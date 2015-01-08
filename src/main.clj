@@ -25,7 +25,8 @@
                       [:id "/test"] :test}] handlers))
 
 (defn start-server []
-  (reset! server (run-server app {:port 8080})))
+  (let [port (Integer/parseInt (get (System/getenv) "PORT" "8080"))]
+    (reset! server (run-server app {:port port}))))
 
 (defn -main []
   (start-server)
