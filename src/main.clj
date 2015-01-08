@@ -4,18 +4,16 @@
 
 (defonce server (atom nil))
 
-(def simple-response 
+(defn simple-response [text] 
   {:status 200
    :headers {"Content-Type" "text/html"}
-   :body "blah"})
+   :body text})
 
 (defn index-handler [request] 
-  (println "index handler") 
-  simple-response)
+  (simple-response "Index handler"))
 
 (defn test-handler [request] 
-  (println (str "test handler: " (:id (:params request)))) 
-  simple-response)
+  (simple-response (str "test handler: " (:id (:params request)))))
 
 (def handlers {:index index-handler
                :test test-handler})
