@@ -1,4 +1,4 @@
-(ns responses 
+(ns d-cent.responses 
   (:require [selmer.parser :refer [render-file]]))
 
 (defn simple-response [text]

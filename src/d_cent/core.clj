@@ -1,8 +1,8 @@
-(ns main
+(ns d-cent.core
   (:use [org.httpkit.server :only [run-server]]
         [bidi.ring :only [make-handler]])
   (:require [clojure.tools.logging :as log]
-            [responses :refer :all]))
+            [d-cent.responses :refer :all]))
 
 (defonce server (atom nil))
 
