@@ -5,8 +5,10 @@
 ;;TODO move translations to external files
 
 (def translation-config
-  {:dictionary {:en {:index {:welcome "Hello"}}
-                :es {:index {:welcome "Hola"}}}
+  {:dictionary {:en {:index {:welcome "Hello"
+                             :title "dCent"}}
+                :es {:index {:welcome "Hola"
+                             :title "dCent"}}}
    :dev-mode? false
    :fallback-locale :en
    :log-missing-translations-function (fn [{:keys [locale ks scope]}]

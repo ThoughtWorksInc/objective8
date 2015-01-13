@@ -8,8 +8,11 @@
 
 (defonce server (atom nil))
 
-(defn index [{:keys [t']}]
-  (simple-response (t' :index/welcome)))
+(defn index [{:keys [t' locale]}]
+  (rendered-response "index.html"
+                     {:title (t' :index/title)
+                      :welcome (t' :index/welcome)
+                      :locale (subs (str locale) 1)}))
 
 (def handlers {:index (wrap-tower index translation-config)})
 
