@@ -27,14 +27,12 @@
     (reset! server (run-server app {:port port}))))
 
 (defn -main []
-  (start-server)
-)
+  (start-server))
 
 (defn stop-server []
   (when-not (nil? @server)
     (@server)
-    (reset! server nil))
-  )
+    (reset! server nil)))
 
 (defn restart-server []
   (stop-server)
