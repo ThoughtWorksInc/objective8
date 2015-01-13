@@ -5,7 +5,8 @@
                  [org.clojure/tools.logging "0.3.1"]
                  [bidi "1.12.0"]
                  [ring "1.3.2"]
-                 [http-kit "2.1.16"]]
+                 [http-kit "2.1.16"]
+                 [selmer "0.7.9"]]
   :main main
   :profiles {:dev {:dependencies [[midje "1.5.1"]
                                   [javax.servlet/servlet-api "2.5"]]

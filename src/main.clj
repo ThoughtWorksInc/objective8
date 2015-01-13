@@ -1,19 +1,15 @@
 (ns main
   (:use [org.httpkit.server :only [run-server]]
         [bidi.ring :only [make-handler]])
-  (:require [clojure.tools.logging :as log]))
+  (:require [clojure.tools.logging :as log]
+            [responses :refer :all]))
 
 (defonce server (atom nil))
-
-(defn simple-response [text] 
-  {:status 200
-   :headers {"Content-Type" "text/html"}
-   :body text})
 
 (defn test-handler [request] 
   (simple-response (str "test handler: " (:id (:params request)))))
 
-(def handlers {:index (constantly (simple-response "d-cent"))
+(def handlers {:index (constantly (rendered-response "index.html"))
                :test test-handler})
 
 (def app
