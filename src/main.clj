@@ -1,6 +1,7 @@
 (ns main
   (:use [org.httpkit.server :only [run-server]]
-        [bidi.ring :only [make-handler]]))
+        [bidi.ring :only [make-handler]])
+  (:require [clojure.tools.logging :as log]))
 
 (defonce server (atom nil))
 
@@ -9,21 +10,19 @@
    :headers {"Content-Type" "text/html"}
    :body text})
 
-(defn index-handler [request] 
-  (simple-response "Index handler"))
-
 (defn test-handler [request] 
   (simple-response (str "test handler: " (:id (:params request)))))
 
-(def handlers {:index index-handler
+(def handlers {:index (constantly (simple-response "d-cent"))
                :test test-handler})
 
 (def app
-  (make-handler ["/" {"index.html" :index
+  (make-handler ["/" {"" :index 
                       [:id "/test"] :test}] handlers))
 
 (defn start-server []
   (let [port (Integer/parseInt (get (System/getenv) "PORT" "8080"))]
+    (log/info (str "Starting d-cent on port " port))
     (reset! server (run-server app {:port port}))))
 
 (defn -main []
