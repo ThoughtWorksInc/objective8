@@ -10,4 +10,4 @@
   ([template-name]
    (rendered-response template-name {}))
   ([template-name vars]
-   (simple-response(render-file (str "templates/" template-name) vars)))) 
+   (simple-response (render-file (str "templates/" template-name) vars)))) 

@@ -1,20 +1,23 @@
 (ns d-cent.core
-  (:use [org.httpkit.server :only [run-server]]
-        [bidi.ring :only [make-handler]])
+  (:use [org.httpkit.server :only [run-server]])
   (:require [clojure.tools.logging :as log]
-            [d-cent.responses :refer :all]))
+            [bidi.ring :refer [make-handler ->Resources]]
+            [taoensso.tower.ring :refer [wrap-tower]]
+            [d-cent.responses :refer :all]
+            [d-cent.translation :refer [translation-config]]))
 
 (defonce server (atom nil))
 
-(defn test-handler [request] 
-  (simple-response (str "test handler: " (:id (:params request)))))
+(defn index [{:keys [t']}]
+  (simple-response (t' :index/welcome)))
 
-(def handlers {:index (constantly (rendered-response "index.html"))
-               :test test-handler})
+(def handlers {:index (wrap-tower index translation-config)})
 
 (def app
-  (make-handler ["/" {"" :index 
-                      [:id "/test"] :test}] handlers))
+  (make-handler ["/" {""        :index 
+                      "static/" (->Resources {:prefix "public/"})}]
+                ;; We need this filtering to make the static handler work
+                (some-fn handlers #(when (fn? %) %))))
 
 (defn start-server []
   (let [port (Integer/parseInt (get (System/getenv) "PORT" "8080"))]

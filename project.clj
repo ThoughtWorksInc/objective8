@@ -6,7 +6,8 @@
                  [bidi "1.12.0"]
                  [ring "1.3.2"]
                  [http-kit "2.1.16"]
-                 [selmer "0.7.9"]]
+                 [selmer "0.7.9"]
+                 [com.taoensso/tower "3.0.2"]]
   :main d-cent.core
   :profiles {:dev {:dependencies [[midje "1.5.1"]
                                   [javax.servlet/servlet-api "2.5"]]
