@@ -6,9 +6,11 @@
 
 (def translation-config
   {:dictionary {:en {:index {:welcome "Hello"
-                             :title "dCent"}}
+                             :title "dCent"
+                             :twitter-login "Log in with Twitter"}}
                 :es {:index {:welcome "Hola"
-                             :title "dCent"}}}
+                             :title "dCent"
+                             :twitter-login "Entrar con Twitter"}}}
    :dev-mode? false
    :fallback-locale :en
    :log-missing-translations-function (fn [{:keys [locale ks scope]}]
