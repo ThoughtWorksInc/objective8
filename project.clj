@@ -8,9 +8,9 @@
                  [http-kit "2.1.16"]
                  [de.ubercode.clostache/clostache "1.4.0"]
                  [com.taoensso/tower "3.0.2"]
-                 [clj-oauth "1.5.1"]]
+                 [clj-oauth "1.5.1"]
+                 [com.ashafa/clutch "0.4.0"]]
   :main d-cent.core
   :profiles {:dev {:dependencies [[midje "1.5.1"]
                                   [javax.servlet/servlet-api "2.5"]]
-                   :plugins [[lein-midje "3.1.3"]]}}
-)
+                   :plugins [[lein-midje "3.1.3"]]}})
