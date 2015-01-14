@@ -35,14 +35,12 @@
 (defn twitter-login [_]
   (let [request-token (oauth/request-token consumer "http://localhost:8080/twitter-callback")
         approval-uri (oauth/user-approval-uri consumer (:oauth_token request-token))]
-    (log/info "Twitter login")
     (response/redirect approval-uri)))
 
 (defn twitter-callback [{params :params}]
   (let [access-token-response (oauth/access-token consumer
                                                   params
                                                   (:oauth_verifier params))]
-    (log/info "Twitter callback")
     (friend/merge-authentication
      (response/redirect "/")
      (workflows/make-auth {:username (access-token-response :screen_name)}
@@ -58,11 +56,12 @@
 
 
 (defn index [{:keys [t' locale]}]
-  (rendered-response "index.mustache"
-                     {:title (t' :index/title)
-                      :welcome (t' :index/welcome)
-                      :twitter-login (t' :index/twitter-login)
-                      :locale (subs (str locale) 1)}))
+  (let [username (get (friend/current-authentication) :username "")]
+    (rendered-response "index.mustache"
+                       {:title (t' :index/title)
+                        :welcome (str (t' :index/welcome) " " username)
+                        :twitter-login (t' :index/twitter-login)
+                        :locale (subs (str locale) 1)})))
 
 (def handlers {:index index})
 
@@ -82,6 +81,7 @@
 (def app
   (wrap-core-middleware
    (make-handler routes (some-fn handlers #(when (fn? %) %)))))
+
 
 (defn start-server []
   (let [port (Integer/parseInt (get environment "PORT" "8080"))]
