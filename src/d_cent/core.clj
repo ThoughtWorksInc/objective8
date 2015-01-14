@@ -2,58 +2,18 @@
   (:use [org.httpkit.server :only [run-server]])
   (:require [clojure.tools.logging :as log]
             [cemerick.friend :as friend]
-            [cemerick.friend.workflows :as workflows]
-            [cemerick.friend.credentials :as creds]
             [ring.util.response :as response]
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.session :refer [wrap-session]]
             [bidi.ring :refer [make-handler ->Resources]]
             [taoensso.tower.ring :refer [wrap-tower]]
-            [oauth.client :as oauth]
+            [d-cent.config :as config]
             [d-cent.responses :refer :all]
-            [d-cent.translation :refer [translation-config]]))
+            [d-cent.translation :refer [translation-config]]
+            [d-cent.workflows.twitter :refer [twitter-workflow]]))
 
 (defonce server (atom nil))
-
-(def environment (System/getenv))
-
-(def twitter-consumer-token (get environment "TWITTER_CONSUMER_TOKEN"))
-(def twitter-consumer-secret-token (get environment "TWITTER_CONSUMER_SECRET_TOKEN"))
-
-(def consumer (oauth/make-consumer twitter-consumer-token
-                                   twitter-consumer-secret-token
-                                   "https://api.twitter.com/oauth/request_token"
-                                   "https://api.twitter.com/oauth/access_token"
-                                   "https://api.twitter.com/oauth/authenticate"
-                                   :hmac-sha1))
-
-(def twitter-routes
-  ["/" {"twitter-login"    :login
-        "twitter-callback" :callback}])
-
-(defn twitter-login [_]
-  (let [request-token (oauth/request-token consumer "http://localhost:8080/twitter-callback")
-        approval-uri (oauth/user-approval-uri consumer (:oauth_token request-token))]
-    (response/redirect approval-uri)))
-
-(defn twitter-callback [{params :params}]
-  (let [access-token-response (oauth/access-token consumer
-                                                  params
-                                                  (:oauth_verifier params))]
-    (friend/merge-authentication
-     (response/redirect "/")
-     (workflows/make-auth {:username (access-token-response :screen_name)}
-                          {::friend/workflow ::twitter-workflow}))))
-
-(def twitter-handlers 
-  {:login    twitter-login
-   :callback twitter-callback})
-
-
-(def twitter-workflow
-  (make-handler twitter-routes twitter-handlers))
-
 
 (defn index [{:keys [t' locale]}]
   (let [username (get (friend/current-authentication) :username "")]
@@ -62,11 +22,15 @@
                         :welcome (str (t' :index/welcome) " " username)
                         :twitter-login (t' :index/twitter-login)
                         :locale (subs (str locale) 1)})))
+(defn logout [_]
+  (friend/logout* (response/redirect "/")))
 
-(def handlers {:index index})
+(def handlers {:index index
+               :logout logout})
 
 (def routes
   ["/" {""                 :index
+        "logout"           :logout
         "static/"          (->Resources {:prefix "public/"})}])
 
 (defn wrap-core-middleware [handler]
@@ -84,7 +48,7 @@
 
 
 (defn start-server []
-  (let [port (Integer/parseInt (get environment "PORT" "8080"))]
+  (let [port (Integer/parseInt config/port)]
     (log/info (str "Starting d-cent on port " port))
     (reset! server (run-server app {:port port}))))
 
