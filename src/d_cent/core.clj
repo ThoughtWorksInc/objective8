@@ -9,7 +9,7 @@
 (defonce server (atom nil))
 
 (defn index [{:keys [t' locale]}]
-  (rendered-response "index.html"
+  (rendered-response "index.mustache"
                      {:title (t' :index/title)
                       :welcome (t' :index/welcome)
                       :locale (subs (str locale) 1)}))
