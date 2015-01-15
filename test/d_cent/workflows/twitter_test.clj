@@ -17,3 +17,9 @@
       (twitter-login fake-request) => (contains {:status 502})
       (provided
         (oauth/request-token consumer callback-url) => nil))
+
+(fact "Sets session username to twitter screen name"
+      (let [params {:oauth_verifier "verifier"}]
+        (twitter-callback {:params params}) => (contains {:session {:cemerick.friend/identity {:authentications {"screen name" {:identity "screen name", :username "screen name"}}, :current "screen name"}}}) 
+        (provided
+          (oauth/access-token consumer params "verifier") => {:screen_name "screen name"})) )
