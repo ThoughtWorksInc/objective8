@@ -13,14 +13,19 @@
                                    "https://api.twitter.com/oauth/authenticate"
                                    :hmac-sha1))
 
+(def callback-url "http://localhost:8080/twitter-callback")
+
 (def twitter-routes
   ["/" {"twitter-login"    :login
         "twitter-callback" :callback}])
 
 (defn twitter-login [_]
-  (let [request-token (oauth/request-token consumer "http://localhost:8080/twitter-callback")
-        approval-uri (oauth/user-approval-uri consumer (:oauth_token request-token))]
-    (response/redirect approval-uri)))
+  (let [request-token (oauth/request-token consumer callback-url)
+        approval-uri (when-let [oauth-token (:oauth_token request-token)]
+                       (oauth/user-approval-uri consumer oauth-token))]
+    (if approval-uri
+      (response/redirect approval-uri)
+      (response/status (response/response "Something went wrong with twitter") 502))))
 
 (defn twitter-callback [{params :params}]
   (let [access-token-response (oauth/access-token consumer
