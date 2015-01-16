@@ -22,35 +22,50 @@
                         :welcome (str (t' :index/welcome) " " username)
                         :twitter-login (t' :index/twitter-login)
                         :locale (subs (str locale) 1)})))
+
+(defn login [{:keys [t' locale]}]
+  (rendered-response "login.mustache"
+                     {:login-required-message "Please log-in"
+                      :welcome (str (t' :index/welcome))
+                      :twitter-login (t' :index/twitter-login)
+                      :locale (subs (str locale) 1)}))
+
+
+(def create-proposal
+  (-> (fn [_] (rendered-response "create_proposal.mustache"))
+      (friend/wrap-authorize #{:logged-in})))
+
 (defn logout [_]
   (friend/logout* (response/redirect "/")))
 
 (def handlers {:index index
+               :login login
+               :create-proposal create-proposal
                :logout logout})
 
 (def routes
-  ["/" {""                 :index
-        "logout"           :logout
+  ["/" {""                :index
+        "login"           :login
+        "create-proposal" :create-proposal
+        "logout"          :logout
         "static/"          (->Resources {:prefix "public/"})}])
 
 (defn wrap-core-middleware [handler]
   (-> handler
-      (friend/authenticate {:allow-anon? true
-                            :workflows [twitter-workflow]})
-      (wrap-tower translation-config)
       wrap-keyword-params
       wrap-params
       wrap-session))
 
 (def app
-  (wrap-core-middleware
-   (make-handler routes (some-fn handlers #(when (fn? %) %)))))
-
+  (-> (make-handler routes (some-fn handlers #(when (fn? %) %)))
+      (friend/authenticate {:allow-anon? true
+                            :workflows [twitter-workflow]})
+      (wrap-tower translation-config)))
 
 (defn start-server []
   (let [port (Integer/parseInt config/port)]
     (log/info (str "Starting d-cent on port " port))
-    (reset! server (run-server app {:port port}))))
+    (reset! server (run-server (wrap-core-middleware app) {:port port}))))
 
 (defn -main []
   (start-server))

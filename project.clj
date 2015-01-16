@@ -1,6 +1,7 @@
 (defproject d-cent "0.0.1-SNAPSHOT"
   :description "Cool new project to do things and stuff"
   :min-lein-version "2.0.0"
+  :test-paths ["test" "integration"]
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [http-kit "2.1.16"]
                  [org.clojure/tools.logging "0.3.1"]
@@ -14,5 +15,6 @@
                  [com.ashafa/clutch "0.4.0"]]
   :main d-cent.core
   :profiles {:dev {:dependencies [[midje "1.5.1"]
+                                  [ring/ring-mock "0.2.0"]
                                   [javax.servlet/servlet-api "2.5"]]
                    :plugins [[lein-midje "3.1.3"]]}})

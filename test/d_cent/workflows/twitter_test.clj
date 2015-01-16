@@ -20,6 +20,16 @@
 
 (fact "Sets session username to twitter screen name"
       (let [params {:oauth_verifier "verifier"}]
-        (twitter-callback {:params params}) => (contains {:session {:cemerick.friend/identity {:authentications {"screen name" {:identity "screen name", :username "screen name"}}, :current "screen name"}}}) 
+        (twitter-callback {:params params}) => (contains {:username "screen name"})
         (provided
           (oauth/access-token consumer params "verifier") => {:screen_name "screen name"})) )
+
+
+
+
+
+
+
+
+
+

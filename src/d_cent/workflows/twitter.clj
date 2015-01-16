@@ -31,10 +31,8 @@
   (let [access-token-response (oauth/access-token consumer
                                                   params
                                                   (:oauth_verifier params))]
-    (friend/merge-authentication
-     (response/redirect "/")
-     (workflows/make-auth {:username (access-token-response :screen_name)}
-                          {::friend/workflow ::twitter-workflow}))))
+    (workflows/make-auth {:username (access-token-response :screen_name) :roles #{:logged-in}}
+                         {::friend/workflow ::twitter-workflow})))
 
 (def twitter-handlers
   {:login    twitter-login
@@ -42,4 +40,3 @@
 
 (def twitter-workflow
   (make-handler twitter-routes twitter-handlers))
-
