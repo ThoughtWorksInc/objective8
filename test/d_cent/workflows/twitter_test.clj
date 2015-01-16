@@ -5,6 +5,9 @@
 
 (def fake-request {})
 
+(defn with-verifier [request]
+  (assoc-in request [:params :oauth_verifier] "verifier"))
+
 ;;TODO - inject uri and token providers into workflow?
 
 (fact "Sends user to twitter approval page with correct oauth token"
@@ -19,10 +22,9 @@
         (oauth/request-token consumer callback-url) => nil))
 
 (fact "Sets session username to twitter screen name"
-      (let [params {:oauth_verifier "verifier"}]
-        (twitter-callback {:params params}) => (contains {:username "screen name"})
-        (provided
-          (oauth/access-token consumer params "verifier") => {:screen_name "screen name"})) )
+      (twitter-callback (-> fake-request with-verifier)) => (contains {:username "screen name"})
+      (provided
+       (oauth/access-token consumer anything "verifier") => {:screen_name "screen name"}) )
 
 
 
