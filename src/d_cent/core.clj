@@ -9,8 +9,10 @@
             [bidi.ring :refer [make-handler ->Resources]]
             [taoensso.tower.ring :refer [wrap-tower]]
             [d-cent.config :as config]
+            [d-cent.proposals :refer [request->proposal]]
             [d-cent.responses :refer :all]
             [d-cent.translation :refer [translation-config]]
+            [d-cent.storage :as storage]
             [d-cent.workflows.twitter :refer [twitter-workflow]]))
 
 (defonce server (atom nil))
@@ -38,17 +40,31 @@
 (defn logout [_]
   (friend/logout* (response/redirect "/")))
 
+(defn make-proposal [request]
+  (let [proposal (request->proposal request)]
+    (if proposal
+      (let [stored-proposal (storage/store! "d-cent-test" proposal)]
+        (simple-response (str "Your proposal is here: http:localhost:8080/proposals/" (:_id stored-proposal))))
+      (simple-response "oops"))))
+
+(defn get-proposal [request]
+  (simple-response (storage/retrieve "d-cent-test" (-> request :route-params :id))))
+
 (def handlers {:index index
                :login login
                :create-proposal create-proposal
-               :logout logout})
+               :logout logout
+               :make-proposal (-> make-proposal wrap-keyword-params wrap-params)
+               :retrieve-proposal get-proposal })
 
 (def routes
   ["/" {""                :index
         "login"           :login
         "create-proposal" :create-proposal
         "logout"          :logout
-        "static/"          (->Resources {:prefix "public/"})}])
+        "static/"          (->Resources {:prefix "public/"})
+        "proposals"       {:post :make-proposal
+                           ["/" :id] :retrieve-proposal }}])
 
 (defn wrap-core-middleware [handler]
   (-> handler
