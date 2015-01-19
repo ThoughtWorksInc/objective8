@@ -35,7 +35,6 @@
 
 (def create-proposal
   (-> (fn [{:keys [t' locale] :as request}]
-        (log/info request)
         (rendered-response "create_proposal.mustache" 
                            {:title-label (t' :proposal/title-label)
                             :description-label (t' :proposal/description-label)
@@ -63,8 +62,17 @@
         (new-proposal-link-page request stored-proposal))
       (simple-response "oops"))))
 
-(defn get-proposal [request]
-  (simple-response (storage/retrieve "d-cent-test" (-> request :route-params :id))))
+(defn get-proposal [{:keys [t' locale] :as request}]
+  (let [proposal (storage/retrieve "d-cent-test" (-> request :route-params :id))]
+    (rendered-response "view_proposal.mustache"
+                       {:title-label (t' :proposal/title-label)
+                        :title (:title proposal)
+                        :description-label (t' :proposal/description-label)
+                        :description (:description proposal)
+                        :objectives-label (t' :proposal/objectives-label)
+                        :objectives (:objectives proposal)
+                        :locale (subs (str locale) 1)
+                        } )))
 
 (def handlers {:index index
                :login login
