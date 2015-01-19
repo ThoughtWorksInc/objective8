@@ -1,8 +1,17 @@
-(ns d-cent.config)
+(ns d-cent.config
+ (:require [clojure.tools.logging :as log]))
 
-(def environment (System/getenv))
+(defn- env-lookup [var-name]
+  (get (System/getenv) var-name))
 
-(def twitter-consumer-token (get environment "TWITTER_CONSUMER_TOKEN"))
-(def twitter-consumer-secret-token (get environment "TWITTER_CONSUMER_SECRET_TOKEN"))
-
-(def port (get environment "PORT" "8080"))
+(defn get-var 
+  "Attempts to read an environment variable. If no variable is
+  found will log a warning message and use the default. If no
+  default is provided will use nil"
+  ([var-name]
+   (get-var var-name nil))
+  ([var-name default] 
+  (if-let [variable (get (System/getenv) var-name)]
+    variable
+    (do (log/warn (str "Failed to look up environment variable \"" var-name "\""))
+        default))))

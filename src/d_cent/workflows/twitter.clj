@@ -6,8 +6,8 @@
               [cemerick.friend.workflows :as workflows]
               [d-cent.config :as config]))
 
-(def consumer (oauth/make-consumer config/twitter-consumer-token
-                                   config/twitter-consumer-secret-token
+(def consumer (oauth/make-consumer (config/get-var "TWITTER_CONSUMER_TOKEN")
+                                   (config/get-var "TWITTER_CONSUMER_SECRET_TOKEN")
                                    "https://api.twitter.com/oauth/request_token"
                                    "https://api.twitter.com/oauth/access_token"
                                    "https://api.twitter.com/oauth/authenticate"

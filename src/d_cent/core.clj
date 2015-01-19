@@ -79,7 +79,7 @@
       (wrap-tower translation-config)))
 
 (defn start-server []
-  (let [port (Integer/parseInt config/port)]
+  (let [port (Integer/parseInt (config/get-var "PORT" "8080"))]
     (log/info (str "Starting d-cent on port " port))
     (reset! server (run-server (wrap-core-middleware app) {:port port}))))
 
