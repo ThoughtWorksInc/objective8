@@ -2,18 +2,39 @@
 <html lang="{{locale}}">
 
 <head>
-    <meta charset="utf-8">
-    <title>{{title}}</title>
-    <!--[if IE]>
-        <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/normalize.css">
+  <link rel="stylesheet" href="/static/basic.css">
 </head>
 
-<body id="home">
-    <div class="page">
-        {{>page}}
-    </div>
-    <link rel="stylesheet" href="static/main.min.css">
+<body>
+  {{! TODO -- change this to partial }}
+  <header role="banner">
+    <a href="/" title="Go to home page" class="header-logo">dCent Project</a>
+    
+    <nav role="navigation">
+      <ul class="global-navigation">
+        {{#signed-in}}
+          <li><a href="/users/{{username}}" class="global-navigation-link" title="Go to user dashboard">Hi, {{username}}</a></li>
+          <li><a href="/sign-out" class="global-navigation-link" title="Sign out">Sign out</a></li>
+        {{/signed-in}}
+        {{^signed-in}}
+          <li><a href="/sign-in" class="global-navigation-link" title="Sign in">Sign in</a></li>
+        {{/signed-in}}
+      </ul>
+    </nav>
+  </header>
+  
+  <section role="main" class="page-container">
+    
+    {{>page}}
+
+  </section>
+
 </body>
 
 </html>

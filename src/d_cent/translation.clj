@@ -7,19 +7,21 @@
 (def translation-config
   {:dictionary {:en {:index {:welcome "Hello"
                              :title "dCent"
-                             :twitter-login "Log in with Twitter"}
-                     :proposal {:title-label "title"
-                                :description-label "description"
-                                :objectives-label "objectives"
-                                :submit "submit"
-                                :proposal-link-text "Your new proposal is here"}}
+                             :twitter-sign-in "Sign in with twitter"
+                             :sign-in-required-message "Please sign in"}
+                     :proposal {:title-label "Title"
+                                :description-label "Description"
+                                :objectives-label "Objectives"
+                                :submit "Submit"
+                                :proposal-link-text "Your new policy is here"}}
                 :es {:index {:welcome "Hola"
                              :title "dCent"
-                             :twitter-login "Entrar con Twitter"}
-                     :proposal {:title-label "título"
-                                :description-label "descripción"
-                                :objectives-label "objetivos"
-                                :submit "entregar"
+                             :twitter-sign-in "Entrar con Twitter"
+                             :sign-in-required-message "Entrar, por favor"}
+                     :proposal {:title-label "Título"
+                                :description-label "Descripción"
+                                :objectives-label "Objetivos"
+                                :submit "Entregar"
                                 :proposal-link-text "Su nueva propuesta esta aqui"}}}
    :dev-mode? false
    :fallback-locale :en

@@ -11,13 +11,13 @@
 ;;TODO - inject uri and token providers into workflow?
 
 (fact "Sends user to twitter approval page with correct oauth token"
-      (twitter-login fake-request) => (contains {:status 302
+      (twitter-sign-in fake-request) => (contains {:status 302
                                                  :headers {"Location" "https://api.twitter.com/oauth/authenticate?oauth_token=wibble"}})
       (provided
         (oauth/request-token consumer callback-url) => {:oauth_token "wibble"}))
 
 (fact "Returns an error if the oauth token is unavailable"
-      (twitter-login fake-request) => (contains {:status 502})
+      (twitter-sign-in fake-request) => (contains {:status 502})
       (provided
         (oauth/request-token consumer callback-url) => nil))
 

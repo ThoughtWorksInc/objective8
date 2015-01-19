@@ -16,10 +16,10 @@
 (def callback-url "http://localhost:8080/twitter-callback")
 
 (def twitter-routes
-  ["/" {"twitter-login"    :login
+  ["/" {"twitter-sign-in"  :sign-in
         "twitter-callback" :callback}])
 
-(defn twitter-login [_]
+(defn twitter-sign-in [_]
   (let [request-token (oauth/request-token consumer callback-url)
         approval-uri (when-let [oauth-token (:oauth_token request-token)]
                        (oauth/user-approval-uri consumer oauth-token))]
@@ -31,11 +31,11 @@
   (let [access-token-response (oauth/access-token consumer
                                                   params
                                                   (:oauth_verifier params))]
-    (workflows/make-auth {:username (access-token-response :screen_name) :roles #{:logged-in}}
+    (workflows/make-auth {:username (access-token-response :screen_name) :roles #{:signed-in}}
                          {::friend/workflow ::twitter-workflow})))
 
 (def twitter-handlers
-  {:login    twitter-login
+  {:sign-in  twitter-sign-in
    :callback twitter-callback})
 
 (def twitter-workflow
