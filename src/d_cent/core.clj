@@ -34,17 +34,33 @@
 
 
 (def create-proposal
-  (-> (fn [_] (rendered-response "create_proposal.mustache"))
+  (-> (fn [{:keys [t' locale] :as request}]
+        (log/info request)
+        (rendered-response "create_proposal.mustache" 
+                           {:title-label (t' :proposal/title-label)
+                            :description-label (t' :proposal/description-label)
+                            :objectives-label (t' :proposal/objectives-label)
+                            :submit (t' :proposal/submit)
+                            :locale (subs (str locale) 1)}))
       (friend/wrap-authorize #{:logged-in})))
 
 (defn logout [_]
   (friend/logout* (response/redirect "/")))
 
+(defn new-proposal-link [stored-proposal]
+  (str "http://localhost:8080/proposals/" (:_id stored-proposal)))
+
+(defn new-proposal-link-page [{:keys [t' locale]} stored-proposal]
+  (rendered-response "new_proposal_link.mustache" 
+                     {:proposal-link (new-proposal-link stored-proposal)
+                      :proposal-link-text (t' :proposal/proposal-link-text)
+                      :locale (subs (str locale) 1)}))
+
 (defn make-proposal [request]
   (let [proposal (request->proposal request)]
     (if proposal
       (let [stored-proposal (storage/store! "d-cent-test" proposal)]
-        (simple-response (str "Your proposal is here: http:localhost:8080/proposals/" (:_id stored-proposal))))
+        (new-proposal-link-page request stored-proposal))
       (simple-response "oops"))))
 
 (defn get-proposal [request]

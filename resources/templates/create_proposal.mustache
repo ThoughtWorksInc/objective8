@@ -1,3 +1,15 @@
 <div>
-<h1>dCent Project</h1>
+  <h1>dCent Project</h1>
+  <form id="create-proposal-form" method="POST" action="/proposals">
+    <label for="title">{{title-label}}</label>
+    <input id="create-proposal-title" name="title" type="text"/>
+
+    <label for="description">{{description-label}}</label>
+    <textarea name="description" id="create-proposal-description" rows="5" cols="10"></textarea>
+
+    <label for="objectives">{{objectives-label}}</label>
+    <textarea name="objectives" id="create-proposal-objectives" rows="5" cols="10"></textarea>
+
+    <input type="submit" name="submit" value="{{submit}}"/>
+  </form>
 </div>
