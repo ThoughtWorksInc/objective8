@@ -1,3 +1,6 @@
+# Useful links
+CouchDB http://couchdb.apache.org/
+
 # d-cent
 
 The project uses [Midje](https://github.com/marick/Midje/).
