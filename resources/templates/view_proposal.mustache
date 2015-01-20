@@ -1,9 +1,80 @@
+
 <h1>{{title}}</h1>
 
-<p><b>{{description-label}}</b></p>
-<p>{{description}}</p>
+<ul class="policy-summary">
+  <li><a class="vote-link" href="#upvote"><span class="icon-plus"></span><span class="visuallyhidden">Up Votes</span> <span id="count">122</span></a></li>
+  <li><a class="vote-link" href="#downvote"><span class="icon-minus"></span><span class="visuallyhidden">Down Votes</span> <span id="count">12</span></a></li>
+  <li><span class="icon-chat"></span> 12 Comments</li>
+</ul>
 
-<hr>
+<div class="policy-meta">
+  Published on 20/01/2015 by <a href="#">Author name</a>
+</div>
 
-<p><b>{{objectives-label}}</b></p>
-<p>{{objectives}}</p>
+<div class="share-this-container">
+  <h2 class="visuallyhidden">Share this</h2>
+  <ul class="share-this">
+    <li><a href="#"><span class="icon-twitter"></span> Twitter</a></li>
+    <li><a href="#"><span class="icon-facebook"></span> Facebook</a></li>
+    <li><a href="#"><span class="icon-googleplus"></span> google+</a></li>
+    <li><a href="#"><span class="icon-tumblr"></span> Tumblr</a></li>
+    <li><a href="#"><span class="icon-linkedin"></span> Linked in</a></li>
+  </ul>
+</div>
+
+<div class="policy-container">
+  <h2>Summary</h2>
+  <p class="no-margin-bottom"><b>{{description-label}}</b></p>
+  <p>{{description}}</p>
+  <p class="no-margin-bottom"><b>{{objectives-label}}</b></p>
+  <p>{{objectives}}</p>
+</div>
+
+<div class="activity-feed">
+  <h2>Activity</h2>
+  <div class="activity-item">
+    <span class="icon-user activity-item-user-icon"></span>
+    <p class="activity-item-summary"><a href="#">Another user </a>commented on this proposal: 20/01/2015</p>
+    <p class="activity-item-detail">Dolor sit amet, consectetur adipisicing elit. Maxime beatae ex, quia nostrum est commodi aperiam sequi aut error, consequuntur ipsa blanditiis dolorem eveniet.</p>
+    <ul class="activity-item-actions">
+      <li><a class="vote-link" href="#upvote"><span class="icon-plus"></span> <span id="count">12</span></a></li>
+      <li><a class="vote-link"href="#downvote"><span class="icon-minus"></span> <span id="count">0</span></a></li>
+      <li><span class="icon-chat"></span> <a href="#" id="js-toggle-responses">1 Response</a></li>
+    </ul>
+    <div id="js-item-responses" class="activity-item-responses hidden">
+      <div class="activity-item-response">
+        <span class="icon-user activity-item-response-user-icon"></span>
+        <p class="activity-item-response-summary"><a href="#">Old user </a>responded: 20/01/2015</p>
+        <p class="activity-item-response-detail">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime beatae ex, quia nostrum est commodi aperiam sequi aut error, consequuntur ipsa blanditiis dolorem eveniet, suscipit similique facilis consectetur totam ut.</p>
+        <ul class="activity-item-actions">
+          <li><a class="vote-link" href="#upvote"><span class="icon-plus"></span> <span id="count">1</span></a></li>
+          <li><a class="vote-link"href="#downvote"><span class="icon-minus"></span> <span id="count">0</span></a></li>
+          <li><span class="icon-chat"></span> <a href="#">0 Responses</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="activity-item">
+    <span class="icon-user activity-item-user-icon"></span>
+    <p class="activity-item-summary"><a href="#">New user </a>commented on this proposal: 20/01/2015</p>
+    <p class="activity-item-detail">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime beatae ex, quia nostrum est commodi aperiam sequi aut error, consequuntur ipsa blanditiis dolorem eveniet, suscipit similique facilis consectetur totam ut.</p>
+    <ul class="activity-item-actions">
+      <li><a class="vote-link" href="#upvote"><span class="icon-plus"></span> <span id="count">1</span></a></li>
+      <li><a class="vote-link"href="#downvote"><span class="icon-minus"></span> <span id="count">0</span></a></li>
+      <li><span class="icon-chat"></span> <a href="#">0 Responses</a></li>
+    </ul>
+  </div>
+
+  <div class="activity-item">
+    <span class="icon-user activity-item-user-icon"></span>
+    <p class="activity-item-summary"><a href="#">Username </a>created this proposal: 19/01/2015</p>
+    <p class="activity-item-detail">URL: <a href="#">http://localhost:8080/proposals/0f6177e9741db18f060262b0e5002c7d</a></p>
+    <ul class="activity-item-actions">
+      <li><a class="vote-link" href="#upvote"><span class="icon-plus"></span> <span id="count">2</span></a></li>
+      <li><a class="vote-link"href="#downvote"><span class="icon-minus"></span> <span id="count">4</span></a></li>
+      <li><span class="icon-chat"></span> <a href="#">0 Responses</a></li>
+    </ul>
+  </div>
+</div>
+
