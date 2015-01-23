@@ -11,5 +11,8 @@
     "grunt-sass": "^0.17.0",
     "node-sass": "1.0.3",
     "grunt-cli": "^0.1.13"
+  },
+  "scripts": {
+    "build": "grunt build"
   }
 }
