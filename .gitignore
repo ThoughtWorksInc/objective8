@@ -1,7 +1,10 @@
 target
 .nrepl-port
 .lein-repl-history
+node_modules/
 *.swp
 *.swo
 .#*
 \#*
+resources/public/*.css
+resources/public/*.css.map
