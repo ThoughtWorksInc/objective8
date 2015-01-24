@@ -10,5 +10,9 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-sass": "0.14.2",
     "node-sass": "1.0.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ThoughtWorksInc/d-cent"
   }
 }

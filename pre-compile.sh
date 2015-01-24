@@ -2,3 +2,5 @@
 
 npm install
 grunt build
+
+lein do clean, midje
