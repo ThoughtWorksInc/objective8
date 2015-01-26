@@ -8,3 +8,4 @@ node_modules/
 \#*
 resources/public/*.css
 resources/public/*.css.map
+ops/.vagrant

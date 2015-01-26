@@ -1,16 +1,19 @@
-# Useful links
-CouchDB http://couchdb.apache.org/
+# d-cent prototype
 
-# d-cent
+## Getting Started
+There is setup for a local development environment in the `ops` directory.
+To start the development VM you will need to install
 
-The project uses [Midje](https://github.com/marick/Midje/).
+- Vagrant + Virtualbox (see https://www.vagrantup.com/downloads.html)
+- Ansible (see http://docs.ansible.com/intro_installation.html)
 
-## How to run the tests
+To get started:
 
-`lein midje` will run all tests.
+```
+git clone git@github.com:ThoughtWorksInc/d-cent.git
+cd d-cent/ops/
+vagrant up
+# type 'vagrant' when asked for a sudoers password
+vagrant ssh
+```
 
-`lein midje namespace.*` will run only tests beginning with "namespace.".
-
-`lein midje :autotest` will run all the tests indefinitely. It sets up a
-watcher on the code files. If they change, only the relevant tests will be
-run again.

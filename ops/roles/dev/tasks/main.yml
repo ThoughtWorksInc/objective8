@@ -1,0 +1,7 @@
+---
+ - name: update apt
+   command: sudo apt-get update
+
+ - name: install leiningen
+   apt: name=leiningen state=present
+
