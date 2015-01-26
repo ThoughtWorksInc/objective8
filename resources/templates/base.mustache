@@ -4,8 +4,8 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>{{title}}</title>
-  <meta name="description" content="{{description}}">
+  <title>{{doc-title}}</title>
+  <meta name="description" content="{{doc-description}}">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/static/styles.css">
 </head>
@@ -18,7 +18,7 @@
     <nav role="navigation">
       <ul class="global-navigation">
         {{#signed-in}}
-          <li><a href="/users/{{username}}" class="global-navigation-link" title="Go to user dashboard">Hi, {{username}}</a></li>
+          <li><a href="/users/{{username}}" class="global-navigation-link" title="Go to user dashboard">{{username}}</a></li>
           <li><a href="/sign-out" class="global-navigation-link" title="Sign out">Sign out</a></li>
         {{/signed-in}}
         {{^signed-in}}
@@ -33,10 +33,5 @@
     {{>page}}
 
   </section>
-  
-  <script src="/static/jquery.js"></script>
-  <script src="/static/custom.js"></script>
-
 </body>
-
 </html>

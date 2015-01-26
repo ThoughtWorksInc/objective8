@@ -20,8 +20,9 @@
 (defn index [{:keys [t' locale]}]
   (let [username (get (friend/current-authentication) :username)]
     (rendered-response "index.mustache"
-                       {:title (t' :index/title)
-                        :welcome (when username (str (t' :index/welcome) " " username))
+                       {:doc-title (t' :index/doc-title)
+                        :doc-description (t' :index/doc-description)
+                        :objective-create-btn-text (t' :index/objective-create-btn-text)
                         :twitter-sign-in (t' :index/twitter-sign-in)
                         :signed-in (when username true)
                         :username username
@@ -29,15 +30,15 @@
 
 (defn sign-in [{:keys [t' locale]}]
   (rendered-response "sign_in.mustache"
-                     {:sign-in-required-message (t' :index/sign-in-required-message)
-                      :welcome (str (t' :index/welcome))
-                      :twitter-sign-in (t' :index/twitter-sign-in)
+                     {:doc-title (t' :sign-in/doc-title)
+                      :doc-description (t' :sign-in/doc-description)
+                      :twitter-sign-in (t' :sign-in/twitter-sign-in)
                       :locale (subs (str locale) 1)}))
-
-
 
 (defn sign-out [_]
   (friend/logout* (response/redirect "/")))
+
+
 
 (defn new-objective-link [stored-objective]
   (str "http://localhost:8080/objectives/" (:_id stored-objective)))
@@ -45,19 +46,22 @@
 (defn objective-new-link-page [{:keys [t' locale]} stored-objective]
   (rendered-response "objective_link.mustache"
                      {:objective-link (new-objective-link stored-objective)
-                      :objective-link-text (t' :objective/objective-link-text)
+                      :objective-link-text (t' :objective-new-link/objective-link-text)
                       :locale (subs (str locale) 1)}))
 
 
 (def objective-create
   (-> (fn [{:keys [t' locale] :as request}]
         (rendered-response "objective_create.mustache"
-                        {:title-label (t' :objective/title-label)
-                        :description-label (t' :objective/description-label)
-                        :actions-label (t' :objective/actions-label)
-                        :submit (t' :objective/submit)
-                        :locale (subs (str locale) 1)}))
-                        (friend/wrap-authorize #{:signed-in})))
+                        {:doc-title (t' :objective-create/doc-title)
+                         :doc-description (t' :objective-create/doc-description)
+                         :page-title (t' :objective-create/page-title)
+                         :title-label (t' :objective-create/title-label)
+                         :description-label (t' :objective-create/description-label)
+                         :actions-label (t' :objective-create/actions-label)
+                         :submit (t' :objective-create/submit)
+                         :locale (subs (str locale) 1)}))
+                         (friend/wrap-authorize #{:signed-in})))
 
 (defn objective-create-post [request]
   (let [objective (request->objective request)]
@@ -66,15 +70,16 @@
         (objective-new-link-page request stored-objective))
       (simple-response "oops"))))
 
-(defn objective-get [{:keys [t' locale] :as request}]
+(defn objective-view [{:keys [t' locale] :as request}]
   (let [objective (storage/retrieve "d-cent-test" (-> request :route-params :id))]
     (rendered-response "objective_view.mustache"
-                       {:title-label (t' :objective/title-label)
+                       {:doc-title (t' :objective-view/doc-title)
+                        :doc-description (t' :objective-view/doc-description)
                         :title (:title objective)
-                        :description-label (t' :objective/description-label)
-                        :description (:description objective)
-                        :actions-label (t' :objective/actions-label)
+                        :actions-label (t' :objective-view/actions-label)
                         :actions (:actions objective)
+                        :description-label (t' :objective-view/description-label)
+                        :description (:description objective)
                         :locale (subs (str locale) 1)
                         } )))
 
@@ -83,7 +88,7 @@
                :objective-create objective-create
                :sign-out sign-out
                :objective-create-post (-> objective-create-post wrap-keyword-params wrap-params)
-               :objective-get objective-get })
+               :objective-view objective-view })
 
 (def routes
   ["/" {""                  :index
@@ -92,7 +97,7 @@
         "sign-out"          :sign-out
         "static/"           (->Resources {:prefix "public/"})
         "objectives"         {:post :objective-create-post
-                            ["/" :id] :objective-get }}])
+                            ["/" :id] :objective-view }}])
 
 (defn wrap-core-middleware [handler]
   (-> handler
