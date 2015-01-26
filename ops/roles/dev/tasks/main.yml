@@ -5,3 +5,6 @@
  - name: install leiningen
    apt: name=leiningen state=present
 
+ - name: install node.js
+   apt: name=nodejs state=present
+
