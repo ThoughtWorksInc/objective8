@@ -14,7 +14,7 @@
                  [clj-oauth "1.5.1"]
                  [com.ashafa/clutch "0.4.0"]]
   :main d-cent.core
-  :profiles {:dev {:dependencies [[midje "1.5.1"]
+  :profiles {:dev {:dependencies [[midje "1.6.3"]
                                   [ring/ring-mock "0.2.0"]
                                   [javax.servlet/servlet-api "2.5"]]
                    :plugins [[lein-midje "3.1.3"]
