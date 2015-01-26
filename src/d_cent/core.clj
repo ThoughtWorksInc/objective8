@@ -9,7 +9,7 @@
             [bidi.ring :refer [make-handler ->Resources]]
             [taoensso.tower.ring :refer [wrap-tower]]
             [d-cent.config :as config]
-            [d-cent.proposals :refer [request->proposal]]
+            [d-cent.objectives :refer [request->objective]]
             [d-cent.responses :refer :all]
             [d-cent.translation :refer [translation-config]]
             [d-cent.storage :as storage]
@@ -35,62 +35,64 @@
                       :locale (subs (str locale) 1)}))
 
 
-(def create-proposal
-  (-> (fn [{:keys [t' locale] :as request}]
-        (rendered-response "create_proposal.mustache" 
-                           {:title-label (t' :proposal/title-label)
-                            :description-label (t' :proposal/description-label)
-                            :objectives-label (t' :proposal/objectives-label)
-                            :submit (t' :proposal/submit)
-                            :locale (subs (str locale) 1)}))
-      (friend/wrap-authorize #{:signed-in})))
 
 (defn sign-out [_]
   (friend/logout* (response/redirect "/")))
 
-(defn new-proposal-link [stored-proposal]
-  (str "http://localhost:8080/proposals/" (:_id stored-proposal)))
+(defn new-objective-link [stored-objective]
+  (str "http://localhost:8080/objectives/" (:_id stored-objective)))
 
-(defn new-proposal-link-page [{:keys [t' locale]} stored-proposal]
-  (rendered-response "new_proposal_link.mustache" 
-                     {:proposal-link (new-proposal-link stored-proposal)
-                      :proposal-link-text (t' :proposal/proposal-link-text)
+(defn objective-new-link-page [{:keys [t' locale]} stored-objective]
+  (rendered-response "objective_link.mustache"
+                     {:objective-link (new-objective-link stored-objective)
+                      :objective-link-text (t' :objective/objective-link-text)
                       :locale (subs (str locale) 1)}))
 
-(defn make-proposal [request]
-  (let [proposal (request->proposal request)]
-    (if proposal
-      (let [stored-proposal (storage/store! "d-cent-test" proposal)]
-        (new-proposal-link-page request stored-proposal))
+
+(def objective-create
+  (-> (fn [{:keys [t' locale] :as request}]
+        (rendered-response "objective_create.mustache"
+                        {:title-label (t' :objective/title-label)
+                        :description-label (t' :objective/description-label)
+                        :actions-label (t' :objective/actions-label)
+                        :submit (t' :objective/submit)
+                        :locale (subs (str locale) 1)}))
+                        (friend/wrap-authorize #{:signed-in})))
+
+(defn objective-create-post [request]
+  (let [objective (request->objective request)]
+    (if objective
+      (let [stored-objective (storage/store! "d-cent-test" objective)]
+        (objective-new-link-page request stored-objective))
       (simple-response "oops"))))
 
-(defn get-proposal [{:keys [t' locale] :as request}]
-  (let [proposal (storage/retrieve "d-cent-test" (-> request :route-params :id))]
-    (rendered-response "view_proposal.mustache"
-                       {:title-label (t' :proposal/title-label)
-                        :title (:title proposal)
-                        :description-label (t' :proposal/description-label)
-                        :description (:description proposal)
-                        :objectives-label (t' :proposal/objectives-label)
-                        :objectives (:objectives proposal)
+(defn objective-get [{:keys [t' locale] :as request}]
+  (let [objective (storage/retrieve "d-cent-test" (-> request :route-params :id))]
+    (rendered-response "objective_view.mustache"
+                       {:title-label (t' :objective/title-label)
+                        :title (:title objective)
+                        :description-label (t' :objective/description-label)
+                        :description (:description objective)
+                        :actions-label (t' :objective/actions-label)
+                        :actions (:actions objective)
                         :locale (subs (str locale) 1)
                         } )))
 
 (def handlers {:index index
                :sign-in sign-in
-               :create-proposal create-proposal
+               :objective-create objective-create
                :sign-out sign-out
-               :make-proposal (-> make-proposal wrap-keyword-params wrap-params)
-               :retrieve-proposal get-proposal })
+               :objective-create-post (-> objective-create-post wrap-keyword-params wrap-params)
+               :objective-get objective-get })
 
 (def routes
-  ["/" {""                :index
-        "sign-in"         :sign-in
-        "create-proposal" :create-proposal
-        "sign-out"        :sign-out
-        "static/"         (->Resources {:prefix "public/"})
-        "proposals"       {:post :make-proposal
-                           ["/" :id] :retrieve-proposal }}])
+  ["/" {""                  :index
+        "sign-in"           :sign-in
+        "objectives/create" :objective-create
+        "sign-out"          :sign-out
+        "static/"           (->Resources {:prefix "public/"})
+        "objectives"         {:post :objective-create-post
+                            ["/" :id] :objective-get }}])
 
 (defn wrap-core-middleware [handler]
   (-> handler

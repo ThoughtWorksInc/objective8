@@ -1,0 +1,16 @@
+
+<h1>Create a new objective {{! TODO: translation }}</h1>
+
+<form id="create-objective-form" method="POST" action="/objectives">
+  <label for="title">{{title-label}}</label>
+  <input id="objective-title" name="title" type="text"/>
+
+  <label for="actions">{{actions-label}}</label>
+  <textarea name="actions" id="objective-actions" rows="5" cols="10"></textarea>
+
+  <label for="description">{{description-label}}</label>
+  <textarea name="description" id="objective-description" rows="5" cols="10"></textarea>
+
+
+  <input type="submit" name="submit" class="button" value="{{submit}}"/>
+</form>
