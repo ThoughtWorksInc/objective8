@@ -7,7 +7,8 @@
 
 (def test-objective {:title "My Objective"
                     :actions ["To rock out" "All day"]
-                    :description "I like cake"})
+                    :description "I like cake"
+                    :end-date "2015-01-31"})
 
 (fact "gets an objective from a request"
       (request->objective (requestify test-objective)) => test-objective)

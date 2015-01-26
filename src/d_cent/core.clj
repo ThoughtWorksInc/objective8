@@ -59,6 +59,7 @@
                          :title-label (t' :objective-create/title-label)
                          :description-label (t' :objective-create/description-label)
                          :actions-label (t' :objective-create/actions-label)
+                         :end-date-label (t' :objective-create/end-date)
                          :submit (t' :objective-create/submit)
                          :locale (subs (str locale) 1)}))
                          (friend/wrap-authorize #{:signed-in})))
@@ -78,6 +79,8 @@
                         :title (:title objective)
                         :actions-label (t' :objective-view/actions-label)
                         :actions (:actions objective)
+                        :end-date-label (t' :objective-view/end-date-label)
+                        :end-date (:end-date objective)
                         :description-label (t' :objective-view/description-label)
                         :description (:description objective)
                         :locale (subs (str locale) 1)
@@ -93,11 +96,11 @@
 (def routes
   ["/" {""                  :index
         "sign-in"           :sign-in
-        "objectives/create" :objective-create
         "sign-out"          :sign-out
         "static/"           (->Resources {:prefix "public/"})
-        "objectives"         {:post :objective-create-post
-                            ["/" :id] :objective-view }}])
+        "objectives"        {["/create"] :objective-create
+                             :post :objective-create-post
+                             ["/" :id] :objective-view }}])
 
 (defn wrap-core-middleware [handler]
   (-> handler
