@@ -2,6 +2,9 @@
  - name: update apt
    command: sudo apt-get update
 
+ - name: install git
+   apt: name=git state=present
+
  - name: install leiningen
    apt: name=leiningen state=present
 
