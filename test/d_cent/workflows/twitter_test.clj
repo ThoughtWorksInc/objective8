@@ -1,7 +1,9 @@
 (ns d-cent.workflows.twitter-test
   (:require [d-cent.workflows.twitter :refer :all]
             [midje.sweet :refer :all]
-            [oauth.client :as oauth]))
+            [oauth.client :as oauth]
+            [cemerick.friend :as friend]
+            [cemerick.friend.workflows :as workflows]))
 
 (def fake-request {})
 
@@ -22,9 +24,12 @@
              (provided
               (oauth/request-token consumer callback-url) => nil)))
 
+;; (fact "The second step is handled by twitter")
+
 (facts "The third step"
        (against-background
         (oauth/access-token consumer anything "verifier") => {:user_id "user id"})
+  
        (fact "asks the user to enter their email address"
              (let [response (twitter-callback (-> fake-request with-verifier))]
                response => (contains {:status 200})
@@ -34,7 +39,19 @@
              (:session (twitter-callback (-> fake-request with-verifier)))
              => (contains {:user_id "user id"})))
 
-;; (fact "Sets session username to twitter screen name"
-;;       (twitter-callback (-> fake-request with-verifier)) => (contains {:username "screen name"})
-;;       (provided
-;;        (oauth/access-token consumer anything "verifier") => {:screen_name "screen name"}))
+(def email-post-request
+  {:params {:email-address "an.email@address.com"}
+   :session {:user_id "user id"}})
+
+(facts "The final step"
+       (fact "authenticates the user with the :signed-in role"
+             (email-capture email-post-request) => :an-authentication-map
+             (provided 
+              (workflows/make-auth {:username "user id" :roles #{:signed-in}}
+                                   {::friend/workflow :d-cent.workflows.twitter/twitter-workflow}) => :an-authentication-map)))
+
+
+
+
+
+
