@@ -14,10 +14,8 @@
                  [clj-oauth "1.5.1"]
                  [com.ashafa/clutch "0.4.0"]]
   :main d-cent.core
-  :ring {:handler d-cent.core/app :port 8080}
   :profiles {:dev {:dependencies [[midje "1.5.1"]
                                   [ring/ring-mock "0.2.0"]
                                   [javax.servlet/servlet-api "2.5"]]
-                   :plugins [[lein-ring "0.9.1"]
-                             [lein-midje "3.1.3"]
+                   :plugins [[lein-midje "3.1.3"]
                              [jonase/eastwood "0.2.1"]]}})
