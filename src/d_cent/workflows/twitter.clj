@@ -4,6 +4,7 @@
               [bidi.ring :refer [make-handler]]
               [cemerick.friend :as friend]
               [cemerick.friend.workflows :as workflows]
+              [d-cent.responses :refer [simple-response]]
               [d-cent.config :as config]))
 
 (def consumer (oauth/make-consumer (config/get-var "TWITTER_CONSUMER_TOKEN")
@@ -28,11 +29,11 @@
       (response/status (response/response "Something went wrong with twitter") 502))))
 
 (defn twitter-callback [{params :params}]
-  (let [access-token-response (oauth/access-token consumer
-                                                  params
-                                                  (:oauth_verifier params))]
-    (workflows/make-auth {:username (access-token-response :screen_name) :roles #{:signed-in}}
-                         {::friend/workflow ::twitter-workflow})))
+  (let [twitter-response (oauth/access-token consumer
+                                             params
+                                             (:oauth_verifier params))]
+    (into (simple-response (slurp "resources/email-form.html"))
+          {:session {:user_id (twitter-response :user_id)}})))
 
 (def twitter-handlers
   {:sign-in  twitter-sign-in

@@ -15,8 +15,6 @@
             [d-cent.storage :as storage]
             [d-cent.workflows.twitter :refer [twitter-workflow]]))
 
-(defonce server (atom nil))
-
 (defn index [{:keys [t' locale]}]
   (let [username (get (friend/current-authentication) :username)]
     (rendered-response "index.mustache"
@@ -38,8 +36,6 @@
 (defn sign-out [_]
   (friend/logout* (response/redirect "/")))
 
-
-
 (defn new-objective-link [stored-objective]
   (str "http://localhost:8080/objectives/" (:_id stored-objective)))
 
@@ -48,7 +44,6 @@
                      {:objective-link (new-objective-link stored-objective)
                       :objective-link-text (t' :objective-new-link/objective-link-text)
                       :locale (subs (str locale) 1)}))
-
 
 (def objective-create
   (-> (fn [{:keys [t' locale] :as request}]
@@ -114,6 +109,9 @@
                             :workflows [twitter-workflow]
                             :login-uri "/sign-in"})
       (wrap-tower translation-config)))
+
+
+(defonce server (atom nil))
 
 (defn start-server []
   (let [port (Integer/parseInt (config/get-var "PORT" "8080"))]

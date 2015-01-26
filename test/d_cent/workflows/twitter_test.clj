@@ -10,28 +10,31 @@
 
 ;;TODO - inject uri and token providers into workflow?
 
-(fact "Sends user to twitter approval page with correct oauth token"
-      (twitter-sign-in fake-request) => (contains {:status 302
-                                                 :headers {"Location" "https://api.twitter.com/oauth/authenticate?oauth_token=wibble"}})
-      (provided
-        (oauth/request-token consumer callback-url) => {:oauth_token "wibble"}))
+(facts "The first step"
+       (fact "Sends user to twitter approval page with correct oauth token"
+             (twitter-sign-in fake-request) => (contains {:status 302
+                                                          :headers {"Location" "https://api.twitter.com/oauth/authenticate?oauth_token=wibble"}})
+             (provided
+              (oauth/request-token consumer callback-url) => {:oauth_token "wibble"}))
 
-(fact "Returns an error if the oauth token is unavailable"
-      (twitter-sign-in fake-request) => (contains {:status 502})
-      (provided
-        (oauth/request-token consumer callback-url) => nil))
+       (fact "Returns an error if the oauth token is unavailable"
+             (twitter-sign-in fake-request) => (contains {:status 502})
+             (provided
+              (oauth/request-token consumer callback-url) => nil)))
 
-(fact "Sets session username to twitter screen name"
-      (twitter-callback (-> fake-request with-verifier)) => (contains {:username "screen name"})
-      (provided
-       (oauth/access-token consumer anything "verifier") => {:screen_name "screen name"}) )
+(facts "The third step"
+       (against-background
+        (oauth/access-token consumer anything "verifier") => {:user_id "user id"})
+       (fact "asks the user to enter their email address"
+             (let [response (twitter-callback (-> fake-request with-verifier))]
+               response => (contains {:status 200})
+               (:body response) => (contains "email address")))
 
+       (fact "stores the user's twitter user_id in the session"
+             (:session (twitter-callback (-> fake-request with-verifier)))
+             => (contains {:user_id "user id"})))
 
-
-
-
-
-
-
-
-
+;; (fact "Sets session username to twitter screen name"
+;;       (twitter-callback (-> fake-request with-verifier)) => (contains {:username "screen name"})
+;;       (provided
+;;        (oauth/access-token consumer anything "verifier") => {:screen_name "screen name"}))
