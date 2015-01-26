@@ -17,16 +17,21 @@
 
 (defonce server (atom nil))
 
+; (defn index [{:keys [t' locale]}]
+;   (let [username (get (friend/current-authentication) :username)]
+;     (rendered-response "index.mustache"
+;                        {:doc-title (t' :index/doc-title)
+;                         :doc-description (t' :index/doc-description)
+;                         :objective-create-btn-text (t' :index/objective-create-btn-text)
+;                         :twitter-sign-in (t' :index/twitter-sign-in)
+;                         :signed-in (when username true)
+;                         :username username
+;                         :locale (subs (str locale) 1)})))
+
+
 (defn index [{:keys [t' locale]}]
-  (let [username (get (friend/current-authentication) :username)]
-    (rendered-response "index.mustache"
-                       {:doc-title (t' :index/doc-title)
-                        :doc-description (t' :index/doc-description)
-                        :objective-create-btn-text (t' :index/objective-create-btn-text)
-                        :twitter-sign-in (t' :index/twitter-sign-in)
-                        :signed-in (when username true)
-                        :username username
-                        :locale (subs (str locale) 1)})))
+  (rendered-response "index.html" ))
+
 
 (defn sign-in [{:keys [t' locale]}]
   (rendered-response "sign_in.mustache"

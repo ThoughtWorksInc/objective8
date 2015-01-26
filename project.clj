@@ -10,6 +10,7 @@
                  [org.apache.httpcomponents/httpclient "4.3.5"]
                  [com.cemerick/friend "0.2.1"]
                  [de.ubercode.clostache/clostache "1.4.0"]
+                 [enlive "1.1.5"]
                  [com.taoensso/tower "3.0.2"]
                  [clj-oauth "1.5.1"]
                  [com.ashafa/clutch "0.4.0"]]
