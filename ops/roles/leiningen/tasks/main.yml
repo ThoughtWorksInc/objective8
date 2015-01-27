@@ -1,4 +1,7 @@
 ---
+ - name: install jdk7
+   apt: name="openjdk-7-jdk" state=present
+
  - name: create /home/vagrant/bin
    command: "mkdir -p /home/vagrant/bin"
 
