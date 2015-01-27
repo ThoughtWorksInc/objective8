@@ -1,6 +1,8 @@
 (ns d-cent.workflows.twitter
-    (:require [oauth.client :as oauth]
+    (:require [clojure.tools.logging :as log]
+              [oauth.client :as oauth]
               [ring.util.response :as response]
+              [ring.util.request :as request]
               [bidi.ring :refer [make-handler]]
               [cemerick.friend :as friend]
               [cemerick.friend.workflows :as workflows]
@@ -14,13 +16,17 @@
                                    "https://api.twitter.com/oauth/authenticate"
                                    :hmac-sha1))
 
-(def callback-url "http://localhost:8080/twitter-callback")
+(def callback-url (str "http://"
+                       (config/get-var "BASE_URI" "localhost")
+                       ":"
+                       (config/get-var "PORT" "8080")
+                       "/twitter-callback"))
 
 (def twitter-routes
   ["/" {"twitter-sign-in"  :sign-in
         "twitter-callback" :callback}])
 
-(defn twitter-sign-in [_]
+(defn twitter-sign-in [request]
   (let [request-token (oauth/request-token consumer callback-url)
         approval-uri (when-let [oauth-token (:oauth_token request-token)]
                        (oauth/user-approval-uri consumer oauth-token))]
