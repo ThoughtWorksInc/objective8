@@ -1,0 +1,20 @@
+<div id="clj-objective-create">
+  <h1>{{page-title}}</h1>
+
+  <form id="create-objective-form" method="POST" action="/objectives">
+
+    <label class="clj-obj-title-label" for="objective-title">{{title-label}}</label>
+    <input id="objective-title" class="clj-obj-title-title" name="title" type="text" pattern=".{3,}" title="{{title-title}}" maxlength="120" required>
+
+    <label class="clj-obj-actions-label" for="objective-actions">{{actions-label}}</label>
+    <textarea id="objective-actions" class="clj-obj-actions-title" name="actions" rows="5" cols="10" pattern=".{50,}" maxlength="500" title="{{actions-title}}" required></textarea>
+
+    <label class="clj-obj-description-label" for="objective-description">{{description-label}}</label>
+    <textarea id="objective-description" class="clj-obj-description-title" name="description" rows="10" cols="10" maxlength="1000" title="{{description-title}}"></textarea>
+    
+    <label class="clj-obj-end-date-label" for="objective-end-date">{{end-date-label}}</label>
+    <input id="objective-end-date" class="clj-obj-end-date-title" name="end-date" type="date" title="{{end-date-title}}" required>
+
+    <input type="submit" name="submit" class="button" value="{{submit}}"/>
+  </form>
+</div>

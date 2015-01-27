@@ -17,28 +17,23 @@
 
 (defonce server (atom nil))
 
-; (defn index [{:keys [t' locale]}]
-;   (let [username (get (friend/current-authentication) :username)]
-;     (rendered-response "index.mustache"
-;                        {:doc-title (t' :index/doc-title)
-;                         :doc-description (t' :index/doc-description)
-;                         :objective-create-btn-text (t' :index/objective-create-btn-text)
-;                         :twitter-sign-in (t' :index/twitter-sign-in)
-;                         :signed-in (when username true)
-;                         :username username
-;                         :locale (subs (str locale) 1)})))
-
-
 (defn index [{:keys [t' locale]}]
-  (rendered-response "index.html" ))
+  (let [username (get (friend/current-authentication) :username)]
+  (rendered-response index-page {:translation t'
+                                 :locale (subs (str locale) 1)
+                                 :doc-title (t' :index/doc-title)
+                                 :doc-description (t' :index/doc-description)
+                                 :signed-in (when username true)})))
+
 
 
 (defn sign-in [{:keys [t' locale]}]
-  (rendered-response "sign_in.mustache"
-                     {:doc-title (t' :sign-in/doc-title)
-                      :doc-description (t' :sign-in/doc-description)
-                      :twitter-sign-in (t' :sign-in/twitter-sign-in)
-                      :locale (subs (str locale) 1)}))
+  (let [username (get (friend/current-authentication) :username)]
+  (rendered-response sign-in-page {:translation t'
+                                   :locale (subs (str locale) 1)
+                                   :doc-title (t' :sign-in/doc-title)
+                                   :doc-description (t' :sign-in/doc-description)
+                                   :signed-in (when username true)})))
 
 (defn sign-out [_]
   (friend/logout* (response/redirect "/")))
@@ -48,26 +43,24 @@
 (defn new-objective-link [stored-objective]
   (str "http://localhost:8080/objectives/" (:_id stored-objective)))
 
+
 (defn objective-new-link-page [{:keys [t' locale]} stored-objective]
-  (rendered-response "objective_link.mustache"
-                     {:objective-link (new-objective-link stored-objective)
-                      :objective-link-text (t' :objective-new-link/objective-link-text)
-                      :locale (subs (str locale) 1)}))
+  (let [username (get (friend/current-authentication) :username)]
+  (rendered-response objectives-new-link-page {:translation t'
+                                               :locale (subs (str locale) 1)
+                                               :doc-title (t' :objective-new-link/doc-title)
+                                               :doc-description (t' :objective-new-link/doc-description)
+                                               :stored-objective (new-objective-link stored-objective)
+                                               :signed-in (when username true)})))
 
 
-(def objective-create
-  (-> (fn [{:keys [t' locale] :as request}]
-        (rendered-response "objective_create.mustache"
-                        {:doc-title (t' :objective-create/doc-title)
-                         :doc-description (t' :objective-create/doc-description)
-                         :page-title (t' :objective-create/page-title)
-                         :title-label (t' :objective-create/title-label)
-                         :description-label (t' :objective-create/description-label)
-                         :actions-label (t' :objective-create/actions-label)
-                         :end-date-label (t' :objective-create/end-date)
-                         :submit (t' :objective-create/submit)
-                         :locale (subs (str locale) 1)}))
-                         (friend/wrap-authorize #{:signed-in})))
+(defn objective-create [{:keys [t' locale]}]
+  (let [username (get (friend/current-authentication) :username)]
+  (rendered-response objective-create-page {:translation t'
+                                            :locale (subs (str locale) 1)
+                                            :doc-title (t' :objective-create/doc-title)
+                                            :doc-description (t' :objective-create/doc-description)
+                                            :signed-in (when username true)})))
 
 (defn objective-create-post [request]
   (let [objective (request->objective request)]
@@ -76,20 +69,16 @@
         (objective-new-link-page request stored-objective))
       (simple-response "oops"))))
 
+
 (defn objective-view [{:keys [t' locale] :as request}]
-  (let [objective (storage/retrieve "d-cent-test" (-> request :route-params :id))]
-    (rendered-response "objective_view.mustache"
-                       {:doc-title (t' :objective-view/doc-title)
-                        :doc-description (t' :objective-view/doc-description)
-                        :title (:title objective)
-                        :actions-label (t' :objective-view/actions-label)
-                        :actions (:actions objective)
-                        :end-date-label (t' :objective-view/end-date-label)
-                        :end-date (:end-date objective)
-                        :description-label (t' :objective-view/description-label)
-                        :description (:description objective)
-                        :locale (subs (str locale) 1)
-                        } )))
+  (let [username (get (friend/current-authentication) :username)
+        objective (storage/retrieve "d-cent-test" (-> request :route-params :id))]
+    (rendered-response objective-view-page {:translation t'
+                                            :locale (subs (str locale) 1)
+                                            :doc-title (t' :objective-view/doc-title)
+                                            :doc-description (t' :objective-view/doc-description)
+                                            :objective objective
+                                            :signed-in (when username true)})))
 
 (def handlers {:index index
                :sign-in sign-in
