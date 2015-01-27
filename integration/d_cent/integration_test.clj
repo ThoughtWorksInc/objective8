@@ -1,16 +1,20 @@
 (ns d-cent.integration-test
   (:require [ring.mock.request :as mock]
             [midje.sweet :refer :all]
-            [d-cent.core :as core]))
+            [d-cent.core :as core]
+            [d-cent.user :as user]))
+
+(def user-id "twitter-user_id")
+(def email-address "test@email.address.com")
 
 (defn with-signed-in-user [request]
   (into request {:session
                  {:cemerick.friend/identity
                   {:authentications
-                   {"screen name" {:identity "screen name"
-                                   :username "screen name"
-                                   :roles #{:signed-in}}}
-                   :current "screen name"}}}))
+                   {user-id {:identity user-id
+                             :username "screen name"
+                             :roles #{:signed-in}}}
+                   :current user-id}}}))
 
 (def objectives-create-request (mock/request :get "/objectives/create"))
 (def objectives-post-request (mock/request :post "/objectives"))
@@ -46,3 +50,9 @@
                     (core/app email-capture-post-request)
                     => (contains {:status 401}))))
 
+(future-fact "should be able to store email addresses"
+      (do
+        (core/app (-> email-capture-post-request with-signed-in-user))
+        
+        (user/find-email-address-for-user {} user-id))
+      => email-address)

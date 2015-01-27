@@ -89,9 +89,9 @@
 (def handlers {:index index
                :sign-in sign-in
                :sign-out sign-out
-               :email-capture-get    (friend/wrap-authorize email-capture-get #{:signed-in})
+               :email-capture-get  (friend/wrap-authorize email-capture-get #{:signed-in})
                :email-capture-post email-capture-post
-               :objective-create (friend/wrap-authorize objective-create #{:signed-in})
+               :objective-create   (friend/wrap-authorize objective-create #{:signed-in})
                :objective-create-post (-> objective-create-post wrap-keyword-params wrap-params)
                :objective-view objective-view })
 
