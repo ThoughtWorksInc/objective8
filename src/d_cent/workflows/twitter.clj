@@ -6,6 +6,7 @@
               [bidi.ring :refer [make-handler]]
               [cemerick.friend :as friend]
               [cemerick.friend.workflows :as workflows]
+              [d-cent.utils :as utils]
               [d-cent.responses :refer [simple-response]]
               [d-cent.config :as config]))
 
@@ -16,11 +17,7 @@
                                    "https://api.twitter.com/oauth/authenticate"
                                    :hmac-sha1))
 
-(def callback-url (str "http://"
-                       (config/get-var "BASE_URI" "localhost")
-                       ":"
-                       (config/get-var "PORT" "8080")
-                       "/twitter-callback"))
+(def callback-url (str utils/host-url "/twitter-callback"))
 
 (def twitter-routes
   ["/" {"twitter-sign-in"  :sign-in

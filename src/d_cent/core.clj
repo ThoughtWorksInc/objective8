@@ -13,6 +13,7 @@
             [d-cent.responses :refer :all]
             [d-cent.translation :refer [translation-config]]
             [d-cent.storage :as storage]
+            [d-cent.utils :as utils]
             [d-cent.workflows.twitter :refer [twitter-workflow]]))
 
 (defn index [{:keys [t' locale]}]
@@ -45,7 +46,7 @@
     {:status 401}))
 
 (defn new-objective-link [stored-objective]
-  (str "http://localhost:8080/objectives/" (:_id stored-objective)))
+  (str utils/host-url "/objectives/" (:_id stored-objective)))
 
 
 (defn objective-new-link-page [{:keys [t' locale]} stored-objective]
