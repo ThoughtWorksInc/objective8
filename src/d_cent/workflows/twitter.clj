@@ -33,14 +33,18 @@
       (response/redirect approval-uri))
     (catch clojure.lang.ExceptionInfo e 
       (do (log/warn (str "Could not get request token from twitter: " e))
-        {:status 502}))))
+          {:status 502}))))
 
 (defn twitter-callback [{params :params}]
-  (let [twitter-response (oauth/access-token consumer
-                                             params
-                                             (:oauth_verifier params))]
-    (workflows/make-auth {:username (twitter-response :user_id) :roles #{:signed-in}}
-                         {::friend/workflow ::twitter-workflow})))
+  (try 
+    (let [twitter-response (oauth/access-token consumer
+                                               params
+                                               (:oauth_verifier params))]
+      (workflows/make-auth {:username (twitter-response :user_id) :roles #{:signed-in}}
+                           {::friend/workflow ::twitter-workflow}))
+    (catch clojure.lang.ExceptionInfo e
+      (do (log/info (str "Did not get authentication from twitter: " e)) 
+          (response/redirect "/")))))
 
 (def twitter-handlers
   {:sign-in       twitter-sign-in

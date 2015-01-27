@@ -14,7 +14,7 @@
 ;;TODO - check that routes are wired up correctly
 ;;TODO - Work through failure conditions for twitter sign-in flow
 
-(facts "The first step"
+(facts "step 1: obtaining request token"
        (fact "Sends user to twitter approval page with correct oauth token"
              (twitter-sign-in fake-request)
              => (contains {:status 302
@@ -29,9 +29,9 @@
               (oauth/request-token consumer callback-url)
               =throws=> (ex-info "blah" {}))))
 
-;; (fact "The second step is handled by twitter")
+;; (fact "step 2: handled by twitter")
 
-(facts "The final step"
+(facts "step 3: authenticating user"
        (fact "authenticates the user with the :signed-in role"
              (twitter-callback (-> fake-request with-verifier)) => :an-authentication-map
              (provided 
@@ -40,4 +40,11 @@
               => :an-authentication-map
               
               (oauth/access-token consumer anything "verifier")
-              => {:user_id "user id"})))
+              => {:user_id "user id"}))
+
+       (fact "redirects to homepage when user doesn't authorise application or error in twitter"
+             (twitter-callback fake-request) => (contains {:status 302})
+             (provided
+              (oauth/access-token anything anything anything)
+              =throws=> (ex-info "blah" {})))
+)
