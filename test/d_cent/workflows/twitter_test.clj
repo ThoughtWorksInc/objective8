@@ -11,6 +11,8 @@
   (assoc-in request [:params :oauth_verifier] "verifier"))
 
 ;;TODO - inject uri and token providers into workflow?
+;;TODO - check that routes are wired up correctly
+;;TODO - Work through failure conditions for twitter sign-in flow
 
 (facts "The first step"
        (fact "Sends user to twitter approval page with correct oauth token"
@@ -26,32 +28,13 @@
 
 ;; (fact "The second step is handled by twitter")
 
-(facts "The third step"
-       (against-background
-        (oauth/access-token consumer anything "verifier") => {:user_id "user id"})
-  
-       (fact "asks the user to enter their email address"
-             (let [response (twitter-callback (-> fake-request with-verifier))]
-               response => (contains {:status 200})
-               (:body response) => (contains "email address")))
-
-       (fact "stores the user's twitter user_id in the session"
-             (:session (twitter-callback (-> fake-request with-verifier)))
-             => (contains {:user_id "user id"})))
-
-(def email-post-request
-  {:params {:email-address "an.email@address.com"}
-   :session {:user_id "user id"}})
-
 (facts "The final step"
        (fact "authenticates the user with the :signed-in role"
-             (email-capture email-post-request) => :an-authentication-map
+             (twitter-callback (-> fake-request with-verifier)) => :an-authentication-map
              (provided 
               (workflows/make-auth {:username "user id" :roles #{:signed-in}}
-                                   {::friend/workflow :d-cent.workflows.twitter/twitter-workflow}) => :an-authentication-map)))
-
-
-
-
-
-
+                                   {::friend/workflow :d-cent.workflows.twitter/twitter-workflow}) 
+              => :an-authentication-map
+              
+              (oauth/access-token consumer anything "verifier")
+              => {:user_id "user id"})))

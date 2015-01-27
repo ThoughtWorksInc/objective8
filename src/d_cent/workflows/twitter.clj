@@ -32,18 +32,12 @@
   (let [twitter-response (oauth/access-token consumer
                                              params
                                              (:oauth_verifier params))]
-    (into (simple-response (slurp "resources/email-form.html"))
-          {:session {:user_id (twitter-response :user_id)}})))
-
-
-(defn email-capture [{session :session}]
-  (workflows/make-auth {:username (session :user_id) :roles #{:signed-in}}
-                     {::friend/workflow ::twitter-workflow}))
+    (workflows/make-auth {:username (twitter-response :user_id) :roles #{:signed-in}}
+                         {::friend/workflow ::twitter-workflow})))
 
 (def twitter-handlers
   {:sign-in       twitter-sign-in
-   :callback      twitter-callback
-   :email-capture email-capture})
+   :callback      twitter-callback})
 
 (def twitter-workflow
   (make-handler twitter-routes twitter-handlers))
