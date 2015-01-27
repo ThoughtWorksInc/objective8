@@ -48,19 +48,17 @@
                       :objective-link-text (t' :objective-new-link/objective-link-text)
                       :locale (subs (str locale) 1)}))
 
-(def objective-create
-  (-> (fn [{:keys [t' locale] :as request}]
-        (rendered-response "objective_create.mustache"
-                        {:doc-title (t' :objective-create/doc-title)
-                         :doc-description (t' :objective-create/doc-description)
-                         :page-title (t' :objective-create/page-title)
-                         :title-label (t' :objective-create/title-label)
-                         :description-label (t' :objective-create/description-label)
-                         :actions-label (t' :objective-create/actions-label)
-                         :end-date-label (t' :objective-create/end-date)
-                         :submit (t' :objective-create/submit)
-                         :locale (subs (str locale) 1)}))
-      (friend/wrap-authorize #{:signed-in})))
+(defn objective-create [{:keys [t' locale] :as request}]
+  (rendered-response "objective_create.mustache"
+                     {:doc-title (t' :objective-create/doc-title)
+                      :doc-description (t' :objective-create/doc-description)
+                      :page-title (t' :objective-create/page-title)
+                      :title-label (t' :objective-create/title-label)
+                      :description-label (t' :objective-create/description-label)
+                      :actions-label (t' :objective-create/actions-label)
+                      :end-date-label (t' :objective-create/end-date)
+                      :submit (t' :objective-create/submit)
+                      :locale (subs (str locale) 1)}))
 
 (defn objective-create-post [request]
   (let [objective (request->objective request)]
@@ -88,7 +86,7 @@
                :sign-in sign-in
                :sign-out sign-out
                :email-capture    (friend/wrap-authorize email-capture #{:signed-in})
-               :objective-create objective-create
+               :objective-create (friend/wrap-authorize objective-create #{:signed-in})
                :objective-create-post (-> objective-create-post wrap-keyword-params wrap-params)
                :objective-view objective-view })
 
