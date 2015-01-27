@@ -11,3 +11,4 @@ resources/public/*.css.map
 ops/.vagrant
 .lein-deps-sum
 lib/
+.DS_Store

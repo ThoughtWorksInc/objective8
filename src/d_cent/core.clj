@@ -51,7 +51,8 @@
 
 (defn objective-new-link-page [{:keys [t' locale]} stored-objective]
   (let [username (get (friend/current-authentication) :username)]
-  (rendered-response objectives-new-link-page {:translation t'
+  (rendered-response objectives-new-link-page {:status-code 201
+                                               :translation t'
                                                :locale (subs (str locale) 1)
                                                :doc-title (t' :objective-new-link/doc-title)
                                                :doc-description (t' :objective-new-link/doc-description)
@@ -73,7 +74,8 @@
       (if objective
         (let [stored-objective (storage/store! "d-cent-test" objective)]
           (objective-new-link-page request stored-objective))
-        (simple-response "oops")))
+        {:status 400 
+         :body "oops"}))
     {:status 401}))
 
 

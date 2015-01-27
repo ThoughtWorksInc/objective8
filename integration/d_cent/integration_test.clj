@@ -26,9 +26,9 @@
               (fact "can reach the create objective page"
                     (core/app (-> objectives-create-request with-signed-in-user))
                     => (contains {:status 200}))
-              (fact "can post a new objective"
+              (future-fact "can post a new objective"
                     (core/app (-> objectives-post-request with-signed-in-user))
-                    => (contains {:status 200}))
+                    => (contains {:status 201}))
               (fact "can reach the email capture page"
                     (core/app (-> email-capture-get-request with-signed-in-user))
                     => (contains {:status 200}))

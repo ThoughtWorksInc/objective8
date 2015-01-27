@@ -2,10 +2,13 @@
   (:require [net.cgrand.enlive-html :as html]
             [d-cent.translation :refer [translation-config]]))
 
-(defn simple-response [text]
-  {:status 200
-   :header {"Content-Type" "text/html"}
-   :body text})
+(defn simple-response
+  ([text]
+   (simple-response text 200))
+  ([text status-code]
+   {:status status-code
+    :header {"Content-Type" "text/html"}
+    :body text}))
 
 (defn render-template [template & args]
   (apply str (apply template args)))
@@ -90,4 +93,5 @@
   (let [navigation (if (:signed-in args)
                          global-navigation-signed-in
                          global-navigation-signed-out)]
+    (println (:status-code args))
     (simple-response (render-template base (assoc args :content (template-name args) :global-navigation (navigation args))))))
