@@ -16,15 +16,18 @@
 
 (facts "The first step"
        (fact "Sends user to twitter approval page with correct oauth token"
-             (twitter-sign-in fake-request) => (contains {:status 302
-                                                          :headers {"Location" "https://api.twitter.com/oauth/authenticate?oauth_token=wibble"}})
+             (twitter-sign-in fake-request)
+             => (contains {:status 302
+                           :headers {"Location" "https://api.twitter.com/oauth/authenticate?oauth_token=wibble"}})
              (provided
-              (oauth/request-token consumer callback-url) => {:oauth_token "wibble"}))
+              (oauth/request-token consumer callback-url)
+              => {:oauth_token "wibble"}))
 
-       (fact "Returns an error if the oauth token is unavailable"
+       (fact "Returns a Bad Gateway error if twitter response indicates an error"
              (twitter-sign-in fake-request) => (contains {:status 502})
              (provided
-              (oauth/request-token consumer callback-url) => nil)))
+              (oauth/request-token consumer callback-url)
+              =throws=> (ex-info "blah" {}))))
 
 ;; (fact "The second step is handled by twitter")
 

@@ -27,12 +27,13 @@
         "twitter-callback" :callback}])
 
 (defn twitter-sign-in [request]
-  (let [request-token (oauth/request-token consumer callback-url)
-        approval-uri (when-let [oauth-token (:oauth_token request-token)]
-                       (oauth/user-approval-uri consumer oauth-token))]
-    (if approval-uri
-      (response/redirect approval-uri)
-      (response/status (response/response "Something went wrong with twitter") 502))))
+  (try
+    (let [request-token-response (oauth/request-token consumer callback-url)
+          approval-uri (oauth/user-approval-uri consumer (:oauth_token request-token-response))]
+      (response/redirect approval-uri))
+    (catch clojure.lang.ExceptionInfo e 
+      (do (log/warn (str "Could not get request token from twitter: " e))
+        {:status 502}))))
 
 (defn twitter-callback [{params :params}]
   (let [twitter-response (oauth/access-token consumer
@@ -47,3 +48,6 @@
 
 (def twitter-workflow
   (make-handler twitter-routes twitter-handlers))
+
+
+
