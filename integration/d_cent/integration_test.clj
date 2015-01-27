@@ -13,6 +13,7 @@
                    :current "screen name"}}}))
 
 (def objectives-create-request (mock/request :get "/objectives/create"))
+(def objectives-post-request (mock/request :post "/objectives"))
 (def email-capture-get-request (mock/request :get "/email"))
 (def email-capture-post-request (mock/request :post "/email"))
 
@@ -20,6 +21,9 @@
        (facts "signed in users"
               (fact "can reach the create objective page"
                     (core/app (-> objectives-create-request with-signed-in-user))
+                    => (contains {:status 200}))
+              (fact "can post a new objective"
+                    (core/app (-> objectives-post-request with-signed-in-user))
                     => (contains {:status 200}))
               (fact "can reach the email capture page"
                     (core/app (-> email-capture-get-request with-signed-in-user))
@@ -32,6 +36,9 @@
               (fact "cannot reach the objective creation page"
                     (core/app objectives-create-request)
                     => (contains {:status 302}))
+              (fact "cannot post a new objective"
+                    (core/app objectives-post-request)
+                    => (contains {:status 401}))
               (fact "cannot reach the email capture page"
                     (core/app email-capture-get-request)
                     => (contains {:status 302}))

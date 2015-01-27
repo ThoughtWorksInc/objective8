@@ -67,11 +67,13 @@
                                             :signed-in (when username true)})))
 
 (defn objective-create-post [request]
-  (let [objective (request->objective request)]
-    (if objective
-      (let [stored-objective (storage/store! "d-cent-test" objective)]
-        (objective-new-link-page request stored-objective))
-      (simple-response "oops"))))
+  (if (friend/authorized? #{:signed-in} friend/*identity*)
+    (let [objective (request->objective request)]
+      (if objective
+        (let [stored-objective (storage/store! "d-cent-test" objective)]
+          (objective-new-link-page request stored-objective))
+        (simple-response "oops")))
+    {:status 401}))
 
 
 (defn objective-view [{:keys [t' locale] :as request}]
