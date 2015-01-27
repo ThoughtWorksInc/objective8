@@ -16,6 +16,16 @@
             [d-cent.utils :as utils]
             [d-cent.workflows.twitter :refer [twitter-workflow]]))
 
+;; Custom ring middleware
+
+(defn wrap-api-authorize [handler roles]
+  (fn [request]
+    (if (friend/authorized? roles friend/*identity*)
+      (handler request)
+      {:status 401})))
+
+;; Handlers
+
 (defn index [{:keys [t' locale]}]
   (let [username (get (friend/current-authentication) :username)]
   (rendered-response index-page {:translation t'
@@ -23,8 +33,6 @@
                                  :doc-title (t' :index/doc-title)
                                  :doc-description (t' :index/doc-description)
                                  :signed-in (when username true)})))
-
-
 
 (defn sign-in [{:keys [t' locale]}]
   (let [username (get (friend/current-authentication) :username)]
@@ -41,13 +49,10 @@
   (simple-response "blah"))
 
 (defn email-capture-post [request]
-  (if (friend/authorized? #{:signed-in} friend/*identity*)
-    {:status 200}
-    {:status 401}))
+  {:status 200})
 
 (defn new-objective-link [stored-objective]
   (str utils/host-url "/objectives/" (:_id stored-objective)))
-
 
 (defn objective-new-link-page [{:keys [t' locale]} stored-objective]
   (let [username (get (friend/current-authentication) :username)]
@@ -78,7 +83,6 @@
          :body "oops"}))
     {:status 401}))
 
-
 (defn objective-view [{:keys [t' locale] :as request}]
   (let [username (get (friend/current-authentication) :username)
         objective (storage/retrieve "d-cent-test" (-> request :route-params :id))]
@@ -93,9 +97,9 @@
                :sign-in sign-in
                :sign-out sign-out
                :email-capture-get  (friend/wrap-authorize email-capture-get #{:signed-in})
-               :email-capture-post email-capture-post
+               :email-capture-post (wrap-api-authorize email-capture-post #{:signed-in})
                :objective-create   (friend/wrap-authorize objective-create #{:signed-in})
-               :objective-create-post (-> objective-create-post wrap-keyword-params wrap-params)
+               :objective-create-post objective-create-post
                :objective-view objective-view })
 
 (def routes
