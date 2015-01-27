@@ -36,6 +36,9 @@
 (defn sign-out [_]
   (friend/logout* (response/redirect "/")))
 
+(defn email-capture [_]
+  (simple-response "blah"))
+
 (defn new-objective-link [stored-objective]
   (str "http://localhost:8080/objectives/" (:_id stored-objective)))
 
@@ -57,7 +60,7 @@
                          :end-date-label (t' :objective-create/end-date)
                          :submit (t' :objective-create/submit)
                          :locale (subs (str locale) 1)}))
-                         (friend/wrap-authorize #{:signed-in})))
+      (friend/wrap-authorize #{:signed-in})))
 
 (defn objective-create-post [request]
   (let [objective (request->objective request)]
@@ -83,8 +86,9 @@
 
 (def handlers {:index index
                :sign-in sign-in
-               :objective-create objective-create
                :sign-out sign-out
+               :email-capture    (friend/wrap-authorize email-capture #{:signed-in})
+               :objective-create objective-create
                :objective-create-post (-> objective-create-post wrap-keyword-params wrap-params)
                :objective-view objective-view })
 
@@ -92,6 +96,7 @@
   ["/" {""                  :index
         "sign-in"           :sign-in
         "sign-out"          :sign-out
+        "email"             :email-capture
         "static/"           (->Resources {:prefix "public/"})
         "objectives"        {["/create"] :objective-create
                              :post :objective-create-post
@@ -109,7 +114,6 @@
                             :workflows [twitter-workflow]
                             :login-uri "/sign-in"})
       (wrap-tower translation-config)))
-
 
 (defonce server (atom nil))
 
