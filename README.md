@@ -17,3 +17,11 @@ vagrant up
 vagrant ssh
 ```
 
+## Deployment
+
+To deploy, you need to set some environment variables:
+
+> export PORT=<port on which the applicaton will be served, defaults to 8080>
+> export BASE_URI=<the base uri at which the application is served, defaults to 'localhost'>
+> export TWITTER_CONSUMER_TOKEN=<obtain this from twitter when registering the application to allow sign-in via twitter>
+> export TWITTER_CONSUMER_SECRET_TOKEN=<as above>

@@ -15,8 +15,6 @@
             [d-cent.storage :as storage]
             [d-cent.workflows.twitter :refer [twitter-workflow]]))
 
-(defonce server (atom nil))
-
 (defn index [{:keys [t' locale]}]
   (let [username (get (friend/current-authentication) :username)]
   (rendered-response index-page {:translation t'
@@ -38,7 +36,13 @@
 (defn sign-out [_]
   (friend/logout* (response/redirect "/")))
 
+(defn email-capture-get [_]
+  (simple-response "blah"))
 
+(defn email-capture-post [request]
+  (if (friend/authorized? #{:signed-in} friend/*identity*)
+    {:status 200}
+    {:status 401}))
 
 (defn new-objective-link [stored-objective]
   (str "http://localhost:8080/objectives/" (:_id stored-objective)))
@@ -82,8 +86,10 @@
 
 (def handlers {:index index
                :sign-in sign-in
-               :objective-create objective-create
                :sign-out sign-out
+               :email-capture-get    (friend/wrap-authorize email-capture-get #{:signed-in})
+               :email-capture-post email-capture-post
+               :objective-create (friend/wrap-authorize objective-create #{:signed-in})
                :objective-create-post (-> objective-create-post wrap-keyword-params wrap-params)
                :objective-view objective-view })
 
@@ -91,6 +97,8 @@
   ["/" {""                  :index
         "sign-in"           :sign-in
         "sign-out"          :sign-out
+        "email"             {:get :email-capture-get
+                             :post :email-capture-post}
         "static/"           (->Resources {:prefix "public/"})
         "objectives"        {["/create"] :objective-create
                              :post :objective-create-post
@@ -108,6 +116,8 @@
                             :workflows [twitter-workflow]
                             :login-uri "/sign-in"})
       (wrap-tower translation-config)))
+
+(defonce server (atom nil))
 
 (defn start-server []
   (let [port (Integer/parseInt (config/get-var "PORT" "8080"))]

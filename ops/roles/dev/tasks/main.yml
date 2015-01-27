@@ -5,9 +5,9 @@
  - name: install git
    apt: name=git state=present
 
- - name: install leiningen
-   apt: name=leiningen state=present
-
  - name: install node.js
    apt: name=nodejs state=present
+
+ - name: install npm
+   apt: name=npm state=present
 
