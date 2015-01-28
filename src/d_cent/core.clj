@@ -12,6 +12,7 @@
             [d-cent.objectives :refer [request->objective]]
             [d-cent.responses :refer :all]
             [d-cent.translation :refer [translation-config]]
+            [d-cent.user :as user]
             [d-cent.storage :as storage]
             [d-cent.utils :as utils]
             [d-cent.workflows.twitter :refer [twitter-workflow]]))
@@ -51,8 +52,12 @@
 (defn email-capture-get [_]
   (simple-response "blah" 200))
 
-(defn email-capture-post [request]
-  {:status 200})
+(defn user-profile-post [request]
+  (let [store (storage/request->store request)
+        user-id (:username (friend/current-authentication))
+        email-address (get-in request [:params :email-address])]
+    (user/store-user-profile! store {:user-id user-id :email-address email-address})
+    {:status 200}))
 
 (defn new-objective-link [stored-objective]
   (str utils/host-url "/objectives/" (:_id stored-objective)))
@@ -66,7 +71,6 @@
                                                :doc-description (t' :objective-new-link/doc-description)
                                                :stored-objective (new-objective-link stored-objective)
                                                :signed-in (when username true)})))
-
 
 (defn objective-create [{:keys [t' locale]}]
   (let [username (get (friend/current-authentication) :username)]
@@ -100,7 +104,7 @@
                :sign-in sign-in
                :sign-out sign-out
                :email-capture-get  (friend/wrap-authorize email-capture-get #{:signed-in})
-               :email-capture-post (wrap-api-authorize email-capture-post #{:signed-in})
+               :user-profile-post (wrap-api-authorize user-profile-post #{:signed-in})
                :objective-create   (friend/wrap-authorize objective-create #{:signed-in})
                :objective-create-post objective-create-post
                :objective-view objective-view })
@@ -109,18 +113,12 @@
   ["/" {""                  :index
         "sign-in"           :sign-in
         "sign-out"          :sign-out
-        "email"             {:get :email-capture-get
-                             :post :email-capture-post}
+        "email"             {:get :email-capture-get}
+        "api/v1/users"      {:post :user-profile-post}
         "static/"           (->Resources {:prefix "public/"})
         "objectives"        {["/create"] :objective-create
                              :post :objective-create-post
                              ["/" :id] :objective-view }}])
-
-(def app-config
-  {:authentication {:allow-anon? true
-                    :workflows [twitter-workflow]
-                    :login-uri "/sign-in"}
-   :translation translation-config})
 
 (defn app [app-config]
   (-> (make-handler routes (some-fn handlers #(when (fn? %) %)))
@@ -128,18 +126,23 @@
       (wrap-tower (:translation app-config))
       wrap-keyword-params
       wrap-params
-      wrap-session))
+      wrap-session
+      (inject-db (:store app-config))))
 
 (defonce server (atom nil))
+(defonce in-memory-db (atom {}))
 
-(def in-memory-db (atom {}))
+(def app-config
+  {:authentication {:allow-anon? true
+                    :workflows [twitter-workflow]
+                    :login-uri "/sign-in"}
+   :translation translation-config
+   :store in-memory-db})
 
 (defn start-server []
   (let [port (Integer/parseInt (config/get-var "PORT" "8080"))]
     (log/info (str "Starting d-cent on port " port))
-    (reset! server (run-server
-                     (inject-db (app app-config) in-memory-db)
-                     {:port port}))))
+    (reset! server (run-server (app app-config) {:port port}))))
 
 (defn -main []
   (start-server))

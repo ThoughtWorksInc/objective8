@@ -1,8 +1,8 @@
-(ns d-cent.user)
+(ns d-cent.user
+  (:require [d-cent.storage :as storage]))
 
-(defn find-email-address-for-user [store user-id]
-  (get-in @store [user-id :email-address])) 
+(defn retrieve-user-record [store user-id]
+  (storage/find-by store "users" #(= user-id (:user-id %))))
 
-(defn store-email-address-for-user! [store user-id email-address]
-  (swap! store assoc-in [user-id :email-address] email-address)
-  store)
+(defn store-user-profile! [store user-profile]
+  (storage/store! store "users" user-profile))

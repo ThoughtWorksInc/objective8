@@ -20,6 +20,6 @@
     record-to-save))
 
 (defn find-by 
-  "Retieves the first record to match predicate"
+  "Retrieves the first record to match predicate"
   [store collection predicate]
   (first (filter predicate (get @store collection))))

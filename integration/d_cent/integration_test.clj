@@ -8,19 +8,23 @@
             [d-cent.storage :as storage]
             [d-cent.user :as user]))
 
-(def user-id "twitter-user_id")
-(def email-address "test@email.address.com")
+(def the-user-id "twitter-user_id")
+(def the-email-address "test@email.address.com")
 
 (def objectives-create-request (mock/request :get "/objectives/create"))
 (def objectives-post-request (mock/request :post "/objectives"))
 (def email-capture-get-request (mock/request :get "/email"))
-(def email-capture-post-request (mock/request :post "/email"))
+(def user-profile-post-request (mock/request :post "/api/v1/users"))
 
-(def app (core/app core/app-config))
+(def default-app (core/app core/app-config))
+
+(def twitter-authentication-background
+  (background (oauth/request-token anything anything) => {:oauth_token "the-token"}
+              (oauth/access-token anything anything anything) => {:user_id the-user-id})) 
 
 (defn access-as-signed-in-user
   "Requires oauth/request-token and oauth/access-token to be stubbed in background or provided statements"
-  [url & args]
+  [app url & args]
   (let [twitter-sign-in (-> (p/session app)
                             (p/request "/twitter-sign-in" :request-method :post)
                             (p/request "/twitter-callback?oauth_verifier=the-verifier"))]
@@ -32,41 +36,45 @@
 
 (facts "authorisation"
        (facts "signed in users"
-              (background (oauth/request-token anything anything) => {:oauth_token "the-token"}
-                          (oauth/access-token anything anything anything) => {:user_id "the-user-id"})
+              twitter-authentication-background
               (fact "can reach the create objective page"
-                    (access-as-signed-in-user "/objectives/create")
+                    (access-as-signed-in-user default-app "/objectives/create")
                     => (check-status 200))
               (fact "can post a new objective"
-                    (access-as-signed-in-user "/objectives" :request-method :post)
+                    (access-as-signed-in-user default-app "/objectives" :request-method :post)
                     => (check-status 201)
                     (provided
                      (request->objective anything) => :an-objective
                      (storage/store! anything anything :an-objective) => :stored-objective))
               (fact "can reach the email capture page"
-                    (access-as-signed-in-user "/email")
+                    (access-as-signed-in-user default-app "/email")
                     => (check-status 200))
-              (fact "can post their email"
-                    (access-as-signed-in-user "/email" :request-method :post)
+              (future-fact "can post their email"
+                    (access-as-signed-in-user default-app "/api/v1/users" :request-method :post)
                     => (check-status 200)))
 
        (facts "unauthorised users"
               (fact "cannot reach the objective creation page"
-                    (app objectives-create-request)
+                    (default-app objectives-create-request)
                     => (contains {:status 302}))
               (fact "cannot post a new objective"
-                    (app objectives-post-request)
+                    (default-app objectives-post-request)
                     => (contains {:status 401}))
               (fact "cannot reach the email capture page"
-                    (app email-capture-get-request)
+                    (default-app email-capture-get-request)
                     => (contains {:status 302}))
-              (fact "cannot post their email address"
-                    (app email-capture-post-request)
+              (fact "cannot post their user profile"
+                    (default-app user-profile-post-request)
                     => (contains {:status 401}))))
 
 (future-fact "should be able to store email addresses"
-      (do
-        (app (-> email-capture-post-request with-signed-in-user))
-
-        (user/find-email-address-for-user {} user-id))
-      => email-address)
+      twitter-authentication-background
+      (let [store (atom {})
+            app-config (into core/app-config {:store store})
+            app (core/app app-config)]
+        (do
+          (access-as-signed-in-user app "/api/v1/users/"
+                                    :request-method :post
+                                    :params {:email-address the-email-address})
+          (:email-address (user/retrieve-user-record store the-user-id))))
+      => the-email-address)

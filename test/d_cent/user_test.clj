@@ -1,27 +1,28 @@
 (ns d-cent.user-test
   (:require [midje.sweet :refer :all]
-            [d-cent.user :refer :all]))
+            [d-cent.user :refer :all]
+            [d-cent.storage :as storage]))
 
 (def email-address "test@email.com")
-(def user-id :twitter-1)
+(def the-user-id :twitter-1)
+(def the-user-record {:user-id the-user-id})
 
-(facts "retrieve email"
-       (fact "can retrieve email address from store by user-id"
-             (find-email-address-for-user (atom {user-id {:email-address email-address}}) user-id) => email-address)
+(facts "about creating user records"
+       (fact "they can be stored"
+             (let [user-profile {:user-id the-user-id :email-address email-address}]
+               (store-user-profile! :stub-store user-profile)
+               => :stub-stored-user-profile
 
-       (fact "returns nil if user does not exist in store"
-             (find-email-address-for-user (atom {}) user-id) => nil)
+               (provided (storage/store! :stub-store "users" user-profile)
+                         => :stub-stored-user-profile))))
 
-       (fact "returns nil if user does not have email address in store"
-             (find-email-address-for-user (atom {user-id {}}) user-id) => nil))
+(facts "retrieve user record"
+       (fact "can retrieve user record from store by user-id"
+             (let [store (atom {})]
+               (storage/store! store "users" the-user-record)
+               (retrieve-user-record store the-user-id))
+             => (contains the-user-record))
 
-
-(defn stored-email-address-matches [user-id email-address]
-  (fn [store]
-    (= (find-email-address-for-user store user-id)
-       email-address)))
-
-(facts "store email"
-       (fact "can store an email address for a user"
-             (store-email-address-for-user! (atom {}) :the-user-id :the-email-address)
-             => (stored-email-address-matches :the-user-id :the-email-address)))
+       (fact "returns nil if no user record exists matching user-id"
+             (retrieve-user-record (atom {}) the-user-id)
+             => nil))
