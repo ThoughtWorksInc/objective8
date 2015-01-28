@@ -1,5 +1,10 @@
 (ns d-cent.storage)
 
+(defn request->store
+  "Fetches the storage atom from the request"
+  [request]
+  (:store (:d-cent request)))
+
 (defn gen-uuid [] (str (java.util.UUID/randomUUID)))
 
 (defn retrieve

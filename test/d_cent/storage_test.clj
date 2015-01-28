@@ -24,3 +24,6 @@
 
 (fact "returns nil if a collection doesn't exist"
       (s/retrieve test-db "does not exist" "not an id") => nil)
+
+(fact "fetches storage atom from request map"
+      (s/request->store {:d-cent {:store :the-store}}) => :the-store)
