@@ -28,8 +28,8 @@
                                         :page-title "Create an objective"
                                         :title-label "Title"
                                         :title-title "3 characters minimum, 120 characters maximum"
-                                        :actions-label "Actions"
-                                        :actions-title "50 characters minimum, 500 characters maximum"
+                                        :goals-label "Goals"
+                                        :goals-title "50 characters minimum, 500 characters maximum"
                                         :description-label "Description"
                                         :description-title "Enter an optional description up to 1000 characters"
                                         :end-date-label "End date"
@@ -42,7 +42,7 @@
                      :objective-view {:doc-title "Objective | dCent"
                                       :doc-description "Objective  ..."
                                       :description-label "Description"
-                                      :actions-label "Actions"
+                                      :goals-label "Goals"
                                       :end-date-label "End date"}}
                 :es {:base {:header-logo-text "Spanish(dCent Project)"
                             :header-logo-title "Spanish(Go to home page)"}
@@ -67,8 +67,8 @@
                                         :page-title "Spanish(Create an objective)"
                                         :title-label "Spanish(Title)"
                                         :title-title "Spanish(3 characters minimum, 120 characters maximum)"
-                                        :actions-label "Spanish(Actions)"
-                                        :actions-title "Spanish(50 characters minimum, 500 characters maximum)"
+                                        :goals-label "Spanish(Goals)"
+                                        :goals-title "Spanish(50 characters minimum, 500 characters maximum)"
                                         :description-label "Spanish(Description)"
                                         :description-title "Spanish(Enter an optional description up to 1000 characters)"
                                         :end-date-label "Spanish(End date)"
@@ -81,7 +81,7 @@
                      :objective-view {:doc-title "Spanish(Objective | dCent)"
                                       :doc-description "Spanish(Objective  ...)"
                                       :description-label "Spanish(Description)"
-                                      :actions-label "Spanish(Actions)"
+                                      :goals-label "Spanish(Goals)"
                                       :end-date-label "Spanish(End date)"}}}
    :dev-mode? false
    :fallback-locale :en

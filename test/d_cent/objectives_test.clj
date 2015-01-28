@@ -6,7 +6,7 @@
   {:params params})
 
 (def test-objective {:title "My Objective"
-                    :actions ["To rock out" "All day"]
+                    :goals ["To rock out" "All day"]
                     :description "I like cake"
                     :end-date "2015-01-31"})
 

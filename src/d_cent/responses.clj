@@ -53,8 +53,8 @@
                                                                           ;TODO look at attr= to remove classes here
                                                                           [:.clj-obj-title-label] (html/content (translation :objective-create/title-label))
                                                                           [:.clj-obj-title-title] (html/set-attr :title (translation :objective-create/title-title))
-                                                                          [:.clj-obj-actions-label] (html/content (translation :objective-create/actions-label))
-                                                                          [:.clj-obj-actions-title] (html/set-attr :title (translation :objective-create/actions-title))
+                                                                          [:.clj-obj-goals-label] (html/content (translation :objective-create/goals-label))
+                                                                          [:.clj-obj-goals-title] (html/set-attr :title (translation :objective-create/goals-title))
                                                                           [:.clj-obj-description-label] (html/content (translation :objective-create/description-label))
                                                                           [:.clj-obj-description-title] (html/set-attr :title (translation :objective-create/description-title))
                                                                           [:.clj-obj-end-date-label] (html/content (translation :objective-create/end-date-label))
@@ -71,8 +71,8 @@
 (html/defsnippet objective-view-page "templates/objectives-view.html" [[:#clj-objectives-view]]
                                                                        [{:keys [translation objective]}]
                                                                        [:h1] (html/content (:title objective))
-                                                                       [:#clj-obj-actions-label] (html/content (translation :objective-view/actions-label))
-                                                                       [:#clj-obj-actions-value] (html/content (:actions objective))
+                                                                       [:#clj-obj-goals-label] (html/content (translation :objective-view/goals-label))
+                                                                       [:#clj-obj-goals-value] (html/content (:goals objective))
                                                                        [:#clj-obj-description-label] (html/content (translation :objective-view/description-label))
                                                                        [:#clj-obj-description-value] (html/content (:description objective))
                                                                        [:#clj-obj-date-label] (html/content (translation :objective-view/end-date-label))
