@@ -24,6 +24,9 @@
       (handler request)
       {:status 401})))
 
+(defn inject-db [handler store]
+  (fn [request] (handler (assoc request :d-cent {:store store}))))
+
 ;; Handlers
 
 (defn index [{:keys [t' locale]}]
@@ -129,10 +132,14 @@
 
 (defonce server (atom nil))
 
+(def in-memory-db (atom {}))
+
 (defn start-server []
   (let [port (Integer/parseInt (config/get-var "PORT" "8080"))]
     (log/info (str "Starting d-cent on port " port))
-    (reset! server (run-server (app app-config) {:port port}))))
+    (reset! server (run-server 
+                     (inject-db (app app-config) in-memory-db) 
+                     {:port port}))))
 
 (defn -main []
   (start-server))
