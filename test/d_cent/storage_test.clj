@@ -27,3 +27,14 @@
 
 (fact "fetches storage atom from request map"
       (s/request->store {:d-cent {:store :the-store}}) => :the-store)
+
+(fact "fetches based on predicate"
+      (s/store! test-db "users" {:a 1})
+      (s/store! test-db "users" {:a 2})
+      (s/store! test-db "users" {:a 3})
+      (s/find-by test-db "users" #(= 1 (:a %)))
+      => (contains {:a 1}))
+
+(fact "returns nil if fetching based on predicate returns no records"
+      (s/find-by test-db "users" #(= 4 (:a %)))
+      => nil)
