@@ -78,7 +78,13 @@
                                                                        [:#clj-obj-date-label] (html/content (translation :objective-view/end-date-label))
                                                                        [:#clj-obj-end-date-value] (html/content (:end-date objective)))
 
-
+;USERS
+(html/defsnippet users-email "templates/users-email.html" [[:#clj-users-email]]
+                                                           [{:keys [translation]}]
+                                                           [:h1] (html/content (translation :users-email/page-title))
+                                                           [:.clj-users-email-label] (html/content (translation :users-email/email-label))
+                                                           [:.clj-users-email-title] (html/set-attr :title (translation :users-email/email-title))
+                                                           [:button] (html/content (translation :users-email/button)))
 
 (defn render-template [template & args]
   (apply str (apply template args)))

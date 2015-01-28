@@ -43,7 +43,13 @@
                                       :doc-description "Objective  ..."
                                       :description-label "Description"
                                       :goals-label "Goals"
-                                      :end-date-label "End date"}}
+                                      :end-date-label "End date"}
+                     :users-email {:doc-title "User email | dCent"
+                                   :doc-description "Email  ..."
+                                   :page-title "Add your email"
+                                   :email-label "Email"
+                                   :email-title "Add your email title"
+                                   :button "Submit"}}
                 :es {:base {:header-logo-text "Spanish(dCent Project)"
                             :header-logo-title "Spanish(Go to home page)"}
                      :navigation-global {:sign-in-text "Spanish(Sign in)"
@@ -82,7 +88,13 @@
                                       :doc-description "Spanish(Objective  ...)"
                                       :description-label "Spanish(Description)"
                                       :goals-label "Spanish(Goals)"
-                                      :end-date-label "Spanish(End date)"}}}
+                                      :end-date-label "Spanish(End date)"}
+                     :users-email {:doc-title "Spanish(User email | dCent)"
+                                   :doc-description "Spanish(Email  ...)"
+                                   :page-title "Spanish(Add your email)"
+                                   :email-label "Spanish(Email)"
+                                   :email-title "Spanish(Add your email title)"
+                                   :button "Spanish(Submit)"}}}
    :dev-mode? false
    :fallback-locale :en
    :log-missing-translations-function (fn [{:keys [locale ks scope]}]

@@ -54,8 +54,12 @@
 (defn sign-out [_]
   (friend/logout* (response/redirect "/")))
 
-(defn email-capture-get [_]
-  (simple-response "blah" 200))
+(defn email-capture-get [{:keys [t' locale]}]
+  (rendered-response users-email {:translation t'
+                                  :locale (subs (str locale) 1)
+                                  :doc-title (t' :users-email/doc-title)
+                                  :doc-description (t' :users-email/doc-description)
+                                  :signed-in (signed-in?)}))
 
 (defn user-profile-post [request]
   (let [store (storage/request->store request)
@@ -94,7 +98,7 @@
     {:status 401}))
 
 (defn objective-view [{:keys [t' locale] :as request}]
-  (let [objective (storage/retrieve "d-cent-test" (-> request :route-params :id))]
+  (let [objective (storage/find-by (storage/request->store request) "objectives" (-> request :route-params :id))]
     (rendered-response objective-view-page {:translation t'
                                             :locale (subs (str locale) 1)
                                             :doc-title (t' :objective-view/doc-title)
