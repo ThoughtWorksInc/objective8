@@ -59,7 +59,7 @@
                                                                           [:.clj-obj-description-title] (html/set-attr :title (translation :objective-create/description-title))
                                                                           [:.clj-obj-end-date-label] (html/content (translation :objective-create/end-date-label))
                                                                           [:.clj-obj-end-date-title] (html/set-attr :title (translation :objective-create/end-date-title))
-                                                                          [:.button] (html/set-attr :value (translation :objective-create/submit)))
+                                                                          [:.button] (html/content (translation :objective-create/submit)))
 
 (html/defsnippet objectives-new-link-page "templates/objectives-new-link.html" [[:#clj-objectives-new-link]]
                                                                                 [{:keys [translation stored-objective]}]

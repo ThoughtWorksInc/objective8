@@ -12,7 +12,7 @@
 (def email-address "test@email.address.com")
 
 (def objectives-create-request (mock/request :get "/objectives/create"))
-(def objectives-post-request (mock/request :post "/objectives") )
+(def objectives-post-request (mock/request :post "/objectives"))
 (def email-capture-get-request (mock/request :get "/email"))
 (def email-capture-post-request (mock/request :post "/email"))
 
