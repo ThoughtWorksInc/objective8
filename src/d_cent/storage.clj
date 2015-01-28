@@ -2,8 +2,6 @@
 
 (defn gen-uuid [] (str (java.util.UUID/randomUUID)))
 
-(def the-store (atom {}))
-
 (defn retrieve
   "Retrieves a record from the in memory database"
   [store collection id]
