@@ -113,25 +113,26 @@
                              :post :objective-create-post
                              ["/" :id] :objective-view }}])
 
-(defn wrap-core-middleware [handler]
-  (-> handler
+(def app-config
+  {:authentication {:allow-anon? true
+                    :workflows [twitter-workflow]
+                    :login-uri "/sign-in"}
+   :translation translation-config})
+
+(defn app [app-config]
+  (-> (make-handler routes (some-fn handlers #(when (fn? %) %)))
+      (friend/authenticate (:authentication app-config))
+      (wrap-tower (:translation app-config))
       wrap-keyword-params
       wrap-params
       wrap-session))
-
-(def app
-  (-> (make-handler routes (some-fn handlers #(when (fn? %) %)))
-      (friend/authenticate {:allow-anon? true
-                            :workflows [twitter-workflow]
-                            :login-uri "/sign-in"})
-      (wrap-tower translation-config)))
 
 (defonce server (atom nil))
 
 (defn start-server []
   (let [port (Integer/parseInt (config/get-var "PORT" "8080"))]
     (log/info (str "Starting d-cent on port " port))
-    (reset! server (run-server (wrap-core-middleware app) {:port port}))))
+    (reset! server (run-server (app app-config) {:port port}))))
 
 (defn -main []
   (start-server))
