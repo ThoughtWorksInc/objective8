@@ -1,14 +1,18 @@
-(ns d-cent.storage
-  (:require [com.ashafa.clutch :as c]))
+(ns d-cent.storage)
+
+(defn gen-uuid [] (str (java.util.UUID/randomUUID)))
+
+(def store (atom {}))
 
 (defn retrieve
-  "Retrieves the latest version of a document in the database"
-  [db id]
-  (c/get-document db id))
+  "Retrieves a record from the in memory database"
+  [collection id]
+  (first (filter #(= (:_id %) id) (get @store collection))))
 
 (defn store! 
-  "Creates or updates a document in the database"
-  [db document]
-  (if-let [existing (retrieve db (:_id document))]
-    (c/put-document db (assoc document :_rev (:_rev existing))) 
-    (c/put-document db document)))
+  "Stores a record in the in memory database"
+  [collection record]
+  (let [record-to-save (assoc record :_id (gen-uuid))]
+    (swap! store update-in [collection] conj record-to-save)
+    record-to-save))
+
