@@ -37,7 +37,7 @@
     (let [twitter-response (oauth/access-token consumer
                                                params
                                                (:oauth_verifier params))]
-      (workflows/make-auth {:username (twitter-response :user_id) :roles #{:signed-in}}
+      (workflows/make-auth {:username (twitter-response :screen_name) :roles #{:signed-in}}
                            {::friend/workflow ::twitter-workflow}))
     (catch clojure.lang.ExceptionInfo e
       (do (log/info (str "Did not get authentication from twitter: " e)) 

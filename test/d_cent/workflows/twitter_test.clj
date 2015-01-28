@@ -40,7 +40,7 @@
               => :an-authentication-map
               
               (oauth/access-token consumer anything "verifier")
-              => {:user_id "user id"}))
+              => {:screen_name "user id"}))
 
        (fact "redirects to homepage when user doesn't authorise application or error in twitter"
              (twitter-callback fake-request) => (contains {:status 302})
