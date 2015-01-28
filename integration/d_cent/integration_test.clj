@@ -67,11 +67,8 @@
               (fact "cannot post their user profile"
                     (default-app user-profile-post-request)
                     => (contains {:status 401}))
-              (fact "cannot post their email address"
-                    (app email-capture-post-request)
-                    => (contains {:status 401}))
               (fact "can access objective view"
-                    (app objective-view-get-request)
+                    (default-app objective-view-get-request)
                     => (contains {:status 200})
                     (provided
                       (storage/find-by anything anything "some-long-id") => :an-objective))))
