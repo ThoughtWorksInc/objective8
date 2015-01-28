@@ -18,7 +18,7 @@
 
 (def app (core/app core/app-config))
 
-(defn access-as-signed-in-user 
+(defn access-as-signed-in-user
   "Requires oauth/request-token and oauth/access-token to be stubbed in background or provided statements"
   [url & args]
   (let [twitter-sign-in (-> (p/session app)
@@ -42,7 +42,7 @@
                     => (check-status 201)
                     (provided
                      (request->objective anything) => :an-objective
-                     (storage/store! anything :an-objective) => :stored-objective))
+                     (storage/store! anything anything :an-objective) => :stored-objective))
               (fact "can reach the email capture page"
                     (access-as-signed-in-user "/email")
                     => (check-status 200))
@@ -67,6 +67,6 @@
 (future-fact "should be able to store email addresses"
       (do
         (app (-> email-capture-post-request with-signed-in-user))
-        
+
         (user/find-email-address-for-user {} user-id))
       => email-address)

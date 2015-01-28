@@ -80,9 +80,9 @@
   (if (friend/authorized? #{:signed-in} friend/*identity*)
     (let [objective (request->objective request)]
       (if objective
-        (let [stored-objective (storage/store! "d-cent-test" objective)]
+        (let [stored-objective (storage/store! (storage/request->store request) "d-cent-test" objective)]
           (objective-new-link-page request stored-objective))
-        {:status 400 
+        {:status 400
          :body "oops"}))
     {:status 401}))
 
@@ -137,8 +137,8 @@
 (defn start-server []
   (let [port (Integer/parseInt (config/get-var "PORT" "8080"))]
     (log/info (str "Starting d-cent on port " port))
-    (reset! server (run-server 
-                     (inject-db (app app-config) in-memory-db) 
+    (reset! server (run-server
+                     (inject-db (app app-config) in-memory-db)
                      {:port port}))))
 
 (defn -main []
