@@ -84,7 +84,7 @@
   (if (friend/authorized? #{:signed-in} friend/*identity*)
     (let [objective (request->objective request)]
       (if objective
-        (let [stored-objective (storage/store! (storage/request->store request) "d-cent-test" objective)]
+        (let [stored-objective (storage/store! (storage/request->store request) "objectives" objective)]
           (objective-new-link-page request stored-objective))
         {:status 400
          :body "oops"}))
@@ -92,7 +92,7 @@
 
 (defn objective-view [{:keys [t' locale] :as request}]
   (let [username (get (friend/current-authentication) :username)
-        objective (storage/retrieve "d-cent-test" (-> request :route-params :id))]
+        objective (storage/find-by (storage/request->store request) "objectives" (-> request :route-params :id))]
     (rendered-response objective-view-page {:translation t'
                                             :locale (subs (str locale) 1)
                                             :doc-title (t' :objective-view/doc-title)

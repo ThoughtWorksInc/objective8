@@ -13,6 +13,7 @@
 
 (def objectives-create-request (mock/request :get "/objectives/create"))
 (def objectives-post-request (mock/request :post "/objectives"))
+(def objective-view-get-request (mock/request :get "/objectives/some-long-id"))
 (def email-capture-get-request (mock/request :get "/email"))
 (def user-profile-post-request (mock/request :post "/api/v1/users"))
 
@@ -20,7 +21,7 @@
 
 (def twitter-authentication-background
   (background (oauth/request-token anything anything) => {:oauth_token "the-token"}
-              (oauth/access-token anything anything anything) => {:user_id the-user-id})) 
+              (oauth/access-token anything anything anything) => {:user_id the-user-id}))
 
 (defn access-as-signed-in-user
   "Requires oauth/request-token and oauth/access-token to be stubbed in background or provided statements"
@@ -65,7 +66,15 @@
                     => (contains {:status 302}))
               (fact "cannot post their user profile"
                     (default-app user-profile-post-request)
-                    => (contains {:status 401}))))
+                    => (contains {:status 401}))
+              (fact "cannot post their email address"
+                    (app email-capture-post-request)
+                    => (contains {:status 401}))
+              (fact "can access objective view"
+                    (app objective-view-get-request)
+                    => (contains {:status 200})
+                    (provided
+                      (storage/find-by anything anything "some-long-id") => :an-objective))))
 
 (fact "should be able to store email addresses"
       twitter-authentication-background
@@ -78,3 +87,12 @@
                                     :params {:email-address the-email-address})
           (:email-address (user/retrieve-user-record store the-user-id))))
       => the-email-address)
+
+(future-fact "authorised user can post and retrieve objective"
+      twitter-authentication-background
+        (access-as-signed-in-user "/objectives" :request-method :post
+                                                   :params {:title "my objective title"
+                                                           :goals "my objective goals"
+                                                           :description "my objective description"
+                                                           :end-date "my objective end-date"})
+          => {})
