@@ -67,13 +67,13 @@
                     (default-app user-profile-post-request)
                     => (contains {:status 401}))))
 
-(future-fact "should be able to store email addresses"
+(fact "should be able to store email addresses"
       twitter-authentication-background
       (let [store (atom {})
             app-config (into core/app-config {:store store})
             app (core/app app-config)]
         (do
-          (access-as-signed-in-user app "/api/v1/users/"
+          (access-as-signed-in-user app "/api/v1/users"
                                     :request-method :post
                                     :params {:email-address the-email-address})
           (:email-address (user/retrieve-user-record store the-user-id))))
