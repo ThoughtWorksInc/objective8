@@ -85,11 +85,17 @@
           (:email-address (user/retrieve-user-record store the-user-id))))
       => the-email-address)
 
-(future-fact "authorised user can post and retrieve objective"
+(fact "authorised user can post and retrieve objective"
       twitter-authentication-background
-        (access-as-signed-in-user "/objectives" :request-method :post
-                                                   :params {:title "my objective title"
-                                                           :goals "my objective goals"
-                                                           :description "my objective description"
-                                                           :end-date "my objective end-date"})
-          => {})
+       (let [store (atom {})
+            app-config (into core/app-config {:store store})
+            app (core/app app-config)
+             params {:title "my objective title"
+                     :goals "my objective goals"
+                     :description "my objective description"
+                     :end-date "my objective end-date"}]
+        (do
+          (access-as-signed-in-user app "/objectives" :request-method :post
+                                    :params params)
+          (storage/find-by store "objectives" #(= (:username %) the-user-id)))
+             => (contains params)))
