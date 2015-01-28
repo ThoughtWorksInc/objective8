@@ -2,16 +2,6 @@
   (:require [net.cgrand.enlive-html :as html]
             [d-cent.translation :refer [translation-config]]))
 
-(defn simple-response
-  ([text]
-   (simple-response text 200))
-  ([text status-code]
-   {:status status-code
-    :header {"Content-Type" "text/html"}
-    :body text}))
-
-(defn render-template [template & args]
-  (apply str (apply template args)))
 
 ;BASE TEMPLATE
 (html/deftemplate base "templates/base.html" 
@@ -89,9 +79,27 @@
                                                                        [:#clj-obj-end-date-value] (html/content (:end-date objective)))
 
 
+
+(defn render-template [template & args]
+  (apply str (apply template args)))
+
+(defn simple-response
+  "Returns a response with given status code or 200"
+  ([text]
+   (simple-response text 200))
+  ([text status-code]
+   {:status status-code
+    :header {"Content-Type" "text/html"}
+    :body text}))
+
 (defn rendered-response [template-name args]
   (let [navigation (if (:signed-in args)
                          global-navigation-signed-in
-                         global-navigation-signed-out)]
-    (println (:status-code args))
-    (simple-response (render-template base (assoc args :content (template-name args) :global-navigation (navigation args))))))
+                         global-navigation-signed-out)
+        page (render-template base (assoc args
+                                          :content (template-name args)
+                                          :global-navigation (navigation args)))]
+        (if-let [status-code (:status-code args)]
+          (simple-response page status-code)
+          (simple-response page))))
+

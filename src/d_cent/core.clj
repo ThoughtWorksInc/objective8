@@ -46,7 +46,7 @@
   (friend/logout* (response/redirect "/")))
 
 (defn email-capture-get [_]
-  (simple-response "blah"))
+  (simple-response "blah" 200))
 
 (defn email-capture-post [request]
   {:status 200})
