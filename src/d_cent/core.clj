@@ -28,23 +28,28 @@
 (defn inject-db [handler store]
   (fn [request] (handler (assoc request :d-cent {:store store}))))
 
+
+;; Helpers
+
+(defn signed-in? []
+  (friend/authorized? #{:signed-in} friend/*identity*))
+
+
 ;; Handlers
 
 (defn index [{:keys [t' locale]}]
-  (let [username (get (friend/current-authentication) :username)]
   (rendered-response index-page {:translation t'
                                  :locale (subs (str locale) 1)
                                  :doc-title (t' :index/doc-title)
                                  :doc-description (t' :index/doc-description)
-                                 :signed-in (when username true)})))
+                                 :signed-in (signed-in?)}))
 
 (defn sign-in [{:keys [t' locale]}]
-  (let [username (get (friend/current-authentication) :username)]
   (rendered-response sign-in-page {:translation t'
                                    :locale (subs (str locale) 1)
                                    :doc-title (t' :sign-in/doc-title)
                                    :doc-description (t' :sign-in/doc-description)
-                                   :signed-in (when username true)})))
+                                   :signed-in (signed-in?)}))
 
 (defn sign-out [_]
   (friend/logout* (response/redirect "/")))
@@ -63,22 +68,20 @@
   (str utils/host-url "/objectives/" (:_id stored-objective)))
 
 (defn objective-new-link-page [{:keys [t' locale]} stored-objective]
-  (let [username (get (friend/current-authentication) :username)]
   (rendered-response objectives-new-link-page {:status-code 201
                                                :translation t'
                                                :locale (subs (str locale) 1)
                                                :doc-title (t' :objective-new-link/doc-title)
                                                :doc-description (t' :objective-new-link/doc-description)
                                                :stored-objective (new-objective-link stored-objective)
-                                               :signed-in (when username true)})))
+                                               :signed-in (signed-in?)}))
 
 (defn objective-create [{:keys [t' locale]}]
-  (let [username (get (friend/current-authentication) :username)]
   (rendered-response objective-create-page {:translation t'
                                             :locale (subs (str locale) 1)
                                             :doc-title (t' :objective-create/doc-title)
                                             :doc-description (t' :objective-create/doc-description)
-                                            :signed-in (when username true)})))
+                                            :signed-in (signed-in?)}))
 
 (defn objective-create-post [request]
   (if (friend/authorized? #{:signed-in} friend/*identity*)
@@ -91,21 +94,20 @@
     {:status 401}))
 
 (defn objective-view [{:keys [t' locale] :as request}]
-  (let [username (get (friend/current-authentication) :username)
-        objective (storage/find-by (storage/request->store request) "objectives" (-> request :route-params :id))]
+  (let [objective (storage/retrieve "d-cent-test" (-> request :route-params :id))]
     (rendered-response objective-view-page {:translation t'
                                             :locale (subs (str locale) 1)
                                             :doc-title (t' :objective-view/doc-title)
                                             :doc-description (t' :objective-view/doc-description)
                                             :objective objective
-                                            :signed-in (when username true)})))
+                                            :signed-in (signed-in?)})))
 
 (def handlers {:index index
                :sign-in sign-in
                :sign-out sign-out
                :email-capture-get  (friend/wrap-authorize email-capture-get #{:signed-in})
                :user-profile-post (wrap-api-authorize user-profile-post #{:signed-in})
-               :objective-create   (friend/wrap-authorize objective-create #{:signed-in})
+               :objective-create (friend/wrap-authorize objective-create #{:signed-in})
                :objective-create-post objective-create-post
                :objective-view objective-view })
 
