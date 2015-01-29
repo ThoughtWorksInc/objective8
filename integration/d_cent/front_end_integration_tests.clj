@@ -5,6 +5,7 @@
             [oauth.client :as oauth]
             [d-cent.objectives :refer [request->objective]]
             [d-cent.storage :as storage]
+            [d-cent.handlers.front-end :as front-end]
             [d-cent.core :as core]))
 
 (def the-user-id "twitter-user_id")
@@ -33,6 +34,10 @@
 (defn check-status [status]
   (fn [peridot-response]
     (= status (get-in peridot-response [:response :status]))))
+
+(defn check-redirect-url [url]
+  (fn [peridot-response]
+    (= url (get-in peridot-response [:response :headers "Location"]))))
 
 (facts "authorisation"
        (facts "signed in users"
@@ -67,6 +72,17 @@
                     => (contains {:status 200})
                     (provided
                       (storage/find-by anything anything "some-long-id") => :an-objective)))))
+
+
+(fact "authorised user can post user profile to /users"
+      twitter-authentication-background
+      (let [params {:user-id the-user-id
+                    :email-address the-email-address}]
+        (access-as-signed-in-user default-app "/users" :request-method :post :params params)
+      => (check-redirect-url "/users/some-id")
+      (provided
+        (front-end/put-user-profile params) => {:_id "some-id"} )))
+
 
 (fact "authorised user can post and retrieve objective"
       twitter-authentication-background

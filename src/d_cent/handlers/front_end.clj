@@ -46,14 +46,21 @@
                                   :doc-description (t' :users-email/doc-description)
                                   :signed-in (signed-in?)}))
 
+;;TODO move into api namespace
+(defn put-user-profile [user-profile]
+  @(http/post (str utils/host-url "/api/v1/users")
+                                 {:headers {"Content-Type" "application/json"}
+                                  :body (json/generate-string user-profile)}))
+
+(defn url-for-user-profile [user-profile]
+  (str "/users/" (:_id user-profile)))
+
 (defn user-profile-post [request]
   (let [user-id (:username (friend/current-authentication))
-        email-address (get-in request [:params :email-address])
-        api-response @(http/post "http://localhost:8080/api/v1/users" 
-                                 {:headers {"Content-Type" "application/json"} 
-                                  :body (json/generate-string {:user-id user-id 
-                                                               :email-address email-address})})]
-    {:status 200 :body api-response}))
+        email-address (get-in request [:params :email-address])]
+    (if-let [stored-user-profile (put-user-profile {:user-id user-id :email-address email-address})]
+      (response/redirect-after-post (url-for-user-profile stored-user-profile))
+      {:status 404})))
 
 ;; objectives
 
