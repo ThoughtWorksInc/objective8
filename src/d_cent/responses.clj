@@ -1,19 +1,19 @@
-(ns d-cent.responses 
+(ns d-cent.responses
   (:require [net.cgrand.enlive-html :as html]
             [d-cent.translation :refer [translation-config]]))
 
 
 ;BASE TEMPLATE
-(html/deftemplate base "templates/base.html" 
+(html/deftemplate base "templates/base.html"
                   [{:keys [translation
-                           locale 
+                           locale
                            doc-title
                            doc-description
                            global-navigation
                            content]}]
                   [:html] (html/set-attr :lang locale)
                   ; TODO find a way to select description without an ID
-                  ; [:meta (html/attr= :name "description")] (html/set-attr :content "Some text")
+                  ; [:head (html/attr= :name "description")] (html/set-attr :content "some text")
                   [:title] (html/content doc-title)
                   [:#clj-description] (html/set-attr :content doc-description)
                   [:#clj-global-navigation] (html/content global-navigation)
@@ -29,7 +29,7 @@
                                                                                             [:#clj-user-profile-link] (html/content (translation :navigation-global/profile-text))
                                                                                             [:#clj-user-profile-link] (html/set-attr :title (translation :navigation-global/profile-title)))
 
-(html/defsnippet global-navigation-signed-out "templates/navigation-global-signed-out.html" [[:.global-navigation]] 
+(html/defsnippet global-navigation-signed-out "templates/navigation-global-signed-out.html" [[:.global-navigation]]
                                                                                             [{:keys [translation]}]
                                                                                             [:#clj-sign-in-link] (html/content (translation :navigation-global/sign-in-text))
                                                                                             [:#clj-sign-in-link] (html/set-attr :title (translation :navigation-global/sign-in-title)))
@@ -50,15 +50,14 @@
 (html/defsnippet objective-create-page "templates/objectives-create.html" [[:#clj-objective-create]]
                                                                           [{:keys [translation]}]
                                                                           [:h1] (html/content (translation :objective-create/page-title))
-                                                                          ;TODO look at attr= to remove classes here
-                                                                          [:.clj-obj-title-label] (html/content (translation :objective-create/title-label))
-                                                                          [:.clj-obj-title-title] (html/set-attr :title (translation :objective-create/title-title))
-                                                                          [:.clj-obj-goals-label] (html/content (translation :objective-create/goals-label))
-                                                                          [:.clj-obj-goals-title] (html/set-attr :title (translation :objective-create/goals-title))
-                                                                          [:.clj-obj-description-label] (html/content (translation :objective-create/description-label))
-                                                                          [:.clj-obj-description-title] (html/set-attr :title (translation :objective-create/description-title))
-                                                                          [:.clj-obj-end-date-label] (html/content (translation :objective-create/end-date-label))
-                                                                          [:.clj-obj-end-date-title] (html/set-attr :title (translation :objective-create/end-date-title))
+                                                                          [(html/attr= :for "objective-title")] (html/content (translation :objective-create/title-label))
+                                                                          [(html/attr= :name "title")] (html/set-attr :title (translation :objective-create/title-title))
+                                                                          [(html/attr= :for "objective-goals")] (html/content (translation :objective-create/goals-label))
+                                                                          [(html/attr= :name "goals")] (html/set-attr :title (translation :objective-create/goals-title))
+                                                                          [(html/attr= :for "objective-description")] (html/content (translation :objective-create/description-label))
+                                                                          [(html/attr= :name "description")] (html/set-attr :title (translation :objective-create/description-title))
+                                                                          [(html/attr= :for "objective-end-date")] (html/content (translation :objective-create/end-date-label))
+                                                                          [(html/attr= :name "end-date")] (html/set-attr :title (translation :objective-create/end-date-title))
                                                                           [:.button] (html/content (translation :objective-create/submit)))
 
 (html/defsnippet objectives-new-link-page "templates/objectives-new-link.html" [[:#clj-objectives-new-link]]
@@ -82,8 +81,8 @@
 (html/defsnippet users-email "templates/users-email.html" [[:#clj-users-email]]
                                                            [{:keys [translation]}]
                                                            [:h1] (html/content (translation :users-email/page-title))
-                                                           [:.clj-users-email-label] (html/content (translation :users-email/email-label))
-                                                           [:.clj-users-email-title] (html/set-attr :title (translation :users-email/email-title))
+                                                           [(html/attr= :for "email-address")] (html/content (translation :users-email/email-label))
+                                                           [(html/attr= :name "email-address")] (html/set-attr :title (translation :users-email/email-title))
                                                            [:button] (html/content (translation :users-email/button)))
 
 (defn render-template [template & args]
@@ -108,4 +107,3 @@
         (if-let [status-code (:status-code args)]
           (simple-response page status-code)
           (simple-response page))))
-
