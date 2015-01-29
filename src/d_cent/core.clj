@@ -47,9 +47,9 @@
         "static/"           (->Resources {:prefix "public/"})
         "objectives"        {["/create"] :objective-create
                              :post :objective-create-post
-                             ["/" :id] :objective-view }}
-        "api/v1/objectives"  :post :api-objective-post
-                              ["/" :id] :objective-view])
+                             ["/" :id] :objective-view }
+        "api/v1/objectives"  {:post :api-objective-post
+                              ["/" :id] :objective-view}}])
 
 (defn app [app-config]
   (-> (make-handler routes (some-fn handlers #(when (fn? %) %)))

@@ -1,6 +1,7 @@
 (ns d-cent.objectives-test
   (:require [midje.sweet :refer :all]
             [cemerick.friend :as friend]
+            [d-cent.storage :as storage]
             [d-cent.objectives :refer :all]))
 
 (defn requestify [params]
@@ -18,4 +19,8 @@
 
 (fact "returns nil if extra params are in the request"
       (request->objective (requestify (assoc test-objective :extra-stuff "Blaaaaaaaaah"))) => nil)
+
+(fact "stores and returns the stored objective"
+      (store-objective! :the-store :the-objective) => :stored-objective
+      (provided (storage/store! anything "objectives" :the-objective) => :stored-objective))
 

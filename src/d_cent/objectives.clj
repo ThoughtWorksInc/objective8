@@ -1,5 +1,6 @@
 (ns d-cent.objectives
-  (:require [cemerick.friend :as friend]))
+  (:require [cemerick.friend :as friend]
+            [d-cent.storage :as storage]))
 
 (defn request->objective
   "Returns a map of an objective if all the parts are in the
@@ -9,5 +10,6 @@
                                       :username (get (friend/current-authentication) :username))))
 
 
-; (defn store [objective]
-;   storage/store! "d-cent-test" objective) )
+(defn store-objective! [store objective]
+  (storage/store! store "objectives" objective))
+
