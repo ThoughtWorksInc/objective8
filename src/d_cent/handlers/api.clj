@@ -2,14 +2,21 @@
   (:require [clojure.tools.logging :as log]
             [d-cent.storage :as storage]
             [d-cent.objectives :as objectives]
-            [d-cent.user :as user]))
+            [d-cent.user :as user]
+            [d-cent.utils :as utils]))
 
 (defn api-user-profile-post [request]
   (let [store (storage/request->store request)
         user-id (get-in request [:params :user-id])
-        email-address (get-in request [:params :email-address])]
-    (user/store-user-profile! store {:user-id user-id :email-address email-address})
-    {:status 200}))
+        email-address (get-in request [:params :email-address])
+        user-profile (user/store-user-profile! store 
+                                               {:user-id user-id 
+                                                :email-address email-address})
+        resource-location (str utils/host-url "/api/v1/users/" (:_id user-profile))]
+    {:status 201
+     :headers {"Content-Type" "application/json"
+               "Location" resource-location}
+     :body user-profile}))
 
 (defn api-objective-post [request]
   (let [store (storage/request->store request)

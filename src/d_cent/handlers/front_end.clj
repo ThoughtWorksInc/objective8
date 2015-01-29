@@ -47,14 +47,11 @@
                                   :doc-description (t' :users-email/doc-description)
                                   :signed-in (signed-in?)}))
 
-(defn url-for-user-profile [user-profile]
-  (str "/users/" (:_id user-profile)))
-
 (defn user-profile-post [request]
   (let [user-id (:username (friend/current-authentication))
         email-address (get-in request [:params :email-address])]
     (if-let [stored-user-profile (api/post-user-profile {:user-id user-id :email-address email-address})]
-      (response/redirect-after-post (url-for-user-profile stored-user-profile))
+      (response/redirect "/")
       {:status 404})))
 
 ;; objectives

@@ -31,18 +31,32 @@
         headers => (contains {"Location" "value"})
         (s/find-by temp-store "objectives" (constantly true)) => (contains the-objective)))
 
-(fact "should be able to store email addresses"
-      (let [temp-store (atom {})
-            app-config (into core/app-config {:store temp-store})
-            user-session (p/session (core/app app-config))]
-        (do
-          (-> user-session
-              (p/content-type "application/json")
-              (p/request "/api/v1/users"
-                         :request-method :post
-                         :headers {"Content-Type" "application/json"}
-                         :body (json/generate-string {:email-address the-email-address
-                                                      :user-id the-user-id})))
-          (:email-address (user/retrieve-user-record temp-store the-user-id))))
-      => the-email-address)
+(fact "The API can be used to store a user profile"
+       (let [temp-store (atom {})
+             app-config (into core/app-config {:store temp-store})
+             user-session (p/session (core/app app-config))
+             api-response (-> user-session
+                              (p/content-type "application/json")
+                              (p/request "/api/v1/users"
+                                         :request-method :post
+                                         :headers {"Content-Type" "application/json"}
+                                         :body (json/generate-string {:email-address the-email-address
+                                                                      :user-id the-user-id}))
+                              :response)
+             stored-email (:email-address (user/retrieve-user-record temp-store the-user-id))]
+         
+         stored-email => the-email-address
+         api-response => (contains {:status 201})
+         api-response => (contains {:body string?})
+         (json/parse-string (:body api-response) true) => (contains {:_id anything})
+         api-response => (contains {:headers (contains {"Location" (contains "/api/v1/users/")})})))
+
+
+
+ 
+
+
+
+
+
 

@@ -26,8 +26,8 @@
 
 (defn access-as-signed-in-user
   "Requires oauth/request-token and oauth/access-token to be stubbed in background or provided statements"
-  [app url & args]
-  (let [twitter-sign-in (-> (p/session app)
+  [user-session url & args]
+  (let [twitter-sign-in (-> user-session
                             (p/request "/twitter-sign-in" :request-method :post)
                             (p/request "/twitter-callback?oauth_verifier=the-verifier"))]
     (apply p/request twitter-sign-in url args)))
@@ -44,18 +44,18 @@
        (facts "signed in users"
               twitter-authentication-background
               (fact "can reach the create objective page"
-                    (access-as-signed-in-user default-app "/objectives/create")
+                    (access-as-signed-in-user (p/session default-app) "/objectives/create")
                     => (check-status 200))
               (fact "can post a new objective"
-                    (access-as-signed-in-user default-app "/objectives" :request-method :post)
+                    (access-as-signed-in-user (p/session default-app) "/objectives" :request-method :post)
                     => (check-status 201)
                     (provided
                      (request->objective anything) => :an-objective
                      (storage/store! anything anything :an-objective) => :stored-objective))
               (fact "can reach the email capture page"
-                    (access-as-signed-in-user default-app "/email")
-                    => (check-status 200))
-(facts "unauthorised users"
+                    (access-as-signed-in-user (p/session default-app) "/email")
+                    => (check-status 200)))
+       (facts "unauthorised users"
               (fact "cannot reach the objective creation page"
                     (default-app objectives-create-request)
                     => (contains {:status 302}))
@@ -72,30 +72,30 @@
                     (default-app objective-view-get-request)
                     => (contains {:status 200})
                     (provided
-                      (storage/find-by anything anything "some-long-id") => :an-objective)))))
-
+                     (storage/find-by anything anything "some-long-id") => :an-objective))))
 
 (fact "authorised user can post user profile to /users"
       twitter-authentication-background
       (let [params {:user-id the-user-id
-                    :email-address the-email-address}]
-        (access-as-signed-in-user default-app "/users" :request-method :post :params params)
-      => (check-redirect-url "/users/some-id")
+                    :email-address the-email-address}
+            user-session (p/session default-app)]
+        (access-as-signed-in-user user-session "/users" :request-method :post :params params)
+      => (check-redirect-url "/")
       (provided
-        (api/post-user-profile params) => {:_id "some-id"} )))
+        (api/post-user-profile params) => {:_id "some-id"})))
 
 
 (fact "authorised user can post and retrieve objective"
       twitter-authentication-background
       (let [store (atom {})
             app-config (into core/app-config {:store store})
-            app (core/app app-config)
+            user-session (p/session (core/app app-config))
             params {:title "my objective title"
                     :goals "my objective goals"
                     :description "my objective description"
                     :end-date "my objective end-date"}]
         (do
-          (access-as-signed-in-user app "/objectives" :request-method :post
+          (access-as-signed-in-user user-session "/objectives" :request-method :post
                                     :params params)
           (storage/find-by store "objectives" #(= (:username %) the-user-id)))
         => (contains params)))

@@ -5,7 +5,7 @@
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.session :refer [wrap-session]]
-            [ring.middleware.json :refer [wrap-json-params wrap-json-response wrap-json-body]]
+            [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
             [bidi.ring :refer [make-handler ->Resources]]
             [taoensso.tower.ring :refer [wrap-tower]]
             [d-cent.config :as config]
@@ -58,6 +58,7 @@
       wrap-keyword-params
       wrap-params
       wrap-json-params
+      wrap-json-response
       wrap-session
       (inject-db (:store app-config))))
 
