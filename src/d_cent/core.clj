@@ -15,7 +15,8 @@
             [d-cent.user :as user]
             [d-cent.storage :as storage]
             [d-cent.utils :as utils]
-            [d-cent.workflows.twitter :refer [twitter-workflow]]))
+            [d-cent.workflows.twitter :refer [twitter-workflow]]
+            [cheshire.core :refer :all]))
 
 ;; Custom ring middleware
 
@@ -97,6 +98,9 @@
          :body "oops"}))
     {:status 401}))
 
+(defn api-objective-post []
+  )
+
 (defn objective-view [{:keys [t' locale] :as request}]
   (let [objective (storage/find-by (storage/request->store request) "objectives" (-> request :route-params :id))]
     (rendered-response objective-view-page {:translation t'
@@ -113,7 +117,8 @@
                :user-profile-post (wrap-api-authorize user-profile-post #{:signed-in})
                :objective-create (friend/wrap-authorize objective-create #{:signed-in})
                :objective-create-post objective-create-post
-               :objective-view objective-view })
+               :objective-view objective-view
+               :api-objective-post api-objective-post})
 
 (def routes
   ["/" {""                  :index
@@ -124,7 +129,9 @@
         "static/"           (->Resources {:prefix "public/"})
         "objectives"        {["/create"] :objective-create
                              :post :objective-create-post
-                             ["/" :id] :objective-view }}])
+                             ["/" :id] :objective-view }}
+        "api/v1/objectives"  :post :api-objective-post
+                              ["/" :id] :objective-view])
 
 (defn app [app-config]
   (-> (make-handler routes (some-fn handlers #(when (fn? %) %)))
