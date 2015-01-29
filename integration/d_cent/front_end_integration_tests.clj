@@ -6,6 +6,7 @@
             [d-cent.objectives :refer [request->objective]]
             [d-cent.storage :as storage]
             [d-cent.handlers.front-end :as front-end]
+            [d-cent.api :as api]
             [d-cent.core :as core]))
 
 (def the-user-id "twitter-user_id")
@@ -81,7 +82,7 @@
         (access-as-signed-in-user default-app "/users" :request-method :post :params params)
       => (check-redirect-url "/users/some-id")
       (provided
-        (front-end/put-user-profile params) => {:_id "some-id"} )))
+        (api/post-user-profile params) => {:_id "some-id"} )))
 
 
 (fact "authorised user can post and retrieve objective"

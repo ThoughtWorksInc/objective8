@@ -6,6 +6,7 @@
             [org.httpkit.client :as http]
             [d-cent.responses :refer :all]
             [d-cent.objectives :refer [request->objective]]
+            [d-cent.api :as api]
             [d-cent.utils :as utils]
             [d-cent.storage :as storage]))
 
@@ -46,19 +47,13 @@
                                   :doc-description (t' :users-email/doc-description)
                                   :signed-in (signed-in?)}))
 
-;;TODO move into api namespace
-(defn put-user-profile [user-profile]
-  @(http/post (str utils/host-url "/api/v1/users")
-                                 {:headers {"Content-Type" "application/json"}
-                                  :body (json/generate-string user-profile)}))
-
 (defn url-for-user-profile [user-profile]
   (str "/users/" (:_id user-profile)))
 
 (defn user-profile-post [request]
   (let [user-id (:username (friend/current-authentication))
         email-address (get-in request [:params :email-address])]
-    (if-let [stored-user-profile (put-user-profile {:user-id user-id :email-address email-address})]
+    (if-let [stored-user-profile (api/post-user-profile {:user-id user-id :email-address email-address})]
       (response/redirect-after-post (url-for-user-profile stored-user-profile))
       {:status 404})))
 
