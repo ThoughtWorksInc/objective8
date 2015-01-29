@@ -46,5 +46,4 @@
              (twitter-callback fake-request) => (contains {:status 302})
              (provided
               (oauth/access-token anything anything anything)
-              =throws=> (ex-info "blah" {})))
-)
+              =throws=> (ex-info "blah" {}))))

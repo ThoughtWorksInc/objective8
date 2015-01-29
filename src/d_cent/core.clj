@@ -2,11 +2,12 @@
   (:use [org.httpkit.server :only [run-server]])
   (:require [clojure.tools.logging :as log]
             [cemerick.friend :as friend]
+            [org.httpkit.client :as http]
             [ring.util.response :as response]
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.session :refer [wrap-session]]
-            [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
+            [ring.middleware.json :refer [wrap-json-params wrap-json-response wrap-json-body]]
             [bidi.ring :refer [make-handler ->Resources]]
             [taoensso.tower.ring :refer [wrap-tower]]
             [d-cent.config :as config]
@@ -17,7 +18,7 @@
             [d-cent.storage :as storage]
             [d-cent.utils :as utils]
             [d-cent.workflows.twitter :refer [twitter-workflow]]
-            [cheshire.core :refer :all]))
+            [cheshire.core :as json]))
 
 ;; Custom ring middleware
 
@@ -64,8 +65,21 @@
                                   :signed-in (signed-in?)}))
 
 (defn user-profile-post [request]
+  (println "-------------- current authentication ---------------")
+  (println (str (friend/current-authentication)))
+  (let [user-id (:username (friend/current-authentication))
+        email-address (get-in request [:params :email-address])
+        api-response @(http/post "http://localhost:8080/api/v1/users" 
+                                 {:headers {"Content-Type" "application/json"} 
+                                  :body (json/generate-string {:user-id user-id 
+                                                               :email-address email-address})})]
+    ; generate redirect response
+    {:status 200 :body api-response}))
+
+(defn api-user-profile-post [request]
+  (log/info (:params request))
   (let [store (storage/request->store request)
-        user-id (:username (friend/current-authentication))
+        user-id (get-in request [:params :user-id])
         email-address (get-in request [:params :email-address])]
     (user/store-user-profile! store {:user-id user-id :email-address email-address})
     {:status 200}))
@@ -115,7 +129,8 @@
                :sign-in sign-in
                :sign-out sign-out
                :email-capture-get  (friend/wrap-authorize email-capture-get #{:signed-in})
-               :user-profile-post (wrap-api-authorize user-profile-post #{:signed-in})
+               :user-profile-post (friend/wrap-authorize user-profile-post #{:signed-in})
+               :api-user-profile-post api-user-profile-post
                :objective-create (friend/wrap-authorize objective-create #{:signed-in})
                :objective-create-post objective-create-post
                :objective-view objective-view
@@ -126,7 +141,8 @@
         "sign-in"           :sign-in
         "sign-out"          :sign-out
         "email"             {:get :email-capture-get}
-        "api/v1/users"      {:post :user-profile-post}
+        "users"             {:post :user-profile-post}
+        "api/v1/users"      {:post :api-user-profile-post}
         "static/"           (->Resources {:prefix "public/"})
         "objectives"        {["/create"] :objective-create
                              :post :objective-create-post
@@ -140,6 +156,7 @@
       (wrap-tower (:translation app-config))
       wrap-keyword-params
       wrap-params
+      wrap-json-params
       wrap-session
       (inject-db (:store app-config))))
 

@@ -3,6 +3,7 @@
             [midje.sweet :refer :all]
             [peridot.core :as p]
             [oauth.client :as oauth]
+            [cheshire.core :as json]
             [d-cent.core :as core]
             [d-cent.objectives :refer [request->objective]]
             [d-cent.storage :as storage]
@@ -15,7 +16,7 @@
 (def objectives-post-request (mock/request :post "/objectives"))
 (def objective-view-get-request (mock/request :get "/objectives/some-long-id"))
 (def email-capture-get-request (mock/request :get "/email"))
-(def user-profile-post-request (mock/request :post "/api/v1/users"))
+(def user-profile-post-request (mock/request :post "/users"))
 
 (def default-app (core/app core/app-config))
 
@@ -66,7 +67,7 @@
                     => (contains {:status 302}))
               (fact "cannot post their user profile"
                     (default-app user-profile-post-request)
-                    => (contains {:status 401}))
+                    => (contains {:status 302}))
               (fact "can access objective view"
                     (default-app objective-view-get-request)
                     => (contains {:status 200})
@@ -74,14 +75,17 @@
                       (storage/find-by anything anything "some-long-id") => :an-objective))))
 
 (fact "should be able to store email addresses"
-      twitter-authentication-background
       (let [store (atom {})
             app-config (into core/app-config {:store store})
             app (core/app app-config)]
         (do
-          (access-as-signed-in-user app "/api/v1/users"
-                                    :request-method :post
-                                    :params {:email-address the-email-address})
+          (-> (p/session app)
+              (p/content-type "application/json")
+              (p/request "/api/v1/users"
+                         :request-method :post
+                         :headers {"Content-Type" "application/json"}
+                         :body (json/generate-string {:email-address the-email-address
+                                                      :user-id the-user-id})))
           (:email-address (user/retrieve-user-record store the-user-id))))
       => the-email-address)
 
