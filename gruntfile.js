@@ -13,17 +13,26 @@ module.exports = function(grunt) {
       },
       sass: {
         files: ['resources/src/sass/**/*.scss'],
-        tasks: ['sass:dist', 'autoprefixer']
+        tasks: ['sass:dev', 'autoprefixer:dev']
       }
     },
     
     //Compile SCSS
     sass: {
-      options: {
-        sourceMap: true,
-        outputStyle: 'compressed'
+      dev: {
+        options: {
+          sourceMap: true,
+          outputStyle: 'expanded'
+        },
+        files: {
+          'resources/public/styles.css': 'resources/src/sass/*.scss'
+        }
       },
       dist: {
+        options: {
+          sourceMap: false,
+          outputStyle: 'compressed'
+        },
         files: {
           'resources/public/styles.css': 'resources/src/sass/*.scss'
         }
@@ -34,21 +43,34 @@ module.exports = function(grunt) {
       options: {
         browsers: ['last 2 version', 'ie 8', 'ie 9']
       },
-      no_dest: {
-        src: 'resources/public/styles.css'
+      dev: {
+        options: {
+          map: true,
+        },
+        no_dest: {
+          src: 'resources/public/styles.css'
+        }
       },
+      dist: {
+        options: {
+          map: false,
+        },
+        no_dest: {
+          src: 'resources/public/styles.css'
+        }
+      }
     },
   });
 
   grunt.registerTask('dev',[
-    'sass:dist',
-    'autoprefixer',
+    'sass:dev',
+    'autoprefixer:dev',
     'watch'
   ]);
   
   grunt.registerTask('build',[
     'sass:dist',
-    'autoprefixer'
+    'autoprefixer:dist'
   ]);
 
   grunt.registerTask('default', [
