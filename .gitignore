@@ -6,7 +6,6 @@ node_modules/
 *.swo
 .#*
 \#*
-resources/public/images
 resources/public/*.css
 resources/public/*.css.map
 ops/.vagrant

@@ -60,30 +60,17 @@ module.exports = function(grunt) {
         }
       }
     },
-
-
-    //Optimise Images
-    imagemin: {
-      files: {                         
-        expand: true,
-        cwd: 'resources/src/images/',
-        src: ['**/*.{png,jpg,gif,svg,ico}'],
-        dest: 'resources/public/images/'
-      }
-    }
   });
 
   grunt.registerTask('dev',[
     'sass:dev',
     'autoprefixer:dev',
-    'imagemin',
     'watch'
   ]);
   
   grunt.registerTask('build',[
     'sass:dist',
-    'autoprefixer:dist',
-    'imagemin'
+    'autoprefixer:dist'
   ]);
 
   grunt.registerTask('default', [
