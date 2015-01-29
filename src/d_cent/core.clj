@@ -6,6 +6,7 @@
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.session :refer [wrap-session]]
+            [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
             [bidi.ring :refer [make-handler ->Resources]]
             [taoensso.tower.ring :refer [wrap-tower]]
             [d-cent.config :as config]
@@ -138,6 +139,7 @@
       (friend/authenticate (:authentication app-config))
       (wrap-tower (:translation app-config))
       wrap-keyword-params
+      wrap-
       wrap-params
       wrap-session
       (inject-db (:store app-config))))

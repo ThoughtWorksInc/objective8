@@ -7,6 +7,7 @@
                  [org.clojure/tools.logging "0.3.1"]
                  [bidi "1.12.0"]
                  [ring "1.3.2"]
+                 [ring/ring-json "0.3.1"]
                  [org.apache.httpcomponents/httpclient "4.3.5"]
                  [com.cemerick/friend "0.2.1"]
                  [de.ubercode.clostache/clostache "1.4.0"]
