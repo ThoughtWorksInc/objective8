@@ -1,20 +1,13 @@
-header {
+.masthead {
   background: $black;
   color: $white;
-  padding: 1em;
+  padding: 0.4em 1em 0.6em;
 }
 .header-logo {
-  color: $white;
-  text-decoration: none;
-  font-size: 1.5em;
-  display: inline-block;
-  margin-bottom: 0.5em;
-  &:hover {
-    text-decoration: underline;
-  }
-  &:visited {
-    color: $white;
-  }
+  @include ir;
+  background-image: url('D-CENT_white.png');
+  height: 40px;
+  width: 76px;
 }
 
 
@@ -23,7 +16,7 @@ header {
   margin: 0;
   padding: 0;
   position: absolute;
-  top: 1.3em;
+  top: 1em;
   right: 0.5em;
   li {
     display: inline;
