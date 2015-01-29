@@ -1,0 +1,20 @@
+a {
+  color: $link-colour;
+  text-decoration: underline;
+  &:visited {
+    color: $link-visited-colour;
+    text-decoration: underline;
+  }
+  &:hover {
+    color: $link-hover-colour;
+    text-decoration: underline;
+  }
+  &:active {
+    color: $link-active-colour;
+    text-decoration: underline;
+  }
+  &:focus {
+    outline: 3px solid $yellow;
+    background-color: $yellow;
+  }
+}

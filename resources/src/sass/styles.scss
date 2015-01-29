@@ -7,9 +7,16 @@
 
 
 //BASE
-@import 'base/basic';
+@import 'base/helpers';
+@import 'base/links';
+@import 'base/buttons';
+@import 'base/forms';
+@import 'base/typography';
+@import 'base/layout';
 
 
+//OBJECTS
+@import 'objects/masthead';
 
 
 //PRINT
