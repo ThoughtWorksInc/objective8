@@ -1,13 +1,11 @@
-(ns d-cent.integration-test
-  (:require [ring.mock.request :as mock]
-            [midje.sweet :refer :all]
+(ns d-cent.front-end-integration-tests
+  (:require [midje.sweet :refer :all]
+            [ring.mock.request :as mock]
             [peridot.core :as p]
             [oauth.client :as oauth]
-            [cheshire.core :as json]
-            [d-cent.core :as core]
             [d-cent.objectives :refer [request->objective]]
             [d-cent.storage :as storage]
-            [d-cent.user :as user]))
+            [d-cent.core :as core]))
 
 (def the-user-id "twitter-user_id")
 (def the-email-address "test@email.address.com")
@@ -51,11 +49,7 @@
               (fact "can reach the email capture page"
                     (access-as-signed-in-user default-app "/email")
                     => (check-status 200))
-              (future-fact "can post their email"
-                    (access-as-signed-in-user default-app "/api/v1/users" :request-method :post)
-                    => (check-status 200)))
-
-       (facts "unauthorised users"
+(facts "unauthorised users"
               (fact "cannot reach the objective creation page"
                     (default-app objectives-create-request)
                     => (contains {:status 302}))
@@ -72,34 +66,19 @@
                     (default-app objective-view-get-request)
                     => (contains {:status 200})
                     (provided
-                      (storage/find-by anything anything "some-long-id") => :an-objective))))
-
-(fact "should be able to store email addresses"
-      (let [store (atom {})
-            app-config (into core/app-config {:store store})
-            app (core/app app-config)]
-        (do
-          (-> (p/session app)
-              (p/content-type "application/json")
-              (p/request "/api/v1/users"
-                         :request-method :post
-                         :headers {"Content-Type" "application/json"}
-                         :body (json/generate-string {:email-address the-email-address
-                                                      :user-id the-user-id})))
-          (:email-address (user/retrieve-user-record store the-user-id))))
-      => the-email-address)
+                      (storage/find-by anything anything "some-long-id") => :an-objective)))))
 
 (fact "authorised user can post and retrieve objective"
       twitter-authentication-background
-       (let [store (atom {})
+      (let [store (atom {})
             app-config (into core/app-config {:store store})
             app (core/app app-config)
-             params {:title "my objective title"
-                     :goals "my objective goals"
-                     :description "my objective description"
-                     :end-date "my objective end-date"}]
+            params {:title "my objective title"
+                    :goals "my objective goals"
+                    :description "my objective description"
+                    :end-date "my objective end-date"}]
         (do
           (access-as-signed-in-user app "/objectives" :request-method :post
                                     :params params)
           (storage/find-by store "objectives" #(= (:username %) the-user-id)))
-             => (contains params)))
+        => (contains params)))
