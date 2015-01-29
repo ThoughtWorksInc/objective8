@@ -9,7 +9,7 @@
                  [ring "1.3.2"]
                  [ring/ring-json "0.3.1"]
                  [org.apache.httpcomponents/httpclient "4.3.5"]
-                 [com.cemerick/friend "0.2.1"]
+                 [com.cemerick/friend "0.2.1" :exclusions [robert/hooke]]
                  [de.ubercode.clostache/clostache "1.4.0"]
                  [enlive "1.1.5"]
                  [com.taoensso/tower "3.0.2"]
@@ -18,6 +18,7 @@
   :main d-cent.core
   :profiles {:dev {:dependencies [[midje "1.6.3"]
                                   [ring/ring-mock "0.2.0"]
+                                  [http-kit.fake "0.2.1"]
                                   [javax.servlet/servlet-api "2.5"]
                                   [peridot "0.3.1"]]
                    :plugins [[lein-midje "3.1.3"]
