@@ -139,7 +139,6 @@
       (friend/authenticate (:authentication app-config))
       (wrap-tower (:translation app-config))
       wrap-keyword-params
-      wrap-
       wrap-params
       wrap-session
       (inject-db (:store app-config))))
