@@ -1,0 +1,22 @@
+* {
+  @include box-sizing(border-box);
+}
+
+@-ms-viewport {
+  width: device-width;
+}
+@-o-viewport {
+  width: device-width;
+}
+
+html {
+  font-size: $doc-font-size;
+}
+
+body {
+  min-width: 252px;
+  color: $black;
+  font-family: $sans-serif;
+  line-height: $baselineheight;
+  -webkit-font-smoothing: antialiased;
+}

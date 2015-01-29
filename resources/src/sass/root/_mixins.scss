@@ -1,0 +1,75 @@
+// Box-sizing
+@mixin box-sizing($boxsize: border-box) {
+  -moz-box-sizing: $boxsize;
+  -webkit-box-sizing: $boxsize;
+  box-sizing: $boxsize;
+}
+// eg: div { @include box-sizing(border-box); }
+
+
+
+// Image replacement
+@mixin ir {
+  display: block;
+  overflow: hidden;
+  border: 0;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  text-align: left;
+  text-indent: -999em;
+  direction: ltr;
+  *line-height: 0;
+}
+// eg: div { @include ir }
+
+
+
+// Visually Hidden
+@mixin visuallyhidden {
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  margin: -1px;
+  padding: 0;
+  width: 1px;
+  height: 1px;
+  border: 0;
+}
+// eg: div { @include visuallyhidden; }
+.visuallyhidden {
+  @include visuallyhidden;
+}
+// use directly as a class
+
+
+// Clear fix
+@mixin cf {
+  zoom:1;
+  &:before,
+  &:after{
+    display:table;
+    content:"";
+  }
+  &:after{
+    clear:both;
+  }
+}
+// eg: div { @include cf; }
+
+
+
+// Text Ellipsis
+@mixin text_truncate {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+// eg: div{ @include text_truncate; }
+
+
+//Media Queries
+@mixin mq($point) {
+  @media screen and (min-width: $point / $doc-font-size +em) {
+    @content;
+  }
+}

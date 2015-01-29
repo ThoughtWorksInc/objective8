@@ -1,0 +1,9 @@
+// Required for mixins, functions and helpers
+$doc-font-size  : 16; //used for REM and Breakpoint conversion
+$baselineheight : 1.4; //used for typography and global lineheight
+
+
+//Font stacks
+$sans-serif     : Arial,sans-serif;
+$serif          : "Georgia","Times New Roman",Times,serif;
+$monospace      : Courier, monospace;

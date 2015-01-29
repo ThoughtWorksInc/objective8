@@ -1,2 +1,16 @@
-@import 'partials/normalize';
-@import 'partials/basic';
+//SET UP
+@import 'root/normalize';
+@import 'root/variables';
+@import 'root/colours';
+@import 'root/mixins';
+@import 'root/root';
+
+
+//BASE
+@import 'base/basic';
+
+
+
+
+//PRINT
+@import 'root/print';
