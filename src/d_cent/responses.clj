@@ -35,14 +35,14 @@
 (html/defsnippet global-navigation-signed-in "templates/navigation-global-signed-in.html" [[:.global-navigation]]
                                                                                           [{:keys [translation]}]
                                                                                             [:#clj-sign-out-link] (html/content (translation :navigation-global/sign-out-text))
-                                                                                            [:#clj-sign-out-link] (html/set-attr :title (translation :navigation-global/sign-out-title))
+                                                                                            [:#clj-sign-out-link-title] (html/set-attr :title (translation :navigation-global/sign-out-title))
                                                                                             [:#clj-user-profile-link] (html/content (translation :navigation-global/profile-text))
                                                                                             [:#clj-user-profile-link] (html/set-attr :title (translation :navigation-global/profile-title)))
 
 (html/defsnippet global-navigation-signed-out "templates/navigation-global-signed-out.html" [[:.global-navigation]]
                                                                                             [{:keys [translation]}]
                                                                                             [:#clj-sign-in-link] (html/content (translation :navigation-global/sign-in-text))
-                                                                                            [:#clj-sign-in-link] (html/set-attr :title (translation :navigation-global/sign-in-title)))
+                                                                                            [:#clj-sign-in-link-title] (html/set-attr :title (translation :navigation-global/sign-in-title)))
 ;HOME/INDEX
 (html/defsnippet index-page "templates/index.html" [[:#clj-index]]
                                                     [{:keys [translation]}]
@@ -89,9 +89,12 @@
 (html/defsnippet users-email "templates/users-email.html" [[:#clj-users-email]]
                                                            [{:keys [translation]}]
                                                            [:h1] (html/content (translation :users-email/page-title))
+                                                           [:.clj-user-email-welcome] (html/content (translation :users-email/user-email-welcome))
                                                            [(html/attr= :for "email-address")] (html/content (translation :users-email/email-label))
                                                            [(html/attr= :name "email-address")] (html/set-attr :title (translation :users-email/email-title))
-                                                           [:button] (html/content (translation :users-email/button)))
+                                                           [:button] (html/content (translation :users-email/button))
+                                                           [:.clj-users-email-continue] (html/content (translation :users-email/continue))
+                                                           [:.clj-users-email-continue] (html/set-attr :title (translation :users-email/continue-title)))
 
 (defn render-template [template & args]
   (apply str (apply template args)))
