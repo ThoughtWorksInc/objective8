@@ -28,7 +28,7 @@
             response (:response request-to-create-objective)
             headers (:headers response)]
         response => (contains {:status 201})
-        headers => (contains {"Location" "value"})
+        headers => (contains {"Location" (contains "/api/v1/objectives/")})
         (s/find-by temp-store "objectives" (constantly true)) => (contains the-objective)))
 
 (fact "The API can be used to store a user profile"

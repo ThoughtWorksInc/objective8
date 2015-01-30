@@ -13,3 +13,5 @@
 (defn store-objective! [store objective]
   (storage/store! store "objectives" objective))
 
+(defn find-by-id [store id]
+  (storage/find-by store "objectives" #(= id (:_id %))))

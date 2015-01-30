@@ -5,7 +5,7 @@
             [cheshire.core :as json]
             [org.httpkit.client :as http]
             [d-cent.responses :refer :all]
-            [d-cent.objectives :refer [request->objective]]
+            [d-cent.objectives :refer [request->objective find-by-id]]
             [d-cent.api :as api]
             [d-cent.utils :as utils]
             [d-cent.storage :as storage]))
@@ -73,17 +73,16 @@
                                             :signed-in (signed-in?)}))
 
 (defn objective-create-post [request]
-  (if (friend/authorized? #{:signed-in} friend/*identity*)
     (let [objective (request->objective request)]
       (if objective
-        (let [stored-objective (storage/store! (storage/request->store request) "objectives" objective)]
-          (objective-new-link-page request stored-objective))
-        {:status 400
-         :body "oops"}))
-    {:status 401}))
-
+        (if-let [stored-objective (api/post-objective objective)]
+          (response/redirect (str utils/host-url "/objectives/" (:_id stored-objective)))
+          {:status 400})
+      {:status 400})))
+  
 (defn objective-view [{:keys [t' locale] :as request}]
-  (let [objective (storage/find-by (storage/request->store request) "objectives" (-> request :route-params :id))]
+  (let [objective (find-by-id (storage/request->store request)
+                                        (-> request :route-params :id))]
     (rendered-response objective-view-page {:translation t'
                                             :locale (subs (str locale) 1)
                                             :doc-title (t' :objective-view/doc-title)

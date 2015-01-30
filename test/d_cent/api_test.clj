@@ -8,16 +8,32 @@
 
 (def host-url utils/host-url)
 
+;USERS
 (def the-user-profile {:user-id "user-id"
                        :email-address "blah@blah.com"})
-
 (def the-stored-user-profile (into the-user-profile {:_id "GUID"}))
-
-(def profile-posts 
+(def profile-posts
   {:successful {:status 201
                 :headers {"Content-Type" "application/json"}
                 :body (json/generate-string the-stored-user-profile)}
    :failure    {:status 500}})
+
+
+;OBJECTIVES
+(def the-objective {:title "My Objective"
+                    :goals "To rock out, All day"
+                    :description "I like cake"
+                    :end-date "2015-01-31"
+                    :username "my username"})
+
+(def the-stored-objective (into the-objective {:_id "GUID"}))
+(def objective-posts 
+  {:successful {:status 201
+                :headers {"Content-Type" "application/json"}
+                :body (json/generate-string the-stored-objective)}
+   :failure    {:status 500}})
+
+
 
 (facts "about user profiles"
        (fact "returns stored profile when post succeeds"
@@ -28,4 +44,15 @@
        (fact "returns api-failure when post fails"
              (with-fake-http [(str host-url "/api/v1/users") (:failure profile-posts)]
                (api/post-user-profile the-user-profile))
+             => api/api-failure))
+
+(facts "about posting objectives"
+       (fact "returns a stored objective when post succeeds"
+          (with-fake-http [(str host-url "/api/v1/objectives") (:successful objective-posts)]
+            (api/post-objective the-objective))
+          => the-stored-objective)
+
+    (fact "returns api-failure when post fails"
+             (with-fake-http [(str host-url "/api/v1/objectives") (:failure objective-posts)]
+               (api/post-objective the-objective))
              => api/api-failure))

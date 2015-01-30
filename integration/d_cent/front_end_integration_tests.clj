@@ -3,7 +3,7 @@
             [ring.mock.request :as mock]
             [peridot.core :as p]
             [oauth.client :as oauth]
-            [d-cent.objectives :refer [request->objective]]
+            [d-cent.objectives :refer [request->objective find-by-id]]
             [d-cent.storage :as storage]
             [d-cent.handlers.front-end :as front-end]
             [d-cent.api :as api]
@@ -48,10 +48,10 @@
                     => (check-status 200))
               (fact "can post a new objective"
                     (access-as-signed-in-user (p/session default-app) "/objectives" :request-method :post)
-                    => (check-status 201)
+                    => (check-status 302)
                     (provided
                      (request->objective anything) => :an-objective
-                     (storage/store! anything anything :an-objective) => :stored-objective))
+                     (api/post-objective :an-objective) => :stored-objective))
               (fact "can reach the email capture page"
                     (access-as-signed-in-user (p/session default-app) "/email")
                     => (check-status 200)))
@@ -61,7 +61,7 @@
                     => (contains {:status 302}))
               (fact "cannot post a new objective"
                     (default-app objectives-post-request)
-                    => (contains {:status 401}))
+                    => (contains {:status 302}))
               (fact "cannot reach the email capture page"
                     (default-app email-capture-get-request)
                     => (contains {:status 302}))
@@ -72,7 +72,7 @@
                     (default-app objective-view-get-request)
                     => (contains {:status 200})
                     (provided
-                     (storage/find-by anything anything "some-long-id") => :an-objective))))
+                     (find-by-id anything "some-long-id") => :an-objective))))
 
 (fact "authorised user can post user profile to /users"
       twitter-authentication-background
@@ -94,8 +94,15 @@
                     :goals "my objective goals"
                     :description "my objective description"
                     :end-date "my objective end-date"}]
-        (do
-          (access-as-signed-in-user user-session "/objectives" :request-method :post
-                                    :params params)
-          (storage/find-by store "objectives" #(= (:username %) the-user-id)))
-        => (contains params)))
+          (-> (access-as-signed-in-user user-session "/objectives" :request-method :post :params params)
+            :response
+            :headers
+            (get "Location"))
+        => (contains "/objectives/some-id")
+        (provided
+          (api/post-objective {:title "my objective title"
+                               :goals "my objective goals"
+                               :description "my objective description"
+                               :end-date "my objective end-date"
+                               :username "twitter-user_id"}) => {:_id "some-id"})))
+

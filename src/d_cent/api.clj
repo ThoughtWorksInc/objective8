@@ -11,3 +11,10 @@
                                  :body (json/generate-string user-profile)})]
     (cond (= status 201)   (json/parse-string body true)
           :else            api-failure)))
+
+(defn post-objective [objective]
+  (let [{:keys [body status]} @(http/post (str utils/host-url "/api/v1/objectives")
+                                {:headers {"Content-Type" "application/json"}
+                                 :body (json/generate-string objective)})]
+    (cond (= status 201)   (json/parse-string body true)
+          :else            api-failure)))

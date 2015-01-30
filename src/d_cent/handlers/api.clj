@@ -24,9 +24,16 @@
         goals (get-in request [:params :goals])
         description (get-in request [:params :description])
         end-date (get-in request [:params :end-date])
-        created-by (get-in request [:params :created-by])]
-    (objectives/store-objective! store {:title title :goals goals :description description
-                                       :end-date end-date :created-by created-by})
+        created-by (get-in request [:params :created-by])
+        stored-objective (objectives/store-objective! store {:title title
+                                                             :goals goals
+                                                             :description description
+                                                             :end-date end-date
+                                                             :created-by created-by})
+        resource-location (str utils/host-url "/api/v1/objectives/" (:_id stored-objective))]
 
-    {:status 201 :headers {"Location" "value"}}))
+    {:status 201
+     :headers {"Content-Type" "application/json"
+               "Location" resource-location}
+     :body stored-objective}))
 

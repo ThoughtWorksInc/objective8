@@ -33,7 +33,7 @@
                :user-profile-post (friend/wrap-authorize front-end-handlers/user-profile-post #{:signed-in})
                :api-user-profile-post api-handlers/api-user-profile-post
                :objective-create (friend/wrap-authorize front-end-handlers/objective-create #{:signed-in})
-               :objective-create-post front-end-handlers/objective-create-post
+               :objective-create-post (friend/wrap-authorize front-end-handlers/objective-create-post #{:signed-in})
                :objective-view front-end-handlers/objective-view
                :api-objective-post api-handlers/api-objective-post})
 
