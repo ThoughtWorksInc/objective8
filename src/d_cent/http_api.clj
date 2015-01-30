@@ -10,11 +10,11 @@
                    :body (json/generate-string object)}))
 
 (defn create-user-profile [user-profile]
-  (let [{:keys [body status]} (json-post "/api/v1/users" user-profile)]
+  (let [{:keys [body status]} (json-post (str utils/host-url "/api/v1/users") user-profile)]
     (cond (= status 201)   (json/parse-string body true)
           :else            api-failure)))
 
 (defn create-objective [objective]
-  (let [{:keys [body status]} (json-post "/api/v1/objectives" objective)]
+  (let [{:keys [body status]} (json-post (str utils/host-url "/api/v1/objectives") objective)]
     (cond (= status 201)   (json/parse-string body true)
           :else            api-failure)))
