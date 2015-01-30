@@ -26,30 +26,42 @@
 (defn inject-db [handler store]
   (fn [request] (handler (assoc request :d-cent {:store store}))))
 
-(def handlers {:index front-end-handlers/index
+(def handlers {; Front End Handlers
+               :index front-end-handlers/index
                :sign-in front-end-handlers/sign-in
                :sign-out front-end-handlers/sign-out
-               :email-capture-get  (friend/wrap-authorize front-end-handlers/email-capture-get #{:signed-in})
-               :user-profile-post (friend/wrap-authorize front-end-handlers/user-profile-post #{:signed-in})
-               :api-user-profile-post api-handlers/api-user-profile-post
-               :objective-create (friend/wrap-authorize front-end-handlers/objective-create #{:signed-in})
-               :objective-create-post (friend/wrap-authorize front-end-handlers/objective-create-post #{:signed-in})
-               :objective-view front-end-handlers/objective-view
-               :api-objective-post api-handlers/api-objective-post})
+               :create-user-profile-form  (friend/wrap-authorize front-end-handlers/create-user-profile-form #{:signed-in})
+               :create-user-profile-form-post (friend/wrap-authorize front-end-handlers/create-user-profile-form-post #{:signed-in})
+               :create-objective-form (friend/wrap-authorize front-end-handlers/create-objective-form #{:signed-in})
+               :create-objective-form-post (friend/wrap-authorize front-end-handlers/create-objective-form-post #{:signed-in})
+               :objective front-end-handlers/objective
+               ; API Handlers 
+               :post-user-profile api-handlers/post-user-profile
+               :post-objective api-handlers/post-objective})
 
 (def routes
   ["/" {""                  :index
+
         "sign-in"           :sign-in
+
         "sign-out"          :sign-out
-        "email"             {:get :email-capture-get}
-        "users"             {:post :user-profile-post}
+
+        "email"             {:get :create-user-profile-form}
+
+        "users"             {:post :create-user-profile-form-post}
+
         "static/"           (->Resources {:prefix "public/"})
-        "objectives"        {["/create"] :objective-create
-                             :post :objective-create-post
-                             ["/" :id] :objective-view }
-        "api/v1"            {"/users" {:post :api-user-profile-post}
-                            "/objectives" {:post :api-objective-post
-                                          ["/" :id] :objective-view}}}])
+
+        "objectives"        {:post :create-objective-form-post
+                             ["/create"] :create-objective-form
+                             ["/" :id] :objective }
+
+        "api/v1"            {"/users" {:post :post-user-profile}
+
+                            "/objectives" {:post :post-objective
+                                          ["/" :id] :objective}}}
+   
+   ])
 
 (defn app [app-config]
   (-> (make-handler routes (some-fn handlers #(when (fn? %) %)))

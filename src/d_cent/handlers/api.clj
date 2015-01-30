@@ -5,7 +5,7 @@
             [d-cent.user :as user]
             [d-cent.utils :as utils]))
 
-(defn api-user-profile-post [request]
+(defn post-user-profile [request]
   (let [store (storage/request->store request)
         user-id (get-in request [:params :user-id])
         email-address (get-in request [:params :email-address])
@@ -18,7 +18,7 @@
                "Location" resource-location}
      :body user-profile}))
 
-(defn api-objective-post [{:keys [params] :as request}]
+(defn post-objective [{:keys [params] :as request}]
   (let [store (storage/request->store request)
         objective (select-keys params [:title :goals :description :end-date :created-by])
         stored-objective (objectives/store-objective! store objective)

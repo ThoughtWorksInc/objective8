@@ -37,14 +37,14 @@
 
 ;; user profile
 
-(defn email-capture-get [{:keys [t' locale]}]
+(defn create-user-profile-form [{:keys [t' locale]}]
   (rendered-response users-email {:translation t'
                                   :locale (subs (str locale) 1)
                                   :doc-title (t' :users-email/doc-title)
                                   :doc-description (t' :users-email/doc-description)
                                   :signed-in (signed-in?)}))
 
-(defn user-profile-post [request]
+(defn create-user-profile-form-post [request]
   (let [user-id (:username (friend/current-authentication))
         email-address (get-in request [:params :email-address])]
     (if-let [stored-user-profile (api/create-user-profile {:user-id user-id :email-address email-address})]
@@ -53,21 +53,21 @@
 
 ;; objectives
 
-(defn objective-create [{:keys [t' locale]}]
+(defn create-objective-form [{:keys [t' locale]}]
   (rendered-response objective-create-page {:translation t'
                                             :locale (subs (str locale) 1)
                                             :doc-title (t' :objective-create/doc-title)
                                             :doc-description (t' :objective-create/doc-description)
                                             :signed-in (signed-in?)}))
 
-(defn objective-create-post [request]
+(defn create-objective-form-post [request]
     (if-let [objective (request->objective request)]
       (if-let [stored-objective (api/create-objective objective)]
         (response/redirect (str utils/host-url "/objectives/" (:_id stored-objective)))
         {:status 502})
       {:status 400}))
 
-(defn objective-view [{:keys [t' locale] :as request}]
+(defn objective [{:keys [t' locale] :as request}]
   (let [objective (find-by-id (storage/request->store request)
                                         (-> request :route-params :id))]
     (rendered-response objective-view-page {:translation t'
