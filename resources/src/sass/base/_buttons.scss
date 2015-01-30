@@ -1,14 +1,16 @@
 .button {
   border: none;
-  background: #007E84;
-  border-bottom: 6px solid #00676C;
-  padding: 0.7em 1em 0.6em;
+  background: $green1;
+  border-bottom: 6px solid $green2;
+  padding: 0.7em 1.4em 0.6em;
+  margin-right: 0.5em;
   display: inline-block;
   text-decoration: none;
   color: $white;
   max-width: 14em;
+  transition: background 0.2s ease-in;
   &:hover {
-    background: #00676C;
+    background: $green2;
     text-decoration: underline;
   }
   &:visited {

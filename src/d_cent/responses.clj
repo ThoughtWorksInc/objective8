@@ -24,6 +24,7 @@
                   [:title] (html/content doc-title)
                   [:#clj-description] (html/set-attr :content doc-description)
                   [:#clj-global-navigation] (html/content global-navigation)
+                  [:.browserupgrade] (html/html-content (translation :base/browsehappy))
                   [:.header-logo] (html/content (translation :base/header-logo-text))
                   [:.header-logo] (html/set-attr :title (translation :base/header-logo-title))
                   [:#main-content] (html/content content)
@@ -45,7 +46,12 @@
 ;HOME/INDEX
 (html/defsnippet index-page "templates/index.html" [[:#clj-index]]
                                                     [{:keys [translation]}]
-                                                    [:a.button] (html/content (translation :index/objective-create-btn-text)))
+                                                    [:.index-welcome] (html/content (translation :index/index-welcome))
+                                                    [:.index-intro] (html/content (translation :index/index-intro))
+                                                    [:.index-get-started] (html/content (translation :index/index-get-started))
+                                                    [:.index-get-started] (html/set-attr :title (translation :index/index-get-started-title))
+                                                    [:.index-learn-more] (html/content (translation :index/index-learn-more))
+                                                    [:.index-learn-more] (html/set-attr :title (translation :index/index-learn-more-title)))
 
 ;SIGN IN
 (html/defsnippet sign-in-page "templates/sign-in.html" [[:#clj-sign-in-page]]

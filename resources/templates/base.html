@@ -13,18 +13,21 @@
 </head>
 
 <body>
+  <!--[if lt IE 8]>
+    <p class="browserupgrade">{{browse happy message}}</p>
+  <![endif]-->
   <header class="masthead" role="banner">
-    <a href="/" title="Go to home page" class="header-logo">{{dCent Project}}</a>
-    <nav id="clj-global-navigation" role="navigation">
+    <div class="wrapper">
+      <a href="/" title="Go to home page" class="header-logo">{{dCent Project}}</a>
+      <nav id="clj-global-navigation" role="navigation">
 
-    </nav>
+      </nav>
+    </div>
   </header>
-
-  <section id="main-content" role="main" class="page-container">
-
+  
+  <section role="main" class="page-container">
+    <div id="main-content" class="wrapper"> {{content goes here}} </div>
   </section>
-
 </body>
-
 
 </html>

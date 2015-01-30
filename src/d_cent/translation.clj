@@ -6,7 +6,8 @@
 
 (def translation-config
   {:dictionary {:en { :base {:header-logo-text "dCent Project"
-                             :header-logo-title "Go to home page"}
+                             :header-logo-title "Go to home page"
+                             :browsehappy! "You are using an <strong>outdated</strong> browser. Please <a href=\"http://browsehappy.com/\">upgrade your browser</a> to improve your experience."}
                       :navigation-global {:sign-in-text "Sign in"
                                           :sign-in-title "Go to sign in"
                                           :sign-out-text "Sign out"
@@ -15,12 +16,15 @@
                                           :profile-title "Go to user profile"}
                       :index {:doc-title "dCent"
                              :doc-description "dCent is description"
-                             :twitter-sign-in "Sign in with twitter"
-                             :sign-in-required-message "Please sign in"
-                             :objective-create-btn-text "Create an objective"}
+                             :index-welcome "Collaborative policy making for democratic organisations."
+                             :index-intro "Gather community opinion, generate ideas, share, discuss, vote and collaborate with experts to draft new policy."
+                             :index-get-started "Get started"
+                             :index-get-started-title "Get started"
+                             :index-learn-more "Learn more"
+                             :index-learn-more-title "Learn more"}
                      :sign-in {:doc-title "Sign in | dCent"
                                :doc-description "Sign in ..."
-                               :page-title "Sign in"
+                               :page-title "Please sign in"
                                :twitter-sign-in-btn "Sign in with twitter"
                                :twitter-sign-in-title "Sign in with twitter"}
                      :objective-create {:doc-title "Create an Objective | dCent"
@@ -34,7 +38,7 @@
                                         :description-title "Enter an optional description up to 1000 characters"
                                         :end-date-label "End date"
                                         :end-date-title "Please enter an end date"
-                                        :submit "Submit"}
+                                        :submit "Create"}
                      :objective-new-link {:doc-title "Success | dCent"
                                           :doc-description "Success! You created an objective ..."
                                           :page-title "Success"
@@ -52,7 +56,8 @@
                                    :email-title "Add your email title"
                                    :button "Submit"}}
                 :es {:base {:header-logo-text "Spanish(dCent Project)"
-                            :header-logo-title "Spanish(Go to home page)"}
+                            :header-logo-title "Spanish(Go to home page)"
+                            :browsehappy! "Spanish(You are using an <strong>outdated</strong> browser. Please <a href='http://browsehappy.com/' target='_blank' title='Visit browsehappy to learn more about the latest browser versions'>upgrade your browser</a> to improve your experience.)"}
                      :navigation-global {:sign-in-text "Spanish(Sign in)"
                                          :sign-in-title "Spanish(Go to sign in)"
                                          :sign-out-text "Spanish(Sign out)"
@@ -61,12 +66,15 @@
                                          :profile-title "Spanish(Go to user profile)"}
                      :index {:doc-title "Spanish(dCent)"
                              :doc-description "Spanish(dCent is description)"
-                             :twitter-sign-in "Spanish(Sign in with twitter)"
-                             :sign-in-required-message "Spanish(Please sign in)"
-                             :objective-create-btn-text "Spanish(Create an objective)"}
+                             :index-welcome "Spanish(Collaborative policy making for democratic organisations.)"
+                             :index-intro "Spanish(Gather community opinion, generate ideas, share, discuss, vote and collaborate with experts to draft new policy.)"
+                             :index-get-started "Spanish(Get started)"
+                             :index-get-started-title "Spanish(Get started)"
+                             :index-learn-more "Spanish(Learn more)"
+                             :index-learn-more-title "Spanish(Learn more)"}
                      :sign-in {:doc-title "Spanish(Sign in | dCent)"
                                :doc-description "Spanish(Sign in ...)"
-                               :page-title "Spanish(Sign in)"
+                               :page-title "Spanish(Please sign in)"
                                :twitter-sign-in-btn "Spanish(Sign in with twitter)"
                                :twitter-sign-in-title "Spanish(Sign in with twitter)"}
                      :objective-create {:doc-title "Spanish(Create an Objective | dCent)"
@@ -80,7 +88,7 @@
                                         :description-title "Spanish(Enter an optional description up to 1000 characters)"
                                         :end-date-label "Spanish(End date)"
                                         :end-date-title "Spanish(Please enter an end date)"
-                                        :submit "Spanish(Submit)"}
+                                        :submit "Spanish(Create)"}
                      :objective-new-link {:doc-title "Spanish(Success | dCent)"
                                           :doc-description "Spanish(Success! You created an objective ...)"
                                           :page-title "Spanish(Success)"

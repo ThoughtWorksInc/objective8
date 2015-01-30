@@ -1,0 +1,21 @@
+.index-hero {
+  max-width: 45em;
+}
+
+.index-welcome {
+  font-size: 30px;
+  font-weight: bold;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  margin-bottom: 0.3em;
+  @include mq(720) {
+    font-size: 46px;
+  }
+}
+
+.index-intro {
+  color: $grey-1;
+  @include mq(720) {
+    font-size: 21px;
+  }
+}

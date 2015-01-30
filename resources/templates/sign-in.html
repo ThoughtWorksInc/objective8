@@ -1,7 +1,10 @@
 <div id="clj-sign-in-page">
   <h1>{{sign-in/page-title}}</h1>
 
-  <form method="post" action="twitter-sign-in">
-    <input type="submit" id="clj-sign-in-twitter" class="button" value="{{sign-in/twitter-sign-in-btn}}" title="{{sign-in/twitter-sign-in-btn-title}}">
+  <form method="post" action="twitter-sign-in" class="sign-in-form">
+
+    <button type="submit" class="btn-social btn-twitter btn-lg" title="{{sign-in/twitter-sign-in-btn-title}}">
+      <i class="fa fa-twitter"></i><span id="clj-sign-in-twitter">Sign in with Twitter</span>
+    </button>
   </form>
 </div>
