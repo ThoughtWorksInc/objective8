@@ -6,7 +6,7 @@
             [d-cent.objectives :refer [request->objective find-by-id]]
             [d-cent.storage :as storage]
             [d-cent.handlers.front-end :as front-end]
-            [d-cent.api :as api]
+            [d-cent.http-api :as api]
             [d-cent.core :as core]))
 
 (def the-user-id "twitter-user_id")
@@ -51,7 +51,7 @@
                     => (check-status 302)
                     (provided
                      (request->objective anything) => :an-objective
-                     (api/post-objective :an-objective) => :stored-objective))
+                     (api/create-objective :an-objective) => :stored-objective))
               (fact "can reach the email capture page"
                     (access-as-signed-in-user (p/session default-app) "/email")
                     => (check-status 200)))
@@ -82,7 +82,7 @@
         (access-as-signed-in-user user-session "/users" :request-method :post :params params)
       => (check-redirect-url "/")
       (provided
-        (api/post-user-profile params) => {:_id "some-id"})))
+        (api/create-user-profile params) => {:_id "some-id"})))
 
 
 (fact "authorised user can post and retrieve objective"
@@ -100,7 +100,7 @@
             (get "Location"))
         => (contains "/objectives/some-id")
         (provided
-          (api/post-objective {:title "my objective title"
+          (api/create-objective {:title "my objective title"
                                :goals "my objective goals"
                                :description "my objective description"
                                :end-date "my objective end-date"

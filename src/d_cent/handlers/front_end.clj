@@ -6,7 +6,7 @@
             [org.httpkit.client :as http]
             [d-cent.responses :refer :all]
             [d-cent.objectives :refer [request->objective find-by-id]]
-            [d-cent.api :as api]
+            [d-cent.http-api :as api]
             [d-cent.utils :as utils]
             [d-cent.storage :as storage]))
 
@@ -50,7 +50,7 @@
 (defn user-profile-post [request]
   (let [user-id (:username (friend/current-authentication))
         email-address (get-in request [:params :email-address])]
-    (if-let [stored-user-profile (api/post-user-profile {:user-id user-id :email-address email-address})]
+    (if-let [stored-user-profile (api/create-user-profile {:user-id user-id :email-address email-address})]
       (response/redirect "/")
       {:status 404})))
 
@@ -75,7 +75,7 @@
 (defn objective-create-post [request]
     (let [objective (request->objective request)]
       (if objective
-        (if-let [stored-objective (api/post-objective objective)]
+        (if-let [stored-objective (api/create-objective objective)]
           (response/redirect (str utils/host-url "/objectives/" (:_id stored-objective)))
           {:status 400})
       {:status 400})))

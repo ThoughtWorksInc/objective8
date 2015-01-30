@@ -1,18 +1,18 @@
-(ns d-cent.api
+(ns d-cent.http-api
   (:require [org.httpkit.client :as http]
             [d-cent.utils :as utils]
             [cheshire.core :as json]))
 
 (def api-failure nil)
 
-(defn post-user-profile [user-profile]
+(defn create-user-profile [user-profile]
   (let [{:keys [body status]} @(http/post (str utils/host-url "/api/v1/users")
                                 {:headers {"Content-Type" "application/json"}
                                  :body (json/generate-string user-profile)})]
     (cond (= status 201)   (json/parse-string body true)
           :else            api-failure)))
 
-(defn post-objective [objective]
+(defn create-objective [objective]
   (let [{:keys [body status]} @(http/post (str utils/host-url "/api/v1/objectives")
                                 {:headers {"Content-Type" "application/json"}
                                  :body (json/generate-string objective)})]
