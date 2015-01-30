@@ -5,16 +5,16 @@
 
 (def api-failure nil)
 
+(defn json-post [url object]
+  @(http/post url {:headers {"Content-Type" "application/json"}
+                   :body (json/generate-string object)}))
+
 (defn create-user-profile [user-profile]
-  (let [{:keys [body status]} @(http/post (str utils/host-url "/api/v1/users")
-                                {:headers {"Content-Type" "application/json"}
-                                 :body (json/generate-string user-profile)})]
+  (let [{:keys [body status]} (json-post "/api/v1/users" user-profile)]
     (cond (= status 201)   (json/parse-string body true)
           :else            api-failure)))
 
 (defn create-objective [objective]
-  (let [{:keys [body status]} @(http/post (str utils/host-url "/api/v1/objectives")
-                                {:headers {"Content-Type" "application/json"}
-                                 :body (json/generate-string objective)})]
+  (let [{:keys [body status]} (json-post "/api/v1/objectives" objective)]
     (cond (= status 201)   (json/parse-string body true)
           :else            api-failure)))

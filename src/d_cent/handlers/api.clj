@@ -18,20 +18,11 @@
                "Location" resource-location}
      :body user-profile}))
 
-(defn api-objective-post [request]
+(defn api-objective-post [{:keys [params] :as request}]
   (let [store (storage/request->store request)
-        title (get-in request [:params :title])
-        goals (get-in request [:params :goals])
-        description (get-in request [:params :description])
-        end-date (get-in request [:params :end-date])
-        created-by (get-in request [:params :created-by])
-        stored-objective (objectives/store-objective! store {:title title
-                                                             :goals goals
-                                                             :description description
-                                                             :end-date end-date
-                                                             :created-by created-by})
+        objective (select-keys params [:title :goals :description :end-date :created-by]) 
+        stored-objective (objectives/store-objective! store objective)
         resource-location (str utils/host-url "/api/v1/objectives/" (:_id stored-objective))]
-
     {:status 201
      :headers {"Content-Type" "application/json"
                "Location" resource-location}
