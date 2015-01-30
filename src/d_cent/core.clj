@@ -37,7 +37,8 @@
                :objective front-end-handlers/objective
                ; API Handlers 
                :post-user-profile api-handlers/post-user-profile
-               :post-objective api-handlers/post-objective})
+               :post-objective api-handlers/post-objective
+               :get-objective api-handlers/get-objective})
 
 (def routes
   ["/" {""                  :index
@@ -59,7 +60,7 @@
         "api/v1"            {"/users" {:post :post-user-profile}
 
                             "/objectives" {:post :post-objective
-                                          ["/" :id] :objective}}}
+                                          ["/" :id] :get-objective}}}
    
    ])
 

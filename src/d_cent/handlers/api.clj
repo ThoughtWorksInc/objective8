@@ -1,5 +1,7 @@
 (ns d-cent.handlers.api
   (:require [clojure.tools.logging :as log]
+            [ring.util.response :as response]
+            [cheshire.core :as json]
             [d-cent.storage :as storage]
             [d-cent.objectives :as objectives]
             [d-cent.user :as user]
@@ -27,3 +29,10 @@
      :headers {"Content-Type" "application/json"
                "Location" resource-location}
      :body stored-objective}))
+
+(defn get-objective [{:keys [route-params] :as request}]
+  (let [store (storage/request->store request)
+        id (:id route-params)]
+    (if-let [objective (objectives/find-by-id store id)] 
+      (response/response (json/generate-string objective))
+      (response/not-found ""))))
