@@ -15,9 +15,6 @@
 (defn signed-in? []
   (friend/authorized? #{:signed-in} friend/*identity*))
 
-(defn new-objective-link [stored-objective]
-  (str utils/host-url "/objectives/" (:_id stored-objective)))
-
 
 ;; HANDLERS
 
@@ -56,15 +53,6 @@
 
 ;; objectives
 
-(defn objective-new-link-page [{:keys [t' locale]} stored-objective]
-  (rendered-response objectives-new-link-page {:status-code 201
-                                               :translation t'
-                                               :locale (subs (str locale) 1)
-                                               :doc-title (t' :objective-new-link/doc-title)
-                                               :doc-description (t' :objective-new-link/doc-description)
-                                               :stored-objective (new-objective-link stored-objective)
-                                               :signed-in (signed-in?)}))
-
 (defn objective-create [{:keys [t' locale]}]
   (rendered-response objective-create-page {:translation t'
                                             :locale (subs (str locale) 1)
@@ -79,7 +67,7 @@
           (response/redirect (str utils/host-url "/objectives/" (:_id stored-objective)))
           {:status 400})
       {:status 400})))
-  
+
 (defn objective-view [{:keys [t' locale] :as request}]
   (let [objective (find-by-id (storage/request->store request)
                                         (-> request :route-params :id))]

@@ -69,13 +69,6 @@
                                                                           [(html/attr= :name "end-date")] (html/set-attr :title (translation :objective-create/end-date-title))
                                                                           [:.button] (html/content (translation :objective-create/submit)))
 
-(html/defsnippet objectives-new-link-page "templates/objectives-new-link.html" [[:#clj-objectives-new-link]]
-                                                                                [{:keys [translation stored-objective]}]
-                                                                                [:h1] (html/content (translation :objective-new-link/page-title))
-                                                                                [:#clj-objectives-new-link-text] (html/content (translation :objective-new-link/objective-link-text))
-                                                                                [:a] (html/content stored-objective)
-                                                                                [:a] (html/set-attr :href stored-objective))
-
 (html/defsnippet objective-view-page "templates/objectives-view.html" [[:#clj-objectives-view]]
                                                                        [{:keys [translation objective]}]
                                                                        [:h1] (html/content (:title objective))
