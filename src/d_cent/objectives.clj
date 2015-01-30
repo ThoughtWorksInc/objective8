@@ -8,7 +8,7 @@
   [{:keys [params]}]
     ;TODO Should we use friend here?
     (when (= 4 (count params)) (assoc (select-keys params [:title :goals :description :end-date])
-                                      :username (get (friend/current-authentication) :username))))
+                                      :created-by (get (friend/current-authentication) :username))))
 
 
 (defn store-objective! [store objective]

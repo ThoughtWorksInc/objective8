@@ -43,7 +43,8 @@
                                       :doc-description "Objective  ..."
                                       :description-label "Description"
                                       :goals-label "Goals"
-                                      :end-date-label "End date"}
+                                      :end-date-label "End date"
+                                      :owner-label "Created by:"}
                      :users-email {:doc-title "User email | dCent"
                                    :doc-description "Email  ..."
                                    :page-title "Add your email"
@@ -88,7 +89,8 @@
                                       :doc-description "Spanish(Objective  ...)"
                                       :description-label "Spanish(Description)"
                                       :goals-label "Spanish(Goals)"
-                                      :end-date-label "Spanish(End date)"}
+                                      :end-date-label "Spanish(End date)"
+                                      :owner-label "Spanish(Created by:)"}
                      :users-email {:doc-title "Spanish(User email | dCent)"
                                    :doc-description "Spanish(Email  ...)"
                                    :page-title "Spanish(Add your email)"

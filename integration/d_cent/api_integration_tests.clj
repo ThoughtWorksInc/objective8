@@ -44,19 +44,9 @@
                                                                       :user-id the-user-id}))
                               :response)
              stored-email (:email-address (user/retrieve-user-record temp-store the-user-id))]
-         
+
          stored-email => the-email-address
          api-response => (contains {:status 201})
          api-response => (contains {:body string?})
          (json/parse-string (:body api-response) true) => (contains {:_id anything})
          api-response => (contains {:headers (contains {"Location" (contains "/api/v1/users/")})})))
-
-
-
- 
-
-
-
-
-
-

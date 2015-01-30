@@ -105,5 +105,4 @@
                                :goals "my objective goals"
                                :description "my objective description"
                                :end-date "my objective end-date"
-                               :username "twitter-user_id"}) => {:_id "some-id"})))
-
+                               :created-by "twitter-user_id"}) => {:_id "some-id"})))
