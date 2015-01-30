@@ -1,7 +1,14 @@
 (ns d-cent.responses
   (:require [net.cgrand.enlive-html :as html]
-            [d-cent.translation :refer [translation-config]]))
+            [d-cent.translation :refer [translation-config]]
+            [d-cent.config :as config]))
 
+(def google-analytics-tracking-id (config/get-var "GA_TRACKING_ID"))
+
+;GOOGLE ANALYTICS
+(html/defsnippet google-analytics "templates/google-analytics.html" [[:#clj-google-analytics]]
+                                                                    [tracking-id]
+                                                                  (html/transform-content (html/replace-vars {:trackingID tracking-id})))
 
 ;BASE TEMPLATE
 (html/deftemplate base "templates/base.html"
@@ -19,7 +26,9 @@
                   [:#clj-global-navigation] (html/content global-navigation)
                   [:.header-logo] (html/content (translation :base/header-logo-text))
                   [:.header-logo] (html/set-attr :title (translation :base/header-logo-title))
-                  [:#main-content] (html/content content))
+                  [:#main-content] (html/content content)
+                  [:body] (html/append (if google-analytics-tracking-id (google-analytics google-analytics-tracking-id))))
+
 
 ;NAVIGATION
 (html/defsnippet global-navigation-signed-in "templates/navigation-global-signed-in.html" [[:.global-navigation]]
