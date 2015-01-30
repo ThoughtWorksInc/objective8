@@ -6,6 +6,7 @@
   "Returns a map of an objective if all the parts are in the
   request params. Otherwise returns nil"
   [{:keys [params]}]
+    ;TODO Should we use friend here?
     (when (= 4 (count params)) (assoc (select-keys params [:title :goals :description :end-date])
                                       :username (get (friend/current-authentication) :username))))
 

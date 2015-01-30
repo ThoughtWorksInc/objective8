@@ -48,6 +48,7 @@
                     => (check-status 200))
               (fact "can post a new objective"
                     (access-as-signed-in-user (p/session default-app) "/objectives" :request-method :post)
+                    ;TODO Check for Location otherwise just like failed
                     => (check-status 302)
                     (provided
                      (request->objective anything) => :an-objective

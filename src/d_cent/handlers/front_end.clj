@@ -61,12 +61,11 @@
                                             :signed-in (signed-in?)}))
 
 (defn objective-create-post [request]
-    (let [objective (request->objective request)]
-      (if objective
-        (if-let [stored-objective (api/create-objective objective)]
-          (response/redirect (str utils/host-url "/objectives/" (:_id stored-objective)))
-          {:status 400})
-      {:status 400})))
+    (if-let [objective (request->objective request)]
+      (if-let [stored-objective (api/create-objective objective)]
+        (response/redirect (str utils/host-url "/objectives/" (:_id stored-objective)))
+        {:status 502})
+      {:status 400}))
 
 (defn objective-view [{:keys [t' locale] :as request}]
   (let [objective (find-by-id (storage/request->store request)
