@@ -75,8 +75,13 @@
                                                                           [(html/attr= :name "end-date")] (html/set-attr :title (translation :objective-create/end-date-title))
                                                                           [:.button] (html/content (translation :objective-create/submit)))
 
+(html/defsnippet objective-link "templates/objectives-link.html" [[:#clj-objective-link]]
+									[url message]
+  									(html/html-content (str message "<br><a href='" url "'>" url "</a>")))
+
 (html/defsnippet objective-view-page "templates/objectives-view.html" [[:#clj-objectives-view]]
-                                                                       [{:keys [translation objective]}]
+                                                                       [{:keys [translation objective flash-url]}]
+                                                                       [:div] (html/prepend (if flash-url (objective-link flash-url (translation :objective-view/share-message))))
                                                                        [:h1] (html/content (:title objective))
                                                                        [:#clj-obj-goals-label] (html/content (translation :objective-view/goals-label))
                                                                        [:#clj-obj-goals-value] (html/content (:goals objective))

@@ -63,16 +63,19 @@
 (defn create-objective-form-post [request]
     (if-let [objective (request->objective request)]
       (if-let [stored-objective (api/create-objective objective)]
-        (response/redirect (str utils/host-url "/objectives/" (:_id stored-objective)))
+        (let [objective-url (str utils/host-url "/objectives/" (:_id stored-objective))]
+          (assoc (response/redirect objective-url) :flash objective-url))
         {:status 502})
       {:status 400}))
 
 (defn objective [{:keys [t' locale] :as request}]
   (let [objective (find-by-id (storage/request->store request)
-                                        (-> request :route-params :id))]
+                                        (-> request :route-params :id))
+        flash-url (request :flash)]
     (rendered-response objective-view-page {:translation t'
                                             :locale (subs (str locale) 1)
                                             :doc-title (t' :objective-view/doc-title)
                                             :doc-description (t' :objective-view/doc-description)
                                             :objective objective
+                                            :flash-url flash-url
                                             :signed-in (signed-in?)})))

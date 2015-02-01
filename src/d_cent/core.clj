@@ -5,6 +5,7 @@
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.session :refer [wrap-session]]
+            [ring.middleware.flash :refer [wrap-flash]]
             [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
             [bidi.ring :refer [make-handler ->Resources]]
             [taoensso.tower.ring :refer [wrap-tower]]
@@ -35,7 +36,7 @@
                :create-objective-form (friend/wrap-authorize front-end-handlers/create-objective-form #{:signed-in})
                :create-objective-form-post (friend/wrap-authorize front-end-handlers/create-objective-form-post #{:signed-in})
                :objective front-end-handlers/objective
-               ; API Handlers 
+               ; API Handlers
                :post-user-profile api-handlers/post-user-profile
                :post-objective api-handlers/post-objective
                :get-objective api-handlers/get-objective})
@@ -61,7 +62,7 @@
 
                             "/objectives" {:post :post-objective
                                           ["/" :id] :get-objective}}}
-   
+
    ])
 
 (defn app [app-config]
@@ -72,6 +73,7 @@
       wrap-params
       wrap-json-params
       wrap-json-response
+      wrap-flash
       wrap-session
       (inject-db (:store app-config))))
 
