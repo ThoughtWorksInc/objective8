@@ -88,21 +88,20 @@
 
 (fact "authorised user can post and retrieve objective"
       twitter-authentication-background
+      (against-background (api/create-objective {:title "my objective title"
+                                 :goals "my objective goals"
+                                 :description "my objective description"
+                                 :end-date "my objective end-date"
+                                 :created-by "twitter-user_id"}) => {:_id "some-id"})
       (let [store (atom {})
             app-config (into core/app-config {:store store})
             user-session (p/session (core/app app-config))
             params {:title "my objective title"
                     :goals "my objective goals"
                     :description "my objective description"
-                    :end-date "my objective end-date"}]
-          (-> (access-as-signed-in-user user-session "/objectives" :request-method :post :params params)
-            :response
+                    :end-date "my objective end-date"}
+            response (:response (access-as-signed-in-user user-session "/objectives" :request-method :post :params params))]
+          (:flash response) => (contains "Your objective has been created!")
+          (-> response
             :headers
-            (get "Location"))
-        => (contains "/objectives/some-id")
-        (provided
-          (api/create-objective {:title "my objective title"
-                               :goals "my objective goals"
-                               :description "my objective description"
-                               :end-date "my objective end-date"
-                               :created-by "twitter-user_id"}) => {:_id "some-id"})))
+            (get "Location")) => (contains "/objectives/some-id")))
