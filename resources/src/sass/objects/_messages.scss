@@ -10,17 +10,18 @@
   padding: 0.5em 1em;
   background: $green1;
   color: $white;
+  text-align: center;
   p {
     margin: 0;
   }
   a {
-    color: #57FFDC;
+    color: #E1FFE1;
     &:hover {
-      color: #57FFDC;
+      color: #E1FFE1;
       text-decoration: none;
     }
     &:visited {
-      color: #57FFDC;
+      color: #E1FFE1;
     }
   }
 }
