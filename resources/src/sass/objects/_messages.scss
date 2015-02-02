@@ -1,19 +1,15 @@
-//TODO look at sass-node @extend?
-// %flash-message {
-//   padding: 0.5em 1em;
-//   p {
-//     margin: 0;
-//   }
-// }
-
-.flash-message-success {
+%flash-message {
   padding: 0.5em 1em;
-  background: $green1;
-  color: $white;
-  text-align: center;
   p {
     margin: 0;
   }
+}
+
+.flash-message-success {
+  @extend %flash-message;
+  background: $green1;
+  color: $white;
+  text-align: center;
   a {
     color: #E1FFE1;
     &:hover {
