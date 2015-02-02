@@ -10,10 +10,6 @@
 (defn with-verifier [request]
   (assoc-in request [:params :oauth_verifier] "verifier"))
 
-;;TODO - inject uri and token providers into workflow?
-;;TODO - check that routes are wired up correctly
-;;TODO - Work through failure conditions for twitter sign-in flow
-
 (facts "step 1: obtaining request token"
        (fact "Sends user to twitter approval page with correct oauth token"
              (twitter-sign-in fake-request)
@@ -40,7 +36,7 @@
              (let [response (twitter-callback (-> fake-request with-verifier))]
                (:session response) => (contains {:d-cent-user-id "twitter-user-id"})
                response => (contains {:status 302})
-               (:headers response) => (contains {"Location" (contains "create-profile")})))
+               (:headers response) => (contains {"Location" (contains "sign-up")})))
 
        (fact "redirects to homepage when user doesn't authorise application or error in twitter"
              (against-background
