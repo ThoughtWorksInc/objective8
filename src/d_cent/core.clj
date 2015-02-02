@@ -13,6 +13,7 @@
             [d-cent.translation :refer [translation-config]]
             [d-cent.storage :as storage]
             [d-cent.workflows.twitter :refer [twitter-workflow]]
+            [d-cent.workflows.profile :refer [capture-profile-workflow]]
             [d-cent.handlers.api :as api-handlers]
             [d-cent.handlers.front-end :as front-end-handlers]))
 
@@ -82,7 +83,8 @@
 
 (def app-config
   {:authentication {:allow-anon? true
-                    :workflows [twitter-workflow]
+                    :workflows [twitter-workflow,
+                                capture-profile-workflow]
                     :login-uri "/sign-in"}
    :translation translation-config
    :store in-memory-db})

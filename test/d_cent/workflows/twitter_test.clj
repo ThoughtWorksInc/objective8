@@ -32,18 +32,20 @@
 ;; (fact "step 2: handled by twitter")
 
 (facts "step 3: authenticating user"
-       (fact "authenticates the user with the :signed-in role"
-             (twitter-callback (-> fake-request with-verifier)) => :an-authentication-map
-             (provided 
-              (workflows/make-auth {:username "user id" :roles #{:signed-in}}
-                                   {::friend/workflow :d-cent.workflows.twitter/twitter-workflow}) 
-              => :an-authentication-map
-              
+       (fact "stores the twitter user id in the session and redirects to capture-profile"
+             (against-background
               (oauth/access-token consumer anything "verifier")
-              => {:user_id "user id"}))
+              => {:user_id "user-id"})
+
+             (let [response (twitter-callback (-> fake-request with-verifier))]
+               (:session response) => (contains {:d-cent-user-id "twitter-user-id"})
+               response => (contains {:status 302})
+               (:headers response) => (contains {"Location" (contains "create-profile")})))
 
        (fact "redirects to homepage when user doesn't authorise application or error in twitter"
-             (twitter-callback fake-request) => (contains {:status 302})
-             (provided
+             (against-background
               (oauth/access-token anything anything anything)
-              =throws=> (ex-info "blah" {}))))
+              =throws=> (ex-info "blah" {}))
+
+             (twitter-callback fake-request) => (contains {:status 302})
+             (:headers (twitter-callback fake-request)) => (contains {"Location" (contains "/")})))

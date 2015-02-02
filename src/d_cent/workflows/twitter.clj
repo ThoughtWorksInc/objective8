@@ -27,18 +27,21 @@
   (try
     (let [request-token-response (oauth/request-token consumer callback-url)
           approval-uri (oauth/user-approval-uri consumer (:oauth_token request-token-response))]
+      (println "Twitter sign in")
       (response/redirect approval-uri))
     (catch clojure.lang.ExceptionInfo e 
       (do (log/warn (str "Could not get request token from twitter: " e))
           {:status 502}))))
 
-(defn twitter-callback [{params :params}]
+(defn twitter-callback [{params :params session :session}]
   (try 
     (let [twitter-response (oauth/access-token consumer
                                                params
-                                               (:oauth_verifier params))]
-      (workflows/make-auth {:username (twitter-response :user_id) :roles #{:signed-in}}
-                           {::friend/workflow ::twitter-workflow}))
+                                               (:oauth_verifier params))
+          twitter-user-id (str "twitter-" (:user_id twitter-response))
+          the-response (into (response/redirect (str utils/host-url "/create-profile"))
+                             {:session (assoc session :d-cent-user-id twitter-user-id)})]
+      the-response)
     (catch clojure.lang.ExceptionInfo e
       (do (log/info (str "Did not get authentication from twitter: " e)) 
           (response/redirect "/")))))
