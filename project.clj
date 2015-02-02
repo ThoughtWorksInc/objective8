@@ -17,6 +17,7 @@
                  [cheshire "5.4.0"]
                  [clj-time "0.9.0"]]
   :main d-cent.core
+  :aot [d-cent.core]
   :profiles {:dev {:dependencies [[midje "1.6.3"]
                                   [ring/ring-mock "0.2.0"]
                                   [http-kit.fake "0.2.1"]
