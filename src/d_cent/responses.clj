@@ -13,7 +13,7 @@
 ;FLASH MESSAGES
 (html/defsnippet flash-message-view "templates/flash-message.html" [[:#clj-flash-message]]
                   [message]
-                    [:p] (html/content message))
+                    [:p] (html/html-content message))
 
 
 ;BASE TEMPLATE

@@ -1,3 +1,4 @@
+//TODO look at sass-node @extend?
 // %flash-message {
 //   padding: 0.5em 1em;
 //   p {
@@ -11,5 +12,15 @@
   color: $white;
   p {
     margin: 0;
+  }
+  a {
+    color: #57FFDC;
+    &:hover {
+      color: #57FFDC;
+      text-decoration: none;
+    }
+    &:visited {
+      color: #57FFDC;
+    }
   }
 }
