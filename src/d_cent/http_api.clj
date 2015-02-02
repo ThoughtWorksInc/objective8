@@ -15,6 +15,6 @@
           :else            api-failure)))
 
 (defn create-objective [objective]
-  (let [{:keys [body status]} (json-post (str utils/host-url "/api/v1/objectives") objective)]
+  (let [{:keys [body status]} (json-post (str utils/host-url "/api/v1/objectives") (assoc objective :end-date (str (objective :end-date))))]
     (cond (= status 201)   (json/parse-string body true)
           :else            api-failure)))

@@ -17,19 +17,22 @@
 (def the-objective {:title "my objective title"
                     :goals "my objective goals"
                     :description "my objective description"
-                    :end-date "my objective end-date"
+                    :end-date "2012-12-2"
                     :created-by "some dude"})
+
+(def time-stamp (utils/string->time-stamp (the-objective :end-date)))
+(def string-time (str time-stamp))
 
 (fact "Objectives posted to the API get stored"
       (let [request-to-create-objective (p/request app-session "/api/v1/objectives"
                                                    :request-method :post
                                                    :content-type "application/json"
-                                                   :body (json/generate-string the-objective))
+                                                   :body (json/generate-string (assoc the-objective :end-date string-time)))
             response (:response request-to-create-objective)
             headers (:headers response)]
         response => (contains {:status 201})
         headers => (contains {"Location" (contains "/api/v1/objectives/")})
-        (s/find-by temp-store "objectives" (constantly true)) => (contains the-objective)))
+        (s/find-by temp-store "objectives" (constantly true)) => (contains (assoc the-objective :end-date time-stamp))))
 
 (fact "The API can be used to store a user profile"
        (let [temp-store (atom {})
