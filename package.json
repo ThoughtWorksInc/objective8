@@ -10,24 +10,15 @@
     "grunt-autoprefixer": "^2.2.0",
     "grunt-cli": "^0.1.13",
     "grunt-contrib-watch": "^0.6.1",
-    "grunt-sass": "0.17.0",
-    "node-sass": "1.2.3",
-    "load-grunt-tasks": "~0.4.0"
+    "grunt-sass": "0.14.2",
+    "load-grunt-tasks": "~0.4.0",
+    "node-sass": "1.0.3"
   },
-  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "https://github.com/ThoughtWorksInc/d-cent"
   },
   "scripts": {
     "postinstall": "grunt build"
-  },
-  "bugs": {
-    "url": "https://github.com/ThoughtWorksInc/d-cent/issues"
-  },
-  "homepage": "https://github.com/ThoughtWorksInc/d-cent",
-  "main": "gruntfile.js",
-  "directories": {
-    "test": "test"
   }
 }
