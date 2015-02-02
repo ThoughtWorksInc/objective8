@@ -73,22 +73,6 @@
                     (provided
                      (find-by-id anything "some-long-id") => :an-objective))))
 
-(fact "authorised user can post user profile to /users"
-      (against-background
-       ;; Twitter authentication background
-       (oauth/access-token anything anything anything) => {:user_id the-user-id})
-      (let [params {:user-id (str "twitter-" the-user-id)
-                    :email-address the-email-address}
-            user-session (p/session default-app)]
-        (-> user-session
-            (helpers/with-sign-in "http://localhost:8080/email")
-            (p/request "http://localhost:8080/users"
-                       :request-method :post
-                       :params params))
-      => (check-redirect-url "/")
-      (provided
-        (api/create-user-profile params) => {:_id "some-id"})))
-
 (fact "authorised user can post and retrieve objective"
       (against-background (api/create-objective 
                            {:title "my objective title"

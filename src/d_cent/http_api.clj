@@ -14,6 +14,9 @@
     (cond (= status 201)   (json/parse-string body true)
           :else            api-failure)))
 
+(defn find-user-profile-by-user-id [user-id]
+  (throw (ex-info "not implemented")))
+
 (defn create-objective [objective]
   (let [{:keys [body status]} (json-post (str utils/host-url "/api/v1/objectives") objective)]
     (cond (= status 201)   (json/parse-string body true)
