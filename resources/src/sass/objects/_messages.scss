@@ -1,0 +1,15 @@
+// %flash-message {
+//   padding: 0.5em 1em;
+//   p {
+//     margin: 0;
+//   }
+// }
+
+.flash-message-success {
+  padding: 0.5em 1em;
+  background: $green1;
+  color: $white;
+  p {
+    margin: 0;
+  }
+}

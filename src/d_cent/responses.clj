@@ -10,6 +10,12 @@
                                                                     [tracking-id]
                                                                   (html/transform-content (html/replace-vars {:trackingID tracking-id})))
 
+;FLASH MESSAGES
+(html/defsnippet flash-message-view "templates/flash-message.html" [[:#clj-flash-message]]
+                  [message]
+                    [:p] (html/content message))
+
+
 ;BASE TEMPLATE
 (html/deftemplate base "templates/base.html"
                   [{:keys [translation
@@ -17,6 +23,7 @@
                            doc-title
                            doc-description
                            global-navigation
+                           flash-message
                            content]}]
                   [:html] (html/set-attr :lang locale)
                   ; TODO find a way to select description without an ID
@@ -27,6 +34,7 @@
                   [:.browserupgrade] (html/html-content (translation :base/browsehappy))
                   [:.header-logo] (html/content (translation :base/header-logo-text))
                   [:.header-logo] (html/set-attr :title (translation :base/header-logo-title))
+                  [:.page-container] (html/before (if flash-message (flash-message-view flash-message)))
                   [:#main-content] (html/content content)
                   [:body] (html/append (if google-analytics-tracking-id (google-analytics google-analytics-tracking-id))))
 
@@ -75,13 +83,9 @@
                                                                           [(html/attr= :name "end-date")] (html/set-attr :title (translation :objective-create/end-date-title))
                                                                           [:.button] (html/content (translation :objective-create/submit)))
 
-(html/defsnippet objective-link "templates/objectives-link.html" [[:#clj-objective-link]]
-									[url message]
-  									(html/html-content (str message "<br><a href='" url "'>" url "</a>")))
 
 (html/defsnippet objective-view-page "templates/objectives-view.html" [[:#clj-objectives-view]]
-                                                                       [{:keys [translation objective flash-url]}]
-                                                                       [:div] (html/prepend (if flash-url (objective-link flash-url (translation :objective-view/share-message))))
+                                                                       [{:keys [translation objective]}]
                                                                        [:h1] (html/content (:title objective))
                                                                        [:#clj-obj-goals-label] (html/content (translation :objective-view/goals-label))
                                                                        [:#clj-obj-goals-value] (html/content (:goals objective))
@@ -119,6 +123,7 @@
                          global-navigation-signed-out)
         page (render-template base (assoc args
                                           :content (template-name args)
+                                          :flash-message (:message args)
                                           :global-navigation (navigation args)))]
         (if-let [status-code (:status-code args)]
           (simple-response page status-code)
