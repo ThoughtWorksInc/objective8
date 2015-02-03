@@ -23,5 +23,7 @@
     (cond (= status 201)   (json/parse-string body true)
           :else            api-failure)))
 
-(defn find-objective-by-id [id]
-  (throw (ex-info "Not yet implemented")))
+(defn get-objective [guid]
+  (let [{:keys [body]} @(http/get (str utils/host-url "/api/v1/objectives/" guid))
+        retrieved-objective (json/parse-string body true)]
+    (update-in retrieved-objective [:end-date] utils/time-string->time-stamp)))

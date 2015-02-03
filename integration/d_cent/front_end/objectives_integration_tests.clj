@@ -12,7 +12,7 @@
 
 (def objectives-create-request (mock/request :get "/objectives/create"))
 (def objectives-post-request (mock/request :post "/objectives"))
-(def objective-view-get-request (mock/request :get "/objectives/some-long-id"))
+(def objective-view-get-request (mock/request :get "/objectives/OBJECTIVE_GUID"))
 
 (def default-app (core/app core/app-config))
 
@@ -46,10 +46,10 @@
 
 (fact "Any user can view an objective"
       (against-background
-       (http-api/find-objective-by-id "some-long-id") => {:title "my objective title"
-                                                          :goals "my objective goals"
-                                                          :description "my objective description"
-                                                          :end-date "2015-01-30T00:00:00.000Z"})
+       (http-api/get-objective "OBJECTIVE_GUID") => {:title "my objective title"
+                                                     :goals "my objective goals"
+                                                     :description "my objective description"
+                                                     :end-date "2015-01-30T00:00:00.000Z"})
       (default-app objective-view-get-request) => (contains {:status 200})
       (default-app objective-view-get-request) => (contains {:body (contains "my objective title")})
       (default-app objective-view-get-request) => (contains {:body (contains "my objective goals")})

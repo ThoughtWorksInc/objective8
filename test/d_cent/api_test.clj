@@ -56,3 +56,25 @@
              (with-fake-http [(str host-url "/api/v1/objectives") (:failure objective-posts)]
                (api/create-objective the-objective))
              => api/api-failure))
+
+(facts "about getting objectives"
+       (fact "returns a stored objective when one exists with given id"
+             (with-fake-http [(str host-url "/api/v1/objectives/" "OBJECTIVE_GUID")
+                              {:status 200
+                               :headers {"Content-Type" "application/json"}
+                               :body (json/generate-string
+                                      {:_id "OBJECTIVE_GUID"
+                                       :title "Objective title"
+                                       :goals "Objective goals"
+                                       :description "Objective description"
+                                       :end-date "2015-01-31T00:00:00.000Z"
+                                       :user-guid "USER_GUID"})}]
+               (api/get-objective "OBJECTIVE_GUID"))
+             => (contains {:_id "OBJECTIVE_GUID"
+                           :title "Objective title"
+                           :goals "Objective goals"
+                           :description "Objective description"
+                           :end-date (utils/time-string->time-stamp "2015-01-31T00:00:00.000Z")
+                           :user-guid "USER_GUID"
+                           }))
+       (fact "returns api-failure when no objective found"))

@@ -60,11 +60,11 @@
         {:status 502})
       {:status 400}))
 
-(defn objective-detail [{{id :id} :route-params
+(defn objective-detail [{{guid :id} :route-params
                          message :flash
                          :keys [t' locale]
                          :as request}]
-  (let [objective (http-api/find-objective-by-id id)]
+  (let [objective (http-api/get-objective guid)]
     (rendered-response objective-view-page {:translation t'
                                             :locale (subs (str locale) 1)
                                             :doc-title (t' :objective-view/doc-title)
