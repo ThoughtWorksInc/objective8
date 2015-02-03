@@ -77,4 +77,8 @@
                            :end-date (utils/time-string->time-stamp "2015-01-31T00:00:00.000Z")
                            :user-guid "USER_GUID"
                            }))
-       (fact "returns api-failure when no objective found"))
+       (fact "returns api-failure when no objective found"
+             (with-fake-http [(str host-url "/api/v1/objectives/" "OBJECTIVE_GUID")
+                              {:status 404}]
+               (api/get-objective "OBJECTIVE_GUID"))
+             => api/api-failure))

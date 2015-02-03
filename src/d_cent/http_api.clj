@@ -24,6 +24,9 @@
           :else            api-failure)))
 
 (defn get-objective [guid]
-  (let [{:keys [body]} @(http/get (str utils/host-url "/api/v1/objectives/" guid))
-        retrieved-objective (json/parse-string body true)]
-    (update-in retrieved-objective [:end-date] utils/time-string->time-stamp)))
+  (let [{:keys [body status]} @(http/get (str utils/host-url "/api/v1/objectives/" guid))]
+    (cond 
+      (= status 200) (-> body 
+                         (json/parse-string true)
+                         (update-in [:end-date] utils/time-string->time-stamp))
+      :else          api-failure)))
