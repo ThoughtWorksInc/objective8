@@ -20,6 +20,13 @@
                "Location" resource-location}
      :body user-profile}))
 
+(defn get-user-profile [request]
+  (let [store (storage/request->store request)
+        twitter-id (get-in request [:params :twitter])]
+    (if-let [user-profile (user/retrieve-user-record store twitter-id)] 
+      (response/response (json/generate-string user-profile))
+      (response/not-found ""))))
+
 (defn post-objective [{:keys [params] :as request}]
   (let [store (storage/request->store request)
         objective (select-keys params [:title :goals :description :end-date :created-by])

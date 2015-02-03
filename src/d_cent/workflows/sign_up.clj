@@ -4,6 +4,7 @@
             [ring.util.response :as response]
             [bidi.ring :refer [make-handler]]
             [d-cent.http-api :as api]
+            [d-cent.user :as user]
             [d-cent.handlers.front-end :as front-end]))
 
 (def sign-up-routes
@@ -12,7 +13,7 @@
 
 (defn sign-up-form [{session :session :as request}]
   (if-let [user-id (:d-cent-user-id session)]
-    (if-let [user-profile (api/find-user-profile-by-user-id user-id)]
+    (if-let [user-profile (api/find-user-profile-by-twitter-id user-id)]
       (workflows/make-auth {:username user-id :roles #{:signed-in}}
                            {::friend/workflow :d-cent.workflows.sign-up/sign-up-workflow})
       (front-end/sign-up-form request))

@@ -44,7 +44,7 @@
 (fact "New users signing in with twitter are asked to sign up by entering their email address"
       (against-background
        (oauth/access-token anything anything anything) => {:user_id "USERID"}
-       (api/find-user-profile-by-user-id "twitter-USERID") => nil)
+       (api/find-user-profile-by-twitter-id "twitter-USERID") => nil)
 
       (let [signed-in-session (p/request test-session twitter-callback-url)]
         (p/follow-redirect signed-in-session))
@@ -77,7 +77,7 @@
         (p/follow-redirect signed-in-session)) => (check-redirects-to protected-resource 303)
 
         (provided 
-         (api/find-user-profile-by-user-id "twitter-USERID") 
+         (api/find-user-profile-by-twitter-id "twitter-USERID") 
          => {:_id "SOME_GUID"
              :user-id "twitter-USERID"
              :email-address "test@email.address.com"} :times 1))

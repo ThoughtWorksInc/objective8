@@ -31,6 +31,7 @@
                :objective front-end-handlers/objective
                ; API Handlers
                :post-user-profile api-handlers/post-user-profile
+               :get-user-profile api-handlers/get-user-profile
                :post-objective api-handlers/post-objective
                :get-objective api-handlers/get-objective})
 
@@ -47,7 +48,8 @@
                              ["/create"] :create-objective-form
                              ["/" :id] :objective }
 
-        "api/v1"            {"/users" {:post :post-user-profile}
+        "api/v1"            {"/users" {:post :post-user-profile
+                                       :get :get-user-profile}
 
                             "/objectives" {:post :post-objective
                                           ["/" :id] :get-objective}}}

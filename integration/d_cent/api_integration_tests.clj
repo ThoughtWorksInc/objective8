@@ -19,6 +19,9 @@
                     :description "my objective description"
                     :end-date "my objective end-date"
                     :created-by "some dude"})
+(def user {:_id "SOME_GUID"
+           :user-id "someTwitterID"
+           :email-address "something@something.com"})
 
 (fact "Objectives posted to the API get stored"
       (let [request-to-create-objective (p/request app-session "/api/v1/objectives"
@@ -30,6 +33,12 @@
         response => (contains {:status 201})
         headers => (contains {"Location" (contains "/api/v1/objectives/")})
         (s/find-by temp-store "objectives" (constantly true)) => (contains the-objective)))
+
+(fact "A user profile can be retrieved"
+      (let [request-to-get-user-profile (p/request app-session "/api/v1/users?twitter=someTwitterID")
+            response (:response request-to-get-user-profile)]
+        (response :body)) => (json/generate-string user)
+        (provided (user/retrieve-user-record anything "someTwitterID") => user))
 
 (fact "The API can be used to store a user profile"
        (let [temp-store (atom {})
