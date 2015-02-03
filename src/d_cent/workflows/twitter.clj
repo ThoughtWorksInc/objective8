@@ -27,7 +27,6 @@
   (try
     (let [request-token-response (oauth/request-token consumer callback-url)
           approval-uri (oauth/user-approval-uri consumer (:oauth_token request-token-response))]
-      (println "Twitter sign in")
       (response/redirect approval-uri))
     (catch clojure.lang.ExceptionInfo e 
       (do (log/warn (str "Could not get request token from twitter: " e))
