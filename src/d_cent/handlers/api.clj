@@ -23,8 +23,8 @@
 (defn get-user-profile [request]
   (let [store (storage/request->store request)
         twitter-id (get-in request [:params :twitter])]
-    (if-let [user-profile (user/retrieve-user-record store twitter-id)] 
-      (response/response (json/generate-string user-profile))
+    (if-let [user-profile (user/retrieve-user-record store twitter-id)]
+      (response/content-type (response/response user-profile) "application/json")
       (response/not-found ""))))
 
 (defn post-objective [{:keys [params] :as request}]
