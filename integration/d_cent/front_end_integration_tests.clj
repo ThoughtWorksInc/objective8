@@ -72,7 +72,7 @@
                     (default-app objective-view-get-request)
                     => (contains {:status 200})
                     (provided
-                     (find-by-id anything "some-long-id") => :an-objective))))
+                     (find-by-id anything "some-long-id") => {:end-date "2015-12-01T00:00:00.000Z"}))))
 
 (fact "authorised user can post user profile to /users"
       (against-background

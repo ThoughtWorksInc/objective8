@@ -9,6 +9,9 @@
     (config/get-var "PORT" "8080")
   ))
 
+
+;;TIME FORMATTING
+
 (defn string->time-stamp [date-string]
   (time-format/parse (time-format/formatters :year-month-day) date-string))
 
@@ -17,3 +20,9 @@
 
 (defn time-stamp->string [time-stamp]
   (time-format/unparse (time-format/formatters :year-month-day) time-stamp))
+
+(def pretty-date (time-format/formatter "dd-MM-yyyy"))
+
+(defn time-string->pretty-date [time-string]
+  (time-format/unparse pretty-date (time-string->time-stamp time-string)))
+
