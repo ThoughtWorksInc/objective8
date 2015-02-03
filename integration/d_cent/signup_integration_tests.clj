@@ -22,11 +22,19 @@
               (contains {:status status
                          :headers (contains {"Location" (contains url-fragment)})})})))
 
-(fact "Users signing in with twitter are redirected to sign-up page"
-      (against-background
-       (oauth/access-token anything anything anything) => {:user_id "USERID"})
+(defn check-html-content [html-fragment]
+  (contains {:response 
+             (contains {:body 
+                        (contains html-fragment)})}))
 
-      (p/request test-session twitter-callback-url) => (check-redirects-to "/sign-up"))
+(fact "New users signing in with twitter are asked to sign up by entering their email address"
+      (against-background
+       (oauth/access-token anything anything anything) => {:user_id "USERID"}
+       (api/find-user-profile-by-user-id "twitter-USERID") => nil)
+
+      (let [signed-in-session (p/request test-session twitter-callback-url)]
+        (p/follow-redirect signed-in-session))
+      => (check-html-content "<title>Sign up"))
 
 (fact "After signing up (by posting their email address) the user is sent back to the resource they were trying to access"
       (against-background
@@ -59,3 +67,4 @@
          => {:_id "SOME_GUID"
              :user-id "twitter-USERID"
              :email-address "test@email.address.com"} :times 1))
+

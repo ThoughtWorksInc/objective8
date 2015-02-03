@@ -11,13 +11,10 @@
             [d-cent.integration-helpers :as helpers]))
 
 (def the-user-id "user_id")
-(def the-email-address "test@email.address.com")
 
 (def objectives-create-request (mock/request :get "/objectives/create"))
 (def objectives-post-request (mock/request :post "/objectives"))
 (def objective-view-get-request (mock/request :get "/objectives/some-long-id"))
-(def email-capture-get-request (mock/request :get "/email"))
-(def user-profile-post-request (mock/request :post "/users"))
 
 (def default-app (core/app core/app-config))
 
@@ -48,24 +45,13 @@
                           (helpers/with-sign-in "http://localhost:8080/objectives/create")
                           (p/request "http://localhost:8080/objectives" :request-method :post))]
                       response => (check-status 302)
-                      response => (check-redirect-url "/objectives/the-objective-id")))
-              (fact "can reach the email capture page"
-                    (let [result (-> (p/session default-app)
-                                     (helpers/with-sign-in "http://localhost:8080/email"))]
-                      result => (check-status 200)
-                      (:request result) => (contains {:uri "/email"}))))
+                      response => (check-redirect-url "/objectives/the-objective-id"))))
        (facts "unauthorised users"
               (fact "cannot reach the objective creation page"
                     (default-app objectives-create-request)
                     => (contains {:status 302}))
               (fact "cannot post a new objective"
                     (default-app objectives-post-request)
-                    => (contains {:status 302}))
-              (fact "cannot reach the email capture page"
-                    (default-app email-capture-get-request)
-                    => (contains {:status 302}))
-              (fact "cannot post their user profile"
-                    (default-app user-profile-post-request)
                     => (contains {:status 302}))
               (fact "can access objective view"
                     (default-app objective-view-get-request)

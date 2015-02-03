@@ -32,8 +32,6 @@
                :index front-end-handlers/index
                :sign-in front-end-handlers/sign-in
                :sign-out front-end-handlers/sign-out
-               :create-user-profile-form  (friend/wrap-authorize front-end-handlers/create-user-profile-form #{:signed-in})
-               :create-user-profile-form-post (friend/wrap-authorize front-end-handlers/create-user-profile-form-post #{:signed-in})
                :create-objective-form (friend/wrap-authorize front-end-handlers/create-objective-form #{:signed-in})
                :create-objective-form-post (friend/wrap-authorize front-end-handlers/create-objective-form-post #{:signed-in})
                :objective front-end-handlers/objective
@@ -48,10 +46,6 @@
         "sign-in"           :sign-in
 
         "sign-out"          :sign-out
-
-        "email"             {:get :create-user-profile-form}
-
-        "users"             {:post :create-user-profile-form-post}
 
         "static/"           (->Resources {:prefix "public/"})
 

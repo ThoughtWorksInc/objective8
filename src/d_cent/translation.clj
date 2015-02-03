@@ -53,7 +53,7 @@
                                       :share-title "Share your objective on twitter"
                                       :share-text "Share your objective"
                                       :share-twitter-text "I just created an objective - "}
-                     :users-email {:doc-title "User email | dCent"
+                     :users-email {:doc-title "Sign up | dCent"
                                    :doc-description "Email  ..."
                                    :page-title "Add your email"
                                    :user-email-welcome "Adding your email address will let us notify you when you receive responses to comments, objectives and votes."

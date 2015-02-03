@@ -3,18 +3,19 @@
             [cemerick.friend :as friend]
             [clojure.pprint :as pprint]
             [bidi.ring :refer [make-handler]]
-            [d-cent.http-api :as api]))
+            [d-cent.http-api :as api]
+            [d-cent.handlers.front-end :as front-end]))
 
 (def sign-up-routes
   ["/" {"sign-up" {:get :sign-up-form
                    :post :sign-up-form-post}}])
 
-(defn sign-up-form [{session :session}]
+(defn sign-up-form [{session :session :as request}]
   (let [user-id (:d-cent-user-id session)]
     (if-let [user-profile (api/find-user-profile-by-user-id user-id)]
       (workflows/make-auth {:username user-id :roles #{:signed-in}}
                            {::friend/workflow :d-cent.workflows.sign-up/sign-up-workflow})
-      nil)))
+      (front-end/sign-up-form request))))
 
 (defn sign-up-form-post [{params :params session :session :as request}]
   (let [username (:d-cent-user-id session)
@@ -29,13 +30,3 @@
 
 (def sign-up-workflow
   (make-handler sign-up-routes sign-up-handlers))
-
-
-
-
-
-
-
-
-
-

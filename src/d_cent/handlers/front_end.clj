@@ -37,19 +37,12 @@
 
 ;; user profile
 
-(defn create-user-profile-form [{:keys [t' locale]}]
+(defn sign-up-form [{:keys [t' locale]}]
   (rendered-response users-email {:translation t'
                                   :locale (subs (str locale) 1)
                                   :doc-title (t' :users-email/doc-title)
                                   :doc-description (t' :users-email/doc-description)
                                   :signed-in (signed-in?)}))
-
-(defn create-user-profile-form-post [request]
-  (let [user-id (:username (friend/current-authentication))
-        email-address (get-in request [:params :email-address])]
-    (if-let [stored-user-profile (api/create-user-profile {:user-id user-id :email-address email-address})]
-      (response/redirect "/")
-      {:status 404})))
 
 ;; objectives
 
