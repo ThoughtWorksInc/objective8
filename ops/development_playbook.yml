@@ -3,4 +3,5 @@
    roles:
     - dev
     - leiningen
+    - elasticsearch
 

@@ -11,3 +11,5 @@
  - name: install npm
    apt: name=npm state=present
 
+ - name: install docker.io
+   apt: name="docker.io" state=present

@@ -40,6 +40,6 @@
 (defn get-objective [{:keys [route-params] :as request}]
   (let [store (storage/request->store request)
         id (:id route-params)]
-    (if-let [objective (objectives/find-by-id store id)] 
+    (if-let [objective (objectives/find-by-id store id)]
       (response/response (json/generate-string objective))
       (response/not-found ""))))

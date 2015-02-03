@@ -15,7 +15,8 @@
             [d-cent.workflows.twitter :refer [twitter-workflow]]
             [d-cent.workflows.sign-up :refer [sign-up-workflow]]
             [d-cent.handlers.api :as api-handlers]
-            [d-cent.handlers.front-end :as front-end-handlers]))
+            [d-cent.handlers.front-end :as front-end-handlers])
+  (:gen-class))
 
 ;; Custom ring middleware
 

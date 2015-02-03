@@ -7,8 +7,9 @@
             [d-cent.storage :as storage]
             [d-cent.handlers.front-end :as front-end]
             [d-cent.http-api :as api]
-            [d-cent.core :as core]
-            [d-cent.integration-helpers :as helpers]))
+            [d-cent.integration-helpers :as helpers]
+            [d-cent.utils :as utils]
+            [d-cent.core :as core]))
 
 (def the-user-id "user_id")
 
@@ -57,14 +58,14 @@
                     (default-app objective-view-get-request)
                     => (contains {:status 200})
                     (provided
-                     (find-by-id anything "some-long-id") => :an-objective))))
+                     (find-by-id anything "some-long-id") => {:end-date "2015-12-01T00:00:00.000Z"}))))
 
 (fact "authorised user can post and retrieve objective"
-      (against-background (api/create-objective 
+      (against-background (api/create-objective
                            {:title "my objective title"
                             :goals "my objective goals"
                             :description "my objective description"
-                            :end-date "my objective end-date"
+                            :end-date (utils/string->time-stamp "2012-12-12")
                             :created-by "twitter-user_id"}) => {:_id "some-id"})
       (against-background
        ;; Twitter authentication background
@@ -75,8 +76,8 @@
             params {:title "my objective title"
                     :goals "my objective goals"
                     :description "my objective description"
-                    :end-date "my objective end-date"}
-            response (:response 
+                    :end-date "2012-12-12"}
+            response (:response
                       (-> user-session
                           (helpers/with-sign-in "http://localhost:8080/objectives/create")
                           (p/request "http://localhost:8080/objectives"
