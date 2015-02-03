@@ -19,12 +19,6 @@
 
 ;; Custom ring middleware
 
-(defn wrap-api-authorize [handler roles]
-  (fn [request]
-    (if (friend/authorized? roles friend/*identity*)
-      (handler request)
-      {:status 401})))
-
 (defn inject-db [handler store]
   (fn [request] (handler (assoc request :d-cent {:store store}))))
 

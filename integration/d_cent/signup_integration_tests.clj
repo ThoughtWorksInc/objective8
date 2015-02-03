@@ -27,6 +27,20 @@
              (contains {:body 
                         (contains html-fragment)})}))
 
+(defn check-status [status]
+  (fn [{response :response}]
+    ((contains {:status status}) response)))
+
+(fact "User directly accessing /sign-up page is redirected to /sign-in"
+      (p/request test-session sign-up-url) => (check-redirects-to "/sign-in"))
+
+(fact "User directly posting to /sign-up page receives 401"
+      (p/request test-session sign-up-url
+                 :request-method :post
+                 :content-type "application/x-www-form-urlencoded"
+                 :body "test%40email.address.com")
+      => (check-status 401))
+
 (fact "New users signing in with twitter are asked to sign up by entering their email address"
       (against-background
        (oauth/access-token anything anything anything) => {:user_id "USERID"}
