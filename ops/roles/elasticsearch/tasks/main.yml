@@ -8,3 +8,9 @@
 
  - name: install elasticsearch
    apt: name="elasticsearch" state=present
+   notify: restart elasticsearch
+
+ - name: update elasticsearch config
+   copy: src="elasticsearch.yml" dest="/etc/elasticsearch.yml" force=yes
+   notify: restart elasticsearch
+

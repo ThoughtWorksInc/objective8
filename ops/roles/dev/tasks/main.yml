@@ -13,7 +13,3 @@
 
  - name: install docker.io
    apt: name="docker.io" state=present
-
- - name: start elasticsearch
-   service: name=elasticsearch state=started
-
