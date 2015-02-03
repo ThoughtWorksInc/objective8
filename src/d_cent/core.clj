@@ -29,7 +29,7 @@
                :sign-out front-end-handlers/sign-out
                :create-objective-form (friend/wrap-authorize front-end-handlers/create-objective-form #{:signed-in})
                :create-objective-form-post (friend/wrap-authorize front-end-handlers/create-objective-form-post #{:signed-in})
-               :objective front-end-handlers/objective
+               :objective front-end-handlers/objective-detail
                ; API Handlers
                :post-user-profile api-handlers/post-user-profile
                :get-user-profile api-handlers/get-user-profile

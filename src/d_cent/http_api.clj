@@ -22,3 +22,6 @@
   (let [{:keys [body status]} (json-post (str utils/host-url "/api/v1/objectives") (assoc objective :end-date (str (objective :end-date))))]
     (cond (= status 201)   (json/parse-string body true)
           :else            api-failure)))
+
+(defn find-objective-by-id [id]
+  (throw (ex-info "Not yet implemented")))
