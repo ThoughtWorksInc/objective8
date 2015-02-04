@@ -15,8 +15,9 @@
           :else            api-failure)))
 
 (defn find-user-profile-by-twitter-id [twitter-id]
-  (let [api-response @(http/get (str utils/host-url "/api/v1/users?twitter=" twitter-id))]
-    (json/parse-string (api-response :body))))
+  (let [{:keys [body status]} @(http/get (str utils/host-url "/api/v1/users?twitter=" twitter-id))]
+    (cond (= status 200) (-> body (json/parse-string true))
+      :else          api-failure)))
 
 (defn create-objective [objective]
   (let [{:keys [body status]} (json-post (str utils/host-url "/api/v1/objectives") (update-in objective [:end-date] str))]
