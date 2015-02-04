@@ -23,17 +23,19 @@
            :user-id "someTwitterID"
            :email-address "something@something.com"})
 
+(def date-time (utils/string->date-time (the-objective :end-date)))
+(def string-time (str date-time))
 
 (fact "Objectives posted to the API get stored"
       (let [request-to-create-objective (p/request app-session "/api/v1/objectives"
                                                    :request-method :post
                                                    :content-type "application/json"
-                                                   :body (json/generate-string (update-in the-objective [:end-date] #(str (utils/string->time-stamp %)))))
+                                                   :body (json/generate-string (assoc the-objective :end-date string-time)))
             response (:response request-to-create-objective)
             headers (:headers response)]
         response => (contains {:status 201})
         headers => (contains {"Location" (contains "/api/v1/objectives/")})
-        (s/find-by temp-store "objectives" (constantly true)) => (contains (update-in the-objective [:end-date] utils/string->time-stamp))))
+        (s/find-by temp-store "objectives" (constantly true)) => (contains (assoc the-objective :end-date date-time))))
 
 (fact "A user profile can be retrieved"
       (let [request-to-get-user-profile (p/request app-session "/api/v1/users?twitter=someTwitterID")

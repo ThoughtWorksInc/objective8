@@ -41,5 +41,5 @@
   (let [store (storage/request->store request)
         id (:id route-params)]
     (if-let [objective (objectives/find-by-id store id)]
-      (response/response (json/generate-string objective))
+      (response/content-type (response/response objective) "application/json")
       (response/not-found ""))))

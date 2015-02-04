@@ -21,7 +21,7 @@
                            {:title "my objective title"
                             :goals "my objective goals"
                             :description "my objective description"
-                            :end-date (utils/string->time-stamp "2012-12-12")
+                            :end-date (utils/string->date-time "2012-12-12")
                             :created-by "twitter-user_id"}) => {:_id "some-id"})
       (against-background
        ;; Twitter authentication background
@@ -49,8 +49,9 @@
        (http-api/get-objective "OBJECTIVE_GUID") => {:title "my objective title"
                                                      :goals "my objective goals"
                                                      :description "my objective description"
-                                                     :end-date "2015-01-30T00:00:00.000Z"})
+                                                     :end-date (utils/string->date-time "2015-12-01")})
       (default-app objective-view-get-request) => (contains {:status 200})
       (default-app objective-view-get-request) => (contains {:body (contains "my objective title")})
       (default-app objective-view-get-request) => (contains {:body (contains "my objective goals")})
-      (default-app objective-view-get-request) => (contains {:body (contains "my objective description")}))
+      (default-app objective-view-get-request) => (contains {:body (contains "my objective description")})
+      (default-app objective-view-get-request) => (contains {:body (contains "01-12-2015")}))

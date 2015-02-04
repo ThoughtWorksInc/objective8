@@ -70,5 +70,5 @@
                                             :doc-title (t' :objective-view/doc-title)
                                             :doc-description (t' :objective-view/doc-description)
                                             :message message
-                                            :objective (update-in objective [:end-date] utils/time-string->pretty-date)
+                                            :objective (update-in objective [:end-date] utils/date-time->pretty-date)
                                             :signed-in (signed-in?)})))

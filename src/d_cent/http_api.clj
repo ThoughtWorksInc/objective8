@@ -28,5 +28,5 @@
     (cond
       (= status 200) (-> body
                          (json/parse-string true)
-                         (update-in [:end-date] utils/time-string->time-stamp))
+                         (update-in [:end-date] utils/time-string->date-time))
       :else          api-failure)))

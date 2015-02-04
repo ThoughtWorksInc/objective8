@@ -27,7 +27,7 @@
                     :username "my username"})
 
 (def the-stored-objective (into the-objective {:_id "GUID"}))
-(def objective-posts 
+(def objective-posts
   {:successful {:status 201
                 :headers {"Content-Type" "application/json"}
                 :body (json/generate-string the-stored-objective)}
@@ -74,7 +74,7 @@
                            :title "Objective title"
                            :goals "Objective goals"
                            :description "Objective description"
-                           :end-date (utils/time-string->time-stamp "2015-01-31T00:00:00.000Z")
+                           :end-date (utils/time-string->date-time "2015-01-31T00:00:00.000Z")
                            :user-guid "USER_GUID"
                            }))
        (fact "returns api-failure when no objective found"

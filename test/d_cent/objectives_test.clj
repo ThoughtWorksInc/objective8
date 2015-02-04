@@ -13,19 +13,19 @@
                     :description "I like cake"
                     :end-date "2015-01-03"})
 
-(def time-stamp (utils/string->time-stamp (:end-date test-objective)))
-(def string-time (str time-stamp))
+(def date-time (utils/string->date-time (:end-date test-objective)))
+(def string-time (str date-time))
 
 (def stored-test-objective (assoc test-objective
                             :created-by "username"
-                            :end-date time-stamp))
+                            :end-date date-time))
 
 (fact "creates correctly formatted objective from a request"
       (against-background
         (friend/current-authentication) => {:username "username"})
         (let [objective (request->objective (requestify test-objective))]
           (:created-by objective) => "username"
-          (:end-date objective) => time-stamp))
+          (:end-date objective) => date-time))
 
 (fact "returns nil if extra params are in the request"
       (request->objective (requestify (assoc test-objective :extra-stuff "Blaaaaaaaaah"))) => nil)
