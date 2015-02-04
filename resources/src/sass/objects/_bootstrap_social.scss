@@ -162,6 +162,25 @@ $bs-height-xs:   (floor($font-size-small * 1.2) + $padding-small-vertical + 1);
 @mixin btn-social($color-bg, $color: #fff) {
   background-color: $color-bg;
   @include button-variant($color, $color-bg, rgba(0,0,0,.2));
+  &:visited {
+    color: $color;
+  }
+  i {
+    font-size: 1.6em;
+    line-height: 32px;
+  }
+  &.btn-sm {
+    i {
+      font-size: 1.3em;
+      line-height: 28px;
+    }
+  }
+  &.btn-xs {
+    i {
+      font-size: 1em;
+      line-height: 16px;
+    }
+  }
 }
 
 
