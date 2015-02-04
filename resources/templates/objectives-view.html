@@ -1,12 +1,13 @@
 <div id="clj-objectives-view" class="objective-article">
-  <h1>{{title}}</h1>
-  <p class="no-margin-bottom"><b id="clj-obj-goals-label">{{goals-label}}</b></p>
-  <p id="clj-obj-goals-value">{{goals}}</p>
-  <p class="no-margin-bottom"><b id="clj-obj-description-label">{{description-label}}</b></p>
-  <p id="clj-obj-description-value">{{description}}</p>
-  <p class="no-margin-bottom"><b id="clj-obj-date-label">{{end-date-label}}</b></p>
-  <p id="clj-obj-end-date-value">{{end-date}}</p>
-
+  <div class="objective-article-details">
+    <h1>{{title}}</h1>
+    <p class="no-margin-bottom"><b>${objective-view/goals-label}</b></p>
+    <p id="clj-obj-goals-value">{{goals}}</p>
+    <p class="no-margin-bottom"><b>${objective-view/description-label}</b></p>
+    <p id="clj-obj-description-value">{{description}}</p>
+    <p class="no-margin-bottom"><b>${objective-view/end-date-label}</b></p>
+    <p id="clj-obj-end-date-value">{{end-date}}</p>
+  </div>
 
   <div class="share-widget">
       <h3 class="share-widget-title">${share-widget/title}</h3>
