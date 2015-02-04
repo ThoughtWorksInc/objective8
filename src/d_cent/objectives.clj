@@ -14,11 +14,10 @@
                                   :created-by (get (friend/current-authentication) :username)))))
 
 (defn format-objective [objective]
-  (assoc objective :end-date (str (objective :end-date))))
+  (update-in objective [:end-date] str))
 
 (defn store-objective! [store objective]
-  (let [iso-time (utils/time-string->time-stamp (:end-date objective))]
-    (format-objective (storage/store! store "objectives" (assoc objective :end-date iso-time)))))
+    (format-objective (storage/store! store "objectives" (update-in objective [:end-date] utils/time-string->time-stamp))))
 
 (defn find-by-id [store id]
   (if-let [stored-objective (storage/find-by store "objectives" #(= id (:_id %)))]

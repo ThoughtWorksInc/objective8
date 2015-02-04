@@ -19,14 +19,14 @@
     (json/parse-string (api-response :body))))
 
 (defn create-objective [objective]
-  (let [{:keys [body status]} (json-post (str utils/host-url "/api/v1/objectives") (assoc objective :end-date (str (objective :end-date))))]
+  (let [{:keys [body status]} (json-post (str utils/host-url "/api/v1/objectives") (update-in objective [:end-date] str))]
     (cond (= status 201)   (json/parse-string body true)
           :else            api-failure)))
 
 (defn get-objective [guid]
   (let [{:keys [body status]} @(http/get (str utils/host-url "/api/v1/objectives/" guid))]
-    (cond 
-      (= status 200) (-> body 
+    (cond
+      (= status 200) (-> body
                          (json/parse-string true)
                          (update-in [:end-date] utils/time-string->time-stamp))
       :else          api-failure)))

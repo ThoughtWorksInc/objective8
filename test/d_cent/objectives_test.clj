@@ -34,5 +34,5 @@
       (store-objective! :the-store (assoc test-objective
                                     :created-by "username"
                                     :end-date string-time))
-                                    => (assoc stored-test-objective :end-date string-time)
+                                    => (update-in stored-test-objective [:end-date] str)
       (provided (storage/store! :the-store "objectives" stored-test-objective) => stored-test-objective))
