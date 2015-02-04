@@ -26,12 +26,5 @@
         (let [objective (request->objective (requestify test-objective))]
           (:created-by objective) => "username"))
 
-(future-fact "returns nil if extra params are in the request"
+(fact "returns nil if extra params are in the request"
       (request->objective (requestify (assoc test-objective :extra-stuff "Blaaaaaaaaah"))) => nil)
-
-(future-fact "stores objective with correct format"
-      (store-objective! :the-store (assoc test-objective
-                                    :created-by "username"
-                                    :_id "SOME_GUID"))
-                                    => stored-test-objective
-      (provided (storage/store! :the-store "objectives" stored-test-objective) => stored-test-objective))
