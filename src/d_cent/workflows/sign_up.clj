@@ -2,6 +2,7 @@
   (:require [cemerick.friend.workflows :as workflows]
             [cemerick.friend :as friend]
             [ring.util.response :as response]
+            [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
             [bidi.ring :refer [make-handler]]
             [d-cent.http-api :as api]
             [d-cent.user :as user]
@@ -28,8 +29,8 @@
     {:status 401}))
 
 (def sign-up-handlers
-  {:sign-up-form        sign-up-form
-   :sign-up-form-post   sign-up-form-post})
+  {:sign-up-form        (wrap-anti-forgery sign-up-form)
+   :sign-up-form-post   (wrap-anti-forgery sign-up-form-post)})
 
 (def sign-up-workflow
   (make-handler sign-up-routes sign-up-handlers))

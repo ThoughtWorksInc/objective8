@@ -9,9 +9,9 @@
   [{:keys [params]}]
     ;TODO Should we use friend here?
     (let [iso-time (utils/string->date-time (:end-date params))]
-      (when (= 4 (count params)) (assoc (select-keys params [:title :goals :description])
+      (assoc (select-keys params [:title :goals :description])
                                   :end-date iso-time
-                                  :created-by (get (friend/current-authentication) :username)))))
+                                  :created-by (get (friend/current-authentication) :username))))
 
 (defn format-objective [objective]
   (update-in objective [:end-date] str))

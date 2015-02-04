@@ -2,7 +2,8 @@
   (:require [net.cgrand.enlive-html :as html]
             [d-cent.translation :refer [translation-config]]
             [d-cent.config :as config]
-            [d-cent.utils :as utils]))
+            [d-cent.utils :as utils]
+            [ring.util.anti-forgery :refer [anti-forgery-field]]))
 
 (def google-analytics-tracking-id (config/get-var "GA_TRACKING_ID"))
 (defn objective-url [objective]
@@ -84,7 +85,8 @@
   [(html/attr= :name "description")] (html/set-attr :title (translation :objective-create/description-title))
   [(html/attr= :for "objective-end-date")] (html/content (translation :objective-create/end-date-label))
   [(html/attr= :name "end-date")] (html/set-attr :title (translation :objective-create/end-date-title))
-  [:.button] (html/content (translation :objective-create/submit)))
+  [:.button] (html/content (translation :objective-create/submit))
+  [:form] (html/prepend (html/html-snippet (anti-forgery-field))))
 
 (html/defsnippet objective-view-page
   "templates/objectives-view.html" [[:#clj-objectives-view]]
@@ -112,8 +114,7 @@
   [(html/attr= :for "email-address")] (html/content (translation :users-email/email-label))
   [(html/attr= :name "email-address")] (html/set-attr :title (translation :users-email/email-title))
   [:button] (html/content (translation :users-email/button))
-  [:.clj-users-email-continue] (html/content (translation :users-email/continue))
-  [:.clj-users-email-continue] (html/set-attr :title (translation :users-email/continue-title)))
+  [:form] (html/prepend (html/html-snippet (anti-forgery-field))))
 
 (defn render-template [template & args]
   (apply str (apply template args)))

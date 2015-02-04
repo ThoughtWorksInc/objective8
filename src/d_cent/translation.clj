@@ -72,9 +72,7 @@
                                    :user-email-welcome "Adding your email address will let us notify you when you receive responses to comments, objectives and votes."
                                    :email-label "Email"
                                    :email-title "Add your email title"
-                                   :button "Submit"
-                                   :continue "Continue without email"
-                                   :continue-title "Continue to post objective without adding an email"}}
+                                   :button "Submit" }}
                 :es {:base {:header-logo-text "Spanish(dCent Project)"
                             :header-logo-title "Spanish(Go to home page)"
                             :browsehappy! "Spanish(You are using an <strong>outdated</strong> browser. Please <a href='http://browsehappy.com/' target='_blank' title='Visit browsehappy to learn more about the latest browser versions'>upgrade your browser</a> to improve your experience.)"}
@@ -142,9 +140,7 @@
                                    :user-email-welcome "Spanish(Adding your email address will let us notify you when you receive responses to comments, objectives and votes.)"
                                    :email-label "Spanish(Email)"
                                    :email-title "Spanish(Add your email title)"
-                                   :button "Spanish(Submit)"
-                                   :continue "Spanish(Continue without email)"
-                                   :continue-title "Spanish(Continue to post objective without adding an email)"}}}
+                                   :button "Spanish(Submit)"}}}
    :dev-mode? false
    :fallback-locale :en
    :log-missing-translations-function (fn [{:keys [locale ks scope]}]

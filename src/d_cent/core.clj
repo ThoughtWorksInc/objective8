@@ -7,6 +7,7 @@
             [ring.middleware.session :refer [wrap-session]]
             [ring.middleware.flash :refer [wrap-flash]]
             [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
+            [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
             [bidi.ring :refer [make-handler ->Resources]]
             [taoensso.tower.ring :refer [wrap-tower]]
             [d-cent.config :as config]
@@ -27,8 +28,8 @@
                :index front-end-handlers/index
                :sign-in front-end-handlers/sign-in
                :sign-out front-end-handlers/sign-out
-               :create-objective-form (friend/wrap-authorize front-end-handlers/create-objective-form #{:signed-in})
-               :create-objective-form-post (friend/wrap-authorize front-end-handlers/create-objective-form-post #{:signed-in})
+               :create-objective-form (friend/wrap-authorize (wrap-anti-forgery front-end-handlers/create-objective-form) #{:signed-in})
+               :create-objective-form-post (friend/wrap-authorize (wrap-anti-forgery front-end-handlers/create-objective-form-post) #{:signed-in})
                :objective front-end-handlers/objective-detail
                ; API Handlers
                :post-user-profile api-handlers/post-user-profile
