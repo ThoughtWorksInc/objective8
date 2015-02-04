@@ -1,51 +1,36 @@
-(ns d-cent.api-integration-tests
+(ns d-cent.users-api-tests
   (:require [midje.sweet :refer :all]
             [peridot.core :as p]
             [oauth.client :as oauth]
             [cheshire.core :as json]
             [d-cent.core :as core]
-            [d-cent.utils :as utils]
             [d-cent.storage :as s]
-            [d-cent.user :as user]))
+            [d-cent.user :as user]
+            [d-cent.integration-helpers :as helpers]))
 
 (def the-user-id "twitter-user_id")
 (def the-email-address "test@email.address.com")
 
-(def temp-store (atom {}))
-(def app-session (p/session (core/app (assoc core/app-config :store temp-store))))
+(def test-db (atom {}))
+(def app (helpers/test-context test-db))
 
-(def the-objective {:title "my objective title"
-                    :goals "my objective goals"
-                    :description "my objective description"
-                    :end-date "2012-12-2"
-                    :created-by "some dude"})
 (def user {:_id "SOME_GUID"
            :user-id "someTwitterID"
            :email-address "something@something.com"})
 
-(def date-time (utils/string->date-time (the-objective :end-date)))
-(def string-time (str date-time))
-
-(fact "Objectives posted to the API get stored"
-      (let [request-to-create-objective (p/request app-session "/api/v1/objectives"
-                                                   :request-method :post
-                                                   :content-type "application/json"
-                                                   :body (json/generate-string (assoc the-objective :end-date string-time)))
-            response (:response request-to-create-objective)
-            headers (:headers response)]
-        response => (contains {:status 201})
-        headers => (contains {"Location" (contains "/api/v1/objectives/")})
-        (s/find-by temp-store "objectives" (constantly true)) => (contains (assoc the-objective :end-date date-time))))
-
 (fact "A user profile can be retrieved"
-      (let [request-to-get-user-profile (p/request app-session "/api/v1/users?twitter=someTwitterID")
+      (let [request-to-get-user-profile (p/request app "/api/v1/users?twitter=someTwitterID")
             response (:response request-to-get-user-profile)]
         (response :body)) => (json/generate-string user)
         (provided (user/retrieve-user-record anything "someTwitterID") => user))
 
+(fact "returns a 404 if a user does not exist"
+      (let [twitter-id "no-existy"
+            user-request (p/request app (str "/api/v1/users?twitter=" twitter-id))]
+        (-> user-request :response :status) => 404))
+
 (fact "The API can be used to store a user profile"
-       (let [temp-store (atom {})
-             app-config (into core/app-config {:store temp-store})
+       (let [app-config (into core/app-config {:store test-db})
              user-session (p/session (core/app app-config))
              api-response (-> user-session
                               (p/content-type "application/json")
@@ -55,7 +40,7 @@
                                          :body (json/generate-string {:email-address the-email-address
                                                                       :user-id the-user-id}))
                               :response)
-             stored-email (:email-address (user/retrieve-user-record temp-store the-user-id))]
+             stored-email (:email-address (user/retrieve-user-record test-db the-user-id))]
 
          stored-email => the-email-address
          api-response => (contains {:status 201})

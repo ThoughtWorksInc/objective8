@@ -16,8 +16,6 @@
 (def objectives-create-request (mock/request :get "/objectives/create"))
 (def objectives-post-request (mock/request :post "/objectives"))
 
-(def objective-view-get-request (mock/request :get "/objectives/OBJECTIVE_GUID"))
-
 (def default-app (core/app core/app-config))
 
 (defn check-status [status]
