@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+psql -U dcent -h localhost -W
+

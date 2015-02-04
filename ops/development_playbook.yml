@@ -3,5 +3,6 @@
    roles:
     - dev
     - leiningen
-    - elasticsearch
+    - postgres 
+    - dcent_postgres_config
 

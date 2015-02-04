@@ -1,0 +1,13 @@
+---
+ - name: install postgresql
+   apt: name=postgresql state=present
+
+ - name: install postgresql-contrib
+   apt: name=postgresql-contrib state=present
+
+ - name: install libpq-dev (for ansible postgres config)
+   apt: name="libpq-dev" state=present
+
+ - name: install python-psycopg2 (for ansible postgres config)
+   apt: name="python-psycopg2" state=present
+

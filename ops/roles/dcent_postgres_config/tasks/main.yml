@@ -1,0 +1,10 @@
+---
+ - name: create dcent database
+   postgresql_db: name=dcent login_user=postgres
+   sudo_user: postgres
+
+ - name: add dcent role
+   #TODO - password management
+   postgresql_user:  name=DCENT login_user=postgres password="md580bca6cc4b57bfe70193b60fc4353609" encrypted=true db=dcent
+   sudo_user: postgres
+
