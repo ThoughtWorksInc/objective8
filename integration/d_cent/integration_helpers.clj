@@ -11,6 +11,7 @@
         (p/request "http://localhost:8080/twitter-callback?oauth_verifier=the-verifier")
         ; Post user email address to store --- returns authentication map
         (p/request "http://localhost:8080/sign-up" :request-method :post)
+        (assoc :session {"__anti-forgery-token" "fakecsrftoken"})
         ; Follow redirect to originally requested resource
         (p/follow-redirect))))
 

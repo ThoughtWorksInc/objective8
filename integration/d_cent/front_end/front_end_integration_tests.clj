@@ -41,7 +41,7 @@
                      (request->objective anything) => :an-objective
                      (http-api/create-objective :an-objective) => {:_id "the-objective-id"})
                     (let [response
-                      (-> (p/session default-app)
+                      (-> (assoc (p/session default-app) {"__anti-forgery-token" "foo"})
                           (helpers/with-sign-in "http://localhost:8080/objectives/create")
                           (p/request "http://localhost:8080/objectives" :request-method :post))]
                       response => (check-status 302)

@@ -34,12 +34,12 @@
 (fact "User directly accessing /sign-up page is redirected to /sign-in"
       (p/request test-session sign-up-url) => (check-redirects-to "/sign-in"))
 
-(fact "User directly posting to /sign-up page receives 401"
+(fact "User directly posting to /sign-up page without csrf token receives 403"
       (p/request test-session sign-up-url
                  :request-method :post
                  :content-type "application/x-www-form-urlencoded"
                  :body "test%40email.address.com")
-      => (check-status 401))
+      => (check-status 403))
 
 (fact "New users signing in with twitter are asked to sign up by entering their email address"
       (against-background
@@ -56,10 +56,11 @@
 
       (let [unauthorized-request-session (p/request test-session protected-resource)
             signed-in-session (p/request unauthorized-request-session twitter-callback-url)]
-        (p/request signed-in-session sign-up-url
+        
+        (p/request (assoc signed-in-session {"__anti-forgery-token" "fakecsrftoken"}) sign-up-url
                    :request-method :post
                    :content-type "application/x-www-form-urlencoded"
-                   :body "email-address=test%40email.address.com"))
+                   :body "__anti-forgery-token=fakecsrftoken&email-address=test%40email.address.com"))
       => (check-redirects-to protected-resource 303)
 
       (provided (api/create-user-profile {:user-id "twitter-USERID"

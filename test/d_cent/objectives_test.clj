@@ -27,9 +27,6 @@
           (:created-by objective) => "username"
           (:end-date objective) => date-time))
 
-(fact "returns nil if extra params are in the request"
-      (request->objective (requestify (assoc test-objective :extra-stuff "Blaaaaaaaaah"))) => nil)
-
 (fact "stores objective with correct format"
       (store-objective! :the-store (assoc test-objective
                                     :created-by "username"
