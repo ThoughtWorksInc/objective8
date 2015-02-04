@@ -1,7 +1,7 @@
 (ns d-cent.objectives-test
   (:require [midje.sweet :refer :all]
             [cemerick.friend :as friend]
-            [d-cent.storage :as storage]
+            [d-cent.storage.storage :as storage]
             [d-cent.utils :as utils]
             [d-cent.objectives :refer :all]))
 

@@ -1,6 +1,6 @@
-(ns d-cent.storage_test
+(ns d-cent.storage.storage_test
   (:require [midje.sweet :refer :all]
-            [d-cent.storage :as s]))
+            [d-cent.storage.storage :as s]))
 
 (def test-db (atom {}))
 

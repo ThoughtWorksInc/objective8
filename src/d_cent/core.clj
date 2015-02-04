@@ -11,7 +11,7 @@
             [taoensso.tower.ring :refer [wrap-tower]]
             [d-cent.config :as config]
             [d-cent.translation :refer [translation-config]]
-            [d-cent.storage :as storage]
+            [d-cent.storage.storage :as storage]
             [d-cent.workflows.twitter :refer [twitter-workflow]]
             [d-cent.workflows.sign-up :refer [sign-up-workflow]]
             [d-cent.handlers.api :as api-handlers]

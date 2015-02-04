@@ -8,7 +8,7 @@
             [d-cent.objectives :refer [request->objective]]
             [d-cent.http-api :as http-api]
             [d-cent.utils :as utils]
-            [d-cent.storage :as storage]))
+            [d-cent.storage.storage :as storage]))
 
 ;; HELPERS
 

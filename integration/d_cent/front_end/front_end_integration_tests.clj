@@ -4,7 +4,7 @@
             [peridot.core :as p]
             [oauth.client :as oauth]
             [d-cent.objectives :refer [request->objective]]
-            [d-cent.storage :as storage]
+            [d-cent.storage.storage :as storage]
             [d-cent.handlers.front-end :as front-end]
             [d-cent.http-api :as http-api]
             [d-cent.integration-helpers :as helpers]

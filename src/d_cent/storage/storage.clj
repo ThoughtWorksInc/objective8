@@ -1,4 +1,4 @@
-(ns d-cent.storage
+(ns d-cent.storage.storage
   (:require [korma.core :as korma]
             [korma.db :as db]
             [cheshire.core :as json])

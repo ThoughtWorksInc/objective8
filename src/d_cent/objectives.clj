@@ -1,7 +1,7 @@
 (ns d-cent.objectives
   (:require [cemerick.friend :as friend]
             [d-cent.utils :as utils]
-            [d-cent.storage :as storage]))
+            [d-cent.storage.storage :as storage]))
 
 (defn request->objective
   "Returns a map of an objective if all the parts are in the

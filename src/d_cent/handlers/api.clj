@@ -2,7 +2,7 @@
   (:require [clojure.tools.logging :as log]
             [ring.util.response :as response]
             [cheshire.core :as json]
-            [d-cent.storage :as storage]
+            [d-cent.storage.storage :as storage]
             [d-cent.objectives :as objectives]
             [d-cent.user :as user]
             [d-cent.utils :as utils]))

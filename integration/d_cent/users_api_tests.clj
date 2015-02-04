@@ -4,7 +4,7 @@
             [oauth.client :as oauth]
             [cheshire.core :as json]
             [d-cent.core :as core]
-            [d-cent.storage :as s]
+            [d-cent.storage.storage :as s]
             [d-cent.user :as user]
             [d-cent.integration-helpers :as helpers]))
 
