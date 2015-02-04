@@ -55,7 +55,7 @@
     (if-let [objective (request->objective request)]
       (if-let [stored-objective (http-api/create-objective objective)]
         (let [objective-url (str utils/host-url "/objectives/" (:_id stored-objective))
-              message (str (t' :objective-view/created-message) " <a title='"(t' :objective-view/share-title)"' href='http://twitter.com/share?text="(t' :objective-view/share-twitter-text)"&url=" objective-url "''>"(t' :objective-view/share-text)"</a>")]
+              message (t' :objective-view/created-message)]
           (assoc (response/redirect objective-url) :flash message))
         {:status 502})
       {:status 400}))
