@@ -2,7 +2,9 @@
   (:require [korma.core :as korma]
             [d-cent.storage.mappings :as mappings]))
 
-(defn pg-store! [{:keys [entity] :as m}]
+(defn pg-store!
+  "Transform a map according to it's :entity value and save it in the database"
+  [{:keys [entity] :as m}]
   (if-let [ent (get mappings/entities entity)]
     (korma/insert ent (korma/values (dissoc m :entity)))
     (throw (Exception. "Could not find database mapping for " entity))))

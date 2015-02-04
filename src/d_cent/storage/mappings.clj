@@ -1,6 +1,7 @@
 (ns d-cent.storage.mappings
   (:require [korma.core :as korma]
-            [cheshire.core :as json])
+            [cheshire.core :as json]
+            [clj-time [format :as tf] [coerce :as tc]])
   (:import [org.postgresql.util PGobject]))
 
 (defn map->json-type
@@ -12,9 +13,10 @@
 
 (defn map->objective
   "Converts a clojure map into a json-typed objective for the database"
-  [{:keys [created-by] :as objective}]
-  (if created-by
+  [{:keys [created-by end-date] :as objective}]
+  (if (and created-by end-date) 
     {:created_by created-by
+     :end_date (tc/to-timestamp end-date)
      :objective (map->json-type objective)} 
     (throw (Exception. "Could not transform map to objective"))))
 
