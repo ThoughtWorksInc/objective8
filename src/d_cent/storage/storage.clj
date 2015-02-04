@@ -2,12 +2,29 @@
   (:require [korma.core :as korma]
             [d-cent.storage.mappings :as mappings]))
 
+(defn insert
+  "Wrapper around Korma's insert call"
+  [entity data]
+  (korma/insert entity (korma/values data)))
+
 (defn pg-store!
   "Transform a map according to it's :entity value and save it in the database"
   [{:keys [entity] :as m}]
-  (if-let [ent (get mappings/entities entity)]
-    (korma/insert ent (korma/values (dissoc m :entity)))
+  (if-let [ent (mappings/get-mapping m)]
+    (insert ent m)
     (throw (Exception. "Could not find database mapping for " entity))))
+
+(defn select
+  "Wrapper around Korma's select call"
+  [entity where]
+  (korma/select entity (korma/where where)))
+
+(defn pg-retrieve [{:keys [entity] :as query}]
+  (if entity
+    (let [result (select (mappings/get-mapping query) (dissoc query :entity))]
+      {:query query
+       :result result}) 
+    (throw (Exception. "Query map requires an :entity key"))))
 
 (defn request->store
   "Fetches the storage atom from the request"

@@ -26,3 +26,8 @@
   (korma/prepare map->objective))
 
 (def entities {:objective objective})
+
+(defn get-mapping
+  "Returns a korma entity for a map"
+  [{:keys [entity]}]
+  (get entities entity))
