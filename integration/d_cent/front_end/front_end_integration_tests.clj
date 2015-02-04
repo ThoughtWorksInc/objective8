@@ -3,7 +3,7 @@
             [ring.mock.request :as mock]
             [peridot.core :as p]
             [oauth.client :as oauth]
-            [d-cent.objectives :refer [request->objective find-by-id]]
+            [d-cent.objectives :refer [request->objective]]
             [d-cent.storage :as storage]
             [d-cent.handlers.front-end :as front-end]
             [d-cent.http-api :as http-api]

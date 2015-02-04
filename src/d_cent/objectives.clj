@@ -16,5 +16,5 @@
 (defn store-objective! [store objective]
   (storage/store! store "objectives" objective))
 
-(defn find-by-id [store id]
-  (storage/retrieve store "objectives" id))
+(defn retrieve-objective [store guid]
+  (storage/retrieve store "objectives" guid))

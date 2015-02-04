@@ -29,8 +29,11 @@
 
 (defn post-objective [{:keys [params] :as request}]
   (let [store (storage/request->store request)
-        objective (select-keys params [:title :goals :description :end-date :created-by])
-        stored-objective (objectives/store-objective! store objective)
+        objective (-> params
+                      (select-keys [:title :goals :description :end-date :created-by])
+                      (update-in [:end-date] utils/time-string->date-time))
+        stored-objective (-> (objectives/store-objective! store objective)
+                             (update-in [:end-date] utils/date-time->iso-date-string))
         resource-location (str utils/host-url "/api/v1/objectives/" (:_id stored-objective))]
     {:status 201
      :headers {"Content-Type" "application/json"
@@ -40,6 +43,9 @@
 (defn get-objective [{:keys [route-params] :as request}]
   (let [store (storage/request->store request)
         id (:id route-params)]
-    (if-let [objective (objectives/find-by-id store id)]
-      (response/content-type (response/response objective) "application/json")
+    (if-let [objective (objectives/retrieve-objective store id)]
+      (-> objective
+          (update-in [:end-date] utils/date-time->iso-date-string)
+          response/response
+          (response/content-type "application/json"))
       (response/not-found ""))))

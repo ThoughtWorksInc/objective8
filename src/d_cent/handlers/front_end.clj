@@ -5,7 +5,7 @@
             [cheshire.core :as json]
             [org.httpkit.client :as http]
             [d-cent.responses :refer :all]
-            [d-cent.objectives :refer [request->objective find-by-id]]
+            [d-cent.objectives :refer [request->objective]]
             [d-cent.http-api :as http-api]
             [d-cent.utils :as utils]
             [d-cent.storage :as storage]))
