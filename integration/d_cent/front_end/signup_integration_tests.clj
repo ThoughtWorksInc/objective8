@@ -1,4 +1,4 @@
-(ns d-cent.signup-integration-tests
+(ns d-cent.front-end.signup-integration-tests
   (:require [midje.sweet :refer :all]
             [peridot.core :as p]
             [oauth.client :as oauth]
@@ -14,17 +14,17 @@
 (def sign-up-url "http://localhost:8080/sign-up")
 (def protected-resource "http://localhost:8080/objectives/create")
 
-(defn check-redirects-to 
+(defn check-redirects-to
   ([url-fragment]
    (check-redirects-to url-fragment 302))
   ([url-fragment status]
-   (contains {:response 
+   (contains {:response
               (contains {:status status
                          :headers (contains {"Location" (contains url-fragment)})})})))
 
 (defn check-html-content [html-fragment]
-  (contains {:response 
-             (contains {:body 
+  (contains {:response
+             (contains {:body
                         (contains html-fragment)})}))
 
 (defn check-status [status]
@@ -61,10 +61,10 @@
                    :content-type "application/x-www-form-urlencoded"
                    :body "email-address=test%40email.address.com"))
       => (check-redirects-to protected-resource 303)
-      
+
       (provided (api/create-user-profile {:user-id "twitter-USERID"
                                           :email-address "test@email.address.com"})
-                => {:_id "SOME_GUID" 
+                => {:_id "SOME_GUID"
                     :user-id "twitter-USERID"
                     :email-address "test@email.address.com"} :times 1))
 
@@ -76,9 +76,8 @@
             signed-in-session (p/request unauthorized-request-session twitter-callback-url)]
         (p/follow-redirect signed-in-session)) => (check-redirects-to protected-resource 303)
 
-        (provided 
-         (api/find-user-profile-by-twitter-id "twitter-USERID") 
+        (provided
+         (api/find-user-profile-by-twitter-id "twitter-USERID")
          => {:_id "SOME_GUID"
              :user-id "twitter-USERID"
              :email-address "test@email.address.com"} :times 1))
-

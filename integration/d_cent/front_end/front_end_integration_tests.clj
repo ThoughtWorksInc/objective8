@@ -1,4 +1,4 @@
-(ns d-cent.front-end-integration-tests
+(ns d-cent.front-end.front-end-integration-tests
   (:require [midje.sweet :refer :all]
             [ring.mock.request :as mock]
             [peridot.core :as p]
