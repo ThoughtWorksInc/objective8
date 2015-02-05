@@ -1,6 +1,9 @@
-(ns d-cent.storage_test
+(ns d-cent.storage.storage_test
   (:require [midje.sweet :refer :all]
-            [d-cent.storage :as s]))
+            [korma.core :as korma]
+            [d-cent.storage.storage :as s]
+            [d-cent.storage.mappings :as m]
+            ))
 
 (def test-db (atom {}))
 
@@ -38,3 +41,28 @@
 (fact "returns nil if fetching based on predicate returns no records"
       (s/find-by test-db "users" #(= 4 (:a %)))
       => nil)
+
+(fact "attempts to store an object by looking up the entity mapping"
+      (let [some-map {:foo "bar" :entity :i-am-entity}]
+        (s/pg-store! some-map) => :the-id
+        (provided
+          (m/get-mapping some-map) => :fake-entity
+          (s/insert :fake-entity anything) => :the-id)))
+
+(fact "attempts to find an object based on a query containing entity"
+      (let [some-query {:entity :i-am-entity :foo "bar" :zap "pow"}]
+        (s/pg-retrieve some-query) => {:query some-query
+                                       :result :expected-object }
+        (provided
+          (m/get-mapping some-query) => :fake-entity
+          (s/select :fake-entity {:foo "bar" :zap "pow"}) => :expected-object)))
+
+(fact "converts hyphens to underscores"
+      (let [some-query {:entity :ent :foo-bar "wibble"}]
+        (s/pg-retrieve some-query) => {:query some-query :result :expected-object}
+        (provided
+          (m/get-mapping some-query) => :fake-entity
+          (s/select :fake-entity {:foo_bar "wibble"}) => :expected-object)))
+
+(fact "throws exception if no entity key is present"
+      (s/pg-retrieve {}) => (throws Exception "Query map requires an :entity key"))

@@ -15,6 +15,9 @@
 (defn string->date-time [date-string]
   (time-format/parse (time-format/formatters :year-month-day) date-string))
 
+(defn date-time->iso-date-string [date-time]
+  (str date-time))
+
 (defn time-string->date-time [time-string]
   (time-format/parse (time-format/formatters :date-time) time-string))
 

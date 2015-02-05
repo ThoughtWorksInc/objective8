@@ -16,9 +16,15 @@
                  [com.taoensso/tower "3.0.2"]
                  [clj-oauth "1.5.1"]
                  [cheshire "5.4.0"]
-                 [clj-time "0.9.0"]]
+                 [clj-time "0.9.0"]
+                 [korma "0.3.0"]
+                 [postgresql "9.1-901.jdbc4"]
+                 [ragtime "0.3.8"] ]
   :main d-cent.core
   :aot [d-cent.core]
+  :plugins [[ragtime/ragtime.lein "0.3.7"]]
+  :ragtime {:migrations ragtime.sql.files/migrations
+            :database "jdbc:postgresql://localhost/dcent?user=dcent&password=development"}
   :profiles {:dev {:dependencies [[midje "1.6.3"]
                                   [ring/ring-mock "0.2.0"]
                                   [http-kit.fake "0.2.1"]

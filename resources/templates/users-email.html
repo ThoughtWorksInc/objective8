@@ -1,12 +1,12 @@
 <div id="clj-users-email">
 
-  <h1>{{page-title}}</h1>
-  <p class="clj-user-email-welcome">{{users-email-welcome}}</p>
+  <h1>${users-email/page-title}</h1>
+  <p>${users-email/user-email-welcome}</p>
   <form id="create-objective-form" method="POST" action="/sign-up">
-    <label class="clj-users-email-label" for="email-address">{{email-label}}</label>
-    <input id="email-address" class="clj-users-email-title" name="email-address" type="email" title="{{email-title}}" required>
+    <label class="clj-users-email-label" for="email-address">${users-email/email-label}</label>
+    <input id="email-address" class="clj-users-email-title" name="email-address" type="email" title="${users-email/email-title}" required>
 
-    <button type="submit" class="button">{{submit}}</button>
+    <button type="submit" class="button">${users-email/button}</button>
   </form>
 
 </div>

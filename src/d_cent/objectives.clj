@@ -1,7 +1,7 @@
 (ns d-cent.objectives
   (:require [cemerick.friend :as friend]
             [d-cent.utils :as utils]
-            [d-cent.storage :as storage]))
+            [d-cent.storage.storage :as storage]))
 
 (defn request->objective
   "Returns a map of an objective if all the parts are in the
@@ -13,12 +13,8 @@
                                   :end-date iso-time
                                   :created-by (get (friend/current-authentication) :username))))
 
-(defn format-objective [objective]
-  (update-in objective [:end-date] str))
-
 (defn store-objective! [store objective]
-  (format-objective (storage/store! store "objectives" (update-in objective [:end-date] utils/time-string->date-time))))
+  (storage/store! store "objectives" objective))
 
-(defn find-by-id [store id]
-  (if-let [stored-objective (storage/find-by store "objectives" #(= id (:_id %)))]
-    (format-objective stored-objective)))
+(defn retrieve-objective [store guid]
+  (storage/retrieve store "objectives" guid))

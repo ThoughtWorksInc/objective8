@@ -1,20 +1,20 @@
 <div id="clj-objective-create">
-  <h1>{{page-title}}</h1>
+  <h1>${objective-create/page-title}</h1>
 
   <form method="POST" action="/objectives">
 
-    <label class="clj-obj-title-label" for="objective-title">{{title-label}}</label>
-    <input id="objective-title" class="clj-obj-title-title" name="title" type="text" pattern=".{3,}" title="{{title-title}}" maxlength="120" required>
+    <label class="clj-obj-title-label" for="objective-title">${objective-create/title-label}</label>
+    <input id="objective-title" class="clj-obj-title-title" name="title" type="text" pattern=".{3,}" title="${objective-create/title-title}" maxlength="120" required>
 
-    <label class="clj-obj-goals-label" for="objective-goals">{{goals-label}}</label>
-    <textarea id="objective-goals" class="clj-obj-goals-title" name="goals" rows="5" cols="10" pattern=".{50,}" maxlength="500" title="{{goals-title}}" required></textarea>
+    <label class="clj-obj-goals-label" for="objective-goals">${objective-create/goals-label}</label>
+    <textarea id="objective-goals" class="clj-obj-goals-title" name="goals" rows="5" cols="10" pattern=".{50,}" maxlength="500" title="${objective-create/goals-title}" required></textarea>
 
-    <label class="clj-obj-description-label" for="objective-description">{{description-label}}</label>
-    <textarea id="objective-description" class="clj-obj-description-title" name="description" rows="10" cols="10" maxlength="1000" title="{{description-title}}"></textarea>
-    
-    <label class="clj-obj-end-date-label" for="objective-end-date">{{end-date-label}}</label>
-    <input id="objective-end-date" class="clj-obj-end-date-title" name="end-date" type="date" title="{{end-date-title}}" required>
+    <label class="clj-obj-description-label" for="objective-description">${objective-create/description-label}</label>
+    <textarea id="objective-description" class="clj-obj-description-title" name="description" rows="10" cols="10" maxlength="1000" title="${objective-create/description-title}"></textarea>
 
-    <button type="submit" class="button">{{submit}}</button>
+    <label class="clj-obj-end-date-label" for="objective-end-date">${objective-create/end-date-label}</label>
+    <input id="objective-end-date" class="clj-obj-end-date-title" name="end-date" type="date" title="${objective-create/end-date-title}" required>
+
+    <button type="submit" class="button">${objective-create/submit}</button>
   </form>
 </div>

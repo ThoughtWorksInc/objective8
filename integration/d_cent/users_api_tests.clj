@@ -4,9 +4,12 @@
             [oauth.client :as oauth]
             [cheshire.core :as json]
             [d-cent.core :as core]
-            [d-cent.storage :as s]
+            [d-cent.storage.storage :as s]
             [d-cent.user :as user]
             [d-cent.integration-helpers :as helpers]))
+
+;; Testing from http request -> making correct calls within user namespace
+;; Mock or stub out 'user' namespace
 
 (def the-user-id "twitter-user_id")
 (def the-email-address "test@email.address.com")
