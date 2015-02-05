@@ -8,3 +8,9 @@ CREATE TABLE policy_drafting.objectives (
     objective   json NOT NULL
 );
 
+CREATE TABLE policy_drafting.users (
+    _id         SERIAL PRIMARY KEY,
+    _created_at timestamp DEFAULT current_timestamp,
+    user_id     varchar NOT NULL,
+    user_data   json NOT NULL
+);
