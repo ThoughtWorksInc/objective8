@@ -19,9 +19,23 @@
   [entity where]
   (korma/select entity (korma/where where)))
 
-(defn pg-retrieve [{:keys [entity] :as query}]
+(defn- -to_
+  "Replaces hyphens in keys with underscores"
+  [m]
+  (let [ks (keys m) vs (vals m)]
+    (zipmap (map (fn [k] (-> (clojure.string/replace k #"-" "_")
+                             (subs 1)
+                             keyword)) ks)
+            vs)))
+
+(defn pg-retrieve
+  "Retrieves objects from the database based on a query map
+  
+   - The map must include an :entity key
+   - Hyphens in key words are replaced with underscores"
+  [{:keys [entity] :as query}]
   (if entity
-    (let [result (select (mappings/get-mapping query) (dissoc query :entity))]
+    (let [result (select (mappings/get-mapping query) (-to_ (dissoc query :entity)))]
       {:query query
        :result result}) 
     (throw (Exception. "Query map requires an :entity key"))))
