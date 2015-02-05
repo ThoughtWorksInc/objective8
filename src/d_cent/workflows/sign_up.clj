@@ -4,8 +4,10 @@
             [ring.util.response :as response]
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
             [bidi.ring :refer [make-handler]]
+            [d-cent.config :as config]
             [d-cent.http-api :as api]
             [d-cent.user :as user]
+            [d-cent.utils :as utils]
             [d-cent.handlers.front-end :as front-end]))
 
 (def sign-up-routes
@@ -21,11 +23,6 @@
     (response/redirect "/sign-in")))
 
 (defn sign-up-form-post [{params :params session :session :as request}]
-  (prn "params ********")
-  (prn params)
-  (prn "sessions ********")
-  (prn session)
-
   (if-let [user-id (:d-cent-user-id session)]
     (let [email-address (:email-address params)]
       (api/create-user-profile {:user-id user-id :email-address email-address})
@@ -34,8 +31,8 @@
     {:status 401}))
 
 (def sign-up-handlers
-  {:sign-up-form        (wrap-anti-forgery sign-up-form)
-   :sign-up-form-post   (wrap-anti-forgery sign-up-form-post)})
+  {:sign-up-form        (utils/anti-forgery-hook sign-up-form)
+   :sign-up-form-post   (utils/anti-forgery-hook sign-up-form-post)})
 
 (def sign-up-workflow
   (make-handler sign-up-routes sign-up-handlers))

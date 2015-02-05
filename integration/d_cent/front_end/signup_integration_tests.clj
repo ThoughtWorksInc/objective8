@@ -5,6 +5,7 @@
             [cemerick.friend.workflows :as workflows]
             [ring.util.codec :as c]
             [d-cent.core :as core]
+            [d-cent.config :as config]
             [d-cent.integration-helpers :as helpers]
             [d-cent.http-api :as api]))
 
@@ -51,27 +52,24 @@
         (p/follow-redirect signed-in-context))
       => (check-html-content "<title>Sign up"))
 
+(binding [config/enable-csrf false]
 (fact "After signing up (by posting their email address) the user is sent back to the resource they were trying to access"
       (against-background
        (oauth/access-token anything anything anything) => {:user_id "USERID"})
 
       (let [unauthorized-request-context (p/request test-session protected-resource)
-            signed-in-context (p/request unauthorized-request-context twitter-callback-url)
-            sign-up-context (p/request signed-in-context sign-up-url)
-            token (helpers/get-anti-forgery-token sign-up-context)]
-        (prn "****** token")
-        (prn (c/url-encode token))
-        (p/request sign-up-context sign-up-url
+            signed-in-context (p/request unauthorized-request-context twitter-callback-url)]
+        (p/request signed-in-context sign-up-url
                    :request-method :post
                    :content-type "application/x-www-form-urlencoded"
-                   :body (str "__anti-forgery-token=" (c/url-encode token) "&email-address=test%40email.address.com")))
+                   :body "&email-address=test%40email.address.com"))
       => (check-redirects-to protected-resource 303)
 
       (provided (api/create-user-profile {:user-id "twitter-USERID"
                                           :email-address "test@email.address.com"})
                 => {:_id "SOME_GUID"
                     :user-id "twitter-USERID"
-                    :email-address "test@email.address.com"} :times 1))
+                    :email-address "test@email.address.com"} :times 1)))
 
 (fact "After signing in, a user with an existing profile is immediately sent to the resource they were trying to access"
       (against-background

@@ -1,5 +1,6 @@
 (ns d-cent.utils
   (:require [clj-time.format :as time-format]
+            [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
             [d-cent.config :as config]))
 
 (def host-url
@@ -25,3 +26,13 @@
 
 (defn date-time->pretty-date [date-time]
   (time-format/unparse pretty-date date-time))
+
+
+;;DISABLE CSRF for tests
+
+(defn anti-forgery-hook [handler]
+  (let [handler-with-anti-forgery (wrap-anti-forgery handler)]
+    (fn [request] (if config/enable-csrf 
+                    (handler-with-anti-forgery request)
+                    (handler request)))))
+

@@ -1,6 +1,8 @@
 (ns d-cent.config
  (:require [clojure.tools.logging :as log]))
 
+(def ^:dynamic enable-csrf true)
+
 (defn- env-lookup [var-name]
   (get (System/getenv) var-name))
 
