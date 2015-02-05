@@ -20,6 +20,14 @@
      :objective (map->json-type objective)} 
     (throw (Exception. "Could not transform map to objective"))))
 
+(defn map->user
+  "Converts a clojure map into a json-typed user for the database"
+  [{:keys [user-id] :as user}]
+  (if user-id
+    {:user_id user-id
+     :user_data (map->json-type user)}
+    (throw (Exception. "Could not transform map to user"))))
+
 (korma/defentity objective
   (korma/pk :_id)
   (korma/table :policy_drafting.objectives)

@@ -26,3 +26,11 @@
              (map->objective {:a "B"}) => (throws Exception "Could not transform map to objective")
              (map->objective {:a "B" :created-by "Foo"}) => (throws Exception "Could not transform map to objective")
              (map->objective {:a "B" :end-date "Blah"}) => (throws Exception "Could not transform map to objective")))
+
+(facts "About map->user"
+       (fact "Column values are pulled out and converted, the map gets turned to json"
+             (let [user (map->user {:user-id "twitter-TWITTERID"})]
+               user => (contains {:user_id "twitter-TWITTERID"
+                                  :user_data json-type?})))
+       (fact "throws exception if :user-id is missing"
+                    (map->user {:a "B"}) => (throws Exception "Could not transform map to user")))
