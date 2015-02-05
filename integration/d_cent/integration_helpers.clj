@@ -1,8 +1,16 @@
 (ns d-cent.integration-helpers
-  (:require [d-cent.core :as core]
-            [peridot.core :as p]))
+  (:require [net.cgrand.enlive-html :as html]
+            [peridot.core :as p]
+            [d-cent.core :as core]))
+
+(defn get-anti-forgery-token [request-context]
+  (let [raw-html (:body (:response request-context))]
+   (do
+    (get-in (first (html/select (html/html-snippet raw-html) [:#__anti-forgery-token])) [:attrs :value]))))
+
 
 (defn with-sign-in [user-session url & args]
+  (get-anti-forgery-token user-session)
   (let [request-function #(apply p/request % url args)]
     (-> user-session
         ; Hit unauthorized url
@@ -11,7 +19,6 @@
         (p/request "http://localhost:8080/twitter-callback?oauth_verifier=the-verifier")
         ; Post user email address to store --- returns authentication map
         (p/request "http://localhost:8080/sign-up" :request-method :post)
-        (assoc :session {"__anti-forgery-token" "fakecsrftoken"})
         ; Follow redirect to originally requested resource
         (p/follow-redirect))))
 

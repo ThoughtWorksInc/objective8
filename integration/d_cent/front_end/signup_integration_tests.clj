@@ -3,6 +3,7 @@
             [peridot.core :as p]
             [oauth.client :as oauth]
             [cemerick.friend.workflows :as workflows]
+            [ring.util.codec :as c]
             [d-cent.core :as core]
             [d-cent.integration-helpers :as helpers]
             [d-cent.http-api :as api]))
@@ -46,21 +47,24 @@
        (oauth/access-token anything anything anything) => {:user_id "USERID"}
        (api/find-user-profile-by-twitter-id "twitter-USERID") => nil)
 
-      (let [signed-in-session (p/request test-session twitter-callback-url)]
-        (p/follow-redirect signed-in-session))
+      (let [signed-in-context (p/request test-session twitter-callback-url)]
+        (p/follow-redirect signed-in-context))
       => (check-html-content "<title>Sign up"))
 
 (fact "After signing up (by posting their email address) the user is sent back to the resource they were trying to access"
       (against-background
        (oauth/access-token anything anything anything) => {:user_id "USERID"})
 
-      (let [unauthorized-request-session (p/request test-session protected-resource)
-            signed-in-session (p/request unauthorized-request-session twitter-callback-url)]
-        
-        (p/request (assoc signed-in-session {"__anti-forgery-token" "fakecsrftoken"}) sign-up-url
+      (let [unauthorized-request-context (p/request test-session protected-resource)
+            signed-in-context (p/request unauthorized-request-context twitter-callback-url)
+            sign-up-context (p/request signed-in-context sign-up-url)
+            token (helpers/get-anti-forgery-token sign-up-context)]
+        (prn "****** token")
+        (prn (c/url-encode token))
+        (p/request sign-up-context sign-up-url
                    :request-method :post
                    :content-type "application/x-www-form-urlencoded"
-                   :body "__anti-forgery-token=fakecsrftoken&email-address=test%40email.address.com"))
+                   :body (str "__anti-forgery-token=" (c/url-encode token) "&email-address=test%40email.address.com")))
       => (check-redirects-to protected-resource 303)
 
       (provided (api/create-user-profile {:user-id "twitter-USERID"
@@ -73,9 +77,9 @@
       (against-background
        (oauth/access-token anything anything anything) => {:user_id "USERID"})
 
-      (let [unauthorized-request-session (p/request test-session protected-resource)
-            signed-in-session (p/request unauthorized-request-session twitter-callback-url)]
-        (p/follow-redirect signed-in-session)) => (check-redirects-to protected-resource 303)
+      (let [unauthorized-request-context (p/request test-session protected-resource)
+            signed-in-context (p/request unauthorized-request-context twitter-callback-url)]
+        (p/follow-redirect signed-in-context)) => (check-redirects-to protected-resource 303)
 
         (provided
          (api/find-user-profile-by-twitter-id "twitter-USERID")

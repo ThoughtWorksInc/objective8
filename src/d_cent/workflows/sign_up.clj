@@ -21,6 +21,11 @@
     (response/redirect "/sign-in")))
 
 (defn sign-up-form-post [{params :params session :session :as request}]
+  (prn "params ********")
+  (prn params)
+  (prn "sessions ********")
+  (prn session)
+
   (if-let [user-id (:d-cent-user-id session)]
     (let [email-address (:email-address params)]
       (api/create-user-profile {:user-id user-id :email-address email-address})
