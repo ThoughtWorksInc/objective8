@@ -23,6 +23,11 @@
   (fn [peridot-response]
     (= status (get-in peridot-response [:response :status]))))
 
+(defn check-redirect-url [url-fragment]
+  (fn [peridot-response]
+    ((contains url-fragment) (get-in peridot-response [:response :headers "Location"]))))
+
+(binding [config/enable-csrf false]
 (facts "authorisation"
        (facts "signed in users"
               (against-background
@@ -33,7 +38,7 @@
                                      (helpers/with-sign-in "http://localhost:8080/objectives/create"))]
                       result => (check-status 200)
                       (:request result) => (contains {:uri "/objectives/create"})))
-              (future-fact "can post a new objective"
+              (fact "can post a new objective"
                       (against-background
                         (request->objective anything) => :an-objective
                         (http-api/create-objective :an-objective) => {:_id "the-objective-id"})
@@ -41,11 +46,12 @@
                             (-> (p/session default-app) 
                                 (helpers/with-sign-in "http://localhost:8080/objectives/create")
                                 (p/request "http://localhost:8080/objectives" :request-method :post))]
-                        response => (check-status 302))))
+                        response => (check-status 302)
+                        response => (check-redirect-url "/objectives/the-objective-id"))))
        (facts "unauthorised users"
               (fact "cannot reach the objective creation page"
                     (default-app objectives-create-request)
                     => (contains {:status 302}))
               (fact "cannot post a new objective"
                     (default-app objectives-post-request)
-                    => (contains {:status 302}))))
+                    => (contains {:status 302})))))

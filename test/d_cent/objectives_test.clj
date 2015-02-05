@@ -25,6 +25,3 @@
         (friend/current-authentication) => {:username "username"})
         (let [objective (request->objective (requestify test-objective))]
           (:created-by objective) => "username"))
-
-(fact "returns nil if extra params are in the request"
-      (request->objective (requestify (assoc test-objective :extra-stuff "Blaaaaaaaaah"))) => nil)
