@@ -33,7 +33,13 @@
   (korma/table :policy_drafting.objectives)
   (korma/prepare map->objective))
 
-(def entities {:objective objective})
+(korma/defentity user
+  (korma/pk :_id)
+  (korma/table :policy_drafting.users)
+  (korma/prepare map->user))
+
+(def entities {:objective objective
+               :user      user})
 
 (defn get-mapping
   "Returns a korma entity for a map"

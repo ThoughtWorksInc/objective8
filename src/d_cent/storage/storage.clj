@@ -12,7 +12,7 @@
   [{:keys [entity] :as m}]
   (if-let [ent (mappings/get-mapping m)]
     (insert ent m)
-    (throw (Exception. "Could not find database mapping for " entity))))
+    (throw (Exception. (str "Could not find database mapping for " entity)))))
 
 (defn select
   "Wrapper around Korma's select call"
