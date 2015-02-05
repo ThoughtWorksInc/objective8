@@ -1,5 +1,5 @@
 (ns d-cent.user
-  (:require [d-cent.storage :as storage]))
+  (:require [d-cent.storage.storage :as storage]))
 
 (defn retrieve-user-record [store user-id]
   (storage/find-by store "users" #(= user-id (:user-id %))))

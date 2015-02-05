@@ -62,10 +62,7 @@
                                       :goals-label "Goals"
                                       :end-date-label "End date"
                                       :owner-label "Created by:"
-                                      :created-message "Your objective has been created!"
-                                      :share-title "Share your objective on twitter"
-                                      :share-text "Share your objective"
-                                      :share-twitter-text "I just created an objective - "}
+                                      :created-message "Your objective has been created!"}
                      :users-email {:doc-title "Sign up | dCent"
                                    :doc-description "Email  ..."
                                    :page-title "Add your email"
@@ -130,10 +127,7 @@
                                       :goals-label "Spanish(Goals)"
                                       :end-date-label "Spanish(End date)"
                                       :owner-label "Spanish(Created by:)"
-                                      :created-message "Spanish(Your objective has been created!)"
-                                      :share-title "Spanish(Share your objective on twitter)"
-                                      :share-text "Spanish(Share your objective)"
-                                      :share-twitter-text "Spanish(I just created an objective - )"}
+                                      :created-message "Spanish(Your objective has been created!)"}
                      :users-email {:doc-title "Spanish(User email | dCent)"
                                    :doc-description "Spanish(Email  ...)"
                                    :page-title "Spanish(Add your email)"

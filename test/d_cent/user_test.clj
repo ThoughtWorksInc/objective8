@@ -1,7 +1,7 @@
 (ns d-cent.user-test
   (:require [midje.sweet :refer :all]
             [d-cent.user :refer :all]
-            [d-cent.storage :as storage]))
+            [d-cent.storage.storage :refer [store!]]))
 
 (def email-address "test@email.com")
 (def the-user-id :twitter-1)
@@ -13,13 +13,13 @@
                (store-user-profile! :stub-store user-profile)
                => :stub-stored-user-profile
 
-               (provided (storage/store! :stub-store "users" user-profile)
+               (provided (store! :stub-store "users" user-profile)
                          => :stub-stored-user-profile))))
 
 (facts "retrieve user record"
        (fact "can retrieve user record from store by user-id"
              (let [store (atom {})]
-               (storage/store! store "users" the-user-record)
+               (store! store "users" the-user-record)
                (retrieve-user-record store the-user-id))
              => (contains the-user-record))
 
