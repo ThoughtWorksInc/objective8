@@ -2,7 +2,7 @@
   (:require [korma.db :as db]
             [d-cent.config :as config]))
 
-(def postgres-spec (db/postgres {:db "dcent"
+(def postgres-spec (db/postgres {:db "app_test"
                                  :user (config/get-var "SNAP_DB_PG_USER" "dcent")
                                  :password (config/get-var "SNAP_DB_PG_PASSWORD" "development") ;TODO password management
                                  :host (config/get-var "SNAP_DB_PG_HOST" "localhost")
