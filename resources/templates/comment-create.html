@@ -1,0 +1,14 @@
+<div id="clj-comment-create">
+
+  <h3>Post a comment</h3>
+
+  <form method="POST" action="/comments">
+    <input id="objective-id" type="hidden" value="#{objective-id}" name="objective-id">
+
+    <label for="comment" class="visuallyhidden">Comment</label>
+    <textarea id="comment" name="comment" rows="5" cols="10" pattern=".{50,}" maxlength="500" title="Comments are a maximum length of 500 charecters" required></textarea>
+
+    <button type="submit" class="button">Post</button>
+  </form>
+
+</div>

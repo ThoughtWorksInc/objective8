@@ -31,7 +31,7 @@
                :sign-out front-end-handlers/sign-out
                :create-objective-form (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form) #{:signed-in})
                :create-objective-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form-post) #{:signed-in})
-               :objective front-end-handlers/objective-detail
+               :objective (utils/anti-forgery-hook front-end-handlers/objective-detail)
                :create-comment-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-comment-form-post) #{:signed-in})
                ; API Handlers
                :post-user-profile api-handlers/post-user-profile

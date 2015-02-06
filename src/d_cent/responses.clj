@@ -55,6 +55,15 @@
   "templates/sign-in.html" [[:#clj-sign-in-page]] [{:keys [translation]}]
   [:#clj-sign-in-page html/any-node] (html/replace-vars translation))
 
+;COMMENTS
+(html/defsnippet comment-create
+  "templates/comment-create.html" [[:#clj-comment-create]] [objective-id]
+  [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
+  [:#objective-id] (html/set-attr :value objective-id))
+
+(html/defsnippet comment-sign-in
+  "templates/comment-sign-in.html" [[:#clj-comment-sign-in]] [])
+
 ;OBJECTIVES
 (html/defsnippet objective-create-page
   "templates/objectives-create.html" [[:#clj-objective-create]] [{:keys [translation]}]
@@ -63,7 +72,7 @@
 
 (html/defsnippet objective-view-page
   "templates/objectives-view.html" [[:#clj-objectives-view]]
-  [{:keys [translation objective]}]
+  [{:keys [translation objective signed-in]}]
   [:.objective-article-details html/any-node] (html/replace-vars translation)
   [:h1] (html/content (:title objective))
   [:#clj-obj-goals-value] (html/content (:goals objective))
@@ -75,13 +84,16 @@
   [:.btn-twitter] (html/set-attr :href (str "https://twitter.com/share?url=" (objective-url objective) "&text=" (:title objective) " - "))
   [:.btn-linkedin] (html/set-attr :href (str "http://www.linkedin.com/shareArticle?mini=true&url=" (objective-url objective)))
   [:.btn-reddit] (html/set-attr :href (str "http://reddit.com/submit?url=" (objective-url objective) "&title=" (:title objective) " - "))
-  [:.share-this-url] (html/set-attr :value (objective-url objective)))
+  [:.share-this-url] (html/set-attr :value (objective-url objective))
+  [:.share-widget] (html/after (if signed-in (comment-create (:_id objective)) (comment-sign-in))))
 
 ;USERS
 (html/defsnippet users-email
   "templates/users-email.html" [[:#clj-users-email]] [{:keys [translation]}]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
   [:#clj-users-email html/any-node] (html/replace-vars translation))
+
+
 
 (defn render-template [template & args]
   (apply str (apply template args)))
