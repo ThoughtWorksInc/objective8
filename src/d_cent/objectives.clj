@@ -13,8 +13,9 @@
                                   :end-date iso-time
                                   :created-by (get (friend/current-authentication) :username))))
 
-(defn store-objective! [store objective]
-  (storage/store! store "objectives" objective))
+(defn store-objective! [objective]
+  (storage/pg-store! (assoc objective :entity :objective)))
 
-(defn retrieve-objective [store guid]
-  (storage/retrieve store "objectives" guid))
+(defn retrieve-objective [objective-id]
+  (let [{result :result} (storage/pg-retrieve {:entity :objective :_id objective-id})]
+    (dissoc (first result) :entity)))

@@ -31,12 +31,9 @@
 
 ;; OBJECTIVE
 (defn post-objective [{:keys [params] :as request}]
-  (let [store (storage/request->store request)
-        objective (-> params
-                      (select-keys [:title :goals :description :end-date :created-by])
-                      (update-in [:end-date] utils/time-string->date-time))
-        stored-objective (-> (objectives/store-objective! store objective)
-                             (update-in [:end-date] utils/date-time->iso-date-string))
+  (let [objective (-> params
+                      (select-keys [:title :goals :description :end-date :created-by]))
+        stored-objective (objectives/store-objective! objective)
         resource-location (str utils/host-url "/api/v1/objectives/" (:_id stored-objective))]
     {:status 201
      :headers {"Content-Type" "application/json"
@@ -44,14 +41,19 @@
      :body stored-objective}))
 
 (defn get-objective [{:keys [route-params] :as request}]
-  (let [store (storage/request->store request)
-        id (:id route-params)]
-    (if-let [objective (objectives/retrieve-objective store id)]
-      (-> objective
-          (update-in [:end-date] utils/date-time->iso-date-string)
-          response/response
-          (response/content-type "application/json"))
-      (response/not-found ""))))
+  (try
+    (let [id (-> (:id route-params)
+                 Integer/parseInt)]
+      (if-let [objective (objectives/retrieve-objective id)]
+        (-> objective
+            (update-in [:end-date] utils/date-time->iso-date-string)
+            response/response
+            (response/content-type "application/json"))
+        (response/not-found "")))
+    (catch NumberFormatException e
+      {:status 400
+       :header {}
+       :body "Objective id must be an integer"})))
 
 ;; COMMENT
 (defn post-comment [{:keys [params] :as request}]

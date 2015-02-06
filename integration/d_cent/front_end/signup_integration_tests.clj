@@ -7,14 +7,15 @@
             [d-cent.core :as core]
             [d-cent.config :as config]
             [d-cent.integration-helpers :as helpers]
-            [d-cent.http-api :as api]))
+            [d-cent.http-api :as api]
+            [d-cent.utils :as utils]))
 
 (def test-store (atom {}))
 (def test-session (helpers/test-context test-store))
 
-(def twitter-callback-url "http://localhost:8080/twitter-callback?oauth_verifier=VERIFICATION_TOKEN")
-(def sign-up-url "http://localhost:8080/sign-up")
-(def protected-resource "http://localhost:8080/objectives/create")
+(def twitter-callback-url (str utils/host-url "/twitter-callback?oauth_verifier=VERIFICATION_TOKEN"))
+(def sign-up-url (str utils/host-url "/sign-up"))
+(def protected-resource (str utils/host-url "/objectives/create"))
 
 (defn check-redirects-to
   ([url-fragment]

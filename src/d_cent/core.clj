@@ -78,6 +78,7 @@
       (inject-db (:store app-config))))
 
 (defonce server (atom nil))
+(defonce postgres-connection-pool (db/connect! db/postgres-spec))
 (defonce in-memory-db (atom {}))
 
 (def app-config

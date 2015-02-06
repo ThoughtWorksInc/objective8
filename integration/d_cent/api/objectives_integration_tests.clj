@@ -4,7 +4,8 @@
             [d-cent.utils :as utils]
             [d-cent.core :as core]
             [d-cent.integration-helpers :as helpers]
-            [d-cent.objectives :as objectives]))
+            [d-cent.objectives :as objectives]
+            [cheshire.core :as json]))
 
 ;; Testing from http request -> making correct calls within objectives namespace
 ;; Mock or stub out 'objectives' namespace
@@ -12,54 +13,64 @@
 (def test-db (atom {}))
 (def app (helpers/test-context test-db))
 
+(def OBJECTIVE_ID 10)
+
 (def the-objective {:title "my objective title"
                     :goals "my objective goals"
                     :description "my objective description"
-                    :end-date (utils/string->date-time "2015-01-01")
+                    :end-date "2015-01-01"
                     :created-by "USER_GUID"})
 
-(def stored-objective (assoc the-objective :_id "OBJECTIVE_GUID"))
+(def stored-objective (assoc the-objective :_id OBJECTIVE_ID))
 
-(def the-objective-as-json "{\"title\":\"my objective title\",\"goals\":\"my objective goals\",\"description\":\"my objective description\",\"end-date\":\"2015-01-01T00:00:00.000Z\",\"created-by\":\"USER_GUID\"}")
+(defn peridot-response-json-body->map [peridot-response]
+  (-> (get-in peridot-response [:response :body])
+      (json/parse-string true)))
 
-(def stored-objective-as-json "{\"_id\":\"OBJECTIVE_GUID\",\"title\":\"my objective title\",\"goals\":\"my objective goals\",\"description\":\"my objective description\",\"end-date\":\"2015-01-01T00:00:00.000Z\",\"created-by\":\"USER_GUID\"}")
+(defn check-json-body [expected-json-as-map]
+  (fn [peridot-response]
+    (let [parsed-body (peridot-response-json-body->map peridot-response)]
+      (= parsed-body expected-json-as-map))))
 
 (fact "can get an objective using its id"
-      (p/request app (str "/api/v1/objectives/" "OBJECTIVE_GUID"))
-      => (contains {:response
-                    (contains {:body
-                               (contains "\"end-date\":\"2015-01-01T00:00:00.000Z\"")})})
+      (-> (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID))
+          peridot-response-json-body->map)
+      => (contains {:end-date "2015-01-01"})
       (provided
-       (objectives/retrieve-objective test-db "OBJECTIVE_GUID") => stored-objective))
+       (objectives/retrieve-objective OBJECTIVE_ID) => stored-objective))
 
 (fact "returns a 404 if an objective does not exist"
       (against-background
-       (objectives/retrieve-objective anything anything) => nil)
+       (objectives/retrieve-objective anything) => nil)
       
-      (p/request app (str "/api/v1/objectives/" "ANY_GUID"))
+      (p/request app (str "/api/v1/objectives/" 123456))
       => (contains {:response (contains {:status 404})}))
+
+(fact "returns a 400 (Bad request) if objective id is not an integer"
+      (p/request app "/api/v1/objectives/NOT-AN-INTEGER")
+      => (contains {:response (contains {:status 400})}))
+
 
 (facts "about posting objectives"
        (fact "the posted objective is stored"
-             (p/request app "/api/v1/objectives"
-                        :request-method :post
-                        :content-type "application/json"
-                        :body the-objective-as-json)
-             
-             => (contains {:response (contains {:body (contains stored-objective-as-json)})})
+             (let [peridot-response (p/request app "/api/v1/objectives"
+                              :request-method :post
+                              :content-type "application/json"
+                              :body (json/generate-string the-objective))]
+               peridot-response)
+             => (check-json-body stored-objective)
              (provided
-              (objectives/store-objective! test-db the-objective) => stored-objective))
+              (objectives/store-objective! the-objective) => stored-objective))
        
        (fact "the http response indicates the location of the objective"
-
              (against-background
-              (objectives/store-objective! anything anything) => stored-objective)
+              (objectives/store-objective! anything) => stored-objective)
              
              (let [result (p/request app "/api/v1/objectives"
                                      :request-method :post
                                      :content-type "application/json"
-                                     :body the-objective-as-json)
+                                     :body (json/generate-string the-objective))
                    response (:response result)
                    headers (:headers response)]
                response => (contains {:status 201})
-               headers => (contains {"Location" (contains "/api/v1/objectives/OBJECTIVE_GUID")}))))
+               headers => (contains {"Location" (contains (str "/api/v1/objectives/" OBJECTIVE_ID))}))))
