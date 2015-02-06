@@ -34,4 +34,3 @@
           (-> response
               :headers
               (get "Location")) => (contains "/objectives/OBJECTIVE_GUID"))))
-

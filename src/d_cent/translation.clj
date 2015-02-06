@@ -63,6 +63,7 @@
                                       :end-date-label "End date"
                                       :owner-label "Created by:"
                                       :created-message "Your objective has been created!"}
+                     :comment-view {:created-message "Your comment has been added!"}
                      :users-email {:doc-title "Sign up | dCent"
                                    :doc-description "Email  ..."
                                    :page-title "Add your email"
@@ -128,6 +129,7 @@
                                       :end-date-label "Spanish(End date)"
                                       :owner-label "Spanish(Created by:)"
                                       :created-message "Spanish(Your objective has been created!)"}
+                    :comment-view {:created-message "Spanish(Your comment has been added!)"}
                      :users-email {:doc-title "Spanish(User email | dCent)"
                                    :doc-description "Spanish(Email  ...)"
                                    :page-title "Spanish(Add your email)"

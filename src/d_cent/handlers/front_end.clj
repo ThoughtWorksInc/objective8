@@ -83,7 +83,7 @@
   (if-let [comment (request->comment request)]
     (if-let [stored-comment (http-api/create-comment comment)]
       (let [comment-url (str utils/host-url "/objectives/" (:objective-id comment))
-            message "Your comment has been added!"]
+            message (t' :comment-view/created-message)]
         (assoc (response/redirect comment-url) :flash message))
       {:status 502})
     {:status 400}))
