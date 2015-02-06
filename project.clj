@@ -26,7 +26,7 @@
                  [ragtime "0.3.8"] ]
   :main d-cent.core
   :aot [d-cent.core]
-  :plugins [[ragtime/ragtime.lein "0.3.7"]]
+  :plugins [[ragtime/ragtime.lein "0.3.8"]]
   :profiles {:dev {:dependencies [[midje "1.6.3"]
                                   [ring/ring-mock "0.2.0"]
                                   [http-kit.fake "0.2.1"]
@@ -35,4 +35,4 @@
                    :plugins [[lein-midje "3.1.3"]
                              [jonase/eastwood "0.2.1"]]
                    :ragtime {:migrations ragtime.sql.files/migrations
-                             :database database-connection-url}}})
+                             :database ~database-connection-url}}})
