@@ -19,11 +19,21 @@
 (defn map->objective
   "Converts a clojure map into a json-typed objective for the database"
   [{:keys [created-by end-date] :as objective}]
-  (if (and created-by end-date) 
+  (if (and created-by end-date)
     {:created_by created-by
      :end_date (tc/to-timestamp end-date)
-     :objective (map->json-type objective)} 
+     :objective (map->json-type objective)}
     (throw (Exception. "Could not transform map to objective"))))
+
+(defn map->comment
+  "Converts a clojure map into a json-typed comment for the database"
+  [{:keys [created-by-id discussing-id parent-id] :as comment}]
+  (if (and created-by-id discussing-id parent-id)
+    {:created_by_id created-by-id
+     :discussing_id discussing-id
+     :parent_id parent-id
+     :comment (map->json-type comment)}
+    (throw (Exception. "Could not transform map to comment"))))
 
 (defn map->user
   "Converts a clojure map into a json-typed user for the database"

@@ -14,3 +14,12 @@ CREATE TABLE policy_drafting.users (
     user_id     varchar NOT NULL,
     user_data   json NOT NULL
 );
+
+CREATE TABLE policy_drafting.comments (
+    _id           SERIAL PRIMARY KEY,
+    _created_at   timestamp DEFAULT current_timestamp,
+    created_by_id integer REFERENCES policy_drafting.users (_id) NOT NULL,
+    discussing_id integer NOT NULL,
+    parent_id     integer NOT NULL,
+    comment       json NOT NULL
+);

@@ -10,10 +10,11 @@
   (= (type thing) java.sql.Timestamp))
 
 (fact "Clojure maps are turned into Postgres JSON types"
-      (let [transformed-map (map->json-type {:is "a map" :has "some keys"})] 
+      (let [transformed-map (map->json-type {:is "a map" :has "some keys"})]
         transformed-map => json-type?
         (.getValue transformed-map) => "{\"is\":\"a map\",\"has\":\"some keys\"}"))
 
+;; OBJECTIVE
 (facts "About map->objective"
        (fact "Column values are pulled out and converted, the map gets turned to json"
              (let [objective (map->objective {:created-by "Mr Bob"
@@ -27,6 +28,7 @@
              (map->objective {:a "B" :created-by "Foo"}) => (throws Exception "Could not transform map to objective")
              (map->objective {:a "B" :end-date "Blah"}) => (throws Exception "Could not transform map to objective")))
 
+;;USER
 (facts "About map->user"
        (fact "Column values are pulled out and converted, the map gets turned to json"
              (let [user (map->user {:user-id "twitter-TWITTERID"})]
@@ -34,3 +36,22 @@
                                   :user_data json-type?})))
        (fact "throws exception if :user-id is missing"
                     (map->user {:a "B"}) => (throws Exception "Could not transform map to user")))
+
+;;COMMENT
+(def created-by-id 1234)
+(def discussing-id 2345)
+(def parent-id 3456)
+(facts "About map->comment"
+       (fact "Column values are pulled out and converted, the map gets turned to json"
+             (let [comment (map->comment {:created-by-id created-by-id
+                                          :discussing-id discussing-id
+                                          :parent-id parent-id})]
+              comment => (contains {:created_by_id created-by-id
+                                    :discussing_id discussing-id
+                                    :parent_id parent-id
+                                    :comment json-type?})))
+       (fact "throws exception if :created-by-id, :discussing-id or parent-id are missing"
+                    (map->comment {:a "B"}) => (throws Exception "Could not transform map to comment")
+                    (map->comment {:a "B" :created-by-id created-by-id :discussing-id discussing-id}) => (throws Exception "Could not transform map to comment")
+                    (map->comment {:a "B" :created-by-id created-by-id :parent-id parent-id}) => (throws Exception "Could not transform map to comment")
+                    (map->comment {:a "B" :discussing-id discussing-id :parent-id parent-id}) => (throws Exception "Could not transform map to comment")))
