@@ -2,8 +2,6 @@
   (or (System/getenv "SNAP_DB_PG_JDBC_URL") 
       "jdbc:postgresql://localhost/dcent?user=dcent&password=development"))
 
-(prn database-connection-url)
-
 (defproject d-cent "0.0.1-SNAPSHOT"
   :description "Cool new project to do things and stuff"
   :min-lein-version "2.0.0"
@@ -24,7 +22,7 @@
                  [cheshire "5.4.0"]
                  [clj-time "0.9.0"]
                  [korma "0.3.0"]
-                 [postgresql "9.1-901.jdbc4"]
+                 [postgresql "9.3-1102.jdbc41"]
                  [ragtime "0.3.8"] ]
   :main d-cent.core
   :aot [d-cent.core]
