@@ -51,8 +51,12 @@
   [:#clj-index html/any-node] (html/replace-vars translation))
 
 ;SIGN IN
+(html/defsnippet sign-in-twitter
+  "templates/sign-in-twitter.html" [[:#clj-sign-in-twitter]] [])
+
 (html/defsnippet sign-in-page
   "templates/sign-in.html" [[:#clj-sign-in-page]] [{:keys [translation]}]
+  [:#clj-sign-in-page] (html/append (sign-in-twitter))
   [:#clj-sign-in-page html/any-node] (html/replace-vars translation))
 
 ;COMMENTS
@@ -62,7 +66,13 @@
   [:#objective-id] (html/set-attr :value objective-id))
 
 (html/defsnippet comment-sign-in
-  "templates/comment-sign-in.html" [[:#clj-comment-sign-in]] [])
+  "templates/comment-sign-in.html" [[:#clj-comment-sign-in]] [translation]
+  [:#clj-comment-sign-in html/any-node] (html/replace-vars translation))
+
+(html/defsnippet comments-view
+  "templates/comments-view.html" [[:#clj-comments-view]] [translation signed-in objective-id]
+  [:#clj-comments-view] (html/append (if signed-in (comment-create objective-id) (comment-sign-in translation)))
+  [:#clj-comments-view html/any-node] (html/replace-vars translation))
 
 ;OBJECTIVES
 (html/defsnippet objective-create-page
@@ -85,7 +95,7 @@
   [:.btn-linkedin] (html/set-attr :href (str "http://www.linkedin.com/shareArticle?mini=true&url=" (objective-url objective)))
   [:.btn-reddit] (html/set-attr :href (str "http://reddit.com/submit?url=" (objective-url objective) "&title=" (:title objective) " - "))
   [:.share-this-url] (html/set-attr :value (objective-url objective))
-  [:.share-widget] (html/after (if signed-in (comment-create (:_id objective)) (comment-sign-in))))
+  [:.share-widget] (html/after (comments-view translation signed-in (:_id objective))))
 
 ;USERS
 (html/defsnippet users-email

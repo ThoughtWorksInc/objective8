@@ -63,7 +63,11 @@
                                       :end-date-label "End date"
                                       :owner-label "Created by:"
                                       :created-message "Your objective has been created!"}
-                     :comment-view {:created-message "Your comment has been added!"}
+                     :comment-view {:created-message "Your comment has been added!"
+                                    :comment-title "Comments"}
+                     :comment-create {:comment-label "Comment"
+                                      :comment-title "Comments are a maximum length of 500 characters"
+                                      :post-button "Post"}
                      :users-email {:doc-title "Sign up | dCent"
                                    :doc-description "Email  ..."
                                    :page-title "Add your email"
@@ -129,7 +133,11 @@
                                       :end-date-label "Spanish(End date)"
                                       :owner-label "Spanish(Created by:)"
                                       :created-message "Spanish(Your objective has been created!)"}
-                    :comment-view {:created-message "Spanish(Your comment has been added!)"}
+                    :comment-view {:created-message "Spanish(Your comment has been added!)"
+                                   :comment-title "Spanish(Comments)"}
+                     :comment-create {:comment-label "Spanish(Comment)"
+                                      :comment-title "Spanish(Comments are a maximum length of 500 characters)"
+                                      :post-button "Spanish(Post)"}
                      :users-email {:doc-title "Spanish(User email | dCent)"
                                    :doc-description "Spanish(Email  ...)"
                                    :page-title "Spanish(Add your email)"

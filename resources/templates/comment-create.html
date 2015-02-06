@@ -1,14 +1,8 @@
-<div id="clj-comment-create">
+<form id="clj-comment-create" method="POST" action="/comments">
+  <input id="objective-id" type="hidden" value="{{objective-id}}" name="objective-id">
 
-  <h3>Post a comment</h3>
+  <label for="comment">${comment-create/comment-label}</label>
+  <textarea id="comment" name="comment" rows="5" cols="10" pattern=".{50,}" maxlength="500" title="${comment-create/comment-title}" required></textarea>
 
-  <form method="POST" action="/comments">
-    <input id="objective-id" type="hidden" value="#{objective-id}" name="objective-id">
-
-    <label for="comment" class="visuallyhidden">Comment</label>
-    <textarea id="comment" name="comment" rows="5" cols="10" pattern=".{50,}" maxlength="500" title="Comments are a maximum length of 500 charecters" required></textarea>
-
-    <button type="submit" class="button">Post</button>
-  </form>
-
-</div>
+  <button type="submit" class="button">${comment-create/post-button}</button>
+</form>
