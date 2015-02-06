@@ -5,14 +5,14 @@
             [d-cent.storage.storage :as storage]
             [d-cent.objectives :as objectives]
             [d-cent.comments :as comments]
-            [d-cent.user :as user]
+            [d-cent.users :as users]
             [d-cent.utils :as utils]))
 
-;; USER
+;; USERS
 (defn post-user-profile [request]
   (let [twitter-id (get-in request [:params :twitter-id])
         email-address (get-in request [:params :email-address])
-        user (user/store-user! {:twitter-id twitter-id
+        user (users/store-user! {:twitter-id twitter-id
                                         :email-address email-address})
         resource-location (str utils/host-url "/api/v1/users/" (:_id user))]
     {:status 201
@@ -22,7 +22,7 @@
 
 (defn find-user-by-query [request]
   (let [twitter-id (get-in request [:params :twitter])]
-    (if-let [user (user/find-user-by-twitter-id twitter-id)]
+    (if-let [user (users/find-user-by-twitter-id twitter-id)]
       (response/content-type (response/response user) "application/json")
       (response/not-found ""))))
 
@@ -30,7 +30,7 @@
   (try
     (let [id (-> (:id route-params)
                  Integer/parseInt)]
-      (if-let [user (user/retrieve-user id)]
+      (if-let [user (users/retrieve-user id)]
         (-> user
             response/response
             (response/content-type "application/json"))

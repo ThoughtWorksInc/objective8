@@ -6,7 +6,6 @@
             [bidi.ring :refer [make-handler]]
             [d-cent.config :as config]
             [d-cent.http-api :as api]
-            [d-cent.user :as user]
             [d-cent.utils :as utils]
             [d-cent.handlers.front-end :as front-end]))
 

@@ -5,7 +5,7 @@
             [cheshire.core :as json]
             [d-cent.core :as core]
             [d-cent.storage.storage :as s]
-            [d-cent.user :as user]
+            [d-cent.users :as users]
             [d-cent.integration-helpers :as helpers]))
 
 ;; Testing from http request -> making correct calls within user namespace
@@ -29,11 +29,11 @@
              (let [peridot-response (p/request app (str "/api/v1/users/" USER_ID))]
                peridot-response) => (helpers/check-json-body stored-user)
                (provided
-                (user/retrieve-user USER_ID) => stored-user))
+                (users/retrieve-user USER_ID) => stored-user))
 
        (fact "returns a 404 if a user does not exist"
              (against-background
-              (user/retrieve-user anything) => nil)
+              (users/retrieve-user anything) => nil)
              
              (p/request app (str "/api/v1/users/" 123456))
              => (contains {:response (contains {:status 404})}))
@@ -46,12 +46,12 @@
  (fact "a user can be retrieved by twitter id"
        (let [peridot-response (p/request app (str "/api/v1/users?twitter=" twitter-id))]
          peridot-response) => (helpers/check-json-body stored-user)
-         (provided (user/find-user-by-twitter-id twitter-id) => stored-user))
+         (provided (users/find-user-by-twitter-id twitter-id) => stored-user))
 
  (fact "returns a 404 if the user does not exist"
        (let [user-request (p/request app (str "/api/v1/users?twitter=twitter-IDONTEXIST"))]
          (-> user-request :response :status)) => 404
-         (provided (user/find-user-by-twitter-id "twitter-IDONTEXIST") => nil)))
+         (provided (users/find-user-by-twitter-id "twitter-IDONTEXIST") => nil)))
 
 (facts "about posting users"
        (fact "the posted user is stored"
@@ -62,11 +62,11 @@
                peridot-response)
              => (helpers/check-json-body stored-user)
              (provided
-              (user/store-user! user) => stored-user))
+              (users/store-user! user) => stored-user))
        
        (fact "the http response indicates the location of the user"
              (against-background
-              (user/store-user! anything) => stored-user)
+              (users/store-user! anything) => stored-user)
              
              (let [result (p/request app "/api/v1/users"
                                      :request-method :post
