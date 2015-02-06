@@ -37,7 +37,8 @@
                :post-user-profile api-handlers/post-user-profile
                :get-user-profile api-handlers/get-user-profile
                :post-objective api-handlers/post-objective
-               :get-objective api-handlers/get-objective})
+               :get-objective api-handlers/get-objective
+               :post-comment api-handlers/post-comment})
 
 (def routes
   ["/" {""                  :index
@@ -58,7 +59,9 @@
                                        :get :get-user-profile}
 
                             "/objectives" {:post :post-objective
-                                          ["/" :id] :get-objective}}}
+                                          ["/" :id] :get-objective}
+
+                            "/comments"   {:post :post-comment}}}
 
    ])
 

@@ -19,6 +19,17 @@
    :failure    {:status 500}})
 
 
+(facts "about user profiles"
+       (fact "returns stored profile when post succeeds"
+             (with-fake-http [(str host-url "/api/v1/users") (:successful profile-posts)]
+               (api/create-user-profile the-user-profile))
+             => the-stored-user-profile)
+
+       (fact "returns api-failure when post fails"
+             (with-fake-http [(str host-url "/api/v1/users") (:failure profile-posts)]
+               (api/create-user-profile the-user-profile))
+             => api/api-failure))
+
 ;OBJECTIVES
 (def the-objective {:title "My Objective"
                     :goals "To rock out, All day"
@@ -33,18 +44,6 @@
                 :body (json/generate-string the-stored-objective)}
    :failure    {:status 500}})
 
-
-
-(facts "about user profiles"
-       (fact "returns stored profile when post succeeds"
-             (with-fake-http [(str host-url "/api/v1/users") (:successful profile-posts)]
-               (api/create-user-profile the-user-profile))
-             => the-stored-user-profile)
-
-       (fact "returns api-failure when post fails"
-             (with-fake-http [(str host-url "/api/v1/users") (:failure profile-posts)]
-               (api/create-user-profile the-user-profile))
-             => api/api-failure))
 
 (facts "about posting objectives"
        (fact "returns a stored objective when post succeeds"
@@ -81,4 +80,29 @@
              (with-fake-http [(str host-url "/api/v1/objectives/" "OBJECTIVE_GUID")
                               {:status 404}]
                (api/get-objective "OBJECTIVE_GUID"))
+             => api/api-failure))
+
+;; COMMENTS
+
+(def the-comment {:comment "The comment"
+                  :objective-id "OBJECTIVE_GUID"
+                  :username "my username"})
+
+(def the-stored-comment (into the-comment {:_id "GUID"}))
+(def comment-response
+  {:successful {:status 201
+                :headers {"Content-Type" "application/json"}
+                :body (json/generate-string the-stored-comment)}
+   :failure    {:status 500}})
+
+
+(facts "about posting comments"
+       (fact "returns a stored comment when post succeeds"
+          (with-fake-http [(str host-url "/api/v1/comments") (:successful comment-response)]
+            (api/create-comment the-comment))
+          => the-stored-comment)
+
+    (fact "returns api-failure when post fails"
+             (with-fake-http [(str host-url "/api/v1/comments") (:failure comment-response)]
+               (api/create-comment the-comment))
              => api/api-failure))

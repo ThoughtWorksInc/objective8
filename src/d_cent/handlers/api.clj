@@ -4,9 +4,11 @@
             [cheshire.core :as json]
             [d-cent.storage.storage :as storage]
             [d-cent.objectives :as objectives]
+            [d-cent.comments :as comments]
             [d-cent.user :as user]
             [d-cent.utils :as utils]))
 
+;; USER
 (defn post-user-profile [request]
   (let [store (storage/request->store request)
         user-id (get-in request [:params :user-id])
@@ -27,6 +29,7 @@
       (response/content-type (response/response user-profile) "application/json")
       (response/not-found ""))))
 
+;; OBJECTIVE
 (defn post-objective [{:keys [params] :as request}]
   (let [store (storage/request->store request)
         objective (-> params
@@ -49,3 +52,15 @@
           response/response
           (response/content-type "application/json"))
       (response/not-found ""))))
+
+;; COMMENT
+(defn post-comment [{:keys [params] :as request}]
+  (let [store (storage/request->store request)
+        comment (-> params
+                  (select-keys [:comment :objective-id :user-id]))
+        stored-comment (comments/store-comment! store comment)
+        resource-location (str utils/host-url "/api/v1/comments/" (:_id stored-comment))]
+    {:status 201
+     :headers {"Content-Type" "application/json"
+               "Location" resource-location}
+     :body stored-comment}))
