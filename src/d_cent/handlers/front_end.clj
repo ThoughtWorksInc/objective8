@@ -5,6 +5,7 @@
             [cheshire.core :as json]
             [org.httpkit.client :as http]
             [d-cent.responses :refer :all]
+            [d-cent.comments :refer [request->comment]]
             [d-cent.objectives :refer [request->objective]]
             [d-cent.http-api :as http-api]
             [d-cent.utils :as utils]
@@ -35,7 +36,7 @@
 (defn sign-out [_]
   (friend/logout* (response/redirect "/")))
 
-;; user profile
+;; USER PROFILE
 
 (defn sign-up-form [{:keys [t' locale]}]
   (rendered-response users-email {:translation t'
@@ -43,6 +44,8 @@
                                   :doc-title (t' :users-email/doc-title)
                                   :doc-description (t' :users-email/doc-description)
                                   :signed-in (signed-in?)}))
+
+;; OBJECTIVES
 
 (defn create-objective-form [{:keys [t' locale]}]
   (rendered-response objective-create-page {:translation t'
@@ -72,3 +75,15 @@
                                             :message message
                                             :objective (update-in objective [:end-date] utils/date-time->pretty-date)
                                             :signed-in (signed-in?)})))
+
+
+;; COMMENTS
+
+(defn create-comment-form-post [{:keys [t' locale] :as request}]
+  (if-let [comment (request->comment request)]
+    (if-let [stored-comment (http-api/create-comment comment)]
+      (let [comment-url (str utils/host-url "/objectives/" (:objective-id comment))
+            message "Your comment has been added!"]
+        (assoc (response/redirect comment-url) :flash message))
+      {:status 502})
+    {:status 400}))

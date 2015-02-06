@@ -4,6 +4,7 @@
             [peridot.core :as p]
             [oauth.client :as oauth]
             [d-cent.objectives :refer [request->objective]]
+            [d-cent.comments :refer [request->comment]]
             [d-cent.storage.storage :as storage]
             [d-cent.handlers.front-end :as front-end]
             [d-cent.http-api :as http-api]
@@ -43,15 +44,29 @@
                         (request->objective anything) => :an-objective
                         (http-api/create-objective :an-objective) => {:_id "the-objective-id"})
                       (let [response
-                            (-> (p/session default-app) 
+                            (-> (p/session default-app)
                                 (helpers/with-sign-in "http://localhost:8080/objectives/create")
                                 (p/request "http://localhost:8080/objectives" :request-method :post))]
                         response => (check-status 302)
-                        response => (check-redirect-url "/objectives/the-objective-id"))))
+                        response => (check-redirect-url "/objectives/the-objective-id")))
+              ;TODO APi returns 302, and unauthorised returns 302, do we need these tests?
+              (fact "can post a new comment to an objective"
+                      (against-background
+                        (request->comment anything) => :a-comment
+                        (http-api/create-comment :a-comment) => {:_id "the-comment-id"})
+                      (let [response
+                            (-> (p/session default-app)
+                                (helpers/with-sign-in "http://localhost:8080/objectives/the-objective-id")
+                                (p/request "http://localhost:8080/comments" :request-method :post
+                                                                            :params {:objective-id "the-objective-id"}))]
+                        response => (check-status 302))))
        (facts "unauthorised users"
               (fact "cannot reach the objective creation page"
                     (default-app objectives-create-request)
                     => (contains {:status 302}))
               (fact "cannot post a new objective"
                     (default-app objectives-post-request)
+                    => (contains {:status 302}))
+              (fact "cannot post a comment"
+                    (default-app (mock/request :post "/comments"))
                     => (contains {:status 302})))))

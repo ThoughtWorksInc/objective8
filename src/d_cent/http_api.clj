@@ -9,6 +9,8 @@
   @(http/post url {:headers {"Content-Type" "application/json"}
                    :body (json/generate-string object)}))
 
+;;USERS
+
 (defn create-user-profile [user-profile]
   (let [{:keys [body status]} (json-post (str utils/host-url "/api/v1/users") user-profile)]
     (cond (= status 201)   (json/parse-string body true)
@@ -18,6 +20,9 @@
   (let [{:keys [body status]} @(http/get (str utils/host-url "/api/v1/users?twitter=" twitter-id))]
     (cond (= status 200) (-> body (json/parse-string true))
       :else          api-failure)))
+
+
+;; OBJECTIVES
 
 (defn create-objective [objective]
   (let [{:keys [body status]} (json-post (str utils/host-url "/api/v1/objectives") (update-in objective [:end-date] str))]
@@ -31,3 +36,10 @@
                          (json/parse-string true)
                          (update-in [:end-date] utils/time-string->date-time))
       :else          api-failure)))
+
+
+;; COMMENTS
+
+(defn create-comment [comment]
+  ;TODO implement me
+)
