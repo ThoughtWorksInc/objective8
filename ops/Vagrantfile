@@ -16,7 +16,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     ansible.playbook = "development_playbook.yml"
     ansible.inventory_path = "development.inventory"
     ansible.sudo = true
-    ansible.ask_sudo_pass = true
   end
 
 end

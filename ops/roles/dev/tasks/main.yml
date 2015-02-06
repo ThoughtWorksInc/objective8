@@ -8,6 +8,9 @@
  - name: install node.js
    apt: name=nodejs state=present
 
+ - name: symlink node->nodejs
+   file: src=/usr/bin/nodejs dest=/usr/bin/node state=link
+
  - name: install npm
    apt: name=npm state=present
 
