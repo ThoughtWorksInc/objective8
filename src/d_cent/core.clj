@@ -78,7 +78,8 @@
       (inject-db (:store app-config))))
 
 (defonce server (atom nil))
-(defonce postgres-connection-pool (db/connect! db/postgres-spec))
+(defonce postgres-connection-pool (atom nil))
+
 (defonce in-memory-db (atom {}))
 
 (def app-config
@@ -91,6 +92,7 @@
 
 (defn start-server []
   (let [port (Integer/parseInt (config/get-var "PORT" "8080"))]
+    (reset! postgres-connection-pool (db/connect! db/postgres-spec))
     (log/info (str "Starting d-cent on port " port))
     (reset! server (run-server (app app-config) {:port port}))))
 
