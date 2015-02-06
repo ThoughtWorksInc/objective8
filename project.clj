@@ -1,3 +1,9 @@
+(def database-connection-url
+  (or (System/getenv "SNAP_DB_PG_JDBC_URL") 
+      "jdbc:postgresql://localhost/dcent?user=dcent&password=development"))
+
+(prn database-connection-url)
+
 (defproject d-cent "0.0.1-SNAPSHOT"
   :description "Cool new project to do things and stuff"
   :min-lein-version "2.0.0"
@@ -23,12 +29,12 @@
   :main d-cent.core
   :aot [d-cent.core]
   :plugins [[ragtime/ragtime.lein "0.3.7"]]
-  :ragtime {:migrations ragtime.sql.files/migrations
-            :database "jdbc:postgresql://localhost/dcent?user=dcent&password=development"}
   :profiles {:dev {:dependencies [[midje "1.6.3"]
                                   [ring/ring-mock "0.2.0"]
                                   [http-kit.fake "0.2.1"]
                                   [javax.servlet/servlet-api "2.5"]
                                   [peridot "0.3.1"]]
                    :plugins [[lein-midje "3.1.3"]
-                             [jonase/eastwood "0.2.1"]]}})
+                             [jonase/eastwood "0.2.1"]]
+                   :ragtime {:migrations ragtime.sql.files/migrations
+                             :database database-connection-url}}})
