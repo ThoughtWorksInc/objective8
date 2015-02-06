@@ -1,6 +1,7 @@
 (ns d-cent.integration-helpers
   (:require [net.cgrand.enlive-html :as html]
             [peridot.core :as p]
+            [cheshire.core :as json]
             [d-cent.core :as core]))
 
 (defn get-anti-forgery-token [request-context]
@@ -31,3 +32,13 @@
 
   ([test-store]
    (p/session (core/app (assoc core/app-config :store test-store)))))
+
+;; Checkers for peridot responses
+(defn peridot-response-json-body->map [peridot-response]
+  (-> (get-in peridot-response [:response :body])
+      (json/parse-string true)))
+
+(defn check-json-body [expected-json-as-map]
+  (fn [peridot-response]
+    (let [parsed-body (peridot-response-json-body->map peridot-response)]
+      (= parsed-body expected-json-as-map))))

@@ -35,7 +35,8 @@
                :create-comment-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-comment-form-post) #{:signed-in})
                ; API Handlers
                :post-user-profile api-handlers/post-user-profile
-               :get-user-profile api-handlers/get-user-profile
+               :find-user-by-query api-handlers/find-user-by-query
+               :get-user api-handlers/get-user
                :post-objective api-handlers/post-objective
                :get-objective api-handlers/get-objective
                :post-comment api-handlers/post-comment})
@@ -56,7 +57,8 @@
         "comments"          {:post :create-comment-form-post}
 
         "api/v1"            {"/users" {:post :post-user-profile
-                                       :get :get-user-profile}
+                                       :get :find-user-by-query
+                                       ["/" :id] :get-user}
 
                             "/objectives" {:post :post-objective
                                           ["/" :id] :get-objective}

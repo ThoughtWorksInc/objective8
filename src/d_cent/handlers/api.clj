@@ -10,24 +10,35 @@
 
 ;; USER
 (defn post-user-profile [request]
-  (let [store (storage/request->store request)
-        user-id (get-in request [:params :user-id])
+  (let [twitter-id (get-in request [:params :twitter-id])
         email-address (get-in request [:params :email-address])
-        user-profile (user/store-user-profile! store
-                                               {:user-id user-id
-                                                :email-address email-address})
-        resource-location (str utils/host-url "/api/v1/users/" (:_id user-profile))]
+        user (user/store-user! {:twitter-id twitter-id
+                                        :email-address email-address})
+        resource-location (str utils/host-url "/api/v1/users/" (:_id user))]
     {:status 201
      :headers {"Content-Type" "application/json"
                "Location" resource-location}
-     :body user-profile}))
+     :body user}))
 
-(defn get-user-profile [request]
-  (let [store (storage/request->store request)
-        twitter-id (get-in request [:params :twitter])]
-    (if-let [user-profile (user/retrieve-user-record store twitter-id)]
-      (response/content-type (response/response user-profile) "application/json")
+(defn find-user-by-query [request]
+  (let [twitter-id (get-in request [:params :twitter])]
+    (if-let [user (user/find-user-by-twitter-id twitter-id)]
+      (response/content-type (response/response user) "application/json")
       (response/not-found ""))))
+
+(defn get-user [{:keys [route-params] :as request}]
+  (try
+    (let [id (-> (:id route-params)
+                 Integer/parseInt)]
+      (if-let [user (user/retrieve-user id)]
+        (-> user
+            response/response
+            (response/content-type "application/json"))
+        (response/not-found "")))
+    (catch NumberFormatException e
+      {:status 400
+       :header {}
+       :body "User id must be an integer"})))
 
 ;; OBJECTIVE
 (defn post-objective [{:keys [params] :as request}]

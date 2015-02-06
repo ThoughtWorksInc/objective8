@@ -23,19 +23,9 @@
 
 (def stored-objective (assoc the-objective :_id OBJECTIVE_ID))
 
-(defn peridot-response-json-body->map [peridot-response]
-  (-> (get-in peridot-response [:response :body])
-      (json/parse-string true)))
-
-(defn check-json-body [expected-json-as-map]
-  (fn [peridot-response]
-    (let [parsed-body (peridot-response-json-body->map peridot-response)]
-      (= parsed-body expected-json-as-map))))
-
-(fact "can get an objective using its id"
-      (-> (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID))
-          peridot-response-json-body->map)
-      => (contains {:end-date "2015-01-01"})
+(fact "can retrieve an objective using its id"
+      (let [peridot-response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID))] 
+        peridot-response) => (helpers/check-json-body stored-objective)
       (provided
        (objectives/retrieve-objective OBJECTIVE_ID) => stored-objective))
 
@@ -50,7 +40,6 @@
       (p/request app "/api/v1/objectives/NOT-AN-INTEGER")
       => (contains {:response (contains {:status 400})}))
 
-
 (facts "about posting objectives"
        (fact "the posted objective is stored"
              (let [peridot-response (p/request app "/api/v1/objectives"
@@ -58,7 +47,7 @@
                               :content-type "application/json"
                               :body (json/generate-string the-objective))]
                peridot-response)
-             => (check-json-body stored-objective)
+             => (helpers/check-json-body stored-objective)
              (provided
               (objectives/store-objective! the-objective) => stored-objective))
        
