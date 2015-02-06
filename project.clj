@@ -1,5 +1,5 @@
 (def database-connection-url
-  (or (System/getenv "SNAP_DB_PG_JDBC_URL") 
+  (or (System/getenv "DB_JDBC_URL") 
       "jdbc:postgresql://localhost/dcent?user=dcent&password=development"))
 
 (defproject d-cent "0.0.1-SNAPSHOT"
