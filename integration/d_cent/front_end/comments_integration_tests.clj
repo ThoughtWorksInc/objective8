@@ -9,28 +9,30 @@
             [d-cent.integration-helpers :as helpers]
             [d-cent.core :as core]))
 
-(def the-user-id "user_id")
+(def USER_ID 1)
+(def COMMENT_ID 123)
+(def OBJECTIVE_ID 234)
 
 (binding [config/enable-csrf false]
   (fact "authorised user can post and retrieve comment against an objective"
       (against-background (http-api/create-comment {:comment "The comment"
-                                                    :objective-id "OBJECTIVE_GUID"
-                                                    :user-id (str "twitter-" the-user-id)}) => {:_id "some-id"})
+                                                    :objective-id OBJECTIVE_ID
+                                                    :user-id USER_ID}) => {:_id COMMENT_ID})
       (against-background
-        ;; Twitter authentication background
-        (oauth/access-token anything anything anything) => {:user_id the-user-id})
+       (oauth/access-token anything anything anything) => {:user_id USER_ID}
+       (http-api/create-user anything) => {:_id USER_ID})
       (let [store (atom {})
               app-config (into core/app-config {:store store})
               user-session (p/session (core/app app-config))
               params {:comment "The comment"
-                      :objective-id "OBJECTIVE_GUID"}
+                      :objective-id OBJECTIVE_ID}
               response (:response
                          (-> user-session
-                             (helpers/with-sign-in "http://localhost:8080/objectives/OBJECTIVE_GUID")
+                             (helpers/with-sign-in (str "http://localhost:8080/objectives/" OBJECTIVE_ID))
                              (p/request "http://localhost:8080/comments"
                                         :request-method :post
                                         :params params)))]
           (:flash response) => (contains "Your comment has been added!")
           (-> response
               :headers
-              (get "Location")) => (contains "/objectives/OBJECTIVE_GUID"))))
+              (get "Location")) => (contains (str "/objectives/" OBJECTIVE_ID)))))

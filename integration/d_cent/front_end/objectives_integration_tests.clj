@@ -9,13 +9,17 @@
             [d-cent.integration-helpers :as helpers]
             [d-cent.utils :as utils]
             [d-cent.core :as core]))
-(def the-user-id "user_id")
+(def TWITTER_ID "TWITTER_ID")
+
+(def OBJECTIVE_ID 234)
+(def USER_ID 1)
 
 (def objectives-create-request (mock/request :get "/objectives/create"))
 (def objectives-post-request (mock/request :post "/objectives"))
-(def objective-view-get-request (mock/request :get "/objectives/OBJECTIVE_GUID"))
+(def objective-view-get-request (mock/request :get (str "/objectives/" OBJECTIVE_ID)))
 
 (def default-app (core/app core/app-config))
+
 
 (binding [config/enable-csrf false]
   (fact "authorised user can post and retrieve objective"
@@ -24,13 +28,12 @@
                                :goals "my objective goals"
                                :description "my objective description"
                                :end-date (utils/string->date-time "2012-12-12")
-                               :created-by "twitter-user_id"}) => {:_id "some-id"})
+                               :created-by USER_ID}) => {:_id OBJECTIVE_ID})
         (against-background
           ;; Twitter authentication background
-          (oauth/access-token anything anything anything) => {:user_id the-user-id})
-        (let [store (atom {})
-              app-config (into core/app-config {:store store})
-              user-session (p/session (core/app app-config))
+         (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
+         (http-api/create-user anything) => {:_id USER_ID})
+        (let [user-session (helpers/test-context)
               params {:title "my objective title"
                       :goals "my objective goals"
                       :description "my objective description"
@@ -44,14 +47,14 @@
           (:flash response) => (contains "Your objective has been created!")
           (-> response
               :headers
-              (get "Location")) => (contains "/objectives/some-id"))))
+              (get "Location")) => (contains (str "/objectives/" OBJECTIVE_ID)))))
 
 (fact "Any user can view an objective"
       (against-background
-        (http-api/get-objective "OBJECTIVE_GUID") => {:title "my objective title"
-                                                      :goals "my objective goals"
-                                                      :description "my objective description"
-                                                      :end-date (utils/string->date-time "2015-12-01")})
+        (http-api/get-objective OBJECTIVE_ID) => {:title "my objective title"
+                                                  :goals "my objective goals"
+                                                  :description "my objective description"
+                                                  :end-date (utils/string->date-time "2015-12-01")})
       (default-app objective-view-get-request) => (contains {:status 200})
       (default-app objective-view-get-request) => (contains {:body (contains "my objective title")})
       (default-app objective-view-get-request) => (contains {:body (contains "my objective goals")})

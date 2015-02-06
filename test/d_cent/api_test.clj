@@ -9,41 +9,44 @@
 (def host-url utils/host-url)
 
 ;USERS
-(def the-user-profile {:user-id "user-id"
-                       :email-address "blah@blah.com"})
-(def the-stored-user-profile (into the-user-profile {:_id "GUID"}))
+(def USER_ID 1)
+(def the-user {:twitter-id "twitter-TWITTER_ID"
+               :email-address "blah@blah.com"})
+
+(def the-stored-user (into the-user {:_id USER_ID}))
 (def profile-posts
   {:successful {:status 201
                 :headers {"Content-Type" "application/json"}
-                :body (json/generate-string the-stored-user-profile)}
+                :body (json/generate-string the-stored-user)}
    :failure    {:status 500}})
 
 
 (facts "about user profiles"
        (fact "returns stored profile when post succeeds"
              (with-fake-http [(str host-url "/api/v1/users") (:successful profile-posts)]
-               (api/create-user-profile the-user-profile))
-             => the-stored-user-profile)
+               (api/create-user the-user))
+             => the-stored-user)
 
        (fact "returns api-failure when post fails"
              (with-fake-http [(str host-url "/api/v1/users") (:failure profile-posts)]
-               (api/create-user-profile the-user-profile))
+               (api/create-user the-user))
              => api/api-failure))
 
 ;OBJECTIVES
+(def OBJECTIVE_ID 234)
+
 (def the-objective {:title "My Objective"
                     :goals "To rock out, All day"
                     :description "I like cake"
                     :end-date "2015-01-31"
                     :username "my username"})
 
-(def the-stored-objective (into the-objective {:_id "GUID"}))
+(def the-stored-objective (into the-objective {:_id OBJECTIVE_ID}))
 (def objective-posts
   {:successful {:status 201
                 :headers {"Content-Type" "application/json"}
                 :body (json/generate-string the-stored-objective)}
    :failure    {:status 500}})
-
 
 (facts "about posting objectives"
        (fact "returns a stored objective when post succeeds"
@@ -58,34 +61,34 @@
 
 (facts "about getting objectives"
        (fact "returns a stored objective when one exists with given id"
-             (with-fake-http [(str host-url "/api/v1/objectives/" "OBJECTIVE_GUID")
+             (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID)
                               {:status 200
                                :headers {"Content-Type" "application/json"}
                                :body (json/generate-string
-                                      {:_id "OBJECTIVE_GUID"
+                                      {:_id (str OBJECTIVE_ID)
                                        :title "Objective title"
                                        :goals "Objective goals"
                                        :description "Objective description"
                                        :end-date "2015-01-31T00:00:00.000Z"
-                                       :user-guid "USER_GUID"})}]
-               (api/get-objective "OBJECTIVE_GUID"))
-             => (contains {:_id "OBJECTIVE_GUID"
+                                       :user-guid (str USER_ID)})}]
+               (api/get-objective OBJECTIVE_ID))
+             => (contains {:_id OBJECTIVE_ID
                            :title "Objective title"
                            :goals "Objective goals"
                            :description "Objective description"
                            :end-date (utils/time-string->date-time "2015-01-31T00:00:00.000Z")
-                           :user-guid "USER_GUID"
+                           :user-guid USER_ID
                            }))
        (fact "returns api-failure when no objective found"
-             (with-fake-http [(str host-url "/api/v1/objectives/" "OBJECTIVE_GUID")
+             (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID)
                               {:status 404}]
-               (api/get-objective "OBJECTIVE_GUID"))
+               (api/get-objective OBJECTIVE_ID))
              => api/api-failure))
 
 ;; COMMENTS
 
 (def the-comment {:comment "The comment"
-                  :objective-id "OBJECTIVE_GUID"
+                  :objective-id OBJECTIVE_ID
                   :username "my username"})
 
 (def the-stored-comment (into the-comment {:_id "GUID"}))

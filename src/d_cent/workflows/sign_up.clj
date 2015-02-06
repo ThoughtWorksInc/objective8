@@ -5,7 +5,7 @@
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
             [bidi.ring :refer [make-handler]]
             [d-cent.config :as config]
-            [d-cent.http-api :as api]
+            [d-cent.http-api :as http-api]
             [d-cent.utils :as utils]
             [d-cent.handlers.front-end :as front-end]))
 
@@ -14,18 +14,18 @@
                    :post :sign-up-form-post}}])
 
 (defn sign-up-form [{session :session :as request}]
-  (if-let [user-id (:d-cent-user-id session)]
-    (if-let [user-profile (api/find-user-profile-by-twitter-id user-id)]
-      (workflows/make-auth {:username user-id :roles #{:signed-in}}
+  (if-let [twitter-id (:twitter-id session)]
+    (if-let [user (http-api/find-user-by-twitter-id twitter-id)]
+      (workflows/make-auth {:username (:_id user) :roles #{:signed-in}}
                            {::friend/workflow :d-cent.workflows.sign-up/sign-up-workflow})
       (front-end/sign-up-form request))
     (response/redirect "/sign-in")))
 
 (defn sign-up-form-post [{params :params session :session :as request}]
-  (if-let [user-id (:d-cent-user-id session)]
-    (let [email-address (:email-address params)]
-      (api/create-user-profile {:user-id user-id :email-address email-address})
-      (workflows/make-auth {:username user-id :roles #{:signed-in}}
+  (if-let [twitter-id (:twitter-id session)]
+    (let [email-address (:email-address params)
+          user (http-api/create-user {:twitter-id twitter-id :email-address email-address})]
+      (workflows/make-auth {:username (:_id user) :roles #{:signed-in}}
                            {::friend/workflow :d-cent.workflows.sign-up/sign-up-workflow}))
     {:status 401}))
 

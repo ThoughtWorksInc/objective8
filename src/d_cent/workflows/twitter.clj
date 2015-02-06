@@ -39,7 +39,7 @@
                                                (:oauth_verifier params))
           twitter-user-id (str "twitter-" (:user_id twitter-response))
           the-response (into (response/redirect (str utils/host-url "/sign-up"))
-                             {:session (assoc session :d-cent-user-id twitter-user-id)})]
+                             {:session (assoc session :twitter-id twitter-user-id)})]
       the-response)
     (catch clojure.lang.ExceptionInfo e
       (do (log/info (str "Did not get authentication from twitter: " e)) 

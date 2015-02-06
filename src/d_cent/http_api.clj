@@ -11,12 +11,12 @@
 
 ;;USERS
 
-(defn create-user-profile [user-profile]
-  (let [{:keys [body status]} (json-post (str utils/host-url "/api/v1/users") user-profile)]
+(defn create-user [user]
+  (let [{:keys [body status]} (json-post (str utils/host-url "/api/v1/users") user)]
     (cond (= status 201)   (json/parse-string body true)
           :else            api-failure)))
 
-(defn find-user-profile-by-twitter-id [twitter-id]
+(defn find-user-by-twitter-id [twitter-id]
   (let [{:keys [body status]} @(http/get (str utils/host-url "/api/v1/users?twitter=" twitter-id))]
     (cond (= status 200) (-> body (json/parse-string true))
       :else          api-failure)))
@@ -29,12 +29,14 @@
     (cond (= status 201)   (json/parse-string body true)
           :else            api-failure)))
 
-(defn get-objective [guid]
-  (let [{:keys [body status]} @(http/get (str utils/host-url "/api/v1/objectives/" guid))]
+(defn get-objective [id]
+  (let [{:keys [body status]} @(http/get (str utils/host-url "/api/v1/objectives/" id))]
     (cond
       (= status 200) (-> body
                          (json/parse-string true)
-                         (update-in [:end-date] utils/time-string->date-time))
+                         (update-in [:end-date] utils/time-string->date-time)
+                         (update-in [:_id] #(Integer/parseInt %))
+                         (update-in [:user-guid] #(Integer/parseInt %)))
       :else          api-failure)))
 
 

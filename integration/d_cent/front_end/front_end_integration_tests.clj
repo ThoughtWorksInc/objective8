@@ -13,7 +13,9 @@
             [d-cent.config :as config]
             [d-cent.core :as core]))
 
-(def the-user-id "user_id")
+(def USER_ID 1)
+
+(def OBJECTIVE_ID 234)
 
 (def objectives-create-request (mock/request :get "/objectives/create"))
 (def objectives-post-request (mock/request :post "/objectives"))
@@ -33,7 +35,7 @@
        (facts "signed in users"
               (against-background
                 ;; Twitter authentication background
-                (oauth/access-token anything anything anything) => {:user_id the-user-id})
+                (oauth/access-token anything anything anything) => {:user_id USER_ID})
               (fact "can reach the create objective page"
                     (let [result (-> (p/session default-app)
                                      (helpers/with-sign-in "http://localhost:8080/objectives/create"))]
@@ -42,13 +44,13 @@
               (fact "can post a new objective"
                       (against-background
                         (request->objective anything) => :an-objective
-                        (http-api/create-objective :an-objective) => {:_id "the-objective-id"})
+                        (http-api/create-objective :an-objective) => {:_id OBJECTIVE_ID})
                       (let [response
                             (-> (p/session default-app)
                                 (helpers/with-sign-in "http://localhost:8080/objectives/create")
                                 (p/request "http://localhost:8080/objectives" :request-method :post))]
                         response => (check-status 302)
-                        response => (check-redirect-url "/objectives/the-objective-id")))
+                        response => (check-redirect-url (str "/objectives/" OBJECTIVE_ID))))
               ;TODO APi returns 302, and unauthorised returns 302, do we need these tests?
               (fact "can post a new comment to an objective"
                       (against-background
@@ -56,9 +58,9 @@
                         (http-api/create-comment :a-comment) => {:_id "the-comment-id"})
                       (let [response
                             (-> (p/session default-app)
-                                (helpers/with-sign-in "http://localhost:8080/objectives/the-objective-id")
+                                (helpers/with-sign-in (str utils/host-url "/objectives/" OBJECTIVE_ID))
                                 (p/request "http://localhost:8080/comments" :request-method :post
-                                                                            :params {:objective-id "the-objective-id"}))]
+                                                                            :params {:objective-id OBJECTIVE_ID}))]
                         response => (check-status 302))))
        (facts "unauthorised users"
               (fact "cannot reach the objective creation page"

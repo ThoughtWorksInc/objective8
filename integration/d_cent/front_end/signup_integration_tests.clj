@@ -7,7 +7,7 @@
             [d-cent.core :as core]
             [d-cent.config :as config]
             [d-cent.integration-helpers :as helpers]
-            [d-cent.http-api :as api]
+            [d-cent.http-api :as http-api]
             [d-cent.utils :as utils]))
 
 (def test-store (atom {}))
@@ -16,6 +16,8 @@
 (def twitter-callback-url (str utils/host-url "/twitter-callback?oauth_verifier=VERIFICATION_TOKEN"))
 (def sign-up-url (str utils/host-url "/sign-up"))
 (def protected-resource (str utils/host-url "/objectives/create"))
+
+(def USER_ID 1)
 
 (defn check-redirects-to
   ([url-fragment]
@@ -46,8 +48,8 @@
 
 (fact "New users signing in with twitter are asked to sign up by entering their email address"
       (against-background
-       (oauth/access-token anything anything anything) => {:user_id "USERID"}
-       (api/find-user-profile-by-twitter-id "twitter-USERID") => nil)
+       (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
+       (http-api/find-user-by-twitter-id "twitter-TWITTER_ID") => nil)
 
       (let [signed-in-context (p/request test-session twitter-callback-url)]
         (p/follow-redirect signed-in-context))
@@ -56,7 +58,7 @@
 (binding [config/enable-csrf false]
 (fact "After signing up (by posting their email address) the user is sent back to the resource they were trying to access"
       (against-background
-       (oauth/access-token anything anything anything) => {:user_id "USERID"})
+       (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"})
 
       (let [unauthorized-request-context (p/request test-session protected-resource)
             signed-in-context (p/request unauthorized-request-context twitter-callback-url)]
@@ -66,22 +68,22 @@
                    :body "&email-address=test%40email.address.com"))
       => (check-redirects-to protected-resource 303)
 
-      (provided (api/create-user-profile {:user-id "twitter-USERID"
-                                          :email-address "test@email.address.com"})
-                => {:_id "SOME_GUID"
-                    :user-id "twitter-USERID"
+      (provided (http-api/create-user {:twitter-id "twitter-TWITTER_ID"
+                                       :email-address "test@email.address.com"})
+                => {:_id USER_ID
+                    :twitter-id "twitter-TWITTER_ID"
                     :email-address "test@email.address.com"} :times 1)))
 
 (fact "After signing in, a user with an existing profile is immediately sent to the resource they were trying to access"
       (against-background
-       (oauth/access-token anything anything anything) => {:user_id "USERID"})
+       (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"})
 
       (let [unauthorized-request-context (p/request test-session protected-resource)
             signed-in-context (p/request unauthorized-request-context twitter-callback-url)]
         (p/follow-redirect signed-in-context)) => (check-redirects-to protected-resource 303)
 
         (provided
-         (api/find-user-profile-by-twitter-id "twitter-USERID")
-         => {:_id "SOME_GUID"
-             :user-id "twitter-USERID"
+         (http-api/find-user-by-twitter-id "twitter-TWITTER_ID")
+         => {:_id USER_ID
+             :twitter-id "twitter-TWITTER_ID"
              :email-address "test@email.address.com"} :times 1))
