@@ -49,19 +49,19 @@
 
 (korma/defentity objective
   (korma/pk :_id)
-  (korma/table :policy_drafting.objectives)
+  (korma/table :objective8.objectives)
   (korma/prepare map->objective)
   (korma/transform (unmap :objective)))
 
 (korma/defentity user
   (korma/pk :_id)
-  (korma/table :policy_drafting.users)
+  (korma/table :objective8.users)
   (korma/prepare map->user)
   (korma/transform (unmap :user_data)))
 
 (korma/defentity comment
   (korma/pk :_id)
-  (korma/table :policy_drafting.comments)
+  (korma/table :objective8.comments)
   (korma/prepare map->comment)
   (korma/transform (unmap :comment)))
 

@@ -1,4 +1,4 @@
-DROP TABLE policy_drafting.comments;
-DROP TABLE policy_drafting.objectives;
-DROP TABLE policy_drafting.users;
-DROP SCHEMA policy_drafting;
+DROP TABLE objective8.comments;
+DROP TABLE objective8.objectives;
+DROP TABLE objective8.users;
+DROP SCHEMA objective8;
