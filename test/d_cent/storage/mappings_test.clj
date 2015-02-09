@@ -17,13 +17,13 @@
 ;; OBJECTIVE
 (facts "About map->objective"
        (fact "Column values are pulled out and converted, the map gets turned to json"
-             (let [objective (map->objective {:created-by "Mr Bob"
+             (let [objective (map->objective {:created-by-id 1
                                               :end-date "2015-01-01T00:01:01Z"})]
-               objective => (contains {:created_by "Mr Bob"
+               objective => (contains {:created_by_id 1
                                        :end_date  time-type?
                                        :objective json-type?})
                (str (:end_date objective)) => (contains "2015-01-01 00:01")))
-       (fact "throws exception if :created-by or :end-date are missing"
+       (fact "throws exception if :created-by-id or :end-date are missing"
              (map->objective {:a "B"}) => (throws Exception "Could not transform map to objective")
              (map->objective {:a "B" :created-by "Foo"}) => (throws Exception "Could not transform map to objective")
              (map->objective {:a "B" :end-date "Blah"}) => (throws Exception "Could not transform map to objective")))

@@ -14,13 +14,13 @@
 
 (fact "an objective entity can be stored in the database"
       (let [objective {:entity :objective
-                       :created-by "a-user-id"
+                       :created-by-id 1
                        :end-date "2015-01-01T00:00:00Z"
                        :description "description"
                        :goals "goals"
                        :title "title"}
             store-result (storage/pg-store! objective)
             retrieve-result (storage/pg-retrieve {:entity :objective :_id (:_id store-result)})]
-        (first (:result retrieve-result))) => (contains {:created-by "a-user-id"
+        (first (:result retrieve-result))) => (contains {:created-by-id 1
                                                          :end-date "2015-01-01T00:00:00Z"
                                                          :title "title"}))
