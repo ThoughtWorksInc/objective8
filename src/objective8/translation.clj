@@ -5,7 +5,7 @@
 ;;TODO move translations to external files
 
 (def translation-config
-  {:dictionary {:en { :base {:header-logo-text "Objective8 Project"
+  {:dictionary {:en { :base {:header-logo-text "Objective[8]"
                              :header-logo-title "Go to home page"
                              :browsehappy! "You are using an <strong>outdated</strong> browser. Please <a href=\"http://browsehappy.com/\">upgrade your browser</a> to improve your experience."}
                       :navigation-global {:sign-in-text "Sign in"
@@ -75,7 +75,7 @@
                                    :email-label "Email"
                                    :email-title "Add your email title"
                                    :button "Submit" }}
-                :es {:base {:header-logo-text "Spanish(Objective8 Project)"
+                :es {:base {:header-logo-text "Objective[8]"
                             :header-logo-title "Spanish(Go to home page)"
                             :browsehappy! "Spanish(You are using an <strong>outdated</strong> browser. Please <a href='http://browsehappy.com/' target='_blank' title='Visit browsehappy to learn more about the latest browser versions'>upgrade your browser</a> to improve your experience.)"}
                      :navigation-global {:sign-in-text "Spanish(Sign in)"

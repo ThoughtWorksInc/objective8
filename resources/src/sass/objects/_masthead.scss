@@ -4,10 +4,17 @@
   padding: 0.4em 1em 0.6em;
 }
 .header-logo {
-  @include ir;
-  background-image: url('D-CENT_white.png');
-  height: 40px;
-  width: 76px;
+  color: $white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.6em;
+  &:visited {
+    color: $white;
+  }
+  &:hover {
+    color: $white;
+    text-decoration: underline;
+  }
 }
 
 
@@ -16,7 +23,7 @@
   margin: 0;
   padding: 0;
   position: absolute;
-  top: 0.65em;
+  top: 0.4em;
   right: 0;
   li {
     display: inline;
