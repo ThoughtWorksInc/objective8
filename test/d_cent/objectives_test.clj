@@ -22,6 +22,6 @@
 
 (fact "creates an objective from a request"
       (against-background
-        (friend/current-authentication) => {:username "username"})
+        (friend/current-authentication) => {:username 1})
         (let [objective (request->objective (requestify test-objective))]
-          (:created-by objective) => "username"))
+          (:created-by-id objective) => 1))

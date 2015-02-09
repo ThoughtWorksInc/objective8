@@ -28,7 +28,7 @@
                                :goals "my objective goals"
                                :description "my objective description"
                                :end-date (utils/string->date-time "2012-12-12")
-                               :created-by USER_ID}) => {:_id OBJECTIVE_ID})
+                               :created-by-id USER_ID}) => {:_id OBJECTIVE_ID})
         (against-background
           ;; Twitter authentication background
          (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}

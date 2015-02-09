@@ -11,7 +11,7 @@
     (let [iso-time (utils/string->date-time (:end-date params))]
       (assoc (select-keys params [:title :goals :description])
                                   :end-date iso-time
-                                  :created-by (get (friend/current-authentication) :username))))
+                                  :created-by-id (get (friend/current-authentication) :username))))
 
 (defn store-objective! [objective]
   (storage/pg-store! (assoc objective :entity :objective)))
