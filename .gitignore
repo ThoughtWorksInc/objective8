@@ -14,3 +14,4 @@ lib/
 .DS_Store
 start_with_twitter_credentials.sh
 hs_err*.log
+init-script

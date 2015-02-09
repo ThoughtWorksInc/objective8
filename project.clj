@@ -26,7 +26,6 @@
                  [postgresql "9.3-1102.jdbc41"]
                  [ragtime "0.3.8"]]
   :main objective8.core
-  :aot [objective8.core]
   :plugins [[ragtime/ragtime.lein "0.3.8"]]
   :profiles {:dev {:dependencies [[midje "1.6.3"]
                                   [ring/ring-mock "0.2.0"]
@@ -36,4 +35,11 @@
                    :plugins [[lein-midje "3.1.3"]
                              [jonase/eastwood "0.2.1"]]
                    :ragtime {:migrations ragtime.sql.files/migrations
-                             :database ~database-connection-url}}})
+                             :database ~database-connection-url}}
+             :uberjar {:aot [objective8.core]}
+             :build {:plugins [[org.clojars.strongh/lein-init-script "1.3.1"]]
+                     :lis-opts {:redirect-output-to "/var/log/objective8d-init.log"
+                                :jvm-opts ["-server"
+                                           "-Xms256M"
+                                           "-Xmx512M"
+                                           "-XX:MaxPermSize=128M"]}}})
