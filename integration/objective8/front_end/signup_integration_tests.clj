@@ -36,54 +36,55 @@
   (fn [{response :response}]
     ((contains {:status status}) response)))
 
-(fact "User directly accessing /sign-up page is redirected to /sign-in"
-      (p/request test-session sign-up-url) => (check-redirects-to "/sign-in"))
+(facts "signup" :integration
+       (fact "User directly accessing /sign-up page is redirected to /sign-in"
+             (p/request test-session sign-up-url) => (check-redirects-to "/sign-in")) 
 
-(fact "User directly posting to /sign-up page without csrf token receives 403"
-      (p/request test-session sign-up-url
-                 :request-method :post
-                 :content-type "application/x-www-form-urlencoded"
-                 :body "test%40email.address.com")
-      => (check-status 403))
+       (fact "User directly posting to /sign-up page without csrf token receives 403"
+             (p/request test-session sign-up-url
+                        :request-method :post
+                        :content-type "application/x-www-form-urlencoded"
+                        :body "test%40email.address.com")
+             => (check-status 403)) 
 
-(fact "New users signing in with twitter are asked to sign up by entering their email address"
-      (against-background
-       (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
-       (http-api/find-user-by-twitter-id "twitter-TWITTER_ID") => nil)
+       (fact "New users signing in with twitter are asked to sign up by entering their email address"
+             (against-background
+               (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
+               (http-api/find-user-by-twitter-id "twitter-TWITTER_ID") => nil)
 
-      (let [signed-in-context (p/request test-session twitter-callback-url)]
-        (p/follow-redirect signed-in-context))
-      => (check-html-content "<title>Sign up"))
+             (let [signed-in-context (p/request test-session twitter-callback-url)]
+               (p/follow-redirect signed-in-context))
+             => (check-html-content "<title>Sign up")) 
 
-(binding [config/enable-csrf false]
-(fact "After signing up (by posting their email address) the user is sent back to the resource they were trying to access"
-      (against-background
-       (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"})
+       (binding [config/enable-csrf false]
+         (fact "After signing up (by posting their email address) the user is sent back to the resource they were trying to access"
+               (against-background
+                 (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"})
 
-      (let [unauthorized-request-context (p/request test-session protected-resource)
-            signed-in-context (p/request unauthorized-request-context twitter-callback-url)]
-        (p/request signed-in-context sign-up-url
-                   :request-method :post
-                   :content-type "application/x-www-form-urlencoded"
-                   :body "&email-address=test%40email.address.com"))
-      => (check-redirects-to protected-resource 303)
+               (let [unauthorized-request-context (p/request test-session protected-resource)
+                     signed-in-context (p/request unauthorized-request-context twitter-callback-url)]
+                 (p/request signed-in-context sign-up-url
+                            :request-method :post
+                            :content-type "application/x-www-form-urlencoded"
+                            :body "&email-address=test%40email.address.com"))
+               => (check-redirects-to protected-resource 303)
 
-      (provided (http-api/create-user {:twitter-id "twitter-TWITTER_ID"
-                                       :email-address "test@email.address.com"})
-                => {:_id USER_ID
-                    :twitter-id "twitter-TWITTER_ID"
-                    :email-address "test@email.address.com"} :times 1)))
+               (provided (http-api/create-user {:twitter-id "twitter-TWITTER_ID"
+                                                :email-address "test@email.address.com"})
+                         => {:_id USER_ID
+                             :twitter-id "twitter-TWITTER_ID"
+                             :email-address "test@email.address.com"} :times 1))) 
 
-(fact "After signing in, a user with an existing profile is immediately sent to the resource they were trying to access"
-      (against-background
-       (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"})
+       (fact "After signing in, a user with an existing profile is immediately sent to the resource they were trying to access"
+             (against-background
+               (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"})
 
-      (let [unauthorized-request-context (p/request test-session protected-resource)
-            signed-in-context (p/request unauthorized-request-context twitter-callback-url)]
-        (p/follow-redirect signed-in-context)) => (check-redirects-to protected-resource 303)
+             (let [unauthorized-request-context (p/request test-session protected-resource)
+                   signed-in-context (p/request unauthorized-request-context twitter-callback-url)]
+               (p/follow-redirect signed-in-context)) => (check-redirects-to protected-resource 303)
 
-        (provided
-         (http-api/find-user-by-twitter-id "twitter-TWITTER_ID")
-         => {:_id USER_ID
-             :twitter-id "twitter-TWITTER_ID"
-             :email-address "test@email.address.com"} :times 1))
+             (provided
+               (http-api/find-user-by-twitter-id "twitter-TWITTER_ID")
+               => {:_id USER_ID
+                   :twitter-id "twitter-TWITTER_ID"
+                   :email-address "test@email.address.com"} :times 1))) 

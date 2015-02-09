@@ -30,45 +30,46 @@
   (fn [peridot-response]
     ((contains url-fragment) (get-in peridot-response [:response :headers "Location"]))))
 
-(binding [config/enable-csrf false]
-(facts "authorisation"
-       (facts "signed in users"
-              (against-background
-                ;; Twitter authentication background
-                (oauth/access-token anything anything anything) => {:user_id USER_ID})
-              (fact "can reach the create objective page"
-                    (let [result (-> (p/session default-app)
-                                     (helpers/with-sign-in "http://localhost:8080/objectives/create"))]
-                      result => (check-status 200)
-                      (:request result) => (contains {:uri "/objectives/create"})))
-              (fact "can post a new objective"
-                      (against-background
-                        (request->objective anything) => :an-objective
-                        (http-api/create-objective :an-objective) => {:_id OBJECTIVE_ID})
-                      (let [response
-                            (-> (p/session default-app)
-                                (helpers/with-sign-in "http://localhost:8080/objectives/create")
-                                (p/request "http://localhost:8080/objectives" :request-method :post))]
-                        response => (check-status 302)
-                        response => (check-redirect-url (str "/objectives/" OBJECTIVE_ID))))
-              ;TODO APi returns 302, and unauthorised returns 302, do we need these tests?
-              (fact "can post a new comment to an objective"
-                      (against-background
-                        (request->comment anything) => :a-comment
-                        (http-api/create-comment :a-comment) => {:_id "the-comment-id"})
-                      (let [response
-                            (-> (p/session default-app)
-                                (helpers/with-sign-in (str utils/host-url "/objectives/" OBJECTIVE_ID))
-                                (p/request "http://localhost:8080/comments" :request-method :post
-                                                                            :params {:objective-id OBJECTIVE_ID}))]
-                        response => (check-status 302))))
-       (facts "unauthorised users"
-              (fact "cannot reach the objective creation page"
-                    (default-app objectives-create-request)
-                    => (contains {:status 302}))
-              (fact "cannot post a new objective"
-                    (default-app objectives-post-request)
-                    => (contains {:status 302}))
-              (fact "cannot post a comment"
-                    (default-app (mock/request :post "/comments"))
-                    => (contains {:status 302})))))
+(facts "front end" :integration
+       (binding [config/enable-csrf false]
+         (facts "authorisation"
+                (facts "signed in users"
+                       (against-background
+                         ;; Twitter authentication background
+                         (oauth/access-token anything anything anything) => {:user_id USER_ID})
+                       (fact "can reach the create objective page"
+                             (let [result (-> (p/session default-app)
+                                              (helpers/with-sign-in "http://localhost:8080/objectives/create"))]
+                               result => (check-status 200)
+                               (:request result) => (contains {:uri "/objectives/create"})))
+                       (fact "can post a new objective"
+                             (against-background
+                               (request->objective anything) => :an-objective
+                               (http-api/create-objective :an-objective) => {:_id OBJECTIVE_ID})
+                             (let [response
+                                   (-> (p/session default-app)
+                                       (helpers/with-sign-in "http://localhost:8080/objectives/create")
+                                       (p/request "http://localhost:8080/objectives" :request-method :post))]
+                               response => (check-status 302)
+                               response => (check-redirect-url (str "/objectives/" OBJECTIVE_ID))))
+                       ;TODO APi returns 302, and unauthorised returns 302, do we need these tests?
+                       (fact "can post a new comment to an objective"
+                             (against-background
+                               (request->comment anything) => :a-comment
+                               (http-api/create-comment :a-comment) => {:_id "the-comment-id"})
+                             (let [response
+                                   (-> (p/session default-app)
+                                       (helpers/with-sign-in (str utils/host-url "/objectives/" OBJECTIVE_ID))
+                                       (p/request "http://localhost:8080/comments" :request-method :post
+                                                  :params {:objective-id OBJECTIVE_ID}))]
+                               response => (check-status 302))))
+                (facts "unauthorised users"
+                       (fact "cannot reach the objective creation page"
+                             (default-app objectives-create-request)
+                             => (contains {:status 302}))
+                       (fact "cannot post a new objective"
+                             (default-app objectives-post-request)
+                             => (contains {:status 302}))
+                       (fact "cannot post a comment"
+                             (default-app (mock/request :post "/comments"))
+                             => (contains {:status 302})))))) 

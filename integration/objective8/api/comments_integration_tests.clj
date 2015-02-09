@@ -21,7 +21,7 @@
 
 (def the-comment-as-json "{\"comment\":\"The comment\",\"root-id\":1,\"parent-id\":1234,\"created-by-id\":223}")
 
-(facts "about posting comments"
+(facts "about posting comments" :integration
        (fact "the posted comment is stored"
              (p/request app "/api/v1/comments"
                         :request-method :post
@@ -30,12 +30,12 @@
 
              => (helpers/check-json-body stored-comment)
              (provided
-              (comments/store-comment! the-comment) => stored-comment))
+               (comments/store-comment! the-comment) => stored-comment))
 
        (fact "the http response indicates the location of the comment"
 
              (against-background
-              (comments/store-comment! anything) => stored-comment)
+               (comments/store-comment! anything) => stored-comment)
 
              (let [result (p/request app "/api/v1/comments"
                                      :request-method :post

@@ -20,43 +20,43 @@
 
 (def default-app (core/app core/app-config))
 
+(facts "objectives" :integration
+       (binding [config/enable-csrf false]
+         (fact "authorised user can post and retrieve objective"
+               (against-background (http-api/create-objective
+                                     {:title "my objective title"
+                                      :goals "my objective goals"
+                                      :description "my objective description"
+                                      :end-date (utils/string->date-time "2012-12-12")
+                                      :created-by-id USER_ID}) => {:_id OBJECTIVE_ID})
+               (against-background
+                 ;; Twitter authentication background
+                 (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
+                 (http-api/create-user anything) => {:_id USER_ID})
+               (let [user-session (helpers/test-context)
+                     params {:title "my objective title"
+                             :goals "my objective goals"
+                             :description "my objective description"
+                             :end-date "2012-12-12"}
+                     response (:response
+                                (-> user-session
+                                    (helpers/with-sign-in "http://localhost:8080/objectives/create")
+                                    (p/request "http://localhost:8080/objectives"
+                                               :request-method :post
+                                               :params params)))]
+                 (:flash response) => (contains "Your objective has been created!")
+                 (-> response
+                     :headers
+                     (get "Location")) => (contains (str "/objectives/" OBJECTIVE_ID))))) 
 
-(binding [config/enable-csrf false]
-  (fact "authorised user can post and retrieve objective"
-        (against-background (http-api/create-objective
-                              {:title "my objective title"
-                               :goals "my objective goals"
-                               :description "my objective description"
-                               :end-date (utils/string->date-time "2012-12-12")
-                               :created-by-id USER_ID}) => {:_id OBJECTIVE_ID})
-        (against-background
-          ;; Twitter authentication background
-         (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
-         (http-api/create-user anything) => {:_id USER_ID})
-        (let [user-session (helpers/test-context)
-              params {:title "my objective title"
-                      :goals "my objective goals"
-                      :description "my objective description"
-                      :end-date "2012-12-12"}
-              response (:response
-                         (-> user-session
-                             (helpers/with-sign-in "http://localhost:8080/objectives/create")
-                             (p/request "http://localhost:8080/objectives"
-                                        :request-method :post
-                                        :params params)))]
-          (:flash response) => (contains "Your objective has been created!")
-          (-> response
-              :headers
-              (get "Location")) => (contains (str "/objectives/" OBJECTIVE_ID)))))
-
-(fact "Any user can view an objective"
-      (against-background
-        (http-api/get-objective OBJECTIVE_ID) => {:title "my objective title"
-                                                  :goals "my objective goals"
-                                                  :description "my objective description"
-                                                  :end-date (utils/string->date-time "2015-12-01")})
-      (default-app objective-view-get-request) => (contains {:status 200})
-      (default-app objective-view-get-request) => (contains {:body (contains "my objective title")})
-      (default-app objective-view-get-request) => (contains {:body (contains "my objective goals")})
-      (default-app objective-view-get-request) => (contains {:body (contains "my objective description")})
-      (default-app objective-view-get-request) => (contains {:body (contains "01-12-2015")}))
+       (fact "Any user can view an objective"
+             (against-background
+               (http-api/get-objective OBJECTIVE_ID) => {:title "my objective title"
+                                                         :goals "my objective goals"
+                                                         :description "my objective description"
+                                                         :end-date (utils/string->date-time "2015-12-01")})
+             (default-app objective-view-get-request) => (contains {:status 200})
+             (default-app objective-view-get-request) => (contains {:body (contains "my objective title")})
+             (default-app objective-view-get-request) => (contains {:body (contains "my objective goals")})
+             (default-app objective-view-get-request) => (contains {:body (contains "my objective description")})
+             (default-app objective-view-get-request) => (contains {:body (contains "01-12-2015")}))) 
