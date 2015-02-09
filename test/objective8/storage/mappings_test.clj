@@ -1,4 +1,5 @@
 (ns objective8.storage.mappings-test
+  (:refer-clojure :exclude [comment])
   (:require [midje.sweet :refer :all]
             [objective8.storage.mappings :refer :all]))
 

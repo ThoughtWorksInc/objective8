@@ -26,8 +26,6 @@
                                                                 :end-date "2015-01-01T00:00:00Z"
                                                                 :title "title"}))
 
-       (def USER_ID 1)
-
        (fact "a comment entity can be stored in the database"
              (let [stored-user (storage/pg-store! {:entity :user
                                                    :twitter-id "twitter-TWITTER_ID"})

@@ -1,4 +1,5 @@
 (ns objective8.storage.mappings
+  (:refer-clojure :exclude [comment])
   (:require [korma.core :as korma]
             [cheshire.core :as json]
             [clj-time [format :as tf] [coerce :as tc]])
@@ -58,7 +59,7 @@
   (korma/prepare map->user)
   (korma/transform (unmap :user_data)))
 
-(korma/defentity objective8.storage.mappings/comment
+(korma/defentity comment
   (korma/pk :_id)
   (korma/table :policy_drafting.comments)
   (korma/prepare map->comment)
@@ -66,7 +67,7 @@
 
 (def entities {:objective objective
                :user      user
-               :comment   objective8.storage.mappings/comment})
+               :comment   comment})
 
 (defn get-mapping
   "Returns a korma entity for a map"
