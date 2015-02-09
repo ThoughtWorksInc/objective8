@@ -16,7 +16,7 @@
 (binding [config/enable-csrf false]
   (fact "authorised user can post and retrieve comment against an objective"
       (against-background (http-api/create-comment {:comment "The comment"
-                                                    :discussing-id OBJECTIVE_ID
+                                                    :root-id OBJECTIVE_ID
                                                     :parent-id OBJECTIVE_ID
                                                     :created-by-id USER_ID}) => {:_id 12})
       (against-background
@@ -26,7 +26,8 @@
               app-config (into core/app-config {:store store})
               user-session (p/session (core/app app-config))
               params {:comment "The comment"
-                      :objective-id OBJECTIVE_ID}
+                      :root-id "234"
+                      :parent-id "234"}
               response (:response
                          (-> user-session
                              (helpers/with-sign-in (str "http://localhost:8080/objectives/" OBJECTIVE_ID))

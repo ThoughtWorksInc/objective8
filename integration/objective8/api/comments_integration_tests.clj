@@ -13,16 +13,13 @@
 (def app (helpers/test-context test-db))
 
 (def the-comment {:comment "The comment"
-                  :discussing-id 1
+                  :root-id 1
                   :parent-id 1234
                   :created-by-id 223})
 
 (def stored-comment (assoc the-comment :_id 1))
 
-(def the-comment-as-json "{\"comment\":\"The comment\",\"discussing-id\":\"1\",\"parent-id\":\"1234\",\"created-by-id\":\"223\"}")
-
-(def stored-comment-as-json "{\"_id\":1,\"created-by-id\":223,\"discussing-id\":1,\"parent-id\":1234,\"comment\":\"The comment\"}")
-
+(def the-comment-as-json "{\"comment\":\"The comment\",\"root-id\":1,\"parent-id\":1234,\"created-by-id\":223}")
 
 (facts "about posting comments"
        (fact "the posted comment is stored"
@@ -31,7 +28,7 @@
                         :content-type "application/json"
                         :body the-comment-as-json)
 
-             => (contains {:response (contains {:body (contains stored-comment-as-json)})})
+             => (helpers/check-json-body stored-comment)
              (provided
               (comments/store-comment! the-comment) => stored-comment))
 

@@ -80,11 +80,16 @@
 
 ;; COMMENTS
 
-(defn create-comment-form-post [{:keys [t' locale] :as request}]
-  (if-let [comment (request->comment request)]
+(defn create-comment-form-post [{{objective-id :objective-id} :params
+                                 :keys [t' locale] :as request}]
+  (let [formatted-request (-> request
+                              (assoc-in [:params :root-id] objective-id)
+                              (assoc-in [:params :parent-id] objective-id)
+                              (update-in [:params] dissoc :objective-id))]
+  (if-let [comment (request->comment formatted-request)]
     (if-let [stored-comment (http-api/create-comment comment)]
-      (let [comment-url (str utils/host-url "/objectives/" (:discussing-id comment))
+      (let [comment-url (str utils/host-url "/objectives/" (:root-id comment))
             message (t' :comment-view/created-message)]
         (assoc (response/redirect comment-url) :flash message))
       {:status 502})
-    {:status 400}))
+    {:status 400})))

@@ -35,7 +35,6 @@
 
 (defn anti-forgery-hook [handler]
   (let [handler-with-anti-forgery (wrap-anti-forgery handler)]
-    (fn [request] (if config/enable-csrf 
+    (fn [request] (if config/enable-csrf
                     (handler-with-anti-forgery request)
                     (handler request)))))
-
