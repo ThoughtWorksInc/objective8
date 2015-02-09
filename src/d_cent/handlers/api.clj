@@ -68,10 +68,12 @@
 
 ;; COMMENT
 (defn post-comment [{:keys [params] :as request}]
-  (let [store (storage/request->store request)
-        comment (-> params
-                  (select-keys [:comment :objective-id :user-id]))
-        stored-comment (comments/store-comment! store comment)
+  (let [comment (-> params
+                  (select-keys [:comment :discussing-id :parent-id :created-by-id]))
+        stored-comment (comments/store-comment! (-> comment
+                                                  (assoc :discussing-id (Integer/parseInt (comment :discussing-id))
+                                                         :parent-id (Integer/parseInt (comment :parent-id))
+                                                         :created-by-id (Integer/parseInt (comment :created-by-id)))))
         resource-location (str utils/host-url "/api/v1/comments/" (:_id stored-comment))]
     {:status 201
      :headers {"Content-Type" "application/json"

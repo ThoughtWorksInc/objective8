@@ -13,15 +13,15 @@
 (def app (helpers/test-context test-db))
 
 (def the-comment {:comment "The comment"
-                  :objective-id "OBJECTIVE_GUID"
-                  :user-id "USER_GUID"})
+                  :discussing-id 1
+                  :parent-id 1234
+                  :created-by-id 223})
 
-(def stored-comment (assoc the-comment :_id "COMMENT_GUID"))
+(def stored-comment (assoc the-comment :_id 1))
 
-(def the-comment-as-json "{\"comment\":\"The comment\",\"objective-id\":\"OBJECTIVE_GUID\",\"user-id\":\"USER_GUID\"}")
+(def the-comment-as-json "{\"comment\":\"The comment\",\"discussing-id\":\"1\",\"parent-id\":\"1234\",\"created-by-id\":\"223\"}")
 
-(def stored-comment-as-json "{\"_id\":\"COMMENT_GUID\",\"user-id\":\"USER_GUID\",\"objective-id\":\"OBJECTIVE_GUID\",\"comment\":\"The comment\"}")
-
+(def stored-comment-as-json "{\"_id\":1,\"created-by-id\":223,\"discussing-id\":1,\"parent-id\":1234,\"comment\":\"The comment\"}")
 
 
 (facts "about posting comments"
@@ -33,12 +33,12 @@
 
              => (contains {:response (contains {:body (contains stored-comment-as-json)})})
              (provided
-              (comments/store-comment! test-db the-comment) => stored-comment))
+              (comments/store-comment! the-comment) => stored-comment))
 
        (fact "the http response indicates the location of the comment"
 
              (against-background
-              (comments/store-comment! anything anything) => stored-comment)
+              (comments/store-comment! anything) => stored-comment)
 
              (let [result (p/request app "/api/v1/comments"
                                      :request-method :post
@@ -47,4 +47,4 @@
                    response (:response result)
                    headers (:headers response)]
                response => (contains {:status 201})
-               headers => (contains {"Location" (contains "/api/v1/comments/COMMENT_GUID")}))))
+               headers => (contains {"Location" (contains "/api/v1/comments/1")}))))

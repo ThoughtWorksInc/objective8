@@ -91,7 +91,7 @@
                   :objective-id OBJECTIVE_ID
                   :username "my username"})
 
-(def the-stored-comment (into the-comment {:_id "GUID"}))
+(def the-stored-comment (into the-comment {:_id 1}))
 (def comment-response
   {:successful {:status 201
                 :headers {"Content-Type" "application/json"}

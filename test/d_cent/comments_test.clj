@@ -3,7 +3,7 @@
             [cemerick.friend :as friend]
             [d-cent.comments :as comments]))
 
-(def OBJECTIVE_ID 234) 
+(def OBJECTIVE_ID 234)
 (def USER_ID 1)
 
 (def test-comment {:comment "the comment"
@@ -13,4 +13,4 @@
       (against-background
         (friend/current-authentication) => {:username USER_ID})
       (let [comment (comments/request->comment {:params test-comment})]
-          (:user-id comment) => USER_ID))
+          (:created-by-id comment) => USER_ID))

@@ -16,8 +16,9 @@
 (binding [config/enable-csrf false]
   (fact "authorised user can post and retrieve comment against an objective"
       (against-background (http-api/create-comment {:comment "The comment"
-                                                    :objective-id OBJECTIVE_ID
-                                                    :user-id USER_ID}) => {:_id COMMENT_ID})
+                                                    :discussing-id OBJECTIVE_ID
+                                                    :parent-id OBJECTIVE_ID
+                                                    :created-by-id USER_ID}) => {:_id 12})
       (against-background
        (oauth/access-token anything anything anything) => {:user_id USER_ID}
        (http-api/create-user anything) => {:_id USER_ID})

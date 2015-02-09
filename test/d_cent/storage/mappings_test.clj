@@ -43,10 +43,10 @@
 (def parent-id 3456)
 (facts "About map->comment"
        (fact "Column values are pulled out and converted, the map gets turned to json"
-             (let [comment (map->comment {:created-by-id created-by-id
+             (let [test-comment (map->comment {:created-by-id created-by-id
                                           :discussing-id discussing-id
                                           :parent-id parent-id})]
-              comment => (contains {:created_by_id created-by-id
+              test-comment => (contains {:created_by_id created-by-id
                                     :discussing_id discussing-id
                                     :parent_id parent-id
                                     :comment json-type?})))

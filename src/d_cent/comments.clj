@@ -1,11 +1,13 @@
 (ns d-cent.comments
   (:require [cemerick.friend :as friend]
             [d-cent.storage.storage :as storage]))
+
 (defn request->comment
   [{:keys [params]}]
-  (-> (select-keys params [:comment :objective-id])
-      (assoc :user-id (get (friend/current-authentication) :username))
-      (update-in [:objective-id] #(Integer/parseInt %))))
+  (let [discussing-id (Integer/parseInt (params :objective-id))
+        parent-id discussing-id]
+    (zipmap [:comment :discussing-id :parent-id :created-by-id]
+            [(params :comment) discussing-id parent-id (get (friend/current-authentication) :username)])))
 
-(defn store-comment! [store comment]
- (storage/store! store "comments" comment))
+(defn store-comment! [comment]
+ (storage/pg-store! (assoc comment :entity :comment)))

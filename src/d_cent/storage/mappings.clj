@@ -58,8 +58,15 @@
   (korma/prepare map->user)
   (korma/transform (unmap :user_data)))
 
+(korma/defentity d-cent.storage.mappings/comment
+  (korma/pk :_id)
+  (korma/table :policy_drafting.comments)
+  (korma/prepare map->comment)
+  (korma/transform (unmap :comment)))
+
 (def entities {:objective objective
-               :user      user})
+               :user      user
+               :comment   d-cent.storage.mappings/comment})
 
 (defn get-mapping
   "Returns a korma entity for a map"
