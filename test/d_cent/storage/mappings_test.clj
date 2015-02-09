@@ -31,10 +31,10 @@
 ;;USER
 (facts "About map->user"
        (fact "Column values are pulled out and converted, the map gets turned to json"
-             (let [user (map->user {:user-id "twitter-TWITTERID"})]
-               user => (contains {:user_id "twitter-TWITTERID"
+             (let [user (map->user {:twitter-id "twitter-TWITTERID"})]
+               user => (contains {:twitter_id "twitter-TWITTERID"
                                   :user_data json-type?})))
-       (fact "throws exception if :user-id is missing"
+       (fact "throws exception if :twitter-id is missing"
                     (map->user {:a "B"}) => (throws Exception "Could not transform map to user")))
 
 ;;COMMENT

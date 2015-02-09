@@ -11,7 +11,7 @@ CREATE TABLE policy_drafting.objectives (
 CREATE TABLE policy_drafting.users (
     _id         SERIAL PRIMARY KEY,
     _created_at timestamp DEFAULT current_timestamp,
-    user_id     varchar NOT NULL,
+    twitter_id  varchar NOT NULL,
     user_data   json NOT NULL
 );
 

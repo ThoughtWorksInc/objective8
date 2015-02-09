@@ -34,9 +34,7 @@
     (cond
       (= status 200) (-> body
                          (json/parse-string true)
-                         (update-in [:end-date] utils/time-string->date-time)
-                         (update-in [:_id] #(Integer/parseInt %))
-                         (update-in [:user-guid] #(Integer/parseInt %)))
+                         (update-in [:end-date] utils/time-string->date-time))
       :else          api-failure)))
 
 

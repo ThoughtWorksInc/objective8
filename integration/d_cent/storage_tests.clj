@@ -7,10 +7,10 @@
 (def db-connection (db/connect! db/postgres-spec))
 
 (fact "a user entity can be stored in the database"
-      (let [user {:entity :user :user-id "the-user-id" :foo "bar"}
+      (let [user {:entity :user :twitter-id "the-twitter-id" :foo "bar"}
             store-result (storage/pg-store! user)
             retrieve-result (storage/pg-retrieve {:entity :user :_id (:_id store-result)})]
-        (first (:result retrieve-result))) => (contains {:user-id "the-user-id" :foo "bar"}))
+        (first (:result retrieve-result))) => (contains {:twitter-id "the-twitter-id" :foo "bar"}))
 
 (fact "an objective entity can be stored in the database"
       (let [objective {:entity :objective
