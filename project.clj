@@ -1,6 +1,6 @@
 (def database-connection-url
   (or (System/getenv "DB_JDBC_URL") 
-      "jdbc:postgresql://localhost/dcent?user=dcent&password=development"))
+      "jdbc:postgresql://localhost/objective8?user=objective8&password=development"))
 
 (defproject objective8 "0.0.1-SNAPSHOT"
   :description "Cool new project to do things and stuff"

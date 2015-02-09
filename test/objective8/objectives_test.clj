@@ -17,7 +17,7 @@
 
 
 (def stored-test-objective (assoc test-objective
-                            :_id "SOME_GUID"
+                            :_id 123
                             :created-by "username"))
 
 (fact "creates an objective from a request"

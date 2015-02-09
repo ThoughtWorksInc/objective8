@@ -4,5 +4,5 @@
     - dev
     - leiningen
     - postgres 
-    - dcent_postgres_config
+    - objective8_postgres_config
 

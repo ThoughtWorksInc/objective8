@@ -1,5 +1,5 @@
 {
-  "name": "dCent",
+  "name": "objective8",
   "version": "0.0.0",
   "description": "",
   "engines": {
@@ -16,7 +16,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ThoughtWorksInc/d-cent"
+    "url": "https://github.com/ThoughtWorksInc/objective8"
+  },
+  "bugs": {
+    "url": "https://github.com/ThoughtWorksInc/objective8/issues"
   },
   "scripts": {
     "postinstall": "grunt build"

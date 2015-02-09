@@ -32,6 +32,6 @@ export TWITTER_CONSUMER_SECRET_TOKEN=<as above>
 
 With root privileges:
 ```
-docker build -t d-cent .
-docker run -it -p 8080:8080 --rm --name d-cent-live d-cent
+docker build -t objective8 .
+docker run -it -p 8080:8080 --rm --name objective8-live objective8
 ```

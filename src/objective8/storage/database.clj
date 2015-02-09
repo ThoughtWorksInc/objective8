@@ -2,8 +2,8 @@
   (:require [korma.db :as db]
             [objective8.config :as config]))
 
-(def postgres-spec (db/postgres {:db (config/get-var "DB_NAME" "dcent")
-                                 :user (config/get-var "DB_USER" "dcent")
+(def postgres-spec (db/postgres {:db (config/get-var "DB_NAME" "objective8")
+                                 :user (config/get-var "DB_USER" "objective8")
                                  :password (config/get-var "DB_PASSWORD" "development") ;TODO password management
                                  :host (config/get-var "DB_HOST" "localhost")
                                  :port (config/get-var "DB_PORT" 5432)}))

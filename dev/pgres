@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-psql -U dcent -h localhost -W
+psql -U objective8 -h localhost -W
 
