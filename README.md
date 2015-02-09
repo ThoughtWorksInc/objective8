@@ -10,8 +10,8 @@ To start the development VM you will need to install
 To get started:
 
 ```
-git clone git@github.com:ThoughtWorksInc/d-cent.git
-cd d-cent/ops/
+git clone git@github.com:ThoughtWorksInc/objective8.git
+cd objective8/ops/
 vagrant up
 # type 'vagrant' when asked for a sudoers password
 vagrant ssh

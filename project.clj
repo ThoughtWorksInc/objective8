@@ -2,7 +2,7 @@
   (or (System/getenv "DB_JDBC_URL") 
       "jdbc:postgresql://localhost/dcent?user=dcent&password=development"))
 
-(defproject d-cent "0.0.1-SNAPSHOT"
+(defproject objective8 "0.0.1-SNAPSHOT"
   :description "Cool new project to do things and stuff"
   :min-lein-version "2.0.0"
   :test-paths ["test" "integration"]
@@ -25,8 +25,8 @@
                  [org.clojure/java.jdbc "0.3.6"]
                  [postgresql "9.3-1102.jdbc41"]
                  [ragtime "0.3.8"]]
-  :main d-cent.core
-  :aot [d-cent.core]
+  :main objective8.core
+  :aot [objective8.core]
   :plugins [[ragtime/ragtime.lein "0.3.8"]]
   :profiles {:dev {:dependencies [[midje "1.6.3"]
                                   [ring/ring-mock "0.2.0"]
