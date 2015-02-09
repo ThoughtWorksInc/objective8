@@ -24,3 +24,17 @@
         (first (:result retrieve-result))) => (contains {:created-by-id 1
                                                          :end-date "2015-01-01T00:00:00Z"
                                                          :title "title"}))
+
+(def USER_ID 1)
+
+(fact "a comment entity can be stored in the database"
+      (let [comment {:entity :comment
+                     :created-by-id USER_ID
+                     :root-id 1
+                     :parent-id 2
+                     :comment "A comment"}
+            store-result (storage/pg-store! comment)
+            retrieve-result (storage/pg-retrieve {:entity :comment :_id (:_id store-result)})]
+       (first (:result retrieve-result))) => (contains {:created-by-id USER_ID
+                                                        :root-id 1
+                                                        :parent-id 2}))

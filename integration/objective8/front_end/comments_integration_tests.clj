@@ -26,8 +26,7 @@
               app-config (into core/app-config {:store store})
               user-session (p/session (core/app app-config))
               params {:comment "The comment"
-                      :root-id "234"
-                      :parent-id "234"}
+                      :objective-id "234"}
               response (:response
                          (-> user-session
                              (helpers/with-sign-in (str "http://localhost:8080/objectives/" OBJECTIVE_ID))

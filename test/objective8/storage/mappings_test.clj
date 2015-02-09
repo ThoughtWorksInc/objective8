@@ -39,19 +39,21 @@
 
 ;;COMMENT
 (def created-by-id 1234)
-(def discussing-id 2345)
+(def root-id 2345)
 (def parent-id 3456)
+
+(def comment-map {:created-by-id created-by-id
+                  :root-id root-id
+                  :parent-id parent-id})
+
 (facts "About map->comment"
        (fact "Column values are pulled out and converted, the map gets turned to json"
-             (let [test-comment (map->comment {:created-by-id created-by-id
-                                          :discussing-id discussing-id
-                                          :parent-id parent-id})]
+             (let [test-comment (map->comment comment-map)]
               test-comment => (contains {:created_by_id created-by-id
-                                    :discussing_id discussing-id
-                                    :parent_id parent-id
-                                    :comment json-type?})))
-       (fact "throws exception if :created-by-id, :discussing-id or parent-id are missing"
-                    (map->comment {:a "B"}) => (throws Exception "Could not transform map to comment")
-                    (map->comment {:a "B" :created-by-id created-by-id :discussing-id discussing-id}) => (throws Exception "Could not transform map to comment")
-                    (map->comment {:a "B" :created-by-id created-by-id :parent-id parent-id}) => (throws Exception "Could not transform map to comment")
-                    (map->comment {:a "B" :discussing-id discussing-id :parent-id parent-id}) => (throws Exception "Could not transform map to comment")))
+                                         :root_id root-id
+                                         :parent_id parent-id
+                                         :comment json-type?})))
+       (fact "throws exception if :created-by-id, :root-id or parent-id are missing"
+                    (map->comment (dissoc comment-map :created-by-id)) => (throws Exception "Could not transform map to comment")
+                    (map->comment (dissoc comment-map :root-id)) => (throws Exception "Could not transform map to comment")
+                    (map->comment (dissoc comment-map :parent-id)) => (throws Exception "Could not transform map to comment")))
