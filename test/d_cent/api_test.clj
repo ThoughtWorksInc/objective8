@@ -65,20 +65,17 @@
                               {:status 200
                                :headers {"Content-Type" "application/json"}
                                :body (json/generate-string
-                                      {:_id (str OBJECTIVE_ID)
+                                      {:_id OBJECTIVE_ID
                                        :title "Objective title"
                                        :goals "Objective goals"
                                        :description "Objective description"
-                                       :end-date "2015-01-31T00:00:00.000Z"
-                                       :user-guid (str USER_ID)})}]
+                                       :end-date "2015-01-31T00:00:00.000Z"})}]
                (api/get-objective OBJECTIVE_ID))
              => (contains {:_id OBJECTIVE_ID
                            :title "Objective title"
                            :goals "Objective goals"
                            :description "Objective description"
-                           :end-date (utils/time-string->date-time "2015-01-31T00:00:00.000Z")
-                           :user-guid USER_ID
-                           }))
+                           :end-date (utils/time-string->date-time "2015-01-31T00:00:00.000Z")}))
        (fact "returns api-failure when no objective found"
              (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID)
                               {:status 404}]
