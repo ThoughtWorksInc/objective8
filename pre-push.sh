@@ -2,4 +2,4 @@
 
 npm install
 
-lein do clean, midje
+lein do clean, midje :filter -integration
