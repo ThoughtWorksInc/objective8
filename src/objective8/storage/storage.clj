@@ -8,7 +8,7 @@
   (korma/insert entity (korma/values data)))
 
 (defn pg-store!
-  "Transform a map according to it's :entity value and save it in the database"
+  "Transform a map according to its :entity value and save it in the database"
   [{:keys [entity] :as m}]
   (if-let [ent (mappings/get-mapping m)]
     (insert ent m)
@@ -30,14 +30,14 @@
 
 (defn pg-retrieve
   "Retrieves objects from the database based on a query map
-  
+
    - The map must include an :entity key
    - Hyphens in key words are replaced with underscores"
   [{:keys [entity] :as query}]
   (if entity
     (let [result (select (mappings/get-mapping query) (-to_ (dissoc query :entity)))]
       {:query query
-       :result result}) 
+       :result result})
     (throw (Exception. "Query map requires an :entity key"))))
 
 (defn request->store
@@ -52,14 +52,14 @@
   [store collection id]
   (first (filter #(= (:_id %) id) (get @store collection))))
 
-(defn store! 
+(defn store!
   "Stores a record in the in memory database"
   [store collection record]
   (let [record-to-save (assoc record :_id (gen-uuid))]
     (swap! store update-in [collection] conj record-to-save)
     record-to-save))
 
-(defn find-by 
+(defn find-by
   "Retrieves the first record to match predicate"
   [store collection predicate]
   (first (filter predicate (get @store collection))))

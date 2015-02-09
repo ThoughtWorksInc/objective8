@@ -28,13 +28,16 @@
 (def USER_ID 1)
 
 (fact "a comment entity can be stored in the database"
-      (let [comment {:entity :comment
-                     :created-by-id USER_ID
+      (let [stored-user (storage/pg-store! {:entity :user
+                                            :twitter-id "twitter-TWITTER_ID"})
+            user-id (:_id stored-user)
+            comment {:entity :comment
+                     :created-by-id user-id
                      :root-id 1
                      :parent-id 2
                      :comment "A comment"}
             store-result (storage/pg-store! comment)
             retrieve-result (storage/pg-retrieve {:entity :comment :_id (:_id store-result)})]
-       (first (:result retrieve-result))) => (contains {:created-by-id USER_ID
+       (first (:result retrieve-result)) => (contains {:created-by-id user-id
                                                         :root-id 1
-                                                        :parent-id 2}))
+                                                        :parent-id 2})))
