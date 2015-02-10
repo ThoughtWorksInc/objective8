@@ -11,6 +11,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network :forwarded_port, guest: 22, host: 2222, id: "ssh", auto_correct: false
 
   config.vm.synced_folder "../", "/var/objective8"
+  
+  config.vm.provider :virtualbox do |vbox|
+    vbox.customize ["modifyvm", :id, "--memory", 1024]
+  end
 
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "development_playbook.yml"
