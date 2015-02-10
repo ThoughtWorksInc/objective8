@@ -69,7 +69,7 @@
 ;; COMMENT
 (defn post-comment [{:keys [params] :as request}]
   (let [comment (-> params
-                  (select-keys [:comment :root-id :parent-id :created-by-id]))
+                  (select-keys [:comment :objective-id :created-by-id]))
         stored-comment (comments/store-comment! comment)
         resource-location (str utils/host-url "/api/v1/comments/" (:_id stored-comment))]
     {:status 201

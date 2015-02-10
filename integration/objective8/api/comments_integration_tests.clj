@@ -11,14 +11,16 @@
 
 (def app (helpers/test-context))
 
+(def OBJECTIVE_ID 234)
+(def USER_ID 1)
+
 (def the-comment {:comment "The comment"
-                  :root-id 1
-                  :parent-id 1234
-                  :created-by-id 223})
+                  :objective-id OBJECTIVE_ID
+                  :created-by-id USER_ID})
 
 (def stored-comment (assoc the-comment :_id 1))
 
-(def the-comment-as-json "{\"comment\":\"The comment\",\"root-id\":1,\"parent-id\":1234,\"created-by-id\":223}")
+(def the-comment-as-json (str "{\"comment\":\"The comment\",\"objective-id\":" OBJECTIVE_ID ",\"created-by-id\":" USER_ID "}"))
 
 (facts "about posting comments" :integration
        (fact "the posted comment is stored"

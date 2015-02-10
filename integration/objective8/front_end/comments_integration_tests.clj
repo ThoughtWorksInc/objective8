@@ -17,22 +17,18 @@
        (binding [config/enable-csrf false]
          (fact "authorised user can post and retrieve comment against an objective"
                (against-background (http-api/create-comment {:comment "The comment"
-                                                             :root-id OBJECTIVE_ID
-                                                             :parent-id OBJECTIVE_ID
+                                                             :objective-id OBJECTIVE_ID
                                                              :created-by-id USER_ID}) => {:_id 12})
                (against-background
                  (oauth/access-token anything anything anything) => {:user_id USER_ID}
                  (http-api/create-user anything) => {:_id USER_ID})
-               (let [user-session (p/session (core/app core/app-config))
+               (let [user-session (helpers/test-context)
                      params {:comment "The comment"
-                             :objective-id "234"}
-                     response (:response
-                                (-> user-session
-                                    (helpers/with-sign-in (str "http://localhost:8080/objectives/" OBJECTIVE_ID))
-                                    (p/request "http://localhost:8080/comments"
-                                               :request-method :post
-                                               :params params)))]
-                 (:flash response) => (contains "Your comment has been added!")
-                 (-> response
-                     :headers
-                     (get "Location")) => (contains (str "/objectives/" OBJECTIVE_ID)))))) 
+                             :objective-id (str OBJECTIVE_ID)}
+                     peridot-response (-> user-session
+                                          (helpers/with-sign-in (str "http://localhost:8080/objectives/" OBJECTIVE_ID))
+                                          (p/request "http://localhost:8080/comments"
+                                                     :request-method :post
+                                                     :params params))]
+                 peridot-response => (helpers/flash-message-contains "Your comment has been added!")
+                 peridot-response => (helpers/headers-location (str "/objectives/" OBJECTIVE_ID))))))

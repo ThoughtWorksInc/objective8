@@ -28,11 +28,10 @@
 
 (defn map->comment
   "Converts a clojure map into a json-typed comment for the database"
-  [{:keys [created-by-id root-id parent-id] :as comment}]
-  (if (and created-by-id root-id parent-id)
+  [{:keys [created-by-id objective-id] :as comment}]
+  (if (and created-by-id objective-id)
     {:created_by_id created-by-id
-     :root_id root-id
-     :parent_id parent-id
+     :objective_id objective-id
      :comment (map->json-type comment)}
     (throw (Exception. "Could not transform map to comment"))))
 

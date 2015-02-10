@@ -9,9 +9,7 @@
       (against-background
         (friend/current-authentication) => {:username USER_ID})
       (let [comment (comments/request->comment {:params {:comment "the comment"
-                                                         :root-id "123"
-                                                         :parent-id "123"}})]
+                                                         :objective-id "123"}})]
            comment => {:comment "the comment"
-                       :root-id 123
-                       :parent-id 123
+                       :objective-id 123
                        :created-by-id USER_ID}))

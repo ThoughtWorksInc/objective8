@@ -4,10 +4,9 @@
 
 (defn request->comment
   [{:keys [params]}]
-  (let [root-id (Integer/parseInt (params :root-id))
-        parent-id (Integer/parseInt (params :parent-id))]
-    (zipmap [:comment :root-id :parent-id :created-by-id]
-            [(params :comment) root-id parent-id (get (friend/current-authentication) :username)])))
+  (let [objective-id (Integer/parseInt (params :objective-id))]
+    (zipmap [:comment :objective-id :created-by-id]
+            [(params :comment) objective-id (get (friend/current-authentication) :username)])))
 
 (defn store-comment! [comment]
  (storage/pg-store! (assoc comment :entity :comment)))
