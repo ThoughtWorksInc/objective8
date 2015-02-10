@@ -5,7 +5,7 @@ HEROKU_POSTGRES_URL=$DATABASE_URL
 DB_URL=`echo $HEROKU_POSTGRES_URL | cut -d@ -f2`
 DB_CONNECTION=`echo $HEROKU_POSTGRES_URL | cut -d@ -f1`
 
-export BASE_URI="fast-lake-9564.herokuapp.com"
+export BASE_URI="objective8.herokuapp.com"
 export APP_PORT=$PORT
 export DB_USER=`echo $DB_CONNECTION | cut -d: -f2 | cut -c 3-`
 export DB_PASSWORD=`echo $DB_CONNECTION | cut -d: -f3`
