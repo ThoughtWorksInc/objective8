@@ -2,15 +2,16 @@
   (:require [midje.sweet :refer :all]
             [korma.core :as korma]
             [objective8.storage.storage :as storage]
-            [objective8.storage.database :as db]))
+            [objective8.storage.database :as db]
+            [objective8.storage.mappings :as m]))
 
 
 (defn db-connection [] (db/connect! db/postgres-spec))
 
 (defn truncate-tables []
-  (korma/delete :comments)
-  (korma/delete :objectives)
-  (korma/delete :users))
+  (korma/delete m/comment)
+  (korma/delete m/objective)
+  (korma/delete m/user))
 
 (against-background [(before :contents (db-connection)) (after :facts (truncate-tables))]
 (facts "Storage tests" :integration
