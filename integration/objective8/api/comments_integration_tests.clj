@@ -9,8 +9,7 @@
 ;; Testing from http request -> making correct calls within comments namespace
 ;; Mock or stub out 'comments' namespace
 
-(def test-db (atom {}))
-(def app (helpers/test-context test-db))
+(def app (helpers/test-context))
 
 (def the-comment {:comment "The comment"
                   :root-id 1

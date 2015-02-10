@@ -24,14 +24,8 @@
         (p/follow-redirect))))
 
 (defn test-context
-  "Creates a fake application context which uses the provided atom
-   as database storage"
-
-  ([]
-   (p/session (core/app core/app-config)))
-
-  ([test-store]
-   (p/session (core/app (assoc core/app-config :store test-store)))))
+  "Creates a fake application context" 
+  [] (p/session (core/app core/app-config)))
 
 ;; Checkers for peridot responses
 (defn peridot-response-json-body->map [peridot-response]

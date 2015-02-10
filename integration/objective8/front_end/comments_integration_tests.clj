@@ -23,9 +23,7 @@
                (against-background
                  (oauth/access-token anything anything anything) => {:user_id USER_ID}
                  (http-api/create-user anything) => {:_id USER_ID})
-               (let [store (atom {})
-                     app-config (into core/app-config {:store store})
-                     user-session (p/session (core/app app-config))
+               (let [user-session (p/session (core/app core/app-config))
                      params {:comment "The comment"
                              :objective-id "234"}
                      response (:response

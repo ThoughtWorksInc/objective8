@@ -10,8 +10,7 @@
             [objective8.http-api :as http-api]
             [objective8.utils :as utils]))
 
-(def test-store (atom {}))
-(def test-session (helpers/test-context test-store))
+(def test-session (helpers/test-context))
 
 (def twitter-callback-url (str utils/host-url "/twitter-callback?oauth_verifier=VERIFICATION_TOKEN"))
 (def sign-up-url (str utils/host-url "/sign-up"))

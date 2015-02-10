@@ -14,8 +14,7 @@
 (def email-address "test@email.address.com")
 (def twitter-id "twitter-1")
 
-(def test-db (atom {}))
-(def app (helpers/test-context test-db))
+(def app (helpers/test-context))
 
 (def USER_ID 10)
 

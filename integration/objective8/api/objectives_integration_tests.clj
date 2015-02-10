@@ -10,8 +10,7 @@
 ;; Testing from http request -> making correct calls within objectives namespace
 ;; Mock or stub out 'objectives' namespace
 
-(def test-db (atom {}))
-(def app (helpers/test-context test-db))
+(def app (helpers/test-context))
 
 (def OBJECTIVE_ID 10)
 
