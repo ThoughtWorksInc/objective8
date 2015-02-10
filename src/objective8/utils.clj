@@ -4,10 +4,7 @@
             [objective8.config :as config]))
 
 (def host-url
-  (str "http://"
-       (config/get-var "BASE_URI" "localhost")
-       (when-let [port (config/get-var "APP_PORT")] (str ":" port))))
-
+  (str "http://" (config/get-var "BASE_URI" "localhost:8080")))
 
 ;;TIME FORMATTING
 
