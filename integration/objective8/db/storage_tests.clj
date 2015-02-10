@@ -5,16 +5,15 @@
             [objective8.storage.database :as db]))
 
 
-(def db-connection (db/connect! db/postgres-spec))
+(defn db-connection [] (db/connect! db/postgres-spec))
 
 (defn truncate-tables []
   (korma/delete :comments)
   (korma/delete :objectives)
   (korma/delete :users))
 
-(against-background [(after :facts (truncate-tables))]
+(against-background [(before :contents (db-connection)) (after :facts (truncate-tables))]
 (facts "Storage tests" :integration
-
        (fact "a user entity can be stored in the database"
              (let [user {:entity :user :twitter-id "the-twitter-id" :foo "bar"}
                    store-result (storage/pg-store! user)
