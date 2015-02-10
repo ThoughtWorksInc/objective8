@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 export BASE_URL="localhost"
-export PORT="8080"
+export APP_PORT="8080"
 

@@ -90,7 +90,7 @@
    :translation translation-config})
 
 (defn start-server []
-  (let [port (Integer/parseInt (config/get-var "PORT" "8080"))]
+  (let [port (Integer/parseInt (config/get-var "APP_PORT" "8080"))]
     (reset! postgres-connection-pool (db/connect! db/postgres-spec))
     (log/info (str "Starting objective8 on port " port))
     (reset! server (run-server (app app-config) {:port port}))))
