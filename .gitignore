@@ -8,6 +8,7 @@ node_modules/
 \#*
 resources/public/*.css
 resources/public/*.css.map
+resources/public/*.js
 ops/.vagrant
 .lein-deps-sum
 lib/

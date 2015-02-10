@@ -4,9 +4,9 @@ module.exports = function(grunt) {
 
   require('load-grunt-tasks')(grunt);
 
-  grunt.initConfig({    
+  grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    
+
     watch: {
       gruntfile: {
         files: ['gruntfile.js']
@@ -16,7 +16,7 @@ module.exports = function(grunt) {
         tasks: ['sass:dev', 'autoprefixer:dev']
       }
     },
-    
+
     //Compile SCSS
     sass: {
       dev: {
@@ -60,17 +60,52 @@ module.exports = function(grunt) {
         }
       }
     },
+
+    //JAVASCRIPT
+    jshint: {
+      options: {
+        jshintrc: '.jshintrc',
+        reporter: require('jshint-stylish')
+      },
+      all: [
+        'resources/src/custom/{,*/}*.js',
+        '!resources/src/vendor/*'
+      ]
+    },
+    //Stick everything together, you'll need to specify JS files in the correct order here.
+    concat: {
+      dist: {
+        src: [
+          'resources/src/js/vendor/webfont.js',
+          'resources/src/js/custom/**/*.js'
+        ],
+        dest: 'resources/public/scripts.js',
+      },
+    },
+    //Uglify
+    uglify: {
+      build: {
+        src: 'resources/public/scripts.js',
+        dest: 'resources/public/scripts.min.js'
+      }
+    }
   });
 
   grunt.registerTask('dev',[
     'sass:dev',
     'autoprefixer:dev',
+    'jshint',
+    'concat',
+    'uglify',
     'watch'
   ]);
-  
+
   grunt.registerTask('build',[
     'sass:dist',
-    'autoprefixer:dist'
+    'autoprefixer:dist',
+    'jshint',
+    'concat',
+    'uglify'
   ]);
 
   grunt.registerTask('default', [
