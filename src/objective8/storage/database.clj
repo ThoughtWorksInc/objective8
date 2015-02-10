@@ -1,5 +1,6 @@
 (ns objective8.storage.database
   (:require [korma.db :as db]
+            [clojure.tools.logging :as log]
             [objective8.config :as config]))
 
 (def postgres-spec (db/postgres {:db (config/get-var "DB_NAME" "objective8")
@@ -11,4 +12,5 @@
 (defn connect!
   "Connect to the database described by the DB spec"
   [dbspec]
+  (log/info (str "Attempting to connect to the database" (dissoc dbspec :password)))
   (db/default-connection (db/create-db dbspec)))

@@ -20,11 +20,6 @@
             [objective8.handlers.front-end :as front-end-handlers])
   (:gen-class))
 
-;; Custom ring middleware
-
-(defn inject-db [handler store]
-  (fn [request] (handler (assoc request :objective8 {:store store}))))
-
 (def handlers {; Front End Handlers
                :index front-end-handlers/index
                :sign-in front-end-handlers/sign-in
