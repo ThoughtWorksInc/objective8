@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+export BASE_URI="localhost"
+export PORT="8080"
 export DB_USER=$SNAP_DB_PG_USER
 export DB_PASSWORD=$SNAP_DB_PG_PASSWORD
 export DB_HOST=$SNAP_DB_PG_HOST

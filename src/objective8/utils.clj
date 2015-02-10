@@ -5,10 +5,8 @@
 
 (def host-url
   (str "http://"
-    (config/get-var "BASE_URI" "localhost")
-     ":"
-    (config/get-var "PORT" "8080")
-  ))
+       (config/get-var "BASE_URI" "localhost")
+       (when-let [port (config/get-var "PORT")] (str ":" port))))
 
 
 ;;TIME FORMATTING
