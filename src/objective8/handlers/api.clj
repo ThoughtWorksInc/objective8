@@ -76,3 +76,17 @@
      :headers {"Content-Type" "application/json"
                "Location" resource-location}
      :body stored-comment}))
+
+(defn retrieve-comments [{:keys [route-params] :as request}]
+  (try
+    (let [id (-> (:id route-params)
+                 Integer/parseInt)]
+      (if-let [comments (comments/retrieve-comments id)]
+        (-> comments
+            response/response
+            (response/content-type "application/json"))
+        (response/not-found "")))
+    (catch NumberFormatException e
+      {:status 400
+       :header {}
+       :body "Objective id must be an integer"})))

@@ -19,6 +19,7 @@
                   :created-by-id USER_ID})
 
 (def stored-comment (assoc the-comment :_id 1))
+(def stored-comments (map #(assoc the-comment :_id %) (range 5)))
 
 (def the-comment-as-json (str "{\"comment\":\"The comment\",\"objective-id\":" OBJECTIVE_ID ",\"created-by-id\":" USER_ID "}"))
 
@@ -46,3 +47,11 @@
                    headers (:headers response)]
                response => (contains {:status 201})
                headers => (contains {"Location" (contains "/api/v1/comments/1")}))))
+
+
+(facts "about retrieving comments"
+  (fact "for an objective ID"
+      (p/request app "/api/v1/objectives/1/comments")
+      => (helpers/check-json-body stored-comments)
+      (provided
+        (comments/retrieve-comments 1) => stored-comments)))

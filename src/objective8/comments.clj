@@ -10,3 +10,8 @@
 
 (defn store-comment! [comment]
  (storage/pg-store! (assoc comment :entity :comment)))
+
+
+(defn retrieve-comments [objective-id]
+  (let [{result :result} (storage/pg-retrieve {:entity :comment :objective-id objective-id})]
+    (map #(dissoc % :entity) result))) ;TODO limit to 50

@@ -45,5 +45,5 @@
     (cond (= status 201)   (json/parse-string body true)
           :else            api-failure)))
 
-(defn retrieve-comments [objective-id] 
+(defn retrieve-comments [objective-id]
   [{:comment "A comment!"}])

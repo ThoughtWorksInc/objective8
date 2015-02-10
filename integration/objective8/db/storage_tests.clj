@@ -13,7 +13,7 @@
   (korma/delete m/objective)
   (korma/delete m/user))
 
-(against-background 
+(against-background
  [(before :contents (db-connection)) (after :facts (truncate-tables))]
  (facts "Storage tests" :integration
         (fact "a user entity can be stored in the database"
@@ -53,4 +53,13 @@
                     store-result (storage/pg-store! comment)
                     retrieve-result (storage/pg-retrieve {:entity :comment :_id (:_id store-result)})]
                 (first (:result retrieve-result)) => (contains {:created-by-id user-id
-                                                                :objective-id objective-id})))))
+                                                                :objective-id objective-id})))
+
+        ;TODO - Look at Korma storgae.clj limiting results/sorting
+        (future-fact "can limit the number of results when retrieving"
+          (let [users [{:entity :user :twitter-id "the-twitter-id1"}
+                       {:entity :user :twitter-id "the-twitter-id2"}
+                       {:entity :user :twitter-id "the-twitter-id3"}]
+                store-result (do-all (map storage/pg-store! users))
+                retrieve-result (storage/pg-retrieve {:entity :user}; :limit 2
+                  )]))))
