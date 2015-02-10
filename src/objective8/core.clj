@@ -56,10 +56,9 @@
                                        ["/" :id] :get-user}
 
                             "/objectives" {:post :post-objective
-                                          ["/" :id] :get-objective}
+                                           ["/" :id] :get-objective}
 
                             "/comments"   {:post :post-comment}}}
-
    ])
 
 (defn app [app-config]

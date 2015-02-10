@@ -1,4 +1,5 @@
 (ns objective8.responses
+  (:refer-clojure :exclude [comment])
   (:require [net.cgrand.enlive-html :as html]
             [objective8.translation :refer [translation-config]]
             [objective8.config :as config]
@@ -71,10 +72,15 @@
   "templates/comment-sign-in.html" [[:#clj-comment-sign-in]] [translation]
   [:#clj-comment-sign-in html/any-node] (html/replace-vars translation))
 
+(html/defsnippet a-comment
+  "templates/comment.html" [:li] [comment]
+  [:li] (html/content (:comment comment)))
+
 (html/defsnippet comments-view
-  "templates/comments-view.html" [[:#clj-comments-view]] [translation signed-in objective-id]
+  "templates/comments-view.html" [[:#clj-comments-view]] [translation signed-in objective-id comments]
   [:#clj-comments-view] (html/append (if signed-in (comment-create objective-id) (comment-sign-in translation)))
-  [:#clj-comments-view html/any-node] (html/replace-vars translation))
+  [:#clj-comments-view html/any-node] (html/replace-vars translation)
+  [:#clj-comments-view :.comment-list] (html/content (map a-comment comments)))
 
 ;OBJECTIVES
 (html/defsnippet objective-create-page
@@ -84,7 +90,7 @@
 
 (html/defsnippet objective-view-page
   "templates/objectives-view.html" [[:#clj-objectives-view]]
-  [{:keys [translation objective signed-in]}]
+  [{:keys [translation objective signed-in comments]}]
   [:.objective-article-details html/any-node] (html/replace-vars translation)
   [:h1] (html/content (:title objective))
   [:#clj-obj-goals-value] (html/content (:goals objective))
@@ -97,14 +103,13 @@
   [:.btn-linkedin] (html/set-attr :href (str "http://www.linkedin.com/shareArticle?mini=true&url=" (objective-url objective)))
   [:.btn-reddit] (html/set-attr :href (str "http://reddit.com/submit?url=" (objective-url objective) "&title=" (:title objective) " - "))
   [:.share-this-url] (html/set-attr :value (objective-url objective))
-  [:.share-widget] (html/after (comments-view translation signed-in (:_id objective))))
+  [:.share-widget] (html/after (comments-view translation signed-in (:_id objective) comments)))
 
 ;USERS
 (html/defsnippet users-email
   "templates/users-email.html" [[:#clj-users-email]] [{:keys [translation]}]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
   [:#clj-users-email html/any-node] (html/replace-vars translation))
-
 
 
 (defn render-template [template & args]

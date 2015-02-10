@@ -22,7 +22,7 @@
 
 (def stored-objective (assoc the-objective :_id OBJECTIVE_ID))
 
-(facts "objetives" :integration
+(facts "objectives" :integration
        (fact "can retrieve an objective using its id"
              (let [peridot-response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID))]
                peridot-response) => (helpers/check-json-body stored-objective)
@@ -38,7 +38,7 @@
 
        (fact "returns a 400 (Bad request) if objective id is not an integer"
              (p/request app "/api/v1/objectives/NOT-AN-INTEGER")
-             => (contains {:response (contains {:status 400})})) 
+             => (contains {:response (contains {:status 400})}))
 
        (facts "about posting objectives"
               (fact "the posted objective is stored"

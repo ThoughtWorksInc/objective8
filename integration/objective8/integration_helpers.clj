@@ -3,7 +3,8 @@
             [midje.sweet :as midje]
             [peridot.core :as p]
             [cheshire.core :as json]
-            [objective8.core :as core]))
+            [objective8.core :as core]
+            [midje.sweet :as midje]))
 
 (defn get-anti-forgery-token [request-context]
   (let [raw-html (:body (:response request-context))]
@@ -27,6 +28,18 @@
 (defn test-context
   "Creates a fake application context" 
   [] (p/session (core/app core/app-config)))
+
+;; Checkers for peridot responses
+(defn headers-location [expected-location]
+  (midje/contains
+   {:response
+    (midje/contains
+     {:headers
+      (midje/contains
+       {"Location" (midje/contains expected-location)})})}))
+
+(defn flash-message-contains [expected-flash-message]
+  (midje/contains {:response (midje/contains {:flash (midje/contains expected-flash-message)})}))
 
 ;; Checkers for peridot responses
 (defn headers-location [expected-location]

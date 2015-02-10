@@ -59,4 +59,19 @@
              (default-app objective-view-get-request) => (contains {:body (contains "my objective title")})
              (default-app objective-view-get-request) => (contains {:body (contains "my objective goals")})
              (default-app objective-view-get-request) => (contains {:body (contains "my objective description")})
-             (default-app objective-view-get-request) => (contains {:body (contains "01-12-2015")}))) 
+             (default-app objective-view-get-request) => (contains {:body (contains "01-12-2015")}))
+
+       (fact "Any user can view comments on an objective"
+             (against-background
+              (http-api/get-objective OBJECTIVE_ID) => {:title "my objective title"
+                                                        :goals "my objective goals"
+                                                        :description "my objective description"
+                                                        :end-date (utils/string->date-time "2015-12-01")}
+              (http-api/retrieve-comments OBJECTIVE_ID)
+              => [{:_id 1
+                   :objective-id OBJECTIVE_ID
+                   :created-by-id USER_ID
+                   :comment "Comment 1"}])
+             (let [user-session (helpers/test-context)
+                   peridot-response (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))]
+               peridot-response) => (contains {:response (contains {:body (contains "Comment 1")})})))

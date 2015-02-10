@@ -44,3 +44,6 @@
   (let [{:keys [body status]} (json-post (str utils/host-url "/api/v1/comments") comment)]
     (cond (= status 201)   (json/parse-string body true)
           :else            api-failure)))
+
+(defn retrieve-comments [objective-id] 
+  [{:comment "A comment!"}])
