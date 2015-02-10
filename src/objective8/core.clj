@@ -76,21 +76,18 @@
       wrap-json-params
       wrap-json-response
       wrap-flash
-      wrap-session
-      (inject-db (:store app-config))))
+      wrap-session))
 
 (defonce server (atom nil))
 (defonce postgres-connection-pool (atom nil))
 
-(defonce in-memory-db (atom {}))
 
 (def app-config
   {:authentication {:allow-anon? true
                     :workflows [twitter-workflow,
                                 sign-up-workflow]
                     :login-uri "/sign-in"}
-   :translation translation-config
-   :store in-memory-db})
+   :translation translation-config})
 
 (defn start-server []
   (let [port (Integer/parseInt (config/get-var "PORT" "8080"))]

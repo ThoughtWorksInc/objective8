@@ -40,10 +40,6 @@
        :result result})
     (throw (Exception. "Query map requires an :entity key"))))
 
-(defn request->store
-  "Fetches the storage atom from the request"
-  [request]
-  (:store (:objective8 request)))
 
 (defn gen-uuid [] (str (java.util.UUID/randomUUID)))
 

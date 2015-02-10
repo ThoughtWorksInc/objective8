@@ -14,9 +14,9 @@
 (fact "can store and retrieve records in collections"
       (let [saved-record-1 (s/store! test-db "some-collection" {:is "a document"})
             saved-record-2 (s/store! test-db "some-other-collection" {:is "another document"})]
-        
-        saved-record-1 => (contains {:is "a document"} :in-any-order) 
-        saved-record-2 => (contains {:is "another document"} :in-any-order) 
+
+        saved-record-1 => (contains {:is "a document"} :in-any-order)
+        saved-record-2 => (contains {:is "another document"} :in-any-order)
 
         (s/retrieve test-db "some-collection" (:_id saved-record-1)) => (contains {:is "a document"} :in-any-order)
         (s/retrieve test-db "some-other-collection" (:_id saved-record-2)) => (contains {:is "another document"} :in-any-order)))
@@ -27,9 +27,6 @@
 
 (fact "returns nil if a collection doesn't exist"
       (s/retrieve test-db "does not exist" "not an id") => nil)
-
-(fact "fetches storage atom from request map"
-      (s/request->store {:objective8 {:store :the-store}}) => :the-store)
 
 (fact "fetches based on predicate"
       (s/store! test-db "users" {:a 1})
