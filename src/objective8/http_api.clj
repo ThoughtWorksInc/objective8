@@ -46,4 +46,8 @@
           :else            api-failure)))
 
 (defn retrieve-comments [objective-id]
-  [{:comment "A comment!"}])
+  (let [{:keys [body status]} @(http/get (str utils/host-url "/api/v1/objectives/" objective-id "/comments"))]
+    (cond
+      (= status 200) (-> body
+                         (json/parse-string true))
+      :else          api-failure)))

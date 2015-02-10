@@ -106,3 +106,11 @@
              (with-fake-http [(str host-url "/api/v1/comments") (:failure comment-response)]
                (api/create-comment the-comment))
              => api/api-failure))
+
+(facts "about retrieving comments"
+      (fact "returns a list of comments for an objective"
+        (with-fake-http [(str host-url "/api/v1/objectives/1/comments") {:status 200
+                                                                         :headers {"Content-Type" "application/json"}
+                                                                         :body (json/generate-string [the-stored-comment])}]
+                        (api/retrieve-comments 1))
+        => [the-stored-comment]))
