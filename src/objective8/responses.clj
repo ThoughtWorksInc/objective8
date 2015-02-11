@@ -76,15 +76,17 @@
   [:#objective-id] (html/set-attr :value objective-id))
 
 (html/defsnippet comment-sign-in
-  "templates/comment-sign-in.html" [[:#clj-comment-sign-in]] [])
+  "templates/comment-sign-in.html" [[:#clj-comment-sign-in]] [translation uri]
+  [:a] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" uri))
+  [:#clj-comment-sign-in html/any-node] (html/replace-vars translation))
 
 (html/defsnippet a-comment
   "templates/comment.html" [:li] [comment]
   [:li] (html/content (:comment comment)))
 
 (html/defsnippet comments-view
-  "templates/comments-view.html" [[:#clj-comments-view]] [translation signed-in objective-id comments]
-  [:#clj-comments-view] (html/append (if signed-in (comment-create objective-id) (comment-sign-in)))
+  "templates/comments-view.html" [[:#clj-comments-view]] [translation signed-in objective-id comments uri]
+  [:#clj-comments-view] (html/append (if signed-in (comment-create objective-id) (comment-sign-in translation uri)))
   [:#clj-comments-view html/any-node] (html/replace-vars translation)
   [:#clj-comments-view :.comment-list] (html/content (map a-comment comments)))
 
@@ -96,7 +98,7 @@
 
 (html/defsnippet objective-view-page
   "templates/objectives-view.html" [[:#clj-objectives-view]]
-  [{:keys [translation objective signed-in comments]}]
+  [{:keys [translation objective signed-in comments uri]}]
   [:.objective-article-details html/any-node] (html/replace-vars translation)
   [:h1] (html/content (:title objective))
   [:#clj-obj-goals-value] (html/content (:goals objective))
@@ -109,7 +111,7 @@
   [:.btn-linkedin] (html/set-attr :href (str "http://www.linkedin.com/shareArticle?mini=true&url=" (objective-url objective)))
   [:.btn-reddit] (html/set-attr :href (str "http://reddit.com/submit?url=" (objective-url objective) "&title=" (:title objective) " - "))
   [:.share-this-url] (html/set-attr :value (objective-url objective))
-  [:.share-widget] (html/after (comments-view translation signed-in (:_id objective) comments)))
+  [:.share-widget] (html/after (comments-view translation signed-in (:_id objective) comments uri)))
 
 ;USERS
 (html/defsnippet users-email

@@ -2,9 +2,9 @@
   (:use org.httpkit.fake)
   (:require [org.httpkit.client :as http]
             [midje.sweet :refer :all]
+            [cheshire.core :as json]
             [objective8.http-api :as api]
-            [objective8.utils :as utils]
-            [cheshire.core :as json]))
+            [objective8.utils :as utils]))
 
 (def host-url utils/host-url)
 
@@ -95,14 +95,13 @@
                 :body (json/generate-string the-stored-comment)}
    :failure    {:status 500}})
 
-
 (facts "about posting comments"
        (fact "returns a stored comment when post succeeds"
           (with-fake-http [(str host-url "/api/v1/comments") (:successful comment-response)]
             (api/create-comment the-comment))
           => the-stored-comment)
 
-    (fact "returns api-failure when post fails"
+       (fact "returns api-failure when post fails"
              (with-fake-http [(str host-url "/api/v1/comments") (:failure comment-response)]
                (api/create-comment the-comment))
              => api/api-failure))

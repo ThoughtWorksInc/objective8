@@ -41,18 +41,6 @@
 (defn flash-message-contains [expected-flash-message]
   (midje/contains {:response (midje/contains {:flash (midje/contains expected-flash-message)})}))
 
-;; Checkers for peridot responses
-(defn headers-location [expected-location]
-  (midje/contains
-   {:response
-    (midje/contains
-     {:headers
-      (midje/contains
-       {"Location" (midje/contains expected-location)})})}))
-
-(defn flash-message-contains [expected-flash-message]
-  (midje/contains {:response (midje/contains {:flash (midje/contains expected-flash-message)})}))
-
 (defn peridot-response-json-body->map [peridot-response]
   (-> (get-in peridot-response [:response :body])
       (json/parse-string true)))

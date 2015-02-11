@@ -73,7 +73,7 @@
 
 (defn objective-detail [{{id :id} :route-params
                          message :flash
-                         :keys [t' locale]
+                         :keys [uri t' locale]
                          :as request}]
   (let [objective-id (Integer/parseInt id)
         objective (http-api/get-objective objective-id)]
@@ -87,8 +87,8 @@
                                                     :message message
                                                     :objective (update-in objective [:end-date] utils/date-time->pretty-date)
                                                     :comments comments
-                                                    :signed-in (signed-in?)})))))
-
+                                                    :signed-in (signed-in?)
+                                                    :uri uri})))))
 
 ;; COMMENTS
 

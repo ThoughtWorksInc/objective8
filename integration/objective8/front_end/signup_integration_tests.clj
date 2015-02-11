@@ -86,4 +86,17 @@
                (http-api/find-user-by-twitter-id "twitter-TWITTER_ID")
                => {:_id USER_ID
                    :twitter-id "twitter-TWITTER_ID"
-                   :email-address "test@email.address.com"} :times 1))) 
+                   :email-address "test@email.address.com"} :times 1)))
+
+(binding [config/enable-csrf false]
+  (future-fact "unauthorised user can sign in and be refered to a target uri"
+        (against-background
+         (oauth/access-token anything anything anything) => {:user_id USER_ID}
+         (http-api/create-user anything) => {:_id USER_ID})
+        (let [target-uri "/target"
+              user-session (helpers/test-context)
+              sign-in-with-refer-response (-> user-session
+                                              (p/request (str utils/host-url "sign_in?refer=" target-uri))
+                                              (p/request twitter-callback-url)
+                                              (p/request sign-up-url :request-method :post))]
+          sign-in-with-refer-response => (check-redirects-to target-uri))))
