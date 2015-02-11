@@ -28,6 +28,11 @@
                                      :reddit-text "Submit to Reddit"
                                      :url-label "URL to share"
                                      :url-title "The link to this page"}
+                      :error-404 {:doc-title "Error 404 | Objective[8]"
+                             :doc-description "Sorry the page you requested can't be found."
+                             :page-title "Sorry the page you requested can't be found."
+                             :page-intro "This page you were trying to reach at this address doesn't seem to exist. This is usually the result of a bad or outdated link. We apologize for any inconvenience."
+                             :page-content! "<h2>What can I do now?</h2><ul><li>Please return to the <a href=\"/\" title=\"Go to Home\">home page</a>.</li><li>If you would like to report an issue visit our <a href=\"https://github.com/ThoughtWorksInc/objective8/issues\">github issues page</a>.</li></ul>" }
                       :index {:doc-title "Objective[8]"
                              :doc-description ""
                              :index-welcome "Collaborative policy making for democratic organisations."
@@ -109,6 +114,11 @@
                                      :reddit-text "Compartir en Reddit"
                                      :url-label "Comparte el link"
                                      :url-title "Comparte el link"}
+                     :error-404 {:doc-title "Spanish(Error 404 | Objective[8])"
+                             :doc-description "Spanish(Sorry the page you requested can't be found.)"
+                             :page-title "Spanish(Sorry the page you requested can't be found.)"
+                             :page-intro "Spanish(This page you were trying to reach at this address doesn't seem to exist. This is usually the result of a bad or outdated link. We apologize for any inconvenience.)"
+                             :page-content! "<h2>What can I do now?</h2><ul><li>Please return to the <a href=\"/\" title=\"Go to Home\">home page</a>.</li><li>If you would like to report an issue visit our <a href=\"https://github.com/ThoughtWorksInc/objective8/issues\">github issues page</a>.</li></ul>" }
                      :index {:doc-title "Objective[8]"
                              :doc-description ""
                              :index-welcome "Politicos colaborando con organizaciones democráticas"

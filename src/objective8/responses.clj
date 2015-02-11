@@ -69,6 +69,12 @@
   [:#clj-project-status html/any-node] (html/replace-vars translation)
   [:#clj-project-status-detail] (html/html-content (translation :project-status/page-content)))
 
+;ERROR 404
+(html/defsnippet error-404-page
+  "templates/error-404.html" [:#clj-error-404] [{:keys [translation]}]
+  [:#clj-error-404 html/any-node] (html/replace-vars translation)
+  [:#clj-error-404-content] (html/html-content (translation :error-404/page-content)))
+
 ;COMMENTS
 (html/defsnippet comment-create
   "templates/comment-create.html" [[:#clj-comment-create]] [objective-id]
