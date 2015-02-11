@@ -55,6 +55,7 @@
                        ;TODO APi returns 302, and unauthorised returns 302, do we need these tests?
                        (fact "can post a new comment to an objective"
                              (against-background
+                               (http-api/get-objective OBJECTIVE_ID) => {:status 200}
                                (request->comment anything) => :a-comment
                                (http-api/create-comment :a-comment) => {:_id "the-comment-id"})
                              (let [response
@@ -72,4 +73,4 @@
                              => (contains {:status 302}))
                        (fact "cannot post a comment"
                              (default-app (mock/request :post "/comments"))
-                             => (contains {:status 302})))))) 
+                             => (contains {:status 302}))))))

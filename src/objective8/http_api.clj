@@ -1,5 +1,6 @@
 (ns objective8.http-api
   (:require [org.httpkit.client :as http]
+            [ring.util.response :as response]
             [objective8.utils :as utils]
             [cheshire.core :as json]))
 
@@ -35,6 +36,7 @@
       (= status 200) (-> body
                          (json/parse-string true)
                          (update-in [:end-date] utils/time-string->date-time))
+      (= status 404) (response/not-found "")
       :else          api-failure)))
 
 

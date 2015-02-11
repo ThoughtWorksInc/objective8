@@ -76,11 +76,11 @@
                            :goals "Objective goals"
                            :description "Objective description"
                            :end-date (utils/time-string->date-time "2015-01-31T00:00:00.000Z")}))
-       (fact "returns api-failure when no objective found"
+       (fact "returns 404 when no objective found"
              (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID)
                               {:status 404}]
                (api/get-objective OBJECTIVE_ID))
-             => api/api-failure))
+             => (contains {:status 404})))
 
 ;; COMMENTS
 

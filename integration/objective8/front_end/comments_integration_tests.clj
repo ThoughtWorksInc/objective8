@@ -17,12 +17,15 @@
 (facts "comments" :integration
        (binding [config/enable-csrf false]
          (fact "authorised user can post and retrieve comment against an objective"
-               (against-background (http-api/create-comment {:comment "The comment"
-                                                             :objective-id OBJECTIVE_ID
-                                                             :created-by-id USER_ID}) => {:_id 12})
-               (against-background
-                 (oauth/access-token anything anything anything) => {:user_id USER_ID}
-                 (http-api/create-user anything) => {:_id USER_ID})
+              (against-background
+                  (http-api/get-objective OBJECTIVE_ID) => {:status 200})
+              (against-background
+                  (http-api/create-comment {:comment "The comment"
+                                            :objective-id OBJECTIVE_ID
+                                            :created-by-id USER_ID}) => {:_id 12})
+              (against-background
+                  (oauth/access-token anything anything anything) => {:user_id USER_ID}
+                  (http-api/create-user anything) => {:_id USER_ID})
                (let [user-session (helpers/test-context)
                      params {:comment "The comment"
                              :objective-id (str OBJECTIVE_ID)}

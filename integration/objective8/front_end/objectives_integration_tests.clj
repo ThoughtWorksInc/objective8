@@ -47,7 +47,7 @@
                  (:flash response) => (contains "Your objective has been created!")
                  (-> response
                      :headers
-                     (get "Location")) => (contains (str "/objectives/" OBJECTIVE_ID))))) 
+                     (get "Location")) => (contains (str "/objectives/" OBJECTIVE_ID)))))
 
        (fact "Any user can view an objective"
              (against-background
@@ -60,6 +60,11 @@
              (default-app objective-view-get-request) => (contains {:body (contains "my objective goals")})
              (default-app objective-view-get-request) => (contains {:body (contains "my objective description")})
              (default-app objective-view-get-request) => (contains {:body (contains "01-12-2015")}))
+
+      (fact "A user should receive a 404 if an objective doesn't exist"
+            (against-background
+              (http-api/get-objective OBJECTIVE_ID) => {:status 404})
+              (default-app objective-view-get-request) => (contains {:status 404}))
 
        (fact "Any user can view comments on an objective"
              (against-background

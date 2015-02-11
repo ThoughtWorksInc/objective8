@@ -68,16 +68,18 @@
                          :keys [t' locale]
                          :as request}]
   (let [objective-id (Integer/parseInt id)
-        objective (http-api/get-objective objective-id)
-        comments (http-api/retrieve-comments objective-id)]
-    (rendered-response objective-view-page {:translation t'
-                                            :locale (subs (str locale) 1)
-                                            :doc-title (t' :objective-view/doc-title)
-                                            :doc-description (t' :objective-view/doc-description)
-                                            :message message
-                                            :objective (update-in objective [:end-date] utils/date-time->pretty-date)
-                                            :comments comments
-                                            :signed-in (signed-in?)})))
+        objective (http-api/get-objective objective-id)]
+    (if (= (objective :status) 404)
+        (response/not-found "")
+        (let [comments (http-api/retrieve-comments objective-id)]
+            (rendered-response objective-view-page {:translation t'
+                                                    :locale (subs (str locale) 1)
+                                                    :doc-title (t' :objective-view/doc-title)
+                                                    :doc-description (t' :objective-view/doc-description)
+                                                    :message message
+                                                    :objective (update-in objective [:end-date] utils/date-time->pretty-date)
+                                                    :comments comments
+                                                    :signed-in (signed-in?)})))))
 
 
 ;; COMMENTS
