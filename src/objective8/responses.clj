@@ -33,6 +33,7 @@
   [:.browserupgrade] (html/html-content (translation :base/browsehappy))
   [:.header-logo] (html/content (translation :base/header-logo-text))
   [:.header-logo] (html/set-attr :title (translation :base/header-logo-title))
+  [:#projectStatus] (html/html-content (translation :base/project-status))
   [:.page-container] (html/before (if flash-message (flash-message-view flash-message)))
   [:#main-content] (html/content content)
   [:body] (html/append (if google-analytics-tracking-id (google-analytics google-analytics-tracking-id))))
@@ -61,6 +62,12 @@
   "templates/sign-in.html" [[:#clj-sign-in-page]] [{:keys [translation]}]
   [:#clj-sign-in-page] (html/append (sign-in-twitter))
   [:#clj-sign-in-page html/any-node] (html/replace-vars translation))
+
+;PROJECT STATUS
+(html/defsnippet project-status-page
+  "templates/project-status.html" [[:#clj-project-status]] [{:keys [translation]}]
+  [:#clj-project-status html/any-node] (html/replace-vars translation)
+  [:#clj-project-status-detail] (html/html-content (translation :project-status/page-content)))
 
 ;COMMENTS
 (html/defsnippet comment-create

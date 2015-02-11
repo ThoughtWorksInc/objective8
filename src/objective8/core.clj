@@ -24,6 +24,7 @@
                :index front-end-handlers/index
                :sign-in front-end-handlers/sign-in
                :sign-out front-end-handlers/sign-out
+               :project-status front-end-handlers/project-status
                :create-objective-form (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form) #{:signed-in})
                :create-objective-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form-post) #{:signed-in})
                :objective (utils/anti-forgery-hook front-end-handlers/objective-detail)
@@ -43,6 +44,8 @@
         "sign-in"           :sign-in
 
         "sign-out"          :sign-out
+
+        "project-status"    :project-status
 
         "static/"           (->Resources {:prefix "public/"})
 

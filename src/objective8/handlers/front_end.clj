@@ -36,6 +36,14 @@
 (defn sign-out [_]
   (friend/logout* (response/redirect "/")))
 
+
+(defn project-status [{:keys [t' locale]}]
+  (rendered-response project-status-page {:translation t'
+                                          :locale (subs (str locale) 1)
+                                          :doc-title (t' :project-status/doc-title)
+                                          :doc-description (t' :project-status/doc-description)
+                                          :signed-in (signed-in?)}))
+
 ;; USER PROFILE
 
 (defn sign-up-form [{:keys [t' locale]}]
