@@ -24,9 +24,12 @@
 (defn sign-up-form-post [{params :params session :session :as request}]
   (if-let [twitter-id (:twitter-id session)]
     (let [email-address (:email-address params)
-          user (http-api/create-user {:twitter-id twitter-id :email-address email-address})]
-      (workflows/make-auth {:username (:_id user) :roles #{:signed-in}}
-                           {::friend/workflow :objective8.workflows.sign-up/sign-up-workflow}))
+          user (http-api/create-user {:twitter-id twitter-id :email-address email-address})
+          auth (workflows/make-auth {:username (:_id user) :roles #{:signed-in}}
+                                    {::friend/workflow :objective8.workflows.sign-up/sign-up-workflow})]
+      (if-let [redirect-uri (:sign-in-referrer session)]
+        (friend/merge-authentication (response/redirect redirect-uri) auth)
+        auth))
     {:status 401}))
 
 (def sign-up-handlers

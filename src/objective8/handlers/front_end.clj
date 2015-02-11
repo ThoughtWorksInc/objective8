@@ -26,12 +26,15 @@
                                  :doc-description (t' :index/doc-description)
                                  :signed-in (signed-in?)}))
 
-(defn sign-in [{:keys [t' locale]}]
-  (rendered-response sign-in-page {:translation t'
-                                   :locale (subs (str locale) 1)
-                                   :doc-title (t' :sign-in/doc-title)
-                                   :doc-description (t' :sign-in/doc-description)
-                                   :signed-in (signed-in?)}))
+(defn sign-in [{{refer :refer} :params 
+                :keys [t' locale] 
+                :as request}]
+  (-> (rendered-response sign-in-page {:translation t'
+                                       :locale (subs (str locale) 1)
+                                       :doc-title (t' :sign-in/doc-title)
+                                       :doc-description (t' :sign-in/doc-description)
+                                       :signed-in (signed-in?)})
+      (assoc-in [:session :sign-in-referrer] refer)))
 
 (defn sign-out [_]
   (friend/logout* (response/redirect "/")))

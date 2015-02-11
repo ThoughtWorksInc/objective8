@@ -4,8 +4,6 @@
               [ring.util.response :as response]
               [ring.util.request :as request]
               [bidi.ring :refer [make-handler]]
-              [cemerick.friend :as friend]
-              [cemerick.friend.workflows :as workflows]
               [objective8.utils :as utils]
               [objective8.responses :refer [simple-response]]
               [objective8.config :as config]))
