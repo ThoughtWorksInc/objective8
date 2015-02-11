@@ -15,7 +15,8 @@
 (def OBJECTIVE_ID 10)
 
 (def the-objective {:title "my objective title"
-                    :goals "my objective goals"
+                    :goal-1 "my first objective goal"
+                    :goal-2 "my second objective goal"
                     :description "my objective description"
                     :end-date "2015-01-01"
                     :created-by-id 1})
@@ -27,14 +28,14 @@
              (let [peridot-response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID))]
                peridot-response) => (helpers/check-json-body stored-objective)
              (provided
-               (objectives/retrieve-objective OBJECTIVE_ID) => stored-objective)) 
+               (objectives/retrieve-objective OBJECTIVE_ID) => stored-objective))
 
        (fact "returns a 404 if an objective does not exist"
              (against-background
                (objectives/retrieve-objective anything) => nil)
 
              (p/request app (str "/api/v1/objectives/" 123456))
-             => (contains {:response (contains {:status 404})})) 
+             => (contains {:response (contains {:status 404})}))
 
        (fact "returns a 400 (Bad request) if objective id is not an integer"
              (p/request app "/api/v1/objectives/NOT-AN-INTEGER")
@@ -62,4 +63,4 @@
                           response (:response result)
                           headers (:headers response)]
                       response => (contains {:status 201})
-                      headers => (contains {"Location" (contains (str "/api/v1/objectives/" OBJECTIVE_ID))}))))) 
+                      headers => (contains {"Location" (contains (str "/api/v1/objectives/" OBJECTIVE_ID))})))))

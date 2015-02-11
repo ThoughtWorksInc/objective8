@@ -25,7 +25,7 @@
          (fact "authorised user can post and retrieve objective"
                (against-background (http-api/create-objective
                                      {:title "my objective title"
-                                      :goals "my objective goals"
+                                      :goal-1 "my objective goal"
                                       :description "my objective description"
                                       :end-date (utils/string->date-time "2012-12-12")
                                       :created-by-id USER_ID}) => {:_id OBJECTIVE_ID})
@@ -35,7 +35,7 @@
                  (http-api/create-user anything) => {:_id USER_ID})
                (let [user-session (helpers/test-context)
                      params {:title "my objective title"
-                             :goals "my objective goals"
+                             :goal-1 "my objective goal"
                              :description "my objective description"
                              :end-date "2012-12-12"}
                      response (:response
@@ -52,12 +52,12 @@
        (fact "Any user can view an objective"
              (against-background
                (http-api/get-objective OBJECTIVE_ID) => {:title "my objective title"
-                                                         :goals "my objective goals"
+                                                         :goal-1 "my objective goal"
                                                          :description "my objective description"
                                                          :end-date (utils/string->date-time "2015-12-01")})
              (default-app objective-view-get-request) => (contains {:status 200})
              (default-app objective-view-get-request) => (contains {:body (contains "my objective title")})
-             (default-app objective-view-get-request) => (contains {:body (contains "my objective goals")})
+             (default-app objective-view-get-request) => (contains {:body (contains "my objective goal")})
              (default-app objective-view-get-request) => (contains {:body (contains "my objective description")})
              (default-app objective-view-get-request) => (contains {:body (contains "01-12-2015")}))
 
@@ -69,7 +69,7 @@
        (fact "Any user can view comments on an objective"
              (against-background
               (http-api/get-objective OBJECTIVE_ID) => {:title "my objective title"
-                                                        :goals "my objective goals"
+                                                        :goal-1 "my objective goal"
                                                         :description "my objective description"
                                                         :end-date (utils/string->date-time "2015-12-01")}
               (http-api/retrieve-comments OBJECTIVE_ID)

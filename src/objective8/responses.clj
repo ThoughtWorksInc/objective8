@@ -97,6 +97,10 @@
   [:#clj-comments-view :.comment-list] (html/content (map a-comment comments)))
 
 ;OBJECTIVES
+(html/defsnippet a-goal
+  "templates/goal.html" [:li] [goal]
+  [:li] (html/content goal))
+
 (html/defsnippet objective-create-page
   "templates/objectives-create.html" [[:#clj-objective-create]] [{:keys [translation]}]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
@@ -107,7 +111,7 @@
   [{:keys [translation objective signed-in comments uri]}]
   [:.objective-article-details html/any-node] (html/replace-vars translation)
   [:h1] (html/content (:title objective))
-  [:#clj-obj-goals-value] (html/content (map a-comment goals))
+  [:#clj-obj-goals-value] (html/content (map a-goal (:goals objective)))
   [:#clj-obj-background-value] (html/content (:description objective))
   [:#clj-obj-end-date-value] (html/content (:end-date objective))
   [:.share-widget html/any-node] (html/replace-vars translation)
