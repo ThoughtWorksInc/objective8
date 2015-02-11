@@ -1,8 +1,10 @@
-<form id="clj-comment-create" method="POST" action="/comments">
-  <input id="objective-id" type="hidden" value="{{objective-id}}" name="objective-id">
+<div id="clj-comment-create" class="objective-comment-posts">
+  <form method="POST" action="/comments">
+    <input id="objective-id" type="hidden" value="{{objective-id}}" name="objective-id">
 
-  <label for="comment">${comment-create/comment-label}</label>
-  <textarea id="comment" name="comment" rows="5" cols="10" pattern=".{50,}" maxlength="500" title="${comment-create/comment-title}" required></textarea>
+    <label for="comment">${comment-create/comment-label}</label>
+    <textarea id="comment" name="comment" rows="5" cols="10" pattern=".{50,}" maxlength="500" title="${comment-create/comment-title}" required></textarea>
 
-  <button type="submit" class="button">${comment-create/post-button}</button>
-</form>
+    <button type="submit" class="button">${comment-create/post-button}</button>
+  </form>
+</div>

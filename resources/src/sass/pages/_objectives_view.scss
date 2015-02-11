@@ -1,3 +1,8 @@
-.objective-article {
-  max-width: 30em;
+.objective-article-details,
+.objective-comments {
+  @include span-columns(7);
+  @include last-col;
+  @include mq(600) {
+    float: right;
+  }
 }

@@ -69,8 +69,7 @@
   [:#objective-id] (html/set-attr :value objective-id))
 
 (html/defsnippet comment-sign-in
-  "templates/comment-sign-in.html" [[:#clj-comment-sign-in]] [translation]
-  [:#clj-comment-sign-in html/any-node] (html/replace-vars translation))
+  "templates/comment-sign-in.html" [[:#clj-comment-sign-in]] [])
 
 (html/defsnippet a-comment
   "templates/comment.html" [:li] [comment]
@@ -78,7 +77,7 @@
 
 (html/defsnippet comments-view
   "templates/comments-view.html" [[:#clj-comments-view]] [translation signed-in objective-id comments]
-  [:#clj-comments-view] (html/append (if signed-in (comment-create objective-id) (comment-sign-in translation)))
+  [:#clj-comments-view] (html/append (if signed-in (comment-create objective-id) (comment-sign-in)))
   [:#clj-comments-view html/any-node] (html/replace-vars translation)
   [:#clj-comments-view :.comment-list] (html/content (map a-comment comments)))
 
