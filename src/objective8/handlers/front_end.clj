@@ -78,7 +78,11 @@
   (let [objective-id (Integer/parseInt id)
         objective (http-api/get-objective objective-id)]
     (if (= (objective :status) 404)
-        (response/not-found "")
+        (rendered-response error-404-page {:translation t'
+                                           :locale (subs (str locale) 1)
+                                           :signed-in (signed-in?)
+                                           :status-code 404})
+        ; (response/not-found "")
         (let [comments (http-api/retrieve-comments objective-id)]
             (rendered-response objective-view-page {:translation t'
                                                     :locale (subs (str locale) 1)

@@ -28,12 +28,12 @@
     (let [request-token-response (oauth/request-token consumer callback-url)
           approval-uri (oauth/user-approval-uri consumer (:oauth_token request-token-response))]
       (response/redirect approval-uri))
-    (catch clojure.lang.ExceptionInfo e 
+    (catch clojure.lang.ExceptionInfo e
       (do (log/warn (str "Could not get request token from twitter: " e))
           {:status 502}))))
 
 (defn twitter-callback [{params :params session :session}]
-  (try 
+  (try
     (let [twitter-response (oauth/access-token consumer
                                                params
                                                (:oauth_verifier params))
@@ -42,7 +42,7 @@
                              {:session (assoc session :twitter-id twitter-user-id)})]
       the-response)
     (catch clojure.lang.ExceptionInfo e
-      (do (log/info (str "Did not get authentication from twitter: " e)) 
+      (do (log/info (str "Did not get authentication from twitter: " e))
           (response/redirect "/")))))
 
 (def twitter-handlers

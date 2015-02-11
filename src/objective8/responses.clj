@@ -139,7 +139,7 @@
     :body text}))
 
 (defn rendered-response [template-name args]
-  (let [navigation (if (:signed-in args)
+(let [navigation (if (:signed-in args)
                          global-navigation-signed-in
                          global-navigation-signed-out)
         page (render-template base (assoc args
