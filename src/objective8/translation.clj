@@ -81,7 +81,7 @@
                                       :created-message "Your objective has been created!"}
                      :comment-view {:created-message "Your comment has been added!"
                                     :comment-title "Comments"}
-                     :comment-create {:comment-label "Comment"
+                     :comment-create {:comment-label "Post a comment"
                                       :comment-title "Comments are a maximum length of 500 characters"
                                       :post-button "Post"}
                      :users-email {:doc-title "Sign up | Objective[8]"
@@ -167,7 +167,7 @@
                                       :created-message "Tu objetivo ha sido creado"}
                     :comment-view {:created-message "Tu comentario ha sido creado"
                                    :comment-title "Comentarios"}
-                     :comment-create {:comment-label "Comentario"
+                     :comment-create {:comment-label "Spanish(Post a comment)"
                                       :comment-title "Los comentarios son máximo de 500 caracteres."
                                       :post-button "Crear"}
                      :users-email {:doc-title "Perfil | Objective[8]"
