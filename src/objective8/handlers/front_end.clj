@@ -82,8 +82,8 @@
         (let [comments (http-api/retrieve-comments objective-id)]
             (rendered-response objective-view-page {:translation t'
                                                     :locale (subs (str locale) 1)
-                                                    :doc-title (t' :objective-view/doc-title)
-                                                    :doc-description (t' :objective-view/doc-description)
+                                                    :doc-title (str (:title objective) " | Objective[8]")
+                                                    :doc-description (:title objective)
                                                     :message message
                                                     :objective (update-in objective [:end-date] utils/date-time->pretty-date)
                                                     :comments comments
