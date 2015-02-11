@@ -93,7 +93,7 @@
   [:.objective-article-details html/any-node] (html/replace-vars translation)
   [:h1] (html/content (:title objective))
   [:#clj-obj-goals-value] (html/content (:goals objective))
-  [:#clj-obj-description-value] (html/content (:description objective))
+  [:#clj-obj-background-value] (html/content (:description objective))
   [:#clj-obj-end-date-value] (html/content (:end-date objective))
   [:.share-widget html/any-node] (html/replace-vars translation)
   [:.btn-facebook] (html/set-attr :href (str "http://www.facebook.com/sharer.php?u=" (objective-url objective) "t=" (:title objective) " - "))
