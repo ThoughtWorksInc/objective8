@@ -9,7 +9,7 @@
   [{:keys [params]}]
     ;TODO Should we use friend here?
     (let [iso-time (utils/string->date-time (:end-date params))]
-      (assoc (select-keys params [:title :goals :description])
+      (assoc (select-keys params [:title :goal-1 :goal-2 :goal-3 :description ])
                                   :end-date iso-time
                                   :created-by-id (get (friend/current-authentication) :username))))
 

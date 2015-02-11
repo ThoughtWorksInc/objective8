@@ -107,7 +107,7 @@
   [{:keys [translation objective signed-in comments uri]}]
   [:.objective-article-details html/any-node] (html/replace-vars translation)
   [:h1] (html/content (:title objective))
-  [:#clj-obj-goals-value] (html/content (:goals objective))
+  [:#clj-obj-goals-value] (html/content (map a-comment goals))
   [:#clj-obj-background-value] (html/content (:description objective))
   [:#clj-obj-end-date-value] (html/content (:end-date objective))
   [:.share-widget html/any-node] (html/replace-vars translation)

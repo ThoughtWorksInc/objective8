@@ -13,7 +13,11 @@
 
         <label for="objective-goals">${objective-create/goals-label}<span class="required">*</span></label>
         <p class="label-helper">${objective-create/goals-prompt}</p>
-        <textarea id="objective-goals" name="goals" rows="5" cols="10" pattern=".{50,}" maxlength="500" title="${objective-create/goals-title}" required placeholder="${objective-create/goals-placeholder}"></textarea>
+        <input id="objective-goals" name="goal-1" type="text" pattern=".{3,}" maxlength="200" required  title="${objective-create/goals-title}" placeholder="${objective-create/goals-placeholder}">
+        <label for="objective-goals-2" class="visuallyhidden">${objective-create/goals-label} 2</label>
+        <input id="objective-goals-2" name="goal-2" type="text" maxlength="200"  title="${objective-create/goals-title}">
+        <label for="objective-goals-3" class="visuallyhidden">${objective-create/goals-label} 3</label>
+        <input id="objective-goals-3" name="goal-3" type="text" maxlength="200"  title="${objective-create/goals-title}">
 
         <label for="objective-description">${objective-create/background-label}</label>
         <p class="label-helper">${objective-create/background-prompt}</p>

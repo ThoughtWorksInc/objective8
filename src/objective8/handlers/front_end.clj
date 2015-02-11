@@ -94,6 +94,7 @@
                                                     :message message
                                                     :objective (update-in objective [:end-date] utils/date-time->pretty-date)
                                                     :comments comments
+                                                    :goals (remove nil? [(:goal-1 objective) (:goal-2 objective) (:goal-3 objective)])
                                                     :signed-in (signed-in?)
                                                     :uri uri})))))
 

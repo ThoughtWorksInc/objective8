@@ -43,7 +43,7 @@
 ;; OBJECTIVE
 (defn post-objective [{:keys [params] :as request}]
   (let [objective (-> params
-                      (select-keys [:title :goals :description :end-date :created-by-id]))
+                      (select-keys [:title :goal-1 :goal-2 :goal-3 :description :end-date :created-by-id]))
         stored-objective (objectives/store-objective! objective)
         resource-location (str utils/host-url "/api/v1/objectives/" (:_id stored-objective))]
     {:status 201
