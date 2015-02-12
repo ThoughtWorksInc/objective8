@@ -113,3 +113,27 @@
                                                                          :body (json/generate-string [the-stored-comment])}]
                         (api/retrieve-comments 1))
         => [the-stored-comment]))
+
+;; QUESTIONS
+
+(def the-question {:question "The meaning of life?"
+                   :objective-id OBJECTIVE_ID
+                   :created-by USER_ID})
+
+(def the-stored-question (into the-question {:_id 42}))
+(def question-response
+    {:successful {:status 201
+                  :headers {"Content-Type" "application/json"}
+                  :body (json/generate-string the-stored-question)}
+     :failure    {:status 500}})
+
+(facts "about posting questions"
+       (fact "returns a stored question when post succeeds"
+          (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID "/questions") (:successful question-response)]
+            (api/create-question the-question))
+          => the-stored-question)
+
+       (fact "returns api-failure when post fails"
+             (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID "/questions") (:failure question-response)]
+               (api/create-question the-question))
+             => api/api-failure))

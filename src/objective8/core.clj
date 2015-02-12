@@ -29,6 +29,7 @@
                :create-objective-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form-post) #{:signed-in})
                :objective (utils/anti-forgery-hook front-end-handlers/objective-detail)
                :create-comment-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-comment-form-post) #{:signed-in})
+               :add-question-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-question-form-post) #{:signed-in})
                ; API Handlers
                :post-user-profile api-handlers/post-user-profile
                :find-user-by-query api-handlers/find-user-by-query
@@ -51,7 +52,8 @@
 
         "objectives"        {:post :create-objective-form-post
                              ["/create"] :create-objective-form
-                             ["/" :id] :objective }
+                             ["/" :id] {"" :objective
+                                       "/questions" {:post :add-question-form-post}}}
 
         "comments"          {:post :create-comment-form-post}
 

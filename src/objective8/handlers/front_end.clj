@@ -7,6 +7,7 @@
             [objective8.responses :refer :all]
             [objective8.comments :refer [request->comment]]
             [objective8.objectives :refer [request->objective]]
+            [objective8.questions :refer [request->question]]
             [objective8.http-api :as http-api]
             [objective8.utils :as utils]
             [objective8.storage.storage :as storage]))
@@ -114,5 +115,16 @@
       (let [comment-url (str utils/host-url "/objectives/" (:objective-id comment))
             message (t' :comment-view/created-message)]
         (assoc (response/redirect comment-url) :flash message))
+      {:status 502})
+    {:status 400}))
+
+;; QUESTIONS
+
+(defn add-question-form-post [{:keys [uri t' locale] :as request}]
+  (if-let [question (request->question request)]
+    (if-let [stored-question (http-api/create-question question)]
+     (let [question-url (str utils/host-url "/objectives/" (:objective-id stored-question) "/questions/" (:_id stored-question))
+           message "Your question has been added!"]
+        (assoc (response/redirect question-url) :flash message))
       {:status 502})
     {:status 400}))

@@ -53,3 +53,10 @@
       (= status 200) (-> body
                          (json/parse-string true))
       :else          api-failure)))
+
+;; QUESTIONS
+
+(defn create-question [question]
+  (let [{:keys [body status]} (json-post (str utils/host-url "/api/v1/objectives/" (:objective-id question) "/questions") question)]
+    (cond (= status 201)   (json/parse-string body true)
+          :else            api-failure)))
