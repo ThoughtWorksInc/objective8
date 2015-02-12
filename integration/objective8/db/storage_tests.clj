@@ -56,10 +56,10 @@
                                                                 :objective-id objective-id})))
 
         ;TODO - Look at Korma storgae.clj limiting results/sorting
-        (future-fact "can limit the number of results when retrieving"
+        (fact "can limit the number of results when retrieving"
           (let [users [{:entity :user :twitter-id "the-twitter-id1"}
                        {:entity :user :twitter-id "the-twitter-id2"}
                        {:entity :user :twitter-id "the-twitter-id3"}]
-                store-result (do-all (map storage/pg-store! users))
-                retrieve-result (storage/pg-retrieve {:entity :user}; :limit 2
-                  )]))))
+                store-result (doall (map storage/pg-store! users))
+                retrieve-result (storage/pg-retrieve {:entity :user} {:limit 2})]
+            (count (:result retrieve-result)) => 2))))

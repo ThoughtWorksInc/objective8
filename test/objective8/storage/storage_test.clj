@@ -15,17 +15,18 @@
 (fact "attempts to find an object based on a query containing entity"
       (let [some-query {:entity :i-am-entity :foo "bar" :zap "pow"}]
         (s/pg-retrieve some-query) => {:query some-query
+                                       :options {}
                                        :result :expected-object }
         (provided
           (m/get-mapping some-query) => :fake-entity
-          (s/select :fake-entity {:foo "bar" :zap "pow"}) => :expected-object)))
+          (s/select :fake-entity {:foo "bar" :zap "pow"} {}) => :expected-object)))
 
 (fact "converts hyphens to underscores"
       (let [some-query {:entity :ent :foo-bar "wibble"}]
-        (s/pg-retrieve some-query) => {:query some-query :result :expected-object}
+        (s/pg-retrieve some-query) => {:query some-query :options {} :result :expected-object}
         (provided
           (m/get-mapping some-query) => :fake-entity
-          (s/select :fake-entity {:foo_bar "wibble"}) => :expected-object)))
+          (s/select :fake-entity {:foo_bar "wibble"} {}) => :expected-object)))
 
 (fact "throws exception if no entity key is present"
       (s/pg-retrieve {}) => (throws Exception "Query map requires an :entity key"))
