@@ -7,9 +7,10 @@
   [{:keys [params]}]
   (assoc (select-keys params [:question]) :created-by-id (get (friend/current-authentication) :username)))
 
-; (defn store-comment! [comment]
-;  (storage/pg-store! (assoc comment :entity :comment)))
-;
+(defn store-question! [question]
+ ;(storage/pg-store! (assoc question :entity :question))
+ )
+
 ;
 ; (defn retrieve-comments [objective-id]
 ;   (let [{result :result} (storage/pg-retrieve {:entity :comment :objective-id objective-id})]

@@ -37,7 +37,8 @@
                :post-objective api-handlers/post-objective
                :get-objective api-handlers/get-objective
                :get-comments-for-objective api-handlers/retrieve-comments
-               :post-comment api-handlers/post-comment})
+               :post-comment api-handlers/post-comment
+               :post-question api-handlers/post-question})
 
 (def routes
   ["/" {""                  :index
@@ -63,7 +64,8 @@
 
                             "/objectives" {:post :post-objective
                                            ["/" :id] {"" :get-objective
-                                                     "/comments" :get-comments-for-objective}}
+                                                     "/comments" :get-comments-for-objective
+                                                     "/questions" {:post :post-question}}}
 
                             "/comments"   {:post :post-comment}}}
    ])

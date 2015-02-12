@@ -5,6 +5,7 @@
             [objective8.storage.storage :as storage]
             [objective8.objectives :as objectives]
             [objective8.comments :as comments]
+            [objective8.questions :as questions]
             [objective8.users :as users]
             [objective8.utils :as utils]))
 
@@ -85,6 +86,27 @@
         (-> comments
             response/response
             (response/content-type "application/json"))
+        (response/not-found "")))
+    (catch NumberFormatException e
+      {:status 400
+       :header {}
+       :body "Objective id must be an integer"})))
+
+;;QUESTIONS
+(defn post-question [{:keys [route-params params] :as request}]
+  (try
+    (let [id (-> (:id route-params)
+                 Integer/parseInt)]
+      (if (objectives/retrieve-objective id)
+        (let [question (-> params
+                       (select-keys [:question :created-by-id])
+                       (assoc :objective-id id))
+              stored-question (questions/store-question! question)
+              resource-location (str utils/host-url "/api/v1/objectives/" (:objective-id stored-question) "/questions/" (:_id stored-question))]
+              {:status 201
+               :headers {"Content-Type" "application/json"
+                         "Location" resource-location}
+               :body stored-question})
         (response/not-found "")))
     (catch NumberFormatException e
       {:status 400
