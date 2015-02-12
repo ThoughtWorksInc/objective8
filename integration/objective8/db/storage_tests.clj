@@ -55,11 +55,20 @@
                 (first (:result retrieve-result)) => (contains {:created-by-id user-id
                                                                 :objective-id objective-id})))
 
-        ;TODO - Look at Korma storgae.clj limiting results/sorting
         (fact "can limit the number of results when retrieving"
-          (let [users [{:entity :user :twitter-id "the-twitter-id1"}
-                       {:entity :user :twitter-id "the-twitter-id2"}
-                       {:entity :user :twitter-id "the-twitter-id3"}]
-                store-result (doall (map storage/pg-store! users))
-                retrieve-result (storage/pg-retrieve {:entity :user} {:limit 2})]
-            (count (:result retrieve-result)) => 2))))
+              (let [users [{:entity :user :twitter-id "the-twitter-id1"}
+                           {:entity :user :twitter-id "the-twitter-id2"}
+                           {:entity :user :twitter-id "the-twitter-id3"}]
+                    store-result (doall (map storage/pg-store! users))
+                    retrieve-result (storage/pg-retrieve {:entity :user} {:limit 2})]
+                (count (:result retrieve-result)) => 2))
+
+        (fact "results are retrieved in reverse chronological order"
+              (let [users [{:entity :user :twitter-id "the-twitter-id1"}
+                           {:entity :user :twitter-id "the-twitter-id2"}
+                           {:entity :user :twitter-id "the-twitter-id3"}]
+                    store-result (doall (map storage/pg-store! users))
+                    retrieved-users (:result (storage/pg-retrieve {:entity :user}))
+                    sorted-twitter-ids (vec (map :twitter-id retrieved-users))]
+                sorted-twitter-ids)
+              => ["the-twitter-id3" "the-twitter-id2" "the-twitter-id1"])))
