@@ -91,12 +91,26 @@
 (binding [config/enable-csrf false]
   (fact "unauthorised user can sign in and be refered to a target uri"
         (against-background
-         (oauth/access-token anything anything anything) => {:user_id USER_ID}
-         (http-api/create-user anything) => {:_id USER_ID})
+          (oauth/access-token anything anything anything) => {:user_id USER_ID}
+          (http-api/create-user anything) => {:_id USER_ID}
+          (utils/safen-url "/target") => "/target")        
         (let [target-uri "/target"
               user-session (helpers/test-context)
               sign-in-with-refer-response (-> user-session
                                               (p/request (str utils/host-url "/sign-in?refer=" target-uri))
                                               (p/request twitter-callback-url)
                                               (p/request sign-up-url :request-method :post))]
-          sign-in-with-refer-response => (check-redirects-to target-uri))))
+          sign-in-with-refer-response => (check-redirects-to target-uri)))
+
+  (fact "users with an unrecognized referer are sent back to /"
+        (against-background
+          (oauth/access-token anything anything anything) => {:user_id USER_ID}
+          (http-api/create-user anything) => {:_id USER_ID}
+          (utils/safen-url "/danger-zone") => nil)        
+        (let [target-uri "/danger-zone"
+              user-session (helpers/test-context)
+              sign-in-with-refer-response (-> user-session
+                                              (p/request (str utils/host-url "/sign-in?refer=" target-uri))
+                                              (p/request twitter-callback-url)
+                                              (p/request sign-up-url :request-method :post))]
+          sign-in-with-refer-response => (check-redirects-to "/" 303))))

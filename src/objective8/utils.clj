@@ -25,6 +25,12 @@
 (defn date-time->pretty-date [date-time]
   (time-format/unparse pretty-date date-time))
 
+(defn- regex-checker
+  [fragment-regex]
+    (fn [fragment] (when fragment (re-matches fragment-regex fragment))))
+
+(defn safen-url [target]
+  ((regex-checker #"/objectives/\d+") target))
 
 ;;DISABLE CSRF for tests
 

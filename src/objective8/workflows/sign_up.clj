@@ -27,8 +27,8 @@
           user (http-api/create-user {:twitter-id twitter-id :email-address email-address})
           auth (workflows/make-auth {:username (:_id user) :roles #{:signed-in}}
                                     {::friend/workflow :objective8.workflows.sign-up/sign-up-workflow})]
-      (if-let [redirect-uri (:sign-in-referrer session)]
-        (friend/merge-authentication (response/redirect redirect-uri) auth)
+      (if-let [redirect-uri (utils/safen-url (:sign-in-referrer session))]
+        (friend/merge-authentication (response/redirect redirect-uri) auth) 
         auth))
     {:status 401}))
 
