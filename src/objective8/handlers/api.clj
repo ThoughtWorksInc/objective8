@@ -58,7 +58,7 @@
                  Integer/parseInt)]
       (if-let [objective (objectives/retrieve-objective id)]
         (-> objective
-            (update-in [:end-date] utils/date-time->iso-date-string)
+            (update-in [:end-date] utils/date-time->iso-time-string)
             response/response
             (response/content-type "application/json"))
         (response/not-found "")))

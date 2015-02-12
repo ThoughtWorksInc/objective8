@@ -2,8 +2,13 @@
   (:refer-clojure :exclude [comment])
   (:require [korma.core :as korma]
             [cheshire.core :as json]
-            [clj-time [format :as tf] [coerce :as tc]])
+            [clj-time [format :as tf] [coerce :as tc]]
+            [objective8.utils :as utils])
   (:import [org.postgresql.util PGobject]))
+
+(defn sql-time->iso-time-string [sql-time]
+  (utils/date-time->iso-time-string (tc/from-sql-time sql-time)))
+
 
 (defn map->json-type
   "Convert a clojure map to a Postgres JSON type"
@@ -53,7 +58,9 @@
     (throw (Exception. "Could not transform map to question"))))
 
 (defn unmap [data-key]
-  (fn [m] (assoc (json-type->map (data-key m)) :_id (:_id m))))
+  (fn [m] (assoc (json-type->map (data-key m)) 
+                 :_id (:_id m)
+                 :_created_at (sql-time->iso-time-string (:_created_at m)))))
 
 (korma/defentity objective
   (korma/pk :_id)

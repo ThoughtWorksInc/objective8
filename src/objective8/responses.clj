@@ -96,7 +96,9 @@
 
 (html/defsnippet a-comment
   "templates/comment.html" [:li] [comment]
-  [:li] (html/content (:comment comment)))
+  [:.comment-text] (html/content (:comment comment))
+  [:.comment-author] (html/content "user-display-name")
+  [:.comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment))))
 
 (html/defsnippet comments-view
   "templates/comments-view.html" [[:#clj-comments-view]] [translation signed-in objective-id comments uri]

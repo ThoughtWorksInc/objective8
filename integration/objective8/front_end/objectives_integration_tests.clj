@@ -74,6 +74,7 @@
                                                         :end-date (utils/string->date-time "2015-12-01")}
               (http-api/retrieve-comments OBJECTIVE_ID)
               => [{:_id 1
+                   :_created_at "2015-02-12T16:46:18.838Z"
                    :objective-id OBJECTIVE_ID
                    :created-by-id USER_ID
                    :comment "Comment 1"}])
