@@ -58,7 +58,8 @@
        (binding [config/enable-csrf false]
          (fact "After signing up (by posting their email address) the user is sent back to the resource they were trying to access"
                (against-background
-                 (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"})
+                 (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"
+                                                                     :screen_name "SCREEN_NAME"})
 
                (let [unauthorized-request-context (p/request test-session protected-resource)
                      signed-in-context (p/request unauthorized-request-context twitter-callback-url)]
@@ -69,9 +70,11 @@
                => (check-redirects-to protected-resource 303)
 
                (provided (http-api/create-user {:twitter-id "twitter-TWITTER_ID"
+                                                :display-name "SCREEN_NAME"
                                                 :email-address "test@email.address.com"})
                          => {:_id USER_ID
                              :twitter-id "twitter-TWITTER_ID"
+                             :display-name "SCREEN_NAME"
                              :email-address "test@email.address.com"} :times 1))) 
 
        (fact "After signing in, a user with an existing profile is immediately sent to the resource they were trying to access"
