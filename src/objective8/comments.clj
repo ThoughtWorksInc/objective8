@@ -13,5 +13,6 @@
 
 
 (defn retrieve-comments [objective-id]
-  (let [{result :result} (storage/pg-retrieve {:entity :comment :objective-id objective-id})]
-    (map #(dissoc % :entity) result))) ;TODO limit to 50
+  (let [{result :result} (storage/pg-retrieve {:entity :comment :objective-id objective-id}
+                                              {:limit 50})]
+    (map #(dissoc % :entity) result)))
