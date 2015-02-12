@@ -106,13 +106,22 @@
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
   [:#clj-objective-create html/any-node] (html/replace-vars translation))
 
+(defn text->p-nodes
+  "Turns text into a collection of paragraph nodes based on linebreaks.
+   Returns nil if no text is supplied"
+  [text]
+  (when text
+    (let [newline-followed-by-optional-whitespace #"(\n+|\r+)\s*"]
+    (map (fn [p] (html/html [:p p])) (clojure.string/split text 
+                                                           newline-followed-by-optional-whitespace)))))
+
 (html/defsnippet objective-view-page
   "templates/objectives-view.html" [[:#clj-objectives-view]]
   [{:keys [translation objective signed-in comments uri]}]
   [:.objective-article-details html/any-node] (html/replace-vars translation)
   [:h1] (html/content (:title objective))
   [:#clj-obj-goals-value] (html/content (map a-goal (:goals objective)))
-  [:#clj-obj-background-value] (html/content (:description objective))
+  [:#clj-obj-background-value] (html/content (text->p-nodes (:description objective)))
   [:#clj-obj-end-date-value] (html/content (:end-date objective))
   [:.share-widget html/any-node] (html/replace-vars translation)
   [:.btn-facebook] (html/set-attr :href (str "http://www.facebook.com/sharer.php?u=" (objective-url objective) "t=" (:title objective) " - "))
