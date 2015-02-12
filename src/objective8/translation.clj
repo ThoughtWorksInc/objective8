@@ -84,6 +84,12 @@
                      :comment-create {:comment-label "Post a comment"
                                       :comment-title "Comments are a maximum length of 500 characters"
                                       :post-button "Post"}
+                     :question-add {:doc-title "Add a question | Objective[8]"
+                                    :doc-description "Add a question"
+                                    :page-title "Add a question to"
+                                    :question-label "Question"
+                                    :question-title "Questions are a maximum length of 500 characters"
+                                    :post-button "Add"}
                      :users-email {:doc-title "Sign up | Objective[8]"
                                    :doc-description "Email  ..."
                                    :page-title "Add your email"
@@ -167,10 +173,16 @@
                                       :created-message "Tu objetivo ha sido creado"}
                     :comment-view {:created-message "Tu comentario ha sido creado"
                                    :comment-title "Comentarios"}
-                     :comment-create {:comment-label "Spanish(Post a comment)"
+                    :comment-create {:comment-label "Spanish(Post a comment)"
                                       :comment-title "Los comentarios son máximo de 500 caracteres."
                                       :post-button "Crear"}
-                     :users-email {:doc-title "Perfil | Objective[8]"
+                    :question-add {:doc-title "Spanish(Add a question | Objective[8])"
+                                    :doc-description "Spanish(Add a question)"
+                                    :page-title "Spanish(Add a question to)"
+                                    :question-label "Spanish(Question)"
+                                    :question-title "Spanish(Questions are a maximum length of 500 characters)"
+                                    :post-button "Spanish(Add)"}
+                    :users-email {:doc-title "Perfil | Objective[8]"
                                    :doc-description ""
                                    :page-title "Escribe tu cuenta de correo electrónico"
                                    :user-email-welcome "Tu correo electrónico nos permitira informarte cuando recivas respuestas a tus comentarios, objetivos y votos."

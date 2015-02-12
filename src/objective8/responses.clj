@@ -75,6 +75,14 @@
   [:#clj-error-404 html/any-node] (html/replace-vars translation)
   [:#clj-error-404-content] (html/html-content (translation :error-404/page-content)))
 
+;QUESTIONS
+(html/defsnippet question-add-page
+  "templates/question-add.html" [:#clj-question-add] [{:keys [translation objective-title objective-id]}]
+  [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
+  [:form] (html/set-attr :action (str "/objectives/" objective-id "/questions"))
+  [:h1] (html/content (str (translation :question-add/page-title) ": " objective-title))
+  [:#clj-question-add html/any-node] (html/replace-vars translation))
+
 ;COMMENTS
 (html/defsnippet comment-create
   "templates/comment-create.html" [[:#clj-comment-create]] [objective-id]

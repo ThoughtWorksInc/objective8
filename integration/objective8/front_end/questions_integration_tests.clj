@@ -20,9 +20,10 @@
               (against-background
                   (http-api/get-objective OBJECTIVE_ID) => {:status 200})
               (against-background
-                  (http-api/create-question {:question "The meaning of life?"
-                                            :created-by-id USER_ID}) => {:_id QUESTION_ID
-                                                                         :objective-id OBJECTIVE_ID})
+                  (http-api/create-question {:objective-id OBJECTIVE_ID
+                                             :created-by-id USER_ID
+                                             :question "The meaning of life?"}) => {:_id QUESTION_ID
+                                                                                    :objective-id OBJECTIVE_ID})
               (against-background
                   (oauth/access-token anything anything anything) => {:user_id USER_ID}
                   (http-api/create-user anything) => {:_id USER_ID})

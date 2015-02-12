@@ -17,7 +17,11 @@
 (defn signed-in? []
   (friend/authorized? #{:signed-in} friend/*identity*))
 
-
+(defn error-404-response [t' locale]
+  (rendered-response error-404-page {:translation t'
+                                     :locale (subs (str locale) 1)
+                                     :signed-in (signed-in?)
+                                     :status-code 404}))
 ;; HANDLERS
 
 (defn index [{:keys [t' locale] :as request}]
@@ -84,10 +88,7 @@
   (let [objective-id (Integer/parseInt id)
         objective (http-api/get-objective objective-id)]
     (if (= (objective :status) 404)
-        (rendered-response error-404-page {:translation t'
-                                           :locale (subs (str locale) 1)
-                                           :signed-in (signed-in?)
-                                           :status-code 404})
+        (error-404-response t' locale)
         (let [comments (http-api/retrieve-comments objective-id)
               goals (if (objective :goals)
                        (list (objective :goals))
@@ -119,6 +120,20 @@
     {:status 400}))
 
 ;; QUESTIONS
+
+(defn add-question-form [{{id :id} :route-params
+                          :keys [t' locale]}]
+  (let [objective-id (Integer/parseInt id)
+        objective (http-api/get-objective objective-id)]
+    (if (= (objective :status) 404)
+      (error-404-response t' locale)
+      (rendered-response question-add-page {:translation t'
+                                            :locale (subs (str locale) 1)
+                                            :doc-title (t' :question-add/doc-title)
+                                            :doc-description (t' :question-add/doc-description)
+                                            :objective-title (:title objective)
+                                            :objective-id (:_id objective)
+                                            :signed-in (signed-in?)}))))
 
 (defn add-question-form-post [{:keys [uri t' locale] :as request}]
   (if-let [question (request->question request)]
