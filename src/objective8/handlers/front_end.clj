@@ -26,8 +26,8 @@
                                  :doc-description (t' :index/doc-description)
                                  :signed-in (signed-in?)}))
 
-(defn sign-in [{{refer :refer} :params 
-                :keys [t' locale] 
+(defn sign-in [{{refer :refer} :params
+                :keys [t' locale]
                 :as request}]
   (-> (rendered-response sign-in-page {:translation t'
                                        :locale (subs (str locale) 1)
@@ -86,9 +86,12 @@
                                            :signed-in (signed-in?)
                                            :status-code 404})
         (let [comments (http-api/retrieve-comments objective-id)
+              goals (if (objective :goals)
+                       (list (objective :goals))
+                       (remove clojure.string/blank? [(:goal-1 objective) (:goal-2 objective) (:goal-3 objective)]))
               formatted-objective (-> objective
                                     (update-in [:end-date] utils/date-time->pretty-date)
-                                    (assoc :goals (remove clojure.string/blank? [(:goal-1 objective) (:goal-2 objective) (:goal-3 objective)]))
+                                    (assoc :goals goals)
                                     (dissoc :goal-1 :goal-2 :goal-3))]
             (rendered-response objective-view-page {:translation t'
                                                     :locale (subs (str locale) 1)
