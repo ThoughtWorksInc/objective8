@@ -84,6 +84,9 @@
                      :comment-create {:comment-label "Post a comment"
                                       :comment-title "Comments are a maximum length of 500 characters"
                                       :post-button "Post"}
+                     :comment-sign-in {:please "Please"
+                                       :sign-in "sign in"
+                                       :to "to start commenting."}
                      :question-add {:doc-title "Add a question | Objective[8]"
                                     :doc-description "Add a question"
                                     :page-title "Add a question to"
@@ -179,6 +182,9 @@
                     :comment-create {:comment-label "Spanish(Post a comment)"
                                       :comment-title "Los comentarios son máximo de 500 caracteres."
                                       :post-button "Crear"}
+                     :comment-sign-in {:please "Spanish(Please)"
+                                       :sign-in "Spanish(sign in)"
+                                       :to "Spanish(to start commenting.)"}
                     :question-add {:doc-title "Spanish(Add a question | Objective[8])"
                                     :doc-description "Spanish(Add a question)"
                                     :page-title "Spanish(Add a question to)"
