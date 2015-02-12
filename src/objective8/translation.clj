@@ -90,6 +90,7 @@
                                     :question-label "Question"
                                     :question-title "Questions are a maximum length of 500 characters"
                                     :post-button "Add"}
+                     :question-view {:added-message "Your question has been added!"}
                      :users-email {:doc-title "Sign up | Objective[8]"
                                    :doc-description "Email  ..."
                                    :page-title "Add your email"
@@ -173,6 +174,8 @@
                                       :created-message "Tu objetivo ha sido creado"}
                     :comment-view {:created-message "Tu comentario ha sido creado"
                                    :comment-title "Comentarios"}
+
+                    :question-view {:added-message "Spanish(Your question has been added!)"}
                     :comment-create {:comment-label "Spanish(Post a comment)"
                                       :comment-title "Los comentarios son máximo de 500 caracteres."
                                       :post-button "Crear"}

@@ -139,7 +139,7 @@
   (if-let [question (request->question request)]
     (if-let [stored-question (http-api/create-question question)]
      (let [question-url (str utils/host-url "/objectives/" (:objective-id stored-question) "/questions/" (:_id stored-question))
-           message "Your question has been added!"]
+           message (t' :question-view/added-message)]
         (assoc (response/redirect question-url) :flash message))
       {:status 502})
     {:status 400}))
