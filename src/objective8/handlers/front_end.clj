@@ -39,6 +39,7 @@
                                        :doc-title (t' :sign-in/doc-title)
                                        :doc-description (t' :sign-in/doc-description)
                                        :signed-in (signed-in?)})
+      (assoc :session (:session request))
       (assoc-in [:session :sign-in-referrer] refer)))
 
 (defn sign-out [request]
