@@ -43,6 +43,15 @@
      :user_data (map->json-type user)}
     (throw (Exception. "Could not transform map to user"))))
 
+(defn map->question
+  "Converts a clojure map into a json-typed question for the database"
+  [{:keys [created-by-id objective-id] :as question}]
+  (if (and created-by-id objective-id)
+    {:created_by_id created-by-id
+     :objective_id objective-id
+     :question (map->json-type question)}
+    (throw (Exception. "Could not transform map to question"))))
+
 (defn unmap [data-key]
   (fn [m] (assoc (json-type->map (data-key m)) :_id (:_id m))))
 
@@ -64,9 +73,16 @@
   (korma/prepare map->comment)
   (korma/transform (unmap :comment)))
 
+(korma/defentity question
+  (korma/pk :_id)
+  (korma/table :objective8.questions)
+  (korma/prepare map->question)
+  (korma/transform (unmap :question)))
+
 (def entities {:objective objective
                :user      user
-               :comment   comment})
+               :comment   comment
+               :question  question})
 
 (defn get-mapping
   "Returns a korma entity for a map"

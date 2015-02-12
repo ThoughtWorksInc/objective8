@@ -51,6 +51,24 @@
               test-comment => (contains {:created_by_id USER_ID
                                          :objective_id OBJECTIVE_ID
                                          :comment json-type?})))
-       (fact "throws exception if :created-by-id or :objective-id"
+       (fact "throws exception if :created-by-id or :objective-id are missing"
                     (map->comment (dissoc comment-map :created-by-id)) => (throws Exception "Could not transform map to comment")
                     (map->comment (dissoc comment-map :objective-id)) => (throws Exception "Could not transform map to comment")))
+
+
+;;QUESTIONS
+(def USER_ID 1234)
+(def OBJECTIVE_ID 2345)
+
+(def question-map {:created-by-id USER_ID
+                   :objective-id OBJECTIVE_ID})
+
+(facts "About map->question"
+       (fact "Column values are pulled out and converted, the map gets turned to json"
+             (let [test-question (map->question question-map)]
+              test-question => (contains {:created_by_id USER_ID
+                                          :objective_id OBJECTIVE_ID
+                                          :question json-type?})))
+       (fact "throws exception if :created-by-id or :objective-id are missing"
+                    (map->question (dissoc question-map :created-by-id)) => (throws Exception "Could not transform map to question")
+                    (map->question (dissoc question-map :objective-id)) => (throws Exception "Could not transform map to question")))

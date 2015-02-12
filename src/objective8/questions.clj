@@ -8,10 +8,4 @@
   (assoc (select-keys params [:question]) :created-by-id (get (friend/current-authentication) :username)))
 
 (defn store-question! [question]
- ;(storage/pg-store! (assoc question :entity :question))
- )
-
-;
-; (defn retrieve-comments [objective-id]
-;   (let [{result :result} (storage/pg-retrieve {:entity :comment :objective-id objective-id})]
-;     (map #(dissoc % :entity) result))) ;TODO limit to 50
+ (storage/pg-store! (assoc question :entity :question)))

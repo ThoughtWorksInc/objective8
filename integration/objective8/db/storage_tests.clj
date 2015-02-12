@@ -9,6 +9,7 @@
 (defn db-connection [] (db/connect! db/postgres-spec))
 
 (defn truncate-tables []
+  (korma/delete m/question)
   (korma/delete m/comment)
   (korma/delete m/objective)
   (korma/delete m/user))
@@ -16,12 +17,14 @@
 (against-background
  [(before :contents (db-connection)) (after :facts (truncate-tables))]
  (facts "Storage tests" :integration
+        ;;USERS
         (fact "a user entity can be stored in the database"
               (let [user {:entity :user :twitter-id "the-twitter-id" :foo "bar"}
                     store-result (storage/pg-store! user)
                     retrieve-result (storage/pg-retrieve {:entity :user :_id (:_id store-result)})]
                 (first (:result retrieve-result))) => (contains {:twitter-id "the-twitter-id" :foo "bar"}))
 
+        ;;OBJECTIVES
         (fact "an objective entity can be stored in the database"
               (let [stored-user (storage/pg-store! {:entity :user
                                                     :twitter-id "twitter-TWITTER_ID"})
@@ -37,7 +40,7 @@
                 (first (:result retrieve-result)) => (contains {:created-by-id user-id
                                                                 :end-date "2015-01-01T00:00:00Z"
                                                                 :title "title"})))
-
+        ;;COMMENTS
         (fact "a comment entity can be stored in the database"
               (let [stored-user (storage/pg-store! {:entity :user
                                                     :twitter-id "twitter-TWITTER_ID"})
@@ -71,4 +74,22 @@
                     retrieved-users (:result (storage/pg-retrieve {:entity :user}))
                     sorted-twitter-ids (vec (map :twitter-id retrieved-users))]
                 sorted-twitter-ids)
-              => ["the-twitter-id3" "the-twitter-id2" "the-twitter-id1"])))
+              => ["the-twitter-id3" "the-twitter-id2" "the-twitter-id1"]))
+
+        ;;QUESTIONS
+        (fact "a question entity can be stored in the database"
+              (let [stored-user (storage/pg-store! {:entity :user
+                                                    :twitter-id "twitter-TWITTER_ID"})
+                    user-id (:_id stored-user)
+                    stored-objective (storage/pg-store! {:entity :objective
+                                                         :created-by-id user-id
+                                                         :end-date "2015-01-01T00:00:00.000Z"})
+                    objective-id (:_id stored-objective)
+                    question {:entity :question
+                              :created-by-id user-id
+                              :objective-id objective-id
+                              :question "A question"}
+                    store-result (storage/pg-store! question)
+                    retrieve-result (storage/pg-retrieve {:entity :question :_id (:_id store-result)})]
+                (first (:result retrieve-result)) => (contains {:created-by-id user-id
+                                                                :objective-id objective-id}))))
