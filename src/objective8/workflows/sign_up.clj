@@ -13,23 +13,25 @@
   ["/" {"sign-up" {:get :sign-up-form
                    :post :sign-up-form-post}}])
 
+(defn finalise-authorisation [user session]
+  (let [auth (workflows/make-auth {:username (:_id user) :roles #{:signed-in}}
+                                  {::friend/workflow :objective8.workflows.sign-up/sign-up-workflow})]
+    (if-let [redirect-uri (utils/safen-url (:sign-in-referrer session))]
+      (friend/merge-authentication (response/redirect redirect-uri) auth)
+      auth)))
+
 (defn sign-up-form [{session :session :as request}]
   (if-let [twitter-id (:twitter-id session)]
     (if-let [user (http-api/find-user-by-twitter-id twitter-id)]
-      (workflows/make-auth {:username (:_id user) :roles #{:signed-in}}
-                           {::friend/workflow :objective8.workflows.sign-up/sign-up-workflow})
+      (finalise-authorisation user session)
       (front-end/sign-up-form request))
     (response/redirect "/sign-in")))
 
 (defn sign-up-form-post [{params :params session :session :as request}]
   (if-let [twitter-id (:twitter-id session)]
     (let [email-address (:email-address params)
-          user (http-api/create-user {:twitter-id twitter-id :email-address email-address})
-          auth (workflows/make-auth {:username (:_id user) :roles #{:signed-in}}
-                                    {::friend/workflow :objective8.workflows.sign-up/sign-up-workflow})]
-      (if-let [redirect-uri (utils/safen-url (:sign-in-referrer session))]
-        (friend/merge-authentication (response/redirect redirect-uri) auth) 
-        auth))
+          user (http-api/create-user {:twitter-id twitter-id :email-address email-address})]
+      (finalise-authorisation user session))
     {:status 401}))
 
 (def sign-up-handlers

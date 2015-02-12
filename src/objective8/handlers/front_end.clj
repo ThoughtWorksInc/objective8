@@ -19,7 +19,7 @@
 
 ;; HANDLERS
 
-(defn index [{:keys [t' locale]}]
+(defn index [{:keys [t' locale] :as request}]
   (rendered-response index-page {:translation t'
                                  :locale (subs (str locale) 1)
                                  :doc-title (t' :index/doc-title)
@@ -36,8 +36,10 @@
                                        :signed-in (signed-in?)})
       (assoc-in [:session :sign-in-referrer] refer)))
 
-(defn sign-out [_]
-  (friend/logout* (response/redirect "/")))
+(defn sign-out [request]
+  (assoc
+   (friend/logout* (response/redirect "/"))
+   :session {}))
 
 
 (defn project-status [{:keys [t' locale]}]
