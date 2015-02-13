@@ -22,3 +22,9 @@
        (storage/pg-retrieve {:entity :comment
                              :objective-id OBJECTIVE_ID}
                             {:limit 50}) => []))
+
+(fact "Postgresql exceptions are not caught"
+      (comments/store-comment! {:comment "something"}) => (throws org.postgresql.util.PSQLException)
+      (provided 
+        (storage/pg-store! {:entity :comment :comment "something"}) =throws=> (org.postgresql.util.PSQLException.
+                                                                               (org.postgresql.util.ServerErrorMessage. "" 0))))
