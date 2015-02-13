@@ -7,12 +7,15 @@
             [objective8.http-api :as http-api]
             [objective8.config :as config]
             [objective8.integration-helpers :as helpers]
+            [objective8.utils :as utils]
             [objective8.core :as core]))
 
 (def USER_ID 1)
 (def OBJECTIVE_ID 234)
 (def QUESTION_ID 42)
+(def question-view-get-request (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID)))
 
+(def default-app (core/app core/app-config))
 
 (facts "questions" :integration
        (binding [config/enable-csrf false]
@@ -35,4 +38,19 @@
                                                      :request-method :post
                                                      :params params))]
                  peridot-response => (helpers/flash-message-contains "Your question has been added!")
-                 peridot-response => (helpers/headers-location (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))))))
+                 peridot-response => (helpers/headers-location (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID)))))
+
+         (fact "Any user can view a question against an objective"
+             (against-background
+               (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success
+                                                                    :result {:question "The meaning of life?"
+                                                                             :created-by-id USER_ID
+                                                                             :objective-id OBJECTIVE_ID
+                                                                             :_id QUESTION_ID}})
+             (default-app question-view-get-request) => (contains {:status 200})
+             (default-app question-view-get-request) => (contains {:body (contains "The meaning of life?")}))
+
+        (fact "A user should receive a 404 if a question doesn't exist"
+            (against-background
+              (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/not-found})
+              (default-app question-view-get-request) => (contains {:status 404})))

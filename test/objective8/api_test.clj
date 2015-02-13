@@ -120,7 +120,9 @@
                    :objective-id OBJECTIVE_ID
                    :created-by USER_ID})
 
-(def the-stored-question (into the-question {:_id 42}))
+(def QUESTION_ID 42)
+
+(def the-stored-question (into the-question {:_id QUESTION_ID}))
 (def question-response
     {:successful {:status 201
                   :headers {"Content-Type" "application/json"}
@@ -137,3 +139,22 @@
              (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID "/questions") (:failure question-response)]
                (api/create-question the-question))
              => api/api-failure))
+
+(facts "about getting questions"
+       (fact "returns a stored question when one exists with a given id"
+             (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID) {:status 200
+                                                                                                           :headers {"Content-Type" "application/json"}
+                                                                                                           :body (json/generate-string the-stored-question)}]
+                             (api/get-question OBJECTIVE_ID QUESTION_ID))
+             => {:status ::api/success
+                 :result the-stored-question})
+
+       (fact "returns :objective8.http-api/error when request fails"
+             (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID) {:status 500}]
+                             (api/get-question OBJECTIVE_ID QUESTION_ID))
+             => {:status ::api/error})
+
+       (fact "returns :objective8.http-api/not-found when no question with that id exists"
+             (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID) {:status 404}]
+                             (api/get-question OBJECTIVE_ID QUESTION_ID))
+             => {:status ::api/not-found}))

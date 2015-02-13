@@ -84,6 +84,18 @@
   [:#clj-error-404 html/any-node] (html/replace-vars translation)
   [:#clj-error-404-content] (html/html-content (translation :error-404/page-content)))
 
+;SHARING
+(html/defsnippet share-widget
+  "templates/share-widget.html"
+  [:.share-widget] [translation url title]
+  [:.share-widget html/any-node] (html/replace-vars translation)
+  [:.btn-facebook] (html/set-attr :href (str "http://www.facebook.com/sharer.php?u=" url "t=" title " - "))
+  [:.btn-google-plus] (html/set-attr :href (str "https://plusone.google.com/_/+1/confirm?hl=en&url=" url))
+  [:.btn-twitter] (html/set-attr :href (str "https://twitter.com/share?url=" url "&text=" title " - "))
+  [:.btn-linkedin] (html/set-attr :href (str "http://www.linkedin.com/shareArticle?mini=true&url=" url))
+  [:.btn-reddit] (html/set-attr :href (str "http://reddit.com/submit?url=" url "&title=" title " - "))
+  [:.share-this-url] (html/set-attr :value url))
+
 ;QUESTIONS
 (html/defsnippet question-add-page
   "templates/question-add.html" [:#clj-question-add] [{:keys [translation objective-title objective-id]}]
@@ -91,6 +103,12 @@
   [:form] (html/set-attr :action (str "/objectives/" objective-id "/questions"))
   [:h1] (html/content (str (translation :question-add/page-title) ": " objective-title))
   [:#clj-question-add html/any-node] (html/replace-vars translation))
+
+(html/defsnippet question-view-page
+  "templates/question-view.html" [:#clj-question-view] [{:keys [translation question]}]
+  [:#clj-question-view :h1] (html/content (:question question))
+  [:.grid] (html/content (share-widget translation (:url question) (:question question)))
+  [:#clj-question-view html/any-node] (html/replace-vars translation))
 
 ;COMMENTS
 (html/defsnippet comment-create
@@ -163,7 +181,7 @@
     :body text}))
 
 (defn rendered-response [template-name args]
-(let [navigation (if (:signed-in args)
+  (let [navigation (if (:signed-in args)
                          global-navigation-signed-in
                          global-navigation-signed-out)
         page (render-template base (assoc args

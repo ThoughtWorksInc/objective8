@@ -181,10 +181,9 @@
                     :comment-view {:created-message "Tu comentario ha sido creado"
                                    :comment-title "Comentarios"
                                    :no-comments "Spanish(There are no comments yet.)"}
-                    :question-view {:added-message "Spanish(Your question has been added!)"}
                     :comment-create {:comment-label "Spanish(Leave a comment)"
-                                      :comment-title "Los comentarios son máximo de 500 caracteres."
-                                      :post-button "Spanish(Add comment)"}
+                                     :comment-title "Los comentarios son máximo de 500 caracteres."
+                                     :post-button "Spanish(Add comment)"}
                      :comment-sign-in {:please "Spanish(Please)"
                                        :sign-in "Spanish(sign in)"
                                        :to "Spanish(to start commenting.)"}
@@ -194,13 +193,14 @@
                                     :question-label "Spanish(Question)"
                                     :question-title "Spanish(Questions are a maximum length of 500 characters)"
                                     :post-button "Spanish(Add)"}
-                    :users-email {:doc-title "Spanish(Sign up almost there) | Objective[8]"
-                                   :doc-description ""
-                                   :page-title "Spanish(Almost there)"
-                                   :user-email-welcome "Tu correo electrónico nos permitira informarte cuando recivas respuestas a tus comentarios, objetivos y votos."
-                                   :email-label "Correo electrónico"
-                                   :email-title "Escribe tu cuenta de correo electrónico"
-                                   :button "Spanish(Create account)"}}}
+                    :question-view {:added-message "Spanish(Your question has been added!)"}
+                    :users-email {:doc-title "Perfil | Objective[8]"
+                                  :doc-description ""
+                                  :page-title "Spanish(Almost there)"
+                                  :user-email-welcome "Tu correo electrónico nos permitira informarte cuando recivas respuestas a tus comentarios, objetivos y votos."
+                                  :email-label "Correo electrónico"
+                                  :email-title "Escribe tu cuenta de correo electrónico"
+                                  :button "Spanish(Create account)"}}}
    :dev-mode? false
    :fallback-locale :en
    :log-missing-translations-function (fn [{:keys [locale ks scope]}]

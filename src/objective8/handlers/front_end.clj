@@ -147,3 +147,22 @@
         (assoc (response/redirect question-url) :flash message))
       {:status 502})
     {:status 400}))
+
+(defn question-detail [{{q-id :q-id id :id} :route-params
+                         message :flash
+                         :keys [uri t' locale]
+                         :as request}]
+  (let [{status :status question :result} (http-api/get-question (Integer/parseInt id) (Integer/parseInt q-id))
+        question-to-display (assoc question :url (str utils/host-url uri))]
+    (cond
+      (= status ::http-api/success)
+          (rendered-response question-view-page {:translation t'
+                                                 :locale (subs (str locale) 1)
+                                                 :doc-title (str (:title question) " | Objective[8]")
+                                                 :doc-description (:title question)
+                                                 :message message
+                                                 :question question-to-display
+                                                 :signed-in (signed-in?)
+                                                 :uri uri})
+      (= status ::http-api/not-found) {:status 404}
+      :else {:status 500})))

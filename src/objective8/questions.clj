@@ -14,4 +14,5 @@
  (storage/pg-store! (assoc question :entity :question)))
 
 (defn retrieve-question [question-id]
-  (storage/pg-retrieve {:entity :question :_id question-id}))
+  (let [{result :result} (storage/pg-retrieve {:entity :question :_id question-id})]
+  (dissoc (first result) :entity)))

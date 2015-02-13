@@ -60,3 +60,12 @@
   (let [{:keys [body status]} (json-post (str utils/host-url "/api/v1/objectives/" (:objective-id question) "/questions") question)]
     (cond (= status 201)   (json/parse-string body true)
           :else            api-failure)))
+
+(defn get-question [objective-id question-id]
+  (let [{:keys [body status]} @(http/get (str utils/host-url "/api/v1/objectives/" objective-id "/questions/" question-id))]
+    (cond
+      (= status 200) {:status ::success
+                      :result (-> body
+                                  (json/parse-string true))}
+      (= status 404) {:status ::not-found}
+      :else          {:status ::error})))
