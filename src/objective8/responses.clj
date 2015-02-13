@@ -11,6 +11,15 @@
 (defn objective-url [objective]
   (str utils/host-url "/objectives/" (:_id objective)))
 
+(defn text->p-nodes
+  "Turns text into a collection of paragraph nodes based on linebreaks.
+   Returns nil if no text is supplied"
+  [text]
+  (when text
+    (let [newline-followed-by-optional-whitespace #"(\n+|\r+)\s*"]
+    (map (fn [p] (html/html [:p p])) (clojure.string/split text
+                                                           newline-followed-by-optional-whitespace)))))
+
 ;GOOGLE ANALYTICS
 (html/defsnippet google-analytics
   "templates/google-analytics.html" [[:#clj-google-analytics]] [tracking-id]
@@ -96,7 +105,7 @@
 
 (html/defsnippet a-comment
   "templates/comment.html" [:li] [comment]
-  [:.comment-text] (html/content (:comment comment))
+  [:.comment-text] (html/content (text->p-nodes (:comment comment)))
   [:.comment-author] (html/content "user-display-name")
   [:.comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment))))
 
@@ -115,15 +124,6 @@
   "templates/objectives-create.html" [[:#clj-objective-create]] [{:keys [translation]}]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
   [:#clj-objective-create html/any-node] (html/replace-vars translation))
-
-(defn text->p-nodes
-  "Turns text into a collection of paragraph nodes based on linebreaks.
-   Returns nil if no text is supplied"
-  [text]
-  (when text
-    (let [newline-followed-by-optional-whitespace #"(\n+|\r+)\s*"]
-    (map (fn [p] (html/html [:p p])) (clojure.string/split text
-                                                           newline-followed-by-optional-whitespace)))))
 
 (html/defsnippet objective-view-page
   "templates/objectives-view.html" [[:#clj-objectives-view]]

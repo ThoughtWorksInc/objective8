@@ -25,3 +25,7 @@
   font-size: 0.8em;
   color: $grey-1;
 }
+
+.comment-text p:last-of-type {
+  margin-bottom: 0;
+}
