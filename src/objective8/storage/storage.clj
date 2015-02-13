@@ -18,8 +18,8 @@
   "Wrapper around Korma's select call"
   [entity where options]
   (if-let [limit (:limit options)]
-    (korma/select entity (korma/where where) (korma/limit limit) (korma/order :_created_at :DESC))
-    (korma/select entity (korma/where where) (korma/order :_created_at :DESC))))
+    (korma/select entity (korma/where where) (korma/limit limit) (korma/order :_created_at :ASC))
+    (korma/select entity (korma/where where) (korma/order :_created_at :ASC))))
 
 (defn- -to_
   "Replaces hyphens in keys with underscores"
