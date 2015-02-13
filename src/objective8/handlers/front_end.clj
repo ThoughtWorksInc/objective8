@@ -164,5 +164,5 @@
                                                  :question question-to-display
                                                  :signed-in (signed-in?)
                                                  :uri uri})
-      (= status ::http-api/not-found) {:status 404}
+      (= status ::http-api/not-found) (error-404-response t' locale)
       :else {:status 500})))
