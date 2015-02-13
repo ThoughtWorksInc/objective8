@@ -72,8 +72,15 @@
                             "/comments"   {:post :post-comment}}}
    ])
 
+(defn wrap-not-found [handler]
+  (fn [request]
+    (if-let [response (handler request)]
+      response
+      (front-end-handlers/error-404 request))))
+
 (defn app [app-config]
   (-> (make-handler routes (some-fn handlers #(when (fn? %) %)))
+      wrap-not-found
       (friend/authenticate (:authentication app-config))
       (wrap-tower (:translation app-config))
       wrap-keyword-params

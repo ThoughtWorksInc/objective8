@@ -24,6 +24,9 @@
                                      :status-code 404}))
 ;; HANDLERS
 
+(defn error-404 [{:keys [t' locale]}]
+  (error-404-response t' locale))
+
 (defn index [{:keys [t' locale] :as request}]
   (rendered-response index-page {:translation t'
                                  :locale (subs (str locale) 1)
