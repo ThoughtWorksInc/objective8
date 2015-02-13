@@ -113,7 +113,7 @@
   "templates/comments-view.html" [[:#clj-comments-view]] [translation signed-in objective-id comments uri]
   [:#clj-comments-view] (html/append (if signed-in (comment-create objective-id) (comment-sign-in translation uri)))
   [:#clj-comments-view html/any-node] (html/replace-vars translation)
-  [:#clj-comments-view :.comment-list] (html/content (map a-comment comments)))
+  [:#clj-comments-view :.comment-list] (if (empty? comments) identity (html/content (map a-comment comments))))
 
 ;OBJECTIVES
 (html/defsnippet a-goal

@@ -81,7 +81,8 @@
                                       :end-date-label "Ending on: "
                                       :created-message "Your objective has been created!"}
                      :comment-view {:created-message "Your comment has been added!"
-                                    :comment-title "Comments"}
+                                    :comment-title "Comments"
+                                    :no-comments "There are no comments yet."}
                      :comment-create {:comment-label "Leave a comment"
                                       :comment-title "Comments are a maximum length of 500 characters"
                                       :post-button "Add comment"}
@@ -178,8 +179,8 @@
                                       :end-date-label "Fecha de vencimiento"
                                       :created-message "Tu objetivo ha sido creado"}
                     :comment-view {:created-message "Tu comentario ha sido creado"
-                                   :comment-title "Comentarios"}
-
+                                   :comment-title "Comentarios"
+                                   :no-comments "Spanish(There are no comments yet.)"}
                     :question-view {:added-message "Spanish(Your question has been added!)"}
                     :comment-create {:comment-label "Spanish(Leave a comment)"
                                       :comment-title "Los comentarios son máximo de 500 caracteres."
