@@ -1,17 +1,18 @@
 <div id="clj-objectives-view">
-  <h1>{{title}}</h1>
+  <div class="objective-title-wrapper">
+    <h1 class="objective-title">{{title}}</h1>
+    <p class="objective-title-end-date">${objective-view/end-date-label} <span id="clj-obj-end-date-value">{{end-date}}</span></p>
+  </div>
 
   <div class="grid">
 
     <div class="objective-article-details">
       <p class="no-margin-bottom"><b>${objective-view/goals-label}</b></p>
-      <ul id="clj-obj-goals-value">
+      <ul id="clj-obj-goals-value" class="objective-article-goals">
         <li>{{goals}}</li>
       </ul>
       <p class="no-margin-bottom"><b>${objective-view/background-label}</b></p>
       <p id="clj-obj-background-value">{{description}}</p>
-      <p class="no-margin-bottom"><b>${objective-view/end-date-label}</b></p>
-      <p id="clj-obj-end-date-value">{{end-date}}</p>
     </div>
 
     <div class="share-widget">
@@ -50,7 +51,7 @@
       </ul>
       <div class="share-this-link">
         <label class="share-this-url-label" for="link">${share-widget/url-label}</label>
-        <input class="share-this-url" type="text" value="http://sharethisurl.com" title="${share-widget/url-title}" />
+        <input class="share-this-url-input" type="text" value="http://sharethisurl.com" title="${share-widget/url-title}" />
       </div>
     </div>
 

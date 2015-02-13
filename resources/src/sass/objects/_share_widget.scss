@@ -1,8 +1,7 @@
 .share-widget {
-  margin: 0;
+  margin: 0 0 1em;
   @include span-columns(5);
-  position: relative;
-  top: -6px;
+  float: left;
 }
 
 .share-widget-title {
@@ -32,7 +31,13 @@
   position: relative;
   top: -2px;
   width: 100%;
+  border-bottom: 1px solid $grey-3;
+  padding-bottom: 0.75em;
 }
 .share-this-url-label {
   @include visuallyhidden;
+}
+.share-this-url-input {
+  padding: 0.2em 0.5em;
+  font-size: 0.8em;
 }

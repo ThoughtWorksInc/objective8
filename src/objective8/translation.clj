@@ -7,7 +7,7 @@
 (def translation-config
   {:dictionary {:en { :base {:header-logo-text "Objective[8]"
                              :header-logo-title "Go to home page"
-                             :project-status! "ALPHA: We are still in development and testing, <a href=\"/project-status\" title=\"Find out more about our project status\">find out more</a>"
+                             :project-status! "ALPHA: We are still testing, <a href=\"/project-status\" title=\"Find out more about our project status\">find out more</a>"
                              :browsehappy! "You are using an <strong>outdated</strong> browser. Please <a href=\"http://browsehappy.com/\">upgrade your browser</a> to improve your experience."}
                       :navigation-global {:sign-in-text "Sign in"
                                           :sign-in-title "Go to sign in"
@@ -31,7 +31,7 @@
                       :error-404 {:doc-title "Error 404 | Objective[8]"
                              :doc-description "Sorry the page you requested can't be found."
                              :page-title "Sorry the page you requested can't be found."
-                             :page-intro "The page you were trying to reach at this address doesn't seem to exist. This is usually the result of a bad or outdated link. We apologize for any inconvenience."
+                             :page-intro "The page you were trying to reach at this address doesn't seem to exist. This is usually the result of a bad or outdated link. We apologise for any inconvenience."
                              :page-content! "<h2>What can I do now?</h2><ul class=\"list-large\"><li>Please return to the <a href=\"/\" title=\"Go to Home\">home page</a>.</li><li>To report an issue visit our <a href=\"https://github.com/ThoughtWorksInc/objective8/issues\">github issues page</a>.</li></ul>" }
                       :index {:doc-title "Objective[8]"
                              :doc-description ""
@@ -43,11 +43,12 @@
                              :index-get-started-title-signed-in "Create an Objective"
                              :index-learn-more "Learn more"
                              :index-learn-more-title "Learn more"}
-                     :sign-in {:doc-title "Sign in | Objective[8]"
-                               :doc-description "Sign in ..."
-                               :page-title "Please sign in"
+                     :sign-in {:doc-title "Sign in or Sign up | Objective[8]"
+                               :doc-description "Sign in or Sign up to Objective [8]"
+                               :page-title "Sign in or Sign up"
                                :twitter-sign-in-btn "Sign in with twitter"
-                               :twitter-sign-in-title "Sign in with twitter"}
+                               :twitter-sign-in-title "Sign in with twitter"
+                               :reassurance "We will never post to Twitter without your permission."}
                      :project-status {:doc-title "Project status | Objective [8]"
                                       :doc-description ""
                                       :page-title "Alpha phase"
@@ -77,13 +78,13 @@
                                       :doc-description "Objective  ..."
                                       :background-label "Background"
                                       :goals-label "Goals"
-                                      :end-date-label "End date"
+                                      :end-date-label "Ending on: "
                                       :created-message "Your objective has been created!"}
                      :comment-view {:created-message "Your comment has been added!"
                                     :comment-title "Comments"}
-                     :comment-create {:comment-label "Post a comment"
+                     :comment-create {:comment-label "Leave a comment"
                                       :comment-title "Comments are a maximum length of 500 characters"
-                                      :post-button "Post"}
+                                      :post-button "Add comment"}
                      :comment-sign-in {:please "Please"
                                        :sign-in "sign in"
                                        :to "to start commenting."}
@@ -94,13 +95,13 @@
                                     :question-title "Questions are a maximum length of 500 characters"
                                     :post-button "Add"}
                      :question-view {:added-message "Your question has been added!"}
-                     :users-email {:doc-title "Sign up | Objective[8]"
-                                   :doc-description "Email  ..."
-                                   :page-title "Add your email"
+                     :users-email {:doc-title "Sign up almost there | Objective[8]"
+                                   :doc-description ""
+                                   :page-title "Almost there"
                                    :user-email-welcome "Adding your email address will let us notify you when you receive responses to comments, objectives and votes."
                                    :email-label "Email"
                                    :email-title "Add your email title"
-                                   :button "Submit" }}
+                                   :button "Create account"}}
                 :es {:base {:header-logo-text "Objective[8]"
                             :header-logo-title "Inicio"
                             :project-status! "Spanish(ALPHA: We are still in development and testing, <a href=\"/project-status\" title=\"Find out more about our project status\">find out more</a>)"
@@ -127,7 +128,7 @@
                      :error-404 {:doc-title "Spanish(Error 404 | Objective[8])"
                              :doc-description "Spanish(Sorry the page you requested can't be found.)"
                              :page-title "Spanish(Sorry the page you requested can't be found.)"
-                             :page-intro "Spanish(The page you were trying to reach at this address doesn't seem to exist. This is usually the result of a bad or outdated link. We apologize for any inconvenience.)"
+                             :page-intro "Spanish(The page you were trying to reach at this address doesn't seem to exist. This is usually the result of a bad or outdated link. We apologise for any inconvenience.)"
                              :page-content! "<h2>What can I do now?</h2><ul class=\"list-large\"><li>Please return to the <a href=\"/\" title=\"Go to Home\">home page</a>.</li><li>To report an issue visit our <a href=\"https://github.com/ThoughtWorksInc/objective8/issues\">github issues page</a>.</li></ul>" }
                      :index {:doc-title "Objective[8]"
                              :doc-description ""
@@ -141,9 +142,10 @@
                              :index-learn-more-title "Más información"}
                      :sign-in {:doc-title "Entrar | Objective[8]"
                                :doc-description "Entrar"
-                               :page-title "Por favor entra a tu cuenta"
+                               :page-title "Spanish(Sign in or Sign up)"
                                :twitter-sign-in-btn "Entra con Twitter"
-                               :twitter-sign-in-title "Entra con Twitter"}
+                               :twitter-sign-in-title "Entra con Twitter"
+                               :reassurance "Spanish(We will never post to Twitter without your permission.)"}
                      :project-status {:doc-title "Spanish(Project status | Objective [8])"
                                       :doc-description ""
                                       :page-title "Spanish(Alpha phase)"
@@ -164,7 +166,7 @@
                                         :background-label "Spanish(Background)"
                                         :background-prompt "Spanish(Use this area to provide further information on why this is important or necessary)"
                                         :background-title "Escribe una descripcion máximo de 1000 caracteres."
-                                        :end-date-label "Fecha de vencimiento"
+                                        :end-date-label "Spanish(Ending on: )"
                                         :end-date-prompt "Spanish(The deadline for discussing this objective.)"
                                         :end-date-title "Por favor escribe la fecha de vencimiento"
                                         :end-date-placeholder "yyyy-mm-dd"
@@ -179,9 +181,9 @@
                                    :comment-title "Comentarios"}
 
                     :question-view {:added-message "Spanish(Your question has been added!)"}
-                    :comment-create {:comment-label "Spanish(Post a comment)"
+                    :comment-create {:comment-label "Spanish(Leave a comment)"
                                       :comment-title "Los comentarios son máximo de 500 caracteres."
-                                      :post-button "Crear"}
+                                      :post-button "Spanish(Add comment)"}
                      :comment-sign-in {:please "Spanish(Please)"
                                        :sign-in "Spanish(sign in)"
                                        :to "Spanish(to start commenting.)"}
@@ -191,13 +193,13 @@
                                     :question-label "Spanish(Question)"
                                     :question-title "Spanish(Questions are a maximum length of 500 characters)"
                                     :post-button "Spanish(Add)"}
-                    :users-email {:doc-title "Perfil | Objective[8]"
+                    :users-email {:doc-title "Spanish(Sign up almost there) | Objective[8]"
                                    :doc-description ""
-                                   :page-title "Escribe tu cuenta de correo electrónico"
+                                   :page-title "Spanish(Almost there)"
                                    :user-email-welcome "Tu correo electrónico nos permitira informarte cuando recivas respuestas a tus comentarios, objetivos y votos."
                                    :email-label "Correo electrónico"
                                    :email-title "Escribe tu cuenta de correo electrónico"
-                                   :button "Crear"}}}
+                                   :button "Spanish(Create account)"}}}
    :dev-mode? false
    :fallback-locale :en
    :log-missing-translations-function (fn [{:keys [locale ks scope]}]

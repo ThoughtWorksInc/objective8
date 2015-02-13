@@ -60,7 +60,7 @@
 
 (html/defsnippet sign-in-page
   "templates/sign-in.html" [[:#clj-sign-in-page]] [{:keys [translation]}]
-  [:#clj-sign-in-page] (html/append (sign-in-twitter))
+  [:h1] (html/after (sign-in-twitter))
   [:#clj-sign-in-page html/any-node] (html/replace-vars translation))
 
 ;PROJECT STATUS
@@ -122,13 +122,13 @@
   [text]
   (when text
     (let [newline-followed-by-optional-whitespace #"(\n+|\r+)\s*"]
-    (map (fn [p] (html/html [:p p])) (clojure.string/split text 
+    (map (fn [p] (html/html [:p p])) (clojure.string/split text
                                                            newline-followed-by-optional-whitespace)))))
 
 (html/defsnippet objective-view-page
   "templates/objectives-view.html" [[:#clj-objectives-view]]
   [{:keys [translation objective signed-in comments uri]}]
-  [:.objective-article-details html/any-node] (html/replace-vars translation)
+  [:#clj-objectives-view html/any-node] (html/replace-vars translation)
   [:h1] (html/content (:title objective))
   [:#clj-obj-goals-value] (html/content (map a-goal (:goals objective)))
   [:#clj-obj-background-value] (html/content (text->p-nodes (:description objective)))
