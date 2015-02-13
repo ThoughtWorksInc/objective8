@@ -78,9 +78,8 @@
        :headers {"Content-Type" "application/json"
                  "Location" resource-location}
        :body stored-comment})
-    (catch org.postgresql.util.PSQLException e
+    (catch Exception e
       {:status 400
-       :header {}
        :body "Invalid comment post request"})))
 
 (defn retrieve-comments [{:keys [route-params] :as request}]

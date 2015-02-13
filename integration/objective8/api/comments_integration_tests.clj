@@ -1,6 +1,7 @@
 (ns objective8.api.comments-integration-tests
   (:require [midje.sweet :refer :all]
             [peridot.core :as p]
+            [cheshire.core :as json]
             [objective8.utils :as utils]
             [objective8.core :as core]
             [objective8.integration-helpers :as helpers]
@@ -21,7 +22,9 @@
 (def stored-comment (assoc the-comment :_id 1))
 (def stored-comments (map #(assoc the-comment :_id %) (range 5)))
 
-(def the-comment-as-json (str "{\"comment\":\"The comment\",\"objective-id\":" OBJECTIVE_ID ",\"created-by-id\":" USER_ID "}"))
+(def the-comment-as-json (json/generate-string the-comment))
+(def the-invalid-comment {:comment "The comment"
+                          :objective-id OBJECTIVE_ID })
 
 (facts "about posting comments" :integration
        (fact "the posted comment is stored"
@@ -34,13 +37,20 @@
              (provided
                (comments/store-comment! the-comment) => stored-comment))
 
-       (fact "a 400 status is returned if a PSQLException returned"
+       (fact "a 400 status is returned if a PSQLException is raised"
           (against-background
-               (comments/store-comment! anything) =throws=> (org.postgresql.util.PSQLException. (org.postgresql.util.ServerErrorMessage. "" 0)) )
+               (comments/store-comment! anything) =throws=> (org.postgresql.util.PSQLException. 
+                                                              (org.postgresql.util.ServerErrorMessage. "" 0)) )
                (:response (p/request app "/api/v1/comments"
                                      :request-method :post
                                      :content-type "application/json"
                                      :body the-comment-as-json)) => (contains {:status 400}))
+
+       (fact "a 400 status is returned if a map->comment exception is raised"
+             (:response (p/request app "/api/v1/comments"
+                                   :request-method :post
+                                   :content-type "application/json"
+                                   :body (json/generate-string the-invalid-comment))) => (contains {:status 400}))
 
        (fact "the http response indicates the location of the comment"
              (against-background
