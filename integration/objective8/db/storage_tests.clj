@@ -18,6 +18,19 @@
   (against-background
    [(before :contents (db-connection)) (after :facts (truncate-tables))]
    (facts "About storage"
+
+          ;;GENERAL
+          (fact "pg-store! throws org.postgresql.util.PSQLException when insert fails"
+                (let [NOT-EXISTENT-USER-ID 1
+                      objective {:entity :objective
+                                 :created-by-id NOT-EXISTENT-USER-ID
+                                 :end-date "2015-01-01T00:00:00Z"
+                                 :description "description"
+                                 :goals "goals"
+                                 :title "title"}]
+                      (storage/pg-store! objective) => (throws org.postgresql.util.PSQLException)))
+
+
           ;;USERS
           (fact "a user entity can be stored in the database"
                 (let [user {:entity :user :twitter-id "the-twitter-id" :foo "bar"}
