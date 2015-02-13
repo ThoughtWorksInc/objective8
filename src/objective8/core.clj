@@ -39,7 +39,8 @@
                :get-objective api-handlers/get-objective
                :get-comments-for-objective api-handlers/retrieve-comments
                :post-comment api-handlers/post-comment
-               :post-question api-handlers/post-question})
+               :post-question api-handlers/post-question
+               :get-question api-handlers/get-question})
 
 (def routes
   ["/" {""                  :index
@@ -55,7 +56,7 @@
         "objectives"        {:post :create-objective-form-post
                              ["/create"] :create-objective-form
                              ["/" :id] {"" :objective
-                                       "/questions" {"" {:post :add-question-form-post}
+                                       "/questions" {:post :add-question-form-post
                                                     "/add" :add-question-form}}}
 
         "comments"          {:post :create-comment-form-post}
@@ -67,7 +68,8 @@
                             "/objectives" {:post :post-objective
                                            ["/" :id] {"" :get-objective
                                                      "/comments" :get-comments-for-objective
-                                                     "/questions" {:post :post-question}}}
+                                                     "/questions" {:post :post-question
+                                                                  ["/" :q-id] :get-question}}}
 
                             "/comments"   {:post :post-comment}}}
    ])

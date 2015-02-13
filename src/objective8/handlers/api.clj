@@ -117,3 +117,17 @@
       {:status 400
        :header {}
        :body "Objective id must be an integer"})))
+
+(defn get-question [{:keys [route-params] :as request}]
+  (try
+    (let [id (-> (:q-id route-params)
+                 Integer/parseInt)]
+      (if-let [question (questions/retrieve-question id)]
+        (-> question
+            response/response
+            (response/content-type "application/json"))
+        (response/not-found "")))
+    (catch NumberFormatException e
+      {:status 400
+       :header {}
+       :body "Question id must be an integer"})))

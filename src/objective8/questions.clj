@@ -12,3 +12,6 @@
 
 (defn store-question! [question]
  (storage/pg-store! (assoc question :entity :question)))
+
+(defn retrieve-question [question-id]
+  (storage/pg-retrieve {:entity :question :_id question-id}))

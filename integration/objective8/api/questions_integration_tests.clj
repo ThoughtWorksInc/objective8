@@ -51,3 +51,8 @@
                response => (contains {:status 201})
                headers => (contains {"Location" (contains (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))}))))
 
+(fact "can retrieve a question using its id"
+             (let [peridot-response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))]
+               peridot-response) => (helpers/check-json-body stored-question)
+             (provided
+               (questions/retrieve-question QUESTION_ID) => stored-question))
