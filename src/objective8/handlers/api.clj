@@ -69,14 +69,19 @@
 
 ;; COMMENT
 (defn post-comment [{:keys [params] :as request}]
-  (let [comment (-> params
-                  (select-keys [:comment :objective-id :created-by-id]))
-        stored-comment (comments/store-comment! comment)
-        resource-location (str utils/host-url "/api/v1/comments/" (:_id stored-comment))]
-    {:status 201
-     :headers {"Content-Type" "application/json"
-               "Location" resource-location}
-     :body stored-comment}))
+  (try
+    (let [comment (-> params
+                    (select-keys [:comment :objective-id :created-by-id]))
+          stored-comment (comments/store-comment! comment)
+          resource-location (str utils/host-url "/api/v1/comments/" (:_id stored-comment))]
+      {:status 201
+       :headers {"Content-Type" "application/json"
+                 "Location" resource-location}
+       :body stored-comment})
+    (catch org.postgresql.util.PSQLException e
+      {:status 400
+       :header {}
+       :body "Invalid comment post request"})))
 
 (defn retrieve-comments [{:keys [route-params] :as request}]
   (try

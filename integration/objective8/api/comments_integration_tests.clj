@@ -34,11 +34,17 @@
              (provided
                (comments/store-comment! the-comment) => stored-comment))
 
-       (fact "the http response indicates the location of the comment"
+       (fact "a 400 status is returned if a PSQLException returned"
+          (against-background
+               (comments/store-comment! anything) =throws=> (org.postgresql.util.PSQLException. (org.postgresql.util.ServerErrorMessage. "" 0)) )
+               (:response (p/request app "/api/v1/comments"
+                                     :request-method :post
+                                     :content-type "application/json"
+                                     :body the-comment-as-json)) => (contains {:status 400}))
 
+       (fact "the http response indicates the location of the comment"
              (against-background
                (comments/store-comment! anything) => stored-comment)
-
              (let [result (p/request app "/api/v1/comments"
                                      :request-method :post
                                      :content-type "application/json"
