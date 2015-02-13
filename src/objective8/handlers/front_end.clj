@@ -7,8 +7,8 @@
             [objective8.responses :refer :all]
             [objective8.comments :refer [request->comment]]
             [objective8.objectives :refer [request->objective]]
-            [objective8.questions :refer [request->question]]
             [objective8.http-api :as http-api]
+            [objective8.front-end-helpers :refer [request->question]]
             [objective8.utils :as utils]
             [objective8.storage.storage :as storage]))
 
@@ -140,7 +140,7 @@
                                             :signed-in (signed-in?)}))))
 
 (defn add-question-form-post [{:keys [uri t' locale] :as request}]
-  (if-let [question (request->question request)]
+  (if-let [question (request->question request (get (friend/current-authentication) :username))]
     (if-let [stored-question (http-api/create-question question)]
      (let [question-url (str utils/host-url "/objectives/" (:objective-id stored-question) "/questions/" (:_id stored-question))
            message (t' :question-view/added-message)]
