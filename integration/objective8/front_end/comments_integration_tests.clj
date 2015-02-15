@@ -22,7 +22,10 @@
               (against-background
                   (http-api/create-comment {:comment "The comment"
                                             :objective-id OBJECTIVE_ID
-                                            :created-by-id USER_ID}) => {:_id 12})
+                                            :created-by-id USER_ID}) => {:_id 12
+                                                                         :objective-id OBJECTIVE_ID
+                                                                         :created-by-id USER_ID
+                                                                         :comment "The comment"})
               (against-background
                   (oauth/access-token anything anything anything) => {:user_id USER_ID}
                   (http-api/create-user anything) => {:_id USER_ID})
