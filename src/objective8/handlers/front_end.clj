@@ -5,10 +5,9 @@
             [cheshire.core :as json]
             [org.httpkit.client :as http]
             [objective8.responses :refer :all]
-            [objective8.comments :refer [request->comment]]
             [objective8.objectives :refer [request->objective]]
             [objective8.http-api :as http-api]
-            [objective8.front-end-helpers :refer [request->question]]
+            [objective8.front-end-helpers :refer [request->question request->comment]]
             [objective8.utils :as utils]
             [objective8.storage.storage :as storage]))
 
@@ -115,7 +114,7 @@
 
 (defn create-comment-form-post [{{objective-id :objective-id} :params
                                  :keys [t' locale] :as request}]
-  (if-let [comment (request->comment request)]
+  (if-let [comment (request->comment request (get (friend/current-authentication) :username))]
     (if-let [stored-comment (http-api/create-comment comment)]
       (let [comment-url (str utils/host-url "/objectives/" (:objective-id stored-comment))
             message (t' :comment-view/created-message)]

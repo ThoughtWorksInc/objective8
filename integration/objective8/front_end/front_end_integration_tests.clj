@@ -4,7 +4,7 @@
             [peridot.core :as p]
             [oauth.client :as oauth]
             [objective8.objectives :refer [request->objective]]
-            [objective8.comments :refer [request->comment]]
+            [objective8.front-end-helpers :refer [request->comment]]
             [objective8.storage.storage :as storage]
             [objective8.handlers.front-end :as front-end]
             [objective8.http-api :as http-api]
@@ -56,7 +56,7 @@
                        (fact "can post a new comment to an objective"
                              (against-background
                                (http-api/get-objective OBJECTIVE_ID) => {:status 200}
-                               (request->comment anything) => :a-comment
+                               (request->comment anything anything) => :a-comment
                                (http-api/create-comment :a-comment) => {:_id "the-comment-id"})
                              (let [response
                                    (-> (p/session default-app)
