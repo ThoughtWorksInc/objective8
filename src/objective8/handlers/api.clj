@@ -47,14 +47,18 @@
 
 ;; OBJECTIVE
 (defn post-objective [{:keys [params] :as request}]
-  (let [objective (-> params
-                      (select-keys [:title :goal-1 :goal-2 :goal-3 :description :end-date :created-by-id]))
-        stored-objective (objectives/store-objective! objective)
-        resource-location (str utils/host-url "/api/v1/objectives/" (:_id stored-objective))]
-    {:status 201
-     :headers {"Content-Type" "application/json"
-               "Location" resource-location}
-     :body stored-objective}))
+  (try
+    (let [objective (-> params
+                        (select-keys [:title :goal-1 :goal-2 :goal-3 :description :end-date :created-by-id]))
+          stored-objective (objectives/store-objective! objective)
+          resource-location (str utils/host-url "/api/v1/objectives/" (:_id stored-objective))]
+      {:status 201
+       :headers {"Content-Type" "application/json"
+                 "Location" resource-location}
+       :body stored-objective})
+    (catch Exception e
+      (log/info "Error when posting objective: " e)
+      (invalid-response "Invalid objective post request"))))
 
 (defn get-objective [{:keys [route-params] :as request}]
   (try

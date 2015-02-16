@@ -1,11 +1,11 @@
 (ns objective8.api.objectives-integration-tests
   (:require [midje.sweet :refer :all]
             [peridot.core :as p]
+            [cheshire.core :as json]
             [objective8.utils :as utils]
             [objective8.core :as core]
             [objective8.integration-helpers :as helpers]
-            [objective8.objectives :as objectives]
-            [cheshire.core :as json]))
+            [objective8.objectives :as objectives]))
 
 ;; Testing from http request -> making correct calls within objectives namespace
 ;; Mock or stub out 'objectives' namespace
@@ -20,6 +20,12 @@
                     :description "my objective description"
                     :end-date "2015-01-01"
                     :created-by-id 1})
+
+(def the-invalid-objective {:title "my objective title"
+                            :goal-1 "my first objective goal"
+                            :goal-2 "my second objective goal"
+                            :description "my objective description"
+                            :end-date "2015-01-01"})
 
 (def stored-objective (assoc the-objective :_id OBJECTIVE_ID))
 
@@ -63,4 +69,19 @@
                           response (:response result)
                           headers (:headers response)]
                       response => (contains {:status 201})
-                      headers => (contains {"Location" (contains (str "/api/v1/objectives/" OBJECTIVE_ID))})))))
+                      headers => (contains {"Location" (contains (str "/api/v1/objectives/" OBJECTIVE_ID))})))
+
+              (fact "a 400 status is returned if a PSQLException is raised"
+                    (against-background
+                      (objectives/store-objective! anything) =throws=> (org.postgresql.util.PSQLException. 
+                                                                         (org.postgresql.util.ServerErrorMessage. "" 0)))
+                    (:response (p/request app "/api/v1/objectives"
+                                          :request-method :post
+                                          :content-type "application/json"
+                                          :body (json/generate-string the-objective))) => (contains {:status 400}))
+
+              (fact "a 400 status is returned if a map->objective exception is raised"
+                    (:response (p/request app "/api/v1/objectives"
+                                          :request-method :post
+                                          :content-type "application/json"
+                                          :body (json/generate-string the-invalid-objective))) => (contains {:status 400}))))
