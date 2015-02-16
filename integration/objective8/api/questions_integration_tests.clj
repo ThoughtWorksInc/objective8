@@ -1,6 +1,7 @@
 (ns objective8.api.questions-integration-tests
   (:require [midje.sweet :refer :all]
             [peridot.core :as p]
+            [cheshire.core :as json]
             [objective8.utils :as utils]
             [objective8.core :as core]
             [objective8.integration-helpers :as helpers]
@@ -19,6 +20,9 @@
 (def the-question {:question "The meaning of life?"
                    :objective-id OBJECTIVE_ID
                    :created-by-id USER_ID})
+
+(def the-invalid-question {:question "The meaning of life?"
+                           :created-by-id USER_ID})
 
 (def stored-question (assoc the-question :_id QUESTION_ID))
 
@@ -49,7 +53,22 @@
                    response (:response result)
                    headers (:headers response)]
                response => (contains {:status 201})
-               headers => (contains {"Location" (contains (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))}))))
+               headers => (contains {"Location" (contains (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))})))
+
+       (fact "a 400 status is returned if a PSQLException is raised"
+          (against-background
+               (questions/store-question! anything) =throws=> (org.postgresql.util.PSQLException. 
+                                                              (org.postgresql.util.ServerErrorMessage. "" 0)) )
+               (:response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions")
+                                     :request-method :post
+                                     :content-type "application/json"
+                                     :body the-question-as-json)) => (contains {:status 400}))
+
+       (fact "a 400 status is returned if a map->question exception is raised"
+             (:response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions")
+                                   :request-method :post
+                                   :content-type "application/json"
+                                   :body (json/generate-string the-invalid-question))) => (contains {:status 400})))
 
 (fact "can retrieve a question using its id"
              (let [peridot-response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))]

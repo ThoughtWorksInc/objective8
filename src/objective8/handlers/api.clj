@@ -42,9 +42,8 @@
             (response/content-type "application/json"))
         (response/not-found "")))
     (catch NumberFormatException e
-      {:status 400
-       :header {}
-       :body "User id must be an integer"})))
+      (log/info "Invalid route: " e)
+      (invalid-response  "User id must be an integer"))))
 
 ;; OBJECTIVE
 (defn post-objective [{:keys [params] :as request}]
@@ -68,9 +67,8 @@
             (response/content-type "application/json"))
         (response/not-found "")))
     (catch NumberFormatException e
-      {:status 400
-       :header {}
-       :body "Objective id must be an integer"})))
+      (log/info "Invalid route: " e)
+      (invalid-response  "Objective id must be an integer"))))
 
 ;; COMMENT
 (defn post-comment [{:keys [params] :as request}]
@@ -84,8 +82,8 @@
                  "Location" resource-location}
        :body stored-comment})
     (catch Exception e
-      {:status 400
-       :body "Invalid comment post request"})))
+      (log/info "Error when posting comment: " e)
+      (invalid-response "Invalid comment post request"))))
 
 (defn retrieve-comments [{:keys [route-params] :as request}]
   (try
@@ -97,30 +95,29 @@
             (response/content-type "application/json"))
         (response/not-found "")))
     (catch NumberFormatException e
-      {:status 400
-       :header {}
-       :body "Objective id must be an integer"})))
+      (log/info "Invalid route: " e)
+      (invalid-response  "Objective id must be an integer"))))
 
 ;;QUESTIONS
 (defn post-question [{:keys [route-params params] :as request}]
   (try
     (let [id (-> (:id route-params)
                  Integer/parseInt)]
-      (if (objectives/retrieve-objective id)
-        (let [question (-> params
-                       (select-keys [:question :created-by-id])
-                       (assoc :objective-id id))
-              stored-question (questions/store-question! question)
-              resource-location (str utils/host-url "/api/v1/objectives/" (:objective-id stored-question) "/questions/" (:_id stored-question))]
-              {:status 201
-               :headers {"Content-Type" "application/json"
-                         "Location" resource-location}
-               :body stored-question})
-        (response/not-found "")))
+      (let [question (-> params
+                         (select-keys [:question :created-by-id])
+                         (assoc :objective-id id))
+            stored-question (questions/store-question! question)
+            resource-location (str utils/host-url "/api/v1/objectives/" (:objective-id stored-question) "/questions/" (:_id stored-question))]
+        {:status 201
+         :headers {"Content-Type" "application/json"
+                   "Location" resource-location}
+         :body stored-question}))
     (catch NumberFormatException e
-      {:status 400
-       :header {}
-       :body "Objective id must be an integer"})))
+      (log/info "Invalid route: " e)
+      (invalid-response  "Objective id must be an integer"))
+    (catch Exception e
+      (log/info "Error when posting question: " e)
+      (invalid-response "Invalid question post request"))))
 
 (defn get-question [{:keys [route-params] :as request}]
   (try
@@ -132,6 +129,5 @@
             (response/content-type "application/json"))
         (response/not-found "")))
     (catch NumberFormatException e
-      {:status 400
-       :header {}
-       :body "Question id must be an integer"})))
+      (log/info "Invalid route: " e)
+      (invalid-response  "Question id must be an integer"))))
