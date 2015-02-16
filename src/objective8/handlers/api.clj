@@ -9,11 +9,6 @@
             [objective8.users :as users]
             [objective8.utils :as utils]))
 
-(defn invalid-response [message]
-  {:status 400
-   :headers {"Content-Type" "application/json"}
-   :body message})
-
 ;; USERS
 (defn post-user-profile [request]
   (let [twitter-id (get-in request [:params :twitter-id])
@@ -26,6 +21,12 @@
                "Location" resource-location}
      :body user}))
 
+(defn find-user-by-query [request]
+  (let [twitter-id (get-in request [:params :twitter])]
+    (if-let [user (users/find-user-by-twitter-id twitter-id)]
+      (response/content-type (response/response user) "application/json")
+      (response/not-found ""))))
+
 (defn get-user [{:keys [route-params] :as request}]
   (try
     (let [id (-> (:id route-params)
@@ -36,8 +37,9 @@
             (response/content-type "application/json"))
         (response/not-found "")))
     (catch NumberFormatException e
-      (log/info "Invalid route: " e)
-      (invalid-response  "User id must be an integer"))))
+      {:status 400
+       :header {}
+       :body "User id must be an integer"})))
 
 ;; OBJECTIVE
 (defn post-objective [{:keys [params] :as request}]
@@ -61,8 +63,9 @@
             (response/content-type "application/json"))
         (response/not-found "")))
     (catch NumberFormatException e
-      (log/info "Invalid route: " e)
-      (invalid-response  "Objective id must be an integer"))))
+      {:status 400
+       :header {}
+       :body "Objective id must be an integer"})))
 
 ;; COMMENT
 (defn post-comment [{:keys [params] :as request}]
@@ -76,8 +79,8 @@
                  "Location" resource-location}
        :body stored-comment})
     (catch Exception e
-      (log/info "Error when posting comment: " e)
-      (invalid-response "Invalid comment post request"))))
+      {:status 400
+       :body "Invalid comment post request"})))
 
 (defn retrieve-comments [{:keys [route-params] :as request}]
   (try
@@ -89,29 +92,30 @@
             (response/content-type "application/json"))
         (response/not-found "")))
     (catch NumberFormatException e
-      (log/info "Invalid route: " e)
-      (invalid-response  "Objective id must be an integer"))))
+      {:status 400
+       :header {}
+       :body "Objective id must be an integer"})))
 
 ;;QUESTIONS
 (defn post-question [{:keys [route-params params] :as request}]
   (try
     (let [id (-> (:id route-params)
                  Integer/parseInt)]
-      (let [question (-> params
-                         (select-keys [:question :created-by-id])
-                         (assoc :objective-id id))
-            stored-question (questions/store-question! question)
-            resource-location (str utils/host-url "/api/v1/objectives/" (:objective-id stored-question) "/questions/" (:_id stored-question))]
-        {:status 201
-         :headers {"Content-Type" "application/json"
-                   "Location" resource-location}
-         :body stored-question}))
+      (if (objectives/retrieve-objective id)
+        (let [question (-> params
+                       (select-keys [:question :created-by-id])
+                       (assoc :objective-id id))
+              stored-question (questions/store-question! question)
+              resource-location (str utils/host-url "/api/v1/objectives/" (:objective-id stored-question) "/questions/" (:_id stored-question))]
+              {:status 201
+               :headers {"Content-Type" "application/json"
+                         "Location" resource-location}
+               :body stored-question})
+        (response/not-found "")))
     (catch NumberFormatException e
-      (log/info "Invalid route: " e)
-      (invalid-response  "Objective id must be an integer"))
-    (catch Exception e
-      (log/info "Error when posting question: " e)
-      (invalid-response "Invalid question post request"))))
+      {:status 400
+       :header {}
+       :body "Objective id must be an integer"})))
 
 (defn get-question [{:keys [route-params] :as request}]
   (try
@@ -123,5 +127,6 @@
             (response/content-type "application/json"))
         (response/not-found "")))
     (catch NumberFormatException e
-      (log/info "Invalid route: " e)
-      (invalid-response  "Question id must be an integer"))))
+      {:status 400
+       :header {}
+       :body "Question id must be an integer"})))
