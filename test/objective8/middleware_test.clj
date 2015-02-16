@@ -6,20 +6,31 @@
                         "api-bearer-name"  "objective8.dev"
                         "some-other-header" "friday"}})
 
-(fact "Calls the handler and dissocs details (so they don't get logged) if the bearer token is correct"
-      (let [handler identity 
-            wbt-wrapped-handler (wrap-bearer-token handler {:objective8.dev "some-secure-token"})]
-        (wbt-wrapped-handler request) => {:headers {"some-other-header" "friday"}}))
+(defn test-token-provider [name]
+  (throw (Exception. "This is only for use in provided statements")))
 
-(fact "Returns 401 Unauthorized if the bearer token is incorrect"
+(fact "Calls the handler and dissocs details (so they don't get logged) if the provided bearer token is correct"
       (let [handler identity 
-            wbt-wrapped-handler (wrap-bearer-token handler {:objective8.dev "some-secure-token"})]
-        (wbt-wrapped-handler (assoc-in request [:headers "api-bearer-token"] "wibble")) => (contains {:status 401})))
+            wbt-wrapped-handler (wrap-bearer-token handler test-token-provider)]
+        (wbt-wrapped-handler request)) => {:headers {"some-other-header" "friday"}} 
+      (provided (test-token-provider "objective8.dev") => "some-secure-token"))
 
-(fact "Returns 401 Unauthorized if the bearer name does not exist"
+(fact "Returns 401 Unauthorized if the bearer token does not match provided bearer token"
       (let [handler identity 
-            wbt-wrapped-handler (wrap-bearer-token handler {:objective8.dev "some-secure-token"})]
-        (wbt-wrapped-handler (assoc-in request [:headers "api-bearer-name"] "wibble")) => (contains {:status 401})))
+            wbt-wrapped-handler (wrap-bearer-token handler test-token-provider)]
+        (wbt-wrapped-handler (assoc-in request [:headers "api-bearer-token"] "wibble"))) => (contains {:status 401})
+      (provided (test-token-provider "objective8.dev") => "some-secure-token"))
+
+(fact "Returns 401 Unauthorized if the bearer name does not exist in the headers"
+      (let [handler identity 
+            wbt-wrapped-handler (wrap-bearer-token handler test-token-provider)]
+        (wbt-wrapped-handler (update-in request [:headers] dissoc "api-bearer-name")) => (contains {:status 401})))
+
+(fact "Returns 401 Unauthorized if the token-provider returns nil"
+      (let [handler identity 
+            wbt-wrapped-handler (wrap-bearer-token handler test-token-provider)]
+        (wbt-wrapped-handler request)) => (contains {:status 401})
+      (provided (test-token-provider "objective8.dev") => nil))
 
 (fact "Returns 401 Unauthorized if the user and bearer token do not match"
       (let [handler identity 
