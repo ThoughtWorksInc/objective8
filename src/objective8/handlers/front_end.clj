@@ -19,7 +19,8 @@
   (rendered-response error-404-page {:translation t'
                                      :locale (subs (str locale) 1)
                                      :signed-in (signed-in?)
-                                     :status-code 404}))
+                                     :status-code 404
+                                     :objectives-nav false}))
 ;; HANDLERS
 
 (defn error-404 [{:keys [t' locale]}]

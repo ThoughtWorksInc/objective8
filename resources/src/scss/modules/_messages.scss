@@ -1,10 +1,17 @@
 .flash-message-success {
   padding: 0.5em 1em;
   position: absolute;
+  z-index: 5;
   top: 52px;
   width: 100%;
   background: $green1;
   color: $white;
+  @include mq(720) {
+    position: fixed;
+    z-index: 6;
+    top: 52px;
+    width: 100%;
+  }
   p {
     margin: 0;
   }

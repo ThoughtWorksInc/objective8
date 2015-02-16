@@ -30,9 +30,24 @@
   "templates/flash-message.html" [[:#clj-flash-message]] [message]
   [:p] (html/html-content message))
 
-;BASE TEMPLATES
+;NAVIGATION
+(html/defsnippet objectives-navigation
+  "templates/objectives-nav.html" [[:#navigation]] [objective translation]
+  [:#clj-objective-title] (html/html-content (:title objective))
+  [:#clj-objectives-details] (html/set-attr :href (str "/objectives/" (:_id objective)))
+  [:#navigation html/any-node] (html/replace-vars translation))
+
+(html/defsnippet user-navigation-signed-in
+  "templates/user-navigation/signed-in.html" [[:#clj-user-navigation]] [{:keys [translation]}]
+  [:#clj-user-navigation html/any-node] (html/replace-vars translation))
+
+(html/defsnippet user-navigation-signed-out
+  "templates/user-navigation/signed-out.html" [[:#clj-user-navigation]] [{:keys [translation]}]
+  [:#clj-user-navigation html/any-node] (html/replace-vars translation))
+
+;BASE TEMPLATE
 (html/deftemplate base
-  "templates/base.html" [{:keys [translation locale doc-title doc-description user-navigation flash-message content]}]
+  "templates/base.html" [{:keys [translation locale doc-title doc-description user-navigation flash-message content objective]}]
   [:html] (html/set-attr :lang locale)
   ; TODO find a way to select description without an ID
   ; [:head (html/attr= :name "description")] (html/set-attr :content "some text")
@@ -45,16 +60,8 @@
   [:#projectStatus] (html/html-content (translation :base/project-status))
   [:#main-content] (html/before (if flash-message (flash-message-view flash-message)))
   [:#main-content] (html/content content)
+  [:#clj-navigation] (if objective (html/content (objectives-navigation objective translation)) identity)
   [:body] (html/append (if google-analytics-tracking-id (google-analytics google-analytics-tracking-id))))
-
-;NAVIGATION
-(html/defsnippet user-navigation-signed-in
-  "templates/user-navigation/signed-in.html" [[:#clj-user-navigation]] [{:keys [translation]}]
-  [:#clj-user-navigation html/any-node] (html/replace-vars translation))
-
-(html/defsnippet user-navigation-signed-out
-  "templates/user-navigation/signed-out.html" [[:#clj-user-navigation]] [{:keys [translation]}]
-  [:#clj-user-navigation html/any-node] (html/replace-vars translation))
 
 ;HOME/INDEX
 (html/defsnippet index-page

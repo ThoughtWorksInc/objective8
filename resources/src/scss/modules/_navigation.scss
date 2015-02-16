@@ -2,15 +2,21 @@
   background: $grey-5;
   padding: 1em;
   @include mq(720) {
-    width: 260px;
-    position: fixed;
-    z-index: 2;
-    top: 0;
-    left: 0;
-    height: 100%;
-    padding-top: 52px;
-    // border-right: 1px solid $grey-2;
-    box-shadow: -3px 10px 8px -1px rgba(0,0,0,0.1) inset;
+    display: none;
+  }
+  &.large-screen-sidebar {
+    @include mq(720) {
+      width: 260px;
+      display: block;
+      position: fixed;
+      z-index: 2;
+      top: 0;
+      left: 0;
+      height: 100%;
+      padding-top: 87px;
+      // border-right: 1px solid $grey-2;
+      box-shadow: -3px 10px 8px -1px rgba(0,0,0,0.1) inset;
+    }
   }
 }
 
