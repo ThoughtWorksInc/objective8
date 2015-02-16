@@ -9,6 +9,17 @@
             [objective8.users :as users]
             [objective8.utils :as utils]))
 
+(defn invalid-response [message]
+  {:status 400
+   :headers {"Content-Type" "application/json"}
+   :body message})
+
+(defn find-user-by-query [request]
+  (let [twitter-id (get-in request [:params :twitter])]
+    (if-let [user (users/find-user-by-twitter-id twitter-id)]
+      (response/content-type (response/response user) "application/json")
+      (response/not-found ""))))
+
 ;; USERS
 (defn post-user-profile [request]
   (let [twitter-id (get-in request [:params :twitter-id])
@@ -20,12 +31,6 @@
      :headers {"Content-Type" "application/json"
                "Location" resource-location}
      :body user}))
-
-(defn find-user-by-query [request]
-  (let [twitter-id (get-in request [:params :twitter])]
-    (if-let [user (users/find-user-by-twitter-id twitter-id)]
-      (response/content-type (response/response user) "application/json")
-      (response/not-found ""))))
 
 (defn get-user [{:keys [route-params] :as request}]
   (try
