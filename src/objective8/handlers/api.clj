@@ -79,6 +79,7 @@
                  "Location" resource-location}
        :body stored-comment})
     (catch Exception e
+      (log/info "Error when posting comment: " e)
       {:status 400
        :body "Invalid comment post request"})))
 
