@@ -33,6 +33,8 @@
                :add-question-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-question-form-post) #{:signed-in})
                :add-question-form (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-question-form) #{:signed-in})
                :question front-end-handlers/question-detail
+
+               
                ; API Handlers
                :post-user-profile api-handlers/post-user-profile
                :find-user-by-query api-handlers/find-user-by-query
@@ -42,7 +44,8 @@
                :get-comments-for-objective api-handlers/retrieve-comments
                :post-comment api-handlers/post-comment
                :post-question api-handlers/post-question
-               :get-question api-handlers/get-question})
+               :get-question api-handlers/get-question
+               :post-answer api-handlers/post-answer})
 
 (def routes
   ["/" {""                  :index
@@ -58,10 +61,10 @@
         "objectives"        {:get :objective-list
                              :post :create-objective-form-post
                              ["/create"] :create-objective-form
-                             ["/" :id] {"" :objective
-                                       "/questions" {:post :add-question-form-post
-                                                    "/add" :add-question-form
-                                                    ["/" :q-id] :question}}}
+                             ["/" :id] {:get :objective
+                                        "/questions" {:post :add-question-form-post
+                                                      "/add" :add-question-form
+                                                      ["/" :q-id] :question}}}
 
         "comments"          {:post :create-comment-form-post}
 
@@ -69,14 +72,14 @@
                                        :get :find-user-by-query
                                        ["/" :id] :get-user}
 
-                            "/objectives" {:post :post-objective
-                                           ["/" :id] {"" :get-objective
-                                                     "/comments" :get-comments-for-objective
-                                                     "/questions" {:post :post-question
-                                                                  ["/" :q-id] :get-question}}}
+                             "/objectives" {:post :post-objective
+                                            ["/" :id] {:get :get-objective
+                                                       "/comments" :get-comments-for-objective
+                                                       "/questions" {:post :post-question
+                                                                     ["/" :q-id] {:get :get-question
+                                                                                  "/answers" {:post :post-answer}}}}}
 
-                            "/comments"   {:post :post-comment}}}
-   ])
+                             "/comments"   {:post :post-comment}}}])
 
 (defn wrap-not-found [handler]
   (fn [request]

@@ -30,8 +30,6 @@
 
 (facts "about posting questions" :integration
        (fact "the posted question is stored"
-             (against-background
-              (objectives/retrieve-objective OBJECTIVE_ID) => {})
              (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions")
                         :request-method :post
                         :content-type "application/json"
@@ -43,7 +41,6 @@
 
        (fact "the http response indicates the location of the question"
              (against-background
-               (objectives/retrieve-objective OBJECTIVE_ID) => {}
                (questions/store-question! anything) => stored-question)
 
              (let [result (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions")

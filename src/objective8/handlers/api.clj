@@ -6,6 +6,7 @@
             [objective8.objectives :as objectives]
             [objective8.comments :as comments]
             [objective8.questions :as questions]
+            [objective8.answers :as answers]
             [objective8.users :as users]
             [objective8.utils :as utils]))
 
@@ -13,6 +14,12 @@
   {:status 400
    :headers {"Content-Type" "application/json"}
    :body message})
+
+(defn successful-post-response [resource-location stored-object]
+  {:status 201
+   :headers {"Content-Type" "application/json"
+             "Location" resource-location}
+   :body stored-object})
 
 (defn find-user-by-query [request]
   (let [twitter-id (get-in request [:params :twitter])]
@@ -27,10 +34,7 @@
         user (users/store-user! {:twitter-id twitter-id
                                         :email-address email-address})
         resource-location (str utils/host-url "/api/v1/users/" (:_id user))]
-    {:status 201
-     :headers {"Content-Type" "application/json"
-               "Location" resource-location}
-     :body user}))
+    (successful-post-response resource-location user)))
 
 (defn get-user [{:keys [route-params] :as request}]
   (try
@@ -52,10 +56,7 @@
                         (select-keys [:title :goal-1 :goal-2 :goal-3 :description :end-date :created-by-id]))
           stored-objective (objectives/store-objective! objective)
           resource-location (str utils/host-url "/api/v1/objectives/" (:_id stored-objective))]
-      {:status 201
-       :headers {"Content-Type" "application/json"
-                 "Location" resource-location}
-       :body stored-objective})
+      (successful-post-response resource-location stored-objective))
     (catch Exception e
       (log/info "Error when posting objective: " e)
       (invalid-response "Invalid objective post request"))))
@@ -81,10 +82,7 @@
                     (select-keys [:comment :objective-id :created-by-id]))
           stored-comment (comments/store-comment! comment)
           resource-location (str utils/host-url "/api/v1/comments/" (:_id stored-comment))]
-      {:status 201
-       :headers {"Content-Type" "application/json"
-                 "Location" resource-location}
-       :body stored-comment})
+      (successful-post-response resource-location stored-comment))
     (catch Exception e
       (log/info "Error when posting comment: " e)
       (invalid-response "Invalid comment post request"))))
@@ -112,10 +110,7 @@
                          (assoc :objective-id id))
             stored-question (questions/store-question! question)
             resource-location (str utils/host-url "/api/v1/objectives/" (:objective-id stored-question) "/questions/" (:_id stored-question))]
-        {:status 201
-         :headers {"Content-Type" "application/json"
-                   "Location" resource-location}
-         :body stored-question}))
+        (successful-post-response resource-location stored-question)))
     (catch NumberFormatException e
       (log/info "Invalid route: " e)
       (invalid-response  "Objective id must be an integer"))
@@ -135,3 +130,13 @@
     (catch NumberFormatException e
       (log/info "Invalid route: " e)
       (invalid-response  "Question id must be an integer"))))
+
+;;ANSWERS
+(defn post-answer [{:keys [route-params params] :as request}]
+  (let [q-id (-> (:q-id route-params)
+                 Integer/parseInt)
+        answer (-> params
+                   (select-keys [:answer :created-by-id])
+                   (assoc :question-id q-id))
+        stored-answer (answers/store-answer! answer)]
+    (successful-post-response "" stored-answer)))
