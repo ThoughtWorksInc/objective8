@@ -1,19 +1,12 @@
 (ns objective8.db.storage-tests
   (:require [midje.sweet :refer :all]
-            [korma.core :as korma]
             [objective8.storage.storage :as storage]
             [objective8.storage.database :as db]
-            [objective8.storage.mappings :as m]))
+            [objective8.integration-helpers :refer [truncate-tables]]))
 
 
 (defn db-connection [] (db/connect! db/postgres-spec))
 
-(defn truncate-tables []
-  (korma/delete m/bearer-token)
-  (korma/delete m/question)
-  (korma/delete m/comment)
-  (korma/delete m/objective)
-  (korma/delete m/user))
 
 (facts "Storage tests" :integration
   (against-background

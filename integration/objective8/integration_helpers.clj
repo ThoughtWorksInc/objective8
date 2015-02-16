@@ -1,10 +1,19 @@
 (ns objective8.integration-helpers
   (:require [net.cgrand.enlive-html :as html]
             [midje.sweet :as midje]
+            [korma.core :as korma]
             [peridot.core :as p]
             [cheshire.core :as json]
             [objective8.core :as core]
+            [objective8.storage.mappings :as m]
             [midje.sweet :as midje]))
+
+(defn truncate-tables []
+  (korma/delete m/bearer-token)
+  (korma/delete m/question)
+  (korma/delete m/comment)
+  (korma/delete m/objective)
+  (korma/delete m/user))
 
 (defn get-anti-forgery-token [request-context]
   (let [raw-html (:body (:response request-context))]
