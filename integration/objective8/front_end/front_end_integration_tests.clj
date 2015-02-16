@@ -3,8 +3,7 @@
             [ring.mock.request :as mock]
             [peridot.core :as p]
             [oauth.client :as oauth]
-            [objective8.objectives :refer [request->objective]]
-            [objective8.front-end-helpers :refer [request->comment]]
+            [objective8.front-end-helpers :refer [request->comment request->objective]]
             [objective8.storage.storage :as storage]
             [objective8.handlers.front-end :as front-end]
             [objective8.http-api :as http-api]
@@ -44,7 +43,7 @@
                                (:request result) => (contains {:uri "/objectives/create"})))
                        (fact "can post a new objective"
                              (against-background
-                               (request->objective anything) => :an-objective
+                               (request->objective anything anything) => :an-objective
                                (http-api/create-objective :an-objective) => {:_id OBJECTIVE_ID})
                              (let [response
                                    (-> (p/session default-app)

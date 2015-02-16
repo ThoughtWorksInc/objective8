@@ -1,6 +1,5 @@
 (ns objective8.objectives-test
   (:require [midje.sweet :refer :all]
-            [cemerick.friend :as friend]
             [objective8.storage.storage :as storage]
             [objective8.utils :as utils]
             [objective8.objectives :refer :all]))
@@ -19,9 +18,3 @@
 (def stored-test-objective (assoc test-objective
                             :_id 123
                             :created-by "username"))
-
-(fact "creates an objective from a request"
-      (against-background
-        (friend/current-authentication) => {:username 1})
-        (let [objective (request->objective (requestify test-objective))]
-          (:created-by-id objective) => 1))

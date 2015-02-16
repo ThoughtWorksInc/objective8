@@ -5,9 +5,8 @@
             [cheshire.core :as json]
             [org.httpkit.client :as http]
             [objective8.responses :refer :all]
-            [objective8.objectives :refer [request->objective]]
             [objective8.http-api :as http-api]
-            [objective8.front-end-helpers :refer [request->question request->comment]]
+            [objective8.front-end-helpers :refer [request->question request->comment request->objective]]
             [objective8.utils :as utils]
             [objective8.storage.storage :as storage]))
 
@@ -76,7 +75,7 @@
                                             :signed-in (signed-in?)}))
 
 (defn create-objective-form-post [{:keys [t' locale] :as request}]
-    (if-let [objective (request->objective request)]
+    (if-let [objective (request->objective request (get (friend/current-authentication) :username))]
       (if-let [stored-objective (http-api/create-objective objective)]
         (let [objective-url (str utils/host-url "/objectives/" (:_id stored-objective))
               message (t' :objective-view/created-message)]

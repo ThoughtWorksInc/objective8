@@ -1,17 +1,5 @@
 (ns objective8.objectives
-  (:require [cemerick.friend :as friend]
-            [objective8.utils :as utils]
-            [objective8.storage.storage :as storage]))
-
-(defn request->objective
-  "Returns a map of an objective if all the parts are in the
-  request params. Otherwise returns nil"
-  [{:keys [params]}]
-    ;TODO Should we use friend here?
-    (let [iso-time (utils/string->date-time (:end-date params))]
-      (assoc (select-keys params [:title :goal-1 :goal-2 :goal-3 :description ])
-                                  :end-date iso-time
-                                  :created-by-id (get (friend/current-authentication) :username))))
+  (:require [objective8.storage.storage :as storage]))
 
 (defn store-objective! [objective]
   (storage/pg-store! (assoc objective :entity :objective)))
