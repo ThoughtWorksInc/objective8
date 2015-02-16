@@ -27,7 +27,9 @@
                  [ragtime "0.3.8"]]
   :main objective8.core
   :plugins [[ragtime/ragtime.lein "0.3.8"]]
-  :profiles {:dev {:dependencies [[midje "1.6.3"]
+  :profiles {:dev {:source-paths ["dev"]
+                   :repl-options {:init-ns user}
+                   :dependencies [[midje "1.6.3"]
                                   [ring/ring-mock "0.2.0"]
                                   [http-kit.fake "0.2.1"]
                                   [javax.servlet/servlet-api "2.5"]
