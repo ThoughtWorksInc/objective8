@@ -133,15 +133,19 @@
 
 ;;ANSWERS
 (defn post-answer [{:keys [route-params params] :as request}]
-  (let [q-id (-> (:q-id route-params)
-                 Integer/parseInt)
-        objective-id (:id route-params)
-        answer (-> params
-                   (select-keys [:answer :created-by-id])
-                   (assoc :question-id q-id))
-        stored-answer (answers/store-answer! answer)
-        resource-location (str utils/host-url
-                               "/api/v1/objectives/" objective-id
-                               "/questions/" (:question-id stored-answer)
-                               "/answers/" (:_id stored-answer))]
-    (successful-post-response resource-location stored-answer)))
+  (try
+    (let [q-id (-> (:q-id route-params)
+                   Integer/parseInt)
+          objective-id (:id route-params)
+          answer (-> params
+                     (select-keys [:answer :created-by-id])
+                     (assoc :question-id q-id))
+          stored-answer (answers/store-answer! answer)
+          resource-location (str utils/host-url
+                                 "/api/v1/objectives/" objective-id
+                                 "/questions/" (:question-id stored-answer)
+                                 "/answers/" (:_id stored-answer))]
+      (successful-post-response resource-location stored-answer))
+    (catch Exception e
+      (log/info "Error when posting answer: " e)
+      (invalid-response "Invalid answer post request"))))

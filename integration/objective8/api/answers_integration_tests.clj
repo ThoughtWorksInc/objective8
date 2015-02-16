@@ -20,6 +20,8 @@
                  :question-id QUESTION_ID
                  :created-by-id USER_ID })
 
+(def the-invalid-answer (dissoc the-answer :question-id))
+
 (def stored-answer (assoc the-answer :_id ANSWER_ID))
 
 (facts "about posting answers" :integation
@@ -31,7 +33,7 @@
 
              => (helpers/check-json-body stored-answer)
              (provided
-               (answers/store-answer! the-answer) => stored-answer)
+               (answers/store-answer! the-answer) => stored-answer)) 
 
       (fact "the http response indicates the location of the answer"
             (against-background
@@ -45,4 +47,19 @@
               response => (contains {:status 201})
               headers => (contains {"Location" (contains (str "api/v1/objectives/" OBJECTIVE_ID
                                                               "/questions/" QUESTION_ID
-                                                              "/answers/" ANSWER_ID))})))))
+                                                              "/answers/" ANSWER_ID))})))
+
+       (fact "a 400 status is returned if a PSQLException is raised"
+             (against-background
+               (answers/store-answer! anything) =throws=> (org.postgresql.util.PSQLException.
+                                                            (org.postgresql.util.ServerErrorMessage. "" 0)))
+             (:response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers")
+                                   :request-method :post
+                                   :content-type "application/json"
+                                   :body (json/generate-string the-answer))) => (contains {:status 400}))
+
+       (fact "a 400 status is returned if a map->answer exception is raised"
+             (:response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers")
+                                   :request-method :post
+                                   :content-type "application/json"
+                                   :body (json/generate-string the-invalid-answer))) => (contains {:status 400})))
