@@ -16,6 +16,8 @@
 (def QUESTION_ID 42)
 (def ANSWER_ID 3)
 
+(def INVALID_ID "NOT_AN_INTEGER")
+
 (def the-answer {:answer "The answer is 42"
                  :question-id QUESTION_ID
                  :created-by-id USER_ID })
@@ -62,4 +64,16 @@
              (:response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers")
                                    :request-method :post
                                    :content-type "application/json"
-                                   :body (json/generate-string the-invalid-answer))) => (contains {:status 400})))
+                                   :body (json/generate-string the-invalid-answer))) => (contains {:status 400}))
+       (tabular
+         (fact "a 400 status is returned if the objective and question ids are not integers"
+               (against-background
+                 (answers/store-answer! anything) => stored-answer)
+               (:response (p/request app (str "/api/v1/objectives/" ?objective_id "/questions/" ?question_id "/answers")
+                                     :request-method :post
+                                     :content-type "application/json"
+                                     :body (json/generate-string the-answer))) => (contains {:status 400}))
+         ?objective_id  ?question_id
+         INVALID_ID     QUESTION_ID
+         OBJECTIVE_ID   INVALID_ID
+         INVALID_ID     INVALID_ID))

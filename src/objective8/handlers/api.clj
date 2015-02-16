@@ -136,7 +136,8 @@
   (try
     (let [q-id (-> (:q-id route-params)
                    Integer/parseInt)
-          objective-id (:id route-params)
+          objective-id (-> (:id route-params)
+                           Integer/parseInt)
           answer (-> params
                      (select-keys [:answer :created-by-id])
                      (assoc :question-id q-id))
@@ -146,6 +147,9 @@
                                  "/questions/" (:question-id stored-answer)
                                  "/answers/" (:_id stored-answer))]
       (successful-post-response resource-location stored-answer))
+    (catch NumberFormatException e
+      (log/info "Invalid route: " e)
+      (invalid-response "Objective and question ids must be integers"))
     (catch Exception e
       (log/info "Error when posting answer: " e)
       (invalid-response "Invalid answer post request"))))
