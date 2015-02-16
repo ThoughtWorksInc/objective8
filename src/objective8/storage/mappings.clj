@@ -93,10 +93,18 @@
   (korma/prepare map->question)
   (korma/transform (unmap :question)))
 
+(korma/defentity bearer-token
+  (korma/pk :_id)
+  (korma/table :objective8.bearer_tokens)
+  (korma/prepare map->bearer-token)
+  (korma/transform (unmap :token_details))
+  )
+
 (def entities {:objective objective
                :user      user
                :comment   comment
-               :question  question})
+               :question  question
+               :bearer-token bearer-token})
 
 (defn get-mapping
   "Returns a korma entity for a map"

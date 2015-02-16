@@ -9,6 +9,7 @@
 (defn db-connection [] (db/connect! db/postgres-spec))
 
 (defn truncate-tables []
+  (korma/delete m/bearer-token)
   (korma/delete m/question)
   (korma/delete m/comment)
   (korma/delete m/objective)
@@ -17,6 +18,7 @@
 (facts "Storage tests" :integration
   (against-background
    [(before :contents (db-connection)) (after :facts (truncate-tables))]
+
    (facts "About storage"
 
           ;;GENERAL
@@ -88,7 +90,7 @@
                       retrieved-users (:result (storage/pg-retrieve {:entity :user}))
                       sorted-twitter-ids (vec (map :twitter-id retrieved-users))]
                   sorted-twitter-ids)
-                => ["the-twitter-id1" "the-twitter-id2" "the-twitter-id3"]))
+                => ["the-twitter-id1" "the-twitter-id2" "the-twitter-id3"])
 
           ;;QUESTIONS
           (fact "a question entity can be stored in the database"
@@ -106,4 +108,14 @@
                       store-result (storage/pg-store! question)
                       retrieve-result (storage/pg-retrieve {:entity :question :_id (:_id store-result)})]
                   (first (:result retrieve-result)) => (contains {:created-by-id user-id
-                                                                  :objective-id objective-id})))))
+                                                                  :objective-id objective-id}))) 
+
+          ;;BEARER-TOKENS
+          (fact "a bearer-token entity can be stored in the database"
+                (let [bearer-token {:entity :bearer-token
+                                    :bearer-name "bearer name"
+                                    :bearer-token "123"
+                                    :authoriser true}
+                      store-result (storage/pg-store! bearer-token)
+                      retrieve-result (storage/pg-retrieve {:entity :bearer-token :bearer-name "bearer name"})]
+                 (first (:result retrieve-result)) => (contains {:bearer-name "bearer name"}))))))
