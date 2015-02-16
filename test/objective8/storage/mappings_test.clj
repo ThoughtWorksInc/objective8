@@ -72,3 +72,19 @@
        (fact "throws exception if :created-by-id or :objective-id are missing"
                     (map->question (dissoc question-map :created-by-id)) => (throws Exception "Could not transform map to question")
                     (map->question (dissoc question-map :objective-id)) => (throws Exception "Could not transform map to question")))
+
+;;BEARER-TOKENS
+(def BEARER_NAME "bearer name")
+(def BEARER_TOKEN "123")
+(def bearer-token-map {:bearer-name BEARER_NAME
+                       :bearer-token BEARER_TOKEN
+                       :authoriser true})
+
+(facts "About map->bearer-token"
+       (fact "Column values are pulled out and converted, the map gets turned to json"
+             (let [test-bearer-token (map->bearer-token bearer-token-map)]
+               test-bearer-token => (contains {:bearer_name BEARER_NAME
+                                               :token_details json-type?})))
+       (fact "throws exception if :bearer-name is missing"
+             (map->bearer-token (dissoc bearer-token-map
+                                        :bearer-name)) => (throws Exception "Could not transform map to bearer-token")))

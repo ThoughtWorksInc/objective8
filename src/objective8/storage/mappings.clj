@@ -57,6 +57,13 @@
      :question (map->json-type question)}
     (throw (Exception. "Could not transform map to question"))))
 
+(defn map->bearer-token
+ "Converts a clojure map into a json-typed bearer-token for the database" [{:keys [bearer-name] :as bearer-token}]
+  (if bearer-name
+    {:bearer_name bearer-name
+     :token_details (map->json-type bearer-token)}
+    (throw (Exception. "Could not transform map to bearer-token"))))
+
 (defn unmap [data-key]
   (fn [m] (assoc (json-type->map (data-key m)) 
                  :_id (:_id m)
