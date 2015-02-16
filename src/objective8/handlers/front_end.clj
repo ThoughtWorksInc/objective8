@@ -66,6 +66,12 @@
                                   :signed-in (signed-in?)}))
 
 ;; OBJECTIVES
+(defn objective-list [{:keys [t' locale]}]
+  (rendered-response objective-list-page {:translation t'
+                                          :locale (subs (str locale) 1)
+                                          :doc-title (t' :objective-list/doc-title)
+                                          :doc-description (t' :objective-list/doc-description)
+                                          :signed-in (signed-in?)}))
 
 (defn create-objective-form [{:keys [t' locale]}]
   (rendered-response objective-create-page {:translation t'
@@ -99,7 +105,7 @@
                                     (update-in [:end-date] utils/date-time->pretty-date)
                                     (assoc :goals goals)
                                     (dissoc :goal-1 :goal-2 :goal-3))]
-            (rendered-response objective-view-page {:translation t'
+            (rendered-response objective-detail-page {:translation t'
                                                     :locale (subs (str locale) 1)
                                                     :doc-title (str (:title objective) " | Objective[8]")
                                                     :doc-description (:title objective)

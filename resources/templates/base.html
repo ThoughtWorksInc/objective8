@@ -16,12 +16,19 @@
   <!--[if lt IE 8]>
     <p class="browserupgrade">{{browse happy message}}</p>
   <![endif]-->
-  <header class="masthead" role="banner">
-    <div class="wrapper">
-      <a href="/" title="Go to home page" class="header-logo">{{Objective[8]}}</a>
-      <nav id="clj-global-navigation" role="navigation">
 
-      </nav>
+  <header role="banner">
+    <div class="masthead">
+      <a href="#navigation" class="masthead-nav-link">
+        <i class="fa fa-bars"></i><span class="visuallyhidden">Skip to navigation</span>
+      </a>
+
+      <a href="/" class="masthead-logo" title="Go to home page" rel="home">Objective[8]</a>
+
+      <div class="masthead-large-screen-nav">
+        <a href="/objectives" title="Go to to the Objectives list">Objectives</a>
+        <a href="/project-status" title="Learn more about Objective[8]">About</a>
+      </div>
     </div>
   </header>
 
@@ -29,10 +36,15 @@
     <div id="projectStatus" class="wrapper">{{project-status}}</div>
   </div>
 
-  <section role="main" class="page-container">
-    <div id="main-content" class="wrapper"> {{content goes here}} </div>
-  </section>
+  <div id="main-content" role="main">
+    {{content goes here}}
+  </div>
 
+  <footer role="contentinfo">
+    <div class="footer">
+      <small>Objective[8]</small>
+    </div>
+  </footer>
 
   <script src="/static/scripts.min.js"></script>
 </body>

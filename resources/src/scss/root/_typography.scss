@@ -4,5 +4,8 @@ h1 {
 }
 p {
   margin-top: 0;
+  &.lede {
+    font-size: 1.3em;
+  }
 }
 

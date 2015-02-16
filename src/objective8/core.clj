@@ -27,11 +27,12 @@
                :project-status front-end-handlers/project-status
                :create-objective-form (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form) #{:signed-in})
                :create-objective-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form-post) #{:signed-in})
+               :objective-list front-end-handlers/objective-list
                :objective (utils/anti-forgery-hook front-end-handlers/objective-detail)
                :create-comment-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-comment-form-post) #{:signed-in})
                :add-question-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-question-form-post) #{:signed-in})
                :add-question-form (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-question-form) #{:signed-in})
-               :question front-end-handlers/question-detail 
+               :question front-end-handlers/question-detail
                ; API Handlers
                :post-user-profile api-handlers/post-user-profile
                :find-user-by-query api-handlers/find-user-by-query
@@ -54,7 +55,8 @@
 
         "static/"           (->Resources {:prefix "public/"})
 
-        "objectives"        {:post :create-objective-form-post
+        "objectives"        {:get :objective-list
+                             :post :create-objective-form-post
                              ["/create"] :create-objective-form
                              ["/" :id] {"" :objective
                                        "/questions" {:post :add-question-form-post

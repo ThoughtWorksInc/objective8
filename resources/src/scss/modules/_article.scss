@@ -1,0 +1,44 @@
+.article-title-no-margin {
+  margin-bottom: 0;
+}
+
+.article-meta {
+  border-bottom: 5px solid $offwhite;
+  margin-bottom: 1em;
+}
+
+.article-meta-voting {
+  font-size: 1.2em;
+  @include mq(720) {
+    font-size: 1.6em;
+  }
+  a {
+    color: $black;
+    text-decoration: none;
+    &:visited {
+      color: $black;
+      text-decoration: none;
+    }
+    &:hover {
+      text-decoration: none;
+      color: $green1
+    }
+    &.vote-up {
+      margin-right: 1em;
+    }
+  }
+}
+
+.article-meta-timing {
+  color: $grey-15;
+  margin: 0 0 1em;
+}
+
+.article-main {
+  p,
+  ul {
+    @include mq(1100) {
+      font-size: 1.3em;
+    }
+  }
+}

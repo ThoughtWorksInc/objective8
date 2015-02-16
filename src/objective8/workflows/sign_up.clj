@@ -31,7 +31,7 @@
   (if-let [twitter-id (:twitter-id session)]
     (let [twitter-screen-name (:twitter-screen-name session)
           email-address (:email-address params)
-          user (http-api/create-user {:twitter-id twitter-id 
+          user (http-api/create-user {:twitter-id twitter-id
                                       :display-name twitter-screen-name
                                       :email-address email-address})]
       (finalise-authorisation user session))

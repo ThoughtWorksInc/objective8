@@ -1,0 +1,81 @@
+.masthead {
+  position: relative;
+  z-index: 3;
+  background: $black;
+  color: $white;
+  padding: 0.4em 1em 0.6em;
+  box-shadow: 0 2px 7px rgba(0,0,0,.15);
+  a {
+    color: white;
+    text-decoration: none;
+    &:visited {
+      color: $white;
+    }
+    &:hover {
+      color: $white;
+      text-decoration: underline;
+    }
+  }
+  @include mq(720) {
+    position: fixed;
+    width: 100%;
+  }
+}
+
+.masthead-nav-link {
+  position: absolute;
+  top: 0.25em;
+  left: 0.5em;
+  font-weight: bold;
+  font-size: 1.7em;
+  @include mq(720) {
+    display: none;
+  }
+}
+
+.masthead-logo {
+  color: $white;
+  font-weight: bold;
+  font-size: 1.6em;
+  text-align: center;
+  display: block;
+  @include mq(720) {
+    text-align: left;
+    display: inline-block;
+  }
+}
+
+
+.masthead-large-screen-nav {
+  display: none;
+  @include mq(720) {
+    text-transform: uppercase;
+    font-size: 0.85em;
+    font-weight: bold;
+    display: inline;
+    position: relative;
+    top: -4px;
+    a {
+      margin-left: 2em;
+    }
+  }
+}
+
+
+.masthead-user-nav {
+  position: absolute;
+  top: 0.8em;
+  right: 1em;
+  i {
+    font-size: 1.5em;
+  }
+  span {
+    display: none;
+    @include mq(720) {
+      display: inline;
+      position: relative;
+      top: -4px;
+      margin-left: 0.25em;
+    }
+  }
+}

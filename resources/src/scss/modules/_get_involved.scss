@@ -1,0 +1,44 @@
+.get-involved-widget {
+  background: $green1;
+  color: white;
+  padding: 1em 1em 2em;
+  margin: 2em 0 0;
+  @include cf;
+}
+
+.get-involved-widget-title {
+  margin: 0 0 0.5em;
+}
+
+.get-invloved-widget-item {
+  border-bottom: 1px solid $green2;
+  padding-bottom: 1em;
+  margin-bottom: 1em;
+  @include mq(1000) {
+    float: left;
+    width: 29.3333%;
+    border-bottom: none;
+    padding-bottom: 0;
+    margin: 0 2%;
+  }
+  i {
+    font-size: 2em;
+    float: left;
+    position: relative;
+    top: 2px;
+  }
+  .get-invloved-widget-item-text {
+    padding-left: 2.7em;
+    a {
+      display: block;
+      color: white;
+      &:visited {
+        color: white;
+      }
+      &:hover {
+        color: white;
+        text-decoration: none;
+      }
+    }
+  }
+}

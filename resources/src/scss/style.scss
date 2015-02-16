@@ -1,21 +1,18 @@
-//SET UP
+/* This file manifest keeps partials in the correct order */
+
 @import 'root/normalize';
 @import 'root/variables';
 @import 'root/colours';
 @import 'root/mixins';
 @import 'root/root';
+@import 'root/typography';
+@import 'root/links';
+@import 'root/forms';
+@import 'root/lists';
+@import 'root/buttons';
+@import 'root/helpers';
 
 
-//BASE
-@import 'base/lists';
-@import 'base/browsehappy';
-@import 'base/helpers';
-@import 'base/links';
-@import 'base/buttons';
-@import 'base/forms';
-@import 'base/typography';
-@import 'base/layout';
-@import 'base/grid';
 
 
 //FONT AWESOME
@@ -36,21 +33,21 @@
 @import 'font_awesome/stacked';
 @import 'font_awesome/icons';
 
-//OBJECTS
-@import 'objects/masthead';
-@import 'objects/status_banner';
-@import 'objects/bootstrap_social';
-@import 'objects/messages';
-@import 'objects/share_widget';
-@import 'objects/comments';
+@import 'modules/bootstrap_social';
 
+@import 'modules/browsehappy';
+@import 'modules/masthead';
+@import 'modules/navigation';
+@import 'modules/main';
+@import 'modules/article';
+@import 'modules/comments';
+@import 'modules/messages';
+@import 'modules/response';
+@import 'modules/footer';
 
-//PAGES
+@import 'modules/share_widget';
+@import 'modules/get_involved';
+@import 'modules/status_banner';
+
 @import 'pages/index';
 @import 'pages/sign_in';
-@import 'pages/project_status';
-@import 'pages/objectives_view';
-
-
-//PRINT
-@import 'root/print';

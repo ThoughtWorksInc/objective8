@@ -148,8 +148,8 @@ $bs-height-xs:   (floor($font-size-small * 1.2) + $padding-small-vertical + 1);
   &.btn-sm {
     height: ($bs-height-sm + 2);
     width: ($bs-height-sm + 2);
-    padding-left: 0;
-    padding-right: 0;
+    padding-left: 30px;
+    padding-right: auto;
   }
   &.btn-xs {
     height: ($bs-height-xs + 2);
@@ -204,3 +204,72 @@ $bs-height-xs:   (floor($font-size-small * 1.2) + $padding-small-vertical + 1);
 .btn-vimeo         { @include btn-social(#1ab7ea); }
 .btn-vk            { @include btn-social(#587ea3); }
 .btn-yahoo         { @include btn-social(#720e9e); }
+
+
+
+@mixin button-no-bg-variant($color) {
+  color: $color;
+  background-color: none;
+  border-color: none;
+  transition: all 0.1s ease-in;
+  &:hover,
+  &:focus,
+  &.focus,
+  &:active,
+  &.active,
+  .open > &.dropdown-toggle {
+    color: white;
+    background-color: darken($color, 10%);
+        border-color: darken($color, 12%);
+  }
+  &:active,
+  &.active,
+  .open > &.dropdown-toggle {
+    background-image: none;
+  }
+}
+
+@mixin btn-no-bg-social($color) {
+  color: $color;
+  @include button-no-bg-variant($color);
+  &:visited {
+    color: $color;
+  }
+  i {
+    font-size: 1.6em;
+    line-height: 32px;
+  }
+  &.btn-sm {
+    i {
+      font-size: 1.3em;
+      line-height: 28px;
+    }
+  }
+  &.btn-xs {
+    i {
+      font-size: 1em;
+      line-height: 16px;
+    }
+  }
+}
+
+.btn-no-bg-adn           { @include btn-no-bg-social(#d87a68); }
+.btn-no-bg-bitbucket     { @include btn-no-bg-social(#205081); }
+.btn-no-bg-dropbox       { @include btn-no-bg-social(#1087dd); }
+.btn-no-bg-facebook      { @include btn-no-bg-social(#3b5998); }
+.btn-no-bg-flickr        { @include btn-no-bg-social(#ff0084); }
+.btn-no-bg-foursquare    { @include btn-no-bg-social(#f94877); }
+.btn-no-bg-github        { @include btn-no-bg-social(#444444); }
+.btn-no-bg-google-plus   { @include btn-no-bg-social(#dd4b39); }
+.btn-no-bg-instagram     { @include btn-no-bg-social(#3f729b); }
+.btn-no-bg-linkedin      { @include btn-no-bg-social(#007bb6); }
+.btn-no-bg-microsoft     { @include btn-no-bg-social(#2672ec); }
+.btn-no-bg-openid        { @include btn-no-bg-social(#f7931e); }
+.btn-no-bg-pinterest     { @include btn-no-bg-social(#cb2027); }
+.btn-no-bg-reddit        { @include btn-no-bg-social(#000000); }
+.btn-no-bg-soundcloud    { @include btn-no-bg-social(#ff5500); }
+.btn-no-bg-tumblr        { @include btn-no-bg-social(#2c4762); }
+.btn-no-bg-twitter       { @include btn-no-bg-social(#55acee); }
+.btn-no-bg-vimeo         { @include btn-no-bg-social(#1ab7ea); }
+.btn-no-bg-vk            { @include btn-no-bg-social(#587ea3); }
+.btn-no-bg-yahoo         { @include btn-no-bg-social(#720e9e); }

@@ -12,7 +12,7 @@ module.exports = function(grunt) {
         files: ['gruntfile.js']
       },
       sass: {
-        files: ['resources/src/sass/**/*.scss'],
+        files: ['resources/src/scss/**/*.scss'],
         tasks: ['sass:dev', 'autoprefixer:dev']
       }
     },
@@ -25,7 +25,7 @@ module.exports = function(grunt) {
           outputStyle: 'expanded'
         },
         files: {
-          'resources/public/styles.css': 'resources/src/sass/*.scss'
+          'resources/public/styles.css': 'resources/src/scss/*.scss'
         }
       },
       dist: {
@@ -34,7 +34,7 @@ module.exports = function(grunt) {
           outputStyle: 'compressed'
         },
         files: {
-          'resources/public/styles.css': 'resources/src/sass/*.scss'
+          'resources/public/styles.css': 'resources/src/scss/*.scss'
         }
       }
     },

@@ -37,8 +37,8 @@
                              :doc-description ""
                              :index-welcome "Collaborative policy making for democratic organisations."
                              :index-intro "Gather community opinion, generate ideas, share, discuss, vote and collaborate with experts to draft new policy."
-                             :index-get-started-signed-out "Get started"
-                             :index-get-started-title-signed-out "Get started"
+                             :index-get-started-signed-out "Join now"
+                             :index-get-started-title-signed-out "Join now"
                              :index-get-started-signed-in "Create an Objective"
                              :index-get-started-title-signed-in "Create an Objective"
                              :index-learn-more "Learn more"
@@ -54,6 +54,11 @@
                                       :page-title "Alpha phase"
                                       :page-intro "We are developing and designing Objective[8] in the open. This allows the tool evolve as you use it, as you give feedback, and as the developers update and add content."
                                       :page-content! "<p>It is important to note that during this time data may be removed or destroyed as part of our process. Any of the views and data expressed here is to be used for example purposes only and does not accurately represent the real views of users.</p><h2>How to get involved</h2><p>This project is open source and we are inviting people to collaborate with us to build a better tool. For developers and you can find the code on github at <a href=\"https://github.com/ThoughtWorksInc/objective8\" title=\"Objective[8] on github\">https://github.com/ThoughtWorksInc/objective8</a>. We will also be adding details for upcoming usability sessions shortly.</p><h2>Have you got an idea?</h2><p>We are really interested in user feedback and are currently inviting people to leave comments our <a href=\"https://github.com/ThoughtWorksInc/objective8/issues\">github issues page</a>.</p>" }
+                     :objective-list {:doc-title "Objectives | Objective[8]"
+                                      :doc-description ""
+                                      :page-title "Objectives"
+                                      :create-button-title "Create an objective"
+                                      :create-button-text "Create an objective"}
                      :objective-create {:doc-title "Create an Objective | Objective[8]"
                                         :doc-description "Create an Objective ..."
                                         :page-title "Create an objective"
@@ -83,7 +88,7 @@
                      :comment-view {:created-message "Your comment has been added!"
                                     :comment-title "Comments"
                                     :no-comments "There are no comments yet."}
-                     :comment-create {:comment-label "Leave a comment"
+                     :comment-create {:comment-label "Your comment"
                                       :comment-title "Comments are a maximum length of 500 characters"
                                       :post-button "Add comment"}
                      :comment-sign-in {:please "Please"
@@ -152,6 +157,11 @@
                                       :page-title "Spanish(Alpha phase)"
                                       :page-intro "Spanish(We are developing and designing Objective[8] in the open. This allows the tool evolve as you use it, as you give feedback, and as the developers update and add content.)"
                                       :page-content! "Spanish(<p>It is important to note that during this time data may be removed or destroyed as part of our process. Any of the views and data expressed here is to be used for example purposes only and does not accurately represent the real views of users.</p><h2>How to get involved</h2><p>This project is open source and we are inviting people to collaborate with us to build a better tool. For developers and you can find the code on github at <a href=\"https://github.com/ThoughtWorksInc/objective8\" title=\"Objective[8] on github\">https://github.com/ThoughtWorksInc/objective8</a>. We will also be adding details for upcoming usability sessions shortly.</p><h2>Have you got an idea?</h2><p>We are really interested in user feedback and are currently inviting people to leave comments our <a href=\"https://github.com/ThoughtWorksInc/objective8/issues\">github issues page</a>.</p>)" }
+                     :objective-list {:doc-title "Spanish(Objectives | Objective[8])"
+                                      :doc-description ""
+                                      :page-title "Spanish(Objectives)"
+                                      :create-button-title "Spanish(Create an objective)"
+                                      :create-button-text "Spanish(Create an objective)"}
                      :objective-create {:doc-title "Crea un objetivo | Objective[8]"
                                         :doc-description "Crea un objetivo"
                                         :page-title "Crea un objetivo"
@@ -181,7 +191,7 @@
                     :comment-view {:created-message "Tu comentario ha sido creado"
                                    :comment-title "Comentarios"
                                    :no-comments "Spanish(There are no comments yet.)"}
-                    :comment-create {:comment-label "Spanish(Leave a comment)"
+                    :comment-create {:comment-label "Spanish(Your comment)"
                                      :comment-title "Los comentarios son máximo de 500 caracteres."
                                      :post-button "Spanish(Add comment)"}
                      :comment-sign-in {:please "Spanish(Please)"

@@ -1,0 +1,25 @@
+.share-widget-title {
+  margin: 1em 0 0.5em;
+  font-size: 1em;
+  text-align: center;
+  @include mq(720) {
+    text-align: left;
+  }
+}
+
+.share-icon-list {
+  list-style: none;
+  margin: 0 0 0.5em -15px;
+  padding: 0;
+  text-align: center;
+  li {
+    display: inline-block;
+    margin: 0 .25em 0;
+  }
+}
+
+.share-this-url-input {
+  width: 100%;
+  padding: 0.2em 0.5em;
+  font-size: 0.8em;
+}

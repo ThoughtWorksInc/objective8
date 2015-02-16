@@ -1,18 +1,57 @@
-<div id="clj-objectives-view">
-  <div class="objective-title-wrapper">
-    <h1 class="objective-title">{{title}}</h1>
-    <p class="objective-title-end-date">${objective-view/end-date-label} <span id="clj-obj-end-date-value">{{end-date}}</span></p>
-  </div>
+<div id="clj-objectives-detail" class="main-wrapper article-wrapper">
+  <article>
+    <h1 class="objective-title article-title-no-margin">{{title}}</h1>
 
-  <div class="grid">
+    <div class="article-meta">
+      <!-- VOTING
+      <div class="article-meta-voting">
+        <a href="#voteup" class="vote-up"><i class="fa fa-caret-up"></i> 12</a>
+        <a href="#votedown" class="vote-down"><i class="fa fa-caret-down"></i> 2</a>
+      </div>
+      -->
+      <p class="article-meta-timing">${objective-view/end-date-label} <span id="clj-obj-end-date-value">{{end-date}}</span></p>
+    </div>
 
-    <div class="objective-article-details">
+    <div class="article-main">
       <p class="no-margin-bottom"><b>${objective-view/goals-label}</b></p>
       <ul id="clj-obj-goals-value" class="objective-article-goals">
         <li>{{goals}}</li>
       </ul>
       <p id="clj-obj-background-label"class="no-margin-bottom"><b>${objective-view/background-label}</b></p>
+    </div><!-- /.article-main -->
+  </article>
+
+  <!-- GET INVOLVED
+  <div class="get-involved-widget">
+    <h2 class="get-involved-widget-title">Get involved</h2>
+    <div class="get-invloved-widget-item">
+      <i class="fa fa-question-circle"></i>
+      <div class="get-invloved-widget-item-text">Get answers to specific issues. <a href="#questions">Add a question</a></div>
     </div>
+    <div class="get-invloved-widget-item">
+      <i class="fa fa-user-plus"></i>
+      <div class="get-invloved-widget-item-text">Know somebody that can help draft policy? <a href="#authors">Invite an Author</a></div>
+    </div>
+    <div class="get-invloved-widget-item">
+      <i class="fa fa-lightbulb-o"></i>
+      <div class="get-invloved-widget-item-text">Do you have a good idea? <a href="#proposals">Submit a proposal</a></div>
+    </div>
+  </div>
+  -->
+
+</div><!-- /.article-wrapper -->
+
+
+
+
+
+
+
+
+
+
+
+
 
     <div class="share-widget">
       <h3 class="share-widget-title">${share-widget/title}</h3>
@@ -53,6 +92,3 @@
         <input class="share-this-url-input" type="text" value="http://sharethisurl.com" title="${share-widget/url-title}" />
       </div>
     </div>
-
-  </div><!-- /grid -->
-</div>

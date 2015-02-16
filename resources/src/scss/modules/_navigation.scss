@@ -1,0 +1,104 @@
+.navigation-wrapper {
+  background: $grey-5;
+  padding: 1em;
+  @include mq(720) {
+    width: 260px;
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    height: 100%;
+    padding-top: 52px;
+    // border-right: 1px solid $grey-2;
+    box-shadow: -3px 10px 8px -1px rgba(0,0,0,0.1) inset;
+  }
+}
+
+.navigation-title {
+  font-size: 0.95em;
+  margin: 1em 0 2em;
+  padding: 0;
+  @include mq(720) {
+    margin-bottom: 1em;
+  }
+}
+
+.navigation-list {
+  list-style: none;
+  margin: 0 -1em;
+  padding: 0;
+  border-bottom: 1px solid $grey-2;
+  li {
+    border-top: 1px solid $grey-2;
+  }
+  a {
+    display: block;
+    padding: 1em;
+    text-decoration: none;
+    color: $grey-15;
+    transition: all 0.1s ease-in-out;
+    &:hover {
+      border-left: 5px solid $green1;
+      color: $black;
+    }
+    &.selected {
+      border-left: 5px solid $green1;
+      color: $black;
+      position: relative;
+      &:hover {
+        cursor: default;
+        box-shadow: none;
+      }
+
+
+      @include mq(1150) {
+        &:before {
+          content:'';
+          position: absolute;
+          background-color: #e5e5e5;
+          width:39px;
+          height:39px;
+          right: -20px;
+          transform: rotate(-45deg);
+          top: 7px;
+        }
+        &:after {
+          content:'';
+          position: absolute;
+          width:39px;
+          height:39px;
+          box-shadow: -2px -2px 5px -2px rgba(0,0,0,0.3) inset;
+          right: -20px;
+          transform: rotate(-45deg);
+          top: 7px;
+        }
+      }
+    }
+  }
+}
+
+
+      // &:before {
+      //   content:'';
+      //   display:block;
+      //   width:17px;
+      //   height:0px;
+      //   box-shadow: 0 4px 1px 1px black;
+      //   -webkit-transform:rotate(-45deg) translateY(2px);
+      //   -webkit-transform-origin: left top;
+      //   top:50%;
+      //   position:absolute;
+      // }
+
+      // &:after {
+      //   content:'';
+      //   display:block;
+      //   width:17px;
+      //   height:0px;
+      //   box-shadow: 0 -4px 1px 1px black;
+      //   -webkit-transform:rotate(45deg) translateY(-2px);
+      //   -webkit-transform-origin: left top;
+      //   top:50%;
+      //   position:absolute;
+      //   z-index:2;
+      // }
