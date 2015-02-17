@@ -26,3 +26,12 @@
       (assoc (select-keys params [:title :goal-1 :goal-2 :goal-3 :description ])
                                   :end-date iso-time
                                   :created-by-id user-id)))
+
+(defn request->answer
+  "Returns a map of an answer if all the parts are in the request. Otherwise returns nil"
+  [{{id :id q-id :q-id} :route-params
+    :keys [params]} user-id]
+  (assoc (select-keys params [:answer])
+         :created-by-id user-id
+         :objective-id (Integer/parseInt id)
+         :question-id (Integer/parseInt q-id)))

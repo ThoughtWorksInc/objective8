@@ -69,3 +69,13 @@
                                   (json/parse-string true))}
       (= status 404) {:status ::not-found}
       :else          {:status ::error})))
+
+;; ANSWERS
+
+(defn create-answer [answer]
+  (let [{:keys [body status]} (json-post (str utils/host-url "/api/v1/objectives/" (:objective-id answer) 
+                                              "/questions/" (:question-id answer) "/answers") answer)]
+    (cond
+      (= status 201) {:status ::success
+                      :result (json/parse-string body true)}
+      :else          {:status ::error})))

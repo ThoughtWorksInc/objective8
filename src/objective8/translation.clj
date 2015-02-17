@@ -102,7 +102,8 @@
                                     :question-label "Question"
                                     :question-title "Questions are a maximum length of 500 characters"
                                     :post-button "Add"}
-                     :question-view {:added-message "Your question has been added!"}
+                     :question-view {:added-message "Your question has been added!"
+                                     :added-answer-message "Your answer has been added!"}
                      :users-email {:doc-title "Sign up almost there | Objective[8]"
                                    :doc-description ""
                                    :page-title "Almost there"
@@ -207,7 +208,8 @@
                                     :question-label "Spanish(Question)"
                                     :question-title "Spanish(Questions are a maximum length of 500 characters)"
                                     :post-button "Spanish(Add)"}
-                    :question-view {:added-message "Spanish(Your question has been added!)"}
+                    :question-view {:added-message "Spanish(Your question has been added!)"
+                                    :added-answer-message "Spanish(Your answer has been added!)"}
                     :users-email {:doc-title "Perfil | Objective[8]"
                                   :doc-description ""
                                   :page-title "Spanish(Almost there)"

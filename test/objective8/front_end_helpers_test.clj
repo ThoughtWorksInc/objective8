@@ -6,6 +6,7 @@
 
 (def USER_ID 1)
 (def OBJECTIVE_ID 2)
+(def QUESTION_ID 3)
 
 (defn requestify [params]
   {:params (assoc params :end-date "2015-01-03")})
@@ -37,3 +38,13 @@
            question => {:question "the question"
                         :created-by-id USER_ID
                         :objective-id OBJECTIVE_ID}))
+
+(fact "creates an answer from a request"
+      (let [answer (request->answer {:route-params {:id (str OBJECTIVE_ID)
+                                                    :q-id (str QUESTION_ID)}
+                                     :params {:answer "the answer"}}
+                                    USER_ID)]
+        answer => {:answer "the answer"
+                   :created-by-id USER_ID
+                   :objective-id OBJECTIVE_ID
+                   :question-id QUESTION_ID}))

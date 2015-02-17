@@ -6,7 +6,8 @@
             [org.httpkit.client :as http]
             [objective8.responses :refer :all]
             [objective8.http-api :as http-api]
-            [objective8.front-end-helpers :refer [request->question request->comment request->objective]]
+            [objective8.front-end-helpers :refer [request->question request->comment 
+                                                  request->objective request->answer]]
             [objective8.utils :as utils]
             [objective8.storage.storage :as storage]))
 
@@ -147,8 +148,8 @@
 (defn add-question-form-post [{:keys [uri t' locale] :as request}]
   (if-let [question (request->question request (get (friend/current-authentication) :username))]
     (if-let [stored-question (http-api/create-question question)]
-     (let [question-url (str utils/host-url "/objectives/" (:objective-id stored-question) "/questions/" (:_id stored-question))
-           message (t' :question-view/added-message)]
+      (let [question-url (str utils/host-url "/objectives/" (:objective-id stored-question) "/questions/" (:_id stored-question))
+            message (t' :question-view/added-message)]
         (assoc (response/redirect question-url) :flash message))
       {:status 502})
     {:status 400}))
@@ -171,3 +172,22 @@
                                                  :uri uri})
       (= status ::http-api/not-found) (error-404-response t' locale)
       :else {:status 500})))
+
+
+;; ANSWERS
+
+(defn add-answer-form-post [{:keys [uri t' locale] :as request}]
+  (if-let [answer (request->answer request (get (friend/current-authentication) :username))]
+    (let [{status :status stored-answer :result} (http-api/create-answer answer)]
+      (cond
+        (= status ::http-api/success)
+        (let [answer-url (str utils/host-url "/objectives/" (:objective-id stored-answer)
+                              "/questions/" (:question-id stored-answer))
+              message (t' :question-view/added-answer-message)]
+          (assoc (response/redirect answer-url) :flash message))
+        :else {:status 502}))
+    {:status 400}))
+
+
+
+
