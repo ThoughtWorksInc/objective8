@@ -14,23 +14,30 @@
                :email-address "blah@blah.com"})
 
 (def the-stored-user (into the-user {:_id USER_ID}))
+
 (def profile-posts
   {:successful {:status 201
                 :headers {"Content-Type" "application/json"}
                 :body (json/generate-string the-stored-user)}
    :failure    {:status 500}})
 
+(def BEARER_NAME "bearer")
+(def BEARER_TOKEN "token")
+
+(background (api/get-api-credentials) => {"api-bearer-name" BEARER_NAME
+                                          "api-bearer-token" BEARER_TOKEN})
 
 (facts "about user profiles"
-       (fact "returns stored profile when post succeeds"
-             (with-fake-http [(str host-url "/api/v1/users") (:successful profile-posts)]
-               (api/create-user the-user))
-             => the-stored-user)
+       (fact "creating a user profile requires credentials"
+             (api/create-user the-user) => the-stored-user
+             (provided (api/post-request (contains "/api/v1/users")
+                                         (contains {:headers (contains {"api-bearer-token" BEARER_TOKEN
+                                                                        "api-bearer-name" BEARER_NAME})}))
+                       => (:successful profile-posts)))
 
        (fact "returns api-failure when post fails"
-             (with-fake-http [(str host-url "/api/v1/users") (:failure profile-posts)]
-               (api/create-user the-user))
-             => api/api-failure))
+             (api/create-user the-user) => api/api-failure
+             (provided (api/post-request anything anything) => (:failure profile-posts))))
 
 ;OBJECTIVES
 (def OBJECTIVE_ID 234)

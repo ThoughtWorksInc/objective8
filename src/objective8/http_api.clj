@@ -6,14 +6,28 @@
 
 (def api-failure nil)
 
+(defn get-api-credentials []
+  {"api-bearer-name" "bearer"
+   "api-bearer-token" "token"})
+
+(defn json-request [object]
+  {:headers {"Content-Type" "application/json"}
+   :body (json/generate-string object)})
+
+(defn with-credentials [request]
+  (update-in request [:headers] merge (get-api-credentials)))
+
+(defn post-request [url request]
+  @(http/post url request))
+
 (defn json-post [url object]
-  @(http/post url {:headers {"Content-Type" "application/json"}
-                   :body (json/generate-string object)}))
+  (post-request url (json-request object)))
 
 ;;USERS
 
 (defn create-user [user]
-  (let [{:keys [body status]} (json-post (str utils/host-url "/api/v1/users") user)]
+  (let [request (with-credentials (json-request user))
+        {:keys [body status]} (post-request (str utils/host-url "/api/v1/users") request)]
     (cond (= status 201)   (json/parse-string body true)
           :else            api-failure)))
 
