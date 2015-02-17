@@ -3,10 +3,10 @@
 (defn- keywordize [m]
   (into {} (for [[k v] m] [(keyword k) v])))
 
-(defn- valid-credentials? [tokens-fn bearer-name bearer-token]
+(defn- valid-credentials? [tokens-fn bearer-name provided-token]
   (when bearer-name
-    (when-let [actual-token (tokens-fn bearer-name)]
-      (= bearer-token actual-token))))
+    (when-let [stored-token (tokens-fn bearer-name)]
+      (= provided-token stored-token))))
 
 (defn wrap-bearer-token
   "Middleware for authorising api requests.

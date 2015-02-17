@@ -2,11 +2,8 @@
   (:require [midje.sweet :refer :all]
             [objective8.storage.storage :as storage]
             [objective8.storage.database :as db]
-            [objective8.integration-helpers :refer [truncate-tables]]))
-
-
-(defn db-connection [] (db/connect! db/postgres-spec))
-
+            [objective8.integration-helpers :refer [truncate-tables
+                                                    db-connection]]))
 
 (facts "Storage tests" :integration
   (against-background

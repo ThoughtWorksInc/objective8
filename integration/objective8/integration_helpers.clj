@@ -6,7 +6,10 @@
             [cheshire.core :as json]
             [objective8.core :as core]
             [objective8.storage.mappings :as m]
+            [objective8.storage.database :as db]
             [midje.sweet :as midje]))
+
+(defn db-connection [] (db/connect! db/postgres-spec))
 
 (defn truncate-tables []
   (korma/delete m/bearer-token)
