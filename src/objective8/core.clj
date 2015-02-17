@@ -17,7 +17,9 @@
             [objective8.workflows.twitter :refer [twitter-workflow]]
             [objective8.workflows.sign-up :refer [sign-up-workflow]]
             [objective8.handlers.api :as api-handlers]
-            [objective8.handlers.front-end :as front-end-handlers])
+            [objective8.handlers.front-end :as front-end-handlers]
+            [objective8.middleware :as m]
+            [objective8.bearer-tokens :as bt])
   (:gen-class))
 
 (def handlers {; Front End Handlers
@@ -40,7 +42,7 @@
                :find-user-by-query api-handlers/find-user-by-query
                :get-user api-handlers/get-user
                :post-objective api-handlers/post-objective
-               :get-objective api-handlers/get-objective
+               :get-objective api-handlers/get-objective 
                :get-comments-for-objective api-handlers/retrieve-comments
                :post-comment api-handlers/post-comment
                :post-question api-handlers/post-question

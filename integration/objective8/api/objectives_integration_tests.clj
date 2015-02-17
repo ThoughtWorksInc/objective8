@@ -5,10 +5,15 @@
             [objective8.utils :as utils]
             [objective8.core :as core]
             [objective8.integration-helpers :as helpers]
-            [objective8.objectives :as objectives]))
+            [objective8.objectives :as objectives]
+            [objective8.middleware :as m]
+            ))
 
 ;; Testing from http request -> making correct calls within objectives namespace
 ;; Mock or stub out 'objectives' namespace
+
+(defmacro NO-BEARER-TOKEN-CHECKING []
+ '(background (m/valid-credentials? anything anything anything) => true))
 
 (def app (helpers/test-context))
 
@@ -28,6 +33,8 @@
                             :end-date "2015-01-01"})
 
 (def stored-objective (assoc the-objective :_id OBJECTIVE_ID))
+
+(NO-BEARER-TOKEN-CHECKING)
 
 (facts "objectives" :integration
        (fact "can retrieve an objective using its id"

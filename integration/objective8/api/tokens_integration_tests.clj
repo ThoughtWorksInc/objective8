@@ -8,7 +8,6 @@
 
 (defn db-connection [] (db/connect! db/postgres-spec))
 
-
 (def app (helpers/test-context))
 
 (defn store-user-and-objective! []
@@ -17,9 +16,9 @@
        stored-objective (storage/pg-store! {:entity :objective :created-by-id user-id :end-date (new java.util.Date)})]
    {:user-id user-id :objective-id (:_id stored-objective)}))
 
-(facts "Bearer token tests" :integration
+(future-facts "Bearer token tests" :integration
        (against-background [(before :contents (db-connection)) (after :facts (helpers/truncate-tables))]
-       (future-fact "api is protected by bearer-tokens"
+       (fact "api is protected by bearer-tokens"
              (let [the-token "some-secure-token"
                    the-bearer "objective8.dev" 
               db-ids (store-user-and-objective!)] 
