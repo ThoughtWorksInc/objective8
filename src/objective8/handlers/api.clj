@@ -118,25 +118,32 @@
       (log/info "Error when posting question: " e)
       (invalid-response "Invalid question post request"))))
 
+(defn check-question-matches-objective [question-id objective-id]
+  (let [question (questions/retrieve-question question-id)]
+    (when-not (= (:objective-id question) objective-id)
+      (throw (Exception. "Question does not belong to this objective")))))
+
+
 (defn get-question [{:keys [route-params] :as request}]
   (try
-    (let [id (-> (:q-id route-params)
-                 Integer/parseInt)]
-      (if-let [question (questions/retrieve-question id)]
+    (let [q-id (-> (:q-id route-params)
+                   Integer/parseInt)
+          objective-id (-> (:id route-params)
+                           Integer/parseInt)]
+      (check-question-matches-objective q-id objective-id) 
+      (if-let [question (questions/retrieve-question q-id)]
         (-> question
             response/response
             (response/content-type "application/json"))
         (response/not-found "")))
     (catch NumberFormatException e
       (log/info "Invalid route: " e)
-      (invalid-response  "Question id must be an integer"))))
+      (invalid-response  "Question id must be an integer"))
+    (catch Exception e
+      (log/info "Invalid route: " e)
+      (invalid-response "Invalid question request for this objective")))) 
 
 ;;ANSWERS
-(defn check-question-matches-objective [question-id objective-id]
-  (let [question (questions/retrieve-question question-id)]
-    (when-not (= (:objective-id question) objective-id)
-      (throw (Exception. "Question does not belong to this objective")))))
-
 (defn post-answer [{:keys [route-params params] :as request}]
   (try
     (let [q-id (-> (:q-id route-params)

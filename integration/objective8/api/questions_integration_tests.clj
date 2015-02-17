@@ -14,6 +14,7 @@
 (def app (helpers/test-context))
 
 (def OBJECTIVE_ID 234)
+(def WRONG_OBJECTIVE_ID (+ OBJECTIVE_ID 1))
 (def USER_ID 1)
 (def QUESTION_ID 42)
 
@@ -67,8 +68,17 @@
                                    :content-type "application/json"
                                    :body (json/generate-string the-invalid-question))) => (contains {:status 400})))
 
-(fact "can retrieve a question using its id"
+
+(facts "about retrieving questions"
+       (fact "can retrieve a question using its id"
              (let [peridot-response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))]
                peridot-response) => (helpers/check-json-body stored-question)
              (provided
                (questions/retrieve-question QUESTION_ID) => stored-question))
+
+      (fact "a 400 status is returned if the question does not belong to the objective"
+             (:response  (p/request app (str "/api/v1/objectives/" WRONG_OBJECTIVE_ID 
+                                             "/questions/" QUESTION_ID))) 
+             => (contains {:status 400}) 
+             (provided (questions/retrieve-question QUESTION_ID) => {:objective-id OBJECTIVE_ID
+                                                                     :question "The question?"}))) 
