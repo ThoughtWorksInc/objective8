@@ -153,3 +153,19 @@
     (catch Exception e
       (log/info "Error when posting answer: " e)
       (invalid-response "Invalid answer post request"))))
+
+(defn retrieve-answers [{:keys [route-params] :as request}]
+  (try
+    (let  [q-id (-> (:q-id route-params)
+                     Integer/parseInt)
+           objective-id (-> (:id route-params)
+                            Integer/parseInt)]
+      (if-let [answers (answers/retrieve-answers q-id)]
+        (-> answers
+            response/response
+            (response/content-type "application/json"))
+        (response/not-found "")))
+    (catch NumberFormatException e
+      (log/info "Invalid route: " e)
+      (invalid-response "Objective and question ids must be integers"))))
+

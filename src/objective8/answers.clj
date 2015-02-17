@@ -4,3 +4,4 @@
 (defn store-answer! [answer]
  (storage/pg-store! (assoc answer :entity :answer)))
 
+(defn retrieve-answers [question-id])

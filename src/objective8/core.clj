@@ -45,6 +45,7 @@
                :post-comment api-handlers/post-comment
                :post-question api-handlers/post-question
                :get-question api-handlers/get-question
+               :get-answers-for-question api-handlers/retrieve-answers
                :post-answer api-handlers/post-answer})
 
 (def routes
@@ -77,7 +78,8 @@
                                                        "/comments" :get-comments-for-objective
                                                        "/questions" {:post :post-question
                                                                      ["/" :q-id] {:get :get-question
-                                                                                  "/answers" {:post :post-answer}}}}}
+                                                                                  "/answers" {:get :get-answers-for-question
+                                                                                              :post :post-answer}}}}}
 
                              "/comments"   {:post :post-comment}}}])
 

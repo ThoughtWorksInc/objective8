@@ -25,6 +25,7 @@
 (def the-invalid-answer (dissoc the-answer :question-id))
 
 (def stored-answer (assoc the-answer :_id ANSWER_ID))
+(def stored-answers (map #(assoc the-answer :_id %) (range 5)))
 
 (facts "about posting answers" :integation
        (fact "the posted answer is stored"
@@ -77,3 +78,9 @@
          INVALID_ID     QUESTION_ID
          OBJECTIVE_ID   INVALID_ID
          INVALID_ID     INVALID_ID))
+
+(fact "answers can be retrieved for a question"
+      (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers"))
+      => (helpers/check-json-body stored-answers)
+      (provided
+        (answers/retrieve-answers QUESTION_ID) => stored-answers))
