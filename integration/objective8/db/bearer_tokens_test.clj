@@ -12,10 +12,10 @@
                                 (s/pg-store! {:entity :bearer-token
                                               :bearer-name "mr api"
                                               :bearer-token "12345"})))
-          (after :facts (helpers/truncate-tables))])
+          (after :facts (helpers/truncate-tables))]
 
        (fact "Gets a bearer token from a bearer-name"
              (bt/token-provider "mr api") => "12345") 
 
        (fact "Returns nil if the token does not exist for a given name"
-             (bt/token-provider "some other guy") => nil)) 
+             (bt/token-provider "some other guy") => nil))) 
