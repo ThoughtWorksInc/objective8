@@ -132,21 +132,27 @@
       (invalid-response  "Question id must be an integer"))))
 
 ;;ANSWERS
+(defn check-question-matches-objective [question-id objective-id]
+  (let [question (questions/retrieve-question question-id)]
+    (when-not (= (:objective-id question) objective-id)
+      (throw (Exception. "Question does not belong to this objective")))))
+
 (defn post-answer [{:keys [route-params params] :as request}]
   (try
     (let [q-id (-> (:q-id route-params)
                    Integer/parseInt)
           objective-id (-> (:id route-params)
-                           Integer/parseInt)
-          answer (-> params
-                     (select-keys [:answer :created-by-id])
-                     (assoc :question-id q-id))
-          stored-answer (answers/store-answer! answer)
-          resource-location (str utils/host-url
-                                 "/api/v1/objectives/" objective-id
-                                 "/questions/" (:question-id stored-answer)
-                                 "/answers/" (:_id stored-answer))]
-      (successful-post-response resource-location stored-answer))
+                           Integer/parseInt)] 
+      (check-question-matches-objective q-id objective-id) 
+      (let [answer (-> params
+                       (select-keys [:answer :created-by-id])
+                       (assoc :question-id q-id)) 
+            stored-answer (answers/store-answer! answer) 
+            resource-location (str utils/host-url
+                                   "/api/v1/objectives/" objective-id
+                                   "/questions/" (:question-id stored-answer)
+                                   "/answers/" (:_id stored-answer))]
+        (successful-post-response resource-location stored-answer)))
     (catch NumberFormatException e
       (log/info "Invalid route: " e)
       (invalid-response "Objective and question ids must be integers"))
@@ -160,6 +166,7 @@
                      Integer/parseInt)
            objective-id (-> (:id route-params)
                             Integer/parseInt)]
+      (check-question-matches-objective q-id objective-id)
       (if-let [answers (answers/retrieve-answers q-id)]
         (-> answers
             response/response
@@ -167,5 +174,8 @@
         (response/not-found "")))
     (catch NumberFormatException e
       (log/info "Invalid route: " e)
-      (invalid-response "Objective and question ids must be integers"))))
+      (invalid-response "Objective and question ids must be integers"))
+    (catch Exception e
+      (log/info "Invalid route: " e)
+      (invalid-response "Invalid answer request for this objective"))))
 

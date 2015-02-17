@@ -12,6 +12,7 @@
 (def app (helpers/test-context))
 
 (def OBJECTIVE_ID 234)
+(def WRONG_OBJECTIVE_ID (+ OBJECTIVE_ID 1))
 (def USER_ID 1)
 (def QUESTION_ID 42)
 (def ANSWER_ID 3)
@@ -29,6 +30,8 @@
 
 (facts "about posting answers" :integation
        (fact "the posted answer is stored"
+             (against-background 
+               (questions/retrieve-question QUESTION_ID) => {:objective-id OBJECTIVE_ID})
              (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers")
                         :request-method :post
                         :content-type "application/json"
@@ -40,6 +43,7 @@
 
       (fact "the http response indicates the location of the answer"
             (against-background
+              (questions/retrieve-question QUESTION_ID) => {:objective-id OBJECTIVE_ID} 
               (answers/store-answer! anything) => stored-answer)
             (let [result (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers")
                                     :request-method :post
@@ -66,21 +70,43 @@
                                    :request-method :post
                                    :content-type "application/json"
                                    :body (json/generate-string the-invalid-answer))) => (contains {:status 400}))
+
        (tabular
          (fact "a 400 status is returned if the objective and question ids are not integers"
                (against-background
                  (answers/store-answer! anything) => stored-answer)
-               (:response (p/request app (str "/api/v1/objectives/" ?objective_id "/questions/" ?question_id "/answers")
+               (:response (p/request app (str "/api/v1/objectives/" ?objective_id 
+                                              "/questions/" ?question_id "/answers")
                                      :request-method :post
                                      :content-type "application/json"
                                      :body (json/generate-string the-answer))) => (contains {:status 400}))
          ?objective_id  ?question_id
          INVALID_ID     QUESTION_ID
          OBJECTIVE_ID   INVALID_ID
-         INVALID_ID     INVALID_ID))
+         INVALID_ID     INVALID_ID)
 
-(fact "answers can be retrieved for a question"
-      (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers"))
-      => (helpers/check-json-body stored-answers)
-      (provided
-        (answers/retrieve-answers QUESTION_ID) => stored-answers))
+       (fact "a 400 status is returned if the question does not belong to the objective"
+             (:response (p/request app (str "/api/v1/objectives/" WRONG_OBJECTIVE_ID 
+                                            "/questions/" QUESTION_ID "/answers")
+                                   :request-method :post
+                                   :content-type "application/json"
+                                   :body "")) => (contains {:status 400})
+             (provided (questions/retrieve-question QUESTION_ID) => {:objective-id OBJECTIVE_ID
+                                                                     :question "The question?"})
+             ))
+
+(facts "about retrieving answers"
+       (fact "answers can be retrieved for a question"
+             (against-background 
+               (questions/retrieve-question QUESTION_ID) => {:objective-id OBJECTIVE_ID})
+             (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers"))
+             => (helpers/check-json-body stored-answers)
+             (provided
+               (answers/retrieve-answers QUESTION_ID) => stored-answers))
+       
+       (fact "a 400 status is returned if the question does not belong to the objective"
+             (:response  (p/request app (str "/api/v1/objectives/" WRONG_OBJECTIVE_ID 
+                                 "/questions/" QUESTION_ID "/answers"))) 
+             => (contains {:status 400}) 
+             (provided (questions/retrieve-question QUESTION_ID) => {:objective-id OBJECTIVE_ID
+                                                                     :question "The question?"}))) 
