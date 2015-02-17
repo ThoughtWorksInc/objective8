@@ -57,6 +57,15 @@
      :question (map->json-type question)}
     (throw (Exception. "Could not transform map to question"))))
 
+(defn map->answer 
+  "Converts a clojure map into a json-typed answer for the database"
+  [{:keys [created-by-id question-id] :as answer}]
+  (if (and created-by-id question-id)
+    {:created_by_id created-by-id
+     :question_id question-id
+     :answer (map->json-type answer)}
+    (throw (Exception. "Could not transform map to answer"))))
+
 (defn map->bearer-token
  "Converts a clojure map into a json-typed bearer-token for the database" [{:keys [bearer-name] :as bearer-token}]
   (if bearer-name
@@ -93,6 +102,12 @@
   (korma/prepare map->question)
   (korma/transform (unmap :question)))
 
+(korma/defentity answer
+  (korma/pk :_id)
+  (korma/table :objective8.answers)
+  (korma/prepare map->answer)
+  (korma/transform (unmap :answer)))
+
 (korma/defentity bearer-token
   (korma/pk :_id)
   (korma/table :objective8.bearer_tokens)
@@ -104,6 +119,7 @@
                :user      user
                :comment   comment
                :question  question
+               :answer    answer
                :bearer-token bearer-token})
 
 (defn get-mapping

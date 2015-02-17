@@ -13,6 +13,7 @@
 
 (defn truncate-tables []
   (korma/delete m/bearer-token)
+  (korma/delete m/answer)
   (korma/delete m/question)
   (korma/delete m/comment)
   (korma/delete m/objective)

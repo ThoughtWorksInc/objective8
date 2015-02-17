@@ -100,6 +100,28 @@
                   (first (:result retrieve-result)) => (contains {:created-by-id user-id
                                                                   :objective-id objective-id}))) 
 
+          ;;ANSWERS
+          (fact "an answer entity can be stored in the database"
+                (let [stored-user (storage/pg-store! {:entity :user
+                                                      :twitter-id "twitter-TWITTER_ID"})
+                      user-id (:_id stored-user)
+                      stored-objective (storage/pg-store! {:entity :objective
+                                                           :created-by-id user-id
+                                                           :end-date "2015-01-01T00:00:00.000Z"})
+                      objective-id (:_id stored-objective)
+                      stored-question (storage/pg-store! {:entity :question
+                                                          :created-by-id user-id
+                                                          :objective-id objective-id
+                                                          :question "A question"})
+                      question-id (:_id stored-question)
+                      answer {:entity :answer
+                              :created-by-id user-id
+                              :question-id question-id
+                              :answer "An answer"}
+                      store-result (storage/pg-store! answer)
+                      retrieve-result (storage/pg-retrieve {:entity :answer :_id (:_id store-result)})]
+                  (first (:result retrieve-result)) => (contains {:created-by-id user-id
+                                                                  :question-id question-id}))) 
           ;;BEARER-TOKENS
           (fact "a bearer-token entity can be stored in the database"
                 (let [bearer-token {:entity :bearer-token
@@ -108,4 +130,4 @@
                                     :authoriser true}
                       store-result (storage/pg-store! bearer-token)
                       retrieve-result (storage/pg-retrieve {:entity :bearer-token :bearer-name "bearer name"})]
-                 (first (:result retrieve-result)) => (contains {:bearer-name "bearer name"}))))))
+                  (first (:result retrieve-result)) => (contains {:bearer-name "bearer name"}))))))

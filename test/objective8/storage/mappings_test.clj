@@ -73,6 +73,23 @@
                     (map->question (dissoc question-map :created-by-id)) => (throws Exception "Could not transform map to question")
                     (map->question (dissoc question-map :objective-id)) => (throws Exception "Could not transform map to question")))
 
+;;ANSWERS
+(def USER_ID 1234)
+(def QUESTION_ID 345)
+
+(def answer-map {:created-by-id USER_ID
+                 :question-id QUESTION_ID})
+
+(facts "About map->answer"
+       (fact "Column values are pulled out and converted, the map gets turned to json"
+             (let [test-answer (map->answer answer-map)]
+               test-answer => (contains {:created_by_id USER_ID
+                                         :question_id QUESTION_ID  
+                                         :answer json-type?})))
+       (fact "throws exception if :created-by-id or :question-id are missing"
+                    (map->answer (dissoc answer-map :created-by-id)) => (throws Exception "Could not transform map to answer")
+                    (map->answer (dissoc answer-map :question-id)) => (throws Exception "Could not transform map to answer")))
+
 ;;BEARER-TOKENS
 (def BEARER_NAME "bearer name")
 (def BEARER_TOKEN "123")
