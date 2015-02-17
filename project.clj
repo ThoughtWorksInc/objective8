@@ -44,4 +44,6 @@
                                 :jvm-opts ["-server"
                                            "-Xms256M"
                                            "-Xmx512M"
-                                           "-XX:MaxPermSize=128M"]}}})
+                                           "-XX:MaxPermSize=128M"]}}
+             :heroku {:ragtime {:migrations ragtime.sql.files/migrations
+                                :database ~database-connection-url}}})
