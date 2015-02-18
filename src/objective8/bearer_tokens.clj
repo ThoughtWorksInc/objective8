@@ -7,3 +7,6 @@
 
 (defn token-provider [bearer-name]
   (:bearer-token (get-token bearer-name)))
+
+(defn stub-token-provider [bearer-name]
+  (when (= bearer-name "bearer") "token"))

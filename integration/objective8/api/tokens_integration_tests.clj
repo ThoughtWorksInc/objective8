@@ -1,6 +1,7 @@
 (ns objective8.api.tokens-integration-tests
   (:require [midje.sweet :refer :all]
             [peridot.core :as p]
+            [cheshire.core :as json]
             [objective8.integration-helpers :as helpers]
             [objective8.storage.storage :as storage]
             [objective8.storage.database :as db]
@@ -10,19 +11,17 @@
 
 (def app (helpers/test-context))
 
-(defn store-user-and-objective! []
- (let [stored-user (storage/pg-store! {:entity :user :twitter-id "twitter-id"})
-       user-id (:_id stored-user) 
-       stored-objective (storage/pg-store! {:entity :objective :created-by-id user-id :end-date (new java.util.Date)})]
-   {:user-id user-id :objective-id (:_id stored-objective)}))
-
-(future-facts "Bearer token tests" :integration
+(facts "Bearer token tests" :integration
        (against-background [(before :contents (db-connection)) (after :facts (helpers/truncate-tables))]
        (fact "api is protected by bearer-tokens"
+             ; Temporarily using stub-token-provider so stored tokens not required.  Will be fixed during #47.
              (let [the-token "some-secure-token"
-                   the-bearer "objective8.dev" 
-              db-ids (store-user-and-objective!)] 
+                   the-bearer "objective8.dev"] 
                (storage/pg-store! {:entity :bearer-token :bearer-name the-bearer :bearer-token the-token})
-               (p/request app (str "/api/v1/objectives/" (:objective-id db-ids))
+               (p/request app "/api/v1/users"
+                          :request-method :post
+                          :content-type "application/json"
                           :headers {"api-bearer-token" "some-wrong-token"
-                                    "api-bearer-name" "objective8.dev"}) => (contains {:response (contains  {:status 401})}))))) 
+                                    "api-bearer-name" "objective8.dev"}
+                          :body (json/generate-string {:twitter-id "Twitter_ID"})) 
+               => (contains {:response (contains  {:status 401})}))))) 
