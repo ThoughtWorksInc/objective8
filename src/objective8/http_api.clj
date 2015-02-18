@@ -23,6 +23,14 @@
 (defn json-post [url object]
   (post-request url (json-request object)))
 
+(defn default-create-call [url object]
+  (let [request (with-credentials (json-request object))
+        {:keys [body status]} (post-request url request)]
+    (cond
+      (= status 201) {:status ::success
+                      :result (json/parse-string body true)}
+      :else          {:status ::error})))
+
 ;;USERS
 
 (defn create-user [user]
@@ -90,9 +98,11 @@
 ;; ANSWERS
 
 (defn create-answer [answer]
-  (let [{:keys [body status]} (json-post (str utils/host-url "/api/v1/objectives/" (:objective-id answer) 
-                                              "/questions/" (:question-id answer) "/answers") answer)]
-    (cond
-      (= status 201) {:status ::success
-                      :result (json/parse-string body true)}
-      :else          {:status ::error})))
+  (default-create-call 
+    (str utils/host-url
+         "/api/v1/objectives/" (:objective-id answer)
+         "/questions/" (:question-id answer) "/answers")
+    answer))
+
+
+

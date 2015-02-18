@@ -163,24 +163,17 @@
                  :question-id QUESTION_ID})
 (def the-stored-answer (into the-answer {:_id 3}))
 
-(def answer-response
-  {:successful {:status 201
-                :headers {"Content-Type" "application/json"}
-                :body (json/generate-string the-stored-answer)}
-   :failure    {:status 500}})
-
 (facts "about posting answers"
        (fact "returns a stored answer when post succeeds"
-             (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID
-                                   "/questions/" QUESTION_ID "/answers") 
-                              (:successful answer-response)]
-               (api/create-answer the-answer))
-             => {:status ::api/success
-                 :result the-stored-answer}) 
+             (api/create-answer the-answer) => {:status ::api/success
+                                                :result the-stored-answer}
+             (provided (api/post-request (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID
+                                                        "/questions/" QUESTION_ID "/answers"))
+                                         request-with-bearer-token)
+                       => {:status 201
+                           :headers {"Content-Type" "application/json"}
+                           :body (json/generate-string the-stored-answer)})) 
 
        (fact "returns :objective8.http-api/error when request fails"
-             (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID
-                                   "/questions/" QUESTION_ID "/answers") 
-                              (:failure answer-response)]
-               (api/create-answer the-answer))
-             => {:status ::api/error}))
+               (api/create-answer the-answer) => {:status ::api/error}
+             (provided (api/post-request anything anything) => {:status 500})))
