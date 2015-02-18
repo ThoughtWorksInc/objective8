@@ -24,6 +24,9 @@
 (def BEARER_NAME "bearer")
 (def BEARER_TOKEN "token")
 
+(def request-with-bearer-token (contains {:headers (contains {"api-bearer-token" BEARER_TOKEN
+                                                               "api-bearer-name" BEARER_NAME})}))
+
 (background (api/get-api-credentials) => {"api-bearer-name" BEARER_NAME
                                           "api-bearer-token" BEARER_TOKEN})
 
@@ -31,8 +34,7 @@
        (fact "creating a user profile requires credentials"
              (api/create-user the-user) => the-stored-user
              (provided (api/post-request (contains "/api/v1/users")
-                                         (contains {:headers (contains {"api-bearer-token" BEARER_TOKEN
-                                                                        "api-bearer-name" BEARER_NAME})}))
+                                         request-with-bearer-token)
                        => (:successful profile-posts)))
 
        (fact "returns api-failure when post fails"
@@ -57,11 +59,12 @@
 
 (facts "about posting objectives"
        (fact "returns a stored objective when post succeeds"
-          (with-fake-http [(str host-url "/api/v1/objectives") (:successful objective-posts)]
-            (api/create-objective the-objective))
-          => the-stored-objective)
+             (api/create-objective the-objective) => the-stored-objective
+             (provided (api/post-request (contains "/api/v1/objectives")
+                                         request-with-bearer-token)
+                       => (:successful objective-posts)))
 
-    (fact "returns api-failure when post fails"
+       (fact "returns api-failure when post fails"
              (with-fake-http [(str host-url "/api/v1/objectives") (:failure objective-posts)]
                (api/create-objective the-objective))
              => api/api-failure))
@@ -72,11 +75,11 @@
                               {:status 200
                                :headers {"Content-Type" "application/json"}
                                :body (json/generate-string
-                                      {:_id OBJECTIVE_ID
-                                       :title "Objective title"
-                                       :goals "Objective goals"
-                                       :description "Objective description"
-                                       :end-date "2015-01-31T00:00:00.000Z"})}]
+                                       {:_id OBJECTIVE_ID
+                                        :title "Objective title"
+                                        :goals "Objective goals"
+                                        :description "Objective description"
+                                        :end-date "2015-01-31T00:00:00.000Z"})}]
                (api/get-objective OBJECTIVE_ID))
              => (contains {:_id OBJECTIVE_ID
                            :title "Objective title"
@@ -104,9 +107,9 @@
 
 (facts "about posting comments"
        (fact "returns a stored comment when post succeeds"
-          (with-fake-http [(str host-url "/api/v1/comments") (:successful comment-response)]
-            (api/create-comment the-comment))
-          => the-stored-comment)
+             (with-fake-http [(str host-url "/api/v1/comments") (:successful comment-response)]
+               (api/create-comment the-comment))
+             => the-stored-comment)
 
        (fact "returns api-failure when post fails"
              (with-fake-http [(str host-url "/api/v1/comments") (:failure comment-response)]
@@ -114,12 +117,12 @@
              => api/api-failure))
 
 (facts "about retrieving comments"
-      (fact "returns a list of comments for an objective"
-        (with-fake-http [(str host-url "/api/v1/objectives/1/comments") {:status 200
-                                                                         :headers {"Content-Type" "application/json"}
-                                                                         :body (json/generate-string [the-stored-comment])}]
-                        (api/retrieve-comments 1))
-        => [the-stored-comment]))
+       (fact "returns a list of comments for an objective"
+             (with-fake-http [(str host-url "/api/v1/objectives/1/comments") {:status 200
+                                                                              :headers {"Content-Type" "application/json"}
+                                                                              :body (json/generate-string [the-stored-comment])}]
+               (api/retrieve-comments 1))
+             => [the-stored-comment]))
 
 ;; QUESTIONS
 
@@ -131,16 +134,16 @@
 
 (def the-stored-question (into the-question {:_id QUESTION_ID}))
 (def question-response
-    {:successful {:status 201
-                  :headers {"Content-Type" "application/json"}
-                  :body (json/generate-string the-stored-question)}
-     :failure    {:status 500}})
+  {:successful {:status 201
+                :headers {"Content-Type" "application/json"}
+                :body (json/generate-string the-stored-question)}
+   :failure    {:status 500}})
 
 (facts "about posting questions"
        (fact "returns a stored question when post succeeds"
-          (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID "/questions") (:successful question-response)]
-            (api/create-question the-question))
-          => the-stored-question)
+             (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID "/questions") (:successful question-response)]
+               (api/create-question the-question))
+             => the-stored-question)
 
        (fact "returns api-failure when post fails"
              (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID "/questions") (:failure question-response)]
@@ -152,18 +155,18 @@
              (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID) {:status 200
                                                                                                            :headers {"Content-Type" "application/json"}
                                                                                                            :body (json/generate-string the-stored-question)}]
-                             (api/get-question OBJECTIVE_ID QUESTION_ID))
+               (api/get-question OBJECTIVE_ID QUESTION_ID))
              => {:status ::api/success
                  :result the-stored-question})
 
        (fact "returns :objective8.http-api/error when request fails"
              (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID) {:status 500}]
-                             (api/get-question OBJECTIVE_ID QUESTION_ID))
+               (api/get-question OBJECTIVE_ID QUESTION_ID))
              => {:status ::api/error})
 
        (fact "returns :objective8.http-api/not-found when no question with that id exists"
              (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID) {:status 404}]
-                             (api/get-question OBJECTIVE_ID QUESTION_ID))
+               (api/get-question OBJECTIVE_ID QUESTION_ID))
              => {:status ::api/not-found}))
 
 ;; ANSWERS
@@ -181,16 +184,16 @@
 
 (facts "about posting answers"
        (fact "returns a stored answer when post succeeds"
-          (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID
-                                "/questions/" QUESTION_ID "/answers") 
-                           (:successful answer-response)]
-            (api/create-answer the-answer))
+             (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID
+                                   "/questions/" QUESTION_ID "/answers") 
+                              (:successful answer-response)]
+               (api/create-answer the-answer))
              => {:status ::api/success
                  :result the-stored-answer}) 
 
-        (fact "returns :objective8.http-api/error when request fails"
-          (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID
-                                "/questions/" QUESTION_ID "/answers") 
-                           (:failure answer-response)]
-            (api/create-answer the-answer))
+       (fact "returns :objective8.http-api/error when request fails"
+             (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID
+                                   "/questions/" QUESTION_ID "/answers") 
+                              (:failure answer-response)]
+               (api/create-answer the-answer))
              => {:status ::api/error}))

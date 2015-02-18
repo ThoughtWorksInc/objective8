@@ -40,7 +40,8 @@
 ;; OBJECTIVES
 
 (defn create-objective [objective]
-  (let [{:keys [body status]} (json-post (str utils/host-url "/api/v1/objectives") (update-in objective [:end-date] str))]
+  (let [request (with-credentials (json-request (update-in  objective [:end-date] str)))
+        {:keys [body status]} (post-request (str utils/host-url "/api/v1/objectives") request)]
     (cond (= status 201)   (json/parse-string body true)
           :else            api-failure)))
 
