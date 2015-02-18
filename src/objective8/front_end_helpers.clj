@@ -4,8 +4,8 @@
 
 (defn request->question
   "Returns a map of a question if all parts are in the request. Otherwise returns nil"
-  [{{id :id} :route-params
-    :keys [params]} user-id]
+  [{{id :id} :route-params :keys [params]} 
+   user-id]
   (assoc (select-keys params [:question])
           :created-by-id user-id
           :objective-id (Integer/parseInt id)))
@@ -29,6 +29,9 @@
 
 (defn request->answer-info
   "Returns a map of an answer if all the parts are in the request. Otherwise returns nil"
-  [{:keys [params]} user-id]
+  [{{id :id q-id :q-id} :route-params :keys [params]} 
+   user-id]
   (assoc (select-keys params [:answer])
+         :question-id (Integer/parseInt q-id) 
+         :objective-id (Integer/parseInt id) 
          :created-by-id user-id))
