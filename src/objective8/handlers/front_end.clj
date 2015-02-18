@@ -7,7 +7,7 @@
             [objective8.responses :refer :all]
             [objective8.http-api :as http-api]
             [objective8.front-end-helpers :refer [request->question request->comment 
-                                                  request->objective request->answer]]
+                                                  request->objective request->answer-info]]
             [objective8.utils :as utils]
             [objective8.storage.storage :as storage]))
 
@@ -177,7 +177,7 @@
 ;; ANSWERS
 
 (defn add-answer-form-post [{:keys [uri t' locale] :as request}]
-  (if-let [answer (request->answer request (get (friend/current-authentication) :username))]
+  (if-let [answer (request->answer-info request (get (friend/current-authentication) :username))]
     (let [{status :status stored-answer :result} (http-api/create-answer answer)]
       (cond
         (= status ::http-api/success)

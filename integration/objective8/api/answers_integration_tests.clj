@@ -21,6 +21,7 @@
 
 (def the-answer {:answer "The answer is 42"
                  :question-id QUESTION_ID
+                 :objective-id OBJECTIVE_ID
                  :created-by-id USER_ID })
 
 (def the-invalid-answer (dissoc the-answer :question-id))

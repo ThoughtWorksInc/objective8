@@ -27,11 +27,8 @@
                                   :end-date iso-time
                                   :created-by-id user-id)))
 
-(defn request->answer
+(defn request->answer-info
   "Returns a map of an answer if all the parts are in the request. Otherwise returns nil"
-  [{{id :id q-id :q-id} :route-params
-    :keys [params]} user-id]
+  [{:keys [params]} user-id]
   (assoc (select-keys params [:answer])
-         :created-by-id user-id
-         :objective-id (Integer/parseInt id)
-         :question-id (Integer/parseInt q-id)))
+         :created-by-id user-id))

@@ -153,10 +153,11 @@
       (check-question-matches-objective q-id objective-id) 
       (let [answer (-> params
                        (select-keys [:answer :created-by-id])
+                       (assoc :objective-id objective-id)
                        (assoc :question-id q-id)) 
             stored-answer (answers/store-answer! answer) 
             resource-location (str utils/host-url
-                                   "/api/v1/objectives/" objective-id
+                                   "/api/v1/objectives/" (:objective-id stored-answer)
                                    "/questions/" (:question-id stored-answer)
                                    "/answers/" (:_id stored-answer))]
         (successful-post-response resource-location stored-answer)))

@@ -17,8 +17,6 @@
                   (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status 200})
               (against-background
                   (http-api/create-answer {:answer "The answer"
-                                           :objective-id OBJECTIVE_ID
-                                           :question-id QUESTION_ID
                                            :created-by-id USER_ID}) => {:status ::http-api/success
                                                                         :result  {:_id 12
                                                                                   :objective-id OBJECTIVE_ID

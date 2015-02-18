@@ -103,6 +103,12 @@
   [:.btn-reddit] (html/set-attr :href (str "http://reddit.com/submit?url=" url "&title=" title " - "))
   [:.share-this-url] (html/set-attr :value url))
 
+;ANSWERS
+(html/defsnippet answer-create
+  "templates/answers/answer-create.html" [[:#clj-answer-create]] [translation signed-in objective-id question-id]
+  [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
+  [:form] (html/set-attr :action (str "/objectives/" objective-id "/questions/" question-id "/answers")))
+
 ;QUESTIONS
 (html/defsnippet question-add-page
   "templates/question-add.html" [:#clj-question-add] [{:keys [translation objective-title objective-id]}]
@@ -112,10 +118,11 @@
   [:#clj-question-add html/any-node] (html/replace-vars translation))
 
 (html/defsnippet question-view-page
-  "templates/question-view.html" [:#clj-question-view] [{:keys [translation question]}]
+  "templates/question-view.html" [:#clj-question-view] [{:keys [translation question signed-in]}]
   [:#clj-question-view :h1] (html/content (:question question))
   ; [:.grid] (html/content (share-widget translation (:url question) (:question question)))
-  [:#clj-question-view html/any-node] (html/replace-vars translation))
+  [:#clj-question-view html/any-node] (html/replace-vars translation)
+  [:#clj-question-view] (html/after (answer-create translation signed-in (:objective-id question) (:_id question))))
 
 ;COMMENTS
 (html/defsnippet comment-create

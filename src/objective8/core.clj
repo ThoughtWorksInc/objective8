@@ -34,7 +34,7 @@
                :create-comment-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-comment-form-post) #{:signed-in})
                :add-question-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-question-form-post) #{:signed-in})
                :add-question-form (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-question-form) #{:signed-in})
-               :question front-end-handlers/question-detail
+               :question (utils/anti-forgery-hook front-end-handlers/question-detail) 
                :add-answer-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-answer-form-post) #{:signed-in})
 
                

@@ -39,12 +39,7 @@
                         :created-by-id USER_ID
                         :objective-id OBJECTIVE_ID}))
 
-(fact "creates an answer from a request"
-      (let [answer (request->answer {:route-params {:id (str OBJECTIVE_ID)
-                                                    :q-id (str QUESTION_ID)}
-                                     :params {:answer "the answer"}}
-                                    USER_ID)]
+(fact "creates answer-info map from a request"
+      (let [answer (request->answer-info {:params {:answer "the answer"}} USER_ID)]
         answer => {:answer "the answer"
-                   :created-by-id USER_ID
-                   :objective-id OBJECTIVE_ID
-                   :question-id QUESTION_ID}))
+                   :created-by-id USER_ID}))
