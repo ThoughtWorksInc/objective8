@@ -46,7 +46,8 @@
                                                                     :result {:question "The meaning of life?"
                                                                              :created-by-id USER_ID
                                                                              :objective-id OBJECTIVE_ID
-                                                                             :_id QUESTION_ID}})
+                                                                             :_id QUESTION_ID}}
+               (http-api/retrieve-answers OBJECTIVE_ID QUESTION_ID) => [])
              (default-app question-view-get-request) => (contains {:status 200})
              (default-app question-view-get-request) => (contains {:body (contains "The meaning of life?")}))
 

@@ -159,7 +159,7 @@
                          :keys [uri t' locale]
                          :as request}]
   (let [{status :status question :result} (http-api/get-question (Integer/parseInt id) (Integer/parseInt q-id))
-        question-to-display (assoc question :url (str utils/host-url uri))]
+        answers (http-api/retrieve-answers  (:objective-id question) (:_id question))]
     (cond
       (= status ::http-api/success)
           (rendered-response question-view-page {:translation t'
@@ -167,7 +167,8 @@
                                                  :doc-title (str (:title question) " | Objective[8]")
                                                  :doc-description (:title question)
                                                  :message message
-                                                 :question question-to-display
+                                                 :question question
+                                                 :answers answers
                                                  :signed-in (signed-in?)
                                                  :uri uri})
       (= status ::http-api/not-found) (error-404-response t' locale)

@@ -108,5 +108,13 @@
          "/questions/" (:question-id answer) "/answers")
     answer))
 
+(defn retrieve-answers [objective-id question-id]
+  (let [{:keys [body status]} @(http/get (str utils/host-url "/api/v1/objectives/" 
+                                              objective-id "/questions/" question-id "/answers"))]
+    (cond
+      (= status 200) (-> body
+                         (json/parse-string true))
+      :else          api-failure)))
+
 
 

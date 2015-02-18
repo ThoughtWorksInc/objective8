@@ -104,6 +104,15 @@
                                     :post-button "Add"}
                      :question-view {:added-message "Your question has been added!"
                                      :added-answer-message "Your answer has been added!"}
+                     :answer-view   {:created-message "Your answer has been posted!"
+                                     :answer-title "Answers"
+                                     :no-answers "No one has answered this question yet."}
+                     :answer-create {:answer-label "Your answer"
+                                     :answer-title "Answers are a maximum length of 500 characters"
+                                     :post-button "Post your answer"}
+                     :answer-sign-in {:please "Please"
+                                      :sign-in "sign in"
+                                      :to "to answer this question."}
                      :users-email {:doc-title "Sign up almost there | Objective[8]"
                                    :doc-description ""
                                    :page-title "Almost there"
@@ -210,6 +219,15 @@
                                     :post-button "Spanish(Add)"}
                     :question-view {:added-message "Spanish(Your question has been added!)"
                                     :added-answer-message "Spanish(Your answer has been added!)"}
+                     :answer-view   {:created-message "Spanish(Your answer has been posted!)"
+                                     :answer-title "Spanish(Answers)"
+                                     :no-answers "Spanish(No one has answered this question yet.)"}
+                     :answer-create {:answer-label "Spanish(Your answer)"
+                                     :answer-title "Spanish(Answers are a maximum length of 500 characters)"
+                                     :post-button "Spanish(Post your answer)"}
+                     :answer-sign-in {:please "Spanish(Please)"
+                                      :sign-in "Spanish(sign in)"
+                                      :to "Spanish(to answer this question.)"}
                     :users-email {:doc-title "Perfil | Objective[8]"
                                   :doc-description ""
                                   :page-title "Spanish(Almost there)"

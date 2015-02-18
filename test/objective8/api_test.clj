@@ -169,7 +169,8 @@
 
 (def the-answer {:answer "The answer"
                  :objective-id OBJECTIVE_ID
-                 :question-id QUESTION_ID})
+                 :question-id QUESTION_ID
+                 :created-by-id USER_ID})
 (def the-stored-answer (into the-answer {:_id 3}))
 
 (facts "about posting answers"
@@ -186,3 +187,11 @@
        (fact "returns :objective8.http-api/error when request fails"
                (api/create-answer the-answer) => {:status ::api/error}
              (provided (api/post-request anything anything) => {:status 500})))
+
+(facts "about retrieving answers" 
+       (fact "returns a list of answers for a given objective and question"
+             (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID 
+                                   "/questions/" QUESTION_ID "/answers") {:status 200
+                                                                          :headers {"Content-Type" "application/json"}
+                                                                          :body (json/generate-string [the-stored-answer])}]
+               (api/retrieve-answers OBJECTIVE_ID QUESTION_ID)) => [the-stored-answer]))

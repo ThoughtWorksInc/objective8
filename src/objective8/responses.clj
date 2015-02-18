@@ -106,10 +106,25 @@
 
 ;ANSWERS
 (html/defsnippet answer-create
-  "templates/answers/answer-create.html" [[:#clj-answer-create]] [translation signed-in objective-id question-id]
+  "templates/answers/answer-create.html" [[:#clj-answer-create]] [translation objective-id question-id]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:form] (html/set-attr :action (str "/objectives/" objective-id "/questions/" question-id "/answers")))
+  [:form] (html/set-attr :action (str "/objectives/" objective-id "/questions/" question-id "/answers"))
+  [:#clj-answer-create html/any-node] (html/replace-vars translation)) 
 
+(html/defsnippet an-answer
+  "templates/answers/answer.html" [:li] [answer]
+  [:.answer-text] (html/content (text->p-nodes (:answer answer)))
+  [:.answer-author] (html/content "user-display-name")
+  [:.answer-date] (html/content (utils/iso-time-string->pretty-time (:_created_at answer))))
+
+(html/defsnippet answers-view
+  "templates/answers/answers-view.html" [[:#clj-answers-view]] [translation signed-in objective-id question-id answers uri]
+  [:#clj-answer-sign-in-uri] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" uri))
+  [:#clj-answers-view :.response-form] (if signed-in (html/content (answer-create translation objective-id question-id)) identity )
+  [:#clj-answers-view html/any-node] (html/replace-vars translation)
+  [:#clj-answers-view :.answer-list] (if (empty? answers) identity (html/content (map an-answer answers))))
+
+;QUESTIONS
 (html/defsnippet question-add-page
   "templates/question-add.html" [:#clj-question-add] [{:keys [translation objective-title objective-id]}]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
@@ -118,10 +133,10 @@
   [:#clj-question-add html/any-node] (html/replace-vars translation))
 
 (html/defsnippet question-view-page
-  "templates/question-view.html" [:#clj-question-view] [{:keys [translation question signed-in]}]
+  "templates/question-view.html" [:#clj-question-view] [{:keys [translation question answers signed-in uri]}]
   [:#clj-question-view :h1] (html/content (:question question))
   [:#clj-question-view html/any-node] (html/replace-vars translation)
-  [:#clj-question-view] (html/after (answer-create translation signed-in (:objective-id question) (:_id question))))
+  [:#clj-question-view] (html/after (answers-view translation signed-in (:objective-id question) (:_id question) answers uri)))
 
 ;COMMENTS
 (html/defsnippet comment-create
