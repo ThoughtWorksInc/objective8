@@ -15,12 +15,6 @@
 
 (def the-stored-user (into the-user {:_id USER_ID}))
 
-(def profile-posts
-  {:successful {:status 201
-                :headers {"Content-Type" "application/json"}
-                :body (json/generate-string the-stored-user)}
-   :failure    {:status 500}})
-
 (def BEARER_NAME "bearer")
 (def BEARER_TOKEN "token")
 
@@ -35,11 +29,14 @@
              (api/create-user the-user) => the-stored-user
              (provided (api/post-request (contains "/api/v1/users")
                                          request-with-bearer-token)
-                       => (:successful profile-posts)))
+                       => {:status 201
+                           :headers {"Content-Type" "application/json"}
+                           :body (json/generate-string the-stored-user)}))
 
        (fact "returns api-failure when post fails"
              (api/create-user the-user) => api/api-failure
-             (provided (api/post-request anything anything) => (:failure profile-posts))))
+             (provided (api/post-request anything anything)
+                       => {:status 500})))
 
 ;OBJECTIVES
 (def OBJECTIVE_ID 234)
@@ -51,23 +48,19 @@
                     :username "my username"})
 
 (def the-stored-objective (into the-objective {:_id OBJECTIVE_ID}))
-(def objective-posts
-  {:successful {:status 201
-                :headers {"Content-Type" "application/json"}
-                :body (json/generate-string the-stored-objective)}
-   :failure    {:status 500}})
 
 (facts "about posting objectives"
        (fact "returns a stored objective when post succeeds"
              (api/create-objective the-objective) => the-stored-objective
              (provided (api/post-request (contains "/api/v1/objectives")
                                          request-with-bearer-token)
-                       => (:successful objective-posts)))
+                       => {:status 201
+                           :headers {"Content-Type" "application/json"}
+                           :body (json/generate-string the-stored-objective)}))
 
        (fact "returns api-failure when post fails"
-             (with-fake-http [(str host-url "/api/v1/objectives") (:failure objective-posts)]
-               (api/create-objective the-objective))
-             => api/api-failure))
+             (api/create-objective the-objective) => api/api-failure
+             (provided (api/post-request anything anything) => {:status 500})))
 
 (facts "about getting objectives"
        (fact "returns a stored objective when one exists with given id"
@@ -99,23 +92,19 @@
                   :username "my username"})
 
 (def the-stored-comment (into the-comment {:_id 1}))
-(def comment-response
-  {:successful {:status 201
-                :headers {"Content-Type" "application/json"}
-                :body (json/generate-string the-stored-comment)}
-   :failure    {:status 500}})
 
 (facts "about posting comments"
        (fact "returns a stored comment when post succeeds"
              (api/create-comment the-comment) => the-stored-comment
              (provided (api/post-request (contains "/api/v1/comments")
                                          request-with-bearer-token)
-                       => (:successful comment-response)))
+                       =>{:status 201
+                          :headers {"Content-Type" "application/json"}
+                          :body (json/generate-string the-stored-comment)}))
 
        (fact "returns api-failure when post fails"
-             (with-fake-http [(str host-url "/api/v1/comments") (:failure comment-response)]
-               (api/create-comment the-comment))
-             => api/api-failure))
+             (api/create-comment the-comment) => api/api-failure
+             (provided (api/post-request anything anything) => {:status 500})))
 
 (facts "about retrieving comments"
        (fact "returns a list of comments for an objective"
