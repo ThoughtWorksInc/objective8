@@ -30,11 +30,12 @@
 (defn sign-up-form-post [{params :params session :session :as request}]
   (if-let [twitter-id (:twitter-id session)]
     (let [twitter-screen-name (:twitter-screen-name session)
-          email-address (:email-address params)
-          user (http-api/create-user {:twitter-id twitter-id
+          email-address (:email-address params)] 
+          (if-let [user (http-api/create-user {:twitter-id twitter-id
                                       :display-name twitter-screen-name
-                                      :email-address email-address})]
-      (finalise-authorisation user session))
+                                      :email-address email-address})] 
+            (finalise-authorisation user session)
+            {:status 401}))
     {:status 401}))
 
 (def sign-up-handlers

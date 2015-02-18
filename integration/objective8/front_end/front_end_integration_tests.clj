@@ -35,7 +35,8 @@
                 (facts "signed in users"
                        (against-background
                          ;; Twitter authentication background
-                         (oauth/access-token anything anything anything) => {:user_id USER_ID})
+                         (oauth/access-token anything anything anything) => {:user_id USER_ID}
+                         (http-api/create-user anything) => {:_id USER_ID})
                        (fact "can reach the create objective page"
                              (let [result (-> (p/session default-app)
                                               (helpers/with-sign-in "http://localhost:8080/objectives/create"))]
