@@ -1,6 +1,6 @@
 <div class="share-widget">
   <h3 class="share-widget-title">${share-widget/title}</h3>
-  <ul class="share-list">
+  <ul class="share-icon-list">
     <li>
       <a class="btn-social-icon btn-xs btn-facebook js-social-share" href="{{replaceme}}" target="_blank" title="${share-widget/facebook-title}">
         <i class="fa fa-facebook"></i>
@@ -33,7 +33,7 @@
     </li>
   </ul>
   <div class="share-this-link">
-    <label class="share-this-url-label" for="link">${share-widget/url-label}</label>
-    <input class="share-this-url" type="text" value="http://sharethisurl.com" title="${share-widget/url-title}" />
+    <label class="visuallyhidden" for="share-page-link">${share-widget/url-label}</label>
+    <input class="share-this-url-input" id="share-page-link" name="share-page-link" type="text" value="http://sharethisurl.com" title="${share-widget/url-title}" />
   </div>
 </div>

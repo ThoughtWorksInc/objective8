@@ -30,11 +30,24 @@
   "templates/flash-message.html" [[:#clj-flash-message]] [message]
   [:p] (html/html-content message))
 
+;SHARING
+(html/defsnippet share-widget
+  "templates/share-widget.html"
+  [:.share-widget] [translation uri title]
+  [:.share-widget html/any-node] (html/replace-vars translation)
+  [:.btn-facebook] (html/set-attr :href (str "http://www.facebook.com/sharer.php?u=" (str utils/host-url uri) "t=" title " - "))
+  [:.btn-google-plus] (html/set-attr :href (str "https://plusone.google.com/_/+1/confirm?hl=en&url=" (str utils/host-url uri)))
+  [:.btn-twitter] (html/set-attr :href (str "https://twitter.com/share?url=" (str utils/host-url uri) "&text=" title " - "))
+  [:.btn-linkedin] (html/set-attr :href (str "http://www.linkedin.com/shareArticle?mini=true&url=" (str utils/host-url uri)))
+  [:.btn-reddit] (html/set-attr :href (str "http://reddit.com/submit?url=" (str utils/host-url uri) "&title=" title " - "))
+  [:.share-this-url-input] (html/set-attr :value (str utils/host-url uri)))
+
 ;NAVIGATION
 (html/defsnippet objectives-navigation
-  "templates/objectives-nav.html" [[:#navigation]] [objective translation]
+  "templates/objectives-nav.html" [[:#navigation]] [objective translation uri]
   [:#clj-objective-title] (html/html-content (:title objective))
   [:#clj-objectives-details] (html/set-attr :href (str "/objectives/" (:_id objective)))
+  [:.navigation-list] (html/after (share-widget translation uri (:title objective))  )
   [:#navigation html/any-node] (html/replace-vars translation))
 
 (html/defsnippet user-navigation-signed-in
@@ -47,7 +60,7 @@
 
 ;BASE TEMPLATE
 (html/deftemplate base
-  "templates/base.html" [{:keys [translation locale doc-title doc-description user-navigation flash-message content objective]}]
+  "templates/base.html" [{:keys [translation locale doc-title doc-description user-navigation flash-message content objective uri]}]
   [:html] (html/set-attr :lang locale)
   ; TODO find a way to select description without an ID
   ; [:head (html/attr= :name "description")] (html/set-attr :content "some text")
@@ -60,7 +73,7 @@
   [:#projectStatus] (html/html-content (translation :base/project-status))
   [:#main-content] (html/before (if flash-message (flash-message-view flash-message)))
   [:#main-content] (html/content content)
-  [:#clj-navigation] (if objective (html/content (objectives-navigation objective translation)) identity)
+  [:#clj-navigation] (if objective (html/content (objectives-navigation objective translation uri)) identity)
   [:body] (html/append (if google-analytics-tracking-id (google-analytics google-analytics-tracking-id))))
 
 ;HOME/INDEX
@@ -109,7 +122,6 @@
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
   [:form] (html/set-attr :action (str "/objectives/" objective-id "/questions/" question-id "/answers")))
 
-;QUESTIONS
 (html/defsnippet question-add-page
   "templates/question-add.html" [:#clj-question-add] [{:keys [translation objective-title objective-id]}]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
@@ -120,7 +132,6 @@
 (html/defsnippet question-view-page
   "templates/question-view.html" [:#clj-question-view] [{:keys [translation question signed-in]}]
   [:#clj-question-view :h1] (html/content (:question question))
-  ; [:.grid] (html/content (share-widget translation (:url question) (:question question)))
   [:#clj-question-view html/any-node] (html/replace-vars translation)
   [:#clj-question-view] (html/after (answer-create translation signed-in (:objective-id question) (:_id question))))
 
@@ -166,13 +177,6 @@
   [:#clj-obj-background-label] (if (empty? (:description objective)) nil identity)
   [:#clj-obj-background-label] (html/after (text->p-nodes (:description objective)))
   [:#clj-obj-end-date-value] (html/content (:end-date objective))
-  [:.share-widget html/any-node] (html/replace-vars translation)
-  [:.btn-facebook] (html/set-attr :href (str "http://www.facebook.com/sharer.php?u=" (objective-url objective) "t=" (:title objective) " - "))
-  [:.btn-google-plus] (html/set-attr :href (str "https://plusone.google.com/_/+1/confirm?hl=en&url=" (objective-url objective)))
-  [:.btn-twitter] (html/set-attr :href (str "https://twitter.com/share?url=" (objective-url objective) "&text=" (:title objective) " - "))
-  [:.btn-linkedin] (html/set-attr :href (str "http://www.linkedin.com/shareArticle?mini=true&url=" (objective-url objective)))
-  [:.btn-reddit] (html/set-attr :href (str "http://reddit.com/submit?url=" (objective-url objective) "&title=" (:title objective) " - "))
-  [:.share-this-url] (html/set-attr :value (objective-url objective))
   [:#clj-objectives-detail] (html/after (comments-view translation signed-in (:_id objective) comments uri)))
 
 ;USERS

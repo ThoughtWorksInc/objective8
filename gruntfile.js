@@ -76,6 +76,7 @@ module.exports = function(grunt) {
     concat: {
       dist: {
         src: [
+          'resources/src/js/vendor/jquery-1.11.2.js',
           'resources/src/js/vendor/webfont.js',
           'resources/src/js/custom/**/*.js'
         ],
