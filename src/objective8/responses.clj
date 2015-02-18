@@ -47,7 +47,7 @@
   "templates/objectives-nav.html" [[:#navigation]] [objective translation uri]
   [:#clj-objective-title] (html/html-content (:title objective))
   [:#clj-objectives-details] (html/set-attr :href (str "/objectives/" (:_id objective)))
-  [:.navigation-list] (html/after (share-widget translation uri (:title objective))  )
+  [:.navigation-list] (html/after (share-widget translation uri (:title objective)))
   [:#navigation html/any-node] (html/replace-vars translation))
 
 (html/defsnippet user-navigation-signed-in
@@ -103,18 +103,6 @@
   "templates/error-404.html" [:#clj-error-404] [{:keys [translation]}]
   [:#clj-error-404 html/any-node] (html/replace-vars translation)
   [:#clj-error-404-content] (html/html-content (translation :error-404/page-content)))
-
-;SHARING
-(html/defsnippet share-widget
-  "templates/share-widget.html"
-  [:.share-widget] [translation url title]
-  [:.share-widget html/any-node] (html/replace-vars translation)
-  [:.btn-facebook] (html/set-attr :href (str "http://www.facebook.com/sharer.php?u=" url "t=" title " - "))
-  [:.btn-google-plus] (html/set-attr :href (str "https://plusone.google.com/_/+1/confirm?hl=en&url=" url))
-  [:.btn-twitter] (html/set-attr :href (str "https://twitter.com/share?url=" url "&text=" title " - "))
-  [:.btn-linkedin] (html/set-attr :href (str "http://www.linkedin.com/shareArticle?mini=true&url=" url))
-  [:.btn-reddit] (html/set-attr :href (str "http://reddit.com/submit?url=" url "&title=" title " - "))
-  [:.share-this-url] (html/set-attr :value url))
 
 ;ANSWERS
 (html/defsnippet answer-create
