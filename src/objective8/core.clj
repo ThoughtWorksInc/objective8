@@ -42,14 +42,14 @@
                :post-user-profile (m/wrap-bearer-token api-handlers/post-user-profile bt/stub-token-provider) 
                :find-user-by-query (m/wrap-bearer-token api-handlers/find-user-by-query bt/stub-token-provider) 
                :get-user (m/wrap-bearer-token api-handlers/get-user bt/stub-token-provider)
-               :post-objective api-handlers/post-objective
+               :post-objective (m/wrap-bearer-token api-handlers/post-objective bt/stub-token-provider)
                :get-objective api-handlers/get-objective 
                :get-comments-for-objective api-handlers/retrieve-comments
-               :post-comment api-handlers/post-comment
-               :post-question api-handlers/post-question
+               :post-comment (m/wrap-bearer-token api-handlers/post-comment bt/stub-token-provider) 
+               :post-question (m/wrap-bearer-token api-handlers/post-question bt/stub-token-provider) 
                :get-question api-handlers/get-question
                :get-answers-for-question api-handlers/retrieve-answers
-               :post-answer api-handlers/post-answer})
+               :post-answer (m/wrap-bearer-token api-handlers/post-answer bt/stub-token-provider)})
 
 (def routes
   ["/" {""                  :index

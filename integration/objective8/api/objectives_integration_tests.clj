@@ -12,8 +12,6 @@
 ;; Testing from http request -> making correct calls within objectives namespace
 ;; Mock or stub out 'objectives' namespace
 
-(defmacro NO-BEARER-TOKEN-CHECKING []
- '(background (m/valid-credentials? anything anything anything) => true))
 
 (def app (helpers/test-context))
 
@@ -34,8 +32,6 @@
 
 (def stored-objective (assoc the-objective :_id OBJECTIVE_ID))
 
-(NO-BEARER-TOKEN-CHECKING)
-
 (facts "objectives" :integration
        (fact "can retrieve an objective using its id"
              (let [peridot-response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID))]
@@ -55,6 +51,8 @@
              => (contains {:response (contains {:status 400})}))
 
        (facts "about posting objectives"
+              (against-background
+                (m/valid-credentials? anything anything anything) => true)
               (fact "the posted objective is stored"
                     (let [peridot-response (p/request app "/api/v1/objectives"
                                                       :request-method :post

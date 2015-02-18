@@ -6,6 +6,7 @@
             [objective8.core :as core]
             [objective8.integration-helpers :as helpers]
             [objective8.objectives :as objectives]
+            [objective8.middleware :as m]
             [objective8.questions :as questions]))
 
 ;; Testing from http request -> making correct calls within questions namespace
@@ -30,6 +31,8 @@
 (def the-question-as-json (str "{\"question\":\"The meaning of life?\",\"objective-id\":" OBJECTIVE_ID ",\"created-by-id\":" USER_ID "}"))
 
 (facts "about posting questions" :integration
+       (against-background
+         (m/valid-credentials? anything anything anything) => true)
        (fact "the posted question is stored"
              (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions")
                         :request-method :post

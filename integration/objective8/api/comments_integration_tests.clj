@@ -5,6 +5,7 @@
             [objective8.utils :as utils]
             [objective8.core :as core]
             [objective8.integration-helpers :as helpers]
+            [objective8.middleware :as m]
             [objective8.comments :as comments]))
 
 ;; Testing from http request -> making correct calls within comments namespace
@@ -27,6 +28,8 @@
                           :objective-id OBJECTIVE_ID })
 
 (facts "about posting comments" :integration
+       (against-background
+         (m/valid-credentials? anything anything anything) => true)
        (fact "the posted comment is stored"
              (p/request app "/api/v1/comments"
                         :request-method :post

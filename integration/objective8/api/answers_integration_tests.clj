@@ -7,6 +7,7 @@
             [objective8.integration-helpers :as helpers]
             [objective8.objectives :as objectives]
             [objective8.questions :as questions]
+            [objective8.middleware :as m]
             [objective8.answers :as answers]))
 
 (def app (helpers/test-context))
@@ -30,6 +31,8 @@
 (def stored-answers (map #(assoc the-answer :_id %) (range 5)))
 
 (facts "about posting answers" :integation
+    (against-background
+      (m/valid-credentials? anything anything anything) => true)
        (fact "the posted answer is stored"
              (against-background 
                (questions/retrieve-question QUESTION_ID) => {:objective-id OBJECTIVE_ID})
