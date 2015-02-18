@@ -40,7 +40,7 @@
                
                ; API Handlers
                :post-user-profile (m/wrap-bearer-token api-handlers/post-user-profile bt/stub-token-provider) 
-               :find-user-by-query api-handlers/find-user-by-query
+               :find-user-by-query (m/wrap-bearer-token api-handlers/find-user-by-query bt/stub-token-provider) 
                :get-user api-handlers/get-user
                :post-objective api-handlers/post-objective
                :get-objective api-handlers/get-objective 

@@ -42,6 +42,8 @@
                     => (contains {:response (contains {:status 400})}))) 
 
        (facts "about querying for users"
+              (against-background
+                (m/valid-credentials? anything anything anything) => true)
               (fact "a user can be retrieved by twitter id"
                     (let [peridot-response (p/request app (str "/api/v1/users?twitter=" twitter-id))]
                       peridot-response) => (helpers/check-json-body stored-user)
