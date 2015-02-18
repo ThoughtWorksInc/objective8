@@ -73,7 +73,8 @@
 ;; QUESTIONS
 
 (defn create-question [question]
-  (let [{:keys [body status]} (json-post (str utils/host-url "/api/v1/objectives/" (:objective-id question) "/questions") question)]
+  (let [request (with-credentials (json-request question))
+        {:keys [body status]} (post-request (str utils/host-url "/api/v1/objectives/" (:objective-id question) "/questions") request)]
     (cond (= status 201)   (json/parse-string body true)
           :else            api-failure)))
 

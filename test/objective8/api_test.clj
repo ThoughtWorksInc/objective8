@@ -123,22 +123,19 @@
 (def QUESTION_ID 42)
 
 (def the-stored-question (into the-question {:_id QUESTION_ID}))
-(def question-response
-  {:successful {:status 201
-                :headers {"Content-Type" "application/json"}
-                :body (json/generate-string the-stored-question)}
-   :failure    {:status 500}})
 
 (facts "about posting questions"
        (fact "returns a stored question when post succeeds"
-             (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID "/questions") (:successful question-response)]
-               (api/create-question the-question))
-             => the-stored-question)
+             (api/create-question the-question) => the-stored-question
+             (provided (api/post-request (contains (str "/api/v1/objectives/" OBJECTIVE_ID "/questions"))
+                                         request-with-bearer-token)
+                       => {:status 201
+                           :headers {"Content-Type" "application/json"}
+                           :body (json/generate-string the-stored-question)}))
 
        (fact "returns api-failure when post fails"
-             (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID "/questions") (:failure question-response)]
-               (api/create-question the-question))
-             => api/api-failure))
+             (api/create-question the-question) => api/api-failure
+             (provided (api/post-request anything anything) => {:status 500})))
 
 (facts "about getting questions"
        (fact "returns a stored question when one exists with a given id"
