@@ -41,7 +41,7 @@
                ; API Handlers
                :post-user-profile (m/wrap-bearer-token api-handlers/post-user-profile bt/stub-token-provider) 
                :find-user-by-query (m/wrap-bearer-token api-handlers/find-user-by-query bt/stub-token-provider) 
-               :get-user api-handlers/get-user
+               :get-user (m/wrap-bearer-token api-handlers/get-user bt/stub-token-provider)
                :post-objective api-handlers/post-objective
                :get-objective api-handlers/get-objective 
                :get-comments-for-objective api-handlers/retrieve-comments

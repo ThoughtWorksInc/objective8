@@ -23,7 +23,8 @@
 
 (facts "users" :integration
        (facts "about retrieving users by id"
-              
+              (against-background
+                (m/valid-credentials? anything anything anything) => true)
               (fact "can retrieve a user by id"
                     (let [peridot-response (p/request app (str "/api/v1/users/" USER_ID))]
                       peridot-response) => (helpers/check-json-body stored-user)
