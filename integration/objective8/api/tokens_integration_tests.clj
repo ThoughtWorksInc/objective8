@@ -13,15 +13,27 @@
 
 (facts "Bearer token tests" :integration
        (against-background [(before :contents (db-connection)) (after :facts (helpers/truncate-tables))]
-       (fact "api is protected by bearer-tokens"
-             ; Temporarily using stub-token-provider so stored tokens not required.  Will be fixed during #47.
-             (let [the-token "some-secure-token"
-                   the-bearer "objective8.dev"] 
-               (storage/pg-store! {:entity :bearer-token :bearer-name the-bearer :bearer-token the-token})
-               (p/request app "/api/v1/users"
-                          :request-method :post
-                          :content-type "application/json"
-                          :headers {"api-bearer-token" "some-wrong-token"
-                                    "api-bearer-name" "objective8.dev"}
-                          :body (json/generate-string {:twitter-id "Twitter_ID"})) 
-               => (contains {:response (contains  {:status 401})}))))) 
+                           (fact "can't access protected api resource without valid bearer-token"
+                                 ; Temporarily using stub-token-provider so stored tokens not required.  Will be fixed during #47.
+                                 (let [the-token "some-secure-token"
+                                       the-bearer "objective8.dev"]
+                                   (storage/pg-store! {:entity :bearer-token :bearer-name the-bearer :bearer-token the-token})
+                                   (p/request app "/api/v1/users"
+                                              :request-method :post
+                                              :content-type "application/json"
+                                              :headers {"api-bearer-token" "some-wrong-token"
+                                                        "api-bearer-name" "objective8.dev"}
+                                              :body (json/generate-string {:twitter-id "Twitter_ID"}))
+                                   => (contains {:response (contains  {:status 401})})))
+                           (fact "can access protected api resource with valid bearer-token"
+                                 ; Temporarily using stub-token-provider so stored tokens not required.  Will be fixed during #47.
+                                 (let [the-token "some-secure-token"
+                                       the-bearer "objective8.dev"]
+                                   (storage/pg-store! {:entity :bearer-token :bearer-name the-bearer :bearer-token the-token})
+                                   (p/request app "/api/v1/users"
+                                              :request-method :post
+                                              :content-type "application/json"
+                                              :headers {"api-bearer-token" "token"
+                                                        "api-bearer-name" "bearer"}
+                                              :body (json/generate-string {:twitter-id "Twitter_ID"}))
+                                   => (contains {:response (contains  {:status 201})})))))
