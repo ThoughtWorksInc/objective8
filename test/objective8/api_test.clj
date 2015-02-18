@@ -107,9 +107,10 @@
 
 (facts "about posting comments"
        (fact "returns a stored comment when post succeeds"
-             (with-fake-http [(str host-url "/api/v1/comments") (:successful comment-response)]
-               (api/create-comment the-comment))
-             => the-stored-comment)
+             (api/create-comment the-comment) => the-stored-comment
+             (provided (api/post-request (contains "/api/v1/comments")
+                                         request-with-bearer-token)
+                       => (:successful comment-response)))
 
        (fact "returns api-failure when post fails"
              (with-fake-http [(str host-url "/api/v1/comments") (:failure comment-response)]

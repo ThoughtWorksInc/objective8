@@ -58,7 +58,8 @@
 ;; COMMENTS
 
 (defn create-comment [comment]
-  (let [{:keys [body status]} (json-post (str utils/host-url "/api/v1/comments") comment)]
+  (let [request (with-credentials (json-request comment))
+        {:keys [body status]} (post-request (str utils/host-url "/api/v1/comments") request)]
     (cond (= status 201)   (json/parse-string body true)
           :else            api-failure)))
 
