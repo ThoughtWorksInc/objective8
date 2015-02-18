@@ -20,6 +20,9 @@
 (defn post-request [url request]
   @(http/post url request))
 
+(defn get-request [url options]
+  @(http/get url options))
+
 (defn json-post [url object]
   (post-request url (json-request object)))
 
@@ -40,9 +43,10 @@
           :else            api-failure)))
 
 (defn find-user-by-twitter-id [twitter-id]
-  (let [{:keys [body status]} @(http/get (str utils/host-url "/api/v1/users?twitter=" twitter-id))]
+  (let [request-options {:headers (get-api-credentials)}
+        {:keys [body status]} (get-request (str utils/host-url "/api/v1/users?twitter=" twitter-id) request-options)]
     (cond (= status 200) (-> body (json/parse-string true))
-      :else          api-failure)))
+          :else          api-failure)))
 
 
 ;; OBJECTIVES

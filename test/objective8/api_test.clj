@@ -8,13 +8,6 @@
 
 (def host-url utils/host-url)
 
-;USERS
-(def USER_ID 1)
-(def the-user {:twitter-id "twitter-TWITTER_ID"
-               :email-address "blah@blah.com"})
-
-(def the-stored-user (into the-user {:_id USER_ID}))
-
 (def BEARER_NAME "bearer")
 (def BEARER_TOKEN "token")
 
@@ -24,8 +17,15 @@
 (background (api/get-api-credentials) => {"api-bearer-name" BEARER_NAME
                                           "api-bearer-token" BEARER_TOKEN})
 
-(facts "about user profiles"
-       (fact "creating a user profile requires credentials"
+;USERS
+(def USER_ID 1)
+(def the-user {:twitter-id "twitter-TWITTER_ID"
+               :email-address "blah@blah.com"})
+
+(def the-stored-user (into the-user {:_id USER_ID}))
+
+(facts "about creating user records"
+       (fact "creating a user record requires credentials"
              (api/create-user the-user) => the-stored-user
              (provided (api/post-request (contains "/api/v1/users")
                                          request-with-bearer-token)
@@ -37,6 +37,15 @@
              (api/create-user the-user) => api/api-failure
              (provided (api/post-request anything anything)
                        => {:status 500})))
+
+(facts "about finding user records"
+       (fact "finding a user record requires credentials"
+             (api/find-user-by-twitter-id (:twitter-id the-user)) => the-stored-user 
+             (provided (api/get-request (contains (str "/api/v1/users?twitter=" (:twitter-id the-user)))
+                                        request-with-bearer-token)
+                       => {:status 200
+                           :headers {"Content-Type" "application/json"}
+                           :body (json/generate-string the-stored-user)})))
 
 ;OBJECTIVES
 (def OBJECTIVE_ID 234)
