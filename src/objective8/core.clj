@@ -42,7 +42,7 @@
                :post-user-profile (m/wrap-bearer-token api-handlers/post-user-profile bt/stub-token-provider) 
                :find-user-by-query (m/wrap-bearer-token api-handlers/find-user-by-query bt/stub-token-provider) 
                :get-user (m/wrap-bearer-token api-handlers/get-user bt/stub-token-provider)
-               :post-objective (m/wrap-bearer-token api-handlers/post-objective bt/stub-token-provider)
+               :post-objective (m/wrap-bearer-token api-handlers/post-objective bt/token-provider)
                :get-objective api-handlers/get-objective 
                :get-comments-for-objective api-handlers/retrieve-comments
                :post-comment (m/wrap-bearer-token api-handlers/post-comment bt/stub-token-provider) 
