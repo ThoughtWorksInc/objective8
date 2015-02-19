@@ -109,7 +109,7 @@
   "templates/answers/answer-create.html" [[:#clj-answer-create]] [translation objective-id question-id]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
   [:form] (html/set-attr :action (str "/objectives/" objective-id "/questions/" question-id "/answers"))
-  [:#clj-answer-create html/any-node] (html/replace-vars translation)) 
+  [:#clj-answer-create html/any-node] (html/replace-vars translation))
 
 (html/defsnippet an-answer
   "templates/answers/answer.html" [:li] [answer]
