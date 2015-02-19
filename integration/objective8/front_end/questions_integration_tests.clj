@@ -13,7 +13,10 @@
 (def USER_ID 1)
 (def OBJECTIVE_ID 234)
 (def QUESTION_ID 42)
+(def INVALID_ID "not-an-int-id")
 (def question-view-get-request (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID)))
+(defn invalid-question-get-request [objective-id question-id]
+      (mock/request :get (str utils/host-url "/objectives/" objective-id "/questions/" question-id)))
 
 (def default-app (core/app core/app-config))
 
@@ -54,4 +57,14 @@
         (fact "A user should receive a 404 if a question doesn't exist"
             (against-background
               (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/not-found})
-              (default-app question-view-get-request) => (contains {:status 404})))
+              (default-app question-view-get-request) => (contains {:status 404}))
+
+       (tabular
+         (fact "A user should see an error page when they attempt to access a question with non-integer ID's"
+             (default-app (invalid-question-get-request ?objective_id ?question_id)) => (contains {:status 404}))
+         ?objective_id  ?question_id
+         INVALID_ID     QUESTION_ID
+         OBJECTIVE_ID   INVALID_ID
+         INVALID_ID     INVALID_ID))
+
+
