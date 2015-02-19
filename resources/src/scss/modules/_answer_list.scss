@@ -1,0 +1,23 @@
+.answer-list {
+  list-style: none;
+  margin: 0em 0 2em;
+  padding: 0;
+  li {
+    border-bottom: 1px solid $grey-3;
+    padding: 1em 0;
+  }
+  p:last-of-type {
+    margin-bottom: 0;
+  }
+}
+.answer-author {
+  margin: 0;
+  font-weight: bold;
+  text-transform: capitalize; //TODO remove when we have stored display names
+  font-size: 0.85em;
+}
+.answer-date {
+  display: block;
+  font-size: 0.8em;
+  color: $grey-1;
+}
