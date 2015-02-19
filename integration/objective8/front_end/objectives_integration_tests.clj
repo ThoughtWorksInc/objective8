@@ -17,6 +17,7 @@
 (def objectives-create-request (mock/request :get "/objectives/create"))
 (def objectives-post-request (mock/request :post "/objectives"))
 (def objective-view-get-request (mock/request :get (str "/objectives/" OBJECTIVE_ID)))
+(def invalid-objective-view-get-request (mock/request :get (str "/objectives/" "not-an-objective-id")))
 
 (def default-app (core/app core/app-config))
 
@@ -80,4 +81,8 @@
                    :comment "Comment 1"}])
              (let [user-session (helpers/test-context)
                    peridot-response (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))]
-               peridot-response) => (contains {:response (contains {:body (contains "Comment 1")})})))
+               peridot-response) => (contains {:response (contains {:body (contains "Comment 1")})}))
+
+
+       (fact "A user should see an error page when they attempt to access an objective with a non-integer ID"
+             (default-app invalid-objective-view-get-request) => (contains {:status 404})))

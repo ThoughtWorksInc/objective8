@@ -95,7 +95,7 @@
                          message :flash
                          :keys [uri t' locale]
                          :as request}]
-  (let [objective-id (Integer/parseInt id)
+  (try (let [objective-id (Integer/parseInt id)
         objective (http-api/get-objective objective-id)]
     (if (= (objective :status) 404)
         (error-404-response t' locale)
@@ -115,7 +115,10 @@
                                                     :objective formatted-objective
                                                     :comments comments
                                                     :signed-in (signed-in?)
-                                                    :uri uri})))))
+                                                    :uri uri}))))
+       (catch NumberFormatException e
+         (log/info "Invalid route: " e)
+         (error-404-response t' locale))))
 
 ;; COMMENTS
 
