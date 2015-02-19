@@ -55,10 +55,9 @@
   (midje/contains {:response (midje/contains {:flash (midje/contains expected-flash-message)})}))
 
 (defn peridot-response-json-body->map [peridot-response]
-  (-> (get-in peridot-response [:response :body])
-      (json/parse-string true)))
+  (json/parse-string (get-in peridot-response [:response :body]) true))
 
 (defn check-json-body [expected-json-as-map]
-  (fn [peridot-response]
-    (let [parsed-body (peridot-response-json-body->map peridot-response)]
-      (= parsed-body expected-json-as-map))))
+   (midje/chatty-checker [peridot-response]
+      (= (peridot-response-json-body->map peridot-response)
+         expected-json-as-map)))
