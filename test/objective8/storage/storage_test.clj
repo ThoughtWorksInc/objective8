@@ -21,6 +21,15 @@
           (m/get-mapping some-query) => :fake-entity
           (s/select :fake-entity {:foo "bar" :zap "pow"} {}) => :expected-object)))
 
+(fact "attempts to update a bearer token for a given bearer name"
+      (let [some-update {:entity :bearer-token :bearer-name "name" :bearer-token "new-token"}] 
+      (s/pg-update-bearer-token! some-update) => anything
+      (provided
+        (m/get-mapping some-update) => :fake-entity
+        (s/update-bearer-token :fake-entity
+                              {:token_details {:bearer-name "name" :bearer-token "new-token"}} 
+                              {:bearer_name "name"}) => anything)))
+
 (fact "converts hyphens to underscores"
       (let [some-query {:entity :ent :foo-bar "wibble"}]
         (s/pg-retrieve some-query) => {:query some-query :options {} :result :expected-object}
