@@ -5,6 +5,12 @@
   (let [{result :result} (storage/pg-retrieve {:entity :bearer-token :bearer-name name})]
     (dissoc (first result) :entity)))
 
+(defn update-token! [token-details]
+  (storage/pg-update-bearer-token! (assoc token-details :entity :bearer-token)))
+
+(defn store-token! [token-details]
+  (storage/pg-store! (assoc token-details :entity :bearer-token)))
+
 (defn token-provider [bearer-name]
   (:bearer-token (get-token bearer-name)))
 

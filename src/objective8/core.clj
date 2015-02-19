@@ -116,6 +116,19 @@
                     :login-uri "/sign-in"}
    :translation translation-config})
 
+(defn get-bearer-token-details []
+  (let [bearer-name (config/get-var "API_BEARER_NAME")
+        bearer-token (config/get-var "API_BEARER_TOKEN")]
+    (when (and bearer-name bearer-token)
+      {:bearer-name bearer-name
+       :bearer-token bearer-token})))
+
+(defn initialise-api []
+  (if-let [bearer-token-details (get-bearer-token-details)]
+    (if (bt/get-token (bearer-token-details :bearer-name)) 
+      (bt/update-token! bearer-token-details)
+      (bt/store-token! bearer-token-details))))
+
 (defn start-server []
   (let [port (Integer/parseInt (config/get-var "APP_PORT" "8080"))]
     (reset! postgres-connection-pool (db/connect! db/postgres-spec))

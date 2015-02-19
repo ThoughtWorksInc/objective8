@@ -46,3 +46,10 @@
         :options options
         :result result})
      (throw (Exception. "Query map requires an :entity key")))))
+
+(defn pg-update-bearer-token! [{:keys [bearer-name] :as m}]
+  "Wrapper around Korma's update call"
+  (when-let [bearer-token (mappings/get-mapping m)]
+    (korma/update bearer-token
+                  (korma/set-fields {:token_details m}) 
+                                    (korma/where {:bearer_name bearer-name}))))
