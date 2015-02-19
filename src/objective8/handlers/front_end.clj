@@ -167,8 +167,8 @@
            (= status ::http-api/success)
            (rendered-response question-view-page {:translation     t'
                                                   :locale          (subs (str locale) 1)
-                                                  :doc-title       (str (:title question) " | Objective[8]")
-                                                  :doc-description (:title question)
+                                                  :doc-title       (str (:question question) " | Objective[8]")
+                                                  :doc-description (:question question)
                                                   :message         message
                                                   :question        question
                                                   :answers         answers
