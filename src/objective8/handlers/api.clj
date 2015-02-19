@@ -75,6 +75,9 @@
       (log/info "Invalid route: " e)
       (invalid-response  "Objective id must be an integer"))))
 
+(defn get-objectives [_]
+  (response/content-type (response/response (objectives/retrieve-objectives)) "application/json"))
+
 ;; COMMENT
 (defn post-comment [{:keys [params] :as request}]
   (try

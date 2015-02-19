@@ -11,3 +11,9 @@
       (provided
         (storage/pg-store! {:entity :objective :objective "something"}) =throws=> (org.postgresql.util.PSQLException.
                                                                                     (org.postgresql.util.ServerErrorMessage. "" 0))))
+
+(fact "Retrives the first 50 objectives from the database"
+      (objectives/retrieve-objectives) => [{:some :content}]
+      (provided
+        (storage/pg-retrieve {:entity :objective} {:limit 50}) => {:result [{:entity :objective :some :content}]}))
+

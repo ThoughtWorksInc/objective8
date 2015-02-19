@@ -7,3 +7,7 @@
 (defn retrieve-objective [objective-id]
   (let [{result :result} (storage/pg-retrieve {:entity :objective :_id objective-id})]
     (dissoc (first result) :entity)))
+
+(defn retrieve-objectives []
+  (map #(dissoc % :entity)
+       (:result (storage/pg-retrieve {:entity :objective} {:limit 50}))))

@@ -44,6 +44,7 @@
                :get-user (m/wrap-bearer-token api-handlers/get-user bt/stub-token-provider)
                :post-objective (m/wrap-bearer-token api-handlers/post-objective bt/stub-token-provider)
                :get-objective api-handlers/get-objective 
+               :get-objectives api-handlers/get-objectives 
                :get-comments-for-objective api-handlers/retrieve-comments
                :post-comment (m/wrap-bearer-token api-handlers/post-comment bt/stub-token-provider) 
                :post-question (m/wrap-bearer-token api-handlers/post-question bt/stub-token-provider) 
@@ -77,7 +78,8 @@
                                        :get :find-user-by-query
                                        ["/" :id] :get-user}
 
-                             "/objectives" {:post :post-objective
+                             "/objectives" {:get :get-objectives
+                                            :post :post-objective
                                             ["/" :id] {:get :get-objective
                                                        "/comments" :get-comments-for-objective
                                                        "/questions" {:post :post-question
