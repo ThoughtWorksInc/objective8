@@ -20,8 +20,12 @@
 (defn post-request [url request]
   @(http/post url request))
 
-(defn get-request [url options]
-  @(http/get url options))
+(defn get-request 
+  ([url]
+   (get-request url {}))
+
+  ([url options] 
+   @(http/get url options)))
 
 (defn json-post [url object]
   (post-request url (json-request object)))
@@ -66,7 +70,10 @@
       (= status 404) (response/not-found "")
       :else          api-failure)))
 
-
+(defn get-all-objectives []
+  (let [{:keys [body status]} (get-request (str utils/host-url "/api/v1/objectives"))]
+    (cond (= status 200) {:status ::success :result (json/parse-string body true)}
+          :else          {:status ::error})))
 ;; COMMENTS
 
 (defn create-comment [comment]

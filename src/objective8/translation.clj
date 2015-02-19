@@ -60,7 +60,8 @@
                                       :doc-description ""
                                       :page-title "Objectives"
                                       :create-button-title "Create an objective"
-                                      :create-button-text "Create an objective"}
+                                      :create-button-text "Create an objective"
+                                      :subtitle "Recently created objectives"}
                      :objective-create {:doc-title "Create an Objective | Objective[8]"
                                         :doc-description "Create an Objective ..."
                                         :page-title "Create an objective"
@@ -173,7 +174,8 @@
                                       :doc-description ""
                                       :page-title "Spanish(Objectives)"
                                       :create-button-title "Spanish(Create an objective)"
-                                      :create-button-text "Spanish(Create an objective)"}
+                                      :create-button-text "Spanish(Create an objective)"
+                                      :subtitle "Spanish(Recently created objectives)"}
                      :objective-create {:doc-title "Crea un objetivo | Objective[8]"
                                         :doc-description "Crea un objetivo"
                                         :page-title "Crea un objetivo"

@@ -162,8 +162,13 @@
   "templates/goal.html" [:li] [goal]
   [:li] (html/content goal))
 
+(html/defsnippet objective-list-entry
+  "templates/objectives-list.html" [:.clj-objectives-list-element] [objective]
+  [:h3] (html/content (:title objective)))
+
 (html/defsnippet objective-list-page
-  "templates/objectives-list.html" [[:#clj-objectives-list]] [{:keys [translation]}]
+  "templates/objectives-list.html" [[:#clj-objectives-list]] [{:keys [translation objectives]}]
+  [:ol] (html/content (map objective-list-entry objectives))
   [:#clj-objectives-list html/any-node] (html/replace-vars translation))
 
 (html/defsnippet objective-create-page

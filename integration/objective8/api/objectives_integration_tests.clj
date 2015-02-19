@@ -35,7 +35,9 @@
 
 (facts "objectives" :integration
        (against-background
-         [(before :contents (helpers/db-connection))
+         [(before :contents (do 
+                              (helpers/db-connection)
+                              (helpers/truncate-tables)))
           (after :facts (helpers/truncate-tables))]
 
          (facts "GET /api/v1/objectives returns a list of objectives"

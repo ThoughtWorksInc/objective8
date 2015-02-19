@@ -69,11 +69,16 @@
 
 ;; OBJECTIVES
 (defn objective-list [{:keys [t' locale]}]
-  (rendered-response objective-list-page {:translation t'
-                                          :locale (subs (str locale) 1)
-                                          :doc-title (t' :objective-list/doc-title)
-                                          :doc-description (t' :objective-list/doc-description)
-                                          :signed-in (signed-in?)}))
+  (let [{status :status objectives :result} (http-api/get-all-objectives)]
+    (cond 
+      (= status ::http-api/success) (rendered-response objective-list-page 
+                                                       {:objectives objectives
+                                                        :translation t'
+                                                        :locale (subs (str locale) 1)
+                                                        :doc-title (t' :objective-list/doc-title)
+                                                        :doc-description (t' :objective-list/doc-description)
+                                                        :signed-in (signed-in?)})
+      (= status ::http-api/error)   {:status 502})))
 
 (defn create-objective-form [{:keys [t' locale]}]
   (rendered-response objective-create-page {:translation t'
