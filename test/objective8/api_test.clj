@@ -165,6 +165,13 @@
                (api/get-question OBJECTIVE_ID QUESTION_ID))
              => {:status ::api/not-found}))
 
+(facts "about retrieving questions" 
+       (fact "returns a list of questions for a given objective"
+             (with-fake-http [(str host-url "/api/v1/objectives/"
+                                   OBJECTIVE_ID "/questions") {:status 200
+                                                               :headers {"Content-Type" "application/json"}
+                                                               :body (json/generate-string [the-stored-question])}]
+               (api/retrieve-questions OBJECTIVE_ID)) => [the-stored-question]))
 ;; ANSWERS
 
 (def the-answer {:answer "The answer"

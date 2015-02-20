@@ -114,6 +114,13 @@
       (= status 404) {:status ::not-found}
       :else          {:status ::error})))
 
+(defn retrieve-questions [objective-id]
+  (let [{:keys [body status]} @(http/get (str utils/host-url "/api/v1/objectives/" objective-id "/questions"))]
+  (cond
+    (= status 200) (-> body
+                       (json/parse-string true))
+    :else           api-failure)))
+
 ;; ANSWERS
 
 (defn create-answer [answer]

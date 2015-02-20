@@ -146,7 +146,8 @@
 (defn question-list [{{id :id} :route-params
                           :keys [t' locale]}]
   (let [objective-id (Integer/parseInt id)
-        objective (http-api/get-objective objective-id)]
+        objective (http-api/get-objective objective-id)
+        questions (http-api/retrieve-questions objective-id)]
     (if (= (:status objective) 404)
       (error-404-response t' locale)
       (rendered-response question-list-page {:translation t'
