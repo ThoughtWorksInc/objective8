@@ -33,7 +33,7 @@ module.exports = function(grunt) {
       dist: {
         options: {
           sourceMap: false,
-          outputStyle: 'compressed'
+          outputStyle: 'expanded'
         },
         files: {
           'resources/public/basic.css': 'resources/src/scss/basic.scss',
