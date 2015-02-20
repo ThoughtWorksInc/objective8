@@ -1,10 +1,14 @@
 (ns objective8.http-api
   (:require [org.httpkit.client :as http]
             [ring.util.response :as response]
+            [cheshire.core :as json]
             [objective8.utils :as utils]
-            [cheshire.core :as json]))
+            [objective8.config :as config]))
 
 (def api-failure nil)
+
+(def consumer {:consumer-name (config/get-var "API_BEARER_NAME")
+               :consumer-token (config/get-var "API_BEARER_TOKEN")})
 
 (defn get-api-credentials []
   {"api-bearer-name" "bearer"

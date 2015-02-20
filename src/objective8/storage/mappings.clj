@@ -67,11 +67,12 @@
     (throw (Exception. "Could not transform map to answer"))))
 
 (defn map->bearer-token
- "Converts a clojure map into a json-typed bearer-token for the database" [{:keys [bearer-name] :as bearer-token}]
+ "Converts a clojure map into a json-typed bearer-token for the database"
+ [{:keys [bearer-name] :as bearer-token}]
   (if bearer-name
     {:bearer_name bearer-name
      :token_details (map->json-type bearer-token)}
-    (throw (Exception. "Could not transform map to bearer-token"))))
+      (throw (Exception. "Could not transform map to bearer-token"))))
 
 (defn unmap [data-key]
   (fn [m] (assoc (json-type->map (data-key m)) 
@@ -112,8 +113,7 @@
   (korma/pk :_id)
   (korma/table :objective8.bearer_tokens)
   (korma/prepare map->bearer-token)
-  (korma/transform (unmap :token_details))
-  )
+  (korma/transform (unmap :token_details)))
 
 (def entities {:objective objective
                :user      user

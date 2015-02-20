@@ -27,7 +27,7 @@
       (provided
         (m/get-mapping some-update) => :fake-entity
         (s/update-bearer-token :fake-entity
-                              {:token_details {:bearer-name "name" :bearer-token "new-token"}} 
+                              some-update 
                               {:bearer_name "name"}) => anything)))
 
 (fact "converts hyphens to underscores"

@@ -39,18 +39,18 @@
 
                
                ; API Handlers
-               :post-user-profile (m/wrap-bearer-token api-handlers/post-user-profile bt/stub-token-provider) 
-               :find-user-by-query (m/wrap-bearer-token api-handlers/find-user-by-query bt/stub-token-provider) 
-               :get-user (m/wrap-bearer-token api-handlers/get-user bt/stub-token-provider)
-               :post-objective (m/wrap-bearer-token api-handlers/post-objective bt/stub-token-provider)
+               :post-user-profile (m/wrap-bearer-token api-handlers/post-user-profile bt/token-provider) 
+               :find-user-by-query (m/wrap-bearer-token api-handlers/find-user-by-query bt/token-provider) 
+               :get-user (m/wrap-bearer-token api-handlers/get-user bt/token-provider)
+               :post-objective (m/wrap-bearer-token api-handlers/post-objective bt/token-provider)
                :get-objective api-handlers/get-objective 
                :get-objectives api-handlers/get-objectives 
                :get-comments-for-objective api-handlers/retrieve-comments
-               :post-comment (m/wrap-bearer-token api-handlers/post-comment bt/stub-token-provider) 
-               :post-question (m/wrap-bearer-token api-handlers/post-question bt/stub-token-provider) 
+               :post-comment (m/wrap-bearer-token api-handlers/post-comment bt/token-provider) 
+               :post-question (m/wrap-bearer-token api-handlers/post-question bt/token-provider) 
                :get-question api-handlers/get-question
                :get-answers-for-question api-handlers/retrieve-answers
-               :post-answer (m/wrap-bearer-token api-handlers/post-answer bt/stub-token-provider)})
+               :post-answer (m/wrap-bearer-token api-handlers/post-answer bt/token-provider)})
 
 (def routes
   ["/" {""                  :index
@@ -128,12 +128,13 @@
 (defn initialise-api []
   (if-let [bearer-token-details (get-bearer-token-details)]
     (if (bt/get-token (bearer-token-details :bearer-name)) 
-      (bt/update-token! bearer-token-details)
+      (bt/update-token! bearer-token-details)  
       (bt/store-token! bearer-token-details))))
 
 (defn start-server []
   (let [port (Integer/parseInt (config/get-var "APP_PORT" "8080"))]
     (reset! postgres-connection-pool (db/connect! db/postgres-spec))
+    (initialise-api)
     (log/info (str "Starting objective8 on port " port))
     (reset! server (run-server (app app-config) {:port port}))))
 

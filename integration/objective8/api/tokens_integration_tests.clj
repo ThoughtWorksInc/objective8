@@ -10,30 +10,32 @@
 (defn db-connection [] (db/connect! db/postgres-spec))
 
 (def app (helpers/test-context))
+(def the-token "token")
+(def some-wrong-token "wrong-token")
+(def the-bearer "bearer")
+(def bearer-token-map {:entity :bearer-token :bearer-name the-bearer :bearer-token the-token})
 
 (facts "Bearer token tests" :integration
-       (against-background [(before :contents (db-connection)) (after :facts (helpers/truncate-tables))]
+       (against-background [(before :contents (do (db-connection) 
+                                                  (helpers/truncate-tables))) 
+                            (after :facts (helpers/truncate-tables))]
+
                            (fact "can't access protected api resource without valid bearer-token"
-                                 ; Temporarily using stub-token-provider so stored tokens not required.  Will be fixed during #47.
-                                 (let [the-token "some-secure-token"
-                                       the-bearer "objective8.dev"]
-                                   (storage/pg-store! {:entity :bearer-token :bearer-name the-bearer :bearer-token the-token})
-                                   (p/request app "/api/v1/users"
-                                              :request-method :post
-                                              :content-type "application/json"
-                                              :headers {"api-bearer-token" "some-wrong-token"
-                                                        "api-bearer-name" "objective8.dev"}
-                                              :body (json/generate-string {:twitter-id "Twitter_ID"}))
-                                   => (contains {:response (contains  {:status 401})})))
+                                 (storage/pg-store! bearer-token-map) 
+                                 (p/request app "/api/v1/users"
+                                            :request-method :post
+                                            :content-type "application/json"
+                                            :headers {"api-bearer-token" some-wrong-token
+                                                      "api-bearer-name" the-bearer}
+                                            :body (json/generate-string {:twitter-id "Twitter_ID"}))
+                                 => (contains {:response (contains  {:status 401})}))
+
                            (fact "can access protected api resource with valid bearer-token"
-                                 ; Temporarily using stub-token-provider so stored tokens not required.  Will be fixed during #47.
-                                 (let [the-token "some-secure-token"
-                                       the-bearer "objective8.dev"]
-                                   (storage/pg-store! {:entity :bearer-token :bearer-name the-bearer :bearer-token the-token})
-                                   (p/request app "/api/v1/users"
-                                              :request-method :post
-                                              :content-type "application/json"
-                                              :headers {"api-bearer-token" "token"
-                                                        "api-bearer-name" "bearer"}
-                                              :body (json/generate-string {:twitter-id "Twitter_ID"}))
-                                   => (contains {:response (contains  {:status 201})})))))
+                                 (storage/pg-store! bearer-token-map) 
+                                 (p/request app "/api/v1/users"
+                                            :request-method :post
+                                            :content-type "application/json"
+                                            :headers {"api-bearer-token" the-token
+                                                      "api-bearer-name" the-bearer}
+                                            :body (json/generate-string {:twitter-id "Twitter_ID"}))
+                                 => (contains {:response (contains  {:status 201})}))))

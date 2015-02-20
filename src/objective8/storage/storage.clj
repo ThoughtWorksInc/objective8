@@ -56,7 +56,6 @@
   "Wrapper around Korma's update call"
   [{:keys [entity] :as m}]
   (if-let [bearer-token-entity (mappings/get-mapping m)] 
-    (let [new-fields {:token_details (dissoc m :entity)}
-          where {:bearer_name (:bearer-name m)}]
-      (update-bearer-token bearer-token-entity new-fields where)) 
+    (let [where {:bearer_name (:bearer-name m)}]
+      (update-bearer-token bearer-token-entity m where)) 
     (throw (Exception. (str "Could not find database mapping for " entity)))))
