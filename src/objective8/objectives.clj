@@ -10,4 +10,7 @@
 
 (defn retrieve-objectives []
   (map #(dissoc % :entity)
-       (:result (storage/pg-retrieve {:entity :objective} {:limit 50}))))
+       (:result (storage/pg-retrieve {:entity :objective}
+                                     {:limit 50
+                                      :sort {:field :_created_at
+                                             :ordering :DESC}}))))

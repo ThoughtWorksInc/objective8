@@ -15,5 +15,7 @@
 (fact "Retrives the first 50 objectives from the database"
       (objectives/retrieve-objectives) => [{:some :content}]
       (provided
-        (storage/pg-retrieve {:entity :objective} {:limit 50}) => {:result [{:entity :objective :some :content}]}))
-
+        (storage/pg-retrieve {:entity :objective}
+                             {:limit 50
+                              :sort {:field :_created_at
+                                     :ordering :DESC}}) => {:result [{:entity :objective :some :content}]}))

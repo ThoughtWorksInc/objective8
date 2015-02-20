@@ -24,7 +24,6 @@
                                        :title "title"}]
                         (storage/pg-store! objective) => (throws org.postgresql.util.PSQLException)))
 
-
                 ;;USERS
                 (fact "a user entity can be stored in the database"
                       (let [user {:entity :user :twitter-id "the-twitter-id" :foo "bar"}
@@ -66,24 +65,6 @@
                         (first (:result retrieve-result)) => (contains {:created-by-id user-id
                                                                         :objective-id objective-id})))
 
-                (fact "can limit the number of results when retrieving"
-                      (let [users [{:entity :user :twitter-id "the-twitter-id1"}
-                                   {:entity :user :twitter-id "the-twitter-id2"}
-                                   {:entity :user :twitter-id "the-twitter-id3"}]
-                            store-result (doall (map storage/pg-store! users))
-                            retrieve-result (storage/pg-retrieve {:entity :user} {:limit 2})]
-                        (count (:result retrieve-result)) => 2))
-
-                (fact "results are retrieved in chronological order"
-                      (let [users [{:entity :user :twitter-id "the-twitter-id1"}
-                                   {:entity :user :twitter-id "the-twitter-id2"}
-                                   {:entity :user :twitter-id "the-twitter-id3"}]
-                            store-result (doall (map storage/pg-store! users))
-                            retrieved-users (:result (storage/pg-retrieve {:entity :user}))
-                            sorted-twitter-ids (vec (map :twitter-id retrieved-users))]
-                        sorted-twitter-ids)
-                      => ["the-twitter-id1" "the-twitter-id2" "the-twitter-id3"])
-
                 ;;QUESTIONS
                 (fact "a question entity can be stored in the database"
                       (let [stored-user (storage/pg-store! {:entity :user
@@ -123,23 +104,53 @@
                             store-result (storage/pg-store! answer)
                             retrieve-result (storage/pg-retrieve {:entity :answer :_id (:_id store-result)})]
                         (first (:result retrieve-result)) => (contains {:created-by-id user-id
-                                                                        :question-id question-id}))) 
-;;BEARER-TOKENS
-(facts "about bearer-tokens"
-       (fact "a bearer-token entity can be stored in the database"
-             (let [bearer-token {:entity :bearer-token
-                                 :bearer-name "bearer name"
-                                 :bearer-token "123"
-                                 :authoriser true}] 
-               (storage/pg-store! bearer-token) 
-               (let [retrieve-result (storage/pg-retrieve {:entity :bearer-token :bearer-name "bearer name"})]
-                 (first (:result retrieve-result)) => (contains {:bearer-name "bearer name"}))))
+                                                                        :question-id question-id})))
+                ;;BEARER-TOKENS
+                (facts "about bearer-tokens"
+                       (fact "a bearer-token entity can be stored in the database"
+                             (let [bearer-token {:entity :bearer-token
+                                                 :bearer-name "bearer name"
+                                                 :bearer-token "123"
+                                                 :authoriser true}]
+                               (storage/pg-store! bearer-token)
+                               (let [retrieve-result (storage/pg-retrieve {:entity :bearer-token :bearer-name "bearer name"})]
+                                 (first (:result retrieve-result)) => (contains {:bearer-name "bearer name"}))))
 
-       (fact "a bearer-token entity can be update in the database"
-             (let [bearer-token {:entity :bearer-token
-                                 :bearer-name "bearer name"
-                                 :bearer-token "123"}]
-               (storage/pg-store! bearer-token)
-               (storage/pg-update-bearer-token! (assoc bearer-token :bearer-token "new-token"))
-               (let [retrieve-result (storage/pg-retrieve {:entity :bearer-token :bearer-name "bearer name"})]
-                 (first (:result retrieve-result)) => (contains {:bearer-token "new-token"}))))))))
+                       (fact "a bearer-token entity can be update in the database"
+                             (let [bearer-token {:entity :bearer-token
+                                                 :bearer-name "bearer name"
+                                                 :bearer-token "123"}]
+                               (storage/pg-store! bearer-token)
+                               (storage/pg-update-bearer-token! (assoc bearer-token :bearer-token "new-token"))
+                               (let [retrieve-result (storage/pg-retrieve {:entity :bearer-token :bearer-name "bearer name"})]
+                                 (first (:result retrieve-result)) => (contains {:bearer-token "new-token"}))))))
+
+         (facts "about retrieving"
+                (fact "can limit the number of results when retrieving"
+                      (let [users [{:entity :user :twitter-id "the-twitter-id1"}
+                                   {:entity :user :twitter-id "the-twitter-id2"}
+                                   {:entity :user :twitter-id "the-twitter-id3"}]
+                            store-result (doall (map storage/pg-store! users))
+                            retrieve-result (storage/pg-retrieve {:entity :user} {:limit 2})]
+                        (count (:result retrieve-result)) => 2))
+
+                (fact "results are retrieved in chronological order by default"
+                      (let [users [{:entity :user :twitter-id "the-twitter-id1"}
+                                   {:entity :user :twitter-id "the-twitter-id2"}
+                                   {:entity :user :twitter-id "the-twitter-id3"}]
+                            store-result (doall (map storage/pg-store! users))
+                            retrieved-users (:result (storage/pg-retrieve {:entity :user}))
+                            sorted-twitter-ids (vec (map :twitter-id retrieved-users))]
+                        sorted-twitter-ids)
+                      => ["the-twitter-id1" "the-twitter-id2" "the-twitter-id3"])
+
+                (fact "results can be retrieved in reverse order"
+                      (let [users [{:entity :user :twitter-id "the-twitter-id1"}
+                                   {:entity :user :twitter-id "the-twitter-id2"}
+                                   {:entity :user :twitter-id "the-twitter-id3"}]
+                            store-result (doall (map storage/pg-store! users))
+                            retrieved-users (:result (storage/pg-retrieve {:entity :user} {:sort {:field :_created_at
+                                                                                                  :ordering :DESC}}))
+                            sorted-twitter-ids (vec (map :twitter-id retrieved-users))]
+                        sorted-twitter-ids)
+                      => ["the-twitter-id3" "the-twitter-id2" "the-twitter-id1"]))))

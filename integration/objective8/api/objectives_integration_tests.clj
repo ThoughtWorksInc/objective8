@@ -40,7 +40,7 @@
                               (helpers/truncate-tables)))
           (after :facts (helpers/truncate-tables))]
 
-         (facts "GET /api/v1/objectives returns a list of objectives"
+         (facts "GET /api/v1/objectives returns a list of objectives in reverse chronological order"
                 (fact "objectives are returned as a list"
                       (let [stored-user-id (gen-user-with-id)
                             objective-1 (objectives/store-objective! (assoc the-objective :created-by-id stored-user-id))
@@ -48,9 +48,9 @@
                             objective-3 (objectives/store-objective! (assoc the-objective :created-by-id stored-user-id))
                             parsed-response (helpers/peridot-response-json-body->map (p/request app "/api/v1/objectives"))]
                         parsed-response => list?
-                        parsed-response => [(dissoc objective-1 :entity)
+                        parsed-response => [(dissoc objective-3 :entity)
                                             (dissoc objective-2 :entity)
-                                            (dissoc objective-3 :entity)]))
+                                            (dissoc objective-1 :entity)]))
 
                 (fact "returns an empty list if there are no objectives"
                       (do
