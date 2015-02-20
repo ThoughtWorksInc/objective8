@@ -25,7 +25,9 @@ module.exports = function(grunt) {
           outputStyle: 'expanded'
         },
         files: {
-          'resources/public/styles.css': 'resources/src/scss/*.scss'
+          'resources/public/basic.css': 'resources/src/scss/basic.scss',
+          'resources/public/ie8.css': 'resources/src/scss/ie8.scss',
+          'resources/public/modern.css': 'resources/src/scss/modern.scss'
         }
       },
       dist: {
@@ -34,7 +36,7 @@ module.exports = function(grunt) {
           outputStyle: 'compressed'
         },
         files: {
-          'resources/public/styles.css': 'resources/src/scss/*.scss'
+          'resources/public/*.css': 'resources/src/scss/*.scss',
         }
       }
     },
@@ -48,7 +50,7 @@ module.exports = function(grunt) {
           map: true,
         },
         no_dest: {
-          src: 'resources/public/styles.css'
+          src: 'resources/public/modern.css'
         }
       },
       dist: {
@@ -56,7 +58,7 @@ module.exports = function(grunt) {
           map: false,
         },
         no_dest: {
-          src: 'resources/public/styles.css'
+          src: 'resources/public/modern.css'
         }
       }
     },
@@ -85,6 +87,10 @@ module.exports = function(grunt) {
     },
     //Uglify
     uglify: {
+      modernizr: {
+        src: 'resources/src/js/vendor/modernizr.js',
+        dest: 'resources/public/modernizr.min.js'
+      },
       build: {
         src: 'resources/public/scripts.js',
         dest: 'resources/public/scripts.min.js'

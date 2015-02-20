@@ -1,0 +1,20 @@
+@import 'root/normalize';
+@import 'root/variables';
+@import 'root/colours';
+@import 'root/mixins';
+
+@mixin mq($point) {
+  @content;
+}
+
+@import "manifest";
+
+body {
+  min-width: 960px;
+}
+.masthead,
+.flash-message-success,
+.project-status {
+  position: absolute;
+  min-width: 960px;
+}

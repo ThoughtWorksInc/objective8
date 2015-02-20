@@ -1,0 +1,48 @@
+/* This file manifest keeps partials in the correct order */
+@import 'root/root';
+@import 'root/typography';
+@import 'root/links';
+@import 'root/forms';
+@import 'root/lists';
+@import 'root/buttons';
+@import 'root/helpers';
+
+
+
+
+//FONT AWESOME
+/*!
+ *  Font Awesome 4.3.0 by @davegandy - http://fontawesome.io - @fontawesome
+ *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
+ */
+@import 'font_awesome/variables';
+@import 'font_awesome/mixins';
+@import 'font_awesome/path';
+@import 'font_awesome/core';
+@import 'font_awesome/larger';
+@import 'font_awesome/fixed-width';
+@import 'font_awesome/list';
+@import 'font_awesome/bordered-pulled';
+@import 'font_awesome/animated';
+@import 'font_awesome/rotated-flipped';
+@import 'font_awesome/stacked';
+@import 'font_awesome/icons';
+
+@import 'modules/bootstrap_social';
+
+@import 'modules/browsehappy';
+@import 'modules/masthead';
+@import 'modules/navigation';
+@import 'modules/main';
+@import 'modules/article';
+@import 'modules/comments';
+@import 'modules/answer_list';
+@import 'modules/messages';
+@import 'modules/response';
+
+@import 'modules/share_widget';
+@import 'modules/get_involved';
+@import 'modules/status_banner';
+
+@import 'pages/index';
+@import 'pages/sign_in';

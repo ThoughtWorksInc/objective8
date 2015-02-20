@@ -14,7 +14,6 @@
       left: 0;
       height: 100%;
       padding-top: 87px;
-      // border-right: 1px solid $grey-2;
       box-shadow: -3px 10px 8px -1px rgba(0,0,0,0.1) inset;
     }
   }
@@ -56,27 +55,28 @@
         box-shadow: none;
       }
 
-
-      @include mq(1150) {
-        &:before {
-          content:'';
-          position: absolute;
-          background-color: #e5e5e5;
-          width:39px;
-          height:39px;
-          right: -20px;
-          transform: rotate(-45deg);
-          top: 7px;
-        }
-        &:after {
-          content:'';
-          position: absolute;
-          width:39px;
-          height:39px;
-          box-shadow: -2px -2px 5px -2px rgba(0,0,0,0.3) inset;
-          right: -20px;
-          transform: rotate(-45deg);
-          top: 7px;
+      .csstransforms & {
+        @include mq(1150) {
+          &:before {
+            content:'';
+            position: absolute;
+            background-color: #e5e5e5;
+            width:39px;
+            height:39px;
+            right: -20px;
+            transform: rotate(-45deg);
+            top: 7px;
+          }
+          &:after {
+            content:'';
+            position: absolute;
+            width:39px;
+            height:39px;
+            box-shadow: -2px -2px 5px -2px rgba(0,0,0,0.3) inset;
+            right: -20px;
+            transform: rotate(-45deg);
+            top: 7px;
+          }
         }
       }
     }

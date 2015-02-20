@@ -154,8 +154,8 @@ $bs-height-xs:   (floor($font-size-small * 1.2) + $padding-small-vertical + 1);
   &.btn-xs {
     height: ($bs-height-xs + 2);
     width: ($bs-height-xs + 2);
-    padding-left: 0;
-    padding-right: 0;
+    padding-left: 23px;
+    padding-right: auto;
   }
 }
 

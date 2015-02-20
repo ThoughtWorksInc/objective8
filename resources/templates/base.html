@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="no-js" lang="en">
 
 <head>
   <meta charset="utf-8">
@@ -9,7 +9,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" href="/static/favicon.ico">
   <link rel="apple-touch-icon" href="static/apple-touch-icon.png">
-  <link rel="stylesheet" href="/static/styles.css">
+
+  <!--[if (lt IE 8) & (!IEMobile)]>
+    <link rel="stylesheet" type="text/css" href="/static/basic.css" />
+  <![endif]-->
+
+  <!--[if IE 8]>
+    <link rel="stylesheet" type="text/css" href="/static/ie8.css" />
+    <script src="/static/modernizr.min.js"></script>
+  <![endif]-->
+
+  <!--[if (gt IE 8) | (IEMobile)]><!-->
+    <link rel="stylesheet" type="text/css" href="/static/modern.css" />
+    <script src="/static/modernizr.min.js"></script>
+  <!--<![endif]-->
 </head>
 
 <body>
