@@ -1,10 +1,11 @@
 (ns objective8.responses
   (:refer-clojure :exclude [comment])
   (:require [net.cgrand.enlive-html :as html]
+            [net.cgrand.jsoup :as jsoup]
+            [ring.util.anti-forgery :refer [anti-forgery-field]]
             [objective8.translation :refer [translation-config]]
             [objective8.config :as config]
-            [objective8.utils :as utils]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]))
+            [objective8.utils :as utils]))
 
 (def google-analytics-tracking-id (config/get-var "GA_TRACKING_ID"))
 
@@ -162,9 +163,18 @@
   "templates/goal.html" [:li] [goal]
   [:li] (html/content goal))
 
-(html/defsnippet objective-list-entry
-  "templates/objectives-list.html" [:.clj-objectives-list-element] [objective]
-  [:h3] (html/content (:title objective)))
+(defn shorten-content [content]
+  (let [content (or content "")
+        shortened-content (clojure.string/trim (subs content 0 (min (count content) 100)))]
+    (when-not (empty? shortened-content)
+      (str shortened-content "..."))))
+
+(html/defsnippet objective-list-entry {:parser jsoup/parser}
+  "templates/objectives-list.html" [:.clj-objectives-list-entry] [objective]
+  [:.clj-objective-title] (html/content (:title objective))
+  [:.clj-objective-brief-description] (html/content (shorten-content (:description objective)))
+  [:.clj-objective-end-date] (html/content (:end-date objective))
+  [:.clj-objective-link] (html/set-attr :href (str "/objectives/" (:_id objective))))
 
 (html/defsnippet objective-list-page
   "templates/objectives-list.html" [[:#clj-objectives-list]] [{:keys [translation objectives]}]

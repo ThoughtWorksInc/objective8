@@ -1,0 +1,27 @@
+.objective-item {
+  text-decoration: none;
+  display: block;
+  padding: 1em;
+  border: 1px solid $grey-3;
+  color: $black;
+  margin-bottom: 1em;
+  &:hover {
+    background: $offwhite;
+    text-decoration: none;
+    .objective-item-title {
+      text-decoration: none;
+    }
+  }
+  &:visited {
+    color: $black;
+  }
+}
+.objective-item-title {
+  margin: 0 0 0.2em;
+  line-height: 1.2;
+  text-decoration: underline;
+  color: $link-colour;
+}
+.objective-item-date {
+  margin: 0 0 0.2em;
+}

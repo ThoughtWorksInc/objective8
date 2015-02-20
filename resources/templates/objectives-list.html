@@ -2,9 +2,13 @@
   <article>
   <h1>${objective-list/page-title}</h1>
   <h2>${objective-list/subtitle}</h2>
-    <ol>
-        <li class="clj-objectives-list-element">
-        <h3>{{Objective Title Goes Here}}</h3>
+    <ol class="unstyled-list">
+        <li class="clj-objectives-list-entry">
+          <a class="objective-item clj-objective-link" href="{{Link to objective}}">
+            <h3 class="objective-item-title clj-objective-title">{{Objective Title Goes Here}}</h3>
+            <p class="block-date clj-objective-end-date">{{Objective End Date}}</p>
+            <p class="preview-text clj-objective-brief-description">{{First few words of the objective description}}</p>
+          </a>
         </li>
     </ol>
   </article>

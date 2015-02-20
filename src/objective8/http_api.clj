@@ -65,18 +65,22 @@
     (cond (= status 201)   (json/parse-string body true)
           :else            api-failure)))
 
+(defn parse-objective [raw-objective]
+  (update-in raw-objective [:end-date] utils/time-string->date-time))
+
 (defn get-objective [id]
   (let [{:keys [body status]} @(http/get (str utils/host-url "/api/v1/objectives/" id))]
     (cond
       (= status 200) (-> body
                          (json/parse-string true)
-                         (update-in [:end-date] utils/time-string->date-time))
+                         parse-objective)
       (= status 404) (response/not-found "")
       :else          api-failure)))
 
 (defn get-all-objectives []
   (let [{:keys [body status]} (get-request (str utils/host-url "/api/v1/objectives"))]
-    (cond (= status 200) {:status ::success :result (json/parse-string body true)}
+    (cond (= status 200) {:status ::success 
+                          :result (map parse-objective (json/parse-string body true))}
           :else          {:status ::error})))
 ;; COMMENTS
 

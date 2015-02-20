@@ -68,11 +68,21 @@
                                   :signed-in (signed-in?)}))
 
 ;; OBJECTIVES
+(defn format-objective [objective]
+  (let [goals (if (objective :goals)
+                (list (objective :goals))
+                (remove clojure.string/blank? [(:goal-1 objective) (:goal-2 objective) (:goal-3 objective)]))
+        formatted-objective (-> objective
+                                (update-in [:end-date] utils/date-time->pretty-date)
+                                (assoc :goals goals)
+                                (dissoc :goal-1 :goal-2 :goal-3))]
+    formatted-objective))
+
 (defn objective-list [{:keys [t' locale]}]
   (let [{status :status objectives :result} (http-api/get-all-objectives)]
     (cond 
       (= status ::http-api/success) (rendered-response objective-list-page 
-                                                       {:objectives objectives
+                                                       {:objectives (map format-objective objectives)
                                                         :translation t'
                                                         :locale (subs (str locale) 1)
                                                         :doc-title (t' :objective-list/doc-title)
@@ -105,13 +115,7 @@
     (if (= (objective :status) 404)
         (error-404-response t' locale)
         (let [comments (http-api/retrieve-comments objective-id)
-              goals (if (objective :goals)
-                       (list (objective :goals))
-                       (remove clojure.string/blank? [(:goal-1 objective) (:goal-2 objective) (:goal-3 objective)]))
-              formatted-objective (-> objective
-                                    (update-in [:end-date] utils/date-time->pretty-date)
-                                    (assoc :goals goals)
-                                    (dissoc :goal-1 :goal-2 :goal-3))]
+              formatted-objective (format-objective objective)]
             (rendered-response objective-detail-page {:translation t'
                                                     :locale (subs (str locale) 1)
                                                     :doc-title (str (:title objective) " | Objective[8]")
