@@ -61,7 +61,9 @@
                                       :page-title "Objectives"
                                       :create-button-title "Create an objective"
                                       :create-button-text "Create an objective"
-                                      :subtitle "Recently created objectives"}
+                                      :subtitle "Recently created objectives"
+                                      :drafting-begins "Drafting begins on"
+                                      :objectives-intro-text "Objectives are ways of gathering feedback and ideas to use to create policy. This is where the journey toward crowd sourced policy begins."}
                      :objective-create {:doc-title "Create an Objective | Objective[8]"
                                         :doc-description "Create an Objective ..."
                                         :page-title "Create an objective"
@@ -175,7 +177,9 @@
                                       :page-title "Spanish(Objectives)"
                                       :create-button-title "Spanish(Create an objective)"
                                       :create-button-text "Spanish(Create an objective)"
-                                      :subtitle "Spanish(Recently created objectives)"}
+                                      :subtitle "Spanish(Recently created objectives)"
+                                      :drafting-begins "Spanish(Drafting begins on)"
+                                      :objectives-intro-text "Spanish(Objectives are ways of gathering feedback and ideas to use to create policy. This is where the journey toward crowd sourced policy begins.)"}
                      :objective-create {:doc-title "Crea un objetivo | Objective[8]"
                                         :doc-description "Crea un objetivo"
                                         :page-title "Crea un objetivo"
