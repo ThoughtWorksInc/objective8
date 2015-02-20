@@ -50,7 +50,13 @@
                         parsed-response => list?
                         parsed-response => [(dissoc objective-1 :entity)
                                             (dissoc objective-2 :entity)
-                                            (dissoc objective-3 :entity)])))
+                                            (dissoc objective-3 :entity)]))
+
+                (fact "returns an empty list if there are no objectives"
+                      (do
+                        (helpers/truncate-tables)
+                        (helpers/peridot-response-json-body->map (p/request app "/api/v1/objectives")))
+                      => empty?))
 
          (facts "GET /api/v1/objectives/:id returns an objective"
                 (fact "can retrieve an objective using its id"
