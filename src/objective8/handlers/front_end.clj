@@ -162,6 +162,7 @@
       {:status 502})
     {:status 400}))
 
+
 (defn question-detail [{{q-id :q-id id :id} :route-params
                          message :flash
                          :keys [uri t' locale]
@@ -170,15 +171,17 @@
              answers (http-api/retrieve-answers (:objective-id question) (:_id question))]
          (cond
            (= status ::http-api/success)
-           (rendered-response question-view-page {:translation     t'
-                                                  :locale          (subs (str locale) 1)
-                                                  :doc-title       (str (:question question) " | Objective[8]")
-                                                  :doc-description (:question question)
-                                                  :message         message
-                                                  :question        question
-                                                  :answers         answers
-                                                  :signed-in       (signed-in?)
-                                                  :uri             uri})
+           (let [objective (http-api/get-objective (:objective-id question))]
+             (rendered-response question-view-page {:translation     t'
+                                                    :locale          (subs (str locale) 1)
+                                                    :doc-title       (str (:question question) " | Objective[8]")
+                                                    :doc-description (:question question)
+                                                    :message         message
+                                                    :question        question
+                                                    :answers         answers
+                                                    :objective       objective
+                                                    :signed-in       (signed-in?)
+                                                    :uri             uri}))
            (= status ::http-api/not-found) (error-404-response t' locale)
            :else {:status 500}))
        (catch NumberFormatException e
