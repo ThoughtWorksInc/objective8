@@ -125,7 +125,7 @@
   [:#clj-post-answer-container html/any-node] (html/replace-vars translation))
 
 ;QUESTIONS
-(html/defsnippet question-add-page
+(html/defsnippet question-list-page
   "templates/question-add.html" [:#clj-question-add] [{:keys [translation objective-title objective-id]}]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
   [:form] (html/set-attr :action (str "/objectives/" objective-id "/questions"))

@@ -143,13 +143,13 @@
 
 ;; QUESTIONS
 
-(defn add-question-form [{{id :id} :route-params
+(defn question-list [{{id :id} :route-params
                           :keys [t' locale]}]
   (let [objective-id (Integer/parseInt id)
         objective (http-api/get-objective objective-id)]
-    (if (= (objective :status) 404)
+    (if (= (:status objective) 404)
       (error-404-response t' locale)
-      (rendered-response question-add-page {:translation t'
+      (rendered-response question-list-page {:translation t'
                                             :locale (subs (str locale) 1)
                                             :doc-title (t' :question-add/doc-title)
                                             :doc-description (t' :question-add/doc-description)
