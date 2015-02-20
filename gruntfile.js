@@ -36,7 +36,9 @@ module.exports = function(grunt) {
           outputStyle: 'compressed'
         },
         files: {
-          'resources/public/*.css': 'resources/src/scss/*.scss',
+          'resources/public/basic.css': 'resources/src/scss/basic.scss',
+          'resources/public/ie8.css': 'resources/src/scss/ie8.scss',
+          'resources/public/modern.css': 'resources/src/scss/modern.scss'
         }
       }
     },
