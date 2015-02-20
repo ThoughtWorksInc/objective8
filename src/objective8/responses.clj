@@ -77,12 +77,17 @@
   [:#clj-navigation] (if objective (html/content (objectives-navigation objective translation uri)) identity)
   [:body] (html/append (if google-analytics-tracking-id (google-analytics google-analytics-tracking-id))))
 
+;GUIDANCE
+(html/defsnippet guidance
+  "templates/big-guidance.html" [[:.grid-container]] [])
+
 ;HOME/INDEX
 (html/defsnippet index-page
   "templates/index.html" [[:#clj-index]] [{:keys [translation signed-in]}]
   [:.index-get-started] (if signed-in (html/html-content (translation :index/index-get-started-signed-in)) (html/html-content (translation :index/index-get-started-signed-out)))
   [:.index-get-started] (if signed-in (html/set-attr :title (translation :index/index-get-started-title-signed-in)) (html/set-attr :title (translation :index/index-get-started-title-signed-out)))
-  [:#clj-index html/any-node] (html/replace-vars translation))
+  [:#clj-index html/any-node] (html/replace-vars translation)
+  [:.index-intro] (html/after (guidance)))
 
 ;SIGN IN
 (html/defsnippet sign-in-twitter

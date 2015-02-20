@@ -1,0 +1,21 @@
+.info-box-text {
+  font-size: 1em;
+  text-align: center;
+  margin: 0 0.2em 0 0.2em;
+  @include mq(720) {
+    font-size: 1.3em;
+    margin: 0 0.5em 0 0.5em;
+  }
+}
+
+.info-box-icon {
+  color: $yellow;
+  overflow: hidden;
+  text-align: center;
+  font-size: 6em;
+  margin: 0 0.5em 0 0.5em;
+}
+
+.info-box-emphasis {
+  color: $pink;
+}
