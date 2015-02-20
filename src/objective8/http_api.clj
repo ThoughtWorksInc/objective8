@@ -11,8 +11,8 @@
                :consumer-token (config/get-var "API_BEARER_TOKEN")})
 
 (defn get-api-credentials []
-  {"api-bearer-name" "bearer"
-   "api-bearer-token" "token"})
+  {"api-bearer-name" (consumer :consumer-name)
+   "api-bearer-token" (consumer :consumer-token)})
 
 (defn json-request [object]
   {:headers {"Content-Type" "application/json"}
