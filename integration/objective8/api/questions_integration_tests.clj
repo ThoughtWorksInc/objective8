@@ -27,8 +27,9 @@
                            :created-by-id USER_ID})
 
 (def stored-question (assoc the-question :_id QUESTION_ID))
-
+(def stored-questions [stored-question])
 (def the-question-as-json (str "{\"question\":\"The meaning of life?\",\"objective-id\":" OBJECTIVE_ID ",\"created-by-id\":" USER_ID "}"))
+
 
 (facts "about posting questions" :integration
        (against-background
@@ -84,4 +85,10 @@
                                              "/questions/" QUESTION_ID))) 
              => (contains {:status 400}) 
              (provided (questions/retrieve-question QUESTION_ID) => {:objective-id OBJECTIVE_ID
-                                                                     :question "The question?"}))) 
+                                                                     :question "The question?"}))
+        
+       (fact "questions can be retrieved for an objective"
+             (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions"))
+             => (helpers/check-json-body stored-questions)
+             (provided
+               (questions/retrieve-questions OBJECTIVE_ID) => stored-questions))) 

@@ -49,6 +49,7 @@
                :post-comment (m/wrap-bearer-token api-handlers/post-comment bt/token-provider) 
                :post-question (m/wrap-bearer-token api-handlers/post-question bt/token-provider) 
                :get-question api-handlers/get-question
+               :get-questions-for-objective api-handlers/retrieve-questions
                :get-answers-for-question api-handlers/retrieve-answers
                :post-answer (m/wrap-bearer-token api-handlers/post-answer bt/token-provider)})
 
@@ -83,6 +84,7 @@
                                             ["/" :id] {:get :get-objective
                                                        "/comments" :get-comments-for-objective
                                                        "/questions" {:post :post-question
+                                                                     :get :get-questions-for-objective
                                                                      ["/" :q-id] {:get :get-question
                                                                                   "/answers" {:get :get-answers-for-question
                                                                                               :post :post-answer}}}}}

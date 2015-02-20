@@ -146,6 +146,19 @@
       (log/info "Invalid route: " e)
       (invalid-response "Invalid question request for this objective")))) 
 
+(defn retrieve-questions [{:keys [route-params] :as request}]
+  (try
+    (let [objective-id (-> (:id route-params)
+                            Integer/parseInt)]
+      (if-let [questions (questions/retrieve-questions objective-id)]
+        (-> questions
+            response/response
+            (response/content-type "application/json"))
+        (response/not-found "")))
+    (catch NumberFormatException e
+      (log/info "Invalid route: " e)
+      (invalid-response "Objective id must be an integer"))))
+
 ;;ANSWERS
 (defn post-answer [{:keys [route-params params] :as request}]
   (try
