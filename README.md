@@ -42,10 +42,12 @@ lein repl
 (reset :stub-twitter)
 ```
 
-###### Running the app with your own twitter app credentials
-create a task (for example `start_with_twitter_credentials.sh` with the following content:
+###### Running the app with credentials
+create a task (for example `start_with_credentials.sh` with the following content:
 
 ```
+API_BEARER_NAME=<choose a bearer name>
+API_BEARER_TOKEN=<choose a secure bearer token>
 TWITTER_CONSUMER_TOKEN=<obtain this from twitter when registering the application to allow sign-in via twitter> \
 TWITTER_CONSUMER_SECRET_TOKEN=<as above> \
 BASE_URI=<either localhost or VM ip address and :APP_PORT> \
