@@ -133,7 +133,15 @@
   [:#clj-question-add html/any-node] (html/replace-vars translation))
 
 (html/defsnippet question-view-page
-  "templates/question-view.html" [:#clj-question-view] [{:keys [translation question answers signed-in uri]}]
+  "templates/question-view.html" [:#clj-question-view] [{:keys [translation objective question answers signed-in uri]}]
+  [:#objective-crumb] (html/set-attr :href (str "/objectives/" (:objective-id question)))
+  [:#objective-crumb] (html/set-attr :title (:title objective))
+  [:#objective-crumb] (html/content (:title objective))
+  [:#objective-crumb] (html/set-attr :href (str "/objectives/" (:objective-id question)))
+  [:#questions-crumb] (html/set-attr :href (str "/objectives/" (:objective-id question) "/questions"))
+  [:#question-crumb] (html/set-attr :href (str "/objectives/" (:objective-id question) "/questions/" (:_id question)))
+  [:#question-crumb] (html/set-attr :title (:question question))
+  [:#question-crumb] (html/content (:question question))
   [:#clj-question-view :h1] (html/content (:question question))
   [:#clj-question-view :.answer-list] (if (empty? answers) identity (html/content (map an-answer answers)))
   [:#clj-question-view] (html/after (post-answer-container translation signed-in (:objective-id question) (:_id question) answers uri))
