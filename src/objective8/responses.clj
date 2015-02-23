@@ -150,14 +150,14 @@
   [:#clj-post-question-container html/any-node] (html/replace-vars translation))
 
 (html/defsnippet question-list-page
-  "templates/questions/question-list.html" [:#clj-question-list] [{:keys [translation objective-title objective-id questions signed-in uri]}]
-  [:#objective-crumb] (html/set-attr :title objective-title)
-  [:#objective-crumb] (html/content objective-title)
-  [:#objective-crumb] (html/set-attr :href (str "/objectives/" objective-id))
-  [:#questions-crumb] (html/set-attr :href (str "/objectives/" objective-id "/questions"))
-  [:#clj-question-list :h1] (html/content objective-title)
+  "templates/questions/question-list.html" [:#clj-question-list] [{:keys [translation objective questions signed-in uri]}]
+  [:#objective-crumb] (html/set-attr :title (:title objective))
+  [:#objective-crumb] (html/content (:title objective))
+  [:#objective-crumb] (html/set-attr :href (str "/objectives/" (:_id objective)))
+  [:#questions-crumb] (html/set-attr :href (str "/objectives/" (:_id objective) "/questions"))
+  [:#clj-question-list :h1] (html/content (:title objective))
   [:#clj-question-list :.question-list] (if (empty? questions) identity (html/content (map a-question questions)))
-  [:#clj-question-list] (html/after (post-question-container translation signed-in objective-id uri))
+  [:#clj-question-list] (html/after (post-question-container translation signed-in (:_id objective) uri))
   [:#clj-question-list html/any-node] (html/replace-vars translation))
 
 (html/defsnippet question-view-page

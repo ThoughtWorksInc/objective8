@@ -169,8 +169,7 @@
                                                :locale (subs (str locale) 1)
                                                :doc-title (str (:title objective) " | Objective[8]")
                                                :doc-description (str (t' :question-list/questions-about) " " (:title objective)) 
-                                               :objective-title (:title objective)
-                                               :objective-id (:_id objective)
+                                               :objective objective
                                                :questions questions
                                                :signed-in (signed-in?)})
         (= objective-status ::http-api/not-found) (error-404-response t' locale)
