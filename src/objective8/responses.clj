@@ -124,22 +124,44 @@
   [:.answer-date] (html/content (utils/iso-time-string->pretty-time (:_created_at answer))))
 
 (html/defsnippet post-answer-container
-  "templates/answers/post-answer-container.html" [[:#clj-post-answer-container]] [translation signed-in objective-id question-id answers uri]
+  "templates/answers/post-answer-container.html" [[:#clj-post-answer-container]] [translation signed-in objective-id question-id uri]
   [:#clj-answer-sign-in-uri] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" uri))
   [:#clj-post-answer-container :.response-form] (if signed-in (html/content (answer-create translation objective-id question-id)) identity )
   [:#clj-post-answer-container html/any-node] (html/replace-vars translation))
 
 ;QUESTIONS
-(html/defsnippet question-list-page
-  "templates/question-add.html" [:#clj-question-add] [{:keys [translation objective-title objective-id]}]
+(html/defsnippet a-question
+  "templates/questions/a-question.html" [:li] [question]
+  [:#clj-question-uri] (html/set-attr :href (str "/objectives/" (:objective-id question) "/questions/" (:_id question)))
+  [:.question-text] (html/content (text->p-nodes (:question question)))
+  [:.question-author] (html/content "user-display-name")
+  [:.question-date] (html/content (utils/iso-time-string->pretty-time (:_created_at question)))) 
+  
+(html/defsnippet question-create
+  "templates/questions/question-create.html" [:#clj-question-create] [translation objective-id]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
   [:form] (html/set-attr :action (str "/objectives/" objective-id "/questions"))
-  [:h1] (html/content (str (translation :question-add/page-title) ": " objective-title))
-  [:#clj-question-add html/any-node] (html/replace-vars translation))
+  [:#clj-question-create html/any-node] (html/replace-vars translation))
+
+(html/defsnippet post-question-container
+  "templates/questions/post-question-container.html" [:#clj-post-question-container] [translation signed-in objective-id uri]
+  [:#clj-question-sign-in-uri] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" uri))
+  [:#clj-post-question-container :.response-form] (if signed-in (html/content (question-create translation objective-id)) identity)
+  [:#clj-post-question-container html/any-node] (html/replace-vars translation))
+
+(html/defsnippet question-list-page
+  "templates/questions/question-list.html" [:#clj-question-list] [{:keys [translation objective-title objective-id questions signed-in uri]}]
+  [:#objective-crumb] (html/set-attr :title objective-title)
+  [:#objective-crumb] (html/content objective-title)
+  [:#objective-crumb] (html/set-attr :href (str "/objectives/" objective-id))
+  [:#questions-crumb] (html/set-attr :href (str "/objectives/" objective-id "/questions"))
+  [:#clj-question-list :h1] (html/content objective-title)
+  [:#clj-question-list :.question-list] (if (empty? questions) identity (html/content (map a-question questions)))
+  [:#clj-question-list] (html/after (post-question-container translation signed-in objective-id uri))
+  [:#clj-question-list html/any-node] (html/replace-vars translation))
 
 (html/defsnippet question-view-page
-  "templates/question-view.html" [:#clj-question-view] [{:keys [translation objective question answers signed-in uri]}]
-  [:#objective-crumb] (html/set-attr :href (str "/objectives/" (:objective-id question)))
+  "templates/questions/question-view.html" [:#clj-question-view] [{:keys [translation objective question answers signed-in uri]}]
   [:#objective-crumb] (html/set-attr :title (:title objective))
   [:#objective-crumb] (html/content (:title objective))
   [:#objective-crumb] (html/set-attr :href (str "/objectives/" (:objective-id question)))
@@ -149,7 +171,7 @@
   [:#question-crumb] (html/content (:question question))
   [:#clj-question-view :h1] (html/content (:question question))
   [:#clj-question-view :.answer-list] (if (empty? answers) identity (html/content (map an-answer answers)))
-  [:#clj-question-view] (html/after (post-answer-container translation signed-in (:objective-id question) (:_id question) answers uri))
+  [:#clj-question-view] (html/after (post-answer-container translation signed-in (:objective-id question) (:_id question) uri))
   [:#clj-question-view html/any-node] (html/replace-vars translation))
 
 ;COMMENTS

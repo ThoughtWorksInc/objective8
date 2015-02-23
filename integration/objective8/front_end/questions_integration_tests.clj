@@ -31,15 +31,14 @@
                                             :question "The meaning of life?"}) 
                  => {:status ::http-api/success
                      :result {:_id QUESTION_ID
-                              :objective-id OBJECTIVE_ID}})
-               (against-background
-                 (oauth/access-token anything anything anything) => {:user_id USER_ID}
+                              :objective-id OBJECTIVE_ID}}
+                 (oauth/access-token anything anything anything) => {:user_id USER_ID} 
                  (http-api/create-user anything) => {:status ::http-api/success
-                                                     :result {:_id USER_ID}})
+                                                     :result {:_id USER_ID}}) 
                (let [user-session (helpers/test-context)
                      params {:question "The meaning of life?"}
                      peridot-response (-> user-session
-                                          (helpers/with-sign-in (str "http://localhost:8080/objectives/" OBJECTIVE_ID "/questions"))
+                                          (helpers/with-sign-in "http://localhost:8080/") 
                                           (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID "/questions")
                                                      :request-method :post
                                                      :params params))]

@@ -97,14 +97,16 @@
                      :comment-sign-in {:please "Please"
                                        :sign-in "sign in"
                                        :to "to start commenting."}
-                     :question-add {:doc-title "Add a question | Objective[8]"
-                                    :doc-description "Add a question"
-                                    :page-title "Add a question to"
-                                    :question-label "Question"
-                                    :question-title "Questions are a maximum length of 500 characters"
-                                    :post-button "Add"}
+                     :question-list {:questions-about "Questions about"
+                                     :no-questions "There are no questions yet."}
+                     :question-create {:question-label "Question"
+                                       :question-title "Questions are a maximum length of 500 characters"
+                                       :post-button "Add"}
                      :question-view {:added-message "Your question has been added!"
                                      :added-answer-message "Your answer has been added!"}
+                     :question-sign-in {:please "Please"
+                                        :sign-in "sign in"
+                                        :to "to ask a question." }
                      :answer-view   {:created-message "Your answer has been posted!"
                                      :answer-title "Answers"
                                      :no-answers "No one has answered this question yet."}
@@ -215,14 +217,16 @@
                      :comment-sign-in {:please "Spanish(Please)"
                                        :sign-in "Spanish(sign in)"
                                        :to "Spanish(to start commenting.)"}
-                    :question-add {:doc-title "Spanish(Add a question | Objective[8])"
-                                    :doc-description "Spanish(Add a question)"
-                                    :page-title "Spanish(Add a question to)"
-                                    :question-label "Spanish(Question)"
-                                    :question-title "Spanish(Questions are a maximum length of 500 characters)"
-                                    :post-button "Spanish(Add)"}
+                     :question-list {:questions-about "Spanish(Questions about)"
+                                     :no-questions "Spanish(There are no questions yet.)" }
+                     :question-create {:question-label "Spanish(Question)"
+                                       :question-title "Spanish(Questions are a maximum length of 500 characters)"
+                                       :post-button "Spanish(Add)"}
                     :question-view {:added-message "Spanish(Your question has been added!)"
                                     :added-answer-message "Spanish(Your answer has been added!)"}
+                     :question-sign-in {:please "Spanish(Please)"
+                                        :sign-in "Spanish(sign in)"
+                                        :to "Spanish(to ask a question.)" }
                      :answer-view   {:created-message "Spanish(Your answer has been posted!)"
                                      :answer-title "Spanish(Answers)"
                                      :no-answers "Spanish(No one has answered this question yet.)"}

@@ -1,0 +1,9 @@
+<div id="clj-question-create">
+  <form method="POST" action="">
+
+    <label for="question">${question-create/question-label}</label>
+    <textarea id="question" name="question" rows="5" cols="10" pattern=".{50,}" maxlength="500" title="${question-create/question-title}" required></textarea>
+
+    <button type="submit" class="button">${question-create/post-button}</button>
+  </form>
+</div>

@@ -165,18 +165,18 @@
           {questions-status :status questions :result} (http-api/retrieve-questions objective-id)]
       (cond
         (every? #(= ::http-api/success %) [objective-status questions-status])
-      (rendered-response question-list-page {:translation t'
-                                            :locale (subs (str locale) 1)
-                                            :doc-title (t' :question-add/doc-title)
-                                            :doc-description (t' :question-add/doc-description)
-                                            :objective-title (:title objective)
-                                            :objective-id (:_id objective)
-                                            :signed-in (signed-in?)})
-     
-     (= objective-status ::http-api/not-found) (error-404-response t' locale)
-     (= questions-status ::http-api/not-found) (error-404-response t' locale)
-     (= questions-status ::http-api/invalid-input) {:status 400}
-     :else {:status 500}))
+        (rendered-response question-list-page {:translation t'
+                                               :locale (subs (str locale) 1)
+                                               :doc-title (str (:title objective) " | Objective[8]")
+                                               :doc-description (str (t' :question-list/questions-about) " " (:title objective)) 
+                                               :objective-title (:title objective)
+                                               :objective-id (:_id objective)
+                                               :questions questions
+                                               :signed-in (signed-in?)})
+        (= objective-status ::http-api/not-found) (error-404-response t' locale)
+        (= questions-status ::http-api/not-found) (error-404-response t' locale)
+        (= questions-status ::http-api/invalid-input) {:status 400}
+        :else {:status 500}))
     (catch NumberFormatException e
       (log/info "Invalid route: " e)
       (error-404-response t' locale))))
@@ -238,7 +238,3 @@
 
         :else {:status 502}))
     {:status 400}))
-
-
-
-

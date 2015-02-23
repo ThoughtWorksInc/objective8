@@ -51,7 +51,7 @@
                :get-question api-handlers/get-question
                :get-questions-for-objective api-handlers/retrieve-questions
                :get-answers-for-question api-handlers/retrieve-answers
-               :post-answer (m/wrap-bearer-token api-handlers/post-answer bt/token-provider)})
+               :post-answer (m/wrap-bearer-token api-handlers/post-answer bt/token-provider)}) 
 
 (def routes
   ["/" {""                  :index
@@ -89,7 +89,7 @@
                                                                                   "/answers" {:get :get-answers-for-question
                                                                                               :post :post-answer}}}}}
 
-                             "/comments"   {:post :post-comment}}}])
+                             "/comments"   {:post :post-comment}}}]) 
 
 (defn wrap-not-found [handler]
   (fn [request]

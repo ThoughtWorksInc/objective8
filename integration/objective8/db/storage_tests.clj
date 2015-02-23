@@ -82,6 +82,26 @@
                             retrieve-result (storage/pg-retrieve {:entity :question :_id (:_id store-result)})]
                         (first (:result retrieve-result)) => (contains {:created-by-id user-id
                                                                         :objective-id objective-id}))) 
+                (fact "questions can be retrieved by objective ID"
+                      (let [stored-user (storage/pg-store! {:entity :user
+                                                            :twitter-id "twitter-TWITTER_ID"})
+                            user-id (:_id stored-user)
+                            a-stored-objective (storage/pg-store! {:entity :objective
+                                                                 :created-by-id user-id
+                                                                 :end-date "2015-01-01T00:00:00.000Z"}) 
+                            an-objective-id (:_id a-stored-objective)
+                            another-stored-objective (storage/pg-store! {:entity :objective
+                                                                 :created-by-id user-id
+                                                                 :end-date "2015-02-01T00:00:00.000Z"})
+                            another-objective-id (:_id another-stored-objective)
+                            question-1 {:entity :question :created-by-id user-id :objective-id an-objective-id :question "A question"}
+                            question-2 {:entity :question :created-by-id user-id :objective-id an-objective-id :question "A question"}
+                            question-3 {:entity :question :created-by-id user-id :objective-id another-objective-id :question "Another question"}
+                            stored-question-1 (storage/pg-store! question-1)
+                            stored-question-2 (storage/pg-store! question-2)
+                            stored-question-3 (storage/pg-store! question-3)
+                            retrieve-result (storage/pg-retrieve {:entity :question :objective_id an-objective-id})]
+                        (:result retrieve-result) => [stored-question-1 stored-question-2]))
 
                 ;;ANSWERS
                 (fact "an answer entity can be stored in the database"
