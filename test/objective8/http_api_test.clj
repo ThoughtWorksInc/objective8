@@ -11,207 +11,129 @@
 (def BEARER_NAME "bearer")
 (def BEARER_TOKEN "token")
 
-(def request-with-bearer-token (contains {:headers (contains {"api-bearer-token" BEARER_TOKEN
-                                                              "api-bearer-name" BEARER_NAME})}))
-
 (background (http-api/get-api-credentials) => {"api-bearer-name" BEARER_NAME
                                                "api-bearer-token" BEARER_TOKEN})
 
+(facts "about retrieving information from the API"
+       (tabular
+         (fact "maps http response status to API status"
+               (http-api/default-get-call "/some/url") => (contains {:status ?http-api-status})
+               (provided (http-api/get-request "/some/url" {}) => {:body "" :status ?http-status}))
+         ?http-status        ?http-api-status
+         200                 ::http-api/success
+         404                 ::http-api/not-found
+         400                 ::http-api/invalid-input
+         :anything           ::http-api/error))
+
+(facts "about posting information to the API"
+       (tabular
+         (fact "maps http response status to API status"
+               (http-api/default-create-call "/some/url" {:some :data}) => (contains {:status ?http-api-status})
+               (provided (http-api/post-request "/some/url" anything) => {:status ?http-status :body ""}))
+         ?http-status        ?http-api-status
+         201                 ::http-api/success
+         400                 ::http-api/invalid-input
+         :anything           ::http-api/error)
+
+       (fact "accesses the API with the front-end credentials"
+             (http-api/default-create-call "/some/url" {:some :data}) => anything
+             (provided
+               (http-api/post-request "/some/url"
+                                      (contains
+                                        {:headers (contains
+                                                    {"api-bearer-name" BEARER_NAME
+                                                     "api-bearer-token" BEARER_TOKEN})})) => {:status 200 :body ""})))
+
 ;USERS
-(def USER_ID 1)
-(def the-user {:twitter-id "twitter-TWITTER_ID"
-               :email-address "blah@blah.com"})
+(def the-user {:some :data
+               :twitter-id "twitter-TWITTER_ID"})
 
-(def the-stored-user (into the-user {:_id USER_ID}))
+(fact "creating a user record hits the correct API endpoint"
+       (http-api/create-user the-user) => :api-call-result
+       (provided (http-api/default-create-call (contains "/api/v1/users") the-user) => :api-call-result))
 
-(facts "about creating user records"
-       (fact "creating a user record requires credentials"
-             (http-api/create-user the-user) => {:status ::http-api/success
-                                                 :result the-stored-user} 
-             (provided (http-api/post-request (contains "/api/v1/users")
-                                              request-with-bearer-token)
-                       => {:status 201
-                           :headers {"Content-Type" "application/json"}
-                           :body (json/generate-string the-stored-user)}))
-
-       (fact "returns api-failure when post fails"
-             (http-api/create-user the-user) => {:status ::http-api/error}
-             (provided (http-api/post-request anything anything)
-                       => {:status 500})))
-
-(facts "about finding user records"
-       (fact "finding a user record requires credentials"
-             (http-api/find-user-by-twitter-id (:twitter-id the-user)) => {:status ::http-api/success
-                                                                           :result the-stored-user} 
-             (provided (http-api/get-request (contains (str "/api/v1/users?twitter=" (:twitter-id the-user)))
-                                             request-with-bearer-token)
-                       => {:status 200
-                           :headers {"Content-Type" "application/json"}
-                           :body (json/generate-string the-stored-user)})))
+(fact "finding a user record hits the correct API endpoint with credentials"
+      (http-api/find-user-by-twitter-id (:twitter-id the-user)) => :api-call-result
+      (provided
+        (http-api/default-get-call
+          (contains (str "/api/v1/users?twitter=" (:twitter-id the-user)))
+          (contains {:headers (contains {"api-bearer-name" anything
+                                         "api-bearer-token" anything})})) => :api-call-result))
 
 ;OBJECTIVES
 (def OBJECTIVE_ID 234)
 
-(def the-objective {:title "My Objective"
-                    :goals "To rock out, All day"
-                    :description "I like cake"
-                    :end-date "2015-01-31"
-                    :username "my username"})
+(def the-objective {:some :data
+                    :end-date (utils/string->date-time "2015-01-31")})
 
-(def the-stored-objective (into the-objective {:_id OBJECTIVE_ID}))
+(fact "creating an objective hits the correct API endpoint"
+      (http-api/create-objective the-objective) => :api-call-result
+      (provided
+        (http-api/default-create-call
+          (contains "/api/v1/objectives")
+          {:some :data
+           :end-date "2015-01-31T00:00:00.000Z"}) => :api-call-result))
 
-(facts "about posting objectives"
-       (fact "returns a stored objective when post succeeds"
-             (http-api/create-objective the-objective) => {:status ::http-api/success
-                                                           :result the-stored-objective} 
-             (provided (http-api/post-request (contains "/api/v1/objectives")
-                                              request-with-bearer-token)
-                       => {:status 201
-                           :headers {"Content-Type" "application/json"}
-                           :body (json/generate-string the-stored-objective)}))
-
-       (fact "returns api-failure when post fails"
-             (http-api/create-objective the-objective) => {:status ::http-api/error}
-             (provided (http-api/post-request anything anything) => {:status 500})))
-
-(facts "about getting objectives"
-       (fact "returns a stored objective when one exists with given id"
-             (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID)
-                              {:status 200
-                               :headers {"Content-Type" "application/json"}
-                               :body (json/generate-string
-                                       {:_id OBJECTIVE_ID
-                                        :title "Objective title"
-                                        :goals "Objective goals"
-                                        :description "Objective description"
-                                        :end-date "2015-01-31T00:00:00.000Z"})}]
-               (http-api/get-objective OBJECTIVE_ID))
-             => (contains {:status ::http-api/success
-                           :result (contains {:_id OBJECTIVE_ID
-                                              :title "Objective title"
-                                              :goals "Objective goals"
-                                              :description "Objective description"
-                                              :end-date (utils/time-string->date-time "2015-01-31T00:00:00.000Z")})}))
-
-       (fact "returns 404 when no objective found"
-             (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID)
-                              {:status 404}]
-               (http-api/get-objective OBJECTIVE_ID))
-             => (contains {:status ::http-api/not-found})))
+(fact "getting an objective hits the correct API endpoint"
+      (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                :result the-objective}
+      (provided
+        (http-api/default-get-call
+          (contains (str "/api/v1/objectives/" OBJECTIVE_ID))) => {:status ::http-api/success
+                                                                   :result {:some :data
+                                                                            :end-date "2015-01-31T00:00:00.000Z" }}))
 
 ;; COMMENTS
 
-(def the-comment {:comment "The comment"
-                  :objective-id OBJECTIVE_ID
-                  :username "my username"})
+(fact "creating a comment hits the correct API endpoint"
+      (http-api/create-comment {:some :data}) => :api-call-result
+      (provided
+        (http-api/default-create-call (contains "/api/v1/comments") {:some :data}) => :api-call-result))
 
-(def the-stored-comment (into the-comment {:_id 1}))
 
-(facts "about posting comments"
-       (fact "returns a stored comment when post succeeds"
-             (http-api/create-comment the-comment) => {:status ::http-api/success :result the-stored-comment} 
-             (provided (http-api/post-request (contains "/api/v1/comments")
-                                              request-with-bearer-token)
-                       =>{:status 201
-                          :headers {"Content-Type" "application/json"}
-                          :body (json/generate-string the-stored-comment)}))
-
-       (fact "returns api-failure when post fails"
-             (http-api/create-comment the-comment) => {:status ::http-api/error} 
-             (provided (http-api/post-request anything anything) => {:status 500})))
-
-(facts "about retrieving comments"
-       (fact "returns a list of comments for an objective"
-             (with-fake-http [(str host-url "/api/v1/objectives/1/comments") {:status 200
-                                                                              :headers {"Content-Type" "application/json"}
-                                                                              :body (json/generate-string [the-stored-comment])}]
-               (http-api/retrieve-comments 1))
-             => {:status ::http-api/success
-                 :result [the-stored-comment]}))
+(fact "retrieving comments for an objective hits the correct API endpoint"
+      (http-api/retrieve-comments OBJECTIVE_ID) => :api-call-result
+      (provided
+        (http-api/default-get-call (contains (str "/api/v1/objectives/" OBJECTIVE_ID "/comments"))) => :api-call-result))
 
 ;; QUESTIONS
 
-(def the-question {:question "The meaning of life?"
-                   :objective-id OBJECTIVE_ID
-                   :created-by USER_ID})
+(def the-question {:some :data
+                   :objective-id OBJECTIVE_ID})
 
 (def QUESTION_ID 42)
 
-(def the-stored-question (into the-question {:_id QUESTION_ID}))
+(fact "creating a question hits the correct API endpoint"
+      (http-api/create-question the-question) => :api-call-result
+      (provided
+        (http-api/default-create-call
+          (contains (str "/api/v1/objectives/" OBJECTIVE_ID "/questions"))
+          the-question) => :api-call-result))
 
-(facts "about posting questions"
-       (fact "returns a stored question when post succeeds"
-             (http-api/create-question the-question) => {:status ::http-api/success 
-                                                         :result the-stored-question}
-             (provided (http-api/post-request (contains (str "/api/v1/objectives/" OBJECTIVE_ID "/questions"))
-                                              request-with-bearer-token)
-                       => {:status 201
-                           :headers {"Content-Type" "application/json"}
-                           :body (json/generate-string the-stored-question)}))
+(fact "getting a question for an objective hits the correct API endpoint"
+      (http-api/get-question OBJECTIVE_ID QUESTION_ID) => :api-call-result
+      (provided (http-api/default-get-call (contains (str "/api/v1/objectives/" OBJECTIVE_ID
+                                                          "/questions/" QUESTION_ID))) => :api-call-result))
 
-       (fact "returns api-failure when post fails"
-             (http-api/create-question the-question) => {:status ::http-api/error}
-             (provided (http-api/post-request anything anything) => {:status 500})))
-
-(facts "about getting questions"
-       (fact "returns a stored question when one exists with a given id"
-             (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID) {:status 200
-                                                                                                           :headers {"Content-Type" "application/json"}
-                                                                                                           :body (json/generate-string the-stored-question)}]
-               (http-api/get-question OBJECTIVE_ID QUESTION_ID))
-             => {:status ::http-api/success
-                 :result the-stored-question})
-
-       (fact "returns :objective8.http-api/error when request fails"
-             (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID) {:status 500}]
-               (http-api/get-question OBJECTIVE_ID QUESTION_ID))
-             => {:status ::http-api/error})
-
-       (fact "returns :objective8.http-api/not-found when no question with that id exists"
-             (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID) {:status 404}]
-               (http-api/get-question OBJECTIVE_ID QUESTION_ID))
-             => {:status ::http-api/not-found}))
-
-(facts "about retrieving questions" 
-       (fact "returns a list of questions for a given objective"
-             (with-fake-http [(str host-url "/api/v1/objectives/"
-                                   OBJECTIVE_ID "/questions") {:status 200
-                                                               :headers {"Content-Type" "application/json"}
-                                                               :body (json/generate-string [the-stored-question])}]
-               (http-api/retrieve-questions OBJECTIVE_ID)) => {:status ::http-api/success
-                                                               :result [the-stored-question]}))
+(fact "getting all questions for an objective hits the correct API endpoint"
+      (http-api/retrieve-questions OBJECTIVE_ID) => :api-call-result
+      (provided
+        (http-api/default-get-call (contains (str "/api/v1/objectives/" OBJECTIVE_ID
+                                                  "/questions"))) => :api-call-result))
 ;; ANSWERS
 
-(def the-answer {:answer "The answer"
+(def the-answer {:some :data
                  :objective-id OBJECTIVE_ID
-                 :question-id QUESTION_ID
-                 :created-by-id USER_ID})
-(def the-stored-answer (into the-answer {:_id 3}))
+                 :question-id QUESTION_ID})
 
-(facts "about posting answers"
-       (fact "returns a stored answer when post succeeds"
-             (http-api/create-answer the-answer) => {:status ::http-api/success
-                                                     :result the-stored-answer}
-             (provided (http-api/post-request (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID
+(fact "creating an answer hits the correct API endpoint"
+      (http-api/create-answer the-answer) => :api-call-result
+      (provided (http-api/default-create-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID
                                                              "/questions/" QUESTION_ID "/answers"))
-                                              request-with-bearer-token)
-                       => {:status 201
-                           :headers {"Content-Type" "application/json"}
-                           :body (json/generate-string the-stored-answer)})) 
+                  the-answer) => :api-call-result))
 
-       (fact "returns :objective8.http-api/invalid when request is invalid"
-             (http-api/create-answer the-answer) => {:status ::http-api/invalid-input}
-             (provided (http-api/post-request anything anything) => {:status 400}))
-
-       (fact "returns :objective8.http-api/error when request fails"
-             (http-api/create-answer the-answer) => {:status ::http-api/error}
-             (provided (http-api/post-request anything anything) => {:status 500})))
-
-(facts "about retrieving answers" 
-       (fact "returns a list of answers for a given objective and question"
-             (with-fake-http [(str host-url "/api/v1/objectives/" OBJECTIVE_ID 
-                                   "/questions/" QUESTION_ID "/answers") {:status 200
-                                                                          :headers {"Content-Type" "application/json"}
-                                                                          :body (json/generate-string [the-stored-answer])}]
-               (http-api/retrieve-answers OBJECTIVE_ID QUESTION_ID)) => {:status ::http-api/success 
-                                                                         :result [the-stored-answer]}))
+(fact "getting all answers for a question hits the correct API endpoint"
+      (http-api/retrieve-answers OBJECTIVE_ID QUESTION_ID) => :api-call-result
+      (provided
+        (http-api/default-get-call (contains (str "/api/v1/objectives/" OBJECTIVE_ID
+                                                  "/questions/" QUESTION_ID "/answers"))) => :api-call-result))
