@@ -22,20 +22,25 @@
 
 (defn sign-up-form [{session :session :as request}]
   (if-let [twitter-id (:twitter-id session)]
-    (if-let [user (http-api/find-user-by-twitter-id twitter-id)]
-      (finalise-authorisation user session)
-      (front-end/sign-up-form request))
+    (let [{status :status user :result} (http-api/find-user-by-twitter-id twitter-id)]
+      (cond
+        (= status ::http-api/success) (finalise-authorisation user session)
+        (= status ::http-api/not-found) (front-end/sign-up-form request)
+        (= status ::http-api/invalid-input) {:status 400}
+        :else {:status 500}))
     (response/redirect "/sign-in")))
 
 (defn sign-up-form-post [{params :params session :session :as request}]
   (if-let [twitter-id (:twitter-id session)]
     (let [twitter-screen-name (:twitter-screen-name session)
-          email-address (:email-address params)] 
-          (if-let [user (http-api/create-user {:twitter-id twitter-id
-                                      :display-name twitter-screen-name
-                                      :email-address email-address})] 
-            (finalise-authorisation user session)
-            {:status 401}))
+          email-address (:email-address params) 
+          {status :status user :result} (http-api/create-user {:twitter-id twitter-id
+                                                               :display-name twitter-screen-name
+                                                               :email-address email-address})]  
+      (cond
+        (= status ::http-api/success) (finalise-authorisation user session)
+        (= status ::http-api/invalid-input) {:status 400}
+        :else {:status 502}))
     {:status 401}))
 
 (def sign-up-handlers

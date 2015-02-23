@@ -14,7 +14,7 @@
        (binding [config/enable-csrf false]
          (fact "authorised user can post and retrieve answer to a question"
               (against-background
-                  (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status 200})
+                  (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success})
               (against-background
                   (http-api/create-answer {:answer "The answer"
                                            :objective-id OBJECTIVE_ID
@@ -27,7 +27,8 @@
                                                                                   :answer "The answer"}})
               (against-background
                   (oauth/access-token anything anything anything) => {:user_id USER_ID}
-                  (http-api/create-user anything) => {:_id USER_ID})
+                  (http-api/create-user anything) => {:status ::http-api/success
+                                                      :result {:_id USER_ID}})
                (let [user-session (helpers/test-context)
                      params {:answer "The answer"}
                      peridot-response (-> user-session

@@ -29,11 +29,13 @@
                                       :goal-1 "my objective goal"
                                       :description "my objective description"
                                       :end-date (utils/string->date-time "2012-12-12")
-                                      :created-by-id USER_ID}) => {:_id OBJECTIVE_ID})
+                                      :created-by-id USER_ID}) => {:status ::http-api/success
+                                                                   :result {:_id OBJECTIVE_ID}})
                (against-background
                  ;; Twitter authentication background
                  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
-                 (http-api/create-user anything) => {:_id USER_ID})
+                 (http-api/create-user anything) => {:status ::http-api/success
+                                                     :result {:_id USER_ID}})
                (let [user-session (helpers/test-context)
                      params {:title "my objective title"
                              :goal-1 "my objective goal"
@@ -52,33 +54,36 @@
 
        (fact "Any user can view an objective"
              (against-background
-               (http-api/get-objective OBJECTIVE_ID) => {:title "my objective title"
-                                                         :goal-1 "my objective goal"
-                                                         :description "my objective description"
-                                                         :end-date (utils/string->date-time "2015-12-01")})
+               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                         :result  {:title "my objective title"
+                                                                   :goal-1 "my objective goal"
+                                                                   :description "my objective description"
+                                                                   :end-date (utils/string->date-time "2015-12-01")}}
+               (http-api/retrieve-comments OBJECTIVE_ID) => {:status ::http-api/success :result []})
              (default-app objective-view-get-request) => (contains {:status 200})
              (default-app objective-view-get-request) => (contains {:body (contains "my objective title")})
              (default-app objective-view-get-request) => (contains {:body (contains "my objective goal")})
              (default-app objective-view-get-request) => (contains {:body (contains "my objective description")})
              (default-app objective-view-get-request) => (contains {:body (contains "01-12-2015")}))
 
-      (fact "A user should receive a 404 if an objective doesn't exist"
-            (against-background
-              (http-api/get-objective OBJECTIVE_ID) => {:status 404})
-              (default-app objective-view-get-request) => (contains {:status 404}))
+       (fact "A user should receive a 404 if an objective doesn't exist"
+             (against-background
+               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/not-found})
+             (default-app objective-view-get-request) => (contains {:status 404}))
 
        (fact "Any user can view comments on an objective"
              (against-background
-              (http-api/get-objective OBJECTIVE_ID) => {:title "my objective title"
-                                                        :goal-1 "my objective goal"
-                                                        :description "my objective description"
-                                                        :end-date (utils/string->date-time "2015-12-01")}
-              (http-api/retrieve-comments OBJECTIVE_ID)
-              => [{:_id 1
-                   :_created_at "2015-02-12T16:46:18.838Z"
-                   :objective-id OBJECTIVE_ID
-                   :created-by-id USER_ID
-                   :comment "Comment 1"}])
+               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                         :result {:title "my objective title"
+                                                                  :goal-1 "my objective goal"
+                                                                  :description "my objective description"
+                                                                  :end-date (utils/string->date-time "2015-12-01")}} 
+               (http-api/retrieve-comments OBJECTIVE_ID) => {:status ::http-api/success
+                                                             :result [{:_id 1
+                                                                       :_created_at "2015-02-12T16:46:18.838Z"
+                                                                       :objective-id OBJECTIVE_ID
+                                                                       :created-by-id USER_ID
+                                                                       :comment "Comment 1"}]})
              (let [user-session (helpers/test-context)
                    peridot-response (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))]
                peridot-response) => (contains {:response (contains {:body (contains "Comment 1")})}))

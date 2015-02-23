@@ -98,33 +98,42 @@
                                             :signed-in (signed-in?)}))
 
 (defn create-objective-form-post [{:keys [t' locale] :as request}]
-    (if-let [objective (request->objective request (get (friend/current-authentication) :username))]
-      (if-let [stored-objective (http-api/create-objective objective)]
-        (let [objective-url (str utils/host-url "/objectives/" (:_id stored-objective))
-              message (t' :objective-view/created-message)]
-          (assoc (response/redirect objective-url) :flash message))
-        {:status 502})
-      {:status 400}))
+  (if-let [objective (request->objective request (get (friend/current-authentication) :username))]
+    (let [{status :status stored-objective :result} (http-api/create-objective objective)]
+      (cond (= status ::http-api/success)
+            (let [objective-url (str utils/host-url "/objectives/" (:_id stored-objective))
+                  message (t' :objective-view/created-message)]
+              (assoc (response/redirect objective-url) :flash message)) 
+
+            (= status ::http-api/invalid-input) {:status 400}
+
+            :else {:status 502}))
+    {:status 400}))
 
 (defn objective-detail [{{id :id} :route-params
                          message :flash
                          :keys [uri t' locale]
                          :as request}]
   (try (let [objective-id (Integer/parseInt id)
-        objective (http-api/get-objective objective-id)]
-    (if (= (objective :status) 404)
-        (error-404-response t' locale)
-        (let [comments (http-api/retrieve-comments objective-id)
-              formatted-objective (format-objective objective)]
-            (rendered-response objective-detail-page {:translation t'
-                                                    :locale (subs (str locale) 1)
-                                                    :doc-title (str (:title objective) " | Objective[8]")
-                                                    :doc-description (:title objective)
-                                                    :message message
-                                                    :objective formatted-objective
-                                                    :comments comments
-                                                    :signed-in (signed-in?)
-                                                    :uri uri}))))
+             {objective-status :status objective :result} (http-api/get-objective objective-id)
+             {comments-status :status comments :result} (http-api/retrieve-comments objective-id)]
+         (cond
+           (every? #(= ::http-api/success %) [objective-status comments-status])
+           (let [formatted-objective (format-objective objective)]
+             (rendered-response objective-detail-page {:translation t'
+                                                       :locale (subs (str locale) 1)
+                                                       :doc-title (str (:title objective) " | Objective[8]")
+                                                       :doc-description (:title objective)
+                                                       :message message
+                                                       :objective formatted-objective
+                                                       :comments comments
+                                                       :signed-in (signed-in?)
+                                                       :uri uri}))
+           (= objective-status ::http-api/not-found) (error-404-response t' locale)
+
+           (= objective-status ::http-api/invalid-input) {:status 400}
+
+           :else {:status 500}))
        (catch NumberFormatException e
          (log/info "Invalid route: " e)
          (error-404-response t' locale))))
@@ -134,60 +143,79 @@
 (defn create-comment-form-post [{{objective-id :objective-id} :params
                                  :keys [t' locale] :as request}]
   (if-let [comment (request->comment request (get (friend/current-authentication) :username))]
-    (if-let [stored-comment (http-api/create-comment comment)]
-      (let [comment-url (str utils/host-url "/objectives/" (:objective-id stored-comment))
-            message (t' :comment-view/created-message)]
-        (assoc (response/redirect comment-url) :flash message))
-      {:status 502})
+    (let [{status :status stored-comment :result} (http-api/create-comment comment)]
+      (cond
+        (= status ::http-api/success)
+        (let [comment-url (str utils/host-url "/objectives/" (:objective-id stored-comment))
+              message (t' :comment-view/created-message)]
+          (assoc (response/redirect comment-url) :flash message))
+
+        (= status ::http-api/invalid-input) {:status 400}
+
+        :else {:status 502}))
     {:status 400}))
 
 ;; QUESTIONS
 
 (defn question-list [{{id :id} :route-params
                           :keys [t' locale]}]
-  (let [objective-id (Integer/parseInt id)
-        objective (http-api/get-objective objective-id)
-        questions (http-api/retrieve-questions objective-id)]
-    (if (= (:status objective) 404)
-      (error-404-response t' locale)
+  (try 
+    (let [objective-id (Integer/parseInt id)
+          {objective-status :status objective :result} (http-api/get-objective objective-id)
+          {questions-status :status questions :result} (http-api/retrieve-questions objective-id)]
+      (cond
+        (every? #(= ::http-api/success %) [objective-status questions-status])
       (rendered-response question-list-page {:translation t'
                                             :locale (subs (str locale) 1)
                                             :doc-title (t' :question-add/doc-title)
                                             :doc-description (t' :question-add/doc-description)
                                             :objective-title (:title objective)
                                             :objective-id (:_id objective)
-                                            :signed-in (signed-in?)}))))
+                                            :signed-in (signed-in?)})
+     
+     (= objective-status ::http-api/not-found) (error-404-response t' locale)
+     (= questions-status ::http-api/not-found) (error-404-response t' locale)
+     (= questions-status ::http-api/invalid-input) {:status 400}
+     :else {:status 500}))
+    (catch NumberFormatException e
+      (log/info "Invalid route: " e)
+      (error-404-response t' locale))))
 
 (defn add-question-form-post [{:keys [uri t' locale] :as request}]
   (if-let [question (request->question request (get (friend/current-authentication) :username))]
-    (if-let [stored-question (http-api/create-question question)]
-      (let [question-url (str utils/host-url "/objectives/" (:objective-id stored-question) "/questions/" (:_id stored-question))
-            message (t' :question-view/added-message)]
-        (assoc (response/redirect question-url) :flash message))
-      {:status 502})
+    (let [{status :status stored-question :result} (http-api/create-question question)]
+      (cond 
+        (= status ::http-api/success)
+        (let [question-url (str utils/host-url "/objectives/" (:objective-id stored-question) "/questions/" (:_id stored-question))
+              message (t' :question-view/added-message)]
+          (assoc (response/redirect question-url) :flash message))
+
+        (= status ::http-api/invalid-input) {:status 400}
+
+        :else {:status 502}))
     {:status 400}))
 
-
 (defn question-detail [{{q-id :q-id id :id} :route-params
-                         message :flash
-                         :keys [uri t' locale]
-                         :as request}]
-  (try (let [{status :status question :result} (http-api/get-question (Integer/parseInt id) (Integer/parseInt q-id))
-             answers (http-api/retrieve-answers (:objective-id question) (:_id question))]
+                        message :flash
+                        :keys [uri t' locale]
+                        :as request}]
+  (try (let [{question-status :status question :result} (http-api/get-question (Integer/parseInt id) (Integer/parseInt q-id))
+             {answer-status :status answers :result} (http-api/retrieve-answers (:objective-id question) (:_id question))
+             {objective-status :status objective :result} (http-api/get-objective (:objective-id question))]
          (cond
-           (= status ::http-api/success)
-           (let [objective (http-api/get-objective (:objective-id question))]
-             (rendered-response question-view-page {:translation     t'
-                                                    :locale          (subs (str locale) 1)
-                                                    :doc-title       (str (:question question) " | Objective[8]")
-                                                    :doc-description (:question question)
-                                                    :message         message
-                                                    :question        question
-                                                    :answers         answers
-                                                    :objective       objective
-                                                    :signed-in       (signed-in?)
-                                                    :uri             uri}))
-           (= status ::http-api/not-found) (error-404-response t' locale)
+           (every? #(= ::http-api/success %) [question-status answer-status objective-status])
+           (rendered-response question-view-page {:translation     t'
+                                                  :locale          (subs (str locale) 1)
+                                                  :doc-title       (str (:question question) " | Objective[8]")
+                                                  :doc-description (:question question)
+                                                  :message         message
+                                                  :question        question
+                                                  :answers         answers
+                                                  :objective       objective
+                                                  :signed-in       (signed-in?)
+                                                  :uri             uri})
+           (= question-status ::http-api/not-found) (error-404-response t' locale)
+           (= question-status ::http-api/invalid-input) {:status 400}
            :else {:status 500}))
        (catch NumberFormatException e
          (log/info "Invalid route: " e)
@@ -205,6 +233,9 @@
                               "/questions/" (:question-id stored-answer))
               message (t' :question-view/added-answer-message)]
           (assoc (response/redirect answer-url) :flash message))
+
+        (= status ::http-api/invalid-input) {:status 400}
+
         :else {:status 502}))
     {:status 400}))
 
