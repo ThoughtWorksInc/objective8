@@ -44,10 +44,18 @@
   [:.share-this-url-input] (html/set-attr :value (str utils/host-url uri)))
 
 ;NAVIGATION
+(defn objectives-nav-selected-id [uri]
+  (cond 
+    (.endsWith uri "/questions") :#clj-objectives-questions
+    (.endsWith uri "/objectives") :#clj-objectives-details))
+
 (html/defsnippet objectives-navigation
   "templates/objectives-nav.html" [[:#navigation]] [objective translation uri]
   [:#clj-objective-title] (html/html-content (:title objective))
+  [:#clj-objectives-details] (html/remove-class "selected")
+  [(objectives-nav-selected-id uri)] (html/add-class "selected")
   [:#clj-objectives-details] (html/set-attr :href (str "/objectives/" (:_id objective)))
+  [:#clj-objectives-questions] (html/set-attr :href (str "/objectives/" (:_id objective) "/questions"))
   [:.navigation-list] (html/after (share-widget translation uri (:title objective)))
   [:#navigation html/any-node] (html/replace-vars translation))
 

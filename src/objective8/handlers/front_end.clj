@@ -158,7 +158,7 @@
 ;; QUESTIONS
 
 (defn question-list [{{id :id} :route-params
-                          :keys [t' locale]}]
+                          :keys [uri t' locale]}]
   (try 
     (let [objective-id (Integer/parseInt id)
           {objective-status :status objective :result} (http-api/get-objective objective-id)
@@ -171,6 +171,7 @@
                                                :doc-description (str (t' :question-list/questions-about) " " (:title objective)) 
                                                :objective objective
                                                :questions questions
+                                               :uri uri
                                                :signed-in (signed-in?)})
         (= objective-status ::http-api/not-found) (error-404-response t' locale)
         (= questions-status ::http-api/not-found) (error-404-response t' locale)

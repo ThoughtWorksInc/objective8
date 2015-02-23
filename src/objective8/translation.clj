@@ -55,7 +55,8 @@
                                       :page-intro "We are developing and designing Objective[8] in the open. This allows the tool evolve as you use it, as you give feedback, and as the developers update and add content."
                                       :page-content! "<p>It is important to note that during this time data may be removed or destroyed as part of our process. Any of the views and data expressed here is to be used for example purposes only and does not accurately represent the real views of users.</p><h2>How to get involved</h2><p>This project is open source and we are inviting people to collaborate with us to build a better tool. For developers and you can find the code on github at <a href=\"https://github.com/ThoughtWorksInc/objective8\" title=\"Objective[8] on github\">https://github.com/ThoughtWorksInc/objective8</a>. We will also be adding details for upcoming usability sessions shortly.</p><h2>Have you got an idea?</h2><p>We are really interested in user feedback and are currently inviting people to leave comments our <a href=\"https://github.com/ThoughtWorksInc/objective8/issues\">github issues page</a>.</p>" }
                      :objective-nav {:title "Navigation for"
-                                     :details "Details"}
+                                     :details "Details"
+                                     :questions "Questions"}  
                      :objective-list {:doc-title "Objectives | Objective[8]"
                                       :doc-description ""
                                       :page-title "Objectives"
@@ -172,8 +173,9 @@
                                       :page-title "Spanish(Alpha phase)"
                                       :page-intro "Spanish(We are developing and designing Objective[8] in the open. This allows the tool evolve as you use it, as you give feedback, and as the developers update and add content.)"
                                       :page-content! "Spanish(<p>It is important to note that during this time data may be removed or destroyed as part of our process. Any of the views and data expressed here is to be used for example purposes only and does not accurately represent the real views of users.</p><h2>How to get involved</h2><p>This project is open source and we are inviting people to collaborate with us to build a better tool. For developers and you can find the code on github at <a href=\"https://github.com/ThoughtWorksInc/objective8\" title=\"Objective[8] on github\">https://github.com/ThoughtWorksInc/objective8</a>. We will also be adding details for upcoming usability sessions shortly.</p><h2>Have you got an idea?</h2><p>We are really interested in user feedback and are currently inviting people to leave comments our <a href=\"https://github.com/ThoughtWorksInc/objective8/issues\">github issues page</a>.</p>)" }
-                     :objective-nav {:title "Navigation for"
+                     :objective-nav {:title "Spanish(Navigation for)"
                                      :details "Spanish(Details)"}
+                                     :questions "Spanish(Questions)"   
                      :objective-list {:doc-title "Spanish(Objectives | Objective[8])"
                                       :doc-description ""
                                       :page-title "Spanish(Objectives)"

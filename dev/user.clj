@@ -9,7 +9,7 @@
             [dev-helpers.launch :refer [stop make-launcher-map]]))
 
 ; Don't try to load ./test and ./integration
-(tnr/set-refresh-dirs "./src" "./dm")
+(tnr/set-refresh-dirs "./src" "./dev")
 
 (def configs 
   {:default core/app-config

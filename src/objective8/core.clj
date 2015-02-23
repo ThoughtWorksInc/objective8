@@ -20,7 +20,9 @@
             [objective8.handlers.front-end :as front-end-handlers]
             [objective8.middleware :as m]
             [objective8.bearer-tokens :as bt])
-  (:gen-class))
+ ; (:gen-class)
+  
+  )
 
 (def handlers {; Front End Handlers
                :index front-end-handlers/index
