@@ -86,8 +86,8 @@
 
 (defn get-all-objectives []
   (let [api-result (default-get-call (str utils/host-url "/api/v1/objectives"))]
-    (if (= ::succes (:status api-result))
-      (update-in api-result [:result] (partial map parse-objective))
+    (if (= ::success (:status api-result))
+      (update-in api-result [:result] #(map parse-objective %))
       api-result)))
 
 ;; COMMENTS
