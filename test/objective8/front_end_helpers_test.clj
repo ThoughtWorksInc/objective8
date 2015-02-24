@@ -48,10 +48,10 @@
                    :objective-id OBJECTIVE_ID
                    :created-by-id USER_ID}))
 
-(fact "creates author-info map from a request"
-      (let [author (request->author-info {:route-params {:id (str OBJECTIVE_ID)} 
-                                          :params {:author-name "Jenny" :reason "Just because"}} USER_ID)]
-        author => {:author-name "Jenny"
+(fact "creates invited-writer-info map from a request"
+      (let [writer (request->invited-writer-info {:route-params {:id (str OBJECTIVE_ID)} 
+                                                  :params {:writer-name "Jenny" :reason "Just because"}} USER_ID)]
+        writer => {:writer-name "Jenny"
                    :reason "Just because"
                    :objective-id OBJECTIVE_ID
                    :suggested-by-id USER_ID}))

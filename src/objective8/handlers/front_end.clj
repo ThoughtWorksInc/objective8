@@ -240,14 +240,14 @@
 
 ;; AUTHORS
 
-(defn suggest-author-form-post [{:keys [t' locale] :as request}]
-  (if-let [author (helpers/request->author-info request (get (friend/current-authentication) :username))]
-    (let [{status :status stored-author-invitation :result} (http-api/suggest-author author)]
+(defn invite-writer-form-post [{:keys [t' locale] :as request}]
+  (if-let [invited-writer (helpers/request->invited-writer-info request (get (friend/current-authentication) :username))]
+    (let [{status :status stored-invited-writer :result} (http-api/invite-writer invited-writer)]
       (cond
         (= status ::http-api/success)
-        (let [author-url (str utils/host-url "/objectives/" (:objective-id stored-author-invitation) "/authors")
+        (let [writer-url (str utils/host-url "/objectives/" (:objective-id stored-invited-writer))
               message "Your suggested author has been added!"]
-          (assoc (response/redirect author-url) :flash message))
+          (assoc (response/redirect writer-url) :flash message))
 
         (= status ::http-api/invalid-input) {:status 400}
 
