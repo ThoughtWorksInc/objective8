@@ -100,7 +100,7 @@
                                       :doc-description "Objective  ..."
                                       :background-label "Background"
                                       :goals-label "Goals"
-                                      :end-date-label "Ending on: "
+                                      :end-date-label "Drafting begins: "
                                       :created-message "Your objective has been created!"}
                      :comment-view {:created-message "Your comment has been added!"
                                     :comment-title "Comments"
