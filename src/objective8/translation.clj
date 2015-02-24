@@ -113,14 +113,15 @@
                                        :to "to start commenting."}
                      :question-list {:questions-about "Questions about"
                                      :no-questions "There are no questions yet."}
-                     :question-create {:question-label "Question"
+                     :question-create {:add-a-question "Add a question to this objective"
+                                       :question-label "Question"
                                        :question-title "Questions are a maximum length of 500 characters"
                                        :post-button "Add"}
                      :question-view {:added-message "Your question has been added!"
                                      :added-answer-message "Your answer has been added!"}
                      :question-sign-in {:please "Please"
                                         :sign-in "sign in"
-                                        :to "to ask a question." }
+                                        :to "to add a question." }
                      :answer-view   {:created-message "Your answer has been posted!"
                                      :answer-title "Answers"
                                      :no-answers "No one has answered this question yet."}
