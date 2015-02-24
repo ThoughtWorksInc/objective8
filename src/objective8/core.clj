@@ -38,6 +38,7 @@
                :question-list (utils/anti-forgery-hook front-end-handlers/question-list) 
                :question (utils/anti-forgery-hook front-end-handlers/question-detail) 
                :add-answer-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-answer-form-post) #{:signed-in})
+               :suggest-author-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/suggest-author-form-post) #{:signed-in})
 
                
                ; API Handlers
@@ -70,6 +71,7 @@
                              :post :create-objective-form-post
                              ["/create"] :create-objective-form
                              ["/" :id] {:get :objective
+                                        "/authors" {:post :suggest-author-form-post}
                                         "/questions" {:post :add-question-form-post
                                                       :get :question-list
                                                       ["/" :q-id] {:get :question

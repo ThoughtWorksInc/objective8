@@ -47,3 +47,11 @@
                    :question-id QUESTION_ID
                    :objective-id OBJECTIVE_ID
                    :created-by-id USER_ID}))
+
+(fact "creates author-info map from a request"
+      (let [author (request->author-info {:route-params {:id (str OBJECTIVE_ID)} 
+                                          :params {:author-name "Jenny" :reason "Just because"}} USER_ID)]
+        author => {:author-name "Jenny"
+                   :reason "Just because"
+                   :objective-id OBJECTIVE_ID
+                   :suggested-by-id USER_ID}))

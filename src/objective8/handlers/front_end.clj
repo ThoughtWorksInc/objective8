@@ -6,8 +6,7 @@
             [org.httpkit.client :as http]
             [objective8.responses :refer :all]
             [objective8.http-api :as http-api]
-            [objective8.front-end-helpers :refer [request->question request->comment 
-                                                  request->objective request->answer-info]]
+            [objective8.front-end-helpers :as helpers]
             [objective8.utils :as utils]
             [objective8.storage.storage :as storage]))
 
@@ -98,7 +97,7 @@
                                             :signed-in (signed-in?)}))
 
 (defn create-objective-form-post [{:keys [t' locale] :as request}]
-  (if-let [objective (request->objective request (get (friend/current-authentication) :username))]
+  (if-let [objective (helpers/request->objective request (get (friend/current-authentication) :username))]
     (let [{status :status stored-objective :result} (http-api/create-objective objective)]
       (cond (= status ::http-api/success)
             (let [objective-url (str utils/host-url "/objectives/" (:_id stored-objective))
@@ -142,7 +141,7 @@
 
 (defn create-comment-form-post [{{objective-id :objective-id} :params
                                  :keys [t' locale] :as request}]
-  (if-let [comment (request->comment request (get (friend/current-authentication) :username))]
+  (if-let [comment (helpers/request->comment request (get (friend/current-authentication) :username))]
     (let [{status :status stored-comment :result} (http-api/create-comment comment)]
       (cond
         (= status ::http-api/success)
@@ -182,7 +181,7 @@
       (error-404-response t' locale))))
 
 (defn add-question-form-post [{:keys [uri t' locale] :as request}]
-  (if-let [question (request->question request (get (friend/current-authentication) :username))]
+  (if-let [question (helpers/request->question request (get (friend/current-authentication) :username))]
     (let [{status :status stored-question :result} (http-api/create-question question)]
       (cond 
         (= status ::http-api/success)
@@ -225,7 +224,7 @@
 ;; ANSWERS
 
 (defn add-answer-form-post [{:keys [uri t' locale] :as request}]
-  (if-let [answer (request->answer-info request (get (friend/current-authentication) :username))]
+  (if-let [answer (helpers/request->answer-info request (get (friend/current-authentication) :username))]
     (let [{status :status stored-answer :result} (http-api/create-answer answer)]
       (cond
         (= status ::http-api/success)
@@ -233,6 +232,22 @@
                               "/questions/" (:question-id stored-answer))
               message (t' :question-view/added-answer-message)]
           (assoc (response/redirect answer-url) :flash message))
+
+        (= status ::http-api/invalid-input) {:status 400}
+
+        :else {:status 502}))
+    {:status 400}))
+
+;; AUTHORS
+
+(defn suggest-author-form-post [{:keys [t' locale] :as request}]
+  (if-let [author (helpers/request->author-info request (get (friend/current-authentication) :username))]
+    (let [{status :status stored-author-invitation :result} (http-api/suggest-author author)]
+      (cond
+        (= status ::http-api/success)
+        (let [author-url (str utils/host-url "/objectives/" (:objective-id stored-author-invitation) "/authors")
+              message "Your suggested author has been added!"]
+          (assoc (response/redirect author-url) :flash message))
 
         (= status ::http-api/invalid-input) {:status 400}
 

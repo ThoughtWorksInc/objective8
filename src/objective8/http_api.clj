@@ -123,3 +123,7 @@
 (defn retrieve-answers [objective-id question-id]
   (default-get-call
     (str utils/host-url "/api/v1/objectives/" objective-id "/questions/" question-id "/answers")))
+
+;; AUTHORS
+
+(defn suggest-author [author])

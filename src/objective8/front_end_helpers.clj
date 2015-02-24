@@ -35,3 +35,11 @@
          :question-id (Integer/parseInt q-id) 
          :objective-id (Integer/parseInt id) 
          :created-by-id user-id))
+
+(defn request->author-info
+  "Returns a map with the suggested author details if all the parts are in the request. Otherwise return nil"
+  [{{id :id} :route-params :keys [params]} 
+   user-id]
+  (assoc (select-keys params [:author-name :reason])
+         :objective-id (Integer/parseInt id)
+         :suggested-by-id user-id))
