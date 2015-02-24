@@ -64,9 +64,9 @@
            
                                   <p>An <b>objective</b> is a change that could be achieved by introducing new policy.  For example: improving access to public housing, or increasing the safety of our roads.</p>
                
-                                  <p><b>Authors</b> are experts responsible for drafting policy.  They use the crowdsourced questions, answers and comments to produce <b>policy drafts</b>.  These are further refined through cycles of feedback and redrafting.</p>
+                                  <p><b>Writers</b> are experts responsible for drafting policy.  They use the crowdsourced questions, answers and comments to produce <b>policy drafts</b>.  These are further refined through cycles of feedback and redrafting.</p>
 
-                                  <p>You can get involved and have your say by creating and sharing objectives, offering your opinion through <b>comments</b>, asking and answering <b>questions</b>, suggesting policy authors, or even providing feedback on the policy drafts themselves.  The whole process is open and transparent.</p>"}
+                                  <p>You can get involved and have your say by creating and sharing objectives, offering your opinion through <b>comments</b>, asking and answering <b>questions</b>, suggesting policy writers, or even providing feedback on the policy drafts themselves.  The whole process is open and transparent.</p>"}
                      :objective-nav {:title "Navigation for"
                                      :details "Details"
                                      :questions "Questions"}  
