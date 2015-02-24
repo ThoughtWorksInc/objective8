@@ -8,6 +8,7 @@
             [objective8.questions :as questions]
             [objective8.answers :as answers]
             [objective8.users :as users]
+            [objective8.writers :as writers]
             [objective8.utils :as utils]))
 
 (defn invalid-response [message]
@@ -203,3 +204,16 @@
       (log/info "Invalid route: " e)
       (invalid-response "Invalid answer request for this objective"))))
 
+;;WRITERS
+(defn invite-writer [{:keys [route-params params]}]
+  (try
+    (let [objective-id (-> (:id route-params)
+                           Integer/parseInt)
+          writer (-> params
+                     (select-keys [:writer-name :reason :invited-by-id])
+                     (assoc :objective-id objective-id))
+          stored-writer (writers/store-invited-writer! writer)
+          resource-location (str utils/host-url
+                                 "/api/v1/objectives/" (:objective-id stored-writer)
+                                 "/writers/invited/" (:_id stored-writer))]
+      (successful-post-response resource-location stored-writer))))

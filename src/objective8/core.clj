@@ -55,7 +55,8 @@
                :get-question api-handlers/get-question
                :get-questions-for-objective api-handlers/retrieve-questions
                :get-answers-for-question api-handlers/retrieve-answers
-               :post-answer (m/wrap-bearer-token api-handlers/post-answer bt/token-provider)}) 
+               :post-answer (m/wrap-bearer-token api-handlers/post-answer bt/token-provider)
+               :invite-writer (m/wrap-bearer-token api-handlers/invite-writer bt/token-provider)}) 
 
 (def routes
   ["/" {""                  :index
@@ -94,7 +95,8 @@
                                                                      :get :get-questions-for-objective
                                                                      ["/" :q-id] {:get :get-question
                                                                                   "/answers" {:get :get-answers-for-question
-                                                                                              :post :post-answer}}}}}
+                                                                                              :post :post-answer}}}
+                                                       "/writers" {"/invited" {:post :invite-writer}}}}
 
                              "/comments"   {:post :post-comment}}}]) 
 
