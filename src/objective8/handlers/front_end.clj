@@ -57,6 +57,12 @@
                                           :doc-description (t' :project-status/doc-description)
                                           :signed-in (signed-in?)}))
 
+(defn learn-more [{:keys [t' locale]}]
+  (rendered-response learn-more-page {:translation t'
+                                      :locale (subs (str locale) 1)
+                                      :doc-title (t' :learn-more/doc-title)
+                                      :doc-description (t' :learn-more/doc-description)
+                                      :signed-in (signed-in?)}))
 ;; USER PROFILE
 
 (defn sign-up-form [{:keys [t' locale]}]

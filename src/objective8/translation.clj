@@ -49,11 +49,24 @@
                                :twitter-sign-in-btn "Sign in with twitter"
                                :twitter-sign-in-title "Sign in with twitter"
                                :reassurance "We will never post to Twitter without your permission."}
-                     :project-status {:doc-title "Project status | Objective [8]"
+                     :project-status {:doc-title "Project status | Objective[8]"
                                       :doc-description ""
                                       :page-title "Alpha phase"
                                       :page-intro "We are developing and designing Objective[8] in the open. This allows the tool evolve as you use it, as you give feedback, and as the developers update and add content."
                                       :page-content! "<p>It is important to note that during this time data may be removed or destroyed as part of our process. Any of the views and data expressed here is to be used for example purposes only and does not accurately represent the real views of users.</p><h2>How to get involved</h2><p>This project is open source and we are inviting people to collaborate with us to build a better tool. For developers and you can find the code on github at <a href=\"https://github.com/ThoughtWorksInc/objective8\" title=\"Objective[8] on github\">https://github.com/ThoughtWorksInc/objective8</a>. We will also be adding details for upcoming usability sessions shortly.</p><h2>Have you got an idea?</h2><p>We are really interested in user feedback and are currently inviting people to leave comments our <a href=\"https://github.com/ThoughtWorksInc/objective8/issues\">github issues page</a>.</p>" }
+                     :learn-more {:doc-title "Learn more | Objective[8]"
+                                  :doc-description ""
+                                  :page-title "Objective[8] 101"
+                                  :sub-title "What are the basics?"
+                                  :page-intro "Objective8 is a platform to enable collaborative policy making for democratic organisations."
+                                  :page-content! "
+                                  <p><b>Policy</b> is used by governments and organisations to make consistent and fair decisions in order to achieve desired outcomes.</p>
+           
+                                  <p>An <b>objective</b> is a change that could be achieved by introducing new policy.  For example: improving access to public housing, or increasing the safety of our roads.</p>
+               
+                                  <p><b>Authors</b> are experts responsible for drafting policy.  They use the crowdsourced questions, answers and comments to produce <b>policy drafts</b>.  These are further refined through cycles of feedback and redrafting.</p>
+
+                                  <p>You can get involved and have your say by creating and sharing objectives, offering your opinion through <b>comments</b>, asking and answering <b>questions</b>, suggesting policy authors, or even providing feedback on the policy drafts themselves.  The whole process is open and transparent.</p>"}
                      :objective-nav {:title "Navigation for"
                                      :details "Details"
                                      :questions "Questions"}  
@@ -173,6 +186,12 @@
                                       :page-title "Spanish(Alpha phase)"
                                       :page-intro "Spanish(We are developing and designing Objective[8] in the open. This allows the tool evolve as you use it, as you give feedback, and as the developers update and add content.)"
                                       :page-content! "Spanish(<p>It is important to note that during this time data may be removed or destroyed as part of our process. Any of the views and data expressed here is to be used for example purposes only and does not accurately represent the real views of users.</p><h2>How to get involved</h2><p>This project is open source and we are inviting people to collaborate with us to build a better tool. For developers and you can find the code on github at <a href=\"https://github.com/ThoughtWorksInc/objective8\" title=\"Objective[8] on github\">https://github.com/ThoughtWorksInc/objective8</a>. We will also be adding details for upcoming usability sessions shortly.</p><h2>Have you got an idea?</h2><p>We are really interested in user feedback and are currently inviting people to leave comments our <a href=\"https://github.com/ThoughtWorksInc/objective8/issues\">github issues page</a>.</p>)" }
+                     :learn-more {:doc-title "Spanish(Learn more) | Objective[8]"
+                                  :doc-description ""
+                                  :page-title "Spanish(...)"
+                                  :sub-title "Spanish(...)"
+                                  :page-intro "Spanish(...)"
+                                  :page-content! "Spanish(...)"}
                      :objective-nav {:title "Spanish(Navigation for)"
                                      :details "Spanish(Details)"}
                                      :questions "Spanish(Questions)"   
