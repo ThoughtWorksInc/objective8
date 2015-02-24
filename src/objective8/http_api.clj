@@ -126,4 +126,6 @@
 
 ;; AUTHORS
 
-(defn suggest-author [author])
+(defn suggest-author [author]
+  (default-create-call
+    (str utils/host-url "/api/v1/objectives/" (:objective-id author) "/authors") author))

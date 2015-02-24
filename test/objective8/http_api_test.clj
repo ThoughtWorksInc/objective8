@@ -137,3 +137,14 @@
       (provided
         (http-api/default-get-call (contains (str "/api/v1/objectives/" OBJECTIVE_ID
                                                   "/questions/" QUESTION_ID "/answers"))) => :api-call-result))
+
+;; AUTHORS
+
+(def the-author {:some :data
+                 :objective-id OBJECTIVE_ID})
+
+(fact "suggesting an author hits the correct API endpoint"
+      (http-api/suggest-author the-author) => :api-call-result
+      (provided 
+        (http-api/default-create-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID 
+                                                     "/authors")) the-author) => :api-call-result))
