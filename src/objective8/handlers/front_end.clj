@@ -244,7 +244,7 @@
         :else {:status 502}))
     {:status 400}))
 
-;; AUTHORS
+;; WRITERS 
 
 (defn invite-writer-form-post [{:keys [t' locale] :as request}]
   (if-let [invited-writer (helpers/request->invited-writer-info request (get (friend/current-authentication) :username))]

@@ -42,4 +42,4 @@
    user-id]
   (assoc (select-keys params [:writer-name :reason])
          :objective-id (Integer/parseInt id)
-         :suggested-by-id user-id))
+         :invited-by-id user-id))

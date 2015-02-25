@@ -21,7 +21,7 @@
                  (http-api/invite-writer {:writer-name "bob"
                                           :reason "he's awesome"
                                           :objective-id OBJECTIVE_ID
-                                          :suggested-by-id USER_ID}) => {:status ::http-api/success
+                                          :invited-by-id USER_ID}) => {:status ::http-api/success
                                                                           :result {:_id INVITATION_ID
                                                                                    :objective-id OBJECTIVE_ID}})
                (let [user-session (helpers/test-context)

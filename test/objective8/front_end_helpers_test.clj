@@ -54,4 +54,4 @@
         writer => {:writer-name "Jenny"
                    :reason "Just because"
                    :objective-id OBJECTIVE_ID
-                   :suggested-by-id USER_ID}))
+                   :invited-by-id USER_ID}))

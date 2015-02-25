@@ -124,7 +124,7 @@
   (default-get-call
     (str utils/host-url "/api/v1/objectives/" objective-id "/questions/" question-id "/answers")))
 
-;; AUTHORS
+;; WRITERS
 
 (defn invite-writer [writer]
   (default-create-call
