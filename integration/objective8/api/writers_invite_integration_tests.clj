@@ -29,4 +29,29 @@
                         :content-type "application/json"
                         :body the-invited-writer-as-json) => (helpers/check-json-body stored-writer)
              (provided
-               (writers/store-invited-writer! the-invited-writer) => stored-writer)))
+               (writers/store-invited-writer! the-invited-writer) => stored-writer))
+
+       (fact "the http response indicates the location of the invited writer"
+             (against-background
+               (writers/store-invited-writer! anything) => stored-writer)
+
+             (let [result (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID 
+                                              "/writers/invited")
+                                     :request-method :post
+                                     :content-type "application/json"
+                                     :body the-invited-writer-as-json)
+                   response (:response result)
+                   headers (:headers response)]
+               response => (contains {:status 201})
+               headers => (contains {"Location" (contains 
+                                                  (str "/api/v1/objectives/" OBJECTIVE_ID 
+                                                       "/writers/invited/" INVITED_WRITER_ID))})))
+       
+       (fact "a 400 status is returned if a PSQLException is raised"
+             (against-background
+               (writers/store-invited-writer! anything) =throws=> (org.postgresql.util.PSQLException.
+                                                                  (org.postgresql.util.ServerErrorMessage. "" 0)))
+             (:response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/writers/invited")
+                                   :request-method :post
+                                   :content-type "application/json"
+                                   :body the-invited-writer-as-json)) => (contains {:status 400})))

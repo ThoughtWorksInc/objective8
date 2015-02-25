@@ -216,4 +216,10 @@
           resource-location (str utils/host-url
                                  "/api/v1/objectives/" (:objective-id stored-writer)
                                  "/writers/invited/" (:_id stored-writer))]
-      (successful-post-response resource-location stored-writer))))
+      (successful-post-response resource-location stored-writer))
+  (catch NumberFormatException e
+    (log/info "Invalid route: " e)
+    (invalid-response "Objective id must be an integer")) 
+  (catch Exception e
+    (log/info "Error when posting invited writer: " e)
+    (invalid-response "Invalid invited writer request for this objective"))))
