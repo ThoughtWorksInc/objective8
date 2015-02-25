@@ -58,15 +58,13 @@
                                    :content-type "application/json"
                                    :body the-invited-writer-as-json)) => (contains {:status 400})))
 
-
-
 (facts "invitations" :integration
        (against-background
          [(m/valid-credentials? anything anything anything) => true 
           (before :contents (do
                               (helpers/db-connection)
                               (helpers/truncate-tables)))
-          (after :facts (helpers/truncate-tables)) ])
+          (after :facts (helpers/truncate-tables)) ]
        (fact "GET /api/v1/invitations?uuid=<UUID> retrieves an active invitation by the uuid if it exists"
            (let 
              [created-by-id (:_id (users/store-user! {:twitter-id "some-twitter-id"}))
@@ -74,4 +72,4 @@
               stored-invitation (writers/store-invited-writer! {:invited-by-id created-by-id 
                                                                 :objective-id objective-id})
               uuid (:uuid stored-invitation)]
-        (helpers/peridot-response-json-body->map (p/request app (str "/api/v1/invitations?uuid=" uuid))) => (dissoc stored-invitation :entity))))
+        (helpers/peridot-response-json-body->map (p/request app (str "/api/v1/invitations?uuid=" uuid))) => (dissoc stored-invitation :entity)))))
