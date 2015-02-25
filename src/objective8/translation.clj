@@ -117,6 +117,8 @@
                                        :sign-in "sign in"
                                        :to "to start commenting."}
                      :question-list {:questions-about "Questions about"
+                                     :page-intro "Gather background information such as opinions and experiences by asking a question.  Your question should be focussed and specific, as the answers will influence the policy drafting process."
+                                     :question-list-heading "Recently asked questions"
                                      :no-questions "There are no questions yet."}
                      :question-create {:add-a-question "Add a question to this objective"
                                        :question-label "Question"
@@ -248,6 +250,8 @@
                                        :sign-in "Spanish(sign in)"
                                        :to "Spanish(to start commenting.)"}
                      :question-list {:questions-about "Spanish(Questions about)"
+                                     :page-intro "Spanish(...)"
+                                     :question-list-heading "Spanish(...)"
                                      :no-questions "Spanish(There are no questions yet.)" }
                      :question-create {:question-label "Spanish(Question)"
                                        :question-title "Spanish(Questions are a maximum length of 500 characters)"
