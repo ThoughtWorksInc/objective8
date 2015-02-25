@@ -20,7 +20,8 @@
     <textarea id="objective-description" name="description" rows="10" cols="10" maxlength="1000" title="${objective-create/background-title}"></textarea>
 
     <label for="objective-end-date">${objective-create/end-date-label}<span class="required">*</span></label>
-    <p class="label-helper">${objective-create/end-date-prompt}</p>
+    <p class="label-helper">${objective-create/end-date-prompt} <span class="not-yet-implemented-comment">${objective-create/drafting-not-yet-implemented}</span></p>
+    
     <input id="objective-end-date" name="end-date" type="date" title="${objective-create/end-date-title}" required placeholder="${objective-create/end-date-placeholder}">
 
     <button type="submit" class="button">${objective-create/submit}</button>

@@ -64,9 +64,11 @@
            
                                   <p>An <b>objective</b> is a change that could be achieved by introducing new policy.  For example: improving access to public housing, or increasing the safety of our roads.</p>
                
-                                  <p><b>Writers</b> are experts responsible for drafting policy.  They use the crowdsourced questions, answers and comments to produce <b>policy drafts</b>.  These are further refined through cycles of feedback and redrafting.</p>
+                                  <p><b>Writers</b> are experts responsible for drafting policy.  They use the crowdsourced questions, answers and comments to produce <b>policy drafts</b><span class=\"not-yet-implemented-footnote-marker\">*</span>.  These are further refined through cycles of feedback and redrafting.</p>
 
-                                  <p>You can get involved and have your say by creating and sharing objectives, offering your opinion through <b>comments</b>, asking and answering <b>questions</b>, suggesting policy writers, or even providing feedback on the policy drafts themselves.  The whole process is open and transparent.</p>"}
+                                  <p>You can get involved and have your say by creating and sharing objectives, offering your opinion through <b>comments</b>, asking and answering <b>questions</b>, suggesting policy writers<span class=\"not-yet-implemented-footnote-marker\">*</span>, or even providing feedback on the policy drafts themselves.  The whole process is open and transparent.</p>
+                                  
+                                  <p class=\"helper-text\"> <span class=\"not-yet-implemented-footnote-marker\">*</span> Since this site is still under development, these features have not yet been implemented. </p> "}
                      :objective-nav {:title "Navigation for"
                                      :details "Details"
                                      :questions "Questions"}  
@@ -93,6 +95,7 @@
                                         :background-title "Enter optional background text up to 1000 characters"
                                         :end-date-label "Drafting start date"
                                         :end-date-prompt "On this date, the drafting phase begins. You should give participants enough time to generate useful information, and to recruit and vote for potential policy writers."
+                                        :drafting-not-yet-implemented "(Please note: since this site is still under development, the drafting phase has not yet been implemented)"
                                         :end-date-title "Please enter an end date"
                                         :end-date-placeholder"yyyy-mm-dd"
                                         :submit "Create"}
@@ -221,6 +224,7 @@
                                         :background-title "Escribe una descripcion máximo de 1000 caracteres."
                                         :end-date-label "Spanish(...)"
                                         :end-date-prompt "Spanish(...)"
+                                        :drafting-not-yet-implemented "Spanish(...)"
                                         :end-date-title "Por favor escribe la fecha de vencimiento"
                                         :end-date-placeholder "yyyy-mm-dd"
                                         :submit "Crear"}
