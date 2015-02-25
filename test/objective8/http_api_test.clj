@@ -148,3 +148,11 @@
       (provided 
         (http-api/default-create-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID 
                                                      "/writers/invitations")) the-invited-writer) => :api-call-result))
+
+;; INVITATIONS
+(def UUID "some-long-random-string")
+
+(fact "retrieving an invitation hits the correct API endpoint"
+      (http-api/retrieve-invitation-by-uuid UUID) => :api-call-result
+      (provided
+        (http-api/default-get-call (contains (str host-url "/api/v1/invitations?uuid=" UUID))) => :api-call-result))

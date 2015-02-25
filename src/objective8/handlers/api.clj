@@ -223,3 +223,9 @@
   (catch Exception e
     (log/info "Error when posting invited writer: " e)
     (invalid-response "Invalid invited writer request for this objective"))))
+
+(defn get-invitation [{{uuid :uuid} :params}]
+  (let [invitation (writers/retrieve-invitation-by-uuid uuid)]
+    (-> invitation
+        response/response
+        (response/content-type "application/json"))))

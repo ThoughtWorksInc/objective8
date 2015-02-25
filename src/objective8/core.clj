@@ -56,7 +56,8 @@
                :get-questions-for-objective api-handlers/retrieve-questions
                :get-answers-for-question api-handlers/retrieve-answers
                :post-answer (m/wrap-bearer-token api-handlers/post-answer bt/token-provider)
-               :invite-writer (m/wrap-bearer-token api-handlers/invite-writer bt/token-provider)}) 
+               :invite-writer (m/wrap-bearer-token api-handlers/invite-writer bt/token-provider)
+               :get-invitation (m/wrap-bearer-token api-handlers/get-invitation bt/token-provider)})
 
 (def routes
   ["/" {""                  :index
@@ -98,7 +99,9 @@
                                                                                               :post :post-answer}}}
                                                        "/writers" {"/invitations" {:post :invite-writer}}}}
 
-                             "/comments"   {:post :post-comment}}}]) 
+                             "/comments"   {:post :post-comment}
+                             "/invitations" {:get :get-invitation}
+                             }}]) 
 
 (defn wrap-not-found [handler]
   (fn [request]
