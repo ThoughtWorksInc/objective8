@@ -119,6 +119,12 @@
   (korma/prepare map->answer)
   (korma/transform (unmap :answer)))
 
+(korma/defentity invitation
+  (korma/pk :_id)
+  (korma/table :objective8.invitations)
+  (korma/prepare map->invitation)
+  (korma/transform (unmap :invitation)))
+
 (korma/defentity bearer-token
   (korma/pk :_id)
   (korma/table :objective8.bearer_tokens)
@@ -130,6 +136,7 @@
                :comment   comment
                :question  question
                :answer    answer
+               :invitation invitation
                :bearer-token bearer-token})
 
 (defn get-mapping

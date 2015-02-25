@@ -122,9 +122,33 @@
                                     :question-id question-id
                                     :answer "An answer"}
                             store-result (storage/pg-store! answer)
-                            retrieve-result (storage/pg-retrieve {:entity :answer :_id (:_id store-result)})]
+                            retrieve-result (storage/pg-retrieve {:entity :answer
+                                                                  :_id (:_id store-result)})]
                         (first (:result retrieve-result)) => (contains {:created-by-id user-id
                                                                         :question-id question-id})))
+
+                ;;INVITATIONS
+                (fact "an invitation entity can be stored in the database"
+                      (let [stored-user (storage/pg-store! {:entity :user
+                                                            :twitter-id "twitter-TWITTER_ID"})
+                            user-id (:_id stored-user)
+                            stored-objective (storage/pg-store! {:entity :objective
+                                                                 :created-by-id user-id
+                                                                 :end-date "2015-01-01T00:00:00.000Z"})
+                            objective-id (:_id stored-objective)
+                            invitation {:entity :invitation
+                                        :invited-by-id user-id
+                                        :objective-id objective-id
+                                        :writer-name "barry"
+                                        :reason "he's barry"
+                                        :uuid "random-uuid"}
+                            store-result (storage/pg-store! invitation)
+                            retrieve-result (storage/pg-retrieve {:entity :invitation :_id (:_id store-result)})]
+                        (first (:result retrieve-result)) => (contains {:invited-by-id user-id
+                                                                        :objective-id objective-id
+                                                                        :uuid "random-uuid"})))
+
+
                 ;;BEARER-TOKENS
                 (facts "about bearer-tokens"
                        (fact "a bearer-token entity can be stored in the database"
