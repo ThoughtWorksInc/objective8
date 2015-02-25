@@ -29,7 +29,7 @@
                              :reason "he's awesome"}
                      peridot-response (-> user-session
                                           (helpers/with-sign-in "http://localhost:8080/")
-                                          (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID "/invite-policy-writer")
+                                          (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID "/writers/invite-policy-writer")
                                                      :request-method :post
                                                      :params params))]
                  peridot-response => (helpers/flash-message-contains "Your suggested author has been added!")

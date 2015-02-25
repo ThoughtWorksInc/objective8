@@ -6,6 +6,9 @@
 (def host-url
   (str "http://" (config/get-var "BASE_URI" "localhost:8080")))
 
+(defn generate-random-uuid []
+  (str (java.util.UUID/randomUUID)))
+
 ;;TIME FORMATTING
 
 (defn string->date-time [date-string]

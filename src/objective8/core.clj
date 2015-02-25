@@ -75,7 +75,7 @@
                              :post :create-objective-form-post
                              ["/create"] :create-objective-form
                              ["/" :id] {:get :objective
-                                        "/invite-policy-writer" {:post :invite-writer-form-post}
+                                        "/writers/invite-policy-writer" {:post :invite-writer-form-post}
                                         "/questions" {:post :add-question-form-post
                                                       :get :question-list
                                                       ["/" :q-id] {:get :question
