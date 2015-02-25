@@ -68,7 +68,9 @@
 
                                   <p>You can get involved and have your say by creating and sharing objectives, offering your opinion through <b>comments</b>, asking and answering <b>questions</b>, suggesting policy writers<span class=\"not-yet-implemented-footnote-marker\">*</span>, or even providing feedback on the policy drafts themselves.  The whole process is open and transparent.</p>
                                   
-                                  <p class=\"helper-text\"> <span class=\"not-yet-implemented-footnote-marker\">*</span> Since this site is still under development, these features have not yet been implemented. </p> "}
+                                  <p class=\"helper-text\"> <span class=\"not-yet-implemented-footnote-marker\">*</span>As the site is still under development, these features have not yet been implemented. Check back soon!</p> "
+                                  :get-started-button-title "Get started"
+                                  :get-started-button-text "Get started"}
                      :objective-nav {:title "Navigation for"
                                      :details "Details"
                                      :questions "Questions"}  
@@ -195,6 +197,8 @@
                                   :page-title "Spanish(...)"
                                   :sub-title "Spanish(...)"
                                   :page-intro "Spanish(...)"
+                                  :get-started-button-title "Spanish(...)"
+                                  :get-started-button-text "Spanish(...)"
                                   :page-content! "Spanish(...)"}
                      :objective-nav {:title "Spanish(Navigation for)"
                                      :details "Spanish(Details)"}
