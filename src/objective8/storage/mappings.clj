@@ -66,6 +66,16 @@
      :answer (map->json-type answer)}
     (throw (Exception. "Could not transform map to answer"))))
 
+(defn map->invitation
+ "Converts a clojure map into a json-typed invitation for the database" 
+  [{:keys [invited-by-id objective-id uuid] :as invitation}]
+  (if (and invited-by-id objective-id uuid)
+    {:invited_by_id invited-by-id
+     :objective_id objective-id
+     :uuid uuid
+     :invitation (map->json-type invitation)}
+    (throw (Exception. "Could not transform map to invitation"))))
+
 (defn map->bearer-token
  "Converts a clojure map into a json-typed bearer-token for the database"
  [{:keys [bearer-name] :as bearer-token}]

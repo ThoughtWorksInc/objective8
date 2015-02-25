@@ -57,9 +57,6 @@
 
 
 ;;QUESTIONS
-(def USER_ID 1234)
-(def OBJECTIVE_ID 2345)
-
 (def question-map {:created-by-id USER_ID
                    :objective-id OBJECTIVE_ID})
 
@@ -74,7 +71,6 @@
                     (map->question (dissoc question-map :objective-id)) => (throws Exception "Could not transform map to question")))
 
 ;;ANSWERS
-(def USER_ID 1234)
 (def QUESTION_ID 345)
 
 (def answer-map {:created-by-id USER_ID
@@ -89,6 +85,29 @@
        (fact "throws exception if :created-by-id or :question-id are missing"
                     (map->answer (dissoc answer-map :created-by-id)) => (throws Exception "Could not transform map to answer")
                     (map->answer (dissoc answer-map :question-id)) => (throws Exception "Could not transform map to answer")))
+
+;;INVITATIONS
+(def invitation-map {:invited-by-id USER_ID
+                     :writer-name "barry"
+                     :reason "the reason"
+                     :uuid "something-random"
+                     :objective-id OBJECTIVE_ID})
+
+(facts "About map->invitation"
+       (fact "Column values are pulled out and converted, the map gets turned to json"
+             (let [test-invitation (map->invitation invitation-map)]
+               test-invitation => (contains {:objective_id OBJECTIVE_ID
+                                             :invited_by_id USER_ID
+                                             :uuid "something-random"
+                                             :invitation json-type?})))
+
+       (fact "throws exception if :objective-id, :invited-by-id or :uuid are missing"
+             (map->invitation (dissoc invitation-map :objective-id)) => (throws Exception "Could not transform map to invitation")
+             (map->invitation (dissoc invitation-map :uuid)) => (throws Exception "Could not transform map to invitation")
+             (map->invitation (dissoc invitation-map :invited-by-id)) => (throws Exception "Could not transform map to invitation")))
+
+
+
 
 ;;BEARER-TOKENS
 (def BEARER_NAME "bearer name")

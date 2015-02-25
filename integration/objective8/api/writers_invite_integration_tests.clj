@@ -12,12 +12,12 @@
 (def app (helpers/test-context))
 (def OBJECTIVE_ID 1)
 (def INVITED_BY_ID 2)
-(def INVITED_WRITER_ID 3)
+(def INVITATION_ID 3)
 (def the-invited-writer {:writer-name "Mel"
                          :reason "She's cool"
                          :objective-id OBJECTIVE_ID
                          :invited-by-id INVITED_BY_ID })
-(def stored-writer (assoc the-invited-writer :_id INVITED_WRITER_ID))
+(def stored-writer (assoc the-invited-writer :_id INVITATION_ID))
 (def the-invited-writer-as-json (str "{\"writer-name\":\"Mel\",\"reason\":\"She's cool\",\"objective-id\":" OBJECTIVE_ID ",\"invited-by-id\":" INVITED_BY_ID "}"))
 
 (facts "about inviting policy writers" :integration
@@ -45,7 +45,7 @@
                response => (contains {:status 201})
                headers => (contains {"Location" (contains 
                                                   (str "/api/v1/objectives/" OBJECTIVE_ID 
-                                                       "/writers/invited/" INVITED_WRITER_ID))})))
+                                                       "/writers/invited/" INVITATION_ID))})))
        
        (fact "a 400 status is returned if a PSQLException is raised"
              (against-background
