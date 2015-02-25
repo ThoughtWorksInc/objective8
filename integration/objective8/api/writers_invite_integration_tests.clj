@@ -24,7 +24,7 @@
        (against-background
          (m/valid-credentials? anything anything anything) => true)
        (fact "the invited writer is stored"
-             (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/writers/invited")
+             (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/writers/invitations")
                         :request-method :post
                         :content-type "application/json"
                         :body the-invited-writer-as-json) => (helpers/check-json-body stored-writer)
@@ -36,7 +36,7 @@
                (writers/store-invited-writer! anything) => stored-writer)
 
              (let [result (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID 
-                                              "/writers/invited")
+                                              "/writers/invitations")
                                      :request-method :post
                                      :content-type "application/json"
                                      :body the-invited-writer-as-json)
@@ -45,13 +45,13 @@
                response => (contains {:status 201})
                headers => (contains {"Location" (contains 
                                                   (str "/api/v1/objectives/" OBJECTIVE_ID 
-                                                       "/writers/invited/" INVITATION_ID))})))
+                                                       "/writers/invitations/" INVITATION_ID))})))
        
        (fact "a 400 status is returned if a PSQLException is raised"
              (against-background
                (writers/store-invited-writer! anything) =throws=> (org.postgresql.util.PSQLException.
                                                                   (org.postgresql.util.ServerErrorMessage. "" 0)))
-             (:response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/writers/invited")
+             (:response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/writers/invitations")
                                    :request-method :post
                                    :content-type "application/json"
                                    :body the-invited-writer-as-json)) => (contains {:status 400})))

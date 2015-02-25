@@ -147,4 +147,4 @@
       (http-api/invite-writer the-invited-writer) => :api-call-result
       (provided 
         (http-api/default-create-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID 
-                                                     "/writers/invited")) the-invited-writer) => :api-call-result))
+                                                     "/writers/invitations")) the-invited-writer) => :api-call-result))

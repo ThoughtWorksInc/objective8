@@ -215,7 +215,7 @@
           stored-writer (writers/store-invited-writer! writer)
           resource-location (str utils/host-url
                                  "/api/v1/objectives/" (:objective-id stored-writer)
-                                 "/writers/invited/" (:_id stored-writer))]
+                                 "/writers/invitations/" (:_id stored-writer))]
       (successful-post-response resource-location stored-writer))
   (catch NumberFormatException e
     (log/info "Invalid route: " e)

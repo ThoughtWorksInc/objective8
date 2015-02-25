@@ -128,4 +128,4 @@
 
 (defn invite-writer [writer]
   (default-create-call
-    (str utils/host-url "/api/v1/objectives/" (:objective-id writer) "/writers/invited") writer))
+    (str utils/host-url "/api/v1/objectives/" (:objective-id writer) "/writers/invitations") writer))

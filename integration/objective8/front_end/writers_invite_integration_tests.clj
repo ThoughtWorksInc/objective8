@@ -9,6 +9,7 @@
 (def USER_ID 1)
 (def OBJECTIVE_ID 2)
 (def INVITATION_ID 3)
+(def UUID "random-uuid")
 
 (facts "about inviting writers" :integration
        (binding [config/enable-csrf false]
@@ -23,14 +24,15 @@
                                           :objective-id OBJECTIVE_ID
                                           :invited-by-id USER_ID}) => {:status ::http-api/success
                                                                           :result {:_id INVITATION_ID
-                                                                                   :objective-id OBJECTIVE_ID}})
+                                                                                   :objective-id OBJECTIVE_ID
+                                                                                   :uuid UUID}})
                (let [user-session (helpers/test-context)
                      params {:writer-name "bob"
                              :reason "he's awesome"}
                      peridot-response (-> user-session
                                           (helpers/with-sign-in "http://localhost:8080/")
-                                          (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID "/writers/invite-policy-writer")
+                                          (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID "/writers/invitations")
                                                      :request-method :post
                                                      :params params))]
-                 peridot-response => (helpers/flash-message-contains "Your suggested author has been added!")
+                 peridot-response => (helpers/flash-message-contains (str "Your invited writer can accept their invitation by going to http://localhost:8080/invitations/" UUID))
                  peridot-response => (helpers/headers-location (str "/objectives/" OBJECTIVE_ID))))))

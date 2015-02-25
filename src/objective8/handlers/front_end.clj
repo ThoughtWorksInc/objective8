@@ -252,7 +252,8 @@
       (cond
         (= status ::http-api/success)
         (let [writer-url (str utils/host-url "/objectives/" (:objective-id stored-invited-writer))
-              message "Your suggested author has been added!"]
+              message (str "Your invited writer can accept their invitation by going to "
+                           utils/host-url "/invitations/" (:uuid stored-invited-writer))]
           (assoc (response/redirect writer-url) :flash message))
 
         (= status ::http-api/invalid-input) {:status 400}
