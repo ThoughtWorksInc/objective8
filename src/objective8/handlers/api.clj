@@ -225,8 +225,12 @@
     (invalid-response "Invalid invitation post request for this objective"))))
 
 (defn get-invitation [{{uuid :uuid} :params}]
-  (if-let [invitation (writers/retrieve-invitation-by-uuid uuid)]
-    (-> invitation
-        response/response
-        (response/content-type "application/json"))
-    (response/not-found (str "No invitations exist with uuid: " uuid))))
+  (try
+    (if-let [invitation (writers/retrieve-invitation-by-uuid uuid)]
+      (-> invitation
+          response/response
+          (response/content-type "application/json"))
+      (response/not-found (str "No invitations exist with uuid: " uuid)))
+    (catch Exception e
+      (log/info "Error when retrieving invitation: " e)
+      (invalid-response (str "Error when retrieving invitation with uuid " uuid)))))

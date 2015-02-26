@@ -25,7 +25,7 @@
 (facts "about inviting policy writers" :integration
        (against-background
          (m/valid-credentials? anything anything anything) => true)
-       (fact "the invited writer is stored"
+       (fact "the invitation is stored"
              (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/writers/invitations")
                         :request-method :post
                         :content-type "application/json"
@@ -66,14 +66,21 @@
                               (helpers/truncate-tables)))
           (after :facts (helpers/truncate-tables)) ]
 
-       (fact "GET /api/v1/invitations?uuid=<UUID> retrieves the active invitation with the given uuid if it exists"
-           (let 
-             [created-by-id (:_id (users/store-user! {:twitter-id "some-twitter-id"}))
-              objective-id (:_id (objectives/store-objective! {:created-by-id created-by-id :end-date "2015-01-01"}))
-              stored-invitation (writers/store-invitation! {:invited-by-id created-by-id 
-                                                                :objective-id objective-id})
-              uuid (:uuid stored-invitation)]
-        (helpers/peridot-response-json-body->map (p/request app (str "/api/v1/invitations?uuid=" uuid))) => (dissoc stored-invitation :entity)))
+         (facts "GET /api/v1/invitations?uuid=<UUID>"
+                (fact "retrieves the active invitation with the given uuid if it exists"
+                      (let 
+                        [created-by-id (:_id (users/store-user! {:twitter-id "some-twitter-id"}))
+                         objective-id (:_id (objectives/store-objective! {:created-by-id created-by-id :end-date "2015-01-01"}))
+                         stored-invitation (writers/store-invitation! {:invited-by-id created-by-id 
+                                                                       :objective-id objective-id})
+                         uuid (:uuid stored-invitation)]
+                        (helpers/peridot-response-json-body->map (p/request app (str "/api/v1/invitations?uuid=" uuid))) => (dissoc stored-invitation :entity)))
 
-       (fact "GET /api/v1/invitations?uuid=<UUID> returns a 404 status if an invitation with uuid=<UUID> doesn't exist"
-             (p/request app "/api/v1/invitations?uuid=non-existent-uuid") => (contains {:response (contains {:status 404})}))))
+                (fact "returns a 404 status if an invitation with uuid=<UUID> doesn't exist"
+                      (p/request app "/api/v1/invitations?uuid=non-existent-uuid") => (contains {:response (contains {:status 404})}))
+
+                (fact "returns a 400 status when a PSQLException is raised"
+                      (against-background
+                        (writers/retrieve-invitation-by-uuid anything) =throws=> (org.postgresql.util.PSQLException.
+                                                                                   (org.postgresql.util.ServerErrorMessage. "" 0)))
+                      (p/request app "/api/v1/invitations?uuid=some-uuid") => (contains {:response (contains {:status 400})})))))
