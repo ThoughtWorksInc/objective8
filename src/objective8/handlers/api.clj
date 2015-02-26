@@ -234,3 +234,18 @@
     (catch Exception e
       (log/info "Error when retrieving invitation: " e)
       (invalid-response (str "Error when retrieving invitation with uuid " uuid)))))
+
+(defn retrieve-candidates [{:keys [route-params params]}]
+  (try
+    (let [objective-id (-> (:id route-params)
+                           Integer/parseInt)
+          candidates (writers/retrieve-candidates objective-id)]
+      (-> candidates
+          response/response
+          (response/content-type "application/json")))
+  (catch NumberFormatException e
+    (log/info "Invalid route: " e)
+    (invalid-response "Objective id must be an integer"))
+  (catch Exception e
+    (log/info "Error when retrieving candidates: " e)
+    (invalid-response "Invalid candidates get request for this objective"))))

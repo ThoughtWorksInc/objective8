@@ -36,31 +36,32 @@
                :objective (utils/anti-forgery-hook front-end-handlers/objective-detail)
                :create-comment-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-comment-form-post) #{:signed-in})
                :add-question-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-question-form-post) #{:signed-in})
-               :question-list (utils/anti-forgery-hook front-end-handlers/question-list) 
-               :question (utils/anti-forgery-hook front-end-handlers/question-detail) 
+               :question-list (utils/anti-forgery-hook front-end-handlers/question-list)
+               :question (utils/anti-forgery-hook front-end-handlers/question-detail)
                :add-answer-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-answer-form-post) #{:signed-in})
-               :invitation-form (utils/anti-forgery-hook front-end-handlers/invitation-form) 
+               :invitation-form (utils/anti-forgery-hook front-end-handlers/invitation-form)
                :invitation-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/invitation-form-post) #{:signed-in})
                :writer-invitation front-end-handlers/writer-invitation
                :accept-or-reject-invitation front-end-handlers/accept-or-reject-invitation
 
                
                ; API Handlers
-               :post-user-profile (m/wrap-bearer-token api-handlers/post-user-profile bt/token-provider) 
-               :get-user-by-query (m/wrap-bearer-token api-handlers/find-user-by-query bt/token-provider) 
+               :post-user-profile (m/wrap-bearer-token api-handlers/post-user-profile bt/token-provider)
+               :get-user-by-query (m/wrap-bearer-token api-handlers/find-user-by-query bt/token-provider)
                :get-user (m/wrap-bearer-token api-handlers/get-user bt/token-provider)
                :post-objective (m/wrap-bearer-token api-handlers/post-objective bt/token-provider)
-               :get-objective api-handlers/get-objective 
-               :get-objectives api-handlers/get-objectives 
+               :get-objective api-handlers/get-objective
+               :get-objectives api-handlers/get-objectives
                :get-comments-for-objective api-handlers/retrieve-comments
-               :post-comment (m/wrap-bearer-token api-handlers/post-comment bt/token-provider) 
-               :post-question (m/wrap-bearer-token api-handlers/post-question bt/token-provider) 
+               :post-comment (m/wrap-bearer-token api-handlers/post-comment bt/token-provider)
+               :post-question (m/wrap-bearer-token api-handlers/post-question bt/token-provider)
                :get-question api-handlers/get-question
                :get-questions-for-objective api-handlers/retrieve-questions
                :get-answers-for-question api-handlers/retrieve-answers
                :post-answer (m/wrap-bearer-token api-handlers/post-answer bt/token-provider)
                :post-invitation (m/wrap-bearer-token api-handlers/post-invitation bt/token-provider)
-               :get-invitation (m/wrap-bearer-token api-handlers/get-invitation bt/token-provider)})
+               :get-invitation (m/wrap-bearer-token api-handlers/get-invitation bt/token-provider)
+               :get-candidates-for-objective api-handlers/retrieve-candidates})
 
 (def routes
   ["/"  ;; FRONT-END
@@ -76,7 +77,7 @@
                              ["/" :id] {:get :objective
                                         "/writers" {:get :invitation-form
                                                     "/invitation" {:get :accept-or-reject-invitation}
-                                                    "/invitations" {:post :invitation-form-post}} 
+                                                    "/invitations" {:post :invitation-form-post}}
                                         "/questions" {:post :add-question-form-post
                                                       :get :question-list
                                                       ["/" :q-id] {:get :question
@@ -98,11 +99,11 @@
                                                                      ["/" :q-id] {:get :get-question
                                                                                   "/answers" {:get :get-answers-for-question
                                                                                               :post :post-answer}}}
-                                                       "/writers" {"/invitations" {:post :post-invitation}}}}
+                                                       "/writers" {"/candidates" {:get :get-candidates-for-objective}
+                                                                   "/invitations" {:post :post-invitation}}}}
 
                              "/comments"   {:post :post-comment}
-                             "/invitations" {:get :get-invitation}
-                             }}]) 
+                             "/invitations" {:get :get-invitation}}}])
 
 (defn wrap-not-found [handler]
   (fn [request]
@@ -142,8 +143,8 @@
 
 (defn initialise-api []
   (if-let [bearer-token-details (get-bearer-token-details)]
-    (if (bt/get-token (bearer-token-details :bearer-name)) 
-      (bt/update-token! bearer-token-details)  
+    (if (bt/get-token (bearer-token-details :bearer-name))
+      (bt/update-token! bearer-token-details)
       (bt/store-token! bearer-token-details))))
 
 (defn start-server []

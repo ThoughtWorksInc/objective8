@@ -12,3 +12,8 @@
 (defn retrieve-invitation-by-uuid [uuid]
   (let [{result :result} (storage/pg-retrieve {:entity :invitation :uuid uuid})]
     (dissoc (first result) :entity)))
+
+(defn retrieve-candidates [objective-id]
+  (let [{result :result} (storage/pg-retrieve {:entity :candidate :objective-id objective-id}
+                                              {:limit 50})]
+    (map #(dissoc % :entity) result)))

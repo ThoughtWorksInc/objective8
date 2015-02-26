@@ -163,6 +163,33 @@
                                                           :uuid "the-uuid"})]
                        (storage/pg-retrieve {:entity :invitation :uuid "the-uuid"}) => (contains {:result (contains invitation)})))
 
+               ;;CANDIDATES
+               (fact "a candidate entity can be stored in the database"
+                     (let [stored-user (storage/pg-store! {:entity :user
+                                                           :twitter-id "twitter-TWITTER_ID"})
+                           user-id (:_id stored-user)
+                           stored-objective (storage/pg-store! {:entity :objective
+                                                                :created-by-id user-id
+                                                                :end-date "2015-01-01T00:00:00.000Z"})
+                           objective-id (:_id stored-objective)
+                           stored-invitation (storage/pg-store! {:entity :invitation
+                                                                 :invited-by-id user-id
+                                                                 :objective-id objective-id
+                                                                 :status "active"
+                                                                 :writer-name "barry"
+                                                                 :reason "he's barry"
+                                                                 :uuid "random-uuid"})
+                           invitation-id (:_id stored-invitation)
+                           candidate {:entity :candidate
+                                      :user-id user-id
+                                      :objective-id objective-id
+                                      :invitation-id invitation-id}
+                           store-result (storage/pg-store! candidate)
+                           retrieve-result (storage/pg-retrieve {:entity :candidate :_id (:_id store-result)})]
+                       (first (:result retrieve-result)) => (contains {:user-id user-id
+                                                                       :objective-id objective-id
+                                                                       :invitation-id invitation-id})))
+
                ;;BEARER-TOKENS
                (facts "about bearer-tokens"
                       (fact "a bearer-token entity can be stored in the database"

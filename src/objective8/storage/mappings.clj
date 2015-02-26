@@ -86,6 +86,16 @@
      :invitation (map->json-type invitation)}
     (throw (Exception. "Could not transform map to invitation"))))
 
+(defn map->candidate
+ "Converts a clojure map into a json-typed candidate for the database"
+  [{:keys [user-id objective-id invitation-id] :as candidate}]
+  (if (and user-id objective-id invitation-id)
+    {:user_id user-id
+     :objective_id objective-id
+     :invitation_id invitation-id
+     :candidate (map->json-type candidate)}
+    (throw (Exception. "Could not transform map to candidate"))))
+
 (defn map->bearer-token
  "Converts a clojure map into a json-typed bearer-token for the database"
  [{:keys [bearer-name] :as bearer-token}]
@@ -95,7 +105,7 @@
       (throw (Exception. "Could not transform map to bearer-token"))))
 
 (defn unmap [data-key]
-  (fn [m] (assoc (json-type->map (data-key m)) 
+  (fn [m] (assoc (json-type->map (data-key m))
                  :_id (:_id m)
                  :_created_at (sql-time->iso-time-string (:_created_at m)))))
 
@@ -135,6 +145,12 @@
   (korma/prepare map->invitation)
   (korma/transform (unmap :invitation)))
 
+(korma/defentity candidate
+  (korma/pk :_id)
+  (korma/table :objective8.candidates)
+  (korma/prepare map->candidate)
+  (korma/transform (unmap :candidate)))
+
 (korma/defentity bearer-token
   (korma/pk :_id)
   (korma/table :objective8.bearer_tokens)
@@ -147,6 +163,7 @@
                :question  question
                :answer    answer
                :invitation invitation
+               :candidate candidate
                :bearer-token bearer-token})
 
 (defn get-mapping

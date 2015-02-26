@@ -103,12 +103,11 @@
 
 (facts "About map->invitation"
        (fact "Column values are pulled out and converted, the map gets turned to json"
-             (let [test-invitation (map->invitation invitation-map)]
-               test-invitation => (contains {:objective_id OBJECTIVE_ID
-                                             :invited_by_id USER_ID
-                                             :uuid "something-random"
-                                             :status (has-postgres-type? "invitation_status") 
-                                             :invitation json-type?})))
+             (map->invitation invitation-map) => (contains {:objective_id OBJECTIVE_ID
+                                                            :invited_by_id USER_ID
+                                                            :uuid "something-random"
+                                                            :status (has-postgres-type? "invitation_status")
+                                                            :invitation json-type?}))
 
        (fact "throws exception if :objective-id, :invited-by-id, :uuid or :status are missing"
              (map->invitation (dissoc invitation-map :objective-id)) => (throws Exception "Could not transform map to invitation")
@@ -116,8 +115,18 @@
              (map->invitation (dissoc invitation-map :invited-by-id)) => (throws Exception "Could not transform map to invitation")
              (map->invitation (dissoc invitation-map :status)) => (throws Exception "Could not transform map to invitation")))
 
+;;CANDIDATES
+(def INVITATION_ID 345)
 
+(def candidate-map {:user-id USER_ID
+                    :objective-id OBJECTIVE_ID
+                    :invitation-id INVITATION_ID})
 
+(facts "About map->candidate"
+       (fact "Column values are pulled out and converted, the map gets turned to json"
+             (map->candidate candidate-map) =>  (contains {:user_id USER_ID
+                                                           :objective_id OBJECTIVE_ID
+                                                           :invitation_id INVITATION_ID})))
 
 ;;BEARER-TOKENS
 (def BEARER_NAME "bearer name")
