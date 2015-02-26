@@ -150,9 +150,18 @@
                                                      "/writers/invitations")) the-invitation) => :api-call-result))
 
 ;; INVITATIONS
+
 (def UUID "some-long-random-string")
 
 (fact "retrieving an invitation hits the correct API endpoint"
       (http-api/retrieve-invitation-by-uuid UUID) => :api-call-result
       (provided
         (http-api/default-get-call (contains (str host-url "/api/v1/invitations?uuid=" UUID))) => :api-call-result))
+
+;;CANDIDATES
+
+(fact "getting candidates for an objective hits the correct API endpoint"
+      (http-api/retrieve-candidates OBJECTIVE_ID) => :api-call-result
+      (provided
+        (http-api/default-get-call (contains (str host-url "/api/v1/objectives/"
+                                                  OBJECTIVE_ID "/writers/candidates"))) => :api-call-result))

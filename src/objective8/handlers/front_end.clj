@@ -252,13 +252,15 @@
           {objective-status :status objective :result} (http-api/get-objective objective-id)]
       (cond
         (= ::http-api/success objective-status)
-        (rendered-response invitation-page {:translation t'
-                                            :locale (subs (str locale) 1)
-                                            :doc-title (t' :invitation/doc-title)
-                                            :doc-description (t' :invitation/doc-description)
-                                            :objective-id (:_id objective)
-                                            :uri uri
-                                            :signed-in (signed-in?)})
+          (let [candidates (http-api/retrieve-candidates objective-id)]
+            (rendered-response invitation-page {:translation t'
+                                                :locale (subs (str locale) 1)
+                                                :doc-title (t' :invitation/doc-title)
+                                                :doc-description (t' :invitation/doc-description)
+                                                :objective-id (:_id objective)
+                                                :candidates candidates
+                                                :uri uri
+                                                :signed-in (signed-in?)})) 
         (= objective-status ::http-api/not-found) (error-404-response t' locale)
         :else {:status 500}))
     (catch NumberFormatException e

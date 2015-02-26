@@ -16,3 +16,4 @@
              => (helpers/check-json-body {:s "stored-candidates"})
        (provided
          (writers/retrieve-candidates OBJECTIVE_ID) => {:s "stored-candidates"})))
+

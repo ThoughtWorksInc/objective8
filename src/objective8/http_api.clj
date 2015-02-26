@@ -133,3 +133,7 @@
 (defn retrieve-invitation-by-uuid [uuid]
   (default-get-call
     (str utils/host-url "/api/v1/invitations?uuid=" uuid)))
+
+(defn retrieve-candidates [objective-id]
+  (default-get-call
+    (str utils/host-url "/api/v1/objectives/" objective-id "/writers/candidates")))

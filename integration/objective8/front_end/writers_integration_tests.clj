@@ -1,4 +1,4 @@
-(ns objective8.front-end.invitations-integration-tests 
+(ns objective8.front-end.writers-integration-tests 
   (:require [midje.sweet :refer :all]
             [ring.mock.request :as mock]
             [peridot.core :as p]
@@ -18,7 +18,7 @@
 
 (def default-app (core/app core/app-config))
 
-(facts "about invitations" :integration
+(facts "about writers" :integration
        (binding [config/enable-csrf false]
          (fact "authorised user can invite a policy writer on an objective"
                (against-background
@@ -44,12 +44,17 @@
                  peridot-response => (helpers/flash-message-contains (str "Your invited writer can accept their invitation by going to http://localhost:8080/invitations/" UUID))
                  peridot-response => (helpers/headers-location (str "/objectives/" OBJECTIVE_ID))))
 
-         (fact "A user should be able to view the invite writers page for an objective"
+         (fact "A user should be able to view the writers page for an objective"
                (against-background
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                            :result {:title "some title" 
                                                                     :_id OBJECTIVE_ID}})
-               (default-app invitation-get-request) => (contains {:status 200}))))
+               (default-app invitation-get-request) => (contains {:status 200})
+               (provided
+                 (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success
+                                                                 :results [{:user-id USER_ID
+                                                                            :objective-id OBJECTIVE_ID
+                                                                            :invitation-id INVITATION_ID}]}))))
 
 (facts "about responding to invitations" :integration
        (fact "an invited writer is redirected to the accept/reject page when accessing their invitation link"
