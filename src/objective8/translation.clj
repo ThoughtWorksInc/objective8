@@ -138,6 +138,17 @@
                      :answer-sign-in {:please "Please"
                                       :sign-in "sign in"
                                       :to "to answer this question."}
+                     :writer-invite {:doc-title "Proposed policy writers | Objective[8]"
+                                     :doc-description "Proposed policy writers..." 
+                                     :page-title "Invite a policy writer"
+                                     :writer-name-label "Who"
+                                     :writer-name-title "Writer names are a maximum length of 50 characters"
+                                     :reason-label "Why"
+                                     :reason-title "Reasons are a maximum length of 1000 characters"
+                                     :submit "Invite"}
+                     :writer-invite-sign-in {:please "Please"
+                                              :sign-in "sign in"
+                                              :to "to invite a policy writer."}
                      :users-email {:doc-title "Sign up almost there | Objective[8]"
                                    :doc-description ""
                                    :page-title "Almost there"
@@ -145,6 +156,7 @@
                                    :email-label "Email"
                                    :email-title "Add your email title"
                                    :button "Create account"}}
+
                 :es {:base {:header-logo-text "Objective[8]"
                             :header-logo-title "Inicio"
                             :project-status! "Spanish(ALPHA: We are still in development and testing, <a href=\"/project-status\" title=\"Find out more about our project status\">find out more</a>)"
@@ -270,6 +282,17 @@
                      :answer-sign-in {:please "Spanish(Please)"
                                       :sign-in "Spanish(sign in)"
                                       :to "Spanish(to answer this question.)"}
+                     :writer-invite {:doc-title "Spanish(...)"
+                                     :doc-description "Spanish(...)"
+                                     :page-title "Spanish(...)"
+                                     :writer-name-label "Spanish(...)"
+                                     :writer-name-title "Spanish(...)"
+                                     :reason-label "Spanish(...)"
+                                     :reason-title "Spanish(...)"
+                                     :submit "Spanish(...)"}
+                     :writer-invite-sign-in {:please "Spanish(...)"
+                                              :sign-in "Spanish(...)"
+                                              :to "Spanish(...)"}
                     :users-email {:doc-title "Perfil | Objective[8]"
                                   :doc-description ""
                                   :page-title "Spanish(Almost there)"

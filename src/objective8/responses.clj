@@ -124,6 +124,20 @@
   [:#clj-error-404 html/any-node] (html/replace-vars translation)
   [:#clj-error-404-content] (html/html-content (translation :error-404/page-content)))
 
+;WRITERS
+
+(html/defsnippet writer-invite
+  "templates/writers/writer-invite-form.html" [[:#clj-writer-invite]] [translation objective-id]
+  [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
+  [:form] (html/set-attr :action (str "/objectives/" objective-id "/writers/invitations"))
+  [:#clj-writer-invite html/any-node] (html/replace-vars translation))
+
+(html/defsnippet writer-invite-page 
+  "templates/writers/writer-invite.html" [[:#clj-writer-invite-container]] [{:keys [translation objective-id uri signed-in]}]
+  [:#clj-writer-invite-sign-in-uri] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" uri))
+  [:#clj-writer-invite-container :.response-form] (if signed-in (html/content (writer-invite translation objective-id)) identity)
+  [:#clj-writer-invite-container html/any-node] (html/replace-vars translation))
+
 ;ANSWERS
 (html/defsnippet answer-create
   "templates/answers/answer-create.html" [[:#clj-answer-create]] [translation objective-id question-id]
@@ -245,6 +259,7 @@
   [:#clj-obj-background-label] (html/after (text->p-nodes (:description objective)))
   [:#clj-obj-end-date-value] (html/content (:end-date objective))
   [:#clj-objectives-detail] (html/after (comments-view translation signed-in (:_id objective) comments uri)))
+
 
 ;USERS
 (html/defsnippet users-email

@@ -1,0 +1,11 @@
+<div id="clj-writer-invite" class="writer-invite-posts">
+	<form method="POST" action="/">
+		<label for="writer-name">${writer-invite/writer-name-label}<span class="required">*</span></label>
+		<input id="writer-name" name="writer-name" type="text" pattern=".{3,}" title="${writer-invite/writer-name-title}" maxlength="50" required>
+
+		<label for="reason">${writer-invite/reason-label}<span class="required">*</span></label>
+		<textarea id="reason" name="reason" rows="3" cols="10" maxlength="1000" title="${writer-invite/reason-title}" required></textarea>
+
+		<button type="submit" class="button">${writer-invite/submit}</button>
+	</form>
+</div>

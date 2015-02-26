@@ -39,6 +39,7 @@
                :question-list (utils/anti-forgery-hook front-end-handlers/question-list) 
                :question (utils/anti-forgery-hook front-end-handlers/question-detail) 
                :add-answer-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-answer-form-post) #{:signed-in})
+               :invite-writer-form (utils/anti-forgery-hook front-end-handlers/invite-writer-form) 
                :invite-writer-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/invite-writer-form-post) #{:signed-in})
 
                
@@ -76,7 +77,8 @@
                              :post :create-objective-form-post
                              ["/create"] :create-objective-form
                              ["/" :id] {:get :objective
-                                        "/writers" {"/invitations" {:post :invite-writer-form-post}} 
+                                        "/writers" {:get :invite-writer-form
+                                                    "/invitations" {:post :invite-writer-form-post}} 
                                         "/questions" {:post :add-question-form-post
                                                       :get :question-list
                                                       ["/" :q-id] {:get :question

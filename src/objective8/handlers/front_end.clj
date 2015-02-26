@@ -246,6 +246,26 @@
 
 ;; WRITERS 
 
+(defn invite-writer-form [{{id :id} :route-params
+                          :keys [uri t' locale]}]
+  (try
+    (let [objective-id (Integer/parseInt id)
+          {objective-status :status objective :result} (http-api/get-objective objective-id)]
+      (cond
+        (= ::http-api/success objective-status)
+        (rendered-response writer-invite-page {:translation t'
+                                               :locale (subs (str locale) 1)
+                                               :doc-title (t' :writer-invite/doc-title)
+                                               :doc-description (t' :writer-invite/doc-description)
+                                               :objective-id (:_id objective)
+                                               :uri uri
+                                               :signed-in (signed-in?)})
+        (= objective-status ::http-api/not-found) (error-404-response t' locale)
+        :else {:status 500}))
+    (catch NumberFormatException e
+      (log/info "Invalid route: " e)
+      (error-404-response t' locale))))
+
 (defn invite-writer-form-post [{:keys [t' locale] :as request}]
   (if-let [invited-writer (helpers/request->invited-writer-info request (get (friend/current-authentication) :username))]
     (let [{status :status stored-invited-writer :result} (http-api/invite-writer invited-writer)]

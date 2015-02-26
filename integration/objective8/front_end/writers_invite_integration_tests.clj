@@ -1,17 +1,23 @@
 (ns objective8.front-end.writers-invite-integration-tests
   (:require [midje.sweet :refer :all]
+            [ring.mock.request :as mock]
             [peridot.core :as p]
             [oauth.client :as oauth]
             [objective8.config :as config] 
             [objective8.integration-helpers :as helpers]
+            [objective8.utils :as utils]
+            [objective8.core :as core]  
             [objective8.http-api :as http-api]))
 
 (def USER_ID 1)
 (def OBJECTIVE_ID 2)
 (def INVITATION_ID 3)
 (def UUID "random-uuid")
+(def writers-invite-get-request (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/writers")))
 
-(facts "about inviting writers" :integration
+(def default-app (core/app core/app-config))
+
+(facts "about writers" :integration
        (binding [config/enable-csrf false]
          (fact "authorised user can invite a policy writer on an objective"
                (against-background
@@ -35,4 +41,11 @@
                                                      :request-method :post
                                                      :params params))]
                  peridot-response => (helpers/flash-message-contains (str "Your invited writer can accept their invitation by going to http://localhost:8080/invitations/" UUID))
-                 peridot-response => (helpers/headers-location (str "/objectives/" OBJECTIVE_ID))))))
+                 peridot-response => (helpers/headers-location (str "/objectives/" OBJECTIVE_ID))))
+
+         (fact "A user should be able to view the invite writers page for an objective"
+               (against-background
+                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                           :result {:title "some title" 
+                                                                  :_id OBJECTIVE_ID}})
+               (default-app writers-invite-get-request) => (contains {:status 200})))) 
