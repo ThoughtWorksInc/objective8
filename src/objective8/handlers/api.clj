@@ -219,7 +219,7 @@
       (successful-post-response resource-location stored-invitation))
   (catch NumberFormatException e
     (log/info "Invalid route: " e)
-    (invalid-response "Objective id must be an integer")) 
+    (invalid-response "Objective id must be an integer"))
   (catch Exception e
     (log/info "Error when posting an invitation: " e)
     (invalid-response "Invalid invitation post request for this objective"))))
