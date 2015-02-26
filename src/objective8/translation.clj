@@ -139,16 +139,17 @@
                                       :sign-in "sign in"
                                       :to "to answer this question."}
                      :invitation {:doc-title "Proposed policy writers | Objective[8]"
-                                     :doc-description "Proposed policy writers..." 
-                                     :page-title "Invite a policy writer"
-                                     :writer-name-label "Who"
-                                     :writer-name-title "Writer names are a maximum length of 50 characters"
-                                     :reason-label "Why"
-                                     :reason-title "Reasons are a maximum length of 1000 characters"
-                                     :submit "Invite"}
+                                  :doc-description "Proposed policy writers..."
+                                  :page-title "Invite a policy writer"
+                                  :page-intro "Do you know someone with the enthusiasm and expertise to help draft this policy?"
+                                  :writer-name-label "Who"
+                                  :writer-name-title "Writer names are a maximum length of 50 characters"
+                                  :reason-label "Why"
+                                  :reason-title "Reasons are a maximum length of 1000 characters"
+                                  :submit "Invite"}
                      :invitation-sign-in {:please "Please"
-                                              :sign-in "sign in"
-                                              :to "to invite a policy writer."}
+                                          :sign-in "sign in"
+                                          :to "to invite a policy writer."}
                      :users-email {:doc-title "Sign up almost there | Objective[8]"
                                    :doc-description ""
                                    :page-title "Almost there"
@@ -283,13 +284,14 @@
                                       :sign-in "Spanish(sign in)"
                                       :to "Spanish(to answer this question.)"}
                      :invitation {:doc-title "Spanish(...)"
-                                     :doc-description "Spanish(...)"
-                                     :page-title "Spanish(...)"
-                                     :writer-name-label "Spanish(...)"
-                                     :writer-name-title "Spanish(...)"
-                                     :reason-label "Spanish(...)"
-                                     :reason-title "Spanish(...)"
-                                     :submit "Spanish(...)"}
+                                  :doc-description "Spanish(...)"
+                                  :page-title "Spanish(...)"
+                                  :page-intro "Spanish(...)"
+                                  :writer-name-label "Spanish(...)"
+                                  :writer-name-title "Spanish(...)"
+                                  :reason-label "Spanish(...)"
+                                  :reason-title "Spanish(...)"
+                                  :submit "Spanish(...)"}
                      :invitation-sign-in {:please "Spanish(...)"
                                               :sign-in "Spanish(...)"
                                               :to "Spanish(...)"}
