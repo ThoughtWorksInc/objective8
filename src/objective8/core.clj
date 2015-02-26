@@ -41,7 +41,7 @@
                :add-answer-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-answer-form-post) #{:signed-in})
                :invite-writer-form (utils/anti-forgery-hook front-end-handlers/invite-writer-form) 
                :invite-writer-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/invite-writer-form-post) #{:signed-in})
-
+               :writer-invitation (utils/anti-forgery-hook front-end-handlers/writer-invitation)
                
                ; API Handlers
                :post-user-profile (m/wrap-bearer-token api-handlers/post-user-profile bt/token-provider) 
@@ -85,6 +85,8 @@
                                                                    "/answers" {:post :add-answer-form-post}}}}}
 
         "comments"          {:post :create-comment-form-post}
+
+        "invitations"       {["/" :uuid] {:get :writer-invitation}}
 
         "api/v1"            {"/users" {:post :post-user-profile
                                        :get :find-user-by-query

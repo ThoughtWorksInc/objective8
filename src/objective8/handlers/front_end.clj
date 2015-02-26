@@ -280,3 +280,7 @@
 
         :else {:status 502}))
     {:status 400}))
+
+(defn writer-invitation [{{uuid :uuid} :route-params}]
+(let [{invitation :result} (storage/pg-retrieve {:entity :invitation :uuid uuid})]
+  (simple-response (str "Invited policy writer for objective: " (:objective-id (first invitation))))))
