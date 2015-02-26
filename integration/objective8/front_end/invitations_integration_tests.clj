@@ -11,13 +11,14 @@
 
 (def USER_ID 1)
 (def OBJECTIVE_ID 2)
+(def OBJECTIVE_TITLE "some title")
 (def INVITATION_ID 3)
 (def UUID "random-uuid")
 (def invitation-get-request (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/writers")))
 
 (def default-app (core/app core/app-config))
 
-(facts "about writers" :integration
+(facts "about invitations" :integration
        (binding [config/enable-csrf false]
          (fact "authorised user can invite a policy writer on an objective"
                (against-background
@@ -48,4 +49,27 @@
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                            :result {:title "some title" 
                                                                     :_id OBJECTIVE_ID}})
-               (default-app invitation-get-request) => (contains {:status 200})))) 
+               (default-app invitation-get-request) => (contains {:status 200}))))
+
+(facts "about responding to invitations" :integration
+       (fact "an invited writer is redirected to the accept/reject page when accessing their invitation link"
+             (against-background
+               (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success
+                                                                   :result {:_id INVITATION_ID
+                                                                            :invited-by-id USER_ID
+                                                                            :objective-id OBJECTIVE_ID
+                                                                            :uuid UUID
+                                                                            :status "active"}}
+               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                              :result {:title OBJECTIVE_TITLE}})
+             (let [user-session (helpers/test-context)
+                   invitation-url (str "http://localhost:8080/invitations/" UUID)
+                   accept-reject-url (str "/objectives/" OBJECTIVE_ID "/writers/invitation")
+                   peridot-response (-> user-session
+                                        (p/request invitation-url)
+                                        p/follow-redirect)]
+               peridot-response => (contains {:request (contains {:uri (contains accept-reject-url)})})
+               peridot-response => (contains {:response (contains {:body (contains OBJECTIVE_TITLE)})})))
+       
+       (fact "a user cannot access the accept/reject page without an invitation"
+             (p/request (helpers/test-context) (str "http://localhost:8080/objectives/" OBJECTIVE_ID "/writers/invitation")) => (contains {:response (contains {:status 404})})))

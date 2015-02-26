@@ -7,8 +7,7 @@
             [objective8.responses :refer :all]
             [objective8.http-api :as http-api]
             [objective8.front-end-helpers :as helpers]
-            [objective8.utils :as utils]
-            [objective8.storage.storage :as storage]))
+            [objective8.utils :as utils]))
 
 ;; HELPERS
 
@@ -279,6 +278,15 @@
         :else {:status 502}))
     {:status 400}))
 
-(defn writer-invitation [{{uuid :uuid} :route-params}]
-  (let [{invitation :result} (storage/pg-retrieve {:entity :invitation :uuid uuid})]
-    (simple-response (str "Invited policy writer for objective: " (:objective-id (first invitation))))))
+(defn writer-invitation [{{uuid :uuid} :route-params session :session}]
+  (let [{{objective-id :objective-id} :result} (http-api/retrieve-invitation-by-uuid uuid)
+        session-with-invitation (assoc session :invitation {:uuid uuid :objective-id objective-id})]
+    (-> (str utils/host-url "/objectives/" objective-id "/writers/invitation")
+        response/redirect
+        (assoc :session session-with-invitation)))) 
+
+(defn accept-or-reject-invitation [{:keys [session t' locale] :as request}]
+  (if-let [invitation-details (:invitation session)]
+    (let [{objective :result} (http-api/get-objective (:objective-id invitation-details))]
+      (simple-response (:title objective)))
+    (error-404-response t' locale)))

@@ -42,10 +42,12 @@
                :invitation-form (utils/anti-forgery-hook front-end-handlers/invitation-form) 
                :invitation-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/invitation-form-post) #{:signed-in})
                :writer-invitation (utils/anti-forgery-hook front-end-handlers/writer-invitation)
+               :accept-or-reject-invitation front-end-handlers/accept-or-reject-invitation
+
                
                ; API Handlers
                :post-user-profile (m/wrap-bearer-token api-handlers/post-user-profile bt/token-provider) 
-               :find-user-by-query (m/wrap-bearer-token api-handlers/find-user-by-query bt/token-provider) 
+               :get-user-by-query (m/wrap-bearer-token api-handlers/find-user-by-query bt/token-provider) 
                :get-user (m/wrap-bearer-token api-handlers/get-user bt/token-provider)
                :post-objective (m/wrap-bearer-token api-handlers/post-objective bt/token-provider)
                :get-objective api-handlers/get-objective 
@@ -61,35 +63,30 @@
                :get-invitation (m/wrap-bearer-token api-handlers/get-invitation bt/token-provider)})
 
 (def routes
-  ["/" {""                  :index
-
+  ["/"  ;; FRONT-END
+        {""                  :index
         "sign-in"           :sign-in
-
         "sign-out"          :sign-out
-
         "project-status"    :project-status
-
         "learn-more"        :learn-more
-
         "static/"           (->Resources {:prefix "public/"})
-
         "objectives"        {:get :objective-list
                              :post :create-objective-form-post
                              ["/create"] :create-objective-form
                              ["/" :id] {:get :objective
                                         "/writers" {:get :invitation-form
+                                                    "/invitation" {:get :accept-or-reject-invitation}
                                                     "/invitations" {:post :invitation-form-post}} 
                                         "/questions" {:post :add-question-form-post
                                                       :get :question-list
                                                       ["/" :q-id] {:get :question
                                                                    "/answers" {:post :add-answer-form-post}}}}}
-
         "comments"          {:post :create-comment-form-post}
-
         "invitations"       {["/" :uuid] {:get :writer-invitation}}
 
+        ;; API
         "api/v1"            {"/users" {:post :post-user-profile
-                                       :get :find-user-by-query
+                                       :get :get-user-by-query
                                        ["/" :id] :get-user}
 
                              "/objectives" {:get :get-objectives
