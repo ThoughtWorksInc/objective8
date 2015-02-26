@@ -65,6 +65,7 @@
                               (helpers/db-connection)
                               (helpers/truncate-tables)))
           (after :facts (helpers/truncate-tables)) ]
+
        (fact "GET /api/v1/invitations?uuid=<UUID> retrieves the active invitation with the given uuid if it exists"
            (let 
              [created-by-id (:_id (users/store-user! {:twitter-id "some-twitter-id"}))
@@ -72,4 +73,7 @@
               stored-invitation (writers/store-invited-writer! {:invited-by-id created-by-id 
                                                                 :objective-id objective-id})
               uuid (:uuid stored-invitation)]
-        (helpers/peridot-response-json-body->map (p/request app (str "/api/v1/invitations?uuid=" uuid))) => (dissoc stored-invitation :entity)))))
+        (helpers/peridot-response-json-body->map (p/request app (str "/api/v1/invitations?uuid=" uuid))) => (dissoc stored-invitation :entity)))
+
+       (fact "GET /api/v1/invitations?uuid=<UUID> returns a 404 status if an invitation with uuid=<UUID> doesn't exist"
+             (p/request app "/api/v1/invitations?uuid=non-existent-uuid") => (contains {:response (contains {:status 404})}))))
