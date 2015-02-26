@@ -7,6 +7,11 @@
     (and (= (type thing) org.postgresql.util.PGobject)
          (= (.getType thing) "json")))
 
+(defn has-postgres-type? [the-type]
+  (fn [thing]
+    (and (= (type thing) org.postgresql.util.PGobject)
+         (= (.getType thing) the-type))))
+
 (defn time-type? [thing]
   (= (type thing) java.sql.Timestamp))
 
@@ -87,11 +92,14 @@
                     (map->answer (dissoc answer-map :question-id)) => (throws Exception "Could not transform map to answer")))
 
 ;;INVITATIONS
+(def INVITATION_STATUS "active")
+
 (def invitation-map {:invited-by-id USER_ID
+                     :objective-id OBJECTIVE_ID
+                     :status INVITATION_STATUS
                      :writer-name "barry"
                      :reason "the reason"
-                     :uuid "something-random"
-                     :objective-id OBJECTIVE_ID})
+                     :uuid "something-random"})
 
 (facts "About map->invitation"
        (fact "Column values are pulled out and converted, the map gets turned to json"
@@ -99,12 +107,14 @@
                test-invitation => (contains {:objective_id OBJECTIVE_ID
                                              :invited_by_id USER_ID
                                              :uuid "something-random"
+                                             :status (has-postgres-type? "invitation_status") 
                                              :invitation json-type?})))
 
-       (fact "throws exception if :objective-id, :invited-by-id or :uuid are missing"
+       (fact "throws exception if :objective-id, :invited-by-id, :uuid or :status are missing"
              (map->invitation (dissoc invitation-map :objective-id)) => (throws Exception "Could not transform map to invitation")
              (map->invitation (dissoc invitation-map :uuid)) => (throws Exception "Could not transform map to invitation")
-             (map->invitation (dissoc invitation-map :invited-by-id)) => (throws Exception "Could not transform map to invitation")))
+             (map->invitation (dissoc invitation-map :invited-by-id)) => (throws Exception "Could not transform map to invitation")
+             (map->invitation (dissoc invitation-map :status)) => (throws Exception "Could not transform map to invitation")))
 
 
 

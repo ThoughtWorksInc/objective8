@@ -10,11 +10,14 @@
       (writers/store-invited-writer! {:writer-name "something"}) => (throws org.postgresql.util.PSQLException)
       (provided
         (storage/pg-store! 
-          {:entity :invitation :writer-name "something" :uuid "random-uuid"}) =throws=> (org.postgresql.util.PSQLException.
-                                                                                          (org.postgresql.util.ServerErrorMessage. "" 0))))
+          {:entity :invitation 
+           :writer-name "something" 
+           :uuid "random-uuid" 
+           :status "active"}) =throws=> (org.postgresql.util.PSQLException.
+                                          (org.postgresql.util.ServerErrorMessage. "" 0))))
 
 (fact "stores invited writer with random uuid"
       (writers/store-invited-writer! {:writer-name "something"}) => :stored-invitation 
       (provided
         (utils/generate-random-uuid) => "random-uuid"
-        (storage/pg-store! {:entity :invitation :writer-name "something" :uuid "random-uuid"}) => :stored-invitation))
+        (storage/pg-store! {:entity :invitation :writer-name "something" :uuid "random-uuid" :status "active"}) => :stored-invitation))

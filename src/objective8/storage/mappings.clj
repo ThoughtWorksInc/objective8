@@ -9,18 +9,27 @@
 (defn sql-time->iso-time-string [sql-time]
   (utils/date-time->iso-time-string (tc/from-sql-time sql-time)))
 
+(defn string->postgres-type
+  "Convert a string to a Postgres object with the given type."
+  [type value]
+  (doto (PGobject.)
+    (.setType type)
+    (.setValue value)))
+
+(defn postgres-type->string
+  "Convert a postgres object to its string representation"
+  [pgobject]
+  (.getValue pgobject))
 
 (defn map->json-type
   "Convert a clojure map to a Postgres JSON type"
   [m]
-  (doto (PGobject.)
-    (.setType "json")
-    (.setValue (json/generate-string m))))
+  (string->postgres-type "json" (json/generate-string m)))
 
 (defn json-type->map
   "Convert a Postgres JSON type to a clojure map"
   [pgobject]
-  (json/parse-string (.getValue pgobject) true))
+  (json/parse-string (postgres-type->string pgobject) true))
 
 (defn map->objective
   "Converts a clojure map into a json-typed objective for the database"
@@ -68,11 +77,12 @@
 
 (defn map->invitation
  "Converts a clojure map into a json-typed invitation for the database" 
-  [{:keys [invited-by-id objective-id uuid] :as invitation}]
-  (if (and invited-by-id objective-id uuid)
+  [{:keys [invited-by-id objective-id uuid status] :as invitation}]
+  (if (and invited-by-id objective-id uuid status)
     {:invited_by_id invited-by-id
      :objective_id objective-id
      :uuid uuid
+     :status (string->postgres-type "invitation_status" status)
      :invitation (map->json-type invitation)}
     (throw (Exception. "Could not transform map to invitation"))))
 

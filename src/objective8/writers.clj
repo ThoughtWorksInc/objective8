@@ -6,6 +6,7 @@
 (defn store-invited-writer! [writer]
   (storage/pg-store! (assoc writer 
                             :entity :invitation
+                            :status "active"
                             :uuid (utils/generate-random-uuid))))
 
 (defn retrieve-invitation-by-uuid [uuid]

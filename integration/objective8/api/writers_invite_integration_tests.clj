@@ -65,7 +65,7 @@
                               (helpers/db-connection)
                               (helpers/truncate-tables)))
           (after :facts (helpers/truncate-tables)) ]
-       (fact "GET /api/v1/invitations?uuid=<UUID> retrieves an active invitation by the uuid if it exists"
+       (fact "GET /api/v1/invitations?uuid=<UUID> retrieves the active invitation with the given uuid if it exists"
            (let 
              [created-by-id (:_id (users/store-user! {:twitter-id "some-twitter-id"}))
               objective-id (:_id (objectives/store-objective! {:created-by-id created-by-id :end-date "2015-01-01"}))

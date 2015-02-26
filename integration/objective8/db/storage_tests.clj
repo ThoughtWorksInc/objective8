@@ -139,6 +139,7 @@
                            invitation {:entity :invitation
                                        :invited-by-id user-id
                                        :objective-id objective-id
+                                       :status "active"
                                        :writer-name "barry"
                                        :reason "he's barry"
                                        :uuid "random-uuid"}
@@ -146,7 +147,8 @@
                            retrieve-result (storage/pg-retrieve {:entity :invitation :_id (:_id store-result)})]
                        (first (:result retrieve-result)) => (contains {:invited-by-id user-id
                                                                        :objective-id objective-id
-                                                                       :uuid "random-uuid"})))
+                                                                       :uuid "random-uuid"
+                                                                       :status "active"})))
 
                (fact "an invitation can be retrieved by uuid"
                      (let [user-id (:_id (storage/pg-store! {:entity :user
@@ -157,6 +159,7 @@
                            invitation (storage/pg-store! {:entity :invitation
                                                           :invited-by-id user-id
                                                           :objective-id objective-id
+                                                          :status "active"
                                                           :uuid "the-uuid"})]
                        (storage/pg-retrieve {:entity :invitation :uuid "the-uuid"}) => (contains {:result (contains invitation)})))
 
