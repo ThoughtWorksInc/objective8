@@ -70,6 +70,10 @@
                                         p/follow-redirect)]
                peridot-response => (contains {:request (contains {:uri (contains accept-reject-url)})})
                peridot-response => (contains {:response (contains {:body (contains OBJECTIVE_TITLE)})})))
-       
+       (fact "an invitation url gives a 404 if the invitation doesn't exist"
+             (against-background
+               (http-api/retrieve-invitation-by-uuid anything) => {:status ::http-api/not-found})
+             (p/request (helpers/test-context) "/invitations/nonexistent-invitation-uuid") => (contains {:response (contains {:status 404})}))
+
        (fact "a user cannot access the accept/reject page without an invitation"
              (p/request (helpers/test-context) (str "http://localhost:8080/objectives/" OBJECTIVE_ID "/writers/invitation")) => (contains {:response (contains {:status 404})})))

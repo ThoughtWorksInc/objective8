@@ -41,7 +41,7 @@
                :add-answer-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-answer-form-post) #{:signed-in})
                :invitation-form (utils/anti-forgery-hook front-end-handlers/invitation-form) 
                :invitation-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/invitation-form-post) #{:signed-in})
-               :writer-invitation (utils/anti-forgery-hook front-end-handlers/writer-invitation)
+               :writer-invitation front-end-handlers/writer-invitation
                :accept-or-reject-invitation front-end-handlers/accept-or-reject-invitation
 
                

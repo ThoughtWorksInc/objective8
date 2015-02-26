@@ -278,12 +278,16 @@
         :else {:status 502}))
     {:status 400}))
 
-(defn writer-invitation [{{uuid :uuid} :route-params session :session}]
-  (let [{{objective-id :objective-id} :result} (http-api/retrieve-invitation-by-uuid uuid)
-        session-with-invitation (assoc session :invitation {:uuid uuid :objective-id objective-id})]
-    (-> (str utils/host-url "/objectives/" objective-id "/writers/invitation")
-        response/redirect
-        (assoc :session session-with-invitation)))) 
+(defn writer-invitation [{{uuid :uuid} :route-params :keys [t' locale session]}]
+  (let [{status :status {objective-id :objective-id} :result} (http-api/retrieve-invitation-by-uuid uuid)]
+    (cond
+      (= status ::http-api/success)
+      (-> (str utils/host-url "/objectives/" objective-id "/writers/invitation")
+          response/redirect
+          (assoc :session session)
+          (assoc-in [:session :invitation] {:uuid uuid :objective-id objective-id}))
+      (= status ::http-api/not-found) (error-404-response t' locale)
+      :else {:status 500})))
 
 (defn accept-or-reject-invitation [{:keys [session t' locale] :as request}]
   (if-let [invitation-details (:invitation session)]
