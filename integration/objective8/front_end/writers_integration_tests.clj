@@ -66,7 +66,7 @@
                                                                             :uuid UUID
                                                                             :status "active"}}
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                              :result {:title OBJECTIVE_TITLE}})
+                                                         :result {:title OBJECTIVE_TITLE}})
              (let [user-session (helpers/test-context)
                    invitation-url (str "http://localhost:8080/invitations/" UUID)
                    accept-reject-url (str "/objectives/" OBJECTIVE_ID "/writers/invitation")
@@ -75,6 +75,7 @@
                                         p/follow-redirect)]
                peridot-response => (contains {:request (contains {:uri (contains accept-reject-url)})})
                peridot-response => (contains {:response (contains {:body (contains OBJECTIVE_TITLE)})})))
+
        (fact "an invitation url gives a 404 if the invitation doesn't exist"
              (against-background
                (http-api/retrieve-invitation-by-uuid anything) => {:status ::http-api/not-found})

@@ -291,8 +291,14 @@
       (= status ::http-api/not-found) (error-404-response t' locale)
       :else {:status 500})))
 
-(defn accept-or-reject-invitation [{:keys [session t' locale] :as request}]
+(defn accept-or-reject-invitation [{:keys [session t' locale uri] :as request}]
   (if-let [invitation-details (:invitation session)]
     (let [{objective :result} (http-api/get-objective (:objective-id invitation-details))]
-      (simple-response (:title objective)))
+      (rendered-response invitation-response-page {:translation t'
+                                                   :locale (subs (str locale) 1)
+                                                   :doc-title (t' :invitation-response/doc-title)
+                                                   :doc-description (t' :invitation-response/doc-description)
+                                                   :objective objective
+                                                   :uri uri
+                                                   :signed-in (signed-in?)}))
     (error-404-response t' locale)))

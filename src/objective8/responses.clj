@@ -124,7 +124,7 @@
   [:#clj-error-404 html/any-node] (html/replace-vars translation)
   [:#clj-error-404-content] (html/html-content (translation :error-404/page-content)))
 
-;WRITERS
+;INVITATIONS
 
 (html/defsnippet invitation-create
   "templates/writers/invitation-form.html" [[:#clj-invitation]] [translation objective-id]
@@ -137,6 +137,13 @@
   [:#clj-invitation-sign-in-uri] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" uri))
   [:#clj-invitation-container :.response-form] (if signed-in (html/content (invitation-create translation objective-id)) identity)
   [:#clj-invitation-container html/any-node] (html/replace-vars translation))
+
+(html/defsnippet invitation-response-page
+  "templates/writers/invitation-response.html" [:#clj-invitation-response]
+  [{:keys [translation objective uri signed-in]}]
+  [:#clj-invitation-response-accept] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" uri))
+  [:#clj-invitation-response-objective-title] (html/content (:title objective))
+  [:#clj-invitation-response html/any-node] (html/replace-vars translation))
 
 ;ANSWERS
 (html/defsnippet answer-create

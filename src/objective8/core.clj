@@ -60,7 +60,7 @@
                :get-answers-for-question api-handlers/retrieve-answers
                :post-answer (m/wrap-bearer-token api-handlers/post-answer bt/token-provider)
                :post-invitation (m/wrap-bearer-token api-handlers/post-invitation bt/token-provider)
-               :get-invitation (m/wrap-bearer-token api-handlers/get-invitation bt/token-provider)
+               :get-invitation api-handlers/get-invitation
                :get-candidates-for-objective api-handlers/retrieve-candidates})
 
 (def routes
