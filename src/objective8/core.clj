@@ -39,8 +39,8 @@
                :question-list (utils/anti-forgery-hook front-end-handlers/question-list) 
                :question (utils/anti-forgery-hook front-end-handlers/question-detail) 
                :add-answer-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-answer-form-post) #{:signed-in})
-               :invite-writer-form (utils/anti-forgery-hook front-end-handlers/invite-writer-form) 
-               :invite-writer-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/invite-writer-form-post) #{:signed-in})
+               :invitation-form (utils/anti-forgery-hook front-end-handlers/invitation-form) 
+               :invitation-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/invitation-form-post) #{:signed-in})
                :writer-invitation (utils/anti-forgery-hook front-end-handlers/writer-invitation)
                
                ; API Handlers
@@ -57,7 +57,7 @@
                :get-questions-for-objective api-handlers/retrieve-questions
                :get-answers-for-question api-handlers/retrieve-answers
                :post-answer (m/wrap-bearer-token api-handlers/post-answer bt/token-provider)
-               :invite-writer (m/wrap-bearer-token api-handlers/invite-writer bt/token-provider)
+               :post-invitation (m/wrap-bearer-token api-handlers/post-invitation bt/token-provider)
                :get-invitation (m/wrap-bearer-token api-handlers/get-invitation bt/token-provider)})
 
 (def routes
@@ -77,8 +77,8 @@
                              :post :create-objective-form-post
                              ["/create"] :create-objective-form
                              ["/" :id] {:get :objective
-                                        "/writers" {:get :invite-writer-form
-                                                    "/invitations" {:post :invite-writer-form-post}} 
+                                        "/writers" {:get :invitation-form
+                                                    "/invitations" {:post :invitation-form-post}} 
                                         "/questions" {:post :add-question-form-post
                                                       :get :question-list
                                                       ["/" :q-id] {:get :question
@@ -101,7 +101,7 @@
                                                                      ["/" :q-id] {:get :get-question
                                                                                   "/answers" {:get :get-answers-for-question
                                                                                               :post :post-answer}}}
-                                                       "/writers" {"/invitations" {:post :invite-writer}}}}
+                                                       "/writers" {"/invitations" {:post :post-invitation}}}}
 
                              "/comments"   {:post :post-comment}
                              "/invitations" {:get :get-invitation}

@@ -1,4 +1,4 @@
-(ns objective8.front-end.writers-invite-integration-tests
+(ns objective8.front-end.invitations-integration-tests 
   (:require [midje.sweet :refer :all]
             [ring.mock.request :as mock]
             [peridot.core :as p]
@@ -13,7 +13,7 @@
 (def OBJECTIVE_ID 2)
 (def INVITATION_ID 3)
 (def UUID "random-uuid")
-(def writers-invite-get-request (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/writers")))
+(def invitation-get-request (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/writers")))
 
 (def default-app (core/app core/app-config))
 
@@ -25,13 +25,13 @@
                  (http-api/create-user anything) => {:status ::http-api/success
                                                      :result {:_id USER_ID}}
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success}
-                 (http-api/invite-writer {:writer-name "bob"
-                                          :reason "he's awesome"
-                                          :objective-id OBJECTIVE_ID
-                                          :invited-by-id USER_ID}) => {:status ::http-api/success
-                                                                          :result {:_id INVITATION_ID
-                                                                                   :objective-id OBJECTIVE_ID
-                                                                                   :uuid UUID}})
+                 (http-api/create-invitation {:writer-name "bob"
+                                              :reason "he's awesome"
+                                              :objective-id OBJECTIVE_ID
+                                              :invited-by-id USER_ID}) => {:status ::http-api/success
+                                                                           :result {:_id INVITATION_ID
+                                                                                    :objective-id OBJECTIVE_ID
+                                                                                    :uuid UUID}})
                (let [user-session (helpers/test-context)
                      params {:writer-name "bob"
                              :reason "he's awesome"}
@@ -47,5 +47,5 @@
                (against-background
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                            :result {:title "some title" 
-                                                                  :_id OBJECTIVE_ID}})
-               (default-app writers-invite-get-request) => (contains {:status 200})))) 
+                                                                    :_id OBJECTIVE_ID}})
+               (default-app invitation-get-request) => (contains {:status 200})))) 

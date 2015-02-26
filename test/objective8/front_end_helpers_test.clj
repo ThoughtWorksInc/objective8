@@ -49,7 +49,7 @@
                    :created-by-id USER_ID}))
 
 (fact "creates invited-writer-info map from a request"
-      (let [writer (request->invited-writer-info {:route-params {:id (str OBJECTIVE_ID)} 
+      (let [writer (request->invitation-info {:route-params {:id (str OBJECTIVE_ID)} 
                                                   :params {:writer-name "Jenny" :reason "Just because"}} USER_ID)]
         writer => {:writer-name "Jenny"
                    :reason "Just because"

@@ -246,41 +246,39 @@
 
 ;; WRITERS 
 
-(defn invite-writer-form [{{id :id} :route-params
-                          :keys [uri t' locale]}]
+(defn invitation-form [{{id :id} :route-params
+                        :keys [uri t' locale]}]
   (try
     (let [objective-id (Integer/parseInt id)
           {objective-status :status objective :result} (http-api/get-objective objective-id)]
       (cond
         (= ::http-api/success objective-status)
-        (rendered-response writer-invite-page {:translation t'
-                                               :locale (subs (str locale) 1)
-                                               :doc-title (t' :writer-invite/doc-title)
-                                               :doc-description (t' :writer-invite/doc-description)
-                                               :objective-id (:_id objective)
-                                               :uri uri
-                                               :signed-in (signed-in?)})
+        (rendered-response invitation-page {:translation t'
+                                            :locale (subs (str locale) 1)
+                                            :doc-title (t' :invitation/doc-title)
+                                            :doc-description (t' :invitation/doc-description)
+                                            :objective-id (:_id objective)
+                                            :uri uri
+                                            :signed-in (signed-in?)})
         (= objective-status ::http-api/not-found) (error-404-response t' locale)
         :else {:status 500}))
     (catch NumberFormatException e
       (log/info "Invalid route: " e)
       (error-404-response t' locale))))
 
-(defn invite-writer-form-post [{:keys [t' locale] :as request}]
-  (if-let [invited-writer (helpers/request->invited-writer-info request (get (friend/current-authentication) :username))]
-    (let [{status :status stored-invited-writer :result} (http-api/invite-writer invited-writer)]
+(defn invitation-form-post [{:keys [t' locale] :as request}]
+  (if-let [invitation (helpers/request->invitation-info request (get (friend/current-authentication) :username))]
+    (let [{status :status stored-invitation :result} (http-api/create-invitation invitation)]
       (cond
         (= status ::http-api/success)
-        (let [writer-url (str utils/host-url "/objectives/" (:objective-id stored-invited-writer))
+        (let [invitation-url (str utils/host-url "/objectives/" (:objective-id stored-invitation))
               message (str "Your invited writer can accept their invitation by going to "
-                           utils/host-url "/invitations/" (:uuid stored-invited-writer))]
-          (assoc (response/redirect writer-url) :flash message))
-
+                           utils/host-url "/invitations/" (:uuid stored-invitation))]
+          (assoc (response/redirect invitation-url) :flash message))
         (= status ::http-api/invalid-input) {:status 400}
-
         :else {:status 502}))
     {:status 400}))
 
 (defn writer-invitation [{{uuid :uuid} :route-params}]
-(let [{invitation :result} (storage/pg-retrieve {:entity :invitation :uuid uuid})]
-  (simple-response (str "Invited policy writer for objective: " (:objective-id (first invitation))))))
+  (let [{invitation :result} (storage/pg-retrieve {:entity :invitation :uuid uuid})]
+    (simple-response (str "Invited policy writer for objective: " (:objective-id (first invitation))))))

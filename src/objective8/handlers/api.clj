@@ -205,24 +205,24 @@
       (invalid-response "Invalid answer request for this objective"))))
 
 ;;WRITERS
-(defn invite-writer [{:keys [route-params params]}]
+(defn post-invitation [{:keys [route-params params]}]
   (try
     (let [objective-id (-> (:id route-params)
                            Integer/parseInt)
-          writer (-> params
+          invitation (-> params
                      (select-keys [:writer-name :reason :invited-by-id])
                      (assoc :objective-id objective-id))
-          stored-writer (writers/store-invited-writer! writer)
+          stored-invitation (writers/store-invitation! invitation)
           resource-location (str utils/host-url
-                                 "/api/v1/objectives/" (:objective-id stored-writer)
-                                 "/writers/invitations/" (:_id stored-writer))]
-      (successful-post-response resource-location stored-writer))
+                                 "/api/v1/objectives/" (:objective-id stored-invitation)
+                                 "/writers/invitations/" (:_id stored-invitation))]
+      (successful-post-response resource-location stored-invitation))
   (catch NumberFormatException e
     (log/info "Invalid route: " e)
     (invalid-response "Objective id must be an integer")) 
   (catch Exception e
-    (log/info "Error when posting invited writer: " e)
-    (invalid-response "Invalid invited writer request for this objective"))))
+    (log/info "Error when posting an invitation: " e)
+    (invalid-response "Invalid invitation post request for this objective"))))
 
 (defn get-invitation [{{uuid :uuid} :params}]
   (if-let [invitation (writers/retrieve-invitation-by-uuid uuid)]

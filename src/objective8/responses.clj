@@ -126,17 +126,17 @@
 
 ;WRITERS
 
-(html/defsnippet writer-invite
-  "templates/writers/writer-invite-form.html" [[:#clj-writer-invite]] [translation objective-id]
+(html/defsnippet invitation-create
+  "templates/writers/invitation-form.html" [[:#clj-invitation]] [translation objective-id]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
   [:form] (html/set-attr :action (str "/objectives/" objective-id "/writers/invitations"))
-  [:#clj-writer-invite html/any-node] (html/replace-vars translation))
+  [:#clj-invitation html/any-node] (html/replace-vars translation))
 
-(html/defsnippet writer-invite-page 
-  "templates/writers/writer-invite.html" [[:#clj-writer-invite-container]] [{:keys [translation objective-id uri signed-in]}]
-  [:#clj-writer-invite-sign-in-uri] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" uri))
-  [:#clj-writer-invite-container :.response-form] (if signed-in (html/content (writer-invite translation objective-id)) identity)
-  [:#clj-writer-invite-container html/any-node] (html/replace-vars translation))
+(html/defsnippet invitation-page 
+  "templates/writers/invitation-create.html" [[:#clj-invitation-container]] [{:keys [translation objective-id uri signed-in]}]
+  [:#clj-invitation-sign-in-uri] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" uri))
+  [:#clj-invitation-container :.response-form] (if signed-in (html/content (invitation-create translation objective-id)) identity)
+  [:#clj-invitation-container html/any-node] (html/replace-vars translation))
 
 ;ANSWERS
 (html/defsnippet answer-create

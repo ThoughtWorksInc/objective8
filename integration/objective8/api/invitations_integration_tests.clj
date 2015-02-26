@@ -1,4 +1,4 @@
-(ns objective8.api.writers-invite-integration-tests
+(ns objective8.api.invitations-integration-tests
   (:require [peridot.core :as p]
             [midje.sweet :refer :all]
             [objective8.integration-helpers :as helpers]
@@ -15,12 +15,12 @@
 (def OBJECTIVE_ID 1)
 (def INVITED_BY_ID 2)
 (def INVITATION_ID 3)
-(def the-invited-writer {:writer-name "Mel"
-                         :reason "She's cool"
-                         :objective-id OBJECTIVE_ID
-                         :invited-by-id INVITED_BY_ID })
-(def stored-writer (assoc the-invited-writer :_id INVITATION_ID))
-(def the-invited-writer-as-json (str "{\"writer-name\":\"Mel\",\"reason\":\"She's cool\",\"objective-id\":" OBJECTIVE_ID ",\"invited-by-id\":" INVITED_BY_ID "}"))
+(def the-invitation {:writer-name "Mel"
+                     :reason "She's cool"
+                     :objective-id OBJECTIVE_ID
+                     :invited-by-id INVITED_BY_ID })
+(def the-stored-invitation (assoc the-invitation :_id INVITATION_ID))
+(def the-invitation-as-json (str "{\"writer-name\":\"Mel\",\"reason\":\"She's cool\",\"objective-id\":" OBJECTIVE_ID ",\"invited-by-id\":" INVITED_BY_ID "}"))
 
 (facts "about inviting policy writers" :integration
        (against-background
@@ -29,19 +29,19 @@
              (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/writers/invitations")
                         :request-method :post
                         :content-type "application/json"
-                        :body the-invited-writer-as-json) => (helpers/check-json-body stored-writer)
+                        :body the-invitation-as-json) => (helpers/check-json-body the-stored-invitation)
              (provided
-               (writers/store-invited-writer! the-invited-writer) => stored-writer))
+               (writers/store-invitation! the-invitation) => the-stored-invitation))
 
-       (fact "the http response indicates the location of the invited writer"
+       (fact "the http response indicates the location of the invitation"
              (against-background
-               (writers/store-invited-writer! anything) => stored-writer)
+               (writers/store-invitation! anything) => the-stored-invitation)
 
              (let [result (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID 
                                               "/writers/invitations")
                                      :request-method :post
                                      :content-type "application/json"
-                                     :body the-invited-writer-as-json)
+                                     :body the-invitation-as-json)
                    response (:response result)
                    headers (:headers response)]
                response => (contains {:status 201})
@@ -51,12 +51,12 @@
        
        (fact "a 400 status is returned if a PSQLException is raised"
              (against-background
-               (writers/store-invited-writer! anything) =throws=> (org.postgresql.util.PSQLException.
+               (writers/store-invitation! anything) =throws=> (org.postgresql.util.PSQLException.
                                                                   (org.postgresql.util.ServerErrorMessage. "" 0)))
              (:response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/writers/invitations")
                                    :request-method :post
                                    :content-type "application/json"
-                                   :body the-invited-writer-as-json)) => (contains {:status 400})))
+                                   :body the-invitation-as-json)) => (contains {:status 400})))
 
 (facts "invitations" :integration
        (against-background
@@ -70,7 +70,7 @@
            (let 
              [created-by-id (:_id (users/store-user! {:twitter-id "some-twitter-id"}))
               objective-id (:_id (objectives/store-objective! {:created-by-id created-by-id :end-date "2015-01-01"}))
-              stored-invitation (writers/store-invited-writer! {:invited-by-id created-by-id 
+              stored-invitation (writers/store-invitation! {:invited-by-id created-by-id 
                                                                 :objective-id objective-id})
               uuid (:uuid stored-invitation)]
         (helpers/peridot-response-json-body->map (p/request app (str "/api/v1/invitations?uuid=" uuid))) => (dissoc stored-invitation :entity)))

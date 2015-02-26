@@ -3,8 +3,8 @@
     [objective8.utils :as utils]    
     [objective8.storage.storage :as storage]))  
 
-(defn store-invited-writer! [writer]
-  (storage/pg-store! (assoc writer 
+(defn store-invitation! [invitation]
+  (storage/pg-store! (assoc invitation 
                             :entity :invitation
                             :status "active"
                             :uuid (utils/generate-random-uuid))))

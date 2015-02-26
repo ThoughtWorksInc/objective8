@@ -140,14 +140,14 @@
 
 ;; WRITERS
 
-(def the-invited-writer {:some :data
-                         :objective-id OBJECTIVE_ID})
+(def the-invitation {:some :data
+                     :objective-id OBJECTIVE_ID})
 
-(fact "inviting a writer hits the correct API endpoint"
-      (http-api/invite-writer the-invited-writer) => :api-call-result
+(fact "creating an invitation hits the correct API endpoint"
+      (http-api/create-invitation the-invitation) => :api-call-result
       (provided 
         (http-api/default-create-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID 
-                                                     "/writers/invitations")) the-invited-writer) => :api-call-result))
+                                                     "/writers/invitations")) the-invitation) => :api-call-result))
 
 ;; INVITATIONS
 (def UUID "some-long-random-string")

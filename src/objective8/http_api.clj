@@ -126,9 +126,9 @@
 
 ;; WRITERS
 
-(defn invite-writer [writer]
+(defn create-invitation [invitation]
   (default-create-call
-    (str utils/host-url "/api/v1/objectives/" (:objective-id writer) "/writers/invitations") writer))
+    (str utils/host-url "/api/v1/objectives/" (:objective-id invitation) "/writers/invitations") invitation))
 
 (defn retrieve-invitation-by-uuid [uuid]
   (default-get-call
