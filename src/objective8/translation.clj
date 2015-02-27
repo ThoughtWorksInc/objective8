@@ -153,7 +153,8 @@
                      :invitation-response {:doc-title "Invitation to draft | Objective[8]"
                                            :doc-description "Invitation to help draft policy"
                                            :page-title "Can you help us to draft some policy?"
-                                           :sign-in-to-accept "Sign in to accept"}
+                                           :sign-in-to-accept "Sign in to accept"
+                                           :accept "Accept"}
                      :users-email {:doc-title "Sign up almost there | Objective[8]"
                                    :doc-description ""
                                    :page-title "Almost there"
@@ -299,7 +300,8 @@
                      :invitation-response {:doc-title "Spanish(...)"
                                            :doc-description "Spanish(...)"
                                            :page-title "Spanish(...)"
-                                           :sign-in-to-accept "Spanish(...)"}
+                                           :sign-in-to-accept "Spanish(...)"
+                                           :accept "Spanish(...)"}
                      :invitation-sign-in {:please "Spanish(...)"
                                               :sign-in "Spanish(...)"
                                               :to "Spanish(...)"}

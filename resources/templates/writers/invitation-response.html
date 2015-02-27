@@ -4,8 +4,11 @@
     <p class="lede">You've been invited to help draft some policy!</p>
     <p>It's to achieve this objective: <span id="clj-invitation-response-objective-title">{{objective title}</span></p>
     <p>If you're interested, you can sign in and accept the invitation below.</p>
-    <div class="clj-invitation-response-form">
-      <a id="clj-invitation-response-accept" class="button" href="{{sign-in-and-refer-back}}">${invitation-response/sign-in-to-accept}</a>
+    <div id="clj-invitation-response-form-container">
+      <a id="clj-invitation-response-sign-in" class="button" href="{{sign-in-and-refer-back}}">${invitation-response/sign-in-to-accept}</a>
+      <form method="POST" id="clj-invitation-response-accept" action="{{/objectives/:o-id/writers/invitation/accept}}">
+        <button type="submit" class="button">${invitation-response/accept}</button>
+      </form>
     </div>
   </article>
 </div>

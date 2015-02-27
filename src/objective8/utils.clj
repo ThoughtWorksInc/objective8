@@ -38,9 +38,10 @@
     (fn [fragment] (when fragment (re-matches fragment-regex fragment))))
 
 (defn safen-url [target]
-  (or ((regex-checker #"/objectives/\d+") target) 
+  (or ((regex-checker #"/objectives/\d+") target)
       ((regex-checker #"/objectives/\d+/questions") target)  
       ((regex-checker #"/objectives/\d+/writers") target)
+      ((regex-checker #"/objectives/\d+/writers/invitation") target)
       ((regex-checker #"/objectives/\d+/questions/\d+") target)))
 
 ;;DISABLE CSRF for tests

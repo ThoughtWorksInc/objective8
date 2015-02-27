@@ -13,12 +13,22 @@
   ["/" {"sign-up" {:get :sign-up-form
                    :post :sign-up-form-post}}])
 
-(defn finalise-authorisation [user session]
-  (let [auth (workflows/make-auth {:username (:_id user) :roles #{:signed-in}}
-                                  {::friend/workflow :objective8.workflows.sign-up/sign-up-workflow})]
-    (if-let [redirect-uri (utils/safen-url (:sign-in-referrer session))]
-      (friend/merge-authentication (response/redirect redirect-uri) auth)
-      auth)))
+(defn auth-map [user]
+  (workflows/make-auth {:username (:_id user) :roles #{:signed-in}}
+                       {::friend/workflow :objective8.workflows.sign-up/sign-up-workflow}))
+
+(defn authorise [response user]
+  (friend/merge-authentication response (auth-map user)))
+
+(defn authorised-redirect [user redirect-url current-session]
+  (-> (response/redirect redirect-url)
+      (assoc :session (select-keys current-session [:invitation]))
+      (authorise user)))
+
+(defn finalise-authorisation [user current-session]
+  (if-let [redirect-url (utils/safen-url (:sign-in-referrer current-session))]
+    (authorised-redirect user redirect-url current-session)
+    (auth-map user)))
 
 (defn sign-up-form [{session :session :as request}]
   (if-let [twitter-id (:twitter-id session)]
@@ -36,7 +46,7 @@
           email-address (:email-address params) 
           {status :status user :result} (http-api/create-user {:twitter-id twitter-id
                                                                :display-name twitter-screen-name
-                                                               :email-address email-address})]  
+                                                               :email-address email-address})]
       (cond
         (= status ::http-api/success) (finalise-authorisation user session)
         (= status ::http-api/invalid-input) {:status 400}
