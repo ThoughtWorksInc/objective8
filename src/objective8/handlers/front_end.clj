@@ -287,7 +287,7 @@
       (-> (str utils/host-url "/objectives/" objective-id "/invited-writers/" _id)
           response/redirect
           (assoc :session session)
-          (assoc-in [:session :invitation] {:uuid uuid :objective-id objective-id}))
+          (assoc-in [:session :invitation] {:uuid uuid :objective-id objective-id :invitation-id _id}))
       (= status ::http-api/not-found) (error-404-response t' locale)
       :else {:status 500})))
 
@@ -305,5 +305,8 @@
 
 (defn accept-invitation [{:keys [session]}]
   (if-let [invitation-credentials (:invitation session)]
-    (response/redirect (str utils/host-url "/objectives/2/candidate-writers"))
+    (do 
+      (http-api/accept-invitation (:invitation-id invitation-credentials)
+                                  (get (friend/current-authentication) :username))
+      (response/redirect (str utils/host-url "/objectives/" (:objective-id invitation-credentials) "/candidate-writers")))
     {:status 401}))

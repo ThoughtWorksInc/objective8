@@ -9,6 +9,7 @@
             [objective8.core :as core]  
             [objective8.http-api :as http-api]))
 
+(def TWITTER_ID "twitter-ID")
 (def USER_ID 1)
 (def OBJECTIVE_ID 2)
 (def OBJECTIVE_TITLE "some title")
@@ -22,7 +23,7 @@
        (binding [config/enable-csrf false]
          (fact "authorised user can invite a policy writer on an objective"
                (against-background
-                 (oauth/access-token anything anything anything) => {:user_id USER_ID}
+                 (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
                  (http-api/create-user anything) => {:status ::http-api/success
                                                      :result {:_id USER_ID}}
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success}
@@ -88,7 +89,7 @@
        (binding [config/enable-csrf false]
          (facts "accepting an invitation"
                 (against-background
-                  (oauth/access-token anything anything anything) => {:user_id USER_ID}
+                  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
                   (http-api/create-user anything) => {:status ::http-api/success
                                                       :result {:_id USER_ID}})
                 (fact "a user can accept an invitation when they have invitation credentials"
@@ -110,8 +111,11 @@
                                                                  "/invited-writers/" INVITATION_ID "/accept")
                                                             :request-method :post)
                                                  p/follow-redirect)]
-                        peridot-response => (contains {:request (contains {:uri (contains (str "/objectives/" OBJECTIVE_ID 
-                                                                                               "/candidate-writers"))})})))
+                        peridot-response) => (contains {:request (contains {:uri (contains (str "/objectives/" OBJECTIVE_ID 
+                                                                                               "/candidate-writers"))})})
+                      (provided
+                          (http-api/accept-invitation INVITATION_ID USER_ID) => {:status ::http-api/success
+                                                                                 :result {}}))
 
                 (fact "a user cannot accept an invitation without invitation credentials"
                       (let [user-session (helpers/test-context)

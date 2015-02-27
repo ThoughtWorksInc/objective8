@@ -137,3 +137,5 @@
 (defn retrieve-candidates [objective-id]
   (default-get-call
     (str utils/host-url "/api/v1/objectives/" objective-id "/writers/candidates")))
+
+(defn accept-invitation [invitation-id user-id])
