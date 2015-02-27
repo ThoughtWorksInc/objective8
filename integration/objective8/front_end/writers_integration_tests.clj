@@ -69,7 +69,7 @@
                                                          :result {:title OBJECTIVE_TITLE}})
              (let [user-session (helpers/test-context)
                    invitation-url (str "http://localhost:8080/invitations/" UUID)
-                   accept-reject-url (str "/objectives/" OBJECTIVE_ID "/writers/invitation")
+                   accept-reject-url (str "/objectives/" OBJECTIVE_ID "/invited-writers/" INVITATION_ID)
                    peridot-response (-> user-session
                                         (p/request invitation-url)
                                         p/follow-redirect)]
@@ -81,5 +81,44 @@
                (http-api/retrieve-invitation-by-uuid anything) => {:status ::http-api/not-found})
              (p/request (helpers/test-context) "/invitations/nonexistent-invitation-uuid") => (contains {:response (contains {:status 404})}))
 
-       (fact "a user cannot access the accept/reject page without an invitation"
-             (p/request (helpers/test-context) (str "http://localhost:8080/objectives/" OBJECTIVE_ID "/writers/invitation")) => (contains {:response (contains {:status 404})})))
+       (fact "a user cannot access the accept/reject page without invitation credentials"
+             (p/request (helpers/test-context) (str "http://localhost:8080/objectives/" OBJECTIVE_ID "/invited-writers/" INVITATION_ID)) 
+             => (contains {:response (contains {:status 404})}))
+       
+       (binding [config/enable-csrf false]
+         (facts "accepting an invitation"
+                (against-background
+                  (oauth/access-token anything anything anything) => {:user_id USER_ID}
+                  (http-api/create-user anything) => {:status ::http-api/success
+                                                      :result {:_id USER_ID}})
+                (fact "a user can accept an invitation when they have invitation credentials"
+                      (against-background
+                        (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success
+                                                                        :result {:_id INVITATION_ID
+                                                                                 :invited-by-id USER_ID
+                                                                                 :objective-id OBJECTIVE_ID
+                                                                                 :uuid UUID
+                                                                                 :status "active"}}
+                        (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                                  :result {:title OBJECTIVE_TITLE}})
+                      (let [user-session (helpers/test-context)
+                            invitation-url (str "http://localhost:8080/invitations/" UUID)
+                            peridot-response (-> user-session
+                                                 (helpers/with-sign-in "http://localhost:8080/")
+                                                 (p/request (str "http://localhost:8080/invitations/" UUID))
+                                                 (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID 
+                                                                 "/invited-writers/" INVITATION_ID "/accept")
+                                                            :request-method :post)
+                                                 p/follow-redirect)]
+                        peridot-response => (contains {:request (contains {:uri (contains (str "/objectives/" OBJECTIVE_ID 
+                                                                                               "/candidate-writers"))})})))
+
+                (fact "a user cannot accept an invitation without invitation credentials"
+                      (let [user-session (helpers/test-context)
+                            invitation-url (str "http://localhost:8080/invitations/" UUID)
+                            peridot-response (-> user-session
+                                                 (helpers/with-sign-in "http://localhost:8080/")
+                                                 (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID 
+                                                                 "/invited-writers/" INVITATION_ID "/accept")
+                                                            :request-method :post))]
+                        peridot-response => (contains {:response (contains {:status 401})}))))))
