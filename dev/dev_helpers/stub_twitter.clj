@@ -5,17 +5,13 @@
             [objective8.utils :as utils]))
 
 ;; Stub out twitter authentication workflow
-(defn print-and-pass-through [x]
-  (prn x)
-  x)
 
 (defn stub-twitter-handler [request]
   (let [session (:session request)]
     (-> (response/redirect (str utils/host-url "/sign-up"))
         (assoc :session (assoc session 
                                :twitter-id "twitter-FAKE_ID"
-                               :twitter-screen-name "I'm a teapot"))
-        print-and-pass-through)))
+                               :twitter-screen-name "I'm a teapot")))))
 
 (def stub-twitter-workflow
   (make-handler ["/twitter-sign-in" stub-twitter-handler]))
