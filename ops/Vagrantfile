@@ -13,7 +13,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.synced_folder "../", "/var/objective8"
   
   config.vm.provider :virtualbox do |vbox|
-    vbox.customize ["modifyvm", :id, "--memory", 1024]
+    vbox.customize ["modifyvm", :id, "--memory", 2048]
   end
 
   config.vm.provision "ansible" do |ansible|
