@@ -163,7 +163,7 @@
                               :invitatiion-id INVITATION_ID
                               :invitee-id 10})
 
-(fact "posting an invitation hits the correct API endpoint"
+(future-fact "posting an invitation hits the correct API endpoint"
       (http-api/accept-invitation the-invitation-response) => :api-call-result
       (provided
         (http-api/default-create-call (contains (str host-url "/api/v1/objectives/" 
