@@ -305,8 +305,9 @@
 
 (defn accept-invitation [{:keys [session]}]
   (if-let [invitation-credentials (:invitation session)]
-    (do 
-      (http-api/accept-invitation (:invitation-id invitation-credentials)
-                                  (get (friend/current-authentication) :username))
+    (let [invitation-response {:invitee-id (get (friend/current-authentication) :username)
+                               :invitation-id (:invitation-id invitation-credentials)
+                               :objective-id (:objective-id invitation-credentials)}] 
+      (http-api/accept-invitation invitation-response)
       (response/redirect (str utils/host-url "/objectives/" (:objective-id invitation-credentials) "/candidate-writers")))
     {:status 401}))

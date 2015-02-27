@@ -114,8 +114,10 @@
                         peridot-response) => (contains {:request (contains {:uri (contains (str "/objectives/" OBJECTIVE_ID 
                                                                                                "/candidate-writers"))})})
                       (provided
-                          (http-api/accept-invitation INVITATION_ID USER_ID) => {:status ::http-api/success
-                                                                                 :result {}}))
+                          (http-api/accept-invitation {:invitee-id USER_ID
+                                                       :invitation-id INVITATION_ID
+                                                       :objective-id OBJECTIVE_ID})=> {:status ::http-api/success
+                                                                                       :result {}}))
 
                 (fact "a user cannot accept an invitation without invitation credentials"
                       (let [user-session (helpers/test-context)
