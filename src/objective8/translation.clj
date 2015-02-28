@@ -138,8 +138,8 @@
                      :answer-sign-in {:please "Please"
                                       :sign-in "sign in"
                                       :to "to answer this question."}
-                     :invitation {:doc-title "Proposed policy writers | Objective[8]"
-                                  :doc-description "Proposed policy writers..."
+                     :invitation {:doc-title "Candidate policy writers | Objective[8]"
+                                  :doc-description "Candidate policy writers..."
                                   :page-title "Invite a policy writer"
                                   :page-intro "Do you know someone with the enthusiasm and expertise to help draft this policy?"
                                   :writer-name-label "Who"
@@ -155,6 +155,9 @@
                                            :page-title "Can you help us to draft some policy?"
                                            :sign-in-to-accept "Sign in to accept"
                                            :accept "Accept"}
+                     :candidate-list {:page-intro "Writers are experts responsisble for drafting policy."
+                                      :candidate-list-heading "Recently added candidates"
+                                      :no-candidates "No writers have been invited yet."}
                      :users-email {:doc-title "Sign up almost there | Objective[8]"
                                    :doc-description ""
                                    :page-title "Almost there"
@@ -305,6 +308,9 @@
                      :invitation-sign-in {:please "Spanish(...)"
                                               :sign-in "Spanish(...)"
                                               :to "Spanish(...)"}
+                     :candidate-list {:page-intro "Spanish(...)"
+                                      :candidate-list-heading "Spanish(...)"
+                                      :no-candidates "Spanish(...)"}
                     :users-email {:doc-title "Perfil | Objective[8]"
                                   :doc-description ""
                                   :page-title "Spanish(Almost there)"

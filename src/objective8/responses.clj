@@ -131,8 +131,8 @@
   [:form] (html/set-attr :action (str "/objectives/" objective-id "/writers/invitations"))
   [:#clj-invitation html/any-node] (html/replace-vars translation))
 
-(html/defsnippet invitation-page 
-  "templates/writers/invitation-create.html" [[:#clj-invitation-container]] [{:keys [translation objective-id uri signed-in]}]
+(html/defsnippet post-invitation-container 
+  "templates/writers/invitation-create.html" [[:#clj-invitation-container]] [translation signed-in objective-id uri] 
   [:#clj-invitation-sign-in-uri] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" uri))
   [:#clj-invitation-container :.response-form] (if signed-in (html/content (invitation-create translation objective-id)) identity)
   [:#clj-invitation-container html/any-node] (html/replace-vars translation))
@@ -146,6 +146,25 @@
   [:#clj-invitation-response-accept] (when signed-in identity)
   [:#clj-invitation-response-objective-title] (html/content (:title objective))
   [:#clj-invitation-response html/any-node] (html/replace-vars translation))
+
+;CANDIDATES
+
+(html/defsnippet a-candidate
+  "templates/writers/a-candidate.html" [:li] [candidate]
+  [:.candidate-name] (html/content (:name candidate))
+  [:.candidate-reason] (html/content (text->p-nodes (:invitation-reason candidate)))
+  [:.invited-by] (html/content "user-display-name"))
+
+(html/defsnippet candidate-list-page
+  "templates/writers/candidate-list.html" [:#clj-candidate-list] [{:keys [translation objective signed-in uri candidates]}]
+  [:#objective-crumb] (html/set-attr :title (:title objective))
+  [:#objective-crumb] (html/content (:title objective))
+  [:#objective-crumb] (html/set-attr :href (str "/objectives/" (:_id objective)))
+  [:#candidates-crumb] (html/set-attr :href (str "/objectives/" (:_id objective) "/writers/candidates"))
+  [:#clj-candidate-list :h1] (html/content (:title objective))
+  [:#clj-candidate-list :.candidate-list] (if (empty? candidates) identity (html/content (map a-candidate candidates)))
+  [:#clj-candidate-list] (html/after (post-invitation-container translation signed-in (:_id objective) uri))
+  [:#clj-candidate-list html/any-node] (html/replace-vars translation))
 
 ;ANSWERS
 (html/defsnippet answer-create

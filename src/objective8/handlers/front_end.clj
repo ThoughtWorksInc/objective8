@@ -245,23 +245,25 @@
 
 ;; WRITERS 
 
-(defn invitation-form [{{id :id} :route-params
-                        :keys [uri t' locale]}]
+(defn candidate-list [{{id :id} :route-params
+                       :keys [uri t' locale]}]
   (try
     (let [objective-id (Integer/parseInt id)
-          {objective-status :status objective :result} (http-api/get-objective objective-id)]
+          {objective-status :status objective :result} (http-api/get-objective objective-id)
+          {candidate-status :status  candidates :result} (http-api/retrieve-candidates objective-id)]
       (cond
-        (= ::http-api/success objective-status)
-          (let [candidates (http-api/retrieve-candidates objective-id)]
-            (rendered-response invitation-page {:translation t'
+        (every? #(= ::http-api/success %) [candidate-status objective-status])
+        (rendered-response candidate-list-page {:translation t'
                                                 :locale (subs (str locale) 1)
                                                 :doc-title (t' :invitation/doc-title)
                                                 :doc-description (t' :invitation/doc-description)
-                                                :objective-id (:_id objective)
+                                                :objective objective
                                                 :candidates candidates
                                                 :uri uri
-                                                :signed-in (signed-in?)})) 
+                                                :signed-in (signed-in?)})
         (= objective-status ::http-api/not-found) (error-404-response t' locale)
+        (= candidate-status ::http-api/not-found) (error-404-response t' locale)
+        (= candidate-status ::http-api/invalid-input) {:status 400}
         :else {:status 500}))
     (catch NumberFormatException e
       (log/info "Invalid route: " e)

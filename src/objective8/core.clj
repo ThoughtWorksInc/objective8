@@ -39,7 +39,7 @@
                :question-list (utils/anti-forgery-hook front-end-handlers/question-list)
                :question (utils/anti-forgery-hook front-end-handlers/question-detail)
                :add-answer-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-answer-form-post) #{:signed-in})
-               :invitation-form (utils/anti-forgery-hook front-end-handlers/invitation-form)
+               :candidate-list (utils/anti-forgery-hook front-end-handlers/candidate-list)
                :invitation-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/invitation-form-post) #{:signed-in})
                :writer-invitation front-end-handlers/writer-invitation
                :accept-or-reject-invitation front-end-handlers/accept-or-reject-invitation
@@ -78,8 +78,9 @@
                              ["/" :id] {:get :objective
                                         "/invited-writers" {["/" :i-id] {:get :accept-or-reject-invitation
                                                                          "/accept" {:post :accept-invitation}}} 
-                                        "/writers" {:get :invitation-form
-                                                    "/invitations" {:post :invitation-form-post}}
+                                        "/writers"  {"/candidates" {:get :candidate-list} 
+                                                    "/invitation" {:get :accept-or-reject-invitation} 
+                                                    "/invitations" {:post :invitation-form-post}} 
                                         "/questions" {:post :add-question-form-post
                                                       :get :question-list
                                                       ["/" :q-id] {:get :question

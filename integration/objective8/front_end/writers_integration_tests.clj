@@ -1,12 +1,12 @@
-(ns objective8.front-end.writers-integration-tests 
+(ns objective8.front-end.writers-integration-tests
   (:require [midje.sweet :refer :all]
             [ring.mock.request :as mock]
             [peridot.core :as p]
             [oauth.client :as oauth]
-            [objective8.config :as config] 
+            [objective8.config :as config]
             [objective8.integration-helpers :as helpers]
             [objective8.utils :as utils]
-            [objective8.core :as core]  
+            [objective8.core :as core]
             [objective8.http-api :as http-api]))
 
 (def TWITTER_ID "twitter-ID")
@@ -15,7 +15,7 @@
 (def OBJECTIVE_TITLE "some title")
 (def INVITATION_ID 3)
 (def UUID "random-uuid")
-(def invitation-get-request (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/writers")))
+(def candidates-get-request (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/writers/candidates")))
 
 (def default-app (core/app core/app-config))
 
@@ -45,27 +45,37 @@
                  peridot-response => (helpers/flash-message-contains (str "Your invited writer can accept their invitation by going to http://localhost:8080/invitations/" UUID))
                  peridot-response => (helpers/headers-location (str "/objectives/" OBJECTIVE_ID))))
 
-         (fact "A user should be able to view the writers page for an objective"
+         (fact "A user should be able to view the candidate writers page for an objective"
                (against-background
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                           :result {:title "some title" 
+                                                           :result {:title "some title"
                                                                     :_id OBJECTIVE_ID}})
-               (default-app invitation-get-request) => (contains {:status 200})
+               (let [response (default-app candidates-get-request)]
+                 response  => (contains {:status 200})
+                 response)  => (contains {:body (contains "martina")})
                (provided
                  (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success
-                                                                 :results [{:user-id USER_ID
-                                                                            :objective-id OBJECTIVE_ID
-                                                                            :invitation-id INVITATION_ID}]}))))
+                                                                 :result [{:user-id USER_ID
+                                                                           :objective-id OBJECTIVE_ID
+                                                                           :invitation-id INVITATION_ID
+                                                                           :name "martina"
+                                                                           :invitation-reason "she's expert"}]}))
+
+         (fact "a user should receive a 404 if accessing the candidate writers page for an objective that does not exist"
+               (against-background
+                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/not-found})
+
+               (default-app candidates-get-request) => (contains {:status 404}))))
 
 (facts "about responding to invitations" :integration
        (fact "an invited writer is redirected to the accept/reject page when accessing their invitation link"
              (against-background
                (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success
-                                                                   :result {:_id INVITATION_ID
-                                                                            :invited-by-id USER_ID
-                                                                            :objective-id OBJECTIVE_ID
-                                                                            :uuid UUID
-                                                                            :status "active"}}
+                                                               :result {:_id INVITATION_ID
+                                                                        :invited-by-id USER_ID
+                                                                        :objective-id OBJECTIVE_ID
+                                                                        :uuid UUID
+                                                                        :status "active"}}
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result {:title OBJECTIVE_TITLE}})
              (let [user-session (helpers/test-context)
