@@ -15,7 +15,7 @@
 (def OBJECTIVE_TITLE "some title")
 (def INVITATION_ID 3)
 (def UUID "random-uuid")
-(def candidates-get-request (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/writers/candidates")))
+(def candidates-get-request (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/candidate-writers")))
 
 (def default-app (core/app core/app-config))
 

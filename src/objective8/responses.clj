@@ -160,7 +160,7 @@
   [:#objective-crumb] (html/set-attr :title (:title objective))
   [:#objective-crumb] (html/content (:title objective))
   [:#objective-crumb] (html/set-attr :href (str "/objectives/" (:_id objective)))
-  [:#candidates-crumb] (html/set-attr :href (str "/objectives/" (:_id objective) "/writers/candidates"))
+  [:#candidates-crumb] (html/set-attr :href (str "/objectives/" (:_id objective) "/candidate-writers"))
   [:#clj-candidate-list :h1] (html/content (:title objective))
   [:#clj-candidate-list :.candidate-list] (if (empty? candidates) identity (html/content (map a-candidate candidates)))
   [:#clj-candidate-list] (html/after (post-invitation-container translation signed-in (:_id objective) uri))

@@ -12,7 +12,7 @@
 
 (facts "candidates" :integration
        (fact "candidates can be retrieved by objective id"
-             (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/writers/candidates"))
+             (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/candidate-writers"))
              => (helpers/check-json-body {:s "stored-candidates"})
        (provided
          (writers/retrieve-candidates OBJECTIVE_ID) => {:s "stored-candidates"})))

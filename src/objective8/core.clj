@@ -78,8 +78,8 @@
                              ["/" :id] {:get :objective
                                         "/invited-writers" {["/" :i-id] {:get :accept-or-reject-invitation
                                                                          "/accept" {:post :accept-invitation}}} 
-                                        "/writers"  {"/candidates" {:get :candidate-list} 
-                                                    "/invitation" {:get :accept-or-reject-invitation} 
+                                        "/candidate-writers" {:get :candidate-list}
+                                        "/writers"  {"/invitation" {:get :accept-or-reject-invitation} 
                                                     "/invitations" {:post :invitation-form-post}} 
                                         "/questions" {:post :add-question-form-post
                                                       :get :question-list
@@ -102,8 +102,8 @@
                                                                      ["/" :q-id] {:get :get-question
                                                                                   "/answers" {:get :get-answers-for-question
                                                                                               :post :post-answer}}}
-                                                       "/writers" {"/candidates" {:get :get-candidates-for-objective}
-                                                                   "/invitations" {:post :post-invitation}}}}
+                                                       "/candidate-writers" {:get :get-candidates-for-objective}
+                                                       "/writers" {"/invitations" {:post :post-invitation}}}}
 
                              "/comments"   {:post :post-comment}
                              "/invitations" {:get :get-invitation}}}])

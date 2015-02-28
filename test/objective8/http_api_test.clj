@@ -175,4 +175,4 @@
       (http-api/retrieve-candidates OBJECTIVE_ID) => :api-call-result
       (provided
         (http-api/default-get-call (contains (str host-url "/api/v1/objectives/"
-                                                  OBJECTIVE_ID "/writers/candidates"))) => :api-call-result))
+                                                  OBJECTIVE_ID "/candidate-writers"))) => :api-call-result))
