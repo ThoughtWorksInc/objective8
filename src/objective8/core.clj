@@ -124,7 +124,7 @@
       wrap-json-params
       wrap-json-response
       wrap-flash
-      wrap-session))
+      (wrap-session {:cookie-attrs {:http-only true}})))
 
 (defonce server (atom nil))
 (defonce postgres-connection-pool (atom nil))
