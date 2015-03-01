@@ -176,7 +176,7 @@
 (html/defsnippet an-answer
   "templates/answers/answer.html" [:li] [answer]
   [:.answer-text] (html/content (text->p-nodes (:answer answer)))
-  [:.answer-author] (html/content "user-display-name")
+  [:.answer-author] (html/content (:display-name answer))
   [:.answer-date] (html/content (utils/iso-time-string->pretty-time (:_created_at answer))))
 
 (html/defsnippet post-answer-container
@@ -190,7 +190,7 @@
   "templates/questions/a-question.html" [:li] [question]
   [:#clj-question-uri] (html/set-attr :href (str "/objectives/" (:objective-id question) "/questions/" (:_id question)))
   [:.question-text] (html/content (text->p-nodes (:question question)))
-  [:.question-author] (html/content "user-display-name")
+  [:.question-author] (html/content (:display-name question))
   [:.question-date] (html/content (utils/iso-time-string->pretty-time (:_created_at question)))) 
   
 (html/defsnippet question-create
@@ -239,7 +239,7 @@
 (html/defsnippet a-comment
   "templates/comments/comment.html" [:li] [comment]
   [:.comment-text] (html/content (text->p-nodes (:comment comment)))
-  [:.comment-author] (html/content "user-display-name")
+  [:.comment-author] (html/content (:display-name comment))
   [:.comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment))))
 
 (html/defsnippet comments-view

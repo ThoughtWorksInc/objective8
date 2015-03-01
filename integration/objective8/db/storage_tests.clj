@@ -64,6 +64,7 @@
                            store-result (storage/pg-store! comment)
                            retrieve-result (storage/pg-retrieve {:entity :comment :_id (:_id store-result)})]
                        (first (:result retrieve-result)) => (contains {:created-by-id user-id
+                                                                       :display-name "twitter-TWITTER_ID"
                                                                        :objective-id objective-id})))
 
                ;;QUESTIONS

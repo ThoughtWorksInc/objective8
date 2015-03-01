@@ -133,8 +133,9 @@
 (korma/defentity comment
   (korma/pk :_id)
   (korma/table :objective8.comments)
+  (korma/belongs-to user {:fk :created_by_id})
   (korma/prepare map->comment)
-  (korma/transform (unmap :comment)))
+  (korma/transform (unmap-with-display-name :comment)))
 
 (korma/defentity question
   (korma/pk :_id)

@@ -28,7 +28,8 @@
   :main objective8.core
   :plugins [[ragtime/ragtime.lein "0.3.8"]]
   :profiles {:dev {:source-paths ["dev"]
-                   :repl-options {:init-ns user}
+                   :repl-options {:init-ns user
+                                  :timeout 120000}
                    :dependencies [[midje "1.6.3"]
                                   [ring/ring-mock "0.2.0"]
                                   [http-kit.fake "0.2.1"]
