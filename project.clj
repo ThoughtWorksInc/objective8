@@ -13,6 +13,7 @@
                  [ring "1.3.2"]
                  [ring/ring-json "0.3.1"]
                  [ring/ring-anti-forgery "1.0.0"]
+                 [ring/ring-headers "0.1.2"]
                  [org.apache.httpcomponents/httpclient "4.3.5"]
                  [com.cemerick/friend "0.2.1" :exclusions [robert/hooke]]
                  [de.ubercode.clostache/clostache "1.4.0"]
@@ -28,7 +29,8 @@
   :main objective8.core
   :plugins [[ragtime/ragtime.lein "0.3.8"]]
   :profiles {:dev {:source-paths ["dev"]
-                   :repl-options {:init-ns user}
+                   :repl-options {:init-ns user
+                                  :timeout 120000}
                    :dependencies [[midje "1.6.3"]
                                   [ring/ring-mock "0.2.0"]
                                   [http-kit.fake "0.2.1"]
