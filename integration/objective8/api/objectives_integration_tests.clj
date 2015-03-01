@@ -48,9 +48,9 @@
                             objective-3 (objectives/store-objective! (assoc the-objective :created-by-id stored-user-id))
                             parsed-response (helpers/peridot-response-json-body->map (p/request app "/api/v1/objectives"))]
                         parsed-response => list?
-                        parsed-response => [(dissoc objective-3 :entity)
-                                            (dissoc objective-2 :entity)
-                                            (dissoc objective-1 :entity)]))
+                        parsed-response => [(assoc (dissoc objective-3 :entity) :display-name "anything")
+                                            (assoc (dissoc objective-2 :entity) :display-name "anything")
+                                            (assoc (dissoc objective-1 :entity) :display-name "anything")]))
 
                 (fact "returns an empty list if there are no objectives"
                       (do
@@ -63,7 +63,7 @@
                       (let [stored-user-id (gen-user-with-id) 
                             stored-objective (objectives/store-objective! (assoc the-objective :created-by-id stored-user-id))
                             objective-url (str "/api/v1/objectives/" (:_id stored-objective))]
-                        (helpers/peridot-response-json-body->map (p/request app objective-url)) => (dissoc stored-objective :entity))) ;;TODO - fix entity keys
+                        (helpers/peridot-response-json-body->map (p/request app objective-url)) => (assoc (dissoc stored-objective :entity) :display-name "anything"))) ;;TODO - fix entity keys
 
                 (fact "returns a 404 if an objective does not exist"
                       (p/request app (str "/api/v1/objectives/" 123456))

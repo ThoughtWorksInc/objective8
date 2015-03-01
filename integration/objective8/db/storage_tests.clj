@@ -45,6 +45,7 @@
                            store-result (storage/pg-store! objective)
                            retrieve-result (storage/pg-retrieve {:entity :objective :_id (:_id store-result)})]
                        (first (:result retrieve-result)) => (contains {:created-by-id user-id
+                                                                       :display-name "twitter-TWITTER_ID"
                                                                        :end-date "2015-01-01T00:00:00Z"
                                                                        :title "title"})))
                ;;COMMENTS
@@ -81,6 +82,7 @@
                            store-result (storage/pg-store! question)
                            retrieve-result (storage/pg-retrieve {:entity :question :_id (:_id store-result)})]
                        (first (:result retrieve-result)) => (contains {:created-by-id user-id
+                                                                       :display-name "twitter-TWITTER_ID"
                                                                        :objective-id objective-id}))) 
                (fact "questions can be retrieved by objective ID"
                      (let [stored-user (storage/pg-store! {:entity :user
@@ -101,7 +103,8 @@
                            stored-question-2 (storage/pg-store! question-2)
                            stored-question-3 (storage/pg-store! question-3)
                            retrieve-result (storage/pg-retrieve {:entity :question :objective_id an-objective-id})]
-                       (:result retrieve-result) => [stored-question-1 stored-question-2]))
+                       (:result retrieve-result) => [(assoc stored-question-1 :display-name "twitter-TWITTER_ID")
+                                                     (assoc stored-question-2 :display-name "twitter-TWITTER_ID")]))
 
                ;;ANSWERS
                (fact "an answer entity can be stored in the database"
@@ -125,6 +128,7 @@
                            retrieve-result (storage/pg-retrieve {:entity :answer
                                                                  :_id (:_id store-result)})]
                        (first (:result retrieve-result)) => (contains {:created-by-id user-id
+                                                                       :display-name "twitter-TWITTER_ID"
                                                                        :question-id question-id})))
 
                ;;INVITATIONS
@@ -209,32 +213,41 @@
                               (storage/pg-update-bearer-token! (assoc bearer-token :bearer-token "new-token"))
                               (let [retrieve-result (storage/pg-retrieve {:entity :bearer-token :bearer-name "bearer name"})]
                                 (first (:result retrieve-result)) => (contains {:bearer-token "new-token"}))))))
-        (facts "about retrieving"
-               (fact "can limit the number of results when retrieving"
-                     (let [users [{:entity :user :twitter-id "the-twitter-id1"}
-                                  {:entity :user :twitter-id "the-twitter-id2"}
-                                  {:entity :user :twitter-id "the-twitter-id3"}]
-                           store-result (doall (map storage/pg-store! users))
-                           retrieve-result (storage/pg-retrieve {:entity :user} {:limit 2})]
-                       (count (:result retrieve-result)) => 2))
 
-               (fact "results are retrieved in chronological order by default"
-                     (let [users [{:entity :user :twitter-id "the-twitter-id1"}
-                                  {:entity :user :twitter-id "the-twitter-id2"}
-                                  {:entity :user :twitter-id "the-twitter-id3"}]
-                           store-result (doall (map storage/pg-store! users))
-                           retrieved-users (:result (storage/pg-retrieve {:entity :user}))
-                           sorted-twitter-ids (vec (map :twitter-id retrieved-users))]
-                       sorted-twitter-ids)
-                     => ["the-twitter-id1" "the-twitter-id2" "the-twitter-id3"])
+(facts "about retrieving"
+       (fact "all results are retrieved when no limit is supplied"
+             (let [users [{:entity :user :twitter-id "the-twitter-id1"}
+                          {:entity :user :twitter-id "the-twitter-id2"}
+                          {:entity :user :twitter-id "the-twitter-id3"}]
+                   store-result (doall (map storage/pg-store! users))
+                   retrieve-result (storage/pg-retrieve {:entity :user})]
+               (count (:result retrieve-result)) => 3))
 
-               (fact "results can be retrieved in reverse order"
-                     (let [users [{:entity :user :twitter-id "the-twitter-id1"}
-                                  {:entity :user :twitter-id "the-twitter-id2"}
-                                  {:entity :user :twitter-id "the-twitter-id3"}]
-                           store-result (doall (map storage/pg-store! users))
-                           retrieved-users (:result (storage/pg-retrieve {:entity :user} {:sort {:field :_created_at
-                                                                                                 :ordering :DESC}}))
-                           sorted-twitter-ids (vec (map :twitter-id retrieved-users))]
-                       sorted-twitter-ids)
-                     => ["the-twitter-id3" "the-twitter-id2" "the-twitter-id1"]))))
+       (fact "can limit the number of results when retrieving"
+             (let [users [{:entity :user :twitter-id "the-twitter-id1"}
+                          {:entity :user :twitter-id "the-twitter-id2"}
+                          {:entity :user :twitter-id "the-twitter-id3"}]
+                   store-result (doall (map storage/pg-store! users))
+                   retrieve-result (storage/pg-retrieve {:entity :user} {:limit 2})]
+               (count (:result retrieve-result)) => 2))
+
+       (fact "results are retrieved in chronological order by default"
+             (let [users [{:entity :user :twitter-id "the-twitter-id1"}
+                          {:entity :user :twitter-id "the-twitter-id2"}
+                          {:entity :user :twitter-id "the-twitter-id3"}]
+                   store-result (doall (map storage/pg-store! users))
+                   retrieved-users (:result (storage/pg-retrieve {:entity :user}))
+                   sorted-twitter-ids (vec (map :twitter-id retrieved-users))]
+               sorted-twitter-ids)
+             => ["the-twitter-id1" "the-twitter-id2" "the-twitter-id3"])
+
+       (fact "results can be retrieved in reverse order"
+             (let [users [{:entity :user :twitter-id "the-twitter-id1"}
+                          {:entity :user :twitter-id "the-twitter-id2"}
+                          {:entity :user :twitter-id "the-twitter-id3"}]
+                   store-result (doall (map storage/pg-store! users))
+                   retrieved-users (:result (storage/pg-retrieve {:entity :user} {:sort {:field :_created_at
+                                                                                         :ordering :DESC}}))
+                   sorted-twitter-ids (vec (map :twitter-id retrieved-users))]
+               sorted-twitter-ids)
+             => ["the-twitter-id3" "the-twitter-id2" "the-twitter-id1"]))))
