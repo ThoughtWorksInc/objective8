@@ -2,6 +2,7 @@
   (:require [net.cgrand.enlive-html :as html]
             [midje.sweet :as midje]
             [korma.core :as korma]
+            [korma.db :as kormadb]
             [peridot.core :as p]
             [cheshire.core :as json]
             [objective8.core :as core]
@@ -9,7 +10,7 @@
             [objective8.storage.database :as db]
             [midje.sweet :as midje]))
 
-(defn db-connection [] (db/connect! db/postgres-spec))
+(defn db-connection [] (kormadb/defdb testdb db/postgres-spec))
 
 (defn truncate-tables []
   (korma/delete m/bearer-token)
