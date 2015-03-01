@@ -13,6 +13,7 @@
                  [ring "1.3.2"]
                  [ring/ring-json "0.3.1"]
                  [ring/ring-anti-forgery "1.0.0"]
+                 [ring/ring-headers "0.1.2"]
                  [org.apache.httpcomponents/httpclient "4.3.5"]
                  [com.cemerick/friend "0.2.1" :exclusions [robert/hooke]]
                  [de.ubercode.clostache/clostache "1.4.0"]

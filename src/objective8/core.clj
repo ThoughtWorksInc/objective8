@@ -7,6 +7,7 @@
             [ring.middleware.session :refer [wrap-session]]
             [ring.middleware.flash :refer [wrap-flash]]
             [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
+            [ring.middleware.x-headers :refer [wrap-xss-protection wrap-frame-options wrap-content-type-options]]
             [bidi.ring :refer [make-handler ->Resources]]
             [taoensso.tower.ring :refer [wrap-tower]]
             [objective8.config :as config]
@@ -124,7 +125,10 @@
       wrap-json-params
       wrap-json-response
       wrap-flash
-      (wrap-session {:cookie-attrs {:http-only true}})))
+      (wrap-session {:cookie-attrs {:http-only true}})
+      (wrap-xss-protection true {:mode :block})
+      (wrap-frame-options :sameorigin)
+      (wrap-content-type-options :nosniff)))
 
 (defonce server (atom nil))
 (defonce postgres-connection-pool (atom nil))
