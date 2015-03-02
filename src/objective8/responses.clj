@@ -153,18 +153,18 @@
   "templates/writers/a-candidate.html" [:li] [candidate]
   [:.candidate-name] (html/content (:name candidate))
   [:.candidate-reason] (html/content (text->p-nodes (:invitation-reason candidate)))
-  [:.invited-by] (html/content "user-display-name"))
+  [:.invited-by] (html/append " user-display-name"))
 
 (html/defsnippet candidate-list-page
-  "templates/writers/candidate-list.html" [:#clj-candidate-list] [{:keys [translation objective signed-in uri candidates]}]
+  "templates/writers/candidate-list.html" [:#clj-candidate-list-container] [{:keys [translation objective signed-in uri candidates]}]
   [:#objective-crumb] (html/set-attr :title (:title objective))
   [:#objective-crumb] (html/content (:title objective))
   [:#objective-crumb] (html/set-attr :href (str "/objectives/" (:_id objective)))
   [:#candidates-crumb] (html/set-attr :href (str "/objectives/" (:_id objective) "/candidate-writers"))
-  [:#clj-candidate-list :h1] (html/content (:title objective))
-  [:#clj-candidate-list :.candidate-list] (if (empty? candidates) identity (html/content (map a-candidate candidates)))
-  [:#clj-candidate-list] (html/after (post-invitation-container translation signed-in (:_id objective) uri))
-  [:#clj-candidate-list html/any-node] (html/replace-vars translation))
+  [:#clj-candidate-list-container :h1] (html/content (:title objective))
+  [:#clj-candidate-list] (if (empty? candidates) identity (html/content (map a-candidate candidates)))
+  [:#clj-candidate-list-container] (html/after (post-invitation-container translation signed-in (:_id objective) uri))
+  [:#clj-candidate-list-container html/any-node] (html/replace-vars translation))
 
 ;ANSWERS
 (html/defsnippet answer-create
