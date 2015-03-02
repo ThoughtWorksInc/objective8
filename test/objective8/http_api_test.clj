@@ -159,15 +159,18 @@
         (http-api/default-get-call (contains (str host-url "/api/v1/invitations?uuid=" UUID))) => :api-call-result))
 
 (def INVITATION_ID 3)
-(def the-invitation-response {:objective-id OBJECTIVE_ID
-                              :invitatiion-id INVITATION_ID
-                              :invitee-id 10})
+(def the-invitation-response {:invitation-id INVITATION_ID
+                              :uuid UUID
+                              :invitee-id 10
+                              :objective-id OBJECTIVE_ID
+                              :response "accept"})
 
-(future-fact "posting an invitation hits the correct API endpoint"
+(fact "posting an invitation response hits the correct API endpoint"
       (http-api/accept-invitation the-invitation-response) => :api-call-result
       (provided
-        (http-api/default-create-call (contains (str host-url "/api/v1/objectives/" 
-                                                     OBJECTIVE_ID "/candidate-writers"))) => :api-call-result))
+        (http-api/default-create-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID 
+                                                     "/invited-writers/" INVITATION_ID
+                                                     "/responses")) the-invitation-response) => :api-call-result))
 
 ;;CANDIDATES
 
