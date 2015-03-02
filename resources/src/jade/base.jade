@@ -25,7 +25,7 @@ html.no-js(lang="en")
     <![endif]-->
 
     <!--[if IE 8]>
-    +stylesheetLinkTag("application","screen")
+    +stylesheetLinkTag("ie8","screen")
     <![endif]-->
 
     //[if gte IE 8]><!
@@ -36,35 +36,36 @@ html.no-js(lang="en")
 
   body(class="#{bodyClass}")
 
-  <!--[if (IE 8)]>
-  p.browserupgrade {{browse happy message}}
-  <![endif]-->
+    <!--[if (IE 8)]>
+    p.browserupgrade {{browse happy message}}
+    <![endif]-->
 
-  header(role="banner")
-    .masthead
-      a.masthead-nav-link(href="#navigation")
-        i.fa.fa-bars
-        span.visuallyhidden Skip to navigation
-      a.masthead-logo(href="/", title="Go to home page", rel="home") Objective[8]
-      div.masthead-large-screen-nav
-        a(href="/objectives", title="Go to to the Objectives list") Objectives
-        a(href="/learn-more", title="Learn more about Objective[8]") About
+    header(role="banner")
+      .masthead
+        a.masthead-nav-link(href="#navigation")
+          i.fa.fa-bars
+          span.visuallyhidden Skip to navigation
+        a.masthead-logo(href="/", title="Go to home page", rel="home") Objective[8]
+        .masthead-large-screen-nav
+          a(href="/objectives", title="Go to to the Objectives list") Objectives
+          a(href="/learn-more", title="Learn more about Objective[8]") About
+        include user-navigation/signed-out
 
-  .project-status
-    .wrapper#projectStatus {{project-status}}
+    .project-status
+      .wrapper#projectStatus
+        include project-status
 
-  #main-content(role="main")
-    block content
-    | {{content goes here}}
+    #main-content(role="main")
+      block content
 
-  nav#clj-navigation
-    #navigation.navigation-wrapper
-      h2.navigation-title Navigation
-      ul.navigation-list
-        li
-          a(href="/objectives") Objectives
-        li
-          a(href="/learn-more") About
+    nav#clj-navigation
+      #navigation.navigation-wrapper
+        h2.navigation-title Navigation
+        ul.navigation-list
+          li
+            a(href="/objectives") Objectives
+          li
+            a(href="/learn-more") About
 
-  +javascriptIncludeTag("scripts.min.js")
-  block footerScripts
+    +javascriptIncludeTag("scripts.min.js")
+    block footerScripts
