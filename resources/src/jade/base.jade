@@ -18,7 +18,7 @@ html.no-js(lang="en")
     link(rel="shortcut icon", href="/static/favicon.ico")
     link(rel="apple-touch-icon", href="static/apple-touch-icon.png")
 
-    +javascriptIncludeTag("modernizr.min.js")
+    +javascriptIncludeTag("modernizr.min")
 
     <!--[if (lt IE 8) & (!IEMobile)]>
     +stylesheetLinkTag("basic","screen")
@@ -53,7 +53,7 @@ html.no-js(lang="en")
 
     .project-status
       .wrapper#projectStatus
-        include project-status
+        //include project-status
 
     #main-content(role="main")
       block content
@@ -67,5 +67,5 @@ html.no-js(lang="en")
           li
             a(href="/learn-more") About
 
-    +javascriptIncludeTag("scripts.min.js")
+    +javascriptIncludeTag("scripts.min")
     block footerScripts
