@@ -17,6 +17,33 @@ module.exports = function(grunt) {
       }
     },
 
+    //Compile HTML
+    jade: {
+      compile: {
+        options: {
+          pretty: true,
+          data: {
+            javascriptsBase: "/static",
+            stylesheetsBase: "/static",
+            imagesBase: "/static"
+          }
+        },
+        files: [
+          {
+            cwd: "resources/src/jade",
+            src: [
+              '**/*.jade',
+              '!**/_*.jade',
+              '!layout/**'
+            ],
+            dest: "resources/templates/jade",
+            expand: true,
+            ext: ".html"
+          }
+        ]
+      }
+    },
+
     //Compile SCSS
     sass: {
       dev: {
