@@ -31,7 +31,7 @@
 (defn gen-user-with-id
   "Make a user and return the ID for use in creating other content"
   []
-  (:_id (users/store-user! {:twitter-id "anything"})))
+  (:_id (users/store-user! {:twitter-id "anything" :username "username"})))
 
 (facts "objectives" :integration
        (against-background

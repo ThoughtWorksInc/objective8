@@ -51,9 +51,10 @@
 
 (defn map->user
   "Converts a clojure map into a json-typed user for the database"
-  [{:keys [twitter-id] :as user}]
-  (if twitter-id
+  [{:keys [twitter-id username] :as user}]
+  (if (and twitter-id username) 
     {:twitter_id twitter-id
+     :username username
      :user_data (map->json-type user)}
     (throw (Exception. "Could not transform map to user"))))
 

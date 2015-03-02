@@ -5,11 +5,13 @@
 
 (def email-address "test@email.com")
 (def twitter-id "twitter-1")
+(def username "testname1")
 
 (def USER_ID 1)
 
 (def the-user {:twitter-id twitter-id
-               :email-address email-address})
+               :email-address email-address
+               :username username})
 
 (def user-entity (assoc the-user :entity :user))
 
@@ -49,4 +51,18 @@
              (provided (storage/pg-retrieve {:entity :user :twitter-id "twitter-00000"})
                        => {:query {:entity :user
                                    :twitter-id "twitter-00000"}
+                           :result []})))
+
+(facts "Finding users by username"
+       (fact "can find user by username"
+             (users/find-user-by-username username) => stored-user
+             (provided (storage/pg-retrieve {:entity :user :username username})
+                       => {:query {:entity :user
+                                   :username username}
+                           :result [(assoc stored-user :entity :user)]}))
+       (fact "returns nil if no user exists with given username"
+             (users/find-user-by-username "NotaUsername") => nil
+             (provided (storage/pg-retrieve {:entity :user :username "NotaUsername"})
+                       => {:query {:entity :user
+                                   :username "NotaUsername"}
                            :result []})))

@@ -11,13 +11,16 @@
 
 (def email-address "test@email.address.com")
 (def twitter-id "twitter-1")
+(def username "testname1")
 
 (def app (helpers/test-context))
 
 (def USER_ID 10)
 
 (def user {:twitter-id twitter-id
-           :email-address email-address})
+           :email-address email-address
+           :username username })
+
 
 (def stored-user (assoc user :_id USER_ID))
 
