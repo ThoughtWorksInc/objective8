@@ -1,0 +1,11 @@
+#clj-post-answer-container
+  .response-action
+    .response-wrapper
+      h2 Post an answer
+      .response-form
+        p
+          | ${answer-sign-in/please}
+          | &nbsp;
+          a#clj-answer-sign-in-uri(href="/sign-in") ${answer-sign-in/sign-in}
+          | &nbsp;
+          | ${answer-sign-in/to}

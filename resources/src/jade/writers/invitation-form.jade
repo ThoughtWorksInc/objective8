@@ -1,0 +1,13 @@
+.invitation-posts#clj-invitation
+  form(method="POST", action="/")
+    label(for="writer-name")
+      | ${invitation/writer-name-label}
+      span.required *
+    input(id="writer-name", name="writer-name", type="text", pattern=".{3,}", title="${invitation/writer-name-title}", maxlength="50", required="required")
+
+    label(for="reason")
+      | ${invitation/reason-label}
+      span.required *
+    textarea(id="reason", name="reason", rows="3", cols="10", maxlength="1000", title="${invitation/reason-title}", required="required")
+
+    button.button(type="submit") ${invitation/submit}

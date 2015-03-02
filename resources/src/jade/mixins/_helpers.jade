@@ -1,0 +1,12 @@
+mixin javascriptIncludeTag(path, type)
+  - type = type || 'text/javascript'
+  script(src="#{javascriptsBase}/#{path}.js", type="#{type}")
+
+mixin stylesheetLinkTag(path, media)
+  link(href="#{stylesheetsBase}/#{path}.css", media="#{media}", rel="stylesheet", type="text/css")
+
+mixin imageIncludeTag(path, alt, cssClasses, title)
+  - alt = alt || ''
+  - cssClasses = cssClasses || ''
+  - title = title || ''
+  img(src="#{imagesBase}/#{path}", alt="#{alt}", class="#{cssClasses}", title="#{title}")

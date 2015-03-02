@@ -1,0 +1,5 @@
+.objective-answer-posts#clj-answer-create
+  form(method="POST", action="")
+    label(for="answer") ${answer-create/answer-label}
+    textarea(id="answer", name="answer", rows="5", cols="10", pattern=".{50,}", maxlength="500", title="${answer-create/answer-title}", required="required")
+    button.button(type="submit") ${answer-create/post-button}

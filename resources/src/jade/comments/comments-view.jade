@@ -1,0 +1,26 @@
+.response-action#clj-comments-view
+  .response-wrapper
+    h2 ${comment-view/comment-title}
+
+    //// <!-- FILTER
+    //.list-filter-wrapper
+    //  p Filter by:
+    //  ul.list-filter
+    //    li
+    //      a href="#newset" Newest
+    //    li
+    //      a href="oldest" Oldest
+    //    li
+    //      a href="#popular" Most popular
+
+    ol.comment-list
+      li.helper-text ${comment-view/no-comments}
+
+    h2 Leave a comment
+    .response-form
+      p
+        | ${comment-sign-in/please}
+        a#clj-comment-sign-in-uri(href="/sign-in") ${comment-sign-in/sign-in}
+        | &nbsp;
+        | ${comment-sign-in/to}
+

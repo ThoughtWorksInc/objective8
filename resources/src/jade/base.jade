@@ -1,0 +1,70 @@
+include mixins/_helpers
+
+- var pageTitle = "{{Page Title}}"
+- var bodyClass = ""
+block vars
+
+doctype
+html.no-js(lang="en")
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    title=pageTitle
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    meta(name="apple-mobile-web-app-status-bar-style", content="black-translucent")
+    meta(name="format-detection", content="telephone=no")
+    block headerMeta
+
+    link(rel="shortcut icon", href="/static/favicon.ico")
+    link(rel="apple-touch-icon", href="static/apple-touch-icon.png")
+
+    +javascriptIncludeTag("modernizr.min.js")
+
+    <!--[if (lt IE 8) & (!IEMobile)]>
+    +stylesheetLinkTag("basic","screen")
+    <![endif]-->
+
+    <!--[if IE 8]>
+    +stylesheetLinkTag("application","screen")
+    <![endif]-->
+
+    //[if gte IE 8]><!
+    +stylesheetLinkTag("modern","screen")
+    //<![endif]
+
+    block headerScripts
+
+  body(class="#{bodyClass}")
+
+  <!--[if (IE 8)]>
+  p.browserupgrade {{browse happy message}}
+  <![endif]-->
+
+  header(role="banner")
+    .masthead
+      a.masthead-nav-link(href="#navigation")
+        i.fa.fa-bars
+        span.visuallyhidden Skip to navigation
+      a.masthead-logo(href="/", title="Go to home page", rel="home") Objective[8]
+      div.masthead-large-screen-nav
+        a(href="/objectives", title="Go to to the Objectives list") Objectives
+        a(href="/learn-more", title="Learn more about Objective[8]") About
+
+  .project-status
+    .wrapper#projectStatus {{project-status}}
+
+  #main-content(role="main")
+    block content
+    | {{content goes here}}
+
+  nav#clj-navigation
+    #navigation.navigation-wrapper
+      h2.navigation-title Navigation
+      ul.navigation-list
+        li
+          a(href="/objectives") Objectives
+        li
+          a(href="/learn-more") About
+
+  +javascriptIncludeTag("scripts.min.js")
+  block footerScripts

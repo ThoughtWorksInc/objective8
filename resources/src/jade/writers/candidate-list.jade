@@ -1,0 +1,11 @@
+.main-wrapper.article-wrapper#clj-candidate-list
+  .breadcrumbs
+    a#objective-crumb(href="/", title="The objective") The objective
+    | &rsaquo;
+    a#candidates-crumb(href="/", title="Candidate writers for objective") Candidate writers
+  h1 {{objective}}
+  p.lede ${candidate-list/page-intro}
+
+  h2 ${candidate-list/candidate-list-heading}
+  ol.candidate-list
+    li.helper-text ${candidate-list/no-candidates}
