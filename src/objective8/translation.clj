@@ -159,13 +159,15 @@
                                       :candidate-list-heading "Recently added candidate writers"
                                       :no-candidates "No candidate writers have been invited yet."
                                       :invited-by "Invited by: "}
-                     :users-email {:doc-title "Sign up almost there | Objective[8]"
-                                   :doc-description ""
-                                   :page-title "Almost there"
-                                   :user-email-welcome "Adding your email address will let us notify you when you receive responses to comments, objectives and votes."
-                                   :email-label "Email"
-                                   :email-title "Add your email title"
-                                   :button "Create account"}}
+                     :sign-up {:doc-title "Sign up almost there | Objective[8]"
+                               :doc-description ""
+                               :page-title "Almost there"
+                               :welcome "Adding your email address will let us notify you when you receive responses to comments, objectives and votes."
+                               :username-label "Username"
+                               :username-title "Create your username"
+                               :email-label "Email"
+                               :email-title "Add your email title"
+                               :button "Create account"}}
 
                 :es {:base {:header-logo-text "Objective[8]"
                             :header-logo-title "Inicio"
@@ -313,13 +315,15 @@
                                       :candidate-list-heading "Spanish(...)"
                                       :no-candidates "Spanish(...)"
                                       :invited-by "Spanish(...)"}
-                     :users-email {:doc-title "Perfil | Objective[8]"
-                                  :doc-description ""
-                                  :page-title "Spanish(Almost there)"
-                                  :user-email-welcome "Tu correo electrónico nos permitira informarte cuando recivas respuestas a tus comentarios, objetivos y votos."
-                                  :email-label "Correo electrónico"
-                                  :email-title "Escribe tu cuenta de correo electrónico"
-                                  :button "Spanish(Create account)"}}}
+                     :sign-up {:doc-title "Perfil | Objective[8]"
+                               :doc-description ""
+                               :page-title ""
+                               :welcome  "Tu correo electrónico nos permitira informarte cuando recivas respuestas a tus comentarios, objetivos y votos."
+                               :username-label ""
+                               :username-title ""
+                               :email-label  "Correo electrónico"
+                               :email-title  "Escribe tu cuenta de correo electrónico"
+                               :button ""}}}
    :dev-mode? false
    :fallback-locale :en
    :log-missing-translations-function (fn [{:keys [locale ks scope]}]

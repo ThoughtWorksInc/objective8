@@ -30,12 +30,18 @@
 
 ;; USERS
 (defn post-user-profile [request]
-  (let [twitter-id (get-in request [:params :twitter-id])
-        email-address (get-in request [:params :email-address])
-        user (users/store-user! {:twitter-id twitter-id
-                                        :email-address email-address})
-        resource-location (str utils/host-url "/api/v1/users/" (:_id user))]
-    (successful-post-response resource-location user)))
+  (try
+    (let [twitter-id (get-in request [:params :twitter-id])
+          email-address (get-in request [:params :email-address])
+          username (get-in request [:params :username])
+          user (users/store-user! {:twitter-id twitter-id
+                                   :email-address email-address
+                                   :username username})
+          resource-location (str utils/host-url "/api/v1/users/" (:_id user))]
+      (successful-post-response resource-location user))
+    (catch Exception e
+      (log/info "Error when posting a user profile: " e)
+      (invalid-response "Username must be unique"))))
 
 (defn get-user [{:keys [route-params] :as request}]
   (try

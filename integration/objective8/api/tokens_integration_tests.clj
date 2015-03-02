@@ -27,7 +27,8 @@
                                             :content-type "application/json"
                                             :headers {"api-bearer-token" some-wrong-token
                                                       "api-bearer-name" the-bearer}
-                                            :body (json/generate-string {:twitter-id "Twitter_ID"}))
+                                            :body (json/generate-string {:twitter-id "Twitter_ID"
+                                                                         :username "username"}))
                                  => (contains {:response (contains  {:status 401})}))
 
                            (fact "can access protected api resource with valid bearer-token"
@@ -37,5 +38,6 @@
                                             :content-type "application/json"
                                             :headers {"api-bearer-token" the-token
                                                       "api-bearer-name" the-bearer}
-                                            :body (json/generate-string {:twitter-id "Twitter_ID"}))
+                                            :body (json/generate-string {:twitter-id "Twitter_ID"
+                                                                         :username "username"}))
                                  => (contains {:response (contains  {:status 201})}))))

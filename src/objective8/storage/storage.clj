@@ -17,12 +17,19 @@
 (defn select
   "Wrapper around Korma's select call"
   [entity where options]
-  (let [limit (:limit options)
+  (let [{:keys [limit]} options
         {:keys [field ordering]} (get options :sort {:field :_created_at
-                                                     :ordering :ASC})]
-    (if limit
-      (korma/select entity (korma/where where) (korma/limit limit) (korma/order field ordering))
-      (korma/select entity (korma/where where) (korma/order field ordering)))))
+                                                     :ordering :ASC})
+        select-query (-> (korma/select* entity)
+                         (korma/where where)
+                         (korma/limit limit)
+                         (korma/order field ordering))
+        with-relation (first (keys (:rel entity)))]
+    (if with-relation
+      (-> select-query
+          (korma/with (mappings/get-mapping {:entity (keyword with-relation)}))
+          (korma/select))
+      (korma/select select-query))))
 
 (defn- -to_
   "Replaces hyphens in keys with underscores"

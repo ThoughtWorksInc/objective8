@@ -9,6 +9,10 @@
   (let [{result :result} (storage/pg-retrieve {:entity :user :twitter-id twitter-id})]
     (dissoc (first result) :entity)))
 
+(defn find-user-by-username [username]
+  (let [{result :result} (storage/pg-retrieve {:entity :user :username username})]
+    (dissoc (first result) :entity)))
+
 (defn store-user! [user]
   (let [user (assoc user :entity :user)]
     (storage/pg-store! user)))

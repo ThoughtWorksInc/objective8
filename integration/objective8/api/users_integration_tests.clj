@@ -11,13 +11,16 @@
 
 (def email-address "test@email.address.com")
 (def twitter-id "twitter-1")
+(def username "testname1")
 
 (def app (helpers/test-context))
 
 (def USER_ID 10)
 
 (def user {:twitter-id twitter-id
-           :email-address email-address})
+           :email-address email-address
+           :username username })
+
 
 (def stored-user (assoc user :_id USER_ID))
 
@@ -79,4 +82,13 @@
                           response (:response result)
                           headers (:headers response)]
                       response => (contains {:status 201})
-                      headers => (contains {"Location" (contains (str "/api/v1/users/" USER_ID))}))))) 
+                      headers => (contains {"Location" (contains (str "/api/v1/users/" USER_ID))}))) 
+
+              (fact "a 400 status is returned if a PSQLException is raised"
+                    (against-background
+                      (users/store-user! anything) =throws=> (org.postgresql.util.PSQLException. 
+                                                               (org.postgresql.util.ServerErrorMessage. "" 0)) )
+                    (:response (p/request app "/api/v1/users" 
+                                          :request-method :post
+                                          :content-type "application/json"
+                                          :body (json/generate-string user))) => (contains {:status 400})))) 

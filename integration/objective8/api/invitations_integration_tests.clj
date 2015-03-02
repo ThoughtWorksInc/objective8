@@ -70,7 +70,7 @@
          (facts "GET /api/v1/invitations?uuid=<UUID>"
                 (fact "retrieves the active invitation with the given uuid if it exists"
                       (let 
-                        [created-by-id (:_id (users/store-user! {:twitter-id "some-twitter-id"}))
+                        [created-by-id (:_id (users/store-user! {:twitter-id "some-twitter-id" :username "username"}))
                          objective-id (:_id (objectives/store-objective! {:created-by-id created-by-id :end-date "2015-01-01"}))
                          stored-invitation (writers/store-invitation! {:invited-by-id created-by-id 
                                                                        :objective-id objective-id})
@@ -96,8 +96,8 @@
 
        (facts "POST /api/v1/objectives/:obj-id/invited-writers/:inv-id/responses"
               (fact "accepting an invitation"
-                   (let [{inviter-id :_id} (users/store-user! {:twitter-id "some-twitter-id"})
-                         {invitee-id :_id} (users/store-user! {:twitter-id "some-other-twitter-id"})
+                   (let [{inviter-id :_id} (users/store-user! {:twitter-id "some-twitter-id" :username "someUsername"})
+                         {invitee-id :_id} (users/store-user! {:twitter-id "some-other-twitter-id" :username "otherUsername"})
                          {objective-id :_id} (objectives/store-objective! {:created-by-id inviter-id :end-date "2015-01-01"})
                          invitation (writers/store-invitation! {:invited-by-id inviter-id 
                                                                 :objective-id objective-id

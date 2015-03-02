@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 extends base
 
 block vars
@@ -23,3 +24,13 @@ block content
     a.button.index-get-started(href="/objectives", title="Get started") Get started
 
 
+=======
+.main-wrapper-no-sidebar#clj-learn-more
+  h1 ${learn-more/page-title}
+  h2 ${learn-more/sub-title}
+  p.lede ${learn-more/page-intro}
+
+  #clj-learn-more-detail
+    | {{learn-more/page-content}}
+  a.button.index-get-started(href="/objectives", title="${learn-more/get-started-button-title}") ${learn-more/get-started-button-text}
+>>>>>>> usernameWIP
