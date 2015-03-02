@@ -240,7 +240,10 @@
   (let [invitation-response (-> (select-keys params [:invitee-id :response :uuid])
                                 (assoc :objective-id (Integer/parseInt objective-id) 
                                        :invitation-id (Integer/parseInt invitation-id)))]
-  (response/response (writers/accept-invitation invitation-response))))
+  (let [candidate-writer (writers/accept-invitation invitation-response)
+        resource-location (str utils/host-url "/api/v1/objectives/" objective-id
+                               "/candidate-writers/" (:_id candidate-writer))]
+    (successful-post-response resource-location candidate-writer))))
 
 (defn retrieve-candidates [{:keys [route-params params]}]
   (try

@@ -18,7 +18,6 @@
     (dissoc (first result) :entity)))
 
 (defn accept-invitation [{user-id :invitee-id :as invitation-response}]
-  (prn invitation-response)
   (let [updated-invitation (storage/pg-update-invitation-status! (:invitation-id invitation-response) "accepted")]
     (storage/pg-store! {:entity :candidate
                         :writer-name (:name updated-invitation)
