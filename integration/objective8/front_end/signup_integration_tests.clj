@@ -63,12 +63,12 @@
                  (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"
                                                                      :screen_name "SCREEN_NAME"}
                  (http-api/create-user {:twitter-id "twitter-TWITTER_ID"
-                                                :display-name "SCREEN_NAME"
-                                                :email-address "test@email.address.com"})
+                                        :username "someUsername"
+                                        :email-address "test@email.address.com"})
                          => {:status ::http-api/success
                              :result {:_id USER_ID
                                       :twitter-id "twitter-TWITTER_ID"
-                                      :display-name "SCREEN_NAME"
+                                      :username "someUsername"
                                       :email-address "test@email.address.com"}})
 
                (let [unauthorized-request-context (p/request test-session protected-resource)
@@ -76,7 +76,7 @@
                      sign-up-response (p/request signed-in-context sign-up-url
                                                  :request-method :post
                                                  :content-type "application/x-www-form-urlencoded"
-                                                 :body "&email-address=test%40email.address.com")]
+                                                 :body "&username=someUsername&email-address=test%40email.address.com")]
                  sign-up-response => (check-redirects-to protected-resource 303))
 
                (let [unauthorized-request-context (p/request test-session protected-resource)
@@ -84,9 +84,22 @@
                      sign-up-response (p/request signed-in-context sign-up-url
                                                  :request-method :post
                                                  :content-type "application/x-www-form-urlencoded"
-                                                 :body "&email-address=test%40email.address.com")]
+                                                 :body "&username=someUsername&email-address=test%40email.address.com")]
                  sign-up-response) => anything
-               (provided (sign-up/finalise-authorisation (contains {:_id USER_ID}) anything) => {})))
+               (provided (sign-up/finalise-authorisation (contains {:_id USER_ID}) anything) => {}))
+         
+         (fact "Signing up with invalid information sends user back to the sign-up page"
+               (against-background
+                 (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
+                 (http-api/create-user anything) => {:status ::http-api/invalid-input})
+
+               (let [unauthorized-request-context (p/request test-session protected-resource)
+                     signed-in-context (p/request test-session twitter-callback-url)
+                     sign-up-response (p/request signed-in-context sign-up-url
+                                                 :request-method :post
+                                                 :content-type "application/x-www-form-urlencoded"
+                                                 :body "&email-address=test%40email.address.com")]
+                 sign-up-response) => (check-html-content "<title>Sign up")))
 
        (fact "After signing in, a user with an existing profile is immediately sent to the resource they were trying to access"
              (against-background

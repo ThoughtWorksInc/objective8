@@ -290,10 +290,10 @@
 
 
 ;USERS
-(html/defsnippet users-email
-  "templates/users-email.html" [[:#clj-users-email]] [{:keys [translation]}]
+(html/defsnippet sign-up
+  "templates/sign-up.html" [[:#clj-sign-up]] [{:keys [translation]}]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:#clj-users-email html/any-node] (html/replace-vars translation))
+  [:#clj-sign-up html/any-node] (html/replace-vars translation))
 
 
 (defn render-template [template & args]

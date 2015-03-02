@@ -1,0 +1,15 @@
+<div id="clj-sign-up" class="main-wrapper-no-sidebar">
+
+  <h1>${sign-up/page-title}</h1>
+  <p>${sign-up/welcome}</p>
+  <form id="create-objective-form" method="POST" action="/sign-up">
+    <label class="clj-sign-up-label" for="username">${sign-up/username-label}</label>
+    <input id="username" class="clj-sign-up-title" name="username" type="text" maxlength=16 title="${sign-up/username-title}" required>
+
+    <label class="clj-sign-up-label" for="email-address">${sign-up/email-label}</label>
+    <input id="email-address" class="clj-sign-up-title" name="email-address" type="email" title="${sign-up/email-title}" required>
+
+    <button type="submit" class="button">${sign-up/button}</button>
+  </form>
+
+</div>

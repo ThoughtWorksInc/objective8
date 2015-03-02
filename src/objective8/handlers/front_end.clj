@@ -65,11 +65,11 @@
 ;; USER PROFILE
 
 (defn sign-up-form [{:keys [t' locale]}]
-  (rendered-response users-email {:translation t'
-                                  :locale (subs (str locale) 1)
-                                  :doc-title (t' :users-email/doc-title)
-                                  :doc-description (t' :users-email/doc-description)
-                                  :signed-in (signed-in?)}))
+  (rendered-response sign-up {:translation t'
+                              :locale (subs (str locale) 1)
+                              :doc-title (t' :sign-up/doc-title)
+                              :doc-description (t' :sign-up/doc-description)
+                              :signed-in (signed-in?)}))
 
 ;; OBJECTIVES
 (defn format-objective [objective]

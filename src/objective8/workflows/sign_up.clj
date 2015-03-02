@@ -42,14 +42,14 @@
 
 (defn sign-up-form-post [{params :params session :session :as request}]
   (if-let [twitter-id (:twitter-id session)]
-    (let [twitter-screen-name (:twitter-screen-name session)
+    (let [username (:username params)
           email-address (:email-address params) 
           {status :status user :result} (http-api/create-user {:twitter-id twitter-id
-                                                               :display-name twitter-screen-name
+                                                               :username username
                                                                :email-address email-address})]
       (cond
         (= status ::http-api/success) (finalise-authorisation user session)
-        (= status ::http-api/invalid-input) {:status 400}
+        (= status ::http-api/invalid-input) (front-end/sign-up-form request) 
         :else {:status 502}))
     {:status 401}))
 
