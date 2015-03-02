@@ -26,9 +26,20 @@
       (s/pg-update-bearer-token! some-update) => anything
       (provided
         (m/get-mapping some-update) => :fake-entity
-        (s/update-bearer-token :fake-entity
-                              some-update 
-                              {:bearer_name "name"}) => anything)))
+        (s/update :fake-entity
+                  some-update 
+                  {:bearer_name "name"}) => anything)))
+
+(def INVITATION_ID 4)
+
+(fact "attempts to update the status of an invitation"
+      (s/pg-update-invitation-status! INVITATION_ID "accepted") => :updated-invitation
+      (provided 
+        (m/get-mapping (contains {:entity :invitation})) => :invitation-entity
+        (s/select :invitation-entity {:_id INVITATION_ID} {}) => {}
+        (s/update :invitation-entity
+                  (contains {:status "accepted"})
+                  {:_id INVITATION_ID}) => :updated-invitation))
 
 (fact "converts hyphens to underscores"
       (let [some-query {:entity :ent :foo-bar "wibble"}]

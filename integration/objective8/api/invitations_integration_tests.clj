@@ -1,6 +1,7 @@
 (ns objective8.api.invitations-integration-tests
   (:require [peridot.core :as p]
             [midje.sweet :refer :all]
+            [cheshire.core :as json]
             [objective8.integration-helpers :as helpers]
             [objective8.writers :as writers]
             [objective8.users :as users]
@@ -84,3 +85,29 @@
                         (writers/retrieve-invitation-by-uuid anything) =throws=> (org.postgresql.util.PSQLException.
                                                                                    (org.postgresql.util.ServerErrorMessage. "" 0)))
                       (p/request app "/api/v1/invitations?uuid=some-uuid") => (contains {:response (contains {:status 400})})))))
+
+(facts "accepting-invitations" :integration
+     (against-background
+       [(m/valid-credentials? anything anything anything) => true 
+          (before :contents (do
+                              (helpers/db-connection)
+                              (helpers/truncate-tables)))
+          (after :facts (helpers/truncate-tables)) ]
+
+       (facts "POST /api/v1/objectives/:obj-id/invited-writers/:inv-id/responses"
+              (fact "accepting an invitation"
+                   (let [{inviter-id :_id} (users/store-user! {:twitter-id "some-twitter-id"})
+                         {invitee-id :_id} (users/store-user! {:twitter-id "some-other-twitter-id"})
+                         {objective-id :_id} (objectives/store-objective! {:created-by-id inviter-id :end-date "2015-01-01"})
+                         invitation (writers/store-invitation! {:invited-by-id inviter-id :objective-id objective-id})
+                         invitation-response-as-json (json/generate-string {:invitation-id (:_id invitation)
+                                                                            :uuid (:uuid invitation)
+                                                                            :invitee-id invitee-id
+                                                                            :objective-id objective-id
+                                                                            :response "accept"}) 
+                         response (p/request app (str "/api/v1/objectives/" objective-id 
+                                                                  "/invited-writers/" (:_id invitation) "/responses") 
+                                                         :request-method :post :content-type "application/json"
+                                                         :body invitation-response-as-json)
+                         updated-invitation (writers/retrieve-invitation (:_id invitation))]
+                     (:status updated-invitation) => "accepted")))))

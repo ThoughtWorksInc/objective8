@@ -235,6 +235,13 @@
       (log/info "Error when retrieving invitation: " e)
       (invalid-response (str "Error when retrieving invitation with uuid " uuid)))))
 
+(defn post-invitation-response [{{objective-id :id invitation-id :inv-id} :route-params
+                                 params :params}]
+  (let [invitation-response (-> (select-keys params [:invitee-id :response :uuid])
+                                (assoc :objective-id (Integer/parseInt objective-id) 
+                                       :invitation-id (Integer/parseInt invitation-id)))]
+  (response/response (writers/accept-invitation invitation-response))))
+
 (defn retrieve-candidates [{:keys [route-params params]}]
   (try
     (let [objective-id (-> (:id route-params)

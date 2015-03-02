@@ -50,7 +50,7 @@
         :result result})
      (throw (Exception. "Query map requires an :entity key")))))
 
-(defn update-bearer-token [entity new-fields where]
+(defn update [entity new-fields where]
   (korma/update entity 
                 (korma/set-fields new-fields) 
                 (korma/where where)))
@@ -60,5 +60,12 @@
   [{:keys [entity] :as m}]
   (if-let [bearer-token-entity (mappings/get-mapping m)] 
     (let [where {:bearer_name (:bearer-name m)}]
-      (update-bearer-token bearer-token-entity m where)) 
+      (update bearer-token-entity m where)) 
     (throw (Exception. (str "Could not find database mapping for " entity)))))
+
+(defn pg-update-invitation-status! [invitation-id new-status]
+  (let [invitation-entity (mappings/get-mapping {:entity :invitation})
+        updated-invitation (-> (select invitation-entity {:_id invitation-id} {}) 
+                               first
+                               (assoc :status new-status))]
+    (update invitation-entity updated-invitation {:_id invitation-id})))
