@@ -53,7 +53,9 @@ html.no-js(lang="en")
 
     .project-status
       .wrapper#projectStatus
-        //include project-status
+        | ALPHA: We are still testing,
+        =" "
+        a(href="/project-status", title="Find out more about our project status") find out more
 
     #main-content(role="main")
       block content
