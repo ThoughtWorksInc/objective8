@@ -64,7 +64,7 @@
            
                                   <p>An <b>objective</b> is a change that could be achieved by introducing new policy.  For example: improving access to public housing, or increasing the safety of our roads.</p>
                
-                                  <p><b>Writers</b> are experts responsible for drafting policy.  They use the crowdsourced questions, answers and comments to produce <b>policy drafts</b><span class=\"not-yet-implemented-footnote-marker\">*</span>.  These are further refined through cycles of feedback and redrafting.</p>
+                                  <p><b>Writers</b> work with each other and the community to draft policy.  They use the crowdsourced questions, answers and comments to produce <b>policy drafts</b><span class=\"not-yet-implemented-footnote-marker\">*</span>.  These are further refined through cycles of feedback and redrafting.</p>
 
                                   <p>You can get involved and have your say by creating and sharing objectives, offering your opinion through <b>comments</b>, asking and answering <b>questions</b>, suggesting policy writers<span class=\"not-yet-implemented-footnote-marker\">*</span>, or even providing feedback on the policy drafts themselves.  The whole process is open and transparent.</p>
                                   
@@ -142,11 +142,11 @@
                                   :doc-description "Candidate policy writers..."
                                   :page-title "Invite a policy writer"
                                   :page-intro "Do you know someone with the enthusiasm and expertise to help draft this policy?"
-                                  :writer-name-label "Who"
+                                  :writer-name-label "I'd like to invite: "
                                   :writer-name-title "Writer names are a maximum length of 50 characters"
-                                  :reason-label "Why"
+                                  :reason-label "to help draft this policy, because: "
                                   :reason-title "Reasons are a maximum length of 1000 characters"
-                                  :submit "Invite"}
+                                  :submit "Create an invite"}
                      :invitation-sign-in {:please "Please"
                                           :sign-in "sign in"
                                           :to "to invite a policy writer."}
@@ -155,9 +155,9 @@
                                            :page-title "Can you help us to draft some policy?"
                                            :sign-in-to-accept "Sign in to accept"
                                            :accept "Accept"}
-                     :candidate-list {:page-intro "Writers are experts responsible for drafting policy."
-                                      :candidate-list-heading "Recently added candidates"
-                                      :no-candidates "No writers have been invited yet."
+                     :candidate-list {:page-intro "Writers work with each other and the community to draft policy."
+                                      :candidate-list-heading "Recently added candidate writers"
+                                      :no-candidates "No candidate writers have been invited yet."
                                       :invited-by "Invited by: "}
                      :users-email {:doc-title "Sign up almost there | Objective[8]"
                                    :doc-description ""
