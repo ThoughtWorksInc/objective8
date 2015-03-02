@@ -1,0 +1,19 @@
+.candidate-item {
+  text-decoration: none;
+  display: block;
+  padding: 1em;
+  border: 1px solid $grey-3;
+  color: $black;
+  margin-bottom: 1em;
+} 
+.candidate-name {
+  font-weight: bold;
+  text-transform: capitalize; //TODO remove when we have stored display names
+  margin: 0 0 0.2em;
+  line-height: 1.2;
+  text-decoration: underline;
+  color: black;
+}
+.candidate-reason {
+  margin: 0 0 0.2em;
+}

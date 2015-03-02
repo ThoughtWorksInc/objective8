@@ -155,9 +155,10 @@
                                            :page-title "Can you help us to draft some policy?"
                                            :sign-in-to-accept "Sign in to accept"
                                            :accept "Accept"}
-                     :candidate-list {:page-intro "Writers are experts responsisble for drafting policy."
+                     :candidate-list {:page-intro "Writers are experts responsible for drafting policy."
                                       :candidate-list-heading "Recently added candidates"
-                                      :no-candidates "No writers have been invited yet."}
+                                      :no-candidates "No writers have been invited yet."
+                                      :invited-by "Invited by: "}
                      :users-email {:doc-title "Sign up almost there | Objective[8]"
                                    :doc-description ""
                                    :page-title "Almost there"
@@ -310,8 +311,9 @@
                                               :to "Spanish(...)"}
                      :candidate-list {:page-intro "Spanish(...)"
                                       :candidate-list-heading "Spanish(...)"
-                                      :no-candidates "Spanish(...)"}
-                    :users-email {:doc-title "Perfil | Objective[8]"
+                                      :no-candidates "Spanish(...)"
+                                      :invited-by "Spanish(...)"}
+                     :users-email {:doc-title "Perfil | Objective[8]"
                                   :doc-description ""
                                   :page-title "Spanish(Almost there)"
                                   :user-email-welcome "Tu correo electrónico nos permitira informarte cuando recivas respuestas a tus comentarios, objetivos y votos."

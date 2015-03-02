@@ -127,10 +127,7 @@
       wrap-flash
       (wrap-session {:cookie-attrs {:http-only true}})
       (wrap-xss-protection true {:mode :block})
-      (wrap-frame-options :sameorigin)
-     ; (wrap-content-type-options :nosniff)
-      
-      ))
+      (wrap-frame-options :sameorigin)))
 
 (defonce server (atom nil))
 (defonce postgres-connection-pool (atom nil))
