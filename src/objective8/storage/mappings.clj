@@ -110,11 +110,11 @@
                  :_id (:_id m)
                  :_created_at (sql-time->iso-time-string (:_created_at m)))))
 
-(defn unmap-with-display-name [data-key]
+(defn unmap-with-username [data-key]
   (fn [m] (assoc (json-type->map (data-key m))
                  :_id (:_id m)
                  :_created_at (sql-time->iso-time-string (:_created_at m))
-                 :display-name (:twitter-id m))))
+                 :username (:username m))))
 
 (declare objective user comment question answer invitation candidate bearer-token)
 
@@ -123,7 +123,7 @@
   (korma/table :objective8.objectives)
   (korma/belongs-to user {:fk :created_by_id})
   (korma/prepare map->objective)
-  (korma/transform (unmap-with-display-name :objective)))
+  (korma/transform (unmap-with-username :objective)))
 
 (korma/defentity user
   (korma/pk :_id)
@@ -136,21 +136,21 @@
   (korma/table :objective8.comments)
   (korma/belongs-to user {:fk :created_by_id})
   (korma/prepare map->comment)
-  (korma/transform (unmap-with-display-name :comment)))
+  (korma/transform (unmap-with-username :comment)))
 
 (korma/defentity question
   (korma/pk :_id)
   (korma/table :objective8.questions)
   (korma/belongs-to user {:fk :created_by_id})
   (korma/prepare map->question)
-  (korma/transform (unmap-with-display-name :question)))
+  (korma/transform (unmap-with-username :question)))
 
 (korma/defentity answer
   (korma/pk :_id)
   (korma/table :objective8.answers)
   (korma/belongs-to user {:fk :created_by_id})
   (korma/prepare map->answer)
-  (korma/transform (unmap-with-display-name :answer)))
+  (korma/transform (unmap-with-username :answer)))
 
 (korma/defentity invitation
   (korma/pk :_id)
