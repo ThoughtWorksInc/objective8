@@ -62,11 +62,7 @@
                             store-result (storage/pg-store! objective)
                             retrieve-result (storage/pg-retrieve {:entity :objective :_id (:_id store-result)})]
                         (first (:result retrieve-result)) => (contains {:created-by-id user-id
-<<<<<<< HEAD
                                                                         :username "username"
-=======
-                                                                        :display-name "twitter-TWITTER_ID"
->>>>>>> RS & MG | #53 | Add username to user table and api handler
                                                                         :end-date "2015-01-01T00:00:00Z"
                                                                         :title "title"})))
                 ;;COMMENTS
@@ -84,11 +80,7 @@
                             store-result (storage/pg-store! comment)
                             retrieve-result (storage/pg-retrieve {:entity :comment :_id (:_id store-result)})]
                         (first (:result retrieve-result)) => (contains {:created-by-id user-id
-<<<<<<< HEAD
                                                                         :username "username"
-=======
-                                                                        :display-name "twitter-TWITTER_ID"
->>>>>>> RS & MG | #53 | Add username to user table and api handler
                                                                         :objective-id objective-id})))
 
                 ;;QUESTIONS
@@ -106,11 +98,7 @@
                             store-result (storage/pg-store! question)
                             retrieve-result (storage/pg-retrieve {:entity :question :_id (:_id store-result)})]
                         (first (:result retrieve-result)) => (contains {:created-by-id user-id
-<<<<<<< HEAD
                                                                         :username "username"
-=======
-                                                                        :display-name "twitter-TWITTER_ID"
->>>>>>> RS & MG | #53 | Add username to user table and api handler
                                                                         :objective-id objective-id}))) 
                 (fact "questions can be retrieved by objective ID"
                       (let [stored-user (store-a-user)
