@@ -1,0 +1,14 @@
+.main-wrapper-no-sidebar#clj-objectives-list
+  article
+    h1 ${objective-list/page-title}
+    p.lede ${objective-list/objectives-intro-text}
+    a.button.index-get-started(href="objectives/create", title="${objective-list/create-button-title}") ${objective-list/create-button-text}
+    h2 ${objective-list/subtitle}
+    ol.unstyled-list
+      li.clj-objectives-list-entry
+        a.objective-item.clj-objective-link(href="{{Link to objective}}")
+          h3.objective-item-title.clj-objective-title {{Objective Title Goes Here}}
+          p.helper-text
+            | ${objective-list/drafting-begins}
+            span.inline-date.clj-objective-end-date {{Objective End Date}}
+          p.preview-text.clj-objective-brief-description {{First few words of the objective description}}

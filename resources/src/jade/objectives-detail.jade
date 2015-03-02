@@ -1,0 +1,45 @@
+.main-wrapper.article-wrapper#clj-objectives-detail
+  article
+    h1.objective-title.article-title-no-margin {{title}}
+
+    .article-meta
+      //VOTING
+      //.article-meta-voting
+      //  a.vote-up(href="#voteup")
+      //    i.fa.fa-caret-up 12
+      //  a.vote-down(href="#votedown")
+      //    i.fa.fa-caret-down 2
+      p.article-meta-timing
+        | ${objective-view/end-date-label}
+        | &nbsp;
+        span#clj-obj-end-date-value {{end-date}}
+
+    .article-main
+      p.no-margin-bottom
+        b ${objective-view/goals-label}
+      ul.objective-article-goals#clj-obj-goals-value
+        li {{goals}}
+      p.no-margin-bottom#clj-obj-background-label
+        b ${objective-view/background-label}
+
+  //<!-- GET INVOLVED
+  //.get-involved-widget
+  //  h2.get-involved-widget-title Get involved
+  //  .get-involved-widget-item
+  //    i.fa.fa-question-circle
+  //    .get-involved-widget-item-text
+  //      | Get answers to specific issues.
+  //      | &nbsp;
+  //      a(href="#questions") Add a question
+  //  .get-involved-widget-item
+  //    i.fa.fa-user-plus
+  //    .get-involved-widget-item-text
+  //      | Know somebody that can help draft policy?
+  //      | &nbsp;
+  //      a(href="#authors") Invite an Author
+  //  .get-involved-widget-item
+  //    i.fa.fa-lightbulb-o"
+  //    .get-involved-widget-item-text
+  //      | Do you have a good idea?
+  //      a(href="#proposals") Submit a proposal
+  //
