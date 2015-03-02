@@ -11,7 +11,7 @@
   clear: both;
 }
 
-[class*='3row'] {
+.grid-column {
   float: left;
   width: 100%;
   @include mq(720) {
