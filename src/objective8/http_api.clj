@@ -138,4 +138,7 @@
   (default-get-call
     (str utils/host-url "/api/v1/objectives/" objective-id "/candidate-writers")))
 
-(defn accept-invitation [invitation-id user-id])
+(defn accept-invitation [invitation-response]
+  (default-create-call (str utils/host-url
+                            "/api/v1/objectives/" (:objective-id invitation-response) 
+                            "/invited-writers/" (:invitation-id invitation-response) "/responses") invitation-response))
