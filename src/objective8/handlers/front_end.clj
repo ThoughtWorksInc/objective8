@@ -305,11 +305,17 @@
                                                    :signed-in (signed-in?)}))
     (error-404-response t' locale)))
 
+(defn remove-invitation-credentials [response current-session]
+  (assoc response :session (dissoc current-session :invitation)))
+
 (defn accept-invitation [{:keys [session]}]
+  (prn (str "request: " session))
   (if-let [invitation-credentials (:invitation session)]
     (let [invitation-response {:invitee-id (get (friend/current-authentication) :username)
                                :invitation-id (:invitation-id invitation-credentials)
                                :objective-id (:objective-id invitation-credentials)}] 
       (http-api/accept-invitation invitation-response)
-      (response/redirect (str utils/host-url "/objectives/" (:objective-id invitation-credentials) "/candidate-writers")))
+      (-> (str utils/host-url "/objectives/" (:objective-id invitation-credentials) "/candidate-writers")
+          response/redirect
+          (remove-invitation-credentials session)))
     {:status 401}))
