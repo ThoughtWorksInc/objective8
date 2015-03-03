@@ -311,10 +311,10 @@
 
 (defn accept-invitation [{:keys [session]}]
   (if-let [invitation-credentials (:invitation session)]
-    (let [invitation-response {:invitee-id (get (friend/current-authentication) :username)
-                               :invitation-id (:invitation-id invitation-credentials)
-                               :objective-id (:objective-id invitation-credentials)}] 
-      (http-api/accept-invitation invitation-response)
+    (let [candidate-writer {:invitee-id (get (friend/current-authentication) :username)
+                            :invitation-uuid (:uuid invitation-credentials)
+                            :objective-id (:objective-id invitation-credentials)}]
+      (http-api/post-candidate-writer candidate-writer)
       (-> (str utils/host-url "/objectives/" (:objective-id invitation-credentials) "/candidate-writers")
           response/redirect
           (remove-invitation-credentials session)))

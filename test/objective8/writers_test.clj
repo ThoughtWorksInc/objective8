@@ -40,7 +40,11 @@
        (i/accept-invitation! :active-invitation) => :accepted-invitation
        (storage/pg-store! anything) => :new-candidate))
 
-(fact "creating a candidate fails when an active invitation is not provided")
+(fact "creating a candidate fails when an active invitation is not provided"
+      (writers/create-candidate {:invitation-uuid UUID}) => nil
+      (provided
+       (i/get-active-invitation UUID) => nil))
+
 
 (facts "throws exception when database errors occur"
        (against-background
