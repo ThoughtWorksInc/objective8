@@ -94,26 +94,26 @@
                               (helpers/truncate-tables)))
           (after :facts (helpers/truncate-tables)) ]
 
-       (facts "POST /api/v1/objectives/:obj-id/invited-writers/:inv-id/responses"
-              (fact "accepting an invitation"
+       (facts "POST /api/v1/objectives/:obj-id/candidate-writers"
+              (fact "creating a candidate writer accepts the invitation"
                    (let [{inviter-id :_id} (users/store-user! {:twitter-id "some-twitter-id" :username "someUsername"})
-                         {invitee-id :_id} (users/store-user! {:twitter-id "some-other-twitter-id" :username "otherUsername"})
                          {objective-id :_id} (objectives/store-objective! {:created-by-id inviter-id :end-date "2015-01-01"})
-                         invitation (writers/store-invitation! {:invited-by-id inviter-id 
+                         invitation (writers/store-invitation! {:invited-by-id inviter-id
                                                                 :objective-id objective-id
                                                                 :reason "some reason"
                                                                 :name "writer name"})
-                         invitation-response-as-json (json/generate-string {:invitation-id (:_id invitation)
-                                                                            :uuid (:uuid invitation)
-                                                                            :invitee-id invitee-id
-                                                                            :objective-id objective-id
-                                                                            :response "accept"}) 
-                         {response :response} (p/request app (str "/api/v1/objectives/" objective-id 
-                                                                  "/invited-writers/" (:_id invitation) "/responses") 
+
+                         {invitee-id :_id} (users/store-user! {:twitter-id "some-other-twitter-id" :username "otherUsername"})
+                         candidate-writer-as-json (json/generate-string {:invitation-uuid (:uuid invitation)
+                                                                         :user-id invitee-id
+                                                                         :objective-id objective-id
+                                                                         :invitation-reason "some reason"
+                                                                         :writer-name "writer name"})
+                         {response :response} (p/request app (str "/api/v1/objectives/" objective-id
+                                                                  "/candidate-writers")
                                                          :request-method :post :content-type "application/json"
-                                                         :body invitation-response-as-json)
-                         candidate-writer (json/parse-string (:body response) true)
+                                                         :body candidate-writer-as-json)
                          updated-invitation (writers/retrieve-invitation (:_id invitation))]
                      (:status updated-invitation) => "accepted"
-                     response => (contains {:status 201
-                                            :headers (contains {"Location" (contains (str "/api/v1/objectives/" objective-id "/candidate-writers/" (:_id candidate-writer)))})}))))))
+                     (:status response) => 201
+                     (:body response) => anything)))))

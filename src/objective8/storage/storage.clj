@@ -70,9 +70,9 @@
       (update bearer-token-entity m where)) 
     (throw (Exception. (str "Could not find database mapping for " entity)))))
 
-(defn pg-update-invitation-status! [invitation-id new-status]
+(defn pg-update-invitation-status! [invitation-uuid new-status]
   (let [invitation-entity (mappings/get-mapping {:entity :invitation})
-        updated-invitation (-> (select invitation-entity {:_id invitation-id} {}) 
+        updated-invitation (-> (select invitation-entity {:uuid invitation-uuid} {})
                                first
                                (assoc :status new-status))]
-    (update invitation-entity updated-invitation {:_id invitation-id})))
+    (update invitation-entity updated-invitation {:uuid invitation-uuid})))

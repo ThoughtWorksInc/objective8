@@ -102,7 +102,7 @@
                   (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
                   (http-api/create-user anything) => {:status ::http-api/success
                                                       :result {:_id USER_ID}})
-                (fact "a user can accept an invitation when they have invitation credentials"
+                (fact "a user can accept an invitation when they have invitation credentials and they're signed in"
                       (against-background
                         (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success
                                                                         :result {:_id INVITATION_ID

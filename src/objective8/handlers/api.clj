@@ -9,7 +9,8 @@
             [objective8.answers :as answers]
             [objective8.users :as users]
             [objective8.writers :as writers]
-            [objective8.utils :as utils]))
+            [objective8.utils :as utils]
+            [objective8.api-requests :as ar]))
 
 (defn invalid-response [message]
   {:status 400
@@ -241,15 +242,11 @@
       (log/info "Error when retrieving invitation: " e)
       (invalid-response (str "Error when retrieving invitation with uuid " uuid)))))
 
-(defn post-invitation-response [{{objective-id :id invitation-id :inv-id} :route-params
-                                 params :params}]
-  (let [invitation-response (-> (select-keys params [:invitee-id :response :uuid])
-                                (assoc :objective-id (Integer/parseInt objective-id) 
-                                       :invitation-id (Integer/parseInt invitation-id)))]
-  (let [candidate-writer (writers/accept-invitation invitation-response)
-        resource-location (str utils/host-url "/api/v1/objectives/" objective-id
-                               "/candidate-writers/" (:_id candidate-writer))]
-    (successful-post-response resource-location candidate-writer))))
+(defn post-candidate-writer [{{objective-id :id} :route-params
+                                params :params :as request}]
+  (let [candidate (ar/request->candidate-data request)]
+    (writers/create-candidate candidate))
+  {:status 201})
 
 (defn retrieve-candidates [{:keys [route-params params]}]
   (try

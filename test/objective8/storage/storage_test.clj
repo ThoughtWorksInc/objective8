@@ -2,8 +2,7 @@
   (:require [midje.sweet :refer :all]
             [korma.core :as korma]
             [objective8.storage.storage :as s]
-            [objective8.storage.mappings :as m]
-            ))
+            [objective8.storage.mappings :as m]))
 
 (fact "attempts to store an object by looking up the entity mapping"
       (let [some-map {:foo "bar" :entity :i-am-entity}]
@@ -29,17 +28,6 @@
         (s/update :fake-entity
                   some-update 
                   {:bearer_name "name"}) => anything)))
-
-(def INVITATION_ID 4)
-
-(fact "attempts to update the status of an invitation"
-      (s/pg-update-invitation-status! INVITATION_ID "accepted") => :updated-invitation
-      (provided 
-        (m/get-mapping (contains {:entity :invitation})) => :invitation-entity
-        (s/select :invitation-entity {:_id INVITATION_ID} {}) => {}
-        (s/update :invitation-entity
-                  (contains {:status "accepted"})
-                  {:_id INVITATION_ID}) => :updated-invitation))
 
 (fact "converts hyphens to underscores"
       (let [some-query {:entity :ent :foo-bar "wibble"}]

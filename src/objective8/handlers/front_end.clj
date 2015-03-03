@@ -309,7 +309,6 @@
   (assoc response :session (dissoc current-session :invitation)))
 
 (defn accept-invitation [{:keys [session]}]
-  (prn (str "request: " session))
   (if-let [invitation-credentials (:invitation session)]
     (let [invitation-response {:invitee-id (get (friend/current-authentication) :username)
                                :invitation-id (:invitation-id invitation-credentials)
