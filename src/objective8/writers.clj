@@ -28,16 +28,6 @@
                         :invitation-reason reason
                         :user-id user-id})))
 
-(defn accept-invitation [{user-id :invitee-id :as invitation-response}]
-  (let [updated-invitation (storage/pg-update-invitation-status! (:invitation-uuid invitation-response) "accepted")]
-    (storage/pg-store! {:entity :candidate
-                        :writer-name (:name updated-invitation)
-                        :invitation-reason (:reason updated-invitation)
-                        :objective-id (:objective-id updated-invitation)
-                        :user-id user-id
-                        :invitation-id (:_id updated-invitation)
-                        :invited-by-id (:invited-by-id updated-invitation)})))
-
 (defn retrieve-candidates [objective-id]
   (let [{result :result} (storage/pg-retrieve {:entity :candidate :objective-id objective-id}
                                               {:limit 50})]

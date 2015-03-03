@@ -66,7 +66,12 @@
       (= (peridot-response-json-body->map peridot-response)
          expected-json-as-map)))
 
+
+
 (defn json-contains [expected]
   (midje/chatty-checker [actual]
                         ((midje/contains expected)
                          (cl-json/read-str actual :key-fn keyword))))
+
+(defn location-contains [expected]
+  (midje/contains {"Location" (midje/contains expected)}))

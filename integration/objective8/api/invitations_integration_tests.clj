@@ -116,6 +116,8 @@
                          updated-invitation (writers/retrieve-invitation (:_id invitation))]
                      (:status updated-invitation) => "accepted"
                      (:status response) => 201
+                     (:headers response) => (helpers/location-contains (str "/api/v1/objectives/" objective-id
+                                                                            "/candidate-writers/"))
                      (:body response) => (helpers/json-contains {:_id integer?
                                                                  :user-id invitee-id
                                                                  :invitation-id (:_id invitation)
