@@ -89,7 +89,7 @@
                  sign-up-response) => anything
                (provided (sign-up/finalise-authorisation (contains {:_id USER_ID}) anything) => {}))
          
-         (fact "An http-api/invalid-input response on signing up sends user back to the sign-up page"
+         (fact "An http-api/invalid-input response on signing up sends user back to the sign-up page with the correct error"
                (against-background
                  (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
                  (http-api/create-user anything) => {:status ::http-api/invalid-input})
@@ -99,9 +99,22 @@
                      sign-up-response (p/request signed-in-context sign-up-url
                                                  :request-method :post
                                                  :content-type "application/x-www-form-urlencoded"
-                                                 :body "&email-address=test%40email.address.com")]
+                                                 :body "&username=notunique&email-address=test%40email.address.com")]
                  sign-up-response => (check-html-content "<title>Sign up")
-                 sign-up-response => (check-html-content "username already exists"))))
+                 sign-up-response => (check-html-content "username already exists")))
+
+         (future-fact "Posting a not well-formed username on signing up sends user back to the sign-up page with the correct error"
+               (against-background
+                 (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"})
+
+               (let [unauthorized-request-context (p/request test-session protected-resource)
+                     signed-in-context (p/request test-session twitter-callback-url)
+                     sign-up-response (p/request signed-in-context sign-up-url
+                                                 :request-method :post
+                                                 :content-type "application/x-www-form-urlencoded"
+                                                 :body "&username=veryveryverylongusername&email-address=test%40email.address.com")]
+                 sign-up-response => (check-html-content "<title>Sign up")
+                 sign-up-response => (check-html-content "username must be 1-16 characters in length, containing only letters and numbers"))))
 
        (fact "After signing in, a user with an existing profile is immediately sent to the resource they were trying to access"
              (against-background
@@ -129,7 +142,9 @@
               sign-in-with-refer-response (-> user-session
                                               (p/request (str utils/host-url "/sign-in?refer=" target-uri))
                                               (p/request twitter-callback-url)
-                                              (p/request sign-up-url :request-method :post))]
+                                              (p/request sign-up-url :request-method :post
+                                                         :content-type "application/x-www-form-urlencoded"
+                                                         :body "&username=somename&email-address=test%40email.address.com"))]
           sign-in-with-refer-response => (check-redirects-to target-uri)))
 
   (fact "unauthorised, registered user can sign in and be referred to a target uri"
@@ -157,5 +172,7 @@
               sign-in-with-refer-response (-> user-session
                                               (p/request (str utils/host-url "/sign-in?refer=" target-uri))
                                               (p/request twitter-callback-url)
-                                              (p/request sign-up-url :request-method :post))]
+                                              (p/request sign-up-url :request-method :post
+                                                         :content-type "application/x-www-form-urlencoded"
+                                                         :body "&username=somename&email-address=test%40email.address.com"))]
           sign-in-with-refer-response => (check-redirects-to "/" 303))))

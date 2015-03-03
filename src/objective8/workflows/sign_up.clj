@@ -41,19 +41,30 @@
         :else {:status 500}))
     (response/redirect "/sign-in")))
 
+(defn valid-length [string]
+  (let [len (count string)]
+    (and (> len 0) (< len 17))))
+
+(defn validate-username [username]
+ (when (valid-length username)
+   username))
+
 (defn sign-up-form-post [{params :params session :session :as request}]
   (if-let [twitter-id (:twitter-id session)]
-    (let [username (:username params)
-          email-address (:email-address params) 
-          {status :status user :result} (http-api/create-user {:twitter-id twitter-id
-                                                               :username username
-                                                               :email-address email-address})]
-      (cond
-        (= status ::http-api/success) (finalise-authorisation user session)
-        (= status ::http-api/invalid-input) (-> request
-                                                (assoc :errors {:username :not-unique})
-                                                front-end/sign-up-form)
-        :else {:status 502}))
+    (if-let [username (validate-username (:username params))]
+      (let [email-address (:email-address params) 
+            {status :status user :result} (http-api/create-user {:twitter-id twitter-id
+                                                                 :username username
+                                                                 :email-address email-address})]
+        (cond
+          (= status ::http-api/success) (finalise-authorisation user session)
+          (= status ::http-api/invalid-input) (-> request
+                                                  (assoc :errors {:username :not-unique})
+                                                  front-end/sign-up-form)
+          :else {:status 502}))
+      (-> request
+          (assoc :errors {:username :not-well-formed})
+          front-end/sign-up-form)) 
     {:status 401}))
 
 (def sign-up-handlers
