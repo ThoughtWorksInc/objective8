@@ -41,13 +41,8 @@
         :else {:status 500}))
     (response/redirect "/sign-in")))
 
-(defn valid-length [string]
-  (let [len (count string)]
-    (and (> len 0) (< len 17))))
-
 (defn validate-username [username]
- (when (valid-length username)
-   username))
+  (re-matches #"[a-zA-Z0-9]{1,16}" username))
 
 (defn sign-up-form-post [{params :params session :session :as request}]
   (if-let [twitter-id (:twitter-id session)]

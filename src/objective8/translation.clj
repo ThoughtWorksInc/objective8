@@ -166,6 +166,7 @@
                                :username-label "Username"
                                :username-title "Create your username"
                                :not-unique "username already exists"
+                               :not-well-formed "username must be 1-16 characters in length, containing only letters and numbers"
                                :email-label "Email"
                                :email-title "Add your email title"
                                :button "Create account"}}
@@ -323,6 +324,7 @@
                                :username-label ""
                                :username-title ""
                                :not-unique ""
+                               :not-well-formed ""
                                :email-label  "Correo electrónico"
                                :email-title  "Escribe tu cuenta de correo electrónico"
                                :button ""}}}

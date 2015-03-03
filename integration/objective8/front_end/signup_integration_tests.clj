@@ -103,7 +103,7 @@
                  sign-up-response => (check-html-content "<title>Sign up")
                  sign-up-response => (check-html-content "username already exists")))
 
-         (future-fact "Posting a not well-formed username on signing up sends user back to the sign-up page with the correct error"
+         (fact "Posting a not well-formed username on signing up sends user back to the sign-up page with the correct error"
                (against-background
                  (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"})
 
