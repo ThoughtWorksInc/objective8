@@ -37,6 +37,7 @@
   color: $white;
   font-weight: bold;
   font-size: 1.6em;
+  letter-spacing: -0.025em;
   text-align: center;
   display: block;
   @include mq(720) {
