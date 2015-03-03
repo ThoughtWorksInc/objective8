@@ -88,6 +88,9 @@ $gamma_vertical_spacing: 8.5em;
   border-bottom: 1px solid $grey-4;
   h1 {
     font-family: $sans-serif;
+    @include mq(720) {
+      font-size: 2.6em;
+    }
   }
   .lede {
     line-height: 1.4;
