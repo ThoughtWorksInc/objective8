@@ -17,8 +17,16 @@
   (let [{result :result} (storage/pg-retrieve {:entity :invitation :_id invitation-id})]
     (dissoc (first result) :entity)))
 
-(defn create-candidate [{:keys [invitation-uuid] :as candidate-data}]
-  (storage/pg-update-invitation-status! invitation-uuid "accepted"))
+(defn create-candidate [{:keys [invitation-uuid user-id] :as candidate-data}]
+  (let [{:keys [name reason objective-id invited-by-id]
+         invitation-id :_id} (storage/pg-update-invitation-status! invitation-uuid "accepted")]
+    (storage/pg-store! {:entity :candidate
+                        :objective-id objective-id
+                        :invitation-id invitation-id
+                        :invited-by-id invited-by-id
+                        :writer-name name
+                        :invitation-reason reason
+                        :user-id user-id})))
 
 (defn accept-invitation [{user-id :invitee-id :as invitation-response}]
   (let [updated-invitation (storage/pg-update-invitation-status! (:invitation-uuid invitation-response) "accepted")]

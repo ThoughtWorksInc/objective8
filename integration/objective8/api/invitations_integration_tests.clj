@@ -116,4 +116,9 @@
                          updated-invitation (writers/retrieve-invitation (:_id invitation))]
                      (:status updated-invitation) => "accepted"
                      (:status response) => 201
-                     (:body response) => anything)))))
+                     (:body response) => (helpers/json-contains {:_id integer?
+                                                                 :user-id invitee-id
+                                                                 :invitation-id (:_id invitation)
+                                                                 :objective-id objective-id
+                                                                 :invitation-reason "some reason"
+                                                                 :writer-name "writer name"}))))))

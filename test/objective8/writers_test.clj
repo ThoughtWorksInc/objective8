@@ -8,6 +8,7 @@
 (def INVITATION_ID 4)
 (def USER_ID 3)
 (def INVITED_BY_ID 2)
+(def UUID "some uuid")
 
 (fact "Postgresql exceptions are not caught"
       (against-background
@@ -21,11 +22,17 @@
            :status "active"}) =throws=> (org.postgresql.util.PSQLException.
                                           (org.postgresql.util.ServerErrorMessage. "" 0))))
 
-(fact "creates invitation writer with a random uuid"
+(fact "creates an invitation with a random uuid"
       (writers/store-invitation! {:writer-name "something"}) => :stored-invitation
       (provided
         (utils/generate-random-uuid) => "random-uuid"
         (storage/pg-store! {:entity :invitation :writer-name "something" :uuid "random-uuid" :status "active"}) => :stored-invitation))
+
+(fact "creating a candidate accepts the invitation and returns the created candidate"
+      (writers/create-candidate {:invitation-uuid UUID}) => :new-candidate
+      (provided
+       (storage/pg-update-invitation-status! UUID "accepted") => :accepted-invitation
+       (storage/pg-store! anything) => :new-candidate))
 
 (fact "By default, only the first 50 candidates are retrieved"
       (writers/retrieve-candidates OBJECTIVE_ID) => anything

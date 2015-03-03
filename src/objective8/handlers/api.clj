@@ -244,9 +244,9 @@
 
 (defn post-candidate-writer [{{objective-id :id} :route-params
                                 params :params :as request}]
-  (let [candidate (ar/request->candidate-data request)]
-    (writers/create-candidate candidate))
-  {:status 201})
+  (let [candidate-data (ar/request->candidate-data request)]
+    (let [candidate (writers/create-candidate candidate-data)]
+      (successful-post-response "" candidate))))
 
 (defn retrieve-candidates [{:keys [route-params params]}]
   (try

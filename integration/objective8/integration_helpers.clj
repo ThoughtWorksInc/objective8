@@ -5,10 +5,11 @@
             [korma.db :as kormadb]
             [peridot.core :as p]
             [cheshire.core :as json]
+            [midje.sweet :as midje]
+            [clojure.data.json :as cl-json]
             [objective8.core :as core]
             [objective8.storage.mappings :as m]
-            [objective8.storage.database :as db]
-            [midje.sweet :as midje]))
+            [objective8.storage.database :as db]))
 
 (defn db-connection [] (kormadb/defdb testdb db/postgres-spec))
 
@@ -64,3 +65,8 @@
    (midje/chatty-checker [peridot-response]
       (= (peridot-response-json-body->map peridot-response)
          expected-json-as-map)))
+
+(defn json-contains [expected]
+  (midje/chatty-checker [actual]
+                        ((midje/contains expected)
+                         (cl-json/read-str actual :key-fn keyword))))
