@@ -1,6 +1,7 @@
 (ns objective8.writers
   (:require 
-    [objective8.utils :as utils]    
+    [objective8.utils :as utils]
+    [objective8.invitations :as i]
     [objective8.storage.storage :as storage]))  
 
 (defn store-invitation! [invitation]
@@ -18,8 +19,8 @@
     (dissoc (first result) :entity)))
 
 (defn create-candidate [{:keys [invitation-uuid user-id] :as candidate-data}]
-  (let [{:keys [name reason objective-id invited-by-id]
-         invitation-id :_id} (storage/pg-update-invitation-status! invitation-uuid "accepted")]
+  (when-let [{:keys [name reason objective-id invited-by-id] invitation-id :_id} (some-> (i/get-active-invitation invitation-uuid)
+                                                                                       (i/accept-invitation!))]
     (storage/pg-store! {:entity :candidate
                         :objective-id objective-id
                         :invitation-id invitation-id

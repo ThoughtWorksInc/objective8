@@ -172,7 +172,7 @@
                (facts "about invitations"
                       (fact "an invitation's status can be updated"
                             (let [invitation (store-an-invitation)]
-                              (:status (storage/pg-update-invitation-status! (:uuid invitation) "accepted")) => "accepted")))
+                              (:status (storage/pg-update-invitation-status! invitation "accepted")) => "accepted")))
 
                ;;BEARER-TOKENS
                (facts "about bearer-tokens"

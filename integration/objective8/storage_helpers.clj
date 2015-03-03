@@ -24,7 +24,9 @@
                         :uuid (java.util.UUID/randomUUID)
                         :status "active"
                         :invited-by-id invited-by-id
-                        :objective-id objective-id})))
+                        :objective-id objective-id
+                        :reason "some reason"
+                        :name "writer name"})))
 
 (defn store-a-question []
   (let [{user-id :_id} (store-a-user)

@@ -3,6 +3,7 @@
             [midje.sweet :refer :all]
             [cheshire.core :as json]
             [objective8.integration-helpers :as helpers]
+            [objective8.storage-helpers :as sh]
             [objective8.writers :as writers]
             [objective8.users :as users]
             [objective8.objectives :as objectives]
@@ -96,31 +97,44 @@
 
        (facts "POST /api/v1/objectives/:obj-id/candidate-writers"
               (fact "creating a candidate writer accepts the invitation"
-                   (let [{inviter-id :_id} (users/store-user! {:twitter-id "some-twitter-id" :username "someUsername"})
-                         {objective-id :_id} (objectives/store-objective! {:created-by-id inviter-id :end-date "2015-01-01"})
-                         invitation (writers/store-invitation! {:invited-by-id inviter-id
-                                                                :objective-id objective-id
-                                                                :reason "some reason"
-                                                                :name "writer name"})
+                    (let [{invitation-id :_id
+                           objective-id :objective-id
+                           invitation-reason :reason
+                           writer-name :name
+                           invitation-uuid :uuid} (sh/store-an-invitation)
 
                          {invitee-id :_id} (users/store-user! {:twitter-id "some-other-twitter-id" :username "otherUsername"})
-                         candidate-writer-as-json (json/generate-string {:invitation-uuid (:uuid invitation)
-                                                                         :user-id invitee-id
-                                                                         :objective-id objective-id
-                                                                         :invitation-reason "some reason"
-                                                                         :writer-name "writer name"})
+                         candidate-data-as-json (json/generate-string {:invitation-uuid invitation-uuid
+                                                                       :user-id invitee-id
+                                                                       :objective-id objective-id})
                          {response :response} (p/request app (str "/api/v1/objectives/" objective-id
                                                                   "/candidate-writers")
-                                                         :request-method :post :content-type "application/json"
-                                                         :body candidate-writer-as-json)
-                         updated-invitation (writers/retrieve-invitation (:_id invitation))]
+                                                         :request-method :post
+                                                         :content-type "application/json"
+                                                         :body candidate-data-as-json)
+                         updated-invitation (writers/retrieve-invitation invitation-id)]
                      (:status updated-invitation) => "accepted"
                      (:status response) => 201
                      (:headers response) => (helpers/location-contains (str "/api/v1/objectives/" objective-id
                                                                             "/candidate-writers/"))
                      (:body response) => (helpers/json-contains {:_id integer?
                                                                  :user-id invitee-id
-                                                                 :invitation-id (:_id invitation)
+                                                                 :invitation-id invitation-id
                                                                  :objective-id objective-id
-                                                                 :invitation-reason "some reason"
-                                                                 :writer-name "writer name"}))))))
+                                                                 :invitation-reason invitation-reason
+                                                                 :writer-name writer-name})))
+
+              (fact "Cannot create a candidate writer when no invitation exists with given uuid"
+                    (let [{invitee-id :_id} (sh/store-a-user)
+                          {objective-id :_id} (sh/store-an-objective)
+                          candidate-data-as-json (json/generate-string {:invitation-uuid "nonexistent uuid"
+                                                                        :user-id invitee-id
+                                                                        :objective-id objective-id
+                                                                        :invitation-reason "some reason"
+                                                                        :writer-name "writer name"})
+                          {response :response} (p/request app (str "/api/v1/objectives/" objective-id
+                                                                   "/candidate-writers")
+                                                          :request-method :post
+                                                          :content-type "application/json"
+                                                          :body candidate-data-as-json)]
+                      (:status response) => 403)))))

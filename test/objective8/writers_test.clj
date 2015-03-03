@@ -1,6 +1,7 @@
 (ns objective8.writers-test
   (:require [midje.sweet :refer :all]
             [objective8.writers :as writers]
+            [objective8.invitations :as invitations]
             [objective8.utils :as utils]
             [objective8.storage.storage :as storage]))
 
@@ -31,7 +32,8 @@
 (fact "creating a candidate accepts the invitation and returns the created candidate"
       (writers/create-candidate {:invitation-uuid UUID}) => :new-candidate
       (provided
-       (storage/pg-update-invitation-status! UUID "accepted") => :accepted-invitation
+       (invitations/get-active-invitation UUID) => :active-invitation
+       (invitations/accept-invitation! :active-invitation) => :accepted-invitation
        (storage/pg-store! anything) => :new-candidate))
 
 (fact "By default, only the first 50 candidates are retrieved"
