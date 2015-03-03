@@ -5,7 +5,7 @@ block vars
   - pageTitle = "Draft"
 
 mixin addCommentButton()
-  .draft-add-comment
+  .draft-add-inline-comment
     a(href="#", title="Add a comment")
       i.fa.fa-plus-square-o.fa-lg
       | Add comment
@@ -46,6 +46,30 @@ block content
         li Jean shorts biodiesel hoodie keytar mlkshk food truck
       +addCommentButton
         p Street art bitters pour-over, Portland pork belly master cleanse lumbersexual. Aesthetic 90's Shoreditch PBR. Austin sustainable Carles American Apparel, banh mi High Life selvage XOXO plaid stumptown fashion axe skateboard butcher McSweeney's. Master cleanse polaroid Shoreditch DIY, Godard salvia gastropub heirloom Kickstarter fap before they sold out chia. Disrupt Neutra tofu Godard kitsch. Chambray Helvetica plaid chia salvia. Cronut asymmetrical messenger bag, cornhole listicle selvage yr beard Godard stumptown meh sustainable.
+
+    //.draft-comments
+    //  h2 Comments
+    //  //.draft-comment-promo
+    //  //  p Only signed in members can post a comment on this draft.
+    //  ol.comment-list
+    //    li.helper-text Be the first to comment on this draft.
+
+    .draft-comments
+      h2 Comments
+      //h2 Leave a comment
+      ol.comment-list
+        li.comment-item
+          .comment-author
+            | Chris Cheshire
+          .comment-wrapper
+            span.comment-text We definitely need to look into Gran Via and Calle Mayor!
+            span.comment-date 3 September 2015
+        li.comment-item
+          .comment-author
+            | Chris Cheshire
+          .comment-wrapper
+            span.comment-text Oooh and Paseo del Prado.
+            span.comment-date 4 September 2015
 
 block footerScripts
   //script.

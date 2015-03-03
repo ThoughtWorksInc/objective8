@@ -81,10 +81,11 @@ $gamma_vertical_spacing: 8.5em;
 
 .draft-preview-document {
   position: relative;
-  margin: 0 0 3em 0;
-  padding: 0 40px 0 0;
+  margin: 0 0 0 0;
+  padding: 0 40px 2em 0;
   font-family: $serif;
   font-size: 110%;
+  border-bottom: 1px solid $grey-4;
   h1 {
     font-family: $sans-serif;
   }
@@ -99,7 +100,7 @@ $gamma_vertical_spacing: 8.5em;
   }
 }
 
-.draft-add-comment {
+.draft-add-inline-comment {
   $comment_icon_size: 24px;
   $hit_area_spacer: 10px;
   position: absolute;
@@ -158,7 +159,6 @@ $draft_help_side_gutter: 1.5em;
   margin-bottom: 0.5em;
   color: $green1;
 }
-
 .button-hide-draft-help {
   position: absolute;
   top: 1em;
@@ -175,5 +175,13 @@ $draft_help_side_gutter: 1.5em;
   }
   &:visited, & {
     color: rgba($default_text_color,0.8);
+  }
+}
+.draft-comment-promo {
+  background: $grey-4;
+  margin: 0 0 1em 0;
+  padding: 1em;
+  :last-child {
+    margin: 0;
   }
 }
