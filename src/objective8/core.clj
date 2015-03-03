@@ -43,7 +43,7 @@
                :candidate-list (utils/anti-forgery-hook front-end-handlers/candidate-list)
                :invitation-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/invitation-form-post) #{:signed-in})
                :writer-invitation front-end-handlers/writer-invitation
-               :accept-or-reject-invitation front-end-handlers/accept-or-reject-invitation
+               :accept-or-reject-invitation (utils/anti-forgery-hook front-end-handlers/accept-or-reject-invitation)
                :accept-invitation (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/accept-invitation) #{:signed-in})
 
                
@@ -68,7 +68,7 @@
 
 (def routes
   ["/"  ;; FRONT-END
-        {""                  :index
+        {""                 :index
         "sign-in"           :sign-in
         "sign-out"          :sign-out
         "project-status"    :project-status
@@ -78,11 +78,10 @@
                              :post :create-objective-form-post
                              ["/create"] :create-objective-form
                              ["/" :id] {:get :objective
-                                        "/invited-writers" {["/" :i-id] {:get :accept-or-reject-invitation
-                                                                         "/accept" {:post :accept-invitation}}} 
+                                        "/writer-invitations" {:post :invitation-form-post
+                                                               ["/" :i-id] {:get :accept-or-reject-invitation
+                                                                            "/response" {:post :accept-invitation}}}
                                         "/candidate-writers" {:get :candidate-list}
-                                        "/writers"  {"/invitation" {:get :accept-or-reject-invitation} 
-                                                    "/invitations" {:post :invitation-form-post}} 
                                         "/questions" {:post :add-question-form-post
                                                       :get :question-list
                                                       ["/" :q-id] {:get :question

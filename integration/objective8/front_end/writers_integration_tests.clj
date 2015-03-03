@@ -39,7 +39,7 @@
                              :reason "he's awesome"}
                      peridot-response (-> user-session
                                           (helpers/with-sign-in "http://localhost:8080/")
-                                          (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID "/writers/invitations")
+                                          (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID "/writer-invitations")
                                                      :request-method :post
                                                      :params params))]
                  peridot-response => (helpers/flash-message-contains (str "Your invited writer can accept their invitation by going to http://localhost:8080/invitations/" UUID))
@@ -80,7 +80,7 @@
                                                          :result {:title OBJECTIVE_TITLE}})
              (let [user-session (helpers/test-context)
                    invitation-url (str "http://localhost:8080/invitations/" UUID)
-                   accept-reject-url (str "/objectives/" OBJECTIVE_ID "/invited-writers/" INVITATION_ID)
+                   accept-reject-url (str "/objectives/" OBJECTIVE_ID "/writer-invitations/" INVITATION_ID)
                    peridot-response (-> user-session
                                         (p/request invitation-url)
                                         p/follow-redirect)]
@@ -93,7 +93,7 @@
              (p/request (helpers/test-context) "/invitations/nonexistent-invitation-uuid") => (contains {:response (contains {:status 404})}))
 
        (fact "a user cannot access the accept/reject page without invitation credentials"
-             (p/request (helpers/test-context) (str "http://localhost:8080/objectives/" OBJECTIVE_ID "/invited-writers/" INVITATION_ID)) 
+             (p/request (helpers/test-context) (str "http://localhost:8080/objectives/" OBJECTIVE_ID "/writer-invitations/" INVITATION_ID)) 
              => (contains {:response (contains {:status 404})}))
        
        (binding [config/enable-csrf false]
@@ -118,7 +118,7 @@
                                                  (helpers/with-sign-in "http://localhost:8080/")
                                                  (p/request (str "http://localhost:8080/invitations/" UUID))
                                                  (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID 
-                                                                 "/invited-writers/" INVITATION_ID "/accept")
+                                                                 "/writer-invitations/" INVITATION_ID "/response")
                                                             :request-method :post)
                                                  p/follow-redirect)]
                         peridot-response) => (contains {:request (contains {:uri (contains (str "/objectives/" OBJECTIVE_ID 
@@ -135,6 +135,6 @@
                             peridot-response (-> user-session
                                                  (helpers/with-sign-in "http://localhost:8080/")
                                                  (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID 
-                                                                 "/invited-writers/" INVITATION_ID "/accept")
+                                                                 "/writer-invitations/" INVITATION_ID "/response")
                                                             :request-method :post))]
                         peridot-response => (contains {:response (contains {:status 401})}))))))

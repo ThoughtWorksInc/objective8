@@ -128,7 +128,7 @@
 (html/defsnippet invitation-create
   "templates/writers/invitation-form.html" [[:#clj-invitation]] [translation objective-id]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:form] (html/set-attr :action (str "/objectives/" objective-id "/writers/invitations"))
+  [:form] (html/set-attr :action (str "/objectives/" objective-id "/writer-invitations"))
   [:#clj-invitation html/any-node] (html/replace-vars translation))
 
 (html/defsnippet post-invitation-container 
@@ -139,10 +139,11 @@
 
 (html/defsnippet invitation-response-page
   "templates/writers/invitation-response.html" [:#clj-invitation-response]
-  [{:keys [translation objective uri signed-in]}]
+  [{:keys [translation objective invitation-id uri signed-in]}]
   [:#clj-invitation-response-sign-in] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" uri))
   [:#clj-invitation-response-sign-in] (when-not signed-in identity)
-  [:#clj-invitation-response-accept] (html/set-attr :action (str "/objectives/" (:_id objective) "/writers/invitation/accept"))
+  [:#clj-invitation-response-accept] (html/set-attr :action (str "/objectives/" (:_id objective) "/writer-invitations/" invitation-id "/response"))
+  [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
   [:#clj-invitation-response-accept] (when signed-in identity)
   [:#clj-invitation-response-objective-title] (html/content (:title objective))
   [:#clj-invitation-response html/any-node] (html/replace-vars translation))

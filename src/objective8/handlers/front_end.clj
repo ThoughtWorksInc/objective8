@@ -275,10 +275,10 @@
     (let [{status :status stored-invitation :result} (http-api/create-invitation invitation)]
       (cond
         (= status ::http-api/success)
-        (let [invitation-url (str utils/host-url "/objectives/" (:objective-id stored-invitation))
-              message (str "Your invited writer can accept their invitation by going to "
-                           utils/host-url "/invitations/" (:uuid stored-invitation))]
-          (assoc (response/redirect invitation-url) :flash message))
+        (let [objective-url (str utils/host-url "/objectives/" (:objective-id stored-invitation))
+              invitation-url (str utils/host-url "/invitations/" (:uuid stored-invitation))
+              message (str "Your invited writer can accept their invitation by going to " invitation-url)]
+          (assoc (response/redirect objective-url) :flash message))
         (= status ::http-api/invalid-input) {:status 400}
         :else {:status 502}))
     {:status 400}))
@@ -287,7 +287,7 @@
   (let [{status :status {:keys [objective-id _id]} :result} (http-api/retrieve-invitation-by-uuid uuid)]
     (cond
       (= status ::http-api/success)
-      (-> (str utils/host-url "/objectives/" objective-id "/invited-writers/" _id)
+      (-> (str utils/host-url "/objectives/" objective-id "/writer-invitations/" _id)
           response/redirect
           (assoc :session session)
           (assoc-in [:session :invitation] {:uuid uuid :objective-id objective-id :invitation-id _id}))
@@ -302,6 +302,7 @@
                                                    :doc-title (t' :invitation-response/doc-title)
                                                    :doc-description (t' :invitation-response/doc-description)
                                                    :objective objective
+                                                   :invitation-id (:invitation-id invitation-details)
                                                    :uri uri
                                                    :signed-in (signed-in?)}))
     (error-404-response t' locale)))
