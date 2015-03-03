@@ -1,6 +1,13 @@
-#clj-index
-  .index-hero
-    h1.index-welcome ${index/index-welcome}
-    p.index-intro ${index/index-intro}
-    a.button.index-get-started(href="objectives/create", title="{Get started}") {Get started}
-    a.index-learn-more(href="/learn-more", title="${index/index-learn-more-title}") ${index/index-learn-more}
+extends base
+
+block vars
+//  - pageTitle = "Settings"
+
+block content
+
+  #clj-index
+    .index-hero
+      h1.index-welcome ${index/index-welcome}
+      p.index-intro ${index/index-intro}
+      a.button.index-get-started(href="objectives/create", title="{Get started}") {Get started}
+      a.index-learn-more(href="/learn-more", title="${index/index-learn-more-title}") ${index/index-learn-more}
