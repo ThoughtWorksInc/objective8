@@ -165,6 +165,7 @@
                                :welcome "Adding your email address will let us notify you when you receive responses to comments, objectives and votes."
                                :username-label "Username"
                                :username-title "Create your username"
+                               :not-unique "username already exists"
                                :email-label "Email"
                                :email-title "Add your email title"
                                :button "Create account"}}
@@ -321,6 +322,7 @@
                                :welcome  "Tu correo electrónico nos permitira informarte cuando recivas respuestas a tus comentarios, objetivos y votos."
                                :username-label ""
                                :username-title ""
+                               :not-unique ""
                                :email-label  "Correo electrónico"
                                :email-title  "Escribe tu cuenta de correo electrónico"
                                :button ""}}}

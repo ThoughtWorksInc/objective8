@@ -291,8 +291,10 @@
 
 ;USERS
 (html/defsnippet sign-up
-  "templates/sign-up.html" [[:#clj-sign-up]] [{:keys [translation]}]
+  "templates/sign-up.html" [[:#clj-sign-up]] [{:keys [translation errors]}]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
+  [:#clj-username-error] (when (:username errors) 
+                           (html/content (translation :sign-up/not-unique))) 
   [:#clj-sign-up html/any-node] (html/replace-vars translation))
 
 

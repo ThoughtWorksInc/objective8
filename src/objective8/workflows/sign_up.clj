@@ -3,6 +3,7 @@
             [cemerick.friend :as friend]
             [ring.util.response :as response]
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
+            [ring.middleware.flash :refer [wrap-flash]]
             [bidi.ring :refer [make-handler]]
             [objective8.config :as config]
             [objective8.http-api :as http-api]
@@ -49,12 +50,14 @@
                                                                :email-address email-address})]
       (cond
         (= status ::http-api/success) (finalise-authorisation user session)
-        (= status ::http-api/invalid-input) (front-end/sign-up-form request) 
+        (= status ::http-api/invalid-input) (-> request
+                                                (assoc :errors {:username :not-unique})
+                                                front-end/sign-up-form)
         :else {:status 502}))
     {:status 401}))
 
 (def sign-up-handlers
-  {:sign-up-form        (utils/anti-forgery-hook sign-up-form)
+  {:sign-up-form        (utils/anti-forgery-hook sign-up-form) 
    :sign-up-form-post   (utils/anti-forgery-hook sign-up-form-post)})
 
 (def sign-up-workflow

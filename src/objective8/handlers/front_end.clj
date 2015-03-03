@@ -64,11 +64,12 @@
                                       :signed-in (signed-in?)}))
 ;; USER PROFILE
 
-(defn sign-up-form [{:keys [t' locale]}]
+(defn sign-up-form [{:keys [t' locale errors] :as request}]
   (rendered-response sign-up {:translation t'
                               :locale (subs (str locale) 1)
                               :doc-title (t' :sign-up/doc-title)
                               :doc-description (t' :sign-up/doc-description)
+                              :errors errors
                               :signed-in (signed-in?)}))
 
 ;; OBJECTIVES

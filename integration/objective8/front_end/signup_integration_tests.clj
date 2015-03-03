@@ -10,6 +10,7 @@
             [objective8.integration-helpers :as helpers]
             [objective8.http-api :as http-api]
             [objective8.utils :as utils]
+            [objective8.handlers.front-end :as front-end]  
             [objective8.workflows.sign-up :as sign-up]))
 
 (def test-session (helpers/test-context))
@@ -88,7 +89,7 @@
                  sign-up-response) => anything
                (provided (sign-up/finalise-authorisation (contains {:_id USER_ID}) anything) => {}))
          
-         (fact "Signing up with invalid information sends user back to the sign-up page"
+         (fact "An http-api/invalid-input response on signing up sends user back to the sign-up page"
                (against-background
                  (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
                  (http-api/create-user anything) => {:status ::http-api/invalid-input})
@@ -99,7 +100,8 @@
                                                  :request-method :post
                                                  :content-type "application/x-www-form-urlencoded"
                                                  :body "&email-address=test%40email.address.com")]
-                 sign-up-response) => (check-html-content "<title>Sign up")))
+                 sign-up-response => (check-html-content "<title>Sign up")
+                 sign-up-response => (check-html-content "username already exists"))))
 
        (fact "After signing in, a user with an existing profile is immediately sent to the resource they were trying to access"
              (against-background
