@@ -76,7 +76,7 @@ module.exports = function(grunt) {
       },
       dev: {
         options: {
-          map: true,
+          map: true
         },
         no_dest: {
           src: 'resources/public/modern.css'
@@ -84,7 +84,7 @@ module.exports = function(grunt) {
       },
       dist: {
         options: {
-          map: false,
+          map: false
         },
         no_dest: {
           src: 'resources/public/modern.css'
@@ -111,8 +111,8 @@ module.exports = function(grunt) {
           'resources/src/js/vendor/webfont.js',
           'resources/src/js/custom/**/*.js'
         ],
-        dest: 'resources/public/scripts.js',
-      },
+        dest: 'resources/public/scripts.js'
+      }
     },
     //Uglify
     uglify: {
@@ -124,6 +124,22 @@ module.exports = function(grunt) {
         src: 'resources/public/scripts.js',
         dest: 'resources/public/scripts.min.js'
       }
+    },
+
+    browserSync: {
+      default_options: {
+        bsFiles: {
+          src: [
+            "resources/public/*.css",
+            "resources/src/jade/**/*.jade"
+          ]
+        },
+        options: {
+          watchTask: true,
+          proxy: "localhost:1234",
+          port: 2345
+        }
+      }
     }
   });
 
@@ -133,6 +149,7 @@ module.exports = function(grunt) {
     'jshint',
     'concat',
     'uglify',
+    'browserSync',
     'watch'
   ]);
 

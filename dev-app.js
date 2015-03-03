@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 var favicon = require('serve-favicon');
+var port = process.env.PORT || 1234;
 
 var pageData = {
   "javascriptsBase": "/public",
@@ -37,4 +38,5 @@ app.get('/:folder/:name', function(req , res){
   res.render(pageName, pageData);
 });
 
-app.listen(1234);
+
+app.listen(port);
