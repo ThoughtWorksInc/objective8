@@ -25,7 +25,7 @@
 //Google webfont
 WebFont.load({
   google: {
-    families: [ 'Titillium+Web:300,700:latin' ]
+    families: [ 'Source+Sans+Pro:400,700:latin' ]
   }
 });
 

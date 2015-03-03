@@ -4,7 +4,7 @@ $baselineheight : 1.4; //used for typography and global lineheight
 
 
 //Font stacks
-$sans-serif     : 'Titillium Web',Arial,sans-serif;
+$sans-serif     : 'Source Sans Pro',Arial,sans-serif;
 $serif          : "Georgia","Times New Roman",Times,serif;
 
 // $sans-serif     : Arial,sans-serif;
@@ -19,5 +19,5 @@ Stop FOUT on webfont loading
 .wf-active h1,
 .wf-inactive h1 {
   visibility: visible;
-  font-family: 'Titillium Web';
+  font-family: 'Source Sans Pro';
 }
