@@ -5,7 +5,6 @@
 (defn get-active-invitation
   "Returns the invitation with the given uuid if it is active, otherwise returns nil"
   [uuid]
-  (prn (str "UUID passed to get-active-invitation: " uuid))
   (-> (storage/pg-retrieve {:entity :invitation
                             :uuid uuid
                             :status (mappings/string->postgres-type "invitation_status" "active")})

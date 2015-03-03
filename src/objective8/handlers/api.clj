@@ -244,12 +244,16 @@
 
 (defn post-candidate-writer [{{objective-id :id} :route-params
                                 params :params :as request}]
-  (let [candidate-data (ar/request->candidate-data request)]
-    (if-let [{candidate-id :_id :as candidate} (writers/create-candidate candidate-data)]
-      (successful-post-response (str utils/host-url
-                                     "/api/v1/objectives/" objective-id
-                                     "/candidate-writers/" candidate-id) candidate)
-      {:status 403})))
+  (try
+    (let [candidate-data (ar/request->candidate-data request)]
+      (if-let [{candidate-id :_id :as candidate} (writers/create-candidate candidate-data)]
+        (successful-post-response (str utils/host-url
+                                       "/api/v1/objectives/" objective-id
+                                       "/candidate-writers/" candidate-id) candidate)
+        {:status 403}))
+    (catch Exception e
+      (log/info "Error when creating candidate: " e)
+      (invalid-response (str "Error when creating candidate writer")))))
 
 (defn retrieve-candidates [{:keys [route-params params]}]
   (try
