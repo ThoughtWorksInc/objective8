@@ -190,7 +190,6 @@
   "templates/questions/a-question.html" [:li] [question]
   [:#clj-question-uri] (html/set-attr :href (str "/objectives/" (:objective-id question) "/questions/" (:_id question)))
   [:.question-text] (html/content (text->p-nodes (:question question)))
-  [:.question-author] (html/content (:username question))
   [:.question-date] (html/content (utils/iso-time-string->pretty-time (:_created_at question)))) 
   
 (html/defsnippet question-create
