@@ -9,3 +9,9 @@
         (authorised-redirect :user :some-url session-with-invitation)) => :authorised-response
         (provided
          (authorise (contains {:session (contains {:invitation :invitation-data})}) :user) => :authorised-response))
+
+(fact "only usernames containing alphanumeric characters, and between 1 and 16 characters long are valid"
+      (validate-username "1-a") => falsey
+      (validate-username "") => falsey
+      (validate-username "123456789abcdefgh") => falsey
+      (validate-username "val1d") => "val1d")
