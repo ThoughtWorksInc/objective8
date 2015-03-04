@@ -52,20 +52,29 @@
                                                                         :some-key "some-value"}))
 
                ;;OBJECTIVES
+
+               (defn store-an-objective-by [created-by-id]
+                  (let [objective {:entity :objective
+                                   :created-by-id created-by-id
+                                   :end-date "2015-01-01T00:00:00Z"
+                                   :description "description"
+                                   :goals "goals"
+                                   :title "title"}]
+                    (storage/pg-store! objective)))
+
                (fact "an objective entity can be stored in the database"
                      (let [{user-id :_id username :username} (store-a-user)
-                           objective {:entity :objective
-                                      :created-by-id user-id
-                                      :end-date "2015-01-01T00:00:00Z"
-                                      :description "description"
-                                      :goals "goals"
-                                      :title "title"}
-                           store-result (storage/pg-store! objective)
+                           store-result (store-an-objective-by user-id)
                            retrieve-result (storage/pg-retrieve {:entity :objective :_id (:_id store-result)})]
                        (first (:result retrieve-result)) => (contains {:created-by-id user-id
                                                                        :username username
                                                                        :end-date "2015-01-01T00:00:00Z"
                                                                        :title "title"})))
+
+               (fact "the 'drafting-status' of an objective can be updated"
+                     (let [objective (store-an-objective)]
+                      (:drafting-started (storage/pg-update-objective-status! objective true)) => true)) 
+
                ;;COMMENTS
                (fact "a comment entity can be stored in the database"
                      (let [{user-id :_id username :username} (store-a-user)

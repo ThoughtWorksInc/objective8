@@ -277,3 +277,8 @@
   (catch Exception e
     (log/info "Error when retrieving candidates: " e)
     (invalid-response "Invalid candidates get request for this objective"))))
+
+(defn post-start-drafting [{{objective-id :id} :route-params}]
+  (let [updated-objective (objectives/start-drafting! (Integer/parseInt objective-id))]
+    (successful-post-response (str utils/host-url
+                                   "/api/v1/objectives/" objective-id) updated-objective)))

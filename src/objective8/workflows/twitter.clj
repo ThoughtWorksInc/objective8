@@ -24,7 +24,6 @@
 (defn twitter-sign-in [request]
   (try
     (let [request-token-response (oauth/request-token consumer callback-url)
-          _ (prn request-token-response)
           approval-uri (oauth/user-approval-uri consumer (:oauth_token request-token-response))]
       (response/redirect approval-uri))
     (catch clojure.lang.ExceptionInfo e

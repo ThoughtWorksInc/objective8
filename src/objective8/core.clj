@@ -66,7 +66,8 @@
                :get-invitation api-handlers/get-invitation
                :post-candidate-writer (m/wrap-bearer-token api-handlers/post-candidate-writer bt/token-provider)
                :put-invitation-declination (m/wrap-bearer-token api-handlers/put-invitation-declination bt/token-provider)
-               :get-candidates-for-objective api-handlers/retrieve-candidates})
+               :get-candidates-for-objective api-handlers/retrieve-candidates
+               :post-start-drafting (m/wrap-bearer-token api-handlers/post-start-drafting bt/token-provider)})
 
 (def routes
   [
@@ -114,7 +115,10 @@
                                                        "/writers" {"/invitations" {:post :post-invitation}}}}
 
                              "/comments"   {:post :post-comment}
-                             "/invitations" {:get :get-invitation}}}])
+                             "/invitations" {:get :get-invitation}}
+
+         ;;DEV-API
+         "dev/api/v1"     {["/objectives/" :id "/start-drafting"] {:post :post-start-drafting}}}])
 
 (defn app [app-config]
   (-> (make-handler routes (some-fn handlers #(when (fn? %) %)))

@@ -74,3 +74,8 @@
   (update (mappings/get-mapping {:entity :invitation})
           (assoc invitation :status new-status)
           {:uuid (:uuid invitation)}))
+
+(defn pg-update-objective-status! [objective new-status]
+  (update (mappings/get-mapping {:entity :objective})
+          (assoc objective :drafting-started true)
+          {:_id (:_id objective)}))
