@@ -157,16 +157,15 @@
                                            :accept "Accept"}
                      :candidate-list {:page-intro "Writers work with each other and the community to draft policy."
                                       :candidate-list-heading "Recently added candidate writers"
-                                      :no-candidates "No candidate writers have been invited yet."
-                                      :invited-by "Invited by: "}
+                                      :no-candidates "No candidate writers have been invited yet."}
                      :sign-up {:doc-title "Sign up almost there | Objective[8]"
                                :doc-description ""
                                :page-title "Almost there"
                                :welcome "Adding your email address will let us notify you when you receive responses to comments, objectives and votes."
                                :username-label "Username"
                                :username-title "Create your username"
-                               :not-unique "username already exists"
-                               :not-well-formed "username must be 1-16 characters in length, containing only letters and numbers"
+                               :not-unique "Username already exists"
+                               :not-well-formed "Username must be 1-16 characters in length, containing only letters and numbers"
                                :email-label "Email"
                                :email-title "Add your email title"
                                :button "Create account"}}
@@ -315,8 +314,7 @@
                                               :to "Spanish(...)"}
                      :candidate-list {:page-intro "Spanish(...)"
                                       :candidate-list-heading "Spanish(...)"
-                                      :no-candidates "Spanish(...)"
-                                      :invited-by "Spanish(...)"}
+                                      :no-candidates "Spanish(...)"}
                      :sign-up {:doc-title "Perfil | Objective[8]"
                                :doc-description ""
                                :page-title ""

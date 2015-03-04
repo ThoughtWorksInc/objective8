@@ -25,6 +25,11 @@ textarea {
   width: 100%;
 }
 
+.user-input-error-message {
+  font-size: 0.85em;
+  color: $dark_pink;
+}
+
 .required {
   color: $pink;
 }

@@ -101,7 +101,7 @@
                                                  :content-type "application/x-www-form-urlencoded"
                                                  :body "&username=notunique&email-address=test%40email.address.com")]
                  sign-up-response => (check-html-content "<title>Sign up")
-                 sign-up-response => (check-html-content "username already exists")))
+                 sign-up-response => (check-html-content "Username already exists")))
 
          (fact "Posting a not well-formed username on signing up sends user back to the sign-up page with the correct error"
                (against-background
@@ -114,7 +114,7 @@
                                                  :content-type "application/x-www-form-urlencoded"
                                                  :body "&username=veryveryverylongusername&email-address=test%40email.address.com")]
                  sign-up-response => (check-html-content "<title>Sign up")
-                 sign-up-response => (check-html-content "username must be 1-16 characters in length, containing only letters and numbers"))))
+                 sign-up-response => (check-html-content "Username must be 1-16 characters in length, containing only letters and numbers"))))
 
        (fact "After signing in, a user with an existing profile is immediately sent to the resource they were trying to access"
              (against-background

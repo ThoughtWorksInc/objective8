@@ -153,8 +153,7 @@
 (html/defsnippet a-candidate
   "templates/writers/a-candidate.html" [:li] [candidate]
   [:.candidate-name] (html/content (:writer-name candidate))
-  [:.candidate-reason] (html/content (text->p-nodes (:invitation-reason candidate)))
-  [:.invited-by] (html/append " user-display-name"))
+  [:.candidate-reason] (html/content (text->p-nodes (:invitation-reason candidate))))
 
 (html/defsnippet candidate-list-page
   "templates/writers/candidate-list.html" [:#clj-candidate-list-container] [{:keys [translation objective signed-in uri candidates]}]
