@@ -34,7 +34,7 @@
 (defn json-post [url object]
   (post-request url (json-request object)))
 
-(defn default-create-call [url object]
+(defn default-post-call [url object]
   (let [request (with-credentials (json-request object))
         {:keys [body status]} (post-request url request)]
     (cond
@@ -60,7 +60,7 @@
 ;;USERS
 
 (defn create-user [user]
-  (default-create-call (str utils/host-url "/api/v1/users") user))
+  (default-post-call (str utils/host-url "/api/v1/users") user))
 
 (defn find-user-by-twitter-id [twitter-id]
   (default-get-call
@@ -71,7 +71,7 @@
 ;; OBJECTIVES
 
 (defn create-objective [objective]
-  (default-create-call
+  (default-post-call
     (str utils/host-url "/api/v1/objectives")
     (update-in objective [:end-date] str)))
 
@@ -93,7 +93,7 @@
 ;; COMMENTS
 
 (defn create-comment [comment]
-  (default-create-call (str utils/host-url "/api/v1/comments") comment))
+  (default-post-call (str utils/host-url "/api/v1/comments") comment))
 
 (defn retrieve-comments [objective-id]
   (default-get-call (str utils/host-url "/api/v1/objectives/" objective-id "/comments")))
@@ -101,7 +101,7 @@
 ;; QUESTIONS
 
 (defn create-question [question]
-  (default-create-call (str utils/host-url "/api/v1/objectives/" (:objective-id question) "/questions") question))
+  (default-post-call (str utils/host-url "/api/v1/objectives/" (:objective-id question) "/questions") question))
 
 (defn get-question [objective-id question-id]
   (default-get-call
@@ -114,7 +114,7 @@
 ;; ANSWERS
 
 (defn create-answer [answer]
-  (default-create-call
+  (default-post-call
     (str utils/host-url
          "/api/v1/objectives/" (:objective-id answer)
          "/questions/" (:question-id answer) "/answers")
@@ -127,7 +127,7 @@
 ;; WRITERS
 
 (defn create-invitation [invitation]
-  (default-create-call
+  (default-post-call
     (str utils/host-url "/api/v1/objectives/" (:objective-id invitation) "/writers/invitations") invitation))
 
 (defn retrieve-invitation-by-uuid [uuid]
@@ -139,6 +139,6 @@
     (str utils/host-url "/api/v1/objectives/" objective-id "/candidate-writers")))
 
 (defn post-candidate-writer [candidate-writer]
-  (default-create-call (str utils/host-url
+  (default-post-call (str utils/host-url
                             "/api/v1/objectives/" (:objective-id candidate-writer)
                             "/candidate-writers") candidate-writer))

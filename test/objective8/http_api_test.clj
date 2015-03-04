@@ -28,7 +28,7 @@
 (facts "about posting information to the API"
        (tabular
          (fact "maps http response status to API status"
-               (http-api/default-create-call "/some/url" {:some :data}) => (contains {:status ?http-api-status})
+               (http-api/default-post-call "/some/url" {:some :data}) => (contains {:status ?http-api-status})
                (provided (http-api/post-request "/some/url" anything) => {:status ?http-status :body ""}))
          ?http-status        ?http-api-status
          201                 ::http-api/success
@@ -36,7 +36,7 @@
          :anything           ::http-api/error)
 
        (fact "accesses the API with the front-end credentials"
-             (http-api/default-create-call "/some/url" {:some :data}) => anything
+             (http-api/default-post-call "/some/url" {:some :data}) => anything
              (provided
                (http-api/post-request "/some/url"
                                       (contains
@@ -50,7 +50,7 @@
 
 (fact "creating a user record hits the correct API endpoint"
        (http-api/create-user the-user) => :api-call-result
-       (provided (http-api/default-create-call (contains "/api/v1/users") the-user) => :api-call-result))
+       (provided (http-api/default-post-call (contains "/api/v1/users") the-user) => :api-call-result))
 
 (fact "finding a user record hits the correct API endpoint with credentials"
       (http-api/find-user-by-twitter-id (:twitter-id the-user)) => :api-call-result
@@ -69,7 +69,7 @@
 (fact "creating an objective hits the correct API endpoint"
       (http-api/create-objective the-objective) => :api-call-result
       (provided
-        (http-api/default-create-call
+        (http-api/default-post-call
           (contains "/api/v1/objectives")
           {:some :data
            :end-date "2015-01-31T00:00:00.000Z"}) => :api-call-result))
@@ -88,7 +88,7 @@
 (fact "creating a comment hits the correct API endpoint"
       (http-api/create-comment {:some :data}) => :api-call-result
       (provided
-        (http-api/default-create-call (contains "/api/v1/comments") {:some :data}) => :api-call-result))
+        (http-api/default-post-call (contains "/api/v1/comments") {:some :data}) => :api-call-result))
 
 
 (fact "retrieving comments for an objective hits the correct API endpoint"
@@ -106,7 +106,7 @@
 (fact "creating a question hits the correct API endpoint"
       (http-api/create-question the-question) => :api-call-result
       (provided
-        (http-api/default-create-call
+        (http-api/default-post-call
           (contains (str "/api/v1/objectives/" OBJECTIVE_ID "/questions"))
           the-question) => :api-call-result))
 
@@ -128,7 +128,7 @@
 
 (fact "creating an answer hits the correct API endpoint"
       (http-api/create-answer the-answer) => :api-call-result
-      (provided (http-api/default-create-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID
+      (provided (http-api/default-post-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID
                                                              "/questions/" QUESTION_ID "/answers"))
                   the-answer) => :api-call-result))
 
@@ -146,7 +146,7 @@
 (fact "creating an invitation hits the correct API endpoint"
       (http-api/create-invitation the-invitation) => :api-call-result
       (provided 
-        (http-api/default-create-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID 
+        (http-api/default-post-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID 
                                                      "/writers/invitations")) the-invitation) => :api-call-result))
 
 ;; INVITATIONS
@@ -166,7 +166,7 @@
 (fact "posting a candidate writer hits the correct API endpoint"
       (http-api/post-candidate-writer the-candidate-writer) => :api-call-result
       (provided
-        (http-api/default-create-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID 
+        (http-api/default-post-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID 
                                                      "/candidate-writers")) the-candidate-writer) => :api-call-result))
 
 ;;CANDIDATES
