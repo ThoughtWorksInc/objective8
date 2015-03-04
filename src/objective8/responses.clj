@@ -152,7 +152,7 @@
 
 (html/defsnippet a-candidate
   "templates/writers/a-candidate.html" [:li] [candidate]
-  [:.candidate-name] (html/content (:name candidate))
+  [:.candidate-name] (html/content (:writer-name candidate))
   [:.candidate-reason] (html/content (text->p-nodes (:invitation-reason candidate)))
   [:.invited-by] (html/append " user-display-name"))
 

@@ -58,7 +58,7 @@
                                                                  :result [{:user-id USER_ID
                                                                            :objective-id OBJECTIVE_ID
                                                                            :invitation-id INVITATION_ID
-                                                                           :name "martina"
+                                                                           :writer-name "martina"
                                                                            :invitation-reason "she's expert"}]}))
 
          (fact "a user should receive a 404 if accessing the candidate writers page for an objective that does not exist"

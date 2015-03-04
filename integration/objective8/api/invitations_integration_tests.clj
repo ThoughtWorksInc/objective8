@@ -100,12 +100,12 @@
                     (let [{invitation-id :_id
                            objective-id :objective-id
                            invitation-reason :reason
-                           writer-name :name
+                           writer-name :writer-name
                            invitation-uuid :uuid} (sh/store-an-invitation)
 
                          {invitee-id :_id} (users/store-user! {:twitter-id "some-other-twitter-id" :username "otherUsername"})
                          candidate-data-as-json (json/generate-string {:invitation-uuid invitation-uuid
-                                                                       :user-id invitee-id
+                                                                       :invitee-id invitee-id
                                                                        :objective-id objective-id})
                          {response :response} (p/request app (str "/api/v1/objectives/" objective-id
                                                                   "/candidate-writers")
@@ -128,7 +128,7 @@
                     (let [{invitee-id :_id} (sh/store-a-user)
                           {objective-id :_id} (sh/store-an-objective)
                           candidate-data-as-json (json/generate-string {:invitation-uuid "nonexistent uuid"
-                                                                        :user-id invitee-id
+                                                                        :invitee-id invitee-id
                                                                         :objective-id objective-id
                                                                         :invitation-reason "some reason"
                                                                         :writer-name "writer name"})
