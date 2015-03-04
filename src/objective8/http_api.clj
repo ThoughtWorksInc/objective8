@@ -24,6 +24,10 @@
 (defn post-request [url request]
   @(http/post url request))
 
+(defn put-request [url request]
+  @(http/request (merge request {:url url
+                                :method :put})))
+
 (defn get-request
   ([url]
    (get-request url {}))
@@ -41,6 +45,15 @@
       (= status 201) {:status ::success
                       :result (json/parse-string body true)}
       (= status 400) {:status ::invalid-input}
+      :else          {:status ::error})))
+
+(defn default-put-call [url object]
+  (let [request (with-credentials (json-request object))
+        {:keys [body status]} (put-request url request)]
+    (cond
+      (= status 200) {:status ::success
+                      :result (json/parse-string body true)}
+      (= status 404) {:status ::not-found}
       :else          {:status ::error})))
 
 (defn default-get-call
@@ -134,8 +147,10 @@
   (default-get-call
     (str utils/host-url "/api/v1/invitations?uuid=" uuid)))
 
-(defn decline-invitation [invitation]
-  )
+(defn decline-invitation [{:keys [objective-id invitation-id] :as invitation}]
+  (default-put-call
+    (str utils/host-url "/api/v1/objectives/" objective-id "/writer-invitations/" invitation-id)
+    invitation))
 
 (defn retrieve-candidates [objective-id]
   (default-get-call

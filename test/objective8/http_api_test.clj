@@ -14,7 +14,7 @@
 (background (http-api/get-api-credentials) => {"api-bearer-name" BEARER_NAME
                                                "api-bearer-token" BEARER_TOKEN})
 
-(facts "about retrieving information from the API"
+(facts "about API GET requests"
        (tabular
          (fact "maps http response status to API status"
                (http-api/default-get-call "/some/url") => (contains {:status ?http-api-status})
@@ -25,7 +25,7 @@
          400                 ::http-api/invalid-input
          :anything           ::http-api/error))
 
-(facts "about posting information to the API"
+(facts "about API POST requests"
        (tabular
          (fact "maps http response status to API status"
                (http-api/default-post-call "/some/url" {:some :data}) => (contains {:status ?http-api-status})
@@ -39,6 +39,24 @@
              (http-api/default-post-call "/some/url" {:some :data}) => anything
              (provided
                (http-api/post-request "/some/url"
+                                      (contains
+                                        {:headers (contains
+                                                    {"api-bearer-name" BEARER_NAME
+                                                     "api-bearer-token" BEARER_TOKEN})})) => {:status 200 :body ""})))
+(facts "about API PUT requests"
+       (tabular
+         (fact "maps http response status to API status"
+               (http-api/default-put-call "/some/url" {:some :data}) => (contains {:status ?http-api-status})
+               (provided (http-api/put-request "/some/url" anything) => {:status ?http-status :body ""}))
+         ?http-status        ?http-api-status
+         200                 ::http-api/success
+         404                 ::http-api/not-found
+         :anything           ::http-api/error)
+
+       (fact "accesses the API with the front-end credentials"
+             (http-api/default-put-call "/some/url" {:some :data}) => anything
+             (provided
+               (http-api/put-request "/some/url"
                                       (contains
                                         {:headers (contains
                                                     {"api-bearer-name" BEARER_NAME
@@ -168,6 +186,15 @@
       (provided
         (http-api/default-post-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID 
                                                      "/candidate-writers")) the-candidate-writer) => :api-call-result))
+
+(def declined-invitation {:invitation-uuid UUID
+                          :invitation-id INVITATION_ID
+                          :objective-id OBJECTIVE_ID})
+(fact "declining an invitation hits the correct API endpoint"
+      (http-api/decline-invitation declined-invitation) => :api-call-result
+      (provided
+        (http-api/default-put-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID
+                                                  "/writer-invitations/" INVITATION_ID)) declined-invitation) => :api-call-result))
 
 ;;CANDIDATES
 
