@@ -84,7 +84,7 @@
                              ["/" :id] {:get :objective
                                         "/writer-invitations" {:post :invitation-form-post
                                                                ["/" :i-id] {:get :accept-or-reject-invitation
-                                                                            "/response" {:post :accept-invitation}
+                                                                            "/accept" {:post :accept-invitation}
                                                                             "/decline" {:post :decline-invitation}
                                                                             }}
                                         "/candidate-writers" {:get :candidate-list}

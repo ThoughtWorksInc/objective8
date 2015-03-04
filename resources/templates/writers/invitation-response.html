@@ -6,8 +6,11 @@
     <p>If you're interested, you can sign in and accept the invitation below.</p>
     <div id="clj-invitation-response-form-container">
       <a id="clj-invitation-response-sign-in" class="button" href="{{sign-in-and-refer-back}}">${invitation-response/sign-in-to-accept}</a>
-      <form method="POST" id="clj-invitation-response-accept" action="{{/objectives/:o-id/writers/invitation/accept}}">
+      <form method="POST" id="clj-invitation-response-accept" action="{{/objectives/:o-id/writer-invitations/:i-id/accept}}">
         <button type="submit" class="button">${invitation-response/accept}</button>
+      </form>
+      <form method="POST" id="clj-invitation-response-decline" action="{{/objectives/:o-id/writer-invitations/:i-id/decline}}">
+        <button type="submit" class="button">${invitation-response/decline}</button>
       </form>
     </div>
   </article>

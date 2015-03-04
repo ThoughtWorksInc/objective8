@@ -25,8 +25,7 @@
   @(http/post url request))
 
 (defn put-request [url request]
-  @(http/request (merge request {:url url
-                                :method :put})))
+  @(http/put url request))
 
 (defn get-request
   ([url]

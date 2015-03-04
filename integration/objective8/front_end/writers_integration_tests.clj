@@ -19,7 +19,7 @@
 
 (def invitation-url (str "http://localhost:8080/invitations/" UUID))
 (def accept-invitation-url (str "http://localhost:8080/objectives/" OBJECTIVE_ID
-                                "/writer-invitations/" INVITATION_ID "/response"))
+                                "/writer-invitations/" INVITATION_ID "/accept"))
 (def decline-invitation-url (str "http://localhost:8080/objectives/" OBJECTIVE_ID
                                  "/writer-invitations/" INVITATION_ID "/decline"))
 

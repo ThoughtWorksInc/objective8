@@ -142,9 +142,11 @@
   [{:keys [translation objective invitation-id uri signed-in]}]
   [:#clj-invitation-response-sign-in] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" uri))
   [:#clj-invitation-response-sign-in] (when-not signed-in identity)
-  [:#clj-invitation-response-accept] (html/set-attr :action (str "/objectives/" (:_id objective) "/writer-invitations/" invitation-id "/response"))
-  [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
+  [:#clj-invitation-response-accept] (html/set-attr :action (str "/objectives/" (:_id objective) "/writer-invitations/" invitation-id "/accept"))
+  [:#clj-invitation-response-accept] (html/prepend (html/html-snippet (anti-forgery-field)))
   [:#clj-invitation-response-accept] (when signed-in identity)
+  [:#clj-invitation-response-decline] (html/prepend (html/html-snippet (anti-forgery-field)))
+  [:#clj-invitation-response-decline] (html/set-attr :action (str "/objectives/" (:_id objective) "/writer-invitations/" invitation-id "/decline"))
   [:#clj-invitation-response-objective-title] (html/content (:title objective))
   [:#clj-invitation-response html/any-node] (html/replace-vars translation))
 

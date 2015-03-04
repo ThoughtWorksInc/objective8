@@ -154,7 +154,8 @@
                                            :doc-description "Invitation to help draft policy"
                                            :page-title "Can you help us to draft some policy?"
                                            :sign-in-to-accept "Sign in to accept"
-                                           :accept "Accept"}
+                                           :accept "Accept"
+                                           :decline "Decline"}
                      :candidate-list {:page-intro "Writers work with each other and the community to draft policy."
                                       :candidate-list-heading "Recently added candidate writers"
                                       :no-candidates "No candidate writers have been invited yet."}
@@ -308,7 +309,8 @@
                                            :doc-description "Spanish(...)"
                                            :page-title "Spanish(...)"
                                            :sign-in-to-accept "Spanish(...)"
-                                           :accept "Spanish(...)"}
+                                           :accept "Spanish(...)"
+                                           :decline "Spanish(...)"}
                      :invitation-sign-in {:please "Spanish(...)"
                                               :sign-in "Spanish(...)"
                                               :to "Spanish(...)"}
