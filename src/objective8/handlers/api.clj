@@ -9,6 +9,7 @@
             [objective8.answers :as answers]
             [objective8.users :as users]
             [objective8.writers :as writers]
+            [objective8.invitations :as invitations]
             [objective8.utils :as utils]
             [objective8.api-requests :as ar]))
 
@@ -241,6 +242,9 @@
     (catch Exception e
       (log/info "Error when retrieving invitation: " e)
       (invalid-response (str "Error when retrieving invitation with uuid " uuid)))))
+
+(defn put-invitation-declination [{{uuid :invitation-uuid} :params}]
+  (invitations/decline-invitation-by-uuid uuid))
 
 (defn post-candidate-writer [{{objective-id :id} :route-params
                                 params :params :as request}]

@@ -64,6 +64,7 @@
                :post-invitation (m/wrap-bearer-token api-handlers/post-invitation bt/token-provider)
                :get-invitation api-handlers/get-invitation
                :post-candidate-writer (m/wrap-bearer-token api-handlers/post-candidate-writer bt/token-provider)
+               :put-invitation-declination (m/wrap-bearer-token api-handlers/put-invitation-declination bt/token-provider)
                :get-candidates-for-objective api-handlers/retrieve-candidates})
 
 (def routes
@@ -106,6 +107,7 @@
                                                                                               :post :post-answer}}}
                                                        "/candidate-writers" {:get :get-candidates-for-objective
                                                                              :post :post-candidate-writer}
+                                                       "/writer-invitations" {["/" :i-id] {:put :put-invitation-declination}}
                                                        "/writers" {"/invitations" {:post :post-invitation}}}}
 
                              "/comments"   {:post :post-comment}

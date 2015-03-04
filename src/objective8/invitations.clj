@@ -13,3 +13,10 @@
 
 (defn accept-invitation! [invitation]
   (storage/pg-update-invitation-status! invitation "accepted"))
+
+(defn decline-invitation! [invitation]
+  (storage/pg-update-invitation-status! invitation "declined"))
+
+(defn decline-invitation-by-uuid [uuid]
+  (some-> (get-active-invitation uuid)
+          decline-invitation!))

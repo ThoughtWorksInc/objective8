@@ -66,7 +66,7 @@
           (before :contents (do
                               (helpers/db-connection)
                               (helpers/truncate-tables)))
-          (after :facts (helpers/truncate-tables)) ]
+          (after :facts (helpers/truncate-tables))]
 
          (facts "GET /api/v1/invitations?uuid=<UUID>"
                 (fact "retrieves the active invitation with the given uuid if it exists"
@@ -87,13 +87,13 @@
                                                                                    (org.postgresql.util.ServerErrorMessage. "" 0)))
                       (p/request app "/api/v1/invitations?uuid=some-uuid") => (contains {:response (contains {:status 400})})))))
 
-(facts "accepting-invitations" :integration
+(facts "accepting invitations" :integration
      (against-background
        [(m/valid-credentials? anything anything anything) => true 
           (before :contents (do
                               (helpers/db-connection)
                               (helpers/truncate-tables)))
-          (after :facts (helpers/truncate-tables)) ]
+          (after :facts (helpers/truncate-tables))]
 
        (facts "POST /api/v1/objectives/:obj-id/candidate-writers"
               (fact "creating a candidate writer accepts the invitation"
@@ -103,26 +103,26 @@
                            writer-name :writer-name
                            invitation-uuid :uuid} (sh/store-an-invitation)
 
-                         {invitee-id :_id} (users/store-user! {:twitter-id "some-other-twitter-id" :username "otherUsername"})
-                         candidate-data-as-json (json/generate-string {:invitation-uuid invitation-uuid
-                                                                       :invitee-id invitee-id
-                                                                       :objective-id objective-id})
-                         {response :response} (p/request app (str "/api/v1/objectives/" objective-id
-                                                                  "/candidate-writers")
-                                                         :request-method :post
-                                                         :content-type "application/json"
-                                                         :body candidate-data-as-json)
-                         updated-invitation (writers/retrieve-invitation invitation-id)]
-                     (:status updated-invitation) => "accepted"
-                     (:status response) => 201
-                     (:headers response) => (helpers/location-contains (str "/api/v1/objectives/" objective-id
-                                                                            "/candidate-writers/"))
-                     (:body response) => (helpers/json-contains {:_id integer?
-                                                                 :user-id invitee-id
-                                                                 :invitation-id invitation-id
-                                                                 :objective-id objective-id
-                                                                 :invitation-reason invitation-reason
-                                                                 :writer-name writer-name})))
+                           {invitee-id :_id} (users/store-user! {:twitter-id "some-other-twitter-id" :username "otherUsername"})
+                           candidate-data-as-json (json/generate-string {:invitation-uuid invitation-uuid
+                                                                         :invitee-id invitee-id
+                                                                         :objective-id objective-id})
+                           {response :response} (p/request app (str "/api/v1/objectives/" objective-id
+                                                                    "/candidate-writers")
+                                                           :request-method :post
+                                                           :content-type "application/json"
+                                                           :body candidate-data-as-json)
+                           updated-invitation (writers/retrieve-invitation invitation-id)]
+                      (:status updated-invitation) => "accepted"
+                      (:status response) => 201
+                      (:headers response) => (helpers/location-contains (str "/api/v1/objectives/" objective-id
+                                                                             "/candidate-writers/"))
+                      (:body response) => (helpers/json-contains {:_id integer?
+                                                                  :user-id invitee-id
+                                                                  :invitation-id invitation-id
+                                                                  :objective-id objective-id
+                                                                  :invitation-reason invitation-reason
+                                                                  :writer-name writer-name})))
 
               (fact "Cannot create a candidate writer when no invitation exists with given uuid"
                     (let [{invitee-id :_id} (sh/store-a-user)
@@ -138,3 +138,23 @@
                                                           :content-type "application/json"
                                                           :body candidate-data-as-json)]
                       (:status response) => 403)))))
+
+(facts "declining invitations" :integration
+       (against-background
+        [(m/valid-credentials? anything anything anything) => true 
+         (before :contents (do
+                             (helpers/db-connection)
+                             (helpers/truncate-tables)))
+         (after :facts (helpers/truncate-tables))]
+
+        (facts "PUT /api/v1/objectives/:obj-id/writer-invitations/:inv-id"
+               (fact "declines the invitation"
+                     (let [{invitation-id :_id objective-id :objective-id invitation-uuid :uuid} (sh/store-an-invitation)
+                            invitation-response-as-json (json/generate-string {:invitation-uuid invitation-uuid})
+                            {response :response} (p/request app (str "/api/v1/objectives/" objective-id
+                                                                     "/writer-invitations/" invitation-id)
+                                                            :request-method :put
+                                                            :content-type "application/json"
+                                                            :body invitation-response-as-json)
+                            updated-invitation (writers/retrieve-invitation invitation-id)]
+                       (:status updated-invitation) => "declined")))))
