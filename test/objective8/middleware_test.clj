@@ -37,3 +37,16 @@
             wbt-wrapped-handler (wrap-bearer-token handler {:objective8.dev "some-secure-token"
                                                             :someone-else "12345"})]
         (wbt-wrapped-handler (assoc-in request [:headers "api-bearer-name"] "someone-else")) => (contains {:status 401})))
+
+(tabular
+
+ (fact "Removes trailing slashes from non-root URIs"
+       (let [handler identity
+             sts-wrapped-handler (strip-trailing-slashes handler)]
+         (sts-wrapped-handler {:uri ?original-uri})) => {:uri ?stripped-uri})
+
+ ?original-uri   ?stripped-uri
+ "/"            "/"
+ "something/"   "something"
+ "something"    "something"
+ "a/b/"         "a/b")

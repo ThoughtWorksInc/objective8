@@ -67,7 +67,8 @@
                :get-candidates-for-objective api-handlers/retrieve-candidates})
 
 (def routes
-  ["/"  ;; FRONT-END
+  [
+   "/"  ;; FRONT-END
         {""                 :index
         "sign-in"           :sign-in
         "sign-out"          :sign-out
@@ -110,17 +111,12 @@
                              "/comments"   {:post :post-comment}
                              "/invitations" {:get :get-invitation}}}])
 
-(defn wrap-not-found [handler]
-  (fn [request]
-    (if-let [response (handler request)]
-      response
-      (front-end-handlers/error-404 request))))
-
 (defn app [app-config]
   (-> (make-handler routes (some-fn handlers #(when (fn? %) %)))
-      wrap-not-found
+      (m/wrap-not-found front-end-handlers/error-404)
       (friend/authenticate (:authentication app-config))
       (wrap-tower (:translation app-config))
+      m/strip-trailing-slashes
       wrap-keyword-params
       wrap-params
       wrap-json-params
