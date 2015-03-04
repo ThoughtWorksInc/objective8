@@ -35,3 +35,8 @@
                         :created-by-id user-id
                         :objective-id objective-id
                         :question "A question"})))
+
+(defn retrieve-invitation [invitation-id]
+  (let [{result :result} (storage/pg-retrieve {:entity :invitation :_id invitation-id})]
+    (dissoc (first result) :entity)))
+

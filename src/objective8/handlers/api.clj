@@ -220,10 +220,10 @@
           invitation (-> params
                      (select-keys [:writer-name :reason :invited-by-id])
                      (assoc :objective-id objective-id))
-          stored-invitation (writers/store-invitation! invitation)
+          stored-invitation (invitations/store-invitation! invitation)
           resource-location (str utils/host-url
                                  "/api/v1/objectives/" (:objective-id stored-invitation)
-                                 "/writers/invitations/" (:_id stored-invitation))]
+                                 "/writer-invitations/" (:_id stored-invitation))]
       (successful-post-response resource-location stored-invitation))
   (catch NumberFormatException e
     (log/info "Invalid route: " e)

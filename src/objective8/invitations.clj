@@ -1,6 +1,13 @@
 (ns objective8.invitations
   (:require [objective8.storage.storage :as storage]
-            [objective8.storage.mappings :as mappings]))
+            [objective8.storage.mappings :as mappings]
+            [objective8.utils :as utils]))
+
+(defn store-invitation! [invitation]
+  (storage/pg-store! (assoc invitation
+                            :entity :invitation
+                            :status "active"
+                            :uuid (utils/generate-random-uuid))))
 
 (defn get-active-invitation
   "Returns the invitation with the given uuid if it is active, otherwise returns nil"

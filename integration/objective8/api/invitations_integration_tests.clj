@@ -29,34 +29,34 @@
        (against-background
          (m/valid-credentials? anything anything anything) => true)
        (fact "the invitation is stored"
-             (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/writers/invitations")
+             (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/writer-invitations")
                         :request-method :post
                         :content-type "application/json"
                         :body the-invitation-as-json) => (helpers/check-json-body the-stored-invitation)
              (provided
-               (writers/store-invitation! the-invitation) => the-stored-invitation))
+               (invitations/store-invitation! the-invitation) => the-stored-invitation))
 
        (fact "the http response indicates the location of the invitation"
              (against-background
-               (writers/store-invitation! anything) => the-stored-invitation)
+               (invitations/store-invitation! anything) => the-stored-invitation)
 
              (let [result (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID 
-                                              "/writers/invitations")
+                                              "/writer-invitations")
                                      :request-method :post
                                      :content-type "application/json"
                                      :body the-invitation-as-json)
                    response (:response result)
                    headers (:headers response)]
                response => (contains {:status 201})
-               headers => (contains {"Location" (contains 
+               headers => (contains {"Location" (contains
                                                   (str "/api/v1/objectives/" OBJECTIVE_ID 
-                                                       "/writers/invitations/" INVITATION_ID))})))
+                                                       "/writer-invitations/" INVITATION_ID))})))
        
        (fact "a 400 status is returned if a PSQLException is raised"
              (against-background
-               (writers/store-invitation! anything) =throws=> (org.postgresql.util.PSQLException.
+               (invitations/store-invitation! anything) =throws=> (org.postgresql.util.PSQLException.
                                                                   (org.postgresql.util.ServerErrorMessage. "" 0)))
-             (:response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/writers/invitations")
+             (:response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/writer-invitations")
                                    :request-method :post
                                    :content-type "application/json"
                                    :body the-invitation-as-json)) => (contains {:status 400})))
@@ -74,7 +74,7 @@
                       (let 
                         [created-by-id (:_id (users/store-user! {:twitter-id "some-twitter-id" :username "username"}))
                          objective-id (:_id (objectives/store-objective! {:created-by-id created-by-id :end-date "2015-01-01"}))
-                         stored-invitation (writers/store-invitation! {:invited-by-id created-by-id 
+                         stored-invitation (invitations/store-invitation! {:invited-by-id created-by-id 
                                                                        :objective-id objective-id})
                          uuid (:uuid stored-invitation)]
                         (helpers/peridot-response-json-body->map (p/request app (str "/api/v1/invitations?uuid=" uuid))) => stored-invitation))
@@ -113,7 +113,7 @@
                                                            :request-method :post
                                                            :content-type "application/json"
                                                            :body candidate-data-as-json)
-                           updated-invitation (writers/retrieve-invitation invitation-id)]
+                           updated-invitation (sh/retrieve-invitation invitation-id)]
                       (:status updated-invitation) => "accepted"
                       (:status response) => 201
                       (:headers response) => (helpers/location-contains (str "/api/v1/objectives/" objective-id
@@ -157,7 +157,7 @@
                                                             :request-method :put
                                                             :content-type "application/json"
                                                             :body invitation-response-as-json)
-                            updated-invitation (writers/retrieve-invitation invitation-id)]
+                            updated-invitation (sh/retrieve-invitation invitation-id)]
                        (:status response) => 200
                        (:body response) => (helpers/json-contains updated-invitation)
                        (:status updated-invitation) => "declined"))

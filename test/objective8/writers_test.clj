@@ -15,24 +15,6 @@
   (org.postgresql.util.PSQLException.
    (org.postgresql.util.ServerErrorMessage. "" 0)))
 
-(fact "Postgresql exceptions are not caught"
-      (against-background
-        (utils/generate-random-uuid) => "random-uuid")
-      (writers/store-invitation! {:writer-name "something"}) => (throws org.postgresql.util.PSQLException)
-      (provided
-        (storage/pg-store!
-          {:entity :invitation
-           :writer-name "something"
-           :uuid "random-uuid"
-           :status "active"}) =throws=> (org.postgresql.util.PSQLException.
-                                          (org.postgresql.util.ServerErrorMessage. "" 0))))
-
-(fact "creates an invitation with a random uuid"
-      (writers/store-invitation! {:writer-name "something"}) => :stored-invitation
-      (provided
-        (utils/generate-random-uuid) => "random-uuid"
-        (storage/pg-store! {:entity :invitation :writer-name "something" :uuid "random-uuid" :status "active"}) => :stored-invitation))
-
 (fact "creating a candidate accepts the invitation and returns the created candidate"
       (writers/create-candidate {:invitation-uuid UUID}) => :new-candidate
       (provided

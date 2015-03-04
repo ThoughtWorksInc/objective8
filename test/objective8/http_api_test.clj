@@ -165,7 +165,7 @@
       (http-api/create-invitation the-invitation) => :api-call-result
       (provided 
         (http-api/default-post-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID 
-                                                     "/writers/invitations")) the-invitation) => :api-call-result))
+                                                     "/writer-invitations")) the-invitation) => :api-call-result))
 
 ;; INVITATIONS
 

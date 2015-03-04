@@ -111,8 +111,8 @@
                                                                                               :post :post-answer}}}
                                                        "/candidate-writers" {:get :get-candidates-for-objective
                                                                              :post :post-candidate-writer}
-                                                       "/writer-invitations" {["/" :i-id] {:put :put-invitation-declination}}
-                                                       "/writers" {"/invitations" {:post :post-invitation}}}}
+                                                       "/writer-invitations" {:post :post-invitation
+                                                                              ["/" :i-id] {:put :put-invitation-declination}}}}
 
                              "/comments"   {:post :post-comment}
                              "/invitations" {:get :get-invitation}}

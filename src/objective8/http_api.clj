@@ -140,7 +140,7 @@
 
 (defn create-invitation [invitation]
   (default-post-call
-    (str utils/host-url "/api/v1/objectives/" (:objective-id invitation) "/writers/invitations") invitation))
+    (str utils/host-url "/api/v1/objectives/" (:objective-id invitation) "/writer-invitations") invitation))
 
 (defn retrieve-invitation-by-uuid [uuid]
   (default-get-call
