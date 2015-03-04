@@ -5,6 +5,7 @@
             [objective8.integration-helpers :as helpers]
             [objective8.storage-helpers :as sh]
             [objective8.writers :as writers]
+            [objective8.invitations :as invitations]
             [objective8.users :as users]
             [objective8.objectives :as objectives]
             [objective8.middleware :as m])) 
@@ -76,14 +77,14 @@
                          stored-invitation (writers/store-invitation! {:invited-by-id created-by-id 
                                                                        :objective-id objective-id})
                          uuid (:uuid stored-invitation)]
-                        (helpers/peridot-response-json-body->map (p/request app (str "/api/v1/invitations?uuid=" uuid))) => (dissoc stored-invitation :entity)))
+                        (helpers/peridot-response-json-body->map (p/request app (str "/api/v1/invitations?uuid=" uuid))) => stored-invitation))
 
                 (fact "returns a 404 status if an invitation with uuid=<UUID> doesn't exist"
                       (p/request app "/api/v1/invitations?uuid=non-existent-uuid") => (contains {:response (contains {:status 404})}))
 
                 (fact "returns a 400 status when a PSQLException is raised"
                       (against-background
-                        (writers/retrieve-invitation-by-uuid anything) =throws=> (org.postgresql.util.PSQLException.
+                        (invitations/get-active-invitation anything) =throws=> (org.postgresql.util.PSQLException.
                                                                                    (org.postgresql.util.ServerErrorMessage. "" 0)))
                       (p/request app "/api/v1/invitations?uuid=some-uuid") => (contains {:response (contains {:status 400})})))))
 
