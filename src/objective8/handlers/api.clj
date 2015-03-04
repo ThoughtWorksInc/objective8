@@ -244,7 +244,11 @@
       (invalid-response (str "Error when retrieving invitation with uuid " uuid)))))
 
 (defn put-invitation-declination [{{uuid :invitation-uuid} :params}]
-  (invitations/decline-invitation-by-uuid uuid))
+  (if-let [declined-invitation (invitations/decline-invitation-by-uuid uuid)]
+    (-> declined-invitation
+        response/response
+        (response/content-type "application/json"))
+    {:status 404}))
 
 (defn post-candidate-writer [{{objective-id :id} :route-params
                                 params :params :as request}]

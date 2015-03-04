@@ -157,4 +157,15 @@
                                                             :content-type "application/json"
                                                             :body invitation-response-as-json)
                             updated-invitation (writers/retrieve-invitation invitation-id)]
-                       (:status updated-invitation) => "declined")))))
+                       (:status response) => 200
+                       (:body response) => (helpers/json-contains updated-invitation)
+                       (:status updated-invitation) => "declined"))
+               
+               (fact "returns 404 when no active invitation exists with the given id"
+                     (let [invitation-response-as-json (json/generate-string {:invitation-uuid "nonexistent uuid"})
+                           {response :response} (p/request app (str "/api/v1/objectives/" "3"
+                                                                    "/writer-invitations/" "10")
+                                                           :request-method :put
+                                                           :content-type "application/json"
+                                                           :body invitation-response-as-json)]
+                       (:status response) => 404)))))

@@ -54,7 +54,7 @@
        (fact "while checking the invitation"
              (writers/create-candidate {}) => (throws Exception "Failed to create candidate writer")
              (provided
-              (i/accept-invitation! anything) =throws=> (database-exception)))
+              (i/get-active-invitation anything) =throws=> (database-exception)))
 
        (fact "while accepting the invitation"
              (writers/create-candidate {}) => (throws Exception "Failed to create candidate writer")
