@@ -74,7 +74,7 @@
                 (:status response) => 423))))
 
 
-(facts "GET /api/v1/objectives/:id/comments"
+(facts "GET /api/v1/objectives/:id/comments" :integration
        (against-background
         [(before :contents (do (helpers/db-connection)
                                (helpers/truncate-tables)))
