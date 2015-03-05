@@ -47,7 +47,8 @@
 (defn objectives-nav-selected-id [uri]
   (cond 
     (re-matches #".*/questions$" uri) :#clj-objectives-questions
-    (re-matches #".*/objectives/\d+$" uri) :#clj-objectives-details))
+    (re-matches #".*/objectives/\d+$" uri) :#clj-objectives-details
+    (re-matches #".*/candidate-writers$" uri) :#clj-objectives-writers))
 
 (html/defsnippet objectives-navigation
   "templates/objectives-nav.html" [[:#navigation]] [objective translation uri]
@@ -56,6 +57,7 @@
   [(objectives-nav-selected-id uri)] (html/add-class "selected")
   [:#clj-objectives-details] (html/set-attr :href (str "/objectives/" (:_id objective)))
   [:#clj-objectives-questions] (html/set-attr :href (str "/objectives/" (:_id objective) "/questions"))
+  [:#clj-objectives-writers] (html/set-attr :href (str "/objectives/" (:_id objective) "/candidate-writers"))
   [:.navigation-list] (html/after (share-widget translation uri (:title objective)))
   [:#navigation html/any-node] (html/replace-vars translation))
 
@@ -140,7 +142,7 @@
 (html/defsnippet invitation-response-page
   "templates/writers/invitation-response.html" [:#clj-invitation-response]
   [{:keys [translation objective invitation-id uri signed-in]}]
-  [:#clj-invitation-response-sign-in] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" uri))
+  [:#clj-invitation-response-sign-in-link] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" uri))
   [:#clj-invitation-response-sign-in] (when-not signed-in identity)
   [:#clj-invitation-response-accept] (html/set-attr :action (str "/objectives/" (:_id objective) "/writer-invitations/" invitation-id "/accept"))
   [:#clj-invitation-response-accept] (html/prepend (html/html-snippet (anti-forgery-field)))

@@ -73,7 +73,8 @@
                                   :get-started-button-text "Get started"}
                      :objective-nav {:title "Navigation for"
                                      :details "Details"
-                                     :questions "Questions"}  
+                                     :questions "Questions"
+                                     :writers "Writers"}  
                      :objective-list {:doc-title "Objectives | Objective[8]"
                                       :doc-description ""
                                       :page-title "Objectives"
@@ -153,6 +154,9 @@
                      :invitation-response {:doc-title "Invitation to draft | Objective[8]"
                                            :doc-description "Invitation to help draft policy"
                                            :page-title "Can you help us to draft some policy?"
+                                           :page-intro "You've been invited to help draft some policy!"
+                                           :for-objective-text "Help write policy to achieve this objective: "
+                                           :rsvp-text "If you're interested, you can sign in and accept the invitation below."
                                            :sign-in-to-accept "Sign in to accept"
                                            :accept "Accept"
                                            :decline "Decline"}
@@ -229,8 +233,9 @@
                                   :get-started-button-text "Spanish(...)"
                                   :page-content! "Spanish(...)"}
                      :objective-nav {:title "Spanish(Navigation for)"
-                                     :details "Spanish(Details)"}
-                                     :questions "Spanish(Questions)"   
+                                     :details "Spanish(Details)"
+                                     :questions "Spanish(Questions)"
+                                     :writers "Spanish(Writers)"}   
                      :objective-list {:doc-title "Spanish(Objectives | Objective[8])"
                                       :doc-description ""
                                       :page-title "Spanish(Objectives)"
@@ -308,6 +313,9 @@
                      :invitation-response {:doc-title "Spanish(...)"
                                            :doc-description "Spanish(...)"
                                            :page-title "Spanish(...)"
+                                           :page-intro "Spanish(...)"
+                                           :for-objective-text "Spanish(...)"
+                                           :rsvp-text "Spanish(...)"
                                            :sign-in-to-accept "Spanish(...)"
                                            :accept "Spanish(...)"
                                            :decline "Spanish(...)"}
