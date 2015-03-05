@@ -31,6 +31,15 @@
   "templates/flash-message.html" [[:#clj-flash-message]] [message]
   [:p] (html/html-content message))
 
+(defn generate-invitation-link [invitation]
+  (str utils/host-url "/objectives/" (:objective-id invitation) "/writer-invitations/" (:invitation-id invitation)))
+
+;INVITATION BANNER
+(html/defsnippet invitation-banner
+  "templates/invitation-banner.html" [[:#clj-invitation-banner]] [invitation translation]
+  [:a] (html/set-attr :href (generate-invitation-link invitation))
+  [:#clj-invitation-banner html/any-node] (html/replace-vars translation))
+
 ;SHARING
 (html/defsnippet share-widget
   "templates/share-widget.html"
@@ -71,7 +80,7 @@
 
 ;BASE TEMPLATE
 (html/deftemplate base
-  "templates/base.html" [{:keys [translation locale doc-title doc-description user-navigation flash-message content objective uri]}]
+  "templates/base.html" [{:keys [translation locale doc-title doc-description user-navigation flash-message invitation content objective uri]}]
   [:html] (html/set-attr :lang locale)
   ; TODO find a way to select description without an ID
   ; [:head (html/attr= :name "description")] (html/set-attr :content "some text")
@@ -82,7 +91,8 @@
   [:.header-logo] (html/content (translation :base/header-logo-text))
   [:.header-logo] (html/set-attr :title (translation :base/header-logo-title))
   [:#projectStatus] (html/html-content (translation :base/project-status))
-  [:#main-content] (html/before (if flash-message (flash-message-view flash-message)))
+  [:#main-content] (html/before (when flash-message (flash-message-view flash-message)))
+  [:#main-content] (html/before (when invitation (invitation-banner invitation translation)))
   [:#main-content] (html/content content)
   [:#clj-navigation] (if objective (html/content (objectives-navigation objective translation uri)) identity)
   [:body] (html/append (if google-analytics-tracking-id (google-analytics google-analytics-tracking-id))))
@@ -322,6 +332,7 @@
         page (render-template base (assoc args
                                           :content (template-name args)
                                           :flash-message (:message args)
+                                          :invitation (:invitation args)
                                           :user-navigation (user-navigation args)))]
         (if-let [status-code (:status-code args)]
           (simple-response page status-code)

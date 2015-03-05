@@ -20,6 +20,10 @@
                                      :signed-in (signed-in?)
                                      :status-code 404
                                      :objectives-nav false}))
+
+(defn invitation? [session]
+  (:invitation session))
+
 ;; HANDLERS
 
 (defn error-404 [{:keys [t' locale]}]
@@ -30,7 +34,8 @@
                                  :locale (subs (str locale) 1)
                                  :doc-title (t' :index/doc-title)
                                  :doc-description (t' :index/doc-description)
-                                 :signed-in (signed-in?)}))
+                                 :signed-in (signed-in?)
+                                 :invitation (invitation? (:session request))}))
 
 (defn sign-in [{{refer :refer} :params
                 :keys [t' locale]
@@ -49,18 +54,20 @@
    :session {}))
 
 
-(defn project-status [{:keys [t' locale]}]
+(defn project-status [{:keys [t' locale] :as request}]
   (rendered-response project-status-page {:translation t'
                                           :locale (subs (str locale) 1)
                                           :doc-title (t' :project-status/doc-title)
                                           :doc-description (t' :project-status/doc-description)
+                                          :invitation (invitation? (:session request))
                                           :signed-in (signed-in?)}))
 
-(defn learn-more [{:keys [t' locale]}]
+(defn learn-more [{:keys [t' locale] :as request}]
   (rendered-response learn-more-page {:translation t'
                                       :locale (subs (str locale) 1)
                                       :doc-title (t' :learn-more/doc-title)
                                       :doc-description (t' :learn-more/doc-description)
+                                      :invitation (invitation? (:session request))
                                       :signed-in (signed-in?)}))
 ;; USER PROFILE
 
@@ -83,7 +90,7 @@
                                 (dissoc :goal-1 :goal-2 :goal-3))]
     formatted-objective))
 
-(defn objective-list [{:keys [t' locale]}]
+(defn objective-list [{:keys [t' locale] :as request}]
   (let [{status :status objectives :result} (http-api/get-all-objectives)]
     (cond 
       (= status ::http-api/success) (rendered-response objective-list-page 
@@ -92,6 +99,7 @@
                                                         :locale (subs (str locale) 1)
                                                         :doc-title (t' :objective-list/doc-title)
                                                         :doc-description (t' :objective-list/doc-description)
+                                                        :invitation (invitation? (:session request))
                                                         :signed-in (signed-in?)})
       (= status ::http-api/error)   {:status 502})))
 
@@ -132,6 +140,7 @@
                                                        :message message
                                                        :objective formatted-objective
                                                        :comments comments
+                                                       :invitation (invitation? (:session request))
                                                        :signed-in (signed-in?)
                                                        :uri uri}))
            (= objective-status ::http-api/not-found) (error-404-response t' locale)
@@ -163,7 +172,7 @@
 ;; QUESTIONS
 
 (defn question-list [{{id :id} :route-params
-                          :keys [uri t' locale]}]
+                          :keys [uri t' locale] :as request}]
   (try 
     (let [objective-id (Integer/parseInt id)
           {objective-status :status objective :result} (http-api/get-objective objective-id)
@@ -177,6 +186,7 @@
                                                :objective objective
                                                :questions questions
                                                :uri uri
+                                               :invitation (invitation? (:session request))
                                                :signed-in (signed-in?)})
         (= objective-status ::http-api/not-found) (error-404-response t' locale)
         (= questions-status ::http-api/not-found) (error-404-response t' locale)
@@ -209,16 +219,17 @@
              {objective-status :status objective :result} (http-api/get-objective (:objective-id question))]
          (cond
            (every? #(= ::http-api/success %) [question-status answer-status objective-status])
-           (rendered-response question-view-page {:translation     t'
-                                                  :locale          (subs (str locale) 1)
-                                                  :doc-title       (str (:question question) " | Objective[8]")
+           (rendered-response question-view-page {:translation t'
+                                                  :locale (subs (str locale) 1)
+                                                  :doc-title (str (:question question) " | Objective[8]")
                                                   :doc-description (:question question)
-                                                  :message         message
-                                                  :question        question
-                                                  :answers         answers
-                                                  :objective       objective
-                                                  :signed-in       (signed-in?)
-                                                  :uri             uri})
+                                                  :message message
+                                                  :question question
+                                                  :answers answers
+                                                  :objective objective
+                                                  :signed-in (signed-in?)
+                                                  :invitation (invitation? (:session request))
+                                                  :uri uri})
            (= question-status ::http-api/not-found) (error-404-response t' locale)
            (= question-status ::http-api/invalid-input) {:status 400}
            :else {:status 500}))
@@ -247,7 +258,7 @@
 ;; WRITERS 
 
 (defn candidate-list [{{id :id} :route-params
-                       :keys [uri t' locale]}]
+                       :keys [uri t' locale] :as request}]
   (try
     (let [objective-id (Integer/parseInt id)
           {objective-status :status objective :result} (http-api/get-objective objective-id)
@@ -261,6 +272,7 @@
                                                 :objective objective
                                                 :candidates candidates
                                                 :uri uri
+                                                :invitation (invitation? (:session request))
                                                 :signed-in (signed-in?)})
         (= objective-status ::http-api/not-found) (error-404-response t' locale)
         (= candidate-status ::http-api/not-found) (error-404-response t' locale)

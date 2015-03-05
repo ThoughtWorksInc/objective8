@@ -162,6 +162,7 @@
                                            :sign-in-to-accept "Sign in to accept"
                                            :accept "Accept"
                                            :decline "Decline"}
+                      :invitation-banner {:message "Respond to your invitation to help draft policy"}
                      :candidate-list {:page-intro "Writers work with each other and the community to draft policy."
                                       :candidate-list-heading "Recently added candidate writers"
                                       :no-candidates "No candidate writers have been invited yet."}
@@ -326,6 +327,7 @@
                      :invitation-sign-in {:please "Spanish(...)"
                                               :sign-in "Spanish(...)"
                                               :to "Spanish(...)"}
+                      :invitation-banner {:message "Spanish(...)"}
                      :candidate-list {:page-intro "Spanish(...)"
                                       :candidate-list-heading "Spanish(...)"
                                       :no-candidates "Spanish(...)"}
