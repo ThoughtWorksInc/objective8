@@ -69,7 +69,6 @@
          expected-json-as-map)))
 
 
-
 (defn json-contains [expected]
   (midje/chatty-checker [actual]
                         ((midje/contains expected)

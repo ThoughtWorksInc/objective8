@@ -24,6 +24,18 @@
                         :end-date "2015-01-02"
                         :drafting-started true})))
 
+(defn store-a-comment
+  ([]
+   (store-a-comment {:user (store-a-user) :objective (store-an-objective)}))
+
+  ([required-entities]
+   (let [{created-by-id :_id} (get required-entities :user (store-a-user))
+         {objective-id :_id} (get required-entities :objective (store-an-objective))]
+     (storage/pg-store! {:entity :comment
+                         :created-by-id created-by-id
+                         :objective-id objective-id
+                         :comment "The comment"}))))
+
 (defn store-an-invitation []
   (let [{invited-by-id :_id} (store-a-user)
         {objective-id :_id} (store-an-objective)]

@@ -5,6 +5,7 @@
             [objective8.utils :as utils]
             [objective8.core :as core]
             [objective8.integration-helpers :as helpers]
+            [objective8.storage-helpers :as sh]
             [objective8.middleware :as m]
             [objective8.comments :as comments]))
 
@@ -20,57 +21,76 @@
                   :objective-id OBJECTIVE_ID
                   :created-by-id USER_ID})
 
-(def stored-comment (assoc the-comment :_id 1))
-(def stored-comments (map #(assoc the-comment :_id %) (range 5)))
-
 (def the-comment-as-json (json/generate-string the-comment))
 (def the-invalid-comment {:comment "The comment"
                           :objective-id OBJECTIVE_ID })
 
-(facts "about posting comments" :integration
+(defn a-comment [objective-id created-by-id]
+  {:comment "The comment"
+   :objective-id objective-id
+   :created-by-id created-by-id})
+
+(facts "POST /api/v1/objectives/:id/comments" :integration
        (against-background
-         (m/valid-credentials? anything anything anything) => true)
-       (fact "the posted comment is stored"
-             (p/request app "/api/v1/comments"
-                        :request-method :post
-                        :content-type "application/json"
-                        :body the-comment-as-json)
+        (m/valid-credentials? anything anything anything) => true)
+       (against-background
+        [(before :contents (do (helpers/db-connection)
+                               (helpers/truncate-tables)))
+         (after :facts (helpers/truncate-tables))]
 
-             => (helpers/check-json-body stored-comment)
-             (provided
-               (comments/store-comment! the-comment) => stored-comment))
+        (fact "the posted comment is stored"
+              (let [{obj-id :_id user-id :created-by-id} (sh/store-an-objective)
+                    comment (a-comment obj-id user-id)
+                    {response :response} (p/request app "/api/v1/comments"
+                                                    :request-method :post
+                                                    :content-type "application/json"
+                                                    :body (json/generate-string comment))]
+                (:body response) => (helpers/json-contains (assoc comment :_id integer?))
+                (:status response) => 201
+                (:headers response) => (helpers/location-contains (str "/api/v1/comments/"))))
 
-       (fact "a 400 status is returned if a PSQLException is raised"
-          (against-background
+        (fact "a 400 status is returned if a PSQLException is raised"
+              (against-background
                (comments/store-comment! anything) =throws=> (org.postgresql.util.PSQLException. 
-                                                              (org.postgresql.util.ServerErrorMessage. "" 0)) )
-               (:response (p/request app "/api/v1/comments"
-                                     :request-method :post
-                                     :content-type "application/json"
-                                     :body the-comment-as-json)) => (contains {:status 400}))
+                                                             (org.postgresql.util.ServerErrorMessage. "" 0)))
+              (:response (p/request app "/api/v1/comments"
+                                    :request-method :post
+                                    :content-type "application/json"
+                                    :body the-comment-as-json)) => (contains {:status 400}))
 
-       (fact "a 400 status is returned if a map->comment exception is raised"
-             (:response (p/request app "/api/v1/comments"
-                                   :request-method :post
-                                   :content-type "application/json"
-                                   :body (json/generate-string the-invalid-comment))) => (contains {:status 400}))
+        (fact "a 400 status is returned if a map->comment exception is raised"
+              (:response (p/request app "/api/v1/comments"
+                                    :request-method :post
+                                    :content-type "application/json"
+                                    :body (json/generate-string the-invalid-comment))) => (contains {:status 400}))
 
-       (fact "the http response indicates the location of the comment"
-             (against-background
-               (comments/store-comment! anything) => stored-comment)
-             (let [result (p/request app "/api/v1/comments"
-                                     :request-method :post
-                                     :content-type "application/json"
-                                     :body the-comment-as-json)
-                   response (:response result)
-                   headers (:headers response)]
-               response => (contains {:status 201})
-               headers => (contains {"Location" (contains "/api/v1/comments/1")}))))
+        (fact "a 423 status is returned when drafting has started on the objective"
+              (let [{obj-id :_id user-id :created-by-id} (sh/store-an-objective-in-draft)
+                    comment (a-comment obj-id user-id)
+                    {response :response} (p/request app (str "/api/v1/comments")
+                                                    :request-method :post
+                                                    :content-type "application/json"
+                                                    :body (json/generate-string comment))]
+                (:status response) => 423))))
 
 
-(facts "about retrieving comments"
-  (fact "for an objective ID"
-      (p/request app "/api/v1/objectives/1/comments")
-      => (helpers/check-json-body stored-comments)
-      (provided
-        (comments/retrieve-comments 1) => stored-comments)))
+(facts "GET /api/v1/objectives/:id/comments"
+       (against-background
+        [(before :contents (do (helpers/db-connection)
+                               (helpers/truncate-tables)))
+         (after :facts (helpers/truncate-tables))]
+
+        ;; DM/MG: Storing a comment should return the same result as retrieving a comment, but currently doesn't.
+        ;; When storing a comment and retrieving a comment give the same result, the second test below will fail.
+        (fact "for an objective ID"
+              (let [objective (sh/store-an-objective)
+                    stored-comments (doall (->> (repeat {:objective objective})
+                                                (take 5)
+                                                (map sh/store-a-comment)
+                                                (map #(dissoc % :username :entity)))) ;; remove this when storing and retrieving give equivalent results
+                    {response :response} (p/request app (str "/api/v1/objectives/" (:_id objective) "/comments"))]
+                 (:body response) => (helpers/json-contains (map contains stored-comments))))
+
+        (fact "canary test to ensure that previous test is fixed"
+              (sh/store-a-comment) => (contains {:username nil
+                                                 :entity "comment"}))))

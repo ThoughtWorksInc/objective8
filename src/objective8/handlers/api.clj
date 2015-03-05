@@ -95,11 +95,12 @@
 ;; COMMENT
 (defn post-comment [{:keys [params] :as request}]
   (try
-    (let [comment (-> params
-                    (select-keys [:comment :objective-id :created-by-id]))
-          stored-comment (comments/store-comment! comment)
-          resource-location (str utils/host-url "/api/v1/comments/" (:_id stored-comment))]
-      (successful-post-response resource-location stored-comment))
+    (if-let [stored-comment (-> params
+                                (select-keys [:comment :objective-id :created-by-id])
+                                comments/create-comment)]
+      (successful-post-response (str utils/host-url "/api/v1/comments/" (:_id stored-comment))
+                                stored-comment)
+      (resource-locked-response "New content cannot be posted against this objective as it is now in drafting."))
     (catch Exception e
       (log/info "Error when posting comment: " e)
       (invalid-response "Invalid comment post request"))))
