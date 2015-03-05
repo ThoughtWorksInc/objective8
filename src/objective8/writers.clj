@@ -23,6 +23,6 @@
       (throw (Exception. "Failed to create candidate writer")))))
 
 (defn retrieve-candidates [objective-id]
-  (let [{result :result} (storage/pg-retrieve {:entity :candidate :objective-id objective-id}
-                                              {:limit 50})]
-    (map #(dissoc % :entity) result)))
+  (:result (storage/pg-retrieve {:entity :candidate 
+                                 :objective-id objective-id}
+                                {:limit 50})))

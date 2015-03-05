@@ -7,15 +7,15 @@
   (storage/pg-store! (assoc objective :entity :objective)))
 
 (defn retrieve-objective [objective-id]
-  (let [{result :result} (storage/pg-retrieve {:entity :objective :_id objective-id})]
-    (dissoc (first result) :entity)))
+  (-> (storage/pg-retrieve {:entity :objective :_id objective-id})
+      :result
+      first))
 
 (defn retrieve-objectives []
-  (map #(dissoc % :entity)
-       (:result (storage/pg-retrieve {:entity :objective}
-                                     {:limit 50
-                                      :sort {:field :_created_at
-                                             :ordering :DESC}}))))
+  (:result (storage/pg-retrieve {:entity :objective}
+                                {:limit 50
+                                 :sort {:field :_created_at
+                                        :ordering :DESC}})))
 
 (defn start-drafting! [objective-id]
   (-> (retrieve-objective objective-id)

@@ -15,7 +15,7 @@
 
 (def user-entity (assoc the-user :entity :user))
 
-(def stored-user (assoc the-user :_id USER_ID))
+(def stored-user (assoc user-entity :_id USER_ID))
 
 (fact "Users can be stored"
       (users/store-user! the-user)

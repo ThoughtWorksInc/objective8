@@ -10,11 +10,12 @@
     (store-question! question)))
 
 (defn retrieve-question [question-id]
-  (let [{result :result} (storage/pg-retrieve {:entity :question :_id question-id})]
-  (dissoc (first result) :entity)))
+  (-> (storage/pg-retrieve {:entity :question :_id question-id}) 
+      :result
+      first))
 
 (defn retrieve-questions [objective-id]
-  (let [{result :result} (storage/pg-retrieve {:entity :question :objective-id objective-id}
-                                              {:limit 50})]
-    (map #(dissoc % :entity) result)))
+  (:result (storage/pg-retrieve {:entity :question 
+                                 :objective-id objective-id}
+                                {:limit 50})))
 

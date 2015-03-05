@@ -2,16 +2,19 @@
   (:require [objective8.storage.storage :as storage]))
 
 (defn retrieve-user [user-id]
-  (let [{result :result} (storage/pg-retrieve {:entity :user :_id user-id})]
-    (dissoc (first result) :entity)))
+  (-> (storage/pg-retrieve {:entity :user :_id user-id}) 
+      :result
+      first))
 
 (defn find-user-by-twitter-id [twitter-id]
-  (let [{result :result} (storage/pg-retrieve {:entity :user :twitter-id twitter-id})]
-    (dissoc (first result) :entity)))
+  (-> (storage/pg-retrieve {:entity :user :twitter-id twitter-id})
+      :result
+      first))
 
 (defn find-user-by-username [username]
-  (let [{result :result} (storage/pg-retrieve {:entity :user :username username})]
-    (dissoc (first result) :entity)))
+  (-> (storage/pg-retrieve {:entity :user :username username}) 
+      :result
+      first))
 
 (defn store-user! [user]
   (let [user (assoc user :entity :user)]
