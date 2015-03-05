@@ -7,6 +7,7 @@
             [objective8.integration-helpers :as helpers]
             [objective8.utils :as utils]
             [objective8.core :as core]
+            [objective8.handlers.front-end :as front-end]
             [objective8.http-api :as http-api]))
 
 (def TWITTER_ID "twitter-ID")
@@ -17,11 +18,10 @@
 (def UUID "random-uuid")
 (def candidates-get-request (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/candidate-writers")))
 
-(def invitation-url (str "http://localhost:8080/invitations/" UUID))
-(def accept-invitation-url (str "http://localhost:8080/objectives/" OBJECTIVE_ID
-                                "/writer-invitations/" INVITATION_ID "/accept"))
-(def decline-invitation-url (str "http://localhost:8080/objectives/" OBJECTIVE_ID
-                                 "/writer-invitations/" INVITATION_ID "/decline"))
+(def invitation-url (str utils/host-url "/invitations/" UUID))
+(def invitation-response-url (str utils/host-url "/objectives/" OBJECTIVE_ID "/writer-invitations/" INVITATION_ID))
+(def accept-invitation-url (str invitation-response-url "/accept"))
+(def decline-invitation-url (str invitation-response-url "/decline"))
 
 (def active-invitation {:_id INVITATION_ID
                         :invited-by-id USER_ID
@@ -80,7 +80,7 @@
                (default-app candidates-get-request) => (contains {:status 404}))))
 
 (facts "about responding to invitations" :integration
-       (fact "an invited writer is redirected to the accept/reject page when accessing their invitation link"
+       (fact "an invited writer is redirected to the accept/decline page when accessing their invitation link"
              (against-background
                (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success
                                                                :result {:_id INVITATION_ID
@@ -90,11 +90,11 @@
                                                                         :status "active"}}
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result {:title OBJECTIVE_TITLE}})
-             (let [accept-reject-url (str "/objectives/" OBJECTIVE_ID "/writer-invitations/" INVITATION_ID)
+             (let [accept-decline-url (str "/objectives/" OBJECTIVE_ID "/writer-invitations/" INVITATION_ID)
                    peridot-response (-> user-session
                                         (p/request invitation-url)
                                         p/follow-redirect)]
-               peridot-response => (contains {:request (contains {:uri (contains accept-reject-url)})})
+               peridot-response => (contains {:request (contains {:uri (contains accept-decline-url)})})
                peridot-response => (contains {:response (contains {:body (contains OBJECTIVE_TITLE)})})))
 
        (fact "an invitation url gives a 404 if the invitation doesn't exist"
@@ -102,9 +102,26 @@
                (http-api/retrieve-invitation-by-uuid anything) => {:status ::http-api/not-found})
              (p/request user-session "/invitations/nonexistent-invitation-uuid") => (contains {:response (contains {:status 404})}))
 
-       (fact "a user cannot access the accept/reject page without invitation credentials"
-             (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID "/writer-invitations/" INVITATION_ID)) 
+       (fact "a user cannot access the accept/decline page without invitation credentials"
+             (p/request user-session invitation-response-url)
              => (contains {:response (contains {:status 404})})))
+
+
+       (fact "a user cannot access the accept/decline page with invitation credentials that don't match an active invitation" 
+             (-> user-session
+                 (p/request invitation-url)
+                 p/follow-redirect)
+             => anything
+             (provided 
+               (http-api/retrieve-invitation-by-uuid anything) =streams=> [{:status ::http-api/success
+                                                                            :result {:_id INVITATION_ID
+                                                                                     :invited-by-id USER_ID
+                                                                                     :objective-id OBJECTIVE_ID
+                                                                                     :uuid :NOT_AN_ACTIVE_UUID
+                                                                                     :status "active"}} 
+                                                                           {:status ::http-api/not-found}]
+               (front-end/error-404-response anything anything) => :error-response
+               (front-end/remove-invitation-credentials :error-response anything) => {}))
 
 (binding [config/enable-csrf false]
   (facts "accepting an invitation"

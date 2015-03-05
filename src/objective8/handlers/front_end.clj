@@ -306,21 +306,24 @@
       (= status ::http-api/not-found) (error-404-response t' locale)
       :else {:status 500})))
 
-(defn accept-or-reject-invitation [{:keys [session t' locale uri] :as request}]
-  (if-let [invitation-details (:invitation session)]
-    (let [{objective :result} (http-api/get-objective (:objective-id invitation-details))]
-      (rendered-response invitation-response-page {:translation t'
-                                                   :locale (subs (str locale) 1)
-                                                   :doc-title (t' :invitation-response/doc-title)
-                                                   :doc-description (t' :invitation-response/doc-description)
-                                                   :objective objective
-                                                   :invitation-id (:invitation-id invitation-details)
-                                                   :uri uri
-                                                   :signed-in (signed-in?)}))
-    (error-404-response t' locale)))
-
 (defn remove-invitation-credentials [response current-session]
   (assoc response :session (dissoc current-session :invitation)))
+
+(defn accept-or-decline-invitation [{:keys [session t' locale uri] :as request}]
+  (if-let [invitation-details (:invitation session)]
+    (if (= ::http-api/success (:status (http-api/retrieve-invitation-by-uuid (:uuid invitation-details))))
+      (let [{objective :result} (http-api/get-objective (:objective-id invitation-details))]
+        (rendered-response invitation-response-page {:translation t'
+                                                     :locale (subs (str locale) 1)
+                                                     :doc-title (t' :invitation-response/doc-title)
+                                                     :doc-description (t' :invitation-response/doc-description)
+                                                     :objective objective
+                                                     :invitation-id (:invitation-id invitation-details)
+                                                     :uri uri
+                                                     :signed-in (signed-in?)}))
+      (-> (error-404-response t' locale)
+          (remove-invitation-credentials session))) 
+    (error-404-response t' locale)))
 
 (defn accept-invitation [{:keys [session]}]
   (if-let [invitation-credentials (:invitation session)]
