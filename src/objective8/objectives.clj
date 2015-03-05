@@ -1,6 +1,8 @@
 (ns objective8.objectives
   (:require [objective8.storage.storage :as storage]))
 
+(def open? (complement :drafting-started))
+
 (defn store-objective! [objective]
   (storage/pg-store! (assoc objective :entity :objective)))
 

@@ -5,6 +5,7 @@
             [objective8.utils :as utils]
             [objective8.core :as core]
             [objective8.integration-helpers :as helpers]
+            [objective8.storage-helpers :as sh]
             [objective8.objectives :as objectives]
             [objective8.middleware :as m]
             [objective8.questions :as questions]))
@@ -28,49 +29,59 @@
 
 (def stored-question (assoc the-question :_id QUESTION_ID))
 (def stored-questions [stored-question])
-(def the-question-as-json (str "{\"question\":\"The meaning of life?\",\"objective-id\":" OBJECTIVE_ID ",\"created-by-id\":" USER_ID "}"))
 
+(defn a-question
+  ([objective-id user-id] {:question "The meaning of life is?"
+                           :objective-id objective-id
+                           :created-by-id user-id})
+  ([] (a-question OBJECTIVE_ID USER_ID)))
+
+(defn the-question-as-json
+  ([objective-id user-id] (json/generate-string (a-question objective-id user-id)))
+  ([] (the-question-as-json OBJECTIVE_ID USER_ID)))
 
 (facts "about posting questions" :integration
        (against-background
          (m/valid-credentials? anything anything anything) => true)
-       (fact "the posted question is stored"
-             (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions")
-                        :request-method :post
-                        :content-type "application/json"
-                        :body the-question-as-json)
+       (against-background
+         [(before :contents (do
+                              (helpers/db-connection)
+                              (helpers/truncate-tables)))
+          (after :facts (helpers/truncate-tables))]
 
-             => (helpers/check-json-body stored-question)
-             (provided
-               (questions/store-question! the-question) => stored-question))
+         (fact "the posted question is stored, and the resource location is reported"
+               (let [{obj-id :_id user-id :created-by-id} (sh/store-an-objective)
+                     question (a-question obj-id user-id)
+                     {response :response} (p/request app (str "/api/v1/objectives/" obj-id "/questions")
+                                                     :request-method :post
+                                                     :content-type "application/json"
+                                                     :body (json/generate-string question))]
+                 (:body response) => (helpers/json-contains (assoc question :_id integer?))
+                 (:status response) => 201
+                 (:headers response) => (helpers/location-contains (str "/api/v1/objectives/" obj-id
+                                                                        "/questions/"))))
 
-       (fact "the http response indicates the location of the question"
-             (against-background
-               (questions/store-question! anything) => stored-question)
-
-             (let [result (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions")
-                                     :request-method :post
-                                     :content-type "application/json"
-                                     :body the-question-as-json)
-                   response (:response result)
-                   headers (:headers response)]
-               response => (contains {:status 201})
-               headers => (contains {"Location" (contains (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))})))
-
-       (fact "a 400 status is returned if a PSQLException is raised"
-          (against-background
-               (questions/store-question! anything) =throws=> (org.postgresql.util.PSQLException. 
-                                                              (org.postgresql.util.ServerErrorMessage. "" 0)) )
+         (fact "a 400 status is returned if a PSQLException is raised"
+               (against-background
+                 (questions/store-question! anything) =throws=> (org.postgresql.util.PSQLException.
+                                                                  (org.postgresql.util.ServerErrorMessage. "" 0)))
                (:response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions")
                                      :request-method :post
                                      :content-type "application/json"
-                                     :body the-question-as-json)) => (contains {:status 400}))
+                                     :body (the-question-as-json))) => (contains {:status 400}))
 
-       (fact "a 400 status is returned if a map->question exception is raised"
-             (:response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions")
-                                   :request-method :post
-                                   :content-type "application/json"
-                                   :body (json/generate-string the-invalid-question))) => (contains {:status 400})))
+         (fact "a 400 status is returned if a map->question exception is raised"
+               (:response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions")
+                                     :request-method :post
+                                     :content-type "application/json"
+                                     :body (json/generate-string the-invalid-question))) => (contains {:status 400}))
+
+         (fact "a 423 (locked) status is returned when trying to post a question to an objective that has drafting-started = true"
+               (let [{objective-id :_id user-id :created-by-id} (sh/store-an-objective-in-draft)]
+                 (:response (p/request app (str "/api/v1/objectives/" objective-id "/questions")
+                                       :request-method :post
+                                       :content-type "application/json"
+                                       :body (the-question-as-json objective-id user-id))) => (contains {:status 423})))))
 
 
 (facts "about retrieving questions"
@@ -80,13 +91,13 @@
              (provided
                (questions/retrieve-question QUESTION_ID) => stored-question))
 
-      (fact "a 400 status is returned if the question does not belong to the objective"
+       (fact "a 400 status is returned if the question does not belong to the objective"
              (:response  (p/request app (str "/api/v1/objectives/" WRONG_OBJECTIVE_ID 
                                              "/questions/" QUESTION_ID))) 
              => (contains {:status 400}) 
              (provided (questions/retrieve-question QUESTION_ID) => {:objective-id OBJECTIVE_ID
                                                                      :question "The question?"}))
-        
+
        (fact "questions can be retrieved for an objective"
              (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions"))
              => (helpers/check-json-body stored-questions)

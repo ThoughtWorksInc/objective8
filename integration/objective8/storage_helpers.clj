@@ -17,6 +17,13 @@
                         :created-by-id user-id
                         :end-date "2015-01-01"})))
 
+(defn store-an-objective-in-draft []
+  (let [{user-id :_id} (store-a-user)]
+    (storage/pg-store! {:entity :objective
+                        :created-by-id user-id
+                        :end-date "2015-01-02"
+                        :drafting-started true})))
+
 (defn store-an-invitation []
   (let [{invited-by-id :_id} (store-a-user)
         {objective-id :_id} (store-an-objective)]

@@ -18,6 +18,11 @@
    :headers {"Content-Type" "application/json"}
    :body message})
 
+(defn resource-locked-response [message]
+  {:status 423
+   :headers {"Content-Type" "application/json"}
+   :body message})
+
 (defn successful-post-response [resource-location stored-object]
   {:status 201
    :headers {"Content-Type" "application/json"
@@ -117,12 +122,15 @@
   (try
     (let [id (-> (:id route-params)
                  Integer/parseInt)]
-      (let [question (-> params
-                         (select-keys [:question :created-by-id])
-                         (assoc :objective-id id))
-            stored-question (questions/store-question! question)
-            resource-location (str utils/host-url "/api/v1/objectives/" (:objective-id stored-question) "/questions/" (:_id stored-question))]
-        (successful-post-response resource-location stored-question)))
+      (if-let [stored-question (-> params
+                                   (select-keys [:question :created-by-id])
+                                   (assoc :objective-id id)
+                                   questions/create-question)]
+        (successful-post-response (str utils/host-url
+                                       "/api/v1/objectives/" (:objective-id stored-question)
+                                       "/questions/" (:_id stored-question))
+                                  stored-question)
+        (resource-locked-response "New content cannot be posted against this objective as it is now in drafting.")))
     (catch NumberFormatException e
       (log/info "Invalid route: " e)
       (invalid-response  "Objective id must be an integer"))
