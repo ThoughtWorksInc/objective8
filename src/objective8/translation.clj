@@ -33,6 +33,8 @@
                              :page-title "Sorry the page you requested can't be found."
                              :page-intro "The page you were trying to reach at this address doesn't seem to exist. This is usually the result of a bad or outdated link. We apologise for any inconvenience."
                              :page-content! "<h2>What can I do now?</h2><ul class=\"list-large\"><li>Please return to the <a href=\"/\" title=\"Go to Home\">home page</a>.</li><li>To report an issue visit our <a href=\"https://github.com/ThoughtWorksInc/objective8/issues\">github issues page</a>.</li></ul>" }
+                     :notifications {:drafting-has-started "Drafting has started on this objective!"
+                                     :go-to-drafting "Go to the next stage."}
                       :index {:doc-title "Objective[8]"
                              :doc-description ""
                              :index-welcome "Collaborative policy making for democratic organisations."
@@ -203,6 +205,8 @@
                              :page-title "Spanish(Sorry the page you requested can't be found.)"
                              :page-intro "Spanish(The page you were trying to reach at this address doesn't seem to exist. This is usually the result of a bad or outdated link. We apologise for any inconvenience.)"
                              :page-content! "<h2>What can I do now?</h2><ul class=\"list-large\"><li>Please return to the <a href=\"/\" title=\"Go to Home\">home page</a>.</li><li>To report an issue visit our <a href=\"https://github.com/ThoughtWorksInc/objective8/issues\">github issues page</a>.</li></ul>" }
+                     :notifications {:drafting-has-started "Spanish(...)"
+                                     :go-to-drafting "Spanish(...)"}
                      :index {:doc-title "Objective[8]"
                              :doc-description ""
                              :index-welcome "Politicos colaborando con organizaciones democráticas"

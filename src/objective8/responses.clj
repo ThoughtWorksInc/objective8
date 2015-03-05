@@ -285,6 +285,8 @@
   [{:keys [translation objective signed-in comments uri]}]
   [:#clj-objectives-detail html/any-node] (html/replace-vars translation)
   [:h1] (html/content (:title objective))
+  [:.clj-objective-drafting-message] (when (:drafting-started objective) identity)
+  [:.clj-objective-drafting-start-date-message] (when-not (:drafting-started objective) identity)
   [:#clj-obj-goals-value] (html/content (map a-goal (:goals objective)))
   [:#clj-obj-background-label] (if (empty? (:description objective)) nil identity)
   [:#clj-obj-background-label] (html/after (text->p-nodes (:description objective)))
