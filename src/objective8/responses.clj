@@ -186,7 +186,7 @@
   [:#clj-candidate-list-container :h1] (html/content (:title objective))
   [:h1] (html/after (article-meta objective translation))
   [:#clj-candidate-list] (if (empty? candidates) identity (html/content (map a-candidate candidates)))
-  [:#clj-candidate-list-container] (html/after (post-invitation-container translation signed-in (:_id objective) uri))
+  [:#clj-candidate-list-container] (html/after (when-not (:drafting-started objective) (post-invitation-container translation signed-in (:_id objective) uri)))
   [:#clj-candidate-list-container html/any-node] (html/replace-vars translation))
 
 ;ANSWERS
@@ -236,7 +236,8 @@
   [:h1] (html/after (article-meta objective translation))
   [:#clj-question-list :h1] (html/content (:title objective))
   [:#clj-question-list :.question-list] (if (empty? questions) identity (html/content (map a-question questions)))
-  [:#clj-question-list] (html/after (post-question-container translation signed-in (:_id objective) uri))
+  [:#clj-question-list] (html/after (when-not (:drafting-started objective)
+                                      (post-question-container translation signed-in (:_id objective) uri)))
   [:#clj-question-list html/any-node] (html/replace-vars translation))
 
 (html/defsnippet question-view-page
@@ -251,7 +252,7 @@
   [:#clj-question-view :h1] (html/content (:question question))
   [:h1] (html/after (article-meta objective translation))
   [:#clj-question-view :.answer-list] (if (empty? answers) identity (html/content (map an-answer answers)))
-  [:#clj-question-view] (html/after (post-answer-container translation signed-in (:objective-id question) (:_id question) uri))
+  [:#clj-question-view] (html/after (when-not (:drafting-started objective) (post-answer-container translation signed-in (:objective-id question) (:_id question) uri)))
   [:#clj-question-view html/any-node] (html/replace-vars translation))
 
 ;COMMENTS
@@ -310,7 +311,7 @@
   [:#clj-obj-goals-value] (html/content (map a-goal (:goals objective)))
   [:#clj-obj-background-label] (if (empty? (:description objective)) nil identity)
   [:#clj-obj-background-label] (html/after (text->p-nodes (:description objective)))
-  [:#clj-objectives-detail] (html/after (comments-view translation signed-in (:_id objective) comments uri)))
+  [:#clj-objectives-detail] (html/after (when-not (:drafting-started objective) (comments-view translation signed-in (:_id objective) comments uri))))
 
 
 ;USERS
