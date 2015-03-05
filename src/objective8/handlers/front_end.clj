@@ -183,7 +183,7 @@
                                                :locale (subs (str locale) 1)
                                                :doc-title (str (:title objective) " | Objective[8]")
                                                :doc-description (str (t' :question-list/questions-about) " " (:title objective)) 
-                                               :objective objective
+                                               :objective (format-objective objective)
                                                :questions questions
                                                :uri uri
                                                :invitation (invitation? (:session request))
@@ -226,7 +226,7 @@
                                                   :message message
                                                   :question question
                                                   :answers answers
-                                                  :objective objective
+                                                  :objective (format-objective objective)
                                                   :signed-in (signed-in?)
                                                   :invitation (invitation? (:session request))
                                                   :uri uri})
@@ -269,7 +269,7 @@
                                                 :locale (subs (str locale) 1)
                                                 :doc-title (t' :invitation/doc-title)
                                                 :doc-description (t' :invitation/doc-description)
-                                                :objective objective
+                                                :objective (format-objective objective)
                                                 :candidates candidates
                                                 :uri uri
                                                 :invitation (invitation? (:session request))
