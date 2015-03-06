@@ -188,13 +188,14 @@
       (let [answer (-> params
                        (select-keys [:answer :created-by-id])
                        (assoc :objective-id objective-id)
-                       (assoc :question-id q-id)) 
-            stored-answer (answers/store-answer! answer) 
-            resource-location (str utils/host-url
-                                   "/api/v1/objectives/" (:objective-id stored-answer)
-                                   "/questions/" (:question-id stored-answer)
-                                   "/answers/" (:_id stored-answer))]
-        (successful-post-response resource-location stored-answer)))
+                       (assoc :question-id q-id))]
+        (if-let [stored-answer (answers/create-answer! answer)]
+          (successful-post-response (str utils/host-url
+                                         "/api/v1/objectives/" (:objective-id stored-answer)
+                                         "/questions/" (:question-id stored-answer)
+                                         "/answers/" (:_id stored-answer))
+                                    stored-answer)
+          (resource-locked-response "New content cannot be posted against this objective as it is now in drafting."))))
     (catch NumberFormatException e
       (log/info "Invalid route: " e)
       (invalid-response "Objective and question ids must be integers"))

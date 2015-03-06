@@ -47,13 +47,17 @@
                         :reason "some reason"
                         :writer-name "writer name"})))
 
-(defn store-a-question []
-  (let [{user-id :_id} (store-a-user)
-        {objective-id :_id} (store-an-objective)]
-    (storage/pg-store! {:entity :question
-                        :created-by-id user-id
-                        :objective-id objective-id
-                        :question "A question"})))
+(defn store-a-question
+  ([]
+   (store-a-question {}))
+
+  ([required-entities]
+   (let [{created-by-id :_id} (get required-entities :user (store-a-user))
+         {objective-id :_id} (get required-entities :objective (store-an-objective))]
+     (storage/pg-store! {:entity :question
+                         :created-by-id created-by-id
+                         :objective-id objective-id
+                         :question "A question"}))))
 
 (defn retrieve-invitation [invitation-id]
   (-> (storage/pg-retrieve {:entity :invitation :_id invitation-id}) 

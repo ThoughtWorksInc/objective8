@@ -5,6 +5,7 @@
             [objective8.utils :as utils]
             [objective8.core :as core]
             [objective8.integration-helpers :as helpers]
+            [objective8.storage-helpers :as sh]
             [objective8.objectives :as objectives]
             [objective8.questions :as questions]
             [objective8.middleware :as m]
@@ -30,55 +31,76 @@
 (def stored-answer (assoc the-answer :_id ANSWER_ID))
 (def stored-answers (map #(assoc the-answer :_id %) (range 5)))
 
-(facts "about posting answers" :integation
-    (against-background
-      (m/valid-credentials? anything anything anything) => true)
-       (fact "the posted answer is stored"
-             (against-background 
-               (questions/retrieve-question QUESTION_ID) => {:objective-id OBJECTIVE_ID})
-             (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers")
-                        :request-method :post
-                        :content-type "application/json"
-                        :body (json/generate-string the-answer))
+(defn an-answer [objective-id question-id created-by-id]
+  {:answer "The answer is 42"
+   :question-id question-id
+   :objective-id objective-id
+   :created-by-id created-by-id})
 
-             => (helpers/check-json-body stored-answer)
-             (provided
+(facts "about posting answers" :integation
+       (against-background
+         (m/valid-credentials? anything anything anything) => true)
+       (against-background
+        [(before :contents (do (helpers/db-connection)
+                               (helpers/truncate-tables)))
+         (after :facts (helpers/truncate-tables))]
+
+        (fact "the posted answer is stored"
+              (against-background 
+               (questions/retrieve-question QUESTION_ID) => {:objective-id OBJECTIVE_ID})
+              (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers")
+                         :request-method :post
+                         :content-type "application/json"
+                         :body (json/generate-string the-answer))
+
+              => (helpers/check-json-body stored-answer)
+              (provided
                (answers/store-answer! the-answer) => stored-answer)) 
 
-      (fact "the http response indicates the location of the answer"
-            (against-background
-              (questions/retrieve-question QUESTION_ID) => {:objective-id OBJECTIVE_ID} 
-              (answers/store-answer! anything) => stored-answer)
-            (let [result (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers")
+        (fact "the http response indicates the location of the answer"
+              (against-background
+               (questions/retrieve-question QUESTION_ID) => {:objective-id OBJECTIVE_ID}
+               (answers/store-answer! anything) => stored-answer)
+              (let [result (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers")
+                                      :request-method :post
+                                      :content-type "application/json"
+                                      :body (json/generate-string the-answer))
+                    response (:response result)
+                    headers (:headers response)]
+                response => (contains {:status 201})
+                headers => (contains {"Location" (contains (str "api/v1/objectives/" OBJECTIVE_ID
+                                                                "/questions/" QUESTION_ID
+                                                                "/answers/" ANSWER_ID))})))
+
+        (fact "a 423 (resource locked) status is returned when drafting has started on the objective"
+              (let [{obj-id :_id :as objective} (sh/store-an-objective-in-draft)
+                    {q-id :_id created-by-id :created-by-id} (sh/store-a-question {:objective objective})
+                    answer (an-answer obj-id q-id created-by-id)
+                    {response :response} (p/request app (str "/api/v1/objectives/" obj-id "/questions/" q-id "/answers")
+                                                    :request-method :post
+                                                    :content-type "application/json"
+                                                    :body (json/generate-string answer))]
+                (:status response) => 423))
+
+        (fact "a 400 status is returned if a PSQLException is raised"
+              (against-background
+               (answers/store-answer! anything) =throws=> (org.postgresql.util.PSQLException.
+                                                           (org.postgresql.util.ServerErrorMessage. "" 0)))
+              (:response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers")
                                     :request-method :post
                                     :content-type "application/json"
-                                    :body (json/generate-string the-answer))
-                  response (:response result)
-                  headers (:headers response)]
-              response => (contains {:status 201})
-              headers => (contains {"Location" (contains (str "api/v1/objectives/" OBJECTIVE_ID
-                                                              "/questions/" QUESTION_ID
-                                                              "/answers/" ANSWER_ID))})))
+                                    :body (json/generate-string the-answer))) => (contains {:status 400}))
 
-       (fact "a 400 status is returned if a PSQLException is raised"
-             (against-background
-               (answers/store-answer! anything) =throws=> (org.postgresql.util.PSQLException.
-                                                            (org.postgresql.util.ServerErrorMessage. "" 0)))
-             (:response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers")
-                                   :request-method :post
-                                   :content-type "application/json"
-                                   :body (json/generate-string the-answer))) => (contains {:status 400}))
+        (fact "a 400 status is returned if a map->answer exception is raised"
+              (:response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers")
+                                    :request-method :post
+                                    :content-type "application/json"
+                                    :body (json/generate-string the-invalid-answer))) => (contains {:status 400}))
 
-       (fact "a 400 status is returned if a map->answer exception is raised"
-             (:response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers")
-                                   :request-method :post
-                                   :content-type "application/json"
-                                   :body (json/generate-string the-invalid-answer))) => (contains {:status 400}))
-
-       (tabular
+        (tabular
          (fact "a 400 status is returned if the objective and question ids are not integers"
                (against-background
-                 (answers/store-answer! anything) => stored-answer)
+                (answers/store-answer! anything) => stored-answer)
                (:response (p/request app (str "/api/v1/objectives/" ?objective_id 
                                               "/questions/" ?question_id "/answers")
                                      :request-method :post
@@ -89,15 +111,14 @@
          OBJECTIVE_ID   INVALID_ID
          INVALID_ID     INVALID_ID)
 
-       (fact "a 400 status is returned if the question does not belong to the objective"
-             (:response (p/request app (str "/api/v1/objectives/" WRONG_OBJECTIVE_ID 
-                                            "/questions/" QUESTION_ID "/answers")
-                                   :request-method :post
-                                   :content-type "application/json"
-                                   :body "")) => (contains {:status 400})
-             (provided (questions/retrieve-question QUESTION_ID) => {:objective-id OBJECTIVE_ID
-                                                                     :question "The question?"})
-             ))
+        (fact "a 400 status is returned if the question does not belong to the objective"
+              (:response (p/request app (str "/api/v1/objectives/" WRONG_OBJECTIVE_ID 
+                                             "/questions/" QUESTION_ID "/answers")
+                                    :request-method :post
+                                    :content-type "application/json"
+                                    :body "")) => (contains {:status 400})
+                                    (provided (questions/retrieve-question QUESTION_ID) => {:objective-id OBJECTIVE_ID
+                                                                                            :question "The question?"}))))
 
 (facts "about retrieving answers"
        (fact "answers can be retrieved for a question"
@@ -107,10 +128,10 @@
              => (helpers/check-json-body stored-answers)
              (provided
                (answers/retrieve-answers QUESTION_ID) => stored-answers))
-       
+
        (fact "a 400 status is returned if the question does not belong to the objective"
              (:response  (p/request app (str "/api/v1/objectives/" WRONG_OBJECTIVE_ID 
-                                 "/questions/" QUESTION_ID "/answers"))) 
+                                             "/questions/" QUESTION_ID "/answers")))
              => (contains {:status 400}) 
              (provided (questions/retrieve-question QUESTION_ID) => {:objective-id OBJECTIVE_ID
                                                                      :question "The question?"}))) 
