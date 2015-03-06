@@ -14,13 +14,6 @@ $gamma_vertical_spacing: 8.5em;
 }
 
 .draft {
-  .masthead {
-    background: $border_color;
-    color: rgba($black,0.8);
-    a {
-      color: inherit;
-    }
-  }
   .project-status {
     opacity: 0.9;
   }
