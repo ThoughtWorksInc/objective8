@@ -29,7 +29,7 @@
     :objective-id objective-id
     :invited-by-id invited-by-id }))
 
-(def the-invation (an-invitation))
+(def the-invitation (an-invitation))
 (def the-invitation-as-json (json/generate-string (an-invitation)))
 (def the-stored-invitation (assoc (an-invitation) :_id INVITATION_ID))
 
@@ -40,28 +40,18 @@
         [(before :contents (do (helpers/db-connection)
                                (helpers/truncate-tables)))
          (after :facts (helpers/truncate-tables))]
+
         (fact "the invitation is stored"
-              (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/writer-invitations")
-                         :request-method :post
-                         :content-type "application/json"
-                         :body the-invitation-as-json) => (helpers/check-json-body the-stored-invitation)
-                         (provided
-                          (invitations/store-invitation! the-invitation) => the-stored-invitation))
-
-        (fact "the http response indicates the location of the invitation"
-              (against-background
-               (invitations/store-invitation! anything) => the-stored-invitation)
-
-              (let [result (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/writer-invitations")
-                                      :request-method :post
-                                      :content-type "application/json"
-                                      :body the-invitation-as-json)
-                    response (:response result)
-                    headers (:headers response)]
-                response => (contains {:status 201})
-                headers => (contains {"Location" (contains
-                                                  (str "/api/v1/objectives/" OBJECTIVE_ID 
-                                                       "/writer-invitations/" INVITATION_ID))})))
+              (let [{obj-id :_id created-by-id :created-by-id} (sh/store-an-objective)
+                    the-invitation (an-invitation obj-id created-by-id)
+                    {response :response} (p/request app (str "/api/v1/objectives/" obj-id "/writer-invitations")
+                                                    :request-method :post
+                                                    :content-type "application/json"
+                                                    :body (json/generate-string the-invitation))]
+                (:status response) => 201
+                (:body response) => (helpers/json-contains (assoc the-invitation
+                                                                  :_id integer?))
+                (:headers response) => (helpers/location-contains (str "/api/v1/objectives/" obj-id "/writer-invitations/"))))
 
         (fact "a 423 (resource locked) status is returned when drafting has started on the objective"
               (let [{obj-id :_id created-by-id :created-by-id} (sh/store-an-objective-in-draft)
