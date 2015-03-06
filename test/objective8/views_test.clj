@@ -5,6 +5,7 @@
             ))
 
 (def test-view identity)
+
 (defn fake-translation-function [k]
   (get {:test/doc-title "This is a title"
         :test/doc-description "This is a description"}
@@ -71,6 +72,6 @@
               (provided
                 (friend/current-authentication ring-request) => nil))
 
-        (future-fact "data is passed to the view"
-              (view-fn "test" ring-request) => {})))
+        (fact "data is passed to the view"
+              (view-fn "test" ring-request :data "yay") => (contains {:data {:data "yay"}}))))
 
