@@ -245,7 +245,7 @@
 
 (defn get-invitation [{{uuid :uuid} :params}]
   (try
-    (if-let [invitation (invitations/get-active-invitation uuid)]
+    (if-let [invitation (invitations/get-invitation uuid)]
       (-> invitation
           response/response
           (response/content-type "application/json"))

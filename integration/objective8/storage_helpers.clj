@@ -24,9 +24,6 @@
                         :end-date "2015-01-02"
                         :drafting-started true})))
 
-(defn move-to-drafting-started [objective]
-  (storage/pg-update-objective-status! objective "drafting-started"))
-
 (defn store-a-comment
   ([]
    (store-a-comment {:user (store-a-user) :objective (store-an-objective)}))

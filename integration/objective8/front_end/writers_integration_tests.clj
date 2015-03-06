@@ -29,6 +29,8 @@
                         :uuid UUID
                         :status "active"})
 
+(def expired-invitation (assoc active-invitation :status "expired"))
+
 (def default-app (core/app core/app-config))
 (def user-session (helpers/test-context))
 
@@ -97,6 +99,20 @@
                peridot-response => (contains {:request (contains {:uri (contains accept-decline-url)})})
                peridot-response => (contains {:response (contains {:body (contains OBJECTIVE_TITLE)})})))
 
+       (fact "a user is redirected to the objective details page with a flash message if the invitation has expired"
+             (against-background
+              (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success
+                                                              :result expired-invitation}
+              (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                        :result {:title OBJECTIVE_TITLE}}
+              (http-api/retrieve-comments anything) => {:status ::http-api/success
+                                                        :result []})
+             (let [{request :request response :response} (-> user-session
+                                                             (p/request invitation-url)
+                                                             p/follow-redirect)]
+               (:uri request) => (str "/objectives/" OBJECTIVE_ID)
+               (:body response) => (contains "This invitation has expired")))
+
        (fact "an invitation url gives a 404 if the invitation doesn't exist"
              (against-background
                (http-api/retrieve-invitation-by-uuid anything) => {:status ::http-api/not-found})
@@ -105,7 +121,6 @@
        (fact "a user cannot access the accept/decline page without invitation credentials"
              (p/request user-session invitation-response-url)
              => (contains {:response (contains {:status 404})})))
-
 
        (fact "a user cannot access the accept/decline page with invitation credentials that don't match an active invitation" 
              (-> user-session
@@ -135,14 +150,13 @@
                                                                  :result active-invitation}
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                            :result {:title OBJECTIVE_TITLE}})
-               (let [peridot-response (-> user-session
+               (let [{request :request} (-> user-session
                                           (helpers/with-sign-in "http://localhost:8080/")
                                           (p/request invitation-url)
                                           (p/request accept-invitation-url 
                                                      :request-method :post)
                                           p/follow-redirect)]
-                 peridot-response) => (contains {:request (contains {:uri (contains (str "/objectives/" OBJECTIVE_ID 
-                                                                                         "/candidate-writers"))})})
+                 (:uri request)) => (contains (str "/objectives/" OBJECTIVE_ID "/candidate-writers"))
                (provided
                  (http-api/post-candidate-writer {:invitee-id USER_ID
                                                   :invitation-uuid UUID
@@ -160,8 +174,8 @@
   (facts "declining an invitation"
          (fact "a user can decline an invitation when they have invitation credentials"
                (against-background
-                  (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success
-                                                                  :result active-invitation})
+                 (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success
+                                                                 :result active-invitation})
                (let [peridot-response (-> user-session
                                           (p/request invitation-url)
                                           (p/request decline-invitation-url

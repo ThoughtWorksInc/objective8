@@ -296,13 +296,26 @@
     {:status 400}))
 
 (defn writer-invitation [{{uuid :uuid} :route-params :keys [t' locale session]}]
-  (let [{status :status {:keys [objective-id _id]} :result} (http-api/retrieve-invitation-by-uuid uuid)]
+  (let [{status :status
+         invitation :result} (http-api/retrieve-invitation-by-uuid uuid)
+         {:keys [objective-id _id] invitation-status :status} invitation]
     (cond
+
       (= status ::http-api/success)
-      (-> (str utils/host-url "/objectives/" objective-id "/writer-invitations/" _id)
-          response/redirect
-          (assoc :session session)
-          (assoc-in [:session :invitation] {:uuid uuid :objective-id objective-id :invitation-id _id}))
+      (cond
+        (= invitation-status "active")
+        (-> (str utils/host-url "/objectives/" objective-id "/writer-invitations/" _id)
+            response/redirect
+            (assoc :session session)
+            (assoc-in [:session :invitation] {:uuid uuid :objective-id objective-id :invitation-id _id}))
+ 
+        (= invitation-status "expired")
+        (-> (str utils/host-url "/objectives/" objective-id)
+            response/redirect
+            (assoc :flash "This invitation has expired"))
+
+        :else (error-404-response t' locale))
+
       (= status ::http-api/not-found) (error-404-response t' locale)
       :else {:status 500})))
 

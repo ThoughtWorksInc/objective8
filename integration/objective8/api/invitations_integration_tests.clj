@@ -70,10 +70,13 @@
                                 (helpers/truncate-tables)))
           (after :facts (helpers/truncate-tables))]
 
-         (fact "retrieves the active invitation with the given uuid if it exists"
-               (let [{uuid :uuid :as stored-invitation} (sh/store-an-invitation)
-                     {response :response} (p/request app (str "/api/v1/invitations?uuid=" uuid))]
-                 (:body response) => (helpers/json-contains stored-invitation)))
+         (tabular
+           (fact "retrieves the invitation with the given uuid if it exists"
+                 (let [{uuid :uuid :as stored-invitation} (sh/store-an-invitation {:status ?status})
+                       {response :response} (p/request app (str "/api/v1/invitations?uuid=" uuid))]
+                   (:body response) => (helpers/json-contains stored-invitation)))
+           ?status 
+           "accepted" "active" "declined" "expired")
 
          (fact "returns a 404 status if an invitation with uuid=<UUID> doesn't exist"
                (get-in (p/request app "/api/v1/invitations?uuid=non-existent-uuid")
@@ -81,8 +84,8 @@
 
          (fact "returns a 400 status when a PSQLException is raised"
                (against-background
-                (invitations/get-active-invitation anything) =throws=> (org.postgresql.util.PSQLException.
-                                                                        (org.postgresql.util.ServerErrorMessage. "" 0)))
+                (invitations/get-invitation anything) =throws=> (org.postgresql.util.PSQLException.
+                                                                  (org.postgresql.util.ServerErrorMessage. "" 0)))
                (get-in (p/request app "/api/v1/invitations?uuid=some-uuid")
                        [:response :status]) => 400)))
 
@@ -107,11 +110,8 @@
                 (:status updated-invitation) => "declined"))
 
         (fact "returns a 404 when the associated objective is in drafting"
-              (let [objective (sh/store-an-objective)
+              (let [objective (sh/store-an-objective-in-draft)
                     {i-id :_id o-id :objective-id uuid :uuid} (sh/store-an-invitation {:objective objective})
-
-                    _ (sh/move-to-drafting-started objective)
-
                     invitation-response {:invitation-uuid uuid}
                     {response :response} (p/request app (str "/api/v1/objectives/" o-id
                                                              "/writer-invitations/" i-id)

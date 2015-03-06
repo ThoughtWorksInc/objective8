@@ -23,6 +23,12 @@
       :result
       first))
 
+(defn get-invitation [uuid]
+  (-> (storage/pg-retrieve {:entity :invitation
+                            :uuid uuid})
+      :result
+      first))
+
 (defn accept-invitation! [{objective-id :objective-id :as invitation}]
   (when (open? (objectives/retrieve-objective objective-id))
     (storage/pg-update-invitation-status! invitation "accepted")))
