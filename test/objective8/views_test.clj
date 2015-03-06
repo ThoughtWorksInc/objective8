@@ -5,7 +5,11 @@
             ))
 
 (def test-view identity)
-(defn fake-translation-function [k] "This is a translation")
+(defn fake-translation-function [k]
+  (get {:test/doc-title "This is a title"
+        :test/doc-description "This is a description"}
+       k
+       "FAIL!"))
 
 ; Note - this request has been editied, it's not a a full session
 (def ring-request {:jvm-locales [:en :en-US],
@@ -54,8 +58,8 @@
               (view-fn "test" ring-request) => (contains {:translations fn?}))
 
         (fact "pulls out common page information from the translations"
-              (view-fn "test" ring-request) => (contains {:doc {:title "This is a translation"
-                                                                :description "This is a translation"}}))
+              (view-fn "test" ring-request) => (contains {:doc {:title "This is a title"
+                                                                :description "This is a description"}}))
 
         (fact "pulls out user information if the user is authenticated with friend")
               (view-fn "test" ring-request) => (contains {:user {:display-name "Wibble"}})
@@ -65,5 +69,8 @@
         (fact "user is nil if there is no friend authentication"
               (view-fn "test" ring-request) => (contains {:user nil}) 
               (provided
-                (friend/current-authentication ring-request) => nil))))
+                (friend/current-authentication ring-request) => nil))
+
+        (future-fact "data is passed to the view"
+              (view-fn "test" ring-request) => {})))
 
