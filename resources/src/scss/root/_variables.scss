@@ -12,7 +12,7 @@ $serif          : "Georgia","Times New Roman",Times,serif;
 $monospace      : Courier, monospace;
 
 
-Stop FOUT on webfont loading
+//Stop FOUT on webfont loading
 .wf-loading h1 {
   visibility: hidden;
 }
@@ -21,3 +21,12 @@ Stop FOUT on webfont loading
   visibility: visible;
   font-family: 'Source Sans Pro';
 }
+
+
+// alpha: mobile
+// beta: mobile
+// gamma: desktopish
+// delta: superdesktopish
+
+$alpha_body_vertical_spacing: 1em;
+$gamma_body_vertical_spacing: 8.5em;

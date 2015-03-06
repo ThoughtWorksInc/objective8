@@ -1,11 +1,3 @@
-// alpha: mobile
-// beta: mobile
-// gamma: desktopish
-// delta: superdesktopish
-
-$alpha_vertical_spacing: 1em;
-$gamma_vertical_spacing: 8.5em;
-
 @mixin hide-icon-text() {
   text-indent: -9999px;
   i {
@@ -64,11 +56,11 @@ $gamma_vertical_spacing: 8.5em;
 
 .draft-preview {
   max-width: 45em;
-  padding: $alpha_vertical_spacing;
+  padding: $alpha_body_vertical_spacing;
   margin: 0 auto;
   color: rgba(black, 0.8);
   @include mq(720) {
-    padding: $gamma_vertical_spacing 1em;
+    padding: $gamma_body_vertical_spacing 1em;
   }
 }
 
