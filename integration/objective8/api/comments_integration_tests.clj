@@ -64,7 +64,7 @@
                                     :content-type "application/json"
                                     :body (json/generate-string the-invalid-comment))) => (contains {:status 400}))
 
-        (fact "a 423 status is returned when drafting has started on the objective"
+        (fact "a 423 (resource locked) status is returned when drafting has started on the objective"
               (let [{obj-id :_id user-id :created-by-id} (sh/store-an-objective-in-draft)
                     comment (a-comment obj-id user-id)
                     {response :response} (p/request app (str "/api/v1/comments")
@@ -80,17 +80,11 @@
                                (helpers/truncate-tables)))
          (after :facts (helpers/truncate-tables))]
 
-        ;; DM/MG: Storing a comment should return the same result as retrieving a comment, but currently doesn't.
-        ;; When storing a comment and retrieving a comment give the same result, the second test below will fail.
-        (fact "for an objective ID"
+        (fact "retrieves comments for an objective ID"
               (let [objective (sh/store-an-objective)
                     stored-comments (doall (->> (repeat {:objective objective})
                                                 (take 5)
                                                 (map sh/store-a-comment)
-                                                (map #(dissoc % :username :entity)))) ;; remove this when storing and retrieving give equivalent results
+                                                (map #(dissoc % :username))))
                     {response :response} (p/request app (str "/api/v1/objectives/" (:_id objective) "/comments"))]
-                 (:body response) => (helpers/json-contains (map contains stored-comments))))
-
-        (fact "canary test to ensure that previous test is fixed"
-              (sh/store-a-comment) => (contains {:username nil
-                                                 :entity "comment"}))))
+                 (:body response) => (helpers/json-contains (map contains stored-comments))))))

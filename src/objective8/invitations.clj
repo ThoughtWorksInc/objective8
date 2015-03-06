@@ -1,6 +1,7 @@
 (ns objective8.invitations
   (:require [objective8.storage.storage :as storage]
             [objective8.storage.mappings :as mappings]
+            [objective8.objectives :refer [open?] :as objectives]
             [objective8.utils :as utils]))
 
 (defn store-invitation! [invitation]
@@ -8,6 +9,10 @@
                             :entity :invitation
                             :status "active"
                             :uuid (utils/generate-random-uuid))))
+
+(defn create-invitation! [{objective-id :objective-id :as invitation}]
+  (when (open? (objectives/retrieve-objective objective-id))
+    (store-invitation! invitation)))
 
 (defn get-active-invitation
   "Returns the invitation with the given uuid if it is active, otherwise returns nil"

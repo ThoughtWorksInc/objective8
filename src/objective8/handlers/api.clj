@@ -167,7 +167,7 @@
 (defn retrieve-questions [{:keys [route-params] :as request}]
   (try
     (let [objective-id (-> (:id route-params)
-                            Integer/parseInt)]
+                           Integer/parseInt)]
       (if-let [questions (questions/retrieve-questions objective-id)]
         (-> questions
             response/response
@@ -205,7 +205,7 @@
 (defn retrieve-answers [{:keys [route-params] :as request}]
   (try
     (let  [q-id (-> (:q-id route-params)
-                     Integer/parseInt)
+                    Integer/parseInt)
            objective-id (-> (:id route-params)
                             Integer/parseInt)]
       (check-question-matches-objective q-id objective-id)
@@ -227,19 +227,19 @@
     (let [objective-id (-> (:id route-params)
                            Integer/parseInt)
           invitation (-> params
-                     (select-keys [:writer-name :reason :invited-by-id])
-                     (assoc :objective-id objective-id))
-          stored-invitation (invitations/store-invitation! invitation)
-          resource-location (str utils/host-url
-                                 "/api/v1/objectives/" (:objective-id stored-invitation)
-                                 "/writer-invitations/" (:_id stored-invitation))]
-      (successful-post-response resource-location stored-invitation))
-  (catch NumberFormatException e
-    (log/info "Invalid route: " e)
-    (invalid-response "Objective id must be an integer"))
-  (catch Exception e
-    (log/info "Error when posting an invitation: " e)
-    (invalid-response "Invalid invitation post request for this objective"))))
+                         (select-keys [:writer-name :reason :invited-by-id])
+                         (assoc :objective-id objective-id))]
+      (if-let [stored-invitation (invitations/create-invitation! invitation)]
+        (successful-post-response (str utils/host-url
+                                       "/api/v1/objectives/" (:objective-id stored-invitation)
+                                       "/writer-invitations/" (:_id stored-invitation)) stored-invitation)
+        (resource-locked-response "New content cannot be posted against this objective as it is now in drafting.")))
+    (catch NumberFormatException e
+      (log/info "Invalid route: " e)
+      (invalid-response "Objective id must be an integer"))
+    (catch Exception e
+      (log/info "Error when posting an invitation: " e)
+      (invalid-response "Invalid invitation post request for this objective"))))
 
 (defn get-invitation [{{uuid :uuid} :params}]
   (try
@@ -260,7 +260,7 @@
     {:status 404}))
 
 (defn post-candidate-writer [{{objective-id :id} :route-params
-                                params :params :as request}]
+                              params :params :as request}]
   (try
     (let [candidate-data (ar/request->candidate-data request)]
       (if-let [{candidate-id :_id :as candidate} (writers/create-candidate candidate-data)]
@@ -280,12 +280,12 @@
       (-> candidates
           response/response
           (response/content-type "application/json")))
-  (catch NumberFormatException e
-    (log/info "Invalid route: " e)
-    (invalid-response "Objective id must be an integer"))
-  (catch Exception e
-    (log/info "Error when retrieving candidates: " e)
-    (invalid-response "Invalid candidates get request for this objective"))))
+    (catch NumberFormatException e
+      (log/info "Invalid route: " e)
+      (invalid-response "Objective id must be an integer"))
+    (catch Exception e
+      (log/info "Error when retrieving candidates: " e)
+      (invalid-response "Invalid candidates get request for this objective"))))
 
 (defn post-start-drafting [{{objective-id :id} :route-params}]
   (let [updated-objective (objectives/start-drafting! (Integer/parseInt objective-id))]
