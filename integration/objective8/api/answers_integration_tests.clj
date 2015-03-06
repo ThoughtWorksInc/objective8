@@ -14,7 +14,6 @@
 (def app (helpers/test-context))
 
 (def OBJECTIVE_ID 234)
-(def WRONG_OBJECTIVE_ID (+ OBJECTIVE_ID 1))
 (def USER_ID 1)
 (def QUESTION_ID 42)
 (def ANSWER_ID 3)
@@ -49,7 +48,7 @@
                 (:headers response) => (helpers/location-contains (str "api/v1/objectives/" obj-id "/questions/" q-id "/answers/"))
                 (:status response) => 201)) 
 
-        (fact "a 423 (resource locked) status is returned when drafting has started on the objective"
+        (fact "returns a 423 (resource locked) status when drafting has started on the objective"
               (let [{obj-id :_id :as objective} (sh/store-an-objective-in-draft)
                     {q-id :_id created-by-id :created-by-id} (sh/store-a-question {:objective objective})
                     answer (an-answer obj-id q-id created-by-id)
@@ -59,7 +58,7 @@
                                                     :body (json/generate-string answer))]
                 (:status response) => 423))
 
-        (fact "a 400 status is returned if a PSQLException is raised"
+        (fact "returns a 400 status if a PSQLException is raised"
               (against-background
                (answers/store-answer! anything) =throws=> (org.postgresql.util.PSQLException.
                                                            (org.postgresql.util.ServerErrorMessage. "" 0)))
@@ -69,7 +68,7 @@
                                  :body (json/generate-string the-answer))
                       [:response :status]) => 400)
 
-        (fact "a 400 status is returned if a map->answer exception is raised"
+        (fact "returns a 400 status if a map->answer exception is raised"
               (get-in (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers")
                                  :request-method :post
                                  :content-type "application/json"
@@ -77,7 +76,7 @@
                       [:response :status]) => 400)
 
         (tabular
-         (fact "a 400 status is returned if the objective and question ids are not integers"
+         (fact "returns a 400 status if the objective and question ids are not integers"
                (get-in (p/request app (str "/api/v1/objectives/" ?objective_id 
                                            "/questions/" ?question_id "/answers")
                                   :request-method :post
@@ -89,30 +88,32 @@
          OBJECTIVE_ID   INVALID_ID
          INVALID_ID     INVALID_ID)
 
-        (fact "a 400 status is returned if the question does not belong to the objective"
-              (get-in (p/request app (str "/api/v1/objectives/" WRONG_OBJECTIVE_ID 
-                                          "/questions/" QUESTION_ID "/answers")
-                                 :request-method :post
-                                 :content-type "application/json"
-                                 :body "")
-                      [:response :status]) => 400
-                      (provided (questions/retrieve-question QUESTION_ID) => {:objective-id OBJECTIVE_ID
-                                                                              :question "The question?"}))))
+        (fact "returns a 400 status if the question does not belong to the objective"
+              (let [{q-id :_id o-id :objective-id} (sh/store-a-question)
+                    {response :response} (p/request app (str "/api/v1/objectives/" (inc o-id) 
+                                                             "/questions/" q-id "/answers")
+                                                    :request-method :post
+                                                    :content-type "application/json"
+                                                    :body "")]
+                (:status response) => 400))))
 
-(def stored-answers (map #(assoc the-answer :_id %) (range 5)))
+(facts "GET /api/v1/objectives/:id/questions/:id/answers" :integration
+       (against-background
+         [(before :contents (do (helpers/db-connection)
+                                (helpers/truncate-tables)))
+          (after :facts (helpers/truncate-tables))]
 
-(facts "about retrieving answers"
-       (fact "answers can be retrieved for a question"
-             (against-background 
-              (questions/retrieve-question QUESTION_ID) => {:objective-id OBJECTIVE_ID})
-             (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers"))
-             => (helpers/check-json-body stored-answers)
-             (provided
-              (answers/retrieve-answers QUESTION_ID) => stored-answers))
+         (fact "retrieves answers for a question"
+               (let [{objective-id :objective-id q-id :_id :as question} (sh/store-a-question)
+                     stored-answers (doall (->> (repeat {:question question})
+                                                (take 5)
+                                                (map sh/store-an-answer)
+                                                (map #(dissoc % :username))))
+                     {response :response} (p/request app (str "/api/v1/objectives/" objective-id "/questions/" q-id "/answers"))]
+                 (:body response) => (helpers/json-contains (map contains stored-answers))))
 
-       (fact "a 400 status is returned if the question does not belong to the objective"
-             (:response  (p/request app (str "/api/v1/objectives/" WRONG_OBJECTIVE_ID 
-                                             "/questions/" QUESTION_ID "/answers")))
-             => (contains {:status 400}) 
-             (provided (questions/retrieve-question QUESTION_ID) => {:objective-id OBJECTIVE_ID
-                                                                     :question "The question?"}))) 
+         (fact "returns a 400 status if the question does not belong to the objective"
+               (let [{q-id :_id o-id :objective-id} (sh/store-a-question)
+                     {response :response} (p/request app (str "/api/v1/objectives/" (inc o-id)
+                                                              "/questions/" q-id "/answers"))]
+                 (:status response) => 400))))

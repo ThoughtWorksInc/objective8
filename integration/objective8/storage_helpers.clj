@@ -59,6 +59,19 @@
                          :objective-id objective-id
                          :question "A question"}))))
 
+(defn store-an-answer
+  ([]
+   (store-an-answer {}))
+
+([required-entities]
+ (let [{created-by-id :_id} (get required-entities :user (store-a-user))
+       {objective-id :objective-id q-id :_id} (get required-entities :question (store-a-question))]
+   (storage/pg-store! {:entity :answer
+                       :created-by-id created-by-id
+                       :objective-id objective-id
+                       :question-id q-id
+                       :answer "An answer"}))))
+
 (defn retrieve-invitation [invitation-id]
   (-> (storage/pg-retrieve {:entity :invitation :_id invitation-id}) 
       :result
