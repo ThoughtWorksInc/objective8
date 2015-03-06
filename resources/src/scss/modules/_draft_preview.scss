@@ -15,7 +15,7 @@ $gamma_vertical_spacing: 8.5em;
 
 .draft {
   .masthead {
-    background: $grey-4;
+    background: $border_color;
     color: rgba($black,0.8);
     a {
       color: inherit;
@@ -27,7 +27,7 @@ $gamma_vertical_spacing: 8.5em;
 }
 
 .draft-tabs {
-  $draft_tab_color_off: $grey-3;
+  $draft_tab_color_off: $grey-4;
   $draft_tab_color_hover: lighten($green1,5%);
   $draft_tab_color_active: $green1;
   margin: 0 auto 2em auto;
@@ -85,9 +85,10 @@ $gamma_vertical_spacing: 8.5em;
   padding: 0 40px 2em 0;
   font-family: $serif;
   font-size: 110%;
-  border-bottom: 1px solid $grey-4;
+  border-bottom: 1px solid $border_color;
   h1 {
     font-family: $sans-serif;
+    letter-spacing: -0.025em;
     @include mq(720) {
       font-size: 2.6em;
     }
@@ -138,23 +139,26 @@ $gamma_vertical_spacing: 8.5em;
 }
 
 $draft_help_side_gutter: 1.5em;
+$draft_help_top_gutter: 1.25em;
 .draft-helper {
   position: relative;
-  padding: 1em $draft_help_side_gutter;
+  padding: $draft_help_top_gutter $draft_help_side_gutter 1em $draft_help_side_gutter;
   margin-bottom: 2em;
   background: $white;
-  border: 1px solid $grey-4;
-  border-top: 5px solid $green1;
+  border: 1px solid $border_color;
+  border-top: 5px solid transparent;
 //  border-left: 5px solid transparent;
-//  &:before {
-//    content: '';
-//    display: block;
-//    position: absolute;
-//    top: 0;
-//    left: -5px;
-//    height: 100%;
-//    border-left: 5px solid $green1;
-//  }
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: -5px;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 5px;
+    border-top: 5px solid $green1;
+  }
 }
 .draft-helper-heading {
   padding: 0;
@@ -164,7 +168,7 @@ $draft_help_side_gutter: 1.5em;
 }
 .button-hide-draft-help {
   position: absolute;
-  top: 1em;
+  top: $draft_help_top_gutter;
   right: $draft_help_side_gutter;
   text-decoration: none;
   span {
@@ -181,7 +185,7 @@ $draft_help_side_gutter: 1.5em;
   }
 }
 .draft-comment-promo {
-  background: $grey-4;
+  background: $border_color;
   margin: 0 0 1em 0;
   padding: 1em;
   :last-child {
