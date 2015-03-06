@@ -8,16 +8,41 @@
 (def OBJECTIVE_ID 1)
 (def invitation {:objective-id OBJECTIVE_ID})
 
-(fact "An invitation can be created when the associated objective is not in drafting"
-      (invitations/create-invitation! invitation) => :stored-invitation
-      (provided
-        (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started false}
-        (invitations/store-invitation! invitation) => :stored-invitation))
+(facts "about creating an invitation"
+       (fact "succeeds when the associated objective is not in drafting"
+             (invitations/create-invitation! invitation) => :stored-invitation
+             (provided
+              (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started false}
+              (invitations/store-invitation! invitation) => :stored-invitation))
 
-(fact "Returns nil when the associated objective is not in drafting"
-      (invitations/create-invitation! invitation) => nil
-      (provided
-        (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started true}))
+       (fact "returns nil when the associated objective is in drafting"
+             (invitations/create-invitation! invitation) => nil
+             (provided
+              (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started true})))
+
+(facts "about accepting an invitation"
+       (fact "returns the accepted invitation when the associated objective is not in drafting"
+             (invitations/accept-invitation! invitation) => :accepted-invitation
+             (provided
+              (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started false}
+              (storage/pg-update-invitation-status! invitation "accepted") => :accepted-invitation))
+
+       (fact "returns nil when the associated objective is in drafting"
+             (invitations/accept-invitation! invitation) => nil
+             (provided
+              (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started true})))
+
+(facts "about declining an invitation"
+       (fact "returns the declined invitation when the associated objective is not in drafting"
+             (invitations/decline-invitation! invitation) => :declined-invitation
+             (provided
+              (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started false}
+              (storage/pg-update-invitation-status! invitation "declined") => :declined-invitation))
+
+       (fact "returns nil when the associated objective is in drafting"
+             (invitations/decline-invitation! invitation) => nil
+             (provided
+              (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started true})))
 
 (fact "Postgresql exceptions are not caught"
       (against-background

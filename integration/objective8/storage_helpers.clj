@@ -24,6 +24,9 @@
                         :end-date "2015-01-02"
                         :drafting-started true})))
 
+(defn move-to-drafting-started [objective]
+  (storage/pg-update-objective-status! objective "drafting-started"))
+
 (defn store-a-comment
   ([]
    (store-a-comment {:user (store-a-user) :objective (store-an-objective)}))
@@ -36,16 +39,19 @@
                          :objective-id objective-id
                          :comment "The comment"}))))
 
-(defn store-an-invitation []
-  (let [{invited-by-id :_id} (store-a-user)
-        {objective-id :_id} (store-an-objective)]
-    (storage/pg-store! {:entity :invitation
-                        :uuid (java.util.UUID/randomUUID)
-                        :status "active"
-                        :invited-by-id invited-by-id
-                        :objective-id objective-id
-                        :reason "some reason"
-                        :writer-name "writer name"})))
+(defn store-an-invitation
+  ([] (store-an-invitation {}))
+
+  ([required-entities]
+   (let [{invited-by-id :_id} (get required-entities :user (store-a-user))
+         {objective-id :_id} (get required-entities :objective (store-an-objective))]
+     (storage/pg-store! {:entity :invitation
+                         :uuid (java.util.UUID/randomUUID)
+                         :status "active"
+                         :invited-by-id invited-by-id
+                         :objective-id objective-id
+                         :reason "some reason"
+                         :writer-name "writer name"}))))
 
 (defn store-a-question
   ([]
@@ -71,6 +77,18 @@
                        :objective-id objective-id
                        :question-id q-id
                        :answer "An answer"}))))
+
+(defn store-a-candidate
+  ([]
+   (store-a-candidate {}))
+
+  ([required-entities]
+   (let [{user-id :_id} (get required-entities :user (store-a-user))
+         {i-id :_id o-id :objective-id} (get required-entities :invitation (store-an-invitation))]
+     (storage/pg-store! {:entity :candidate
+                         :user-id user-id
+                         :objective-id o-id
+                         :invitation-id i-id}))))
 
 (defn retrieve-invitation [invitation-id]
   (-> (storage/pg-retrieve {:entity :invitation :_id invitation-id}) 

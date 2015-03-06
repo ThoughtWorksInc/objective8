@@ -27,7 +27,6 @@
       (provided
        (i/get-active-invitation UUID) => nil))
 
-
 (facts "throws exception when database errors occur"
        (against-background
         (i/get-active-invitation anything) => {}
