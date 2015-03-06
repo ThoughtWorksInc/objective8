@@ -12,9 +12,8 @@
 }
 
 .grid-column {
-  float: left;
-  width: 100%;
   @include mq(720) {
     width: 33%;
+    float: left;
   }
 }
