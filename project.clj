@@ -15,7 +15,8 @@
                  [ring/ring-anti-forgery "1.0.0"]
                  [ring/ring-headers "0.1.2"]
                  [org.apache.httpcomponents/httpclient "4.3.5"]
-                 [com.cemerick/friend "0.2.1" :exclusions [robert/hooke]]
+                 [xml-apis "1.4.01"]
+                 [com.cemerick/friend "0.2.1" :exclusions [robert/hooke xml-apis]]
                  [de.ubercode.clostache/clostache "1.4.0"]
                  [enlive "1.1.5"]
                  [com.taoensso/tower "3.0.2"]
@@ -33,6 +34,13 @@
                                   :timeout 120000}
                    :dependencies [[midje "1.6.3"]
                                   [ring/ring-mock "0.2.0"]
+                                  [clj-webdriver "0.6.1" :exclusions [org.seleniumhq.selenium/selenium-java 
+                                                                      org.seleniumhq.selenium/selenium-server
+                                                                      org.seleniumhq.selenium/selenium-remote-driver
+                                                                      xml-apis]] 
+                                  [org.seleniumhq.selenium/selenium-server "2.43.0"]
+                                  [org.seleniumhq.selenium/selenium-java "2.43.0"]
+                                  [org.seleniumhq.selenium/selenium-remote-driver "2.43.0"]
                                   [http-kit.fake "0.2.1"]
                                   [javax.servlet/servlet-api "2.5"]
                                   [peridot "0.3.1"]]
