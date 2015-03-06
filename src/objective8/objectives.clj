@@ -16,7 +16,3 @@
                                 {:limit 50
                                  :sort {:field :_created_at
                                         :ordering :DESC}})))
-
-(defn start-drafting! [objective-id]
-  (-> (retrieve-objective objective-id)
-      (storage/pg-update-objective-status! true)))

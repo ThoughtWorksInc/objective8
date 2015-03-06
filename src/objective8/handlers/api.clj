@@ -11,7 +11,8 @@
             [objective8.writers :as writers]
             [objective8.invitations :as invitations]
             [objective8.utils :as utils]
-            [objective8.api-requests :as ar]))
+            [objective8.api-requests :as ar]
+            [objective8.actions :as actions]))
 
 (defn invalid-response [message]
   {:status 400
@@ -289,6 +290,6 @@
       (invalid-response "Invalid candidates get request for this objective"))))
 
 (defn post-start-drafting [{{objective-id :id} :route-params}]
-  (let [updated-objective (objectives/start-drafting! (Integer/parseInt objective-id))]
+  (let [updated-objective (actions/start-drafting! (Integer/parseInt objective-id))]
     (successful-post-response (str utils/host-url
                                    "/api/v1/objectives/" objective-id) updated-objective)))

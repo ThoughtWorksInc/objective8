@@ -34,3 +34,12 @@
 (defn decline-invitation-by-uuid [uuid]
   (some-> (get-active-invitation uuid)
           decline-invitation!))
+
+(defn retrieve-active-invitations [objective-id]
+  (-> (storage/pg-retrieve {:entity :invitation
+                            :objective-id objective-id
+                            :status (mappings/string->postgres-type "invitation_status" "active")})
+      :result))
+
+(defn expire-invitation! [invitation]
+  (storage/pg-update-invitation-status! invitation "expired"))

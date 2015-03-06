@@ -44,10 +44,11 @@
 
   ([required-entities]
    (let [{invited-by-id :_id} (get required-entities :user (store-a-user))
-         {objective-id :_id} (get required-entities :objective (store-an-objective))]
+         {objective-id :_id} (get required-entities :objective (store-an-objective))
+         status (get required-entities :status "active")]
      (storage/pg-store! {:entity :invitation
                          :uuid (java.util.UUID/randomUUID)
-                         :status "active"
+                         :status status
                          :invited-by-id invited-by-id
                          :objective-id objective-id
                          :reason "some reason"
