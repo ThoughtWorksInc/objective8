@@ -5,21 +5,31 @@
 }
 
 .comment-item {
-  border-bottom: 1px solid $grey-3;
+  border-bottom: 1px solid $border_color;
   padding: 1em 0;
 }
 
+.comment-meta {
+  margin-bottom: 0.2em;
+}
+
 .comment-author {
-  font-weight: bold;
-  margin: 0;
-  font-size: 0.85em;
+  padding-right: 0.75em;
+  color: $pink;
+  text-transform: capitalize; //TODO remove when we have stored display names
+  font-size: 1em;
 }
 .comment-date {
-  display: block;
-  font-size: 0.8em;
+  font-size: 0.75em;
   color: $grey-1;
 }
 
-.comment-text p:last-of-type {
-  margin-bottom: 0;
+.comment-text {
+  color: $grey-15;
+  p {
+    margin-bottom: 0.6em;
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+  }
 }
