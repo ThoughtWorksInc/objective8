@@ -7,7 +7,7 @@
 
 (def config-without-twitter (assoc core/app-config :authentication stub-twitter-auth-config))
 
-(facts "some tests" :functional
+(facts "some tests" :functional :integration
        (against-background 
          [(before :contents (do (core/start-server config-without-twitter)
                              (webdriver/set-driver! {:browser :firefox})))
