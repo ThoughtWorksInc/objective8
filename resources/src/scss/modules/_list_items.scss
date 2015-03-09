@@ -1,0 +1,46 @@
+%list-item-container {
+  list-style: none;
+  margin: 0em 0 2em;
+  padding: 0;
+  :last-child {
+    margin-bottom: 0;
+  }
+}
+%list-item {
+  border-bottom: 1px solid $border_color;
+  padding: 1em 0;
+
+}
+%list-item-meta {
+  margin-bottom: 0.2em;
+}
+%list-item-author {
+  padding-right: 0.75em;
+  color: $pink;
+  text-transform: capitalize; //TODO remove when we have stored display names
+  font-size: 1em;
+}
+%list-item-date {
+  font-size: 0.75em;
+  color: $grey-1;
+}
+%list-item-text {
+  color: $grey-15;
+  margin-bottom: 0.3em;
+  p {
+    margin-bottom: 0.6em;
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+  }
+}
+%list-item-reply-button {
+  font-weight: 700;
+  &:visited, & {
+    color: $grey-15;
+    text-decoration: none;
+  }
+  &:hover {
+    text-decoration: underline;
+  }
+}

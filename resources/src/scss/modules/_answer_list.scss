@@ -1,22 +1,21 @@
 .answer-list {
-  list-style: none;
-  margin: 0em 0 2em;
-  padding: 0;
-  li {
-    border-bottom: 1px solid $grey-3;
-    padding: 1em 0;
-  }
-  p:last-of-type {
-    margin-bottom: 0;
-  }
+  @extend %list-item-container;
+}
+.answer-item {
+  @extend %list-item;
+}
+.answer-meta {
+  @extend %list-item-meta;
 }
 .answer-author {
-  margin: 0;
-  font-weight: bold;
-  font-size: 0.85em;
+  @extend %list-item-author;
 }
 .answer-date {
-  display: block;
-  font-size: 0.8em;
-  color: $grey-1;
+  @extend %list-item-date;
+}
+.answer-text {
+  @extend %list-item-text;
+}
+.answer-reply {
+  @extend %list-item-reply-button;
 }

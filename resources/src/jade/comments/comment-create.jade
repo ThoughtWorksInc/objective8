@@ -1,8 +1,7 @@
 .objective-comment-posts#clj-comment-create
   form(method="POST", action="/comments")
     input(id="objective-id", type="hidden", value="{{objective-id}}", name="objective-id")
-
-    label(for="comment") ${comment-create/comment-label}
+    label(for="comment") Comment
     textarea(id="comment", name="comment", rows="5", cols="10", pattern=".{50,}", maxlength="500", title="${comment-create/comment-title}", required="required")
 
-    button.button(type="submit") ${comment-create/post-button}
+    button.button(type="submit") Add comment

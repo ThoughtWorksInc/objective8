@@ -1,59 +1,21 @@
 .comment-list {
-  list-style: none;
-  margin: 0em 0 2em;
-  padding: 0;
-  :last-child {
-    margin-bottom: 0;
-  }
+  @extend %list-item-container;
 }
-
 .comment-item {
-  border-bottom: 1px solid $border_color;
-  padding: 1em 0;
+  @extend %list-item;
 }
-
 .comment-meta {
-  margin-bottom: 0.2em;
+  @extend %list-item-meta;
 }
-
 .comment-author {
-  padding-right: 0.75em;
-  color: $pink;
-  text-transform: capitalize; //TODO remove when we have stored display names
-  font-size: 1em;
+  @extend %list-item-author;
 }
 .comment-date {
-  font-size: 0.75em;
-  color: $grey-1;
+  @extend %list-item-date;
 }
-
 .comment-text {
-  color: $grey-15;
-  margin-bottom: 0.3em;
-  p {
-    margin-bottom: 0.6em;
-    &:last-of-type {
-      margin-bottom: 0;
-    }
-  }
+  @extend %list-item-text;
 }
-
 .comment-reply {
-  font-weight: 700;
-  &:visited, & {
-    color: $grey-15;
-    text-decoration: none;
-  }
-  &:hover {
-//    color: $link-hover-colour;
-    text-decoration: underline;
-  }
-//  &:active {
-//    color: $link-active-colour;
-//    text-decoration: underline;
-//  }
-//  &:focus {
-//    outline: 3px solid $yellow;
-//    background-color: $yellow;
-//  }
+  @extend %list-item-reply-button;
 }

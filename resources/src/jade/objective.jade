@@ -1,0 +1,102 @@
+extends base
+
+block vars
+  - bodyClass = "draft"
+  - pageTitle = "Draft"
+
+mixin addCommentButton()
+  .draft-add-inline-comment
+    a(href="#", title="Add a comment")
+      i.fa.fa-plus-square-o.fa-lg
+      | Add comment
+  block
+
+block content
+  .draft-preview
+
+    ul.progress-indicator
+      li.complete
+        a(href="#") Objective
+      li.on
+        a(href="#") Draft
+      li
+        a(href="#") Policy
+
+    ul.draft-tabs
+      li
+        a(href="#") Edit
+      li.on
+        a(href="#") Preview
+
+    .draft-helper
+      a.button-hide-draft-help(href="#")
+        span Hide help
+        =" "
+        i.fa.fa-times
+      h2.draft-helper-heading What is a draft?
+      ul
+        li The draft is used to create an application to government to suggest change.
+        li Drafts are crafted by the writers you nominated at the objective stage.
+        li Everyone can comment and make suggestions.
+
+    .draft-preview-document
+      h1.draft-title Build safer cycling networks in the streets of Madrid.
+      p.lede London and Paris are two prime examples of cycle super highway heaven.  We need to show the world that madrid too can be the pinnacle in cycling and safety.
+      +addCommentButton
+        p Street art bitters pour-over, Portland pork belly master cleanse lumbersexual. Aesthetic 90's Shoreditch PBR. Austin sustainable Carles American Apparel, banh mi High Life selvage XOXO plaid stumptown fashion axe skateboard butcher McSweeney's. Master cleanse polaroid Shoreditch DIY, Godard salvia gastropub heirloom Kickstarter fap before they sold out chia. Disrupt Neutra tofu Godard kitsch. Chambray Helvetica plaid chia salvia. Cronut asymmetrical messenger bag, cornhole listicle selvage yr beard Godard stumptown meh sustainable.
+      +addCommentButton
+        p Deep v heirloom Echo Park, drinking vinegar meggings jean shorts biodiesel hoodie keytar mlkshk food truck. Kogi bitters lo-fi, keffiyeh vegan squid heirloom. Sustainable sriracha Etsy, PBR trust fund quinoa tofu Shoreditch pour-over keffiyeh meggings keytar. YOLO beard sustainable meh, semiotics Williamsburg post-ironic. Cray salvia mixtape Wes Anderson Banksy heirloom pork belly locavore retro migas. DIY fingerstache wolf master cleanse. Lumbersexual XOXO semiotics High Life, Schlitz farm-to-table biodiesel ugh jean shorts twee butcher photo booth trust fund sustainable try-hard.
+      +addCommentButton
+        p Mixtape Tumblr McSweeney's, fap keffiyeh whatever hoodie kale chips. Mustache pug four dollar toast slow-carb iPhone, forage twee kogi Intelligentsia heirloom hoodie pour-over. Roof party bicycle rights dreamcatcher, before they sold out kale chips 90's McSweeney's Helvetica wolf swag post-ironic bitters. Beard wolf cliche, PBR slow-carb cronut authentic Brooklyn tote bag heirloom fingerstache. Cardigan irony lumbersexual forage health goth lomo organic, stumptown letterpress chillwave. Truffaut photo booth cornhole, raw denim Wes Anderson polaroid Intelligentsia next level actually. YOLO skateboard twee, jean shorts Intelligentsia semiotics kogi Kickstarter.
+      +addCommentButton
+        ul
+          li Deep v heirloom Echo Park
+          li Drinking vinegar meggings
+          li Jean shorts biodiesel hoodie keytar mlkshk food truck
+      +addCommentButton
+        p Street art bitters pour-over, Portland pork belly master cleanse lumbersexual. Aesthetic 90's Shoreditch PBR. Austin sustainable Carles American Apparel, banh mi High Life selvage XOXO plaid stumptown fashion axe skateboard butcher McSweeney's. Master cleanse polaroid Shoreditch DIY, Godard salvia gastropub heirloom Kickstarter fap before they sold out chia. Disrupt Neutra tofu Godard kitsch. Chambray Helvetica plaid chia salvia. Cronut asymmetrical messenger bag, cornhole listicle selvage yr beard Godard stumptown meh sustainable.
+
+    //.draft-comments
+    //  h2 Comments
+    //  //.draft-comment-promo
+    //  //  p Only signed in members can post a comment on this draft.
+    //  ol.comment-list
+    //    li.helper-text Be the first to comment on this draft.
+
+    .draft-comments
+      h2 Comments
+      //h2 Leave a comment
+      ol.comment-list
+        li.comment-item
+          .comment-meta
+            span.comment-author Chris Cheshire
+            span.comment-date 3 September 2015 07:41
+          .comment-text
+            p We definitely need to look into Gran Via and Calle Mayor!
+          a.comment-reply(href="#") Reply
+        li.comment-item
+          .comment-meta
+            span.comment-author Phil Smith
+            span.comment-date 4 September 2015 19:41
+          .comment-text
+            p Oooh Paseo del Prado.
+          a.comment-reply(href="#") Reply
+        li.comment-item
+          .comment-meta
+            span.comment-author Jen Bloggs
+            span.comment-date 3 September 2015 19:41
+          .comment-text
+            p Paseo del Prado.
+          a.comment-reply(href="#") Reply
+
+
+block footerScripts
+  //script.
+  //  $(window).scroll(function () {
+  //    if ($(this).scrollTop() > 1) {
+  //      $('.masthead').addClass("sticky");
+  //    }
+  //    else {
+  //      $('.masthead').removeClass("sticky");
+  //    }
+  //  });

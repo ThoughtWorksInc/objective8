@@ -1,5 +1,5 @@
 #clj-question-create
   form(method="POST", action="")
-    label(for="question") ${question-create/question-label}
+    label(for="question") Add a question
     textarea#question(name="question", rows="5", cols="10", pattern=".{50,}", maxlength="500", title="${question-create/question-title}", required="required")
-    button.button(type="submit") ${question-create/post-button}
+    button.button(type="submit") Add question
