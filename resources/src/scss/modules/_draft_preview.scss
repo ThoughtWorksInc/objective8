@@ -72,7 +72,7 @@
   font-family: $serif;
   font-size: 110%;
   border-bottom: 1px solid $border_color;
-  h1 {
+  .draft-title {
     font-family: $sans-serif;
     letter-spacing: -0.025em;
     @include mq(720) {
@@ -124,52 +124,6 @@
   }
 }
 
-$draft_help_side_gutter: 1.5em;
-$draft_help_top_gutter: 1.25em;
-.draft-helper {
-  position: relative;
-  padding: $draft_help_top_gutter $draft_help_side_gutter 1em $draft_help_side_gutter;
-  margin-bottom: 2em;
-  background: $white;
-  border: 1px solid $border_color;
-  border-top: 5px solid transparent;
-//  border-left: 5px solid transparent;
-  &:before {
-    content: '';
-    display: block;
-    position: absolute;
-    top: -5px;
-    left: 0;
-    z-index: 1;
-    width: 100%;
-    height: 5px;
-    border-top: 5px solid $green1;
-  }
-}
-.draft-helper-heading {
-  padding: 0;
-  margin-top: 0;
-  margin-bottom: 0.5em;
-  color: $green1;
-}
-.button-hide-draft-help {
-  position: absolute;
-  top: $draft_help_top_gutter;
-  right: $draft_help_side_gutter;
-  text-decoration: none;
-  span {
-    margin-right: 2px;
-  }
-  &:hover {
-    text-decoration: none;
-    span {
-      text-decoration: underline;
-    }
-  }
-  &:visited, & {
-    color: rgba($default_text_color,0.8);
-  }
-}
 .draft-comment-promo {
   background: $border_color;
   margin: 0 0 1em 0;

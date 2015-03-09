@@ -12,6 +12,16 @@
   }
 }
 
+//.main-content {
+//  max-width: 45em;
+//  padding: $alpha_body_vertical_spacing;
+//  margin: 0 auto;
+//  color: rgba(black, 0.8);
+//  @include mq(720) {
+//    padding: $gamma_body_vertical_spacing 1em;
+//  }
+//}
+
 .main-wrapper-no-sidebar {
   margin: 0 auto;
   max-width: 32em;

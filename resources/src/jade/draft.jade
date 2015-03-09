@@ -12,6 +12,7 @@ mixin addCommentButton()
   block
 
 block content
+  //refactor to main-content
   .draft-preview
 
     ul.progress-indicator
@@ -28,12 +29,12 @@ block content
       li.on
         a(href="#") Preview
 
-    .draft-helper
-      a.button-hide-draft-help(href="#")
+    .guidance-text
+      a.button-hide-guidance-text(href="#")
         span Hide help
         =" "
         i.fa.fa-times
-      h2.draft-helper-heading What is a draft?
+      h2.guidance-text-heading What is a draft?
       ul
         li The draft is used to create an application to government to suggest change.
         li Drafts are crafted by the writers you nominated at the objective stage.
