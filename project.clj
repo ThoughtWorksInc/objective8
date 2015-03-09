@@ -5,7 +5,7 @@
 (defproject objective8 "0.0.1-SNAPSHOT"
   :description "Cool new project to do things and stuff"
   :min-lein-version "2.0.0"
-  :test-paths ["test" "integration"]
+  :test-paths ["test" "integration" "functional"]
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [http-kit "2.1.16"]
                  [org.clojure/tools.logging "0.3.1"]
@@ -38,9 +38,9 @@
                                                                       org.seleniumhq.selenium/selenium-server
                                                                       org.seleniumhq.selenium/selenium-remote-driver
                                                                       xml-apis]] 
-                                  [org.seleniumhq.selenium/selenium-server "2.43.0"]
-                                  [org.seleniumhq.selenium/selenium-java "2.43.0"]
-                                  [org.seleniumhq.selenium/selenium-remote-driver "2.43.0"]
+                                  [org.seleniumhq.selenium/selenium-server "2.45.0"]
+                                  [org.seleniumhq.selenium/selenium-java "2.45.0"]
+                                  [org.seleniumhq.selenium/selenium-remote-driver "2.45.0"]
                                   [http-kit.fake "0.2.1"]
                                   [javax.servlet/servlet-api "2.5"]
                                   [peridot "0.3.1"]]

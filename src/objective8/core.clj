@@ -161,18 +161,22 @@
       (bt/update-token! bearer-token-details)
       (bt/store-token! bearer-token-details))))
 
-(defn start-server []
-  (let [port (Integer/parseInt (config/get-var "APP_PORT" "8080"))]
-    (reset! postgres-connection-pool (db/connect! db/postgres-spec))
-    (initialise-api)
-    (log/info (str "Starting objective8 on port " port))
-    (reset! server (run-server (app app-config) {:port port}))))
+(defn start-server 
+  ([] 
+   (start-server app-config)) 
+  ([app-config] 
+   (let [port (Integer/parseInt (config/get-var "APP_PORT" "8080"))]
+     (reset! postgres-connection-pool (db/connect! db/postgres-spec))
+     (initialise-api)
+     (log/info (str "Starting objective8 on port " port))
+     (reset! server (run-server (app app-config) {:port port})))))
 
 (defn -main []
   (start-server))
 
 (defn stop-server []
   (when-not (nil? @server)
+    (log/info "Stopping objective8")
     (@server)
     (reset! server nil)))
 

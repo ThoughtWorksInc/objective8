@@ -16,3 +16,9 @@
 
  - name: install docker.io
    apt: name="docker.io" state=present
+
+ - name: install firefox
+   apt: name=firefox state=present
+
+ - name: install xvfb
+   apt: name=xvfb state=present
