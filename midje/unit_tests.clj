@@ -2,6 +2,6 @@
   (:require [midje.config :refer :all]))
 
 (defn not-integration-or-functional [fact-meta-data]
-  (not (or (contains? fact-meta-data :integration) (contains? fact-meta-data :functional))))
+  (not-any? #(contains? fact-meta-data %) [:integration :functional]))
 
 (change-defaults :fact-filter not-integration-or-functional)
