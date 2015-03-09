@@ -144,6 +144,17 @@
   [:#clj-error-404 html/any-node] (html/replace-vars translation)
   [:#clj-error-404-content] (html/html-content (translation :error-404/page-content)))
 
+;DRAFTS
+
+(html/defsnippet current-draft-page
+  "templates/drafts/current-draft.html" [:#clj-current-draft] [{:keys [translation objective signed-in uri]}]
+  [:#objective-crumb] (html/set-attr :title (:title objective))
+  [:#objective-crumb] (html/content (:title objective))
+  [:#objective-crumb] (html/set-attr :href (str "/objectives/" (:_id objective)))
+  [:#drafts-crumb] (html/set-attr :href (str "/objectives/" (:_id objective) "/drafts"))
+  [:h1] (html/content (:title objective)) 
+  [:#clj-current-draft html/any-node] (html/replace-vars translation))
+
 ;INVITATIONS
 (html/defsnippet invitation-create
   "templates/writers/invitation-form.html" [[:#clj-invitation]] [translation objective-id]

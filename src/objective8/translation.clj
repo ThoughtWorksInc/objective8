@@ -166,6 +166,8 @@
                      :candidate-list {:page-intro "Writers work with each other and the community to draft policy."
                                       :candidate-list-heading "Recently added candidate writers"
                                       :no-candidates "No candidate writers have been invited yet."}
+                     :current-draft {:page-intro "Current draft"
+                                     :no-drafts "There are currently no drafts for this objective"}
                      :sign-up {:doc-title "Sign up almost there | Objective[8]"
                                :doc-description ""
                                :page-title "Almost there"
