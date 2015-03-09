@@ -1,0 +1,59 @@
+.objective-writers {
+  margin-bottom: $default_block_spacing;
+}
+
+.writer-item-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.writer-item {
+  display: inline-block;
+  margin: 0 1em 1em 0;
+  padding: 0;
+  .draft-writers & {
+    text-align: center;
+  }
+  a {
+    display: inline-block;
+    text-decoration: none;
+  }
+}
+
+.writer-item-photo {
+  @include circle(80px);
+  margin-bottom: 0.3em;
+  background: $grey-4;
+  overflow: hidden;
+  .draft-writers & {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .objective-writers & {
+    float: left;
+  }
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+}
+.writer-item-author {
+  display: inline-block;
+  line-height: 1.1;
+  color: rgba(black,0.8);
+  .draft-writers & {
+    width: 80px;
+    word-spacing: 30000px;
+  }
+}
+
+.writer-item-text {
+  padding-top: 10px;
+  padding-left: 100px;
+}
+.writer-item-descripton {
+  color: $grey-1;
+  font-style: italic;
+}

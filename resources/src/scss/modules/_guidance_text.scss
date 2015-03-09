@@ -3,7 +3,7 @@ $guidance_text_top_gutter: 1.25em;
 .guidance-text {
   position: relative;
   padding: $guidance_text_top_gutter $guidance_text_side_gutter 1em $guidance_text_side_gutter;
-  margin-bottom: 2em;
+  margin-bottom: $default_block_spacing;
   background: $white;
   border: 1px solid $border_color;
   border-top: 5px solid transparent;

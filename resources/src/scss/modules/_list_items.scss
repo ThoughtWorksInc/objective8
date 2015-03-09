@@ -1,6 +1,6 @@
 %list-item-container {
   list-style: none;
-  margin: 0em 0 2em;
+  margin: 0em 0 $default_block_spacing 0;
   padding: 0;
   :last-child {
     margin-bottom: 0;

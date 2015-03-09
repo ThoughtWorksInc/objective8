@@ -1,0 +1,45 @@
+mixin objectiveWriterItem(name, href, photo)
+  - href = href || ''
+  - photo = photo || 'http://placekitten.com/g/80/80'
+  li.writer-item
+    a(href="#{href}")
+      .writer-item-photo
+        img(src="#{photo}")
+      .writer-item-text
+        .writer-item-author
+          = name
+        .writer-item-descripton
+          p
+            block
+
+mixin goalItem()
+  li.goal-item
+    i.fa-li.fa.fa-dot-circle-o
+    block
+
+mixin questionItem(author, date)
+  li.question-item
+    span.question-author #{author}
+    span.question-date #{date}
+    .question-text
+      block
+    a.comment-reply(href="#") Answer
+
+mixin commentItem(author, date)
+  li.comment-item
+    .comment-meta
+      span.comment-author #{author}
+      span.comment-date #{date}
+    .comment-text
+      block
+    a.comment-reply(href="#") Reply
+
+mixin draftWriterItem(name, href, photo)
+  - href = href || ''
+  - photo = photo || 'http://placekitten.com/g/80/80'
+  li.writer-item
+    a(href="#{href}")
+      .writer-item-photo
+        img(src="#{photo}")
+      .writer-item-author
+        = name

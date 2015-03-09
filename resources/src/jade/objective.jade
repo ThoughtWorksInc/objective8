@@ -1,4 +1,5 @@
 extends base
+include mixins/_view_helpers
 
 block vars
   - bodyClass = ""
@@ -27,59 +28,61 @@ block content
         li These are catalysts for change.
         li Everyone can comment and make suggestions to contribute towards the draft stage.
 
-    .objective-outline
+    .objective-navigation
+      ul
+        li
+          a(href="#outline") Outline
+        li
+          a(href="#questions") Questions
+        li
+          a(href="#writers") Writers
+        li
+          a(href="#comments") Comments
+
+    .objective-outline#outline
       h1.draft-title Build safer cycling networks in the streets of Madrid.
       h2 Background
       p London and Paris are two prime examples of cycle super highway heaven.  We need to show the world that madrid too can be the pinnacle in cycling and safety.
       p Street art bitters pour-over, Portland pork belly master cleanse lumbersexual. Aesthetic 90's Shoreditch PBR. Austin sustainable Carles American Apparel, banh mi High Life selvage XOXO plaid stumptown fashion axe skateboard butcher McSweeney's. Master cleanse polaroid Shoreditch DIY, Godard salvia gastropub heirloom Kickstarter fap before they sold out chia. Disrupt Neutra tofu Godard kitsch. Chambray Helvetica plaid chia salvia. Cronut asymmetrical messenger bag, cornhole listicle selvage yr beard Godard stumptown meh sustainable.
-      h2 Goals
-      ul
-        li Deep v heirloom Echo Park
-        li Drinking vinegar meggings
-        li Jean shorts biodiesel hoodie keytar mlkshk food truck
+      .objective-goals
+        h2 Goals
+        ul.goal-item-list.fa-ul
+          +goalItem
+            | Deep v heirloom Echo Park
+          +goalItem
+            | Drinking vinegar meggings
+          +goalItem
+            | Jean shorts biodiesel hoodie keytar mlkshk food truck
 
-    .objective-questions
+    .objective-writers#writers
+      h2 Writers
+      ul.writer-item-list
+        +objectiveWriterItem('Jenny Bloggs', '#', 'http://placekitten.com/g/80/80')
+          | A cycling enthusiast, responsible for many safety policies in the UK.
+        +objectiveWriterItem('Boris Johnson', '#', 'http://placekitten.com/g/81/81')
+          | Quirky but has achieved wonders in the London for the boris bikes.
+        +objectiveWriterItem('Bob Smith', '#', 'http://placekitten.com/g/82/82')
+          | Interested in anything to do with cycling and Spain.
+      a.invite-writer(href="#") Invite a writer
+    .objective-questions#questions
       h2 Recently asked questions
       ol.question-list
-        li.question-item
-          span.question-author Chris Cheshire
-          span.question-date 3 September 2015 07:41
-          .question-text
-            p What road surface should we use?
-          a.comment-reply(href="#") Answer
-        li.question-item
-          span.question-author Chris Cheshire
-          span.question-date 4 September 2015 07:41
-          .question-text
-            p Do we have a colour in mind for the road?
-          a.comment-reply(href="#") Answer
+        +questionItem('Chris Cheshire', '3 September 2015 07:41')
+          p What road surface should we use?
+        +questionItem('Chris Cheshire', '4 September 2015 07:41')
+          p Do we have a colour in mind for the road?
     .objective-questions-add
       include questions/question-create
 
-    .objective-comments
+    .objective-comments#comments
       h2 Comments
       ol.comment-list
-        li.comment-item
-          .comment-meta
-            span.comment-author Chris Cheshire
-            span.comment-date 3 September 2015 07:41
-          .comment-text
-            p We definitely need to look into Gran Via and Calle Mayor!
-          a.comment-reply(href="#") Reply
-        li.comment-item
-          .comment-meta
-            span.comment-author Phil Smith
-            span.comment-date 4 September 2015 19:41
-          .comment-text
-            p Oooh Paseo del Prado.
-          a.comment-reply(href="#") Reply
-        li.comment-item
-          .comment-meta
-            span.comment-author Jen Bloggs
-            span.comment-date 3 September 2015 19:41
-          .comment-text
-            p Paseo del Prado.
-          a.comment-reply(href="#") Reply
+        +commentItem('Chris Cheshire', '3 September 2015 07:41')
+          p We definitely need to look into Gran Via and Calle Mayor!
+        +commentItem('Phil Smith', '2 September 2015 07:41')
+          p Oooh Paseo del Prado.
+        +commentItem('Jen Bloggs', '1 September 2015 07:41')
+          p Paseo del Prado.
 
     .objective-comments-add
       //h2 Leave a comment

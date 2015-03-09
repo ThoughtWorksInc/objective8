@@ -1,6 +1,6 @@
 $progress_indicator_height: 40px;
 .progress-indicator {
-  margin: 0 auto 2em auto;
+  margin: 0 auto $default_block_spacing auto;
   padding: 0;
   list-style: none;
   text-align: center;

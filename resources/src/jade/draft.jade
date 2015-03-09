@@ -1,4 +1,5 @@
 extends base
+include mixins/_view_helpers
 
 block vars
   - bodyClass = "draft"
@@ -64,31 +65,24 @@ block content
     //  ol.comment-list
     //    li.helper-text Be the first to comment on this draft.
 
+    .draft-writers
+      h2 Writers
+      ul.writer-item-list
+        +draftWriterItem('Jenny Bloggs', '#', 'http://placekitten.com/g/80/80')
+        +draftWriterItem('Boris Johnson', '#', 'http://placekitten.com/g/81/81')
+        +draftWriterItem('Bob Smith', '#', 'http://placekitten.com/g/82/82')
+
+
     .draft-comments
       h2 Comments
       //h2 Leave a comment
       ol.comment-list
-        li.comment-item
-          .comment-meta
-            span.comment-author Chris Cheshire
-            span.comment-date 3 September 2015 07:41
-          .comment-text
-            p We definitely need to look into Gran Via and Calle Mayor!
-          a.comment-reply(href="#") Reply
-        li.comment-item
-          .comment-meta
-            span.comment-author Phil Smith
-            span.comment-date 4 September 2015 19:41
-          .comment-text
-            p Oooh Paseo del Prado.
-          a.comment-reply(href="#") Reply
-        li.comment-item
-          .comment-meta
-            span.comment-author Jen Bloggs
-            span.comment-date 3 September 2015 19:41
-          .comment-text
-            p Paseo del Prado.
-          a.comment-reply(href="#") Reply
+        +commentItem('Chris Cheshire', '3 September 2015 07:41')
+          p We definitely need to look into Gran Via and Calle Mayor!
+        +commentItem('Phil Smith', '2 September 2015 07:41')
+          p Oooh Paseo del Prado.
+        +commentItem('Jen Bloggs', '1 September 2015 07:41')
+          p Paseo del Prado.
 
 
 block footerScripts
