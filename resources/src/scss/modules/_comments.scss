@@ -2,6 +2,9 @@
   list-style: none;
   margin: 0em 0 2em;
   padding: 0;
+  :last-child {
+    margin-bottom: 0;
+  }
 }
 
 .comment-item {
@@ -26,10 +29,31 @@
 
 .comment-text {
   color: $grey-15;
+  margin-bottom: 0.3em;
   p {
     margin-bottom: 0.6em;
     &:last-of-type {
       margin-bottom: 0;
     }
   }
+}
+
+.comment-reply {
+  font-weight: 700;
+  &:visited, & {
+    color: $grey-15;
+    text-decoration: none;
+  }
+  &:hover {
+//    color: $link-hover-colour;
+    text-decoration: underline;
+  }
+//  &:active {
+//    color: $link-active-colour;
+//    text-decoration: underline;
+//  }
+//  &:focus {
+//    outline: 3px solid $yellow;
+//    background-color: $yellow;
+//  }
 }

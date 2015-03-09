@@ -44,6 +44,7 @@
     background-color: $draft_tab_color_off;
     color: $grey-15;
     border-radius: inherit;
+    transition: background 200ms ease, color 200ms ease;
     &:hover {
       background-color: $draft_tab_color_hover;
       color: $white;

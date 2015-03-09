@@ -14,6 +14,14 @@ mixin addCommentButton()
 block content
   .draft-preview
 
+    ul.progress-indicator
+      li.complete
+        a(href="#") Objective
+      li.on
+        a(href="#") Draft
+      li
+        a(href="#") Policy
+
     ul.draft-tabs
       li
         a(href="#") Edit
@@ -65,18 +73,21 @@ block content
             span.comment-date 3 September 2015 07:41
           .comment-text
             p We definitely need to look into Gran Via and Calle Mayor!
+          a.comment-reply(href="#") Reply
         li.comment-item
           .comment-meta
             span.comment-author Phil Smith
             span.comment-date 4 September 2015 19:41
           .comment-text
             p Oooh Paseo del Prado.
+          a.comment-reply(href="#") Reply
         li.comment-item
           .comment-meta
             span.comment-author Jen Bloggs
             span.comment-date 3 September 2015 19:41
           .comment-text
             p Paseo del Prado.
+          a.comment-reply(href="#") Reply
 
 
 block footerScripts
