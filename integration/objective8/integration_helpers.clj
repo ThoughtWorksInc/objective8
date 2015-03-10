@@ -29,7 +29,6 @@
 
 
 (defn with-sign-in [user-session url & args]
-  (get-anti-forgery-token user-session)
   (let [request-function #(apply p/request % url args)]
     (-> user-session
         ; Hit unauthorized url
@@ -42,6 +41,11 @@
                    :body "&username=someusername&email-address=test%40email.address.com")
         ; Follow redirect to originally requested resource
         (p/follow-redirect))))
+
+(defn sign-in-as-existing-user [user-session]
+ (-> user-session
+     (p/request "http://localhost:8080/twitter-callback?oauth_verifier=the-verifier")
+     p/follow-redirect))
 
 (defn test-context
   "Creates a fake application context" 

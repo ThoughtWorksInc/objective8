@@ -169,6 +169,9 @@
                                       :no-candidates "No candidate writers have been invited yet."}
                      :current-draft {:page-intro "Current draft"
                                      :no-drafts "There are currently no drafts for this objective"}
+                     :edit-draft {:doc-title "Edit draft | Objective[8]"
+                                  :doc-description "Draft policy"
+                                  :preview "Preview"}
                      :sign-up {:doc-title "Sign up almost there | Objective[8]"
                                :doc-description ""
                                :page-title "Almost there"
@@ -331,10 +334,15 @@
                      :invitation-sign-in {:please "Spanish(...)"
                                               :sign-in "Spanish(...)"
                                               :to "Spanish(...)"}
-                      :invitation-banner {:message "Spanish(...)"}
+                     :invitation-banner {:message "Spanish(...)"}
                      :candidate-list {:page-intro "Spanish(...)"
                                       :candidate-list-heading "Spanish(...)"
                                       :no-candidates "Spanish(...)"}
+                     :current-draft {:page-intro "Spanish(...)"
+                                     :no-drafts "Spanish(...)"}
+                     :edit-draft {:doc-title "Spanish(...)"
+                                  :doc-description "Spanish(...)"
+                                  :preview "Spanish(...)"}
                      :sign-up {:doc-title "Perfil | Objective[8]"
                                :doc-description ""
                                :page-title ""

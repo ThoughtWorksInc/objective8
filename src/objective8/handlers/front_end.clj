@@ -2,14 +2,16 @@
   (:require [clojure.tools.logging :as log]
             [cemerick.friend :as friend]
             [ring.util.response :as response]
+            [endophile.core :as ec]
+            [endophile.hiccup :as eh]
+            [hiccup.core :as hc]
             [cheshire.core :as json]
             [org.httpkit.client :as http]
             [objective8.responses :refer :all]
             [objective8.http-api :as http-api]
             [objective8.front-end-helpers :as helpers]
             [objective8.utils :as utils]
-            [objective8.views :as views]
-            ))
+            [objective8.views :as views]))
 
 ;; HELPERS
 
@@ -349,5 +351,13 @@
       (log/info "Invalid route: " e)
       (error-404-response t' locale))))
 
-(defn edit-draft-get [_]
-  (simple-response "Got here!"))
+(defn edit-draft-get [{{objective-id :id} :route-params :as request}]
+  (views/edit-draft "edit-draft" request :objective-id objective-id))
+
+(defn edit-draft-with-preview [{{objective-id :id} :route-params params :params :as request}]
+  (let [preview (hc/html (eh/to-hiccup (ec/mp (:content params))))]
+    (views/edit-draft "edit-draft" request :objective-id objective-id :preview preview)))
+
+(defn create-draft [{{o-id :id} :route-params :as request}]
+  (let [{draft :result} (http-api/create-draft {})]
+    (response/redirect (str "/objectives/" o-id "/drafts/" (:_id draft)))))

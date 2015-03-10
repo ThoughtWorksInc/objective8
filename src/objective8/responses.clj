@@ -157,6 +157,12 @@
   [:h1] (html/content (:title objective)) 
   [:#clj-current-draft html/any-node] (html/replace-vars translation))
 
+(html/defsnippet edit-draft-page
+  "templates/drafts/edit-draft.html" [:#clj-edit-draft] [{:keys [translations data]}]
+  [:#clj-edit-draft-preview] (some-> data :preview html/html-content)
+  [:#clj-edit-draft-form] (html/set-attr :action (str "/objectives/" (:objective-id data) "/edit-draft"))
+  [:#clj-edit-draft html/any-node] (html/replace-vars translations))
+
 ;INVITATIONS
 (html/defsnippet invitation-create
   "templates/writers/invitation-form.html" [[:#clj-invitation]] [{:keys [translations data] :as context}]

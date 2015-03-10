@@ -26,7 +26,8 @@
                  [korma "0.3.0"]
                  [org.clojure/java.jdbc "0.3.6"]
                  [postgresql "9.3-1102.jdbc41"]
-                 [ragtime "0.3.8"]]
+                 [ragtime "0.3.8"]
+                 [endophile "0.1.2"]]
   :main objective8.core
   :plugins [[ragtime/ragtime.lein "0.3.8"]]
   :profiles {:dev {:source-paths ["dev"]

@@ -163,3 +163,7 @@
   (default-post-call (str utils/host-url
                             "/api/v1/objectives/" (:objective-id candidate-writer)
                             "/candidate-writers") candidate-writer))
+
+;; DRAFTS
+
+(defn create-draft [draft])

@@ -51,5 +51,6 @@
 (def question-detail (view (render-page responses/question-view-page)))
 (def candidate-list (view (render-page responses/candidate-list-page)))
 (def invitation-response (view (render-page responses/invitation-response-page)))
+(def edit-draft (view (render-page responses/edit-draft-page)))
 
 (def four-o-four (view (render-page responses/error-404-page)))
