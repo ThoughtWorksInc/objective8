@@ -1,5 +1,6 @@
 (ns objective8.middleware
-  (:require [clojure.string :as s]))
+  (:require [clojure.string :as s]
+            [clojure.tools.logging :as log]))
 
 (defn- keywordize [m]
   (into {} (for [[k v] m] [(keyword k) v])))
@@ -19,7 +20,8 @@
           bearer-name (get headers "api-bearer-name")]
       (if (valid-credentials? tokens-fn bearer-name bearer-token)
         (handler (update-in request [:headers] dissoc "api-bearer-token" "api-bearer-name"))
-        {:status 401}))))
+        (do (log/info (str "Invalid bearer token credentials"))
+            {:status 401})))))
 
 (defn wrap-not-found [handler not-found-handler]
   (fn [request]
