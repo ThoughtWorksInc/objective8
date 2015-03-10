@@ -17,7 +17,7 @@
 (defn roles-for-user [user]
   (let [{{writer-records :writer-records} :result} (http-api/get-user (:_id user))
         objective-ids (map :objective-id writer-records)
-        writer-roles (map #(keyword (str "writer-for-" %)) objective-ids)]
+        writer-roles (map utils/writer-for objective-ids)]
     (set (conj writer-roles :signed-in))))
 
 (defn auth-map [user]

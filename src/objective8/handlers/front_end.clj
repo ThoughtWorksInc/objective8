@@ -280,8 +280,8 @@
       (= status ::http-api/not-found) (error-404-response request)
       :else {:status 500})))
 
-(defn remove-invitation-credentials [response current-session]
-  (assoc response :session (dissoc current-session :invitation)))
+(defn remove-invitation-credentials [response]
+  (update-in response [:session] dissoc :invitation))
 
 (defn accept-or-decline-invitation [{:keys [session t' locale uri] :as request}]
   (if-let [invitation-details (:invitation session)]
@@ -291,7 +291,8 @@
                                    request
                                    :objective (format-objective objective)))
       (-> (error-404-response request)
-          (remove-invitation-credentials session))) 
+          (assoc :session session)
+          remove-invitation-credentials)) 
     (error-404-response request)))
 
 (defn accept-invitation [{:keys [session]}]
@@ -304,7 +305,9 @@
         (= status ::http-api/success)
         (-> (str utils/host-url "/objectives/" (:objective-id invitation-credentials) "/candidate-writers")
             response/redirect
-            (remove-invitation-credentials session))
+            (assoc :session session)
+            remove-invitation-credentials
+            (utils/add-authorisation-role (utils/writer-for (:objective-id invitation-credentials))))
         
         :else {:status 500}))
     {:status 401}))
@@ -319,7 +322,8 @@
        (-> (str utils/host-url)
                   response/redirect
                   (assoc :flash "Invitation declined")
-                  (remove-invitation-credentials session))
+                  (assoc :session session)
+                  remove-invitation-credentials)
        
        :else {:status 500}))
     {:status 401}))

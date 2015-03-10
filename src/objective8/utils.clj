@@ -1,6 +1,7 @@
 (ns objective8.utils
   (:require [clj-time.format :as time-format]
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
+            [cemerick.friend :as friend]
             [objective8.config :as config]))
 
 (def host-url
@@ -8,6 +9,21 @@
 
 (defn generate-random-uuid []
   (str (java.util.UUID/randomUUID)))
+
+;;AUTHORISATION HELPERS
+
+(defn writer-for [objective-id]
+  (keyword (str "writer-for-" objective-id)))
+
+(defn add-authorisation-role
+  "If the session in the request-or-response is already authenticated,
+  then adds a new-role to the list of authorised roles, otherwise
+  returns the request-or-response."
+  [request-or-response new-role]
+  (if-let [new-authentication (some-> (friend/current-authentication request-or-response)
+                                      (update-in [:roles] conj new-role))]
+    (friend/merge-authentication request-or-response new-authentication)
+    request-or-response))
 
 ;;TIME FORMATTING
 
