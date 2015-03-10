@@ -25,8 +25,21 @@ lein ragtime migrate
 
 ####Running the tests
 
+To run all tests:
 ```
 lein midje
+```
+To run only unit tests:
+```
+lein midje :config midje/unit_tests.clj
+```
+To run unit and integration tests:
+```
+lein midje :config midje/integration_tests.clj
+```
+To run only functional tests:
+```
+lein midje :config midje/functional_tests.clj
 ```
 
 ####Running the app
