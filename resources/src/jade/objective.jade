@@ -88,12 +88,14 @@ block content
 
 
 block footerScripts
-  //script.
-  //  $(window).scroll(function () {
-  //    if ($(this).scrollTop() > 1) {
-  //      $('.masthead').addClass("sticky");
-  //    }
-  //    else {
-  //      $('.masthead').removeClass("sticky");
-  //    }
-  //  });
+  script.
+    var pageNav = $('.objective-navigation-list-wrapper');
+    var pageNavStickHeight = pageNav.offset().top;
+    $(window).scroll(function () {
+      if ($(this).scrollTop() > pageNavStickHeight) {
+        pageNav.addClass("sticky");
+      }
+      else {
+        pageNav.removeClass("sticky");
+      }
+    });

@@ -9,8 +9,14 @@ $objective_navigation_height: 80px;
   position: absolute;
   left: 0;
   width: 100%;
+  background: rgba($white,0.98);
 //  border-top: 1px solid $border_color;
   border-bottom: 1px solid $border_color;
+  &.sticky {
+    position: fixed;
+    top: 0;
+    z-index: 10;
+  }
 }
 
 .objective-navigation-list {
