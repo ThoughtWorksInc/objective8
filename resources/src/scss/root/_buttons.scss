@@ -1,21 +1,41 @@
 button,
 .button {
+  position: relative;
   display: inline-block;
   max-width: 14em;
   margin-right: 0.5em;
   padding: 0.55em 1.35em 0.65em 1.35em;
-  border: 1px solid $grey-3;
+  border: 1px solid $green1;
   border-radius: 2em;
-  transition: background 0.2s ease-in, color 0.2s ease-in;
-  &:visited, & {
+  transition: background 0.2s ease-in-out, color 0.2s ease-in-out, border 0.2s ease-in-out;
+  &:after {
+    content: '';
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: -2px;
+    width: 100%;
+    height: 100%;
+    border: 2px solid $yellow;
+    border-radius: inherit;
+  }
+  &:visited, &:focus, & {
     background-color: $white;
     text-decoration: none;
-    color: $grey-15;
+    color: $green1;
+    outline-color: transparent;
   }
   &:hover {
-    background-color: $offwhite;
+    background-color: $green1;
     text-decoration: none;
-    color: $green1;
+    color: $white;
+  }
+  &:focus {
+    border-color: $yellow;
+    &:after {
+      opacity: 1;
+    }
   }
 }
 
