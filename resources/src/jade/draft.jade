@@ -15,13 +15,13 @@ mixin addCommentButton()
 block content
   .middle-container
 
-    ul.progress-indicator
-      li.complete
-        a(href="#") Objective
-      li.on
-        a(href="#") Draft
-      li
-        a(href="#") Policy
+    //ul.progress-indicator
+    //  li.complete
+    //    a(href="/objective") Objective
+    //  li.on
+    //    a(href="/draft") Draft
+    //  li
+    //    a(href="#") Policy
 
     ul.draft-tabs
       li
@@ -29,12 +29,7 @@ block content
       li.on
         a(href="#") Preview
 
-    .guidance-text
-      a.button-hide-guidance-text(href="#")
-        span Hide help
-        =" "
-        i.fa.fa-times
-      h2.guidance-text-heading What is a draft?
+    +guidanceText('What is a draft?')
       ul
         li The draft is used to create an application to government to suggest change.
         li Drafts are crafted by the writers you nominated at the objective stage.

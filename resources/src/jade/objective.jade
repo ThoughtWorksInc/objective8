@@ -8,20 +8,15 @@ block vars
 block content
   .middle-container
 
-    ul.progress-indicator
-      li.on
-        a(href="#") Objective
-      li
-        a(href="#") Draft
-      li
-        a(href="#") Policy
+    //ul.progress-indicator
+    //  li.on
+    //    a(href="/objective") Objective
+    //  li
+    //    a(href="/draft") Draft
+    //  li
+    //    a(href="#") Policy
 
-    .guidance-text
-      a.button-hide-guidance-text(href="#")
-        span Hide help
-        =" "
-        i.fa.fa-times
-      h2.guidance-text-heading What is an objective?
+    +guidanceText('What is an objective?')
       ul
         li A policy starts with an idea.
         li These are catalysts for change.
@@ -31,7 +26,7 @@ block content
       .objective-navigation-list-wrapper
         ul.objective-navigation-list
           li.on
-            a(href="#outline") Outline
+            a(href="#outline") Objective
           li
             a(href="#writers") Writers
           li
