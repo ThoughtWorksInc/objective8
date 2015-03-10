@@ -5,7 +5,6 @@
             [korma.db :as kormadb]
             [peridot.core :as p]
             [cheshire.core :as json]
-            [midje.sweet :as midje]
             [clojure.data.json :as cl-json]
             [objective8.core :as core]
             [objective8.storage.mappings :as m]

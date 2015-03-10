@@ -14,8 +14,14 @@
   ["/" {"sign-up" {:get :sign-up-form
                    :post :sign-up-form-post}}])
 
+(defn roles-for-user [user]
+  (let [{{writer-records :writer-records} :result} (http-api/get-user (:_id user))
+        objective-ids (map :objective-id writer-records)
+        writer-roles (map #(keyword (str "writer-for-" %)) objective-ids)]
+    (set (conj writer-roles :signed-in))))
+
 (defn auth-map [user]
-  (workflows/make-auth {:username (:_id user) :roles #{:signed-in}}
+  (workflows/make-auth {:username (:_id user) :roles (roles-for-user user)}
                        {::friend/workflow :objective8.workflows.sign-up/sign-up-workflow}))
 
 (defn authorise [response user]

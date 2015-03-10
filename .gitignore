@@ -20,3 +20,4 @@ start_with_twitter_credentials.sh
 hs_err*.log
 init-script
 .idea/
+profiles.clj

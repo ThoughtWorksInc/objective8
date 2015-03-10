@@ -1,5 +1,7 @@
 (ns objective8.middleware-test
   (:require [midje.sweet :refer :all]
+            [cemerick.friend :as friend]
+            [cemerick.friend.workflows :as workflows]
             [objective8.middleware :refer :all]))
 
 (def request {:headers {"api-bearer-token" "some-secure-token"
@@ -50,3 +52,23 @@
  "something/"   "something"
  "something"    "something"
  "a/b/"         "a/b")
+
+(def USER_ID 1)
+(def OBJECTIVE_ID 3)
+(def writer-role (keyword (str "writer-for-" OBJECTIVE_ID)))
+
+(facts "about writer authorisation"
+       (fact "a user can access writer-only resources for an objective they are a writer for"
+             (let [auth-map (workflows/make-auth {:username USER_ID :roles #{:signed-in writer-role}})
+                   request (friend/merge-authentication {:route-params {:id (str OBJECTIVE_ID)}} auth-map)
+                   handler identity
+                   wrapped-handler (wrap-authorise-writer handler)]
+               (wrapped-handler request) => (handler request)))
+
+       (fact "a user cannot access writer-only resources for an objective they are not a writer for"
+             (let [auth-map (workflows/make-auth {:username USER_ID :roles #{:signed-in writer-role}})
+                   a-different-objective (inc OBJECTIVE_ID)
+                   request (friend/merge-authentication {:route-params {:id (str a-different-objective)}} auth-map)
+                   handler identity
+                   wrapped-handler (wrap-authorise-writer handler)]
+               (wrapped-handler request) => (throws clojure.lang.ExceptionInfo))))

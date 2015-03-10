@@ -47,6 +47,7 @@
                :accept-invitation (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/accept-invitation) #{:signed-in})
                :decline-invitation (utils/anti-forgery-hook front-end-handlers/decline-invitation) 
                :current-draft front-end-handlers/current-draft
+               :edit-draft-get (m/wrap-authorise-writer front-end-handlers/edit-draft-get)
 
                
                ; API Handlers
@@ -93,7 +94,8 @@
                                                       :get :question-list
                                                       ["/" :q-id] {:get :question
                                                                    "/answers" {:post :add-answer-form-post}}}
-                                        "/drafts" {:get :current-draft}}}
+                                        "/drafts" {:get :current-draft}
+                                        "/edit-draft" {:get :edit-draft-get}}}
         "comments"          {:post :create-comment-form-post}
         "invitations"       {["/" :uuid] {:get :writer-invitation}}
 

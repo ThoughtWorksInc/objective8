@@ -1,6 +1,7 @@
 (ns objective8.users-test
   (:require [midje.sweet :refer :all]
             [objective8.users :as users]
+            [objective8.writers :as writers]
             [objective8.storage.storage :as storage]))
 
 (def email-address "test@email.com")
@@ -26,13 +27,24 @@
 
 (facts "Retrieving users"
        (fact "can retrieve user from store by user-id"
-             (users/retrieve-user USER_ID) => stored-user
+             (against-background
+               (writers/retrieve-candidates-by-user-id USER_ID) => [])
+             (users/retrieve-user USER_ID) => (contains stored-user)
              (provided (storage/pg-retrieve {:entity :user :_id USER_ID})
                        => {:query {:entity :user
                                    :_id USER_ID}
                            :result [(assoc stored-user :entity :user)]}))
 
+       (fact "finding user by user-id returns candidate records if they exist"
+             (against-background
+               (storage/pg-retrieve anything) => {:result [stored-user]})
+             (users/retrieve-user USER_ID) => (contains {:writer-records :stubbed-candidate-records})
+             (provided
+              (writers/retrieve-candidates-by-user-id USER_ID) => :stubbed-candidate-records))
+
        (fact "returns nil if no user exists matching user-id"
+             (against-background
+               (writers/retrieve-candidates-by-user-id 0) => [])
              (users/retrieve-user 0) => nil
              (provided (storage/pg-retrieve {:entity :user :_id 0})
                        => {:query {:entity :user

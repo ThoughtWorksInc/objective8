@@ -7,6 +7,7 @@
             [objective8.storage.storage :as s]
             [objective8.users :as users]
             [objective8.integration-helpers :as helpers]
+            [objective8.storage-helpers :as sh]
             [objective8.middleware :as m]))
 
 (def email-address "test@email.address.com")
@@ -23,6 +24,22 @@
 
 
 (def stored-user (assoc user :_id USER_ID))
+
+(facts "GET /api/v1/users/:id" :integration
+       (against-background
+        (m/valid-credentials? anything anything anything) => true)
+       (against-background
+        [(before :contents (do
+                             (helpers/db-connection)
+                             (helpers/truncate-tables)))
+         (after :facts (helpers/truncate-tables))]
+
+        (fact "retrieves the user record and associated candidate-writer records by user id"
+              (let [{user-id :_id :as the-user} (sh/store-a-user)
+                    candidate-record-1 (sh/store-a-candidate {:user the-user})
+                    candidate-record-2 (sh/store-a-candidate {:user the-user})
+                    {response :response} (p/request app (str "/api/v1/users/" user-id))]
+                (:body response) => (helpers/json-contains {:writer-records (contains [candidate-record-1 candidate-record-2])})))))
 
 (facts "users" :integration
        (facts "about retrieving users by id"

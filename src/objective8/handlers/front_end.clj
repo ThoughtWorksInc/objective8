@@ -388,3 +388,6 @@
     (catch NumberFormatException e
       (log/info "Invalid route: " e)
       (error-404-response t' locale))))
+
+(defn edit-draft-get [_]
+  (simple-response "Got here!"))

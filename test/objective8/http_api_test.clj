@@ -62,7 +62,8 @@
                                                     {"api-bearer-name" BEARER_NAME
                                                      "api-bearer-token" BEARER_TOKEN})})) => {:status 200 :body ""})))
 
-;USERS
+;;USERS
+(def USER_ID 3)
 (def the-user {:some :data
                :twitter-id "twitter-TWITTER_ID"})
 
@@ -70,13 +71,21 @@
        (http-api/create-user the-user) => :api-call-result
        (provided (http-api/default-post-call (contains "/api/v1/users") the-user) => :api-call-result))
 
-(fact "finding a user record hits the correct API endpoint with credentials"
+(fact "finding a user record by twitter-id hits the correct API endpoint with credentials"
       (http-api/find-user-by-twitter-id (:twitter-id the-user)) => :api-call-result
       (provided
         (http-api/default-get-call
           (contains (str "/api/v1/users?twitter=" (:twitter-id the-user)))
           (contains {:headers (contains {"api-bearer-name" anything
                                          "api-bearer-token" anything})})) => :api-call-result))
+
+(fact "getting a user record hits the correct API endpoint with credentials"
+      (http-api/get-user USER_ID) => :api-call-result
+      (provided
+       (http-api/default-get-call
+         (contains (str "/api/v1/users/" USER_ID))
+         (contains {:headers (contains {"api-bearer-name" anything
+                                        "api-bearer-token" anything})})) => :api-call-result))
 
 ;OBJECTIVES
 (def OBJECTIVE_ID 234)

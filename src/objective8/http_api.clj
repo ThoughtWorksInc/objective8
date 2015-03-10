@@ -79,6 +79,10 @@
     (str utils/host-url "/api/v1/users?twitter=" twitter-id)
     {:headers (get-api-credentials)}))
 
+(defn get-user [user-id]
+  (default-get-call
+    (str utils/host-url "/api/v1/users/" user-id)
+    {:headers (get-api-credentials)}))
 
 ;; OBJECTIVES
 

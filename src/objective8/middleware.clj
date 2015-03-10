@@ -1,6 +1,7 @@
 (ns objective8.middleware
   (:require [clojure.string :as s]
-            [clojure.tools.logging :as log]))
+            [clojure.tools.logging :as log]
+            [cemerick.friend :as friend]))
 
 (defn- keywordize [m]
   (into {} (for [[k v] m] [(keyword k) v])))
@@ -32,3 +33,16 @@
 (defn strip-trailing-slashes [handler]
   (fn [request]
     (handler (update-in request [:uri] s/replace #"(.)/$" "$1"))))
+
+(defn writer-role-for-objective [objective-id]
+  (keyword (str "writer-for-" objective-id)))
+
+(defn wrap-authorise-writer [handler]
+  (fn [{{objective-id :id} :route-params :as request}]
+    (let [roles #{(writer-role-for-objective objective-id)}]
+      (if (friend/authorized? roles (friend/identity request))
+        (handler request)
+        (friend/throw-unauthorized (friend/identity request)
+                                   {::friend/wrapped-handler handler
+                                    ::friend/required-roles roles})))))
+
