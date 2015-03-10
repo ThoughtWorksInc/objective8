@@ -1,23 +1,24 @@
 button,
 .button {
-  border: none;
-  background: $green1;
-  border-bottom: 6px solid $green2;
-  padding: 0.7em 1.4em 0.6em;
-  margin-right: 0.5em;
   display: inline-block;
-  text-decoration: none;
-  color: $white;
   max-width: 14em;
-  transition: background 0.2s ease-in;
-  &:hover {
-    background: $green2;
-    text-decoration: underline;
+  margin-right: 0.5em;
+  padding: 0.55em 1.35em 0.65em 1.35em;
+  border: 1px solid $grey-3;
+  border-radius: 2em;
+  transition: background 0.2s ease-in, color 0.2s ease-in;
+  &:visited, & {
+    background-color: $white;
+    text-decoration: none;
+    color: $grey-15;
   }
-  &:visited {
-    color: $white;
+  &:hover {
+    background-color: $offwhite;
+    text-decoration: none;
+    color: $green1;
   }
 }
+
 
 
 
