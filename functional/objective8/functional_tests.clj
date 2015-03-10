@@ -15,7 +15,7 @@
   (wd/take-screenshot :file (str "functional/objective8/screenshots/" 
                                  filename ".png")))
 
-(facts "About user journeys" :functional :integration
+(facts "About user journeys" :functional
        (against-background 
          [(before :contents (do (core/start-server config-without-twitter)
                                 (wd/set-driver! {:browser :firefox})))
