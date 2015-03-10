@@ -47,13 +47,11 @@
 @import 'modules/invitation_response';
 @import 'modules/info-box';
 @import 'modules/objective_navigation';
-@import 'modules/objective_writers';
+@import 'modules/writer_list';
 @import 'modules/objective_item';
 @import 'modules/candidate_item';
 @import 'modules/progress_indicator';
-@import 'modules/objective_outline';
 @import 'modules/guidance_text';
-@import 'modules/draft_preview';
 
 @import 'modules/share_widget';
 @import 'modules/get_involved';
@@ -61,3 +59,5 @@
 
 @import 'pages/index';
 @import 'pages/sign_in';
+@import 'pages/objective';
+@import 'pages/draft_preview';

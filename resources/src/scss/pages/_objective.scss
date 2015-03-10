@@ -1,0 +1,20 @@
+%objective-section {
+  margin-bottom: $default_block_spacing;
+}
+
+.objective-outline {
+  @extend %objective-section;
+}
+
+.objective-writers {
+  @extend %objective-section;
+}
+
+.objective-questions {
+  @extend %objective-section;
+}
+
+.objective-comments {
+  @extend %objective-section;
+}
+

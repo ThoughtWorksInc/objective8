@@ -1,11 +1,7 @@
-.objective-writers {
-  margin-bottom: $default_block_spacing;
-}
+$writer_avatar_size: 60px;
 
 .writer-item-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+  @extend %list-item-container;
 }
 
 .writer-item {
@@ -22,7 +18,7 @@
 }
 
 .writer-item-photo {
-  @include circle(80px);
+  @include circle($writer_avatar_size);
   margin-bottom: 0.3em;
   background: $grey-4;
   overflow: hidden;
@@ -39,20 +35,25 @@
     height: auto;
   }
 }
+
 .writer-item-author {
   display: inline-block;
   line-height: 1.1;
-  color: rgba(black,0.8);
+  color: rgba(black, 0.8);
   .draft-writers & {
-    width: 80px;
+    width: $writer_avatar_size;
     word-spacing: 30000px;
   }
 }
 
 .writer-item-text {
-  padding-top: 10px;
-  padding-left: 100px;
+  padding-top: 5px;
+  padding-left: ($writer_avatar_size + 15px);
+  @include mq(720) {
+    padding-top: 10px;
+  }
 }
+
 .writer-item-descripton {
   color: $grey-1;
   font-style: italic;
