@@ -135,7 +135,7 @@
                                                                                      :uuid :NOT_AN_ACTIVE_UUID
                                                                                      :status "active"}} 
                                                                            {:status ::http-api/not-found}]
-               (front-end/error-404-response anything anything) => :error-response
+               (front-end/error-404-response anything) => :error-response
                (front-end/remove-invitation-credentials :error-response anything) => {}))
 
 (binding [config/enable-csrf false]

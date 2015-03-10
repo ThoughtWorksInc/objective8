@@ -5,19 +5,29 @@
 (defn- user-info [request auth-map]
   (when auth-map {:display-name (:display-name auth-map)}))
 
-(defn- doc-info [request page-name translations]
+(defn- doc-info [request page-name translations data]
   (when (and page-name translations) 
-    {:title (translations (keyword (str page-name "/doc-title")))
-     :description (translations (keyword (str page-name "/doc-description")))}))
+    (-> {:flash (:flash request)}
+        (assoc :errors (:errors data))
+        (assoc :title
+               (if-let [title (get-in data [:doc :title])]
+                 title
+                 (translations (keyword (str page-name "/doc-title")))))
+        (assoc :description
+               (if-let [description (get-in data [:doc :description])]
+                 description
+                 (translations (keyword (str page-name "/doc-description"))))))))
 
 (defn make-view-context [page-name request data]
   (let [auth-map (friend/current-authentication request)
-        translations (:t' request)]
+        translations (:t' request)
+        data (apply hash-map data)]
     {:translations translations 
      :ring-request request
      :user (user-info request auth-map)
-     :doc (doc-info request page-name translations)
-     :data (apply hash-map data)}))
+     :doc (doc-info request page-name translations data)
+     :invitation (get-in request [:session :invitation])
+     :data data}))
 
 (defn view
   "Wraps a template so that it can easily be called
@@ -26,6 +36,20 @@
   (fn [page-name ring-request & data] 
     (viewfn (make-view-context page-name ring-request data))))
 
-(def objective-detail-page
-  (view responses/index-page))
+(defn- render-page [page]
+  (fn [context] (responses/rendered-response page context)))
 
+(def index (view (render-page responses/index-page)))
+(def sign-in (view (render-page responses/sign-in-page)))
+(def project-status (view (render-page responses/project-status-page)))
+(def learn-more (view (render-page responses/learn-more-page)))
+(def sign-up-form (view (render-page responses/sign-up)))
+(def objectives-list (view (render-page responses/objective-list-page)))
+(def create-objective-form (view (render-page responses/objective-create-page)))
+(def objective-detail-page (view (render-page responses/objective-detail-page)))
+(def question-list (view (render-page responses/question-list-page)))
+(def question-detail (view (render-page responses/question-view-page)))
+(def candidate-list (view (render-page responses/candidate-list-page)))
+(def invitation-response (view (render-page responses/invitation-response-page)))
+
+(def four-o-four (view (render-page responses/error-404-page)))

@@ -36,21 +36,21 @@
 
 ;INVITATION BANNER
 (html/defsnippet invitation-banner
-  "templates/invitation-banner.html" [[:#clj-invitation-banner]] [invitation translation]
+  "templates/invitation-banner.html" [[:#clj-invitation-banner]] [invitation translations]
   [:a] (html/set-attr :href (generate-invitation-link invitation))
-  [:#clj-invitation-banner html/any-node] (html/replace-vars translation))
+  [:#clj-invitation-banner html/any-node] (html/replace-vars translations))
 
 ;SHARING
 (html/defsnippet share-widget
   "templates/share-widget.html"
-  [:.share-widget] [translation uri title]
-  [:.share-widget html/any-node] (html/replace-vars translation)
-  [:.btn-facebook] (html/set-attr :href (str "http://www.facebook.com/sharer.php?u=" (str utils/host-url uri) "t=" title " - "))
-  [:.btn-google-plus] (html/set-attr :href (str "https://plusone.google.com/_/+1/confirm?hl=en&url=" (str utils/host-url uri)))
-  [:.btn-twitter] (html/set-attr :href (str "https://twitter.com/share?url=" (str utils/host-url uri) "&text=" title " - "))
-  [:.btn-linkedin] (html/set-attr :href (str "http://www.linkedin.com/shareArticle?mini=true&url=" (str utils/host-url uri)))
-  [:.btn-reddit] (html/set-attr :href (str "http://reddit.com/submit?url=" (str utils/host-url uri) "&title=" title " - "))
-  [:.share-this-url-input] (html/set-attr :value (str utils/host-url uri)))
+  [:.share-widget] [{:keys [translations data ring-request] :as context}]
+  [:.share-widget html/any-node] (html/replace-vars translations)
+  [:.btn-facebook] (html/set-attr :href (str "http://www.facebook.com/sharer.php?u=" (str utils/host-url (:uri ring-request)) "t=" (get-in data [:objective :title]) " - "))
+  [:.btn-google-plus] (html/set-attr :href (str "https://plusone.google.com/_/+1/confirm?hl=en&url=" (str utils/host-url (:uri ring-request))))
+  [:.btn-twitter] (html/set-attr :href (str "https://twitter.com/share?url=" (str utils/host-url (:uri ring-request)) "&text=" (get-in data [:objective :title]) " - "))
+  [:.btn-linkedin] (html/set-attr :href (str "http://www.linkedin.com/shareArticle?mini=true&url=" (str utils/host-url (:uri ring-request))))
+  [:.btn-reddit] (html/set-attr :href (str "http://reddit.com/submit?url=" (str utils/host-url (:uri ring-request)) "&title=" (get-in data [:objective :title]) " - "))
+  [:.share-this-url-input] (html/set-attr :value (str utils/host-url (:uri ring-request))))
 
 ;NAVIGATION
 (defn objectives-nav-selected-id [uri]
@@ -60,41 +60,40 @@
     (re-matches #".*/candidate-writers$" uri) :#clj-objectives-writers))
 
 (html/defsnippet objectives-navigation
-  "templates/objectives-nav.html" [[:#navigation]] [objective translation uri]
-  [:#clj-objective-title] (html/html-content (:title objective))
+  "templates/objectives-nav.html" [[:#navigation]] [{:keys [translations data ring-request] :as context}]
+  [:#clj-objective-title] (html/html-content (get-in data [:objective :title]))
   [:#clj-objectives-details] (html/remove-class "selected")
-  [(objectives-nav-selected-id uri)] (html/add-class "selected")
-  [:#clj-objectives-details] (html/set-attr :href (str "/objectives/" (:_id objective)))
-  [:#clj-objectives-questions] (html/set-attr :href (str "/objectives/" (:_id objective) "/questions"))
-  [:#clj-objectives-writers] (html/set-attr :href (str "/objectives/" (:_id objective) "/candidate-writers"))
-  [:.navigation-list] (html/after (share-widget translation uri (:title objective)))
-  [:#navigation html/any-node] (html/replace-vars translation))
+  [(objectives-nav-selected-id (:uri ring-request))] (html/add-class "selected")
+  [:#clj-objectives-details] (html/set-attr :href (str "/objectives/" (get-in data [:objective :_id])))
+  [:#clj-objectives-questions] (html/set-attr :href (str "/objectives/" (get-in data [:objective :_id]) "/questions"))
+  [:#clj-objectives-writers] (html/set-attr :href (str "/objectives/" (get-in data [:objective :_id]) "/candidate-writers"))
+  [:.navigation-list] (html/after (share-widget context))
+  [:#navigation html/any-node] (html/replace-vars translations))
 
 (html/defsnippet user-navigation-signed-in
-  "templates/user-navigation/signed-in.html" [[:#clj-user-navigation]] [{:keys [translation]}]
-  [:#clj-user-navigation html/any-node] (html/replace-vars translation))
+  "templates/user-navigation/signed-in.html" [[:#clj-user-navigation]] [{:keys [translations]}]
+  [:#clj-user-navigation html/any-node] (html/replace-vars translations))
 
 (html/defsnippet user-navigation-signed-out
-  "templates/user-navigation/signed-out.html" [[:#clj-user-navigation]] [{:keys [translation]}]
-  [:#clj-user-navigation html/any-node] (html/replace-vars translation))
+  "templates/user-navigation/signed-out.html" [[:#clj-user-navigation]] [{:keys [translations]}]
+  [:#clj-user-navigation html/any-node] (html/replace-vars translations))
 
 ;BASE TEMPLATE
 (html/deftemplate base
-  "templates/base.html" [{:keys [translation locale doc-title doc-description user-navigation flash-message invitation content objective uri]}]
-  [:html] (html/set-attr :lang locale)
+  "templates/base.html" [{:keys [translations doc user-navigation invitation content data] :as context}]
   ; TODO find a way to select description without an ID
   ; [:head (html/attr= :name "description")] (html/set-attr :content "some text")
-  [:title] (html/content doc-title)
-  [:#clj-description] (html/set-attr :content doc-description)
+  [:title] (html/content (doc :title))
+  [:#clj-description] (html/set-attr :content (doc :description))
   [:.masthead] (html/append user-navigation)
-  [:.browserupgrade] (html/html-content (translation :base/browsehappy))
-  [:.header-logo] (html/content (translation :base/header-logo-text))
-  [:.header-logo] (html/set-attr :title (translation :base/header-logo-title))
-  [:#projectStatus] (html/html-content (translation :base/project-status))
-  [:#main-content] (html/before (when flash-message (flash-message-view flash-message)))
-  [:#main-content] (html/before (when invitation (invitation-banner invitation translation)))
+  [:.browserupgrade] (html/html-content (translations :base/browsehappy))
+  [:.header-logo] (html/content (translations :base/header-logo-text))
+  [:.header-logo] (html/set-attr :title (translations :base/header-logo-title))
+  [:#projectStatus] (html/html-content (translations :base/project-status))
+  [:#main-content] (html/before (when-let [flash-message (:flash doc)] (flash-message-view flash-message)))
+  [:#main-content] (html/before (when invitation (invitation-banner invitation translations)))
   [:#main-content] (html/content content)
-  [:#clj-navigation] (if objective (html/content (objectives-navigation objective translation uri)) identity)
+  [:#clj-navigation] (if (:objective data) (html/content (objectives-navigation context)) identity)
   [:body] (html/append (if google-analytics-tracking-id (google-analytics google-analytics-tracking-id))))
 
 ;GUIDANCE
@@ -103,10 +102,10 @@
 
 ;HOME/INDEX
 (html/defsnippet index-page
-  "templates/index.html" [[:#clj-index]] [{:keys [translation signed-in]}]
-  [:.index-get-started] (if signed-in (html/html-content (translation :index/index-get-started-signed-in)) (html/html-content (translation :index/index-get-started-signed-out)))
-  [:.index-get-started] (if signed-in (html/set-attr :title (translation :index/index-get-started-title-signed-in)) (html/set-attr :title (translation :index/index-get-started-title-signed-out)))
-  [:#clj-index html/any-node] (html/replace-vars translation)
+  "templates/index.html" [[:#clj-index]] [{:keys [translations user]}]
+  [:.index-get-started] (if user (html/html-content (translations :index/index-get-started-signed-in)) (html/html-content (translations :index/index-get-started-signed-out)))
+  [:.index-get-started] (if user (html/set-attr :title (translations :index/index-get-started-title-signed-in)) (html/set-attr :title (translations :index/index-get-started-title-signed-out)))
+  [:#clj-index html/any-node] (html/replace-vars translations)
   [:.index-intro] (html/after (guidance)))
 
 ;SIGN IN
@@ -114,14 +113,14 @@
   "templates/sign-in-twitter.html" [[:#clj-sign-in-twitter]] [])
 
 (html/defsnippet sign-in-page
-  "templates/sign-in.html" [[:#clj-sign-in-page]] [{:keys [translation]}]
+  "templates/sign-in.html" [[:#clj-sign-in-page]] [{:keys [translations]}]
   [:h1] (html/after (sign-in-twitter))
-  [:#clj-sign-in-page html/any-node] (html/replace-vars translation))
+  [:#clj-sign-in-page html/any-node] (html/replace-vars translations))
 
 ;;ARTICLE META
 (html/defsnippet article-meta
-  "templates/article-meta.html" [:div.article-meta] [objective translation]
-  [:div.article-meta html/any-node] (html/replace-vars translation)
+  "templates/article-meta.html" [:div.article-meta] [objective translations]
+  [:div.article-meta html/any-node] (html/replace-vars translations)
   [:.clj-objective-drafting-message] (when (:drafting-started objective) identity)
   [:.clj-objective-drafting-start-date-message] (when-not (:drafting-started objective) identity)
   [:.clj-objective-drafting-link] (html/set-attr :href (str "/objectives/" (:_id objective) "/drafts")) 
@@ -129,21 +128,21 @@
 
 ;PROJECT STATUS
 (html/defsnippet project-status-page
-  "templates/project-status.html" [[:#clj-project-status]] [{:keys [translation]}]
-  [:#clj-project-status html/any-node] (html/replace-vars translation)
-  [:#clj-project-status-detail] (html/html-content (translation :project-status/page-content)))
+  "templates/project-status.html" [[:#clj-project-status]] [{:keys [translations]}]
+  [:#clj-project-status html/any-node] (html/replace-vars translations)
+  [:#clj-project-status-detail] (html/html-content (translations :project-status/page-content)))
 
 ;LEARN MORE
 (html/defsnippet learn-more-page
-  "templates/learn-more.html" [:#clj-learn-more] [{:keys [translation]}]
-  [:#clj-learn-more html/any-node] (html/replace-vars translation)
-  [:#clj-learn-more-detail] (html/html-content (translation :learn-more/page-content)))
+  "templates/learn-more.html" [:#clj-learn-more] [{:keys [translations]}]
+  [:#clj-learn-more html/any-node] (html/replace-vars translations)
+  [:#clj-learn-more-detail] (html/html-content (translations :learn-more/page-content)))
 
 ;ERROR 404
 (html/defsnippet error-404-page
-  "templates/error-404.html" [:#clj-error-404] [{:keys [translation]}]
-  [:#clj-error-404 html/any-node] (html/replace-vars translation)
-  [:#clj-error-404-content] (html/html-content (translation :error-404/page-content)))
+  "templates/error-404.html" [:#clj-error-404] [{:keys [translations]}]
+  [:#clj-error-404 html/any-node] (html/replace-vars translations)
+  [:#clj-error-404-content] (html/html-content (translations :error-404/page-content)))
 
 ;DRAFTS
 
@@ -158,29 +157,29 @@
 
 ;INVITATIONS
 (html/defsnippet invitation-create
-  "templates/writers/invitation-form.html" [[:#clj-invitation]] [translation objective-id]
+  "templates/writers/invitation-form.html" [[:#clj-invitation]] [{:keys [translations data] :as context}]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:form] (html/set-attr :action (str "/objectives/" objective-id "/writer-invitations"))
-  [:#clj-invitation html/any-node] (html/replace-vars translation))
+  [:form] (html/set-attr :action (str "/objectives/" (get-in data [:objective :_id]) "/writer-invitations"))
+  [:#clj-invitation html/any-node] (html/replace-vars translations))
 
 (html/defsnippet post-invitation-container 
-  "templates/writers/invitation-create.html" [[:#clj-invitation-container]] [translation signed-in objective-id uri] 
-  [:#clj-invitation-sign-in-uri] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" uri))
-  [:#clj-invitation-container :.response-form] (if signed-in (html/content (invitation-create translation objective-id)) identity)
-  [:#clj-invitation-container html/any-node] (html/replace-vars translation))
+  "templates/writers/invitation-create.html" [[:#clj-invitation-container]] [{:keys [translations user ring-request data] :as context}] 
+  [:#clj-invitation-sign-in-uri] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" (:uri ring-request)))
+  [:#clj-invitation-container :.response-form] (if user (html/content (invitation-create context)) identity)
+  [:#clj-invitation-container html/any-node] (html/replace-vars translations))
 
 (html/defsnippet invitation-response-page
   "templates/writers/invitation-response.html" [:#clj-invitation-response]
-  [{:keys [translation objective invitation-id uri signed-in]}]
-  [:#clj-invitation-response-sign-in-link] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" uri))
-  [:#clj-invitation-response-sign-in] (when-not signed-in identity)
-  [:#clj-invitation-response-accept] (html/set-attr :action (str "/objectives/" (:_id objective) "/writer-invitations/" invitation-id "/accept"))
+  [{:keys [translations data user ring-request invitation] :as context}]
+  [:#clj-invitation-response-sign-in-link] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" (:uri ring-request)))
+  [:#clj-invitation-response-sign-in] (when-not user identity)
+  [:#clj-invitation-response-accept] (html/set-attr :action (str "/objectives/" (get-in data [:objective :_id]) "/writer-invitations/" (:invitation-id invitation) "/accept"))
   [:#clj-invitation-response-accept] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:#clj-invitation-response-accept] (when signed-in identity)
+  [:#clj-invitation-response-accept] (when user identity)
   [:#clj-invitation-response-decline] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:#clj-invitation-response-decline] (html/set-attr :action (str "/objectives/" (:_id objective) "/writer-invitations/" invitation-id "/decline"))
-  [:#clj-invitation-response-objective-title] (html/content (:title objective))
-  [:#clj-invitation-response html/any-node] (html/replace-vars translation))
+  [:#clj-invitation-response-decline] (html/set-attr :action (str "/objectives/" (get-in data [:objective :_id]) "/writer-invitations/" (:invitation-id invitation) "/decline"))
+  [:#clj-invitation-response-objective-title] (html/content (get-in data [:objective :title]))
+  [:#clj-invitation-response html/any-node] (html/replace-vars translations))
 
 ;CANDIDATES
 
@@ -190,23 +189,23 @@
   [:.candidate-reason] (html/content (text->p-nodes (:invitation-reason candidate))))
 
 (html/defsnippet candidate-list-page
-  "templates/writers/candidate-list.html" [:#clj-candidate-list-container] [{:keys [translation objective signed-in uri candidates]}]
-  [:#objective-crumb] (html/set-attr :title (:title objective))
-  [:#objective-crumb] (html/content (:title objective))
-  [:#objective-crumb] (html/set-attr :href (str "/objectives/" (:_id objective)))
-  [:#candidates-crumb] (html/set-attr :href (str "/objectives/" (:_id objective) "/candidate-writers"))
-  [:#clj-candidate-list-container :h1] (html/content (:title objective))
-  [:h1] (html/after (article-meta objective translation))
-  [:#clj-candidate-list] (if (empty? candidates) identity (html/content (map a-candidate candidates)))
-  [:#clj-candidate-list-container] (html/after (when-not (:drafting-started objective) (post-invitation-container translation signed-in (:_id objective) uri)))
-  [:#clj-candidate-list-container html/any-node] (html/replace-vars translation))
+  "templates/writers/candidate-list.html" [:#clj-candidate-list-container] [{:keys [translations objective signed-in uri candidates data] :as context}]
+  [:#objective-crumb] (html/set-attr :title (get-in data [:objective :title]))
+  [:#objective-crumb] (html/content (get-in data [:objective :title]))
+  [:#objective-crumb] (html/set-attr :href (str "/objectives/" (get-in data [:objective :_id])))
+  [:#candidates-crumb] (html/set-attr :href (str "/objectives/" (get-in data [:objective :_id]) "/candidate-writers"))
+  [:#clj-candidate-list-container :h1] (html/content (get-in data [:objective :title]))
+  [:h1] (html/after (article-meta (:objective data) translations))
+  [:#clj-candidate-list] (let [candidates (:candidates data)] (if (empty? candidates) identity (html/content (map a-candidate candidates)))) 
+  [:#clj-candidate-list-container] (html/after (when-not (get-in data [:objective :drafting-started]) (post-invitation-container context)))
+  [:#clj-candidate-list-container html/any-node] (html/replace-vars translations))
 
 ;ANSWERS
 (html/defsnippet answer-create
-  "templates/answers/answer-create.html" [[:#clj-answer-create]] [translation objective-id question-id]
+  "templates/answers/answer-create.html" [[:#clj-answer-create]] [{:keys [translations data] :as context}]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:form] (html/set-attr :action (str "/objectives/" objective-id "/questions/" question-id "/answers"))
-  [:#clj-answer-create html/any-node] (html/replace-vars translation))
+  [:form] (html/set-attr :action (str "/objectives/" (get-in data [:objective :_id]) "/questions/" (get-in data [:question :_id]) "/answers"))
+  [:#clj-answer-create html/any-node] (html/replace-vars translations))
 
 (html/defsnippet an-answer
   "templates/answers/answer.html" [:li] [answer]
@@ -215,10 +214,10 @@
   [:.answer-date] (html/content (utils/iso-time-string->pretty-time (:_created_at answer))))
 
 (html/defsnippet post-answer-container
-  "templates/answers/post-answer-container.html" [[:#clj-post-answer-container]] [translation signed-in objective-id question-id uri]
-  [:#clj-answer-sign-in-uri] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" uri))
-  [:#clj-post-answer-container :.response-form] (if signed-in (html/content (answer-create translation objective-id question-id)) identity )
-  [:#clj-post-answer-container html/any-node] (html/replace-vars translation))
+  "templates/answers/post-answer-container.html" [[:#clj-post-answer-container]] [{:keys [translations user ring-request data] :as context}]
+  [:#clj-answer-sign-in-uri] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" (:uri ring-request)))
+  [:#clj-post-answer-container :.response-form] (if user (html/content (answer-create context)) identity)
+  [:#clj-post-answer-container html/any-node] (html/replace-vars translations))
 
 ;QUESTIONS
 (html/defsnippet a-question
@@ -228,44 +227,45 @@
   [:.question-date] (html/content (utils/iso-time-string->pretty-time (:_created_at question)))) 
   
 (html/defsnippet question-create
-  "templates/questions/question-create.html" [:#clj-question-create] [translation objective-id]
+  "templates/questions/question-create.html" [:#clj-question-create] [{:keys [data translations] :as context}]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:form] (html/set-attr :action (str "/objectives/" objective-id "/questions"))
-  [:#clj-question-create html/any-node] (html/replace-vars translation))
+  [:form] (html/set-attr :action (str "/objectives/" (get-in data [:objective :_id]) "/questions"))
+  [:#clj-question-create html/any-node] (html/replace-vars translations))
 
 (html/defsnippet post-question-container
-  "templates/questions/post-question-container.html" [:#clj-post-question-container] [translation signed-in objective-id uri]
-  [:#clj-question-sign-in-uri] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" uri))
-  [:#clj-post-question-container :.response-form] (if signed-in (html/content (question-create translation objective-id)) identity)
-  [:#clj-post-question-container html/any-node] (html/replace-vars translation))
+  "templates/questions/post-question-container.html" [:#clj-post-question-container] [{:keys [user ring-request translations] :as context}]
+  [:#clj-question-sign-in-uri] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" (:uri ring-request)))
+  [:#clj-post-question-container :.response-form] (if user (html/content (question-create context)) identity)
+  [:#clj-post-question-container html/any-node] (html/replace-vars translations))
 
+;TODO - why is this breaking?
 (html/defsnippet question-list-page
-  "templates/questions/question-list.html" [:#clj-question-list] [{:keys [translation objective questions signed-in uri]}]
-  [:#objective-crumb] (html/set-attr :title (:title objective))
-  [:#objective-crumb] (html/content (:title objective))
-  [:#objective-crumb] (html/set-attr :href (str "/objectives/" (:_id objective)))
-  [:#questions-crumb] (html/set-attr :href (str "/objectives/" (:_id objective) "/questions"))
-  [:h1] (html/after (article-meta objective translation))
-  [:#clj-question-list :h1] (html/content (:title objective))
-  [:#clj-question-list :.question-list] (if (empty? questions) identity (html/content (map a-question questions)))
-  [:#clj-question-list] (html/after (when-not (:drafting-started objective)
-                                      (post-question-container translation signed-in (:_id objective) uri)))
-  [:#clj-question-list html/any-node] (html/replace-vars translation))
+  "templates/questions/question-list.html" [:#clj-question-list] [{:keys [translations data users uri] :as context}]
+  [:#objective-crumb] (html/set-attr :title (get-in data [:objective :title]))
+  [:#objective-crumb] (html/content (get-in data [:objective :title]))
+  [:#objective-crumb] (html/set-attr :href (str "/objectives/" (get-in data [:objective :_id])))
+  [:#questions-crumb] (html/set-attr :href (str "/objectives/" (get-in data [:objective :_id]) "/questions"))
+  [:h1] (html/after (article-meta (:objective data) translations))
+  [:#clj-question-list :h1] (html/content (get-in data [:objective :title]))
+  [:#clj-question-list :.question-list] (let [questions (:questions data)] (if (empty? questions) identity (html/content (map a-question questions)))) 
+  [:#clj-question-list] (html/after (when-not (get-in data [:objective :drafting-started])
+                                      (post-question-container context)))
+  [:#clj-question-list html/any-node] (html/replace-vars translations))
 
 (html/defsnippet question-view-page
-  "templates/questions/question-view.html" [:#clj-question-view] [{:keys [translation objective question answers signed-in uri]}]
-  [:#objective-crumb] (html/set-attr :title (:title objective))
-  [:#objective-crumb] (html/content (:title objective))
-  [:#objective-crumb] (html/set-attr :href (str "/objectives/" (:objective-id question)))
-  [:#questions-crumb] (html/set-attr :href (str "/objectives/" (:objective-id question) "/questions"))
-  [:#question-crumb] (html/set-attr :href (str "/objectives/" (:objective-id question) "/questions/" (:_id question)))
-  [:#question-crumb] (html/set-attr :title (:question question))
-  [:#question-crumb] (html/content (:question question))
-  [:#clj-question-view :h1] (html/content (:question question))
-  [:h1] (html/after (article-meta objective translation))
-  [:#clj-question-view :.answer-list] (if (empty? answers) identity (html/content (map an-answer answers)))
-  [:#clj-question-view] (html/after (when-not (:drafting-started objective) (post-answer-container translation signed-in (:objective-id question) (:_id question) uri)))
-  [:#clj-question-view html/any-node] (html/replace-vars translation))
+  "templates/questions/question-view.html" [:#clj-question-view] [{:keys [translations data users ring-request] :as context}]
+  [:#objective-crumb] (html/set-attr :title (get-in data [:objective :title]))
+  [:#objective-crumb] (html/content (get-in data [:objective :title]))
+  [:#objective-crumb] (html/set-attr :href (str "/objectives/" (get-in data [:objective :_id])))
+  [:#questions-crumb] (html/set-attr :href (str "/objectives/" (get-in data [:objective :_id]) "/questions"))
+  [:#question-crumb] (html/set-attr :href (str "/objectives/" (get-in data [:objective :_id]) "/questions/" (get-in data [:question :_id])))
+  [:#question-crumb] (html/set-attr :title (get-in data [:question :question]))
+  [:#question-crumb] (html/content (get-in data [:question :question]))
+  [:#clj-question-view :h1] (html/content (get-in data [:question :question]))
+  [:h1] (html/after (article-meta (:objective data) translations))
+  [:#clj-question-view :.answer-list]  (if (empty? (:answers data)) identity (html/content (map an-answer (:answers data))))
+  [:#clj-question-view] (html/after (when-not (get-in data [:objective :drafting-started]) (post-answer-container context)))
+  [:#clj-question-view html/any-node] (html/replace-vars translations))
 
 ;COMMENTS
 (html/defsnippet comment-create
@@ -280,11 +280,11 @@
   [:.comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment))))
 
 (html/defsnippet comments-view
-  "templates/comments/comments-view.html" [[:#clj-comments-view]] [translation signed-in objective-id comments uri]
-  [:#clj-comment-sign-in-uri] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" uri))
-  [:#clj-comments-view :.response-form] (if signed-in (html/content (comment-create objective-id)) identity )
-  [:#clj-comments-view html/any-node] (html/replace-vars translation)
-  [:#clj-comments-view :.comment-list] (if (empty? comments) identity (html/content (map a-comment comments))))
+  "templates/comments/comments-view.html" [[:#clj-comments-view]] [{:keys [translations ring-request user data] :as context}]
+  [:#clj-comment-sign-in-uri] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" (:uri ring-request)))
+  [:#clj-comments-view :.response-form] (if user (html/content (comment-create (get-in data [:objective :_id]))) identity )
+  [:#clj-comments-view html/any-node] (html/replace-vars translations)
+  [:#clj-comments-view :.comment-list] (let [comments (:comments data)] (if (empty? comments) identity (html/content (map a-comment comments)))))
 
 ;OBJECTIVES
 (html/defsnippet a-goal
@@ -305,34 +305,33 @@
   [:.clj-objective-link] (html/set-attr :href (str "/objectives/" (:_id objective))))
 
 (html/defsnippet objective-list-page
-  "templates/objectives-list.html" [[:#clj-objectives-list]] [{:keys [translation objectives]}]
-  [:ol] (html/content (map objective-list-entry objectives))
-  [:#clj-objectives-list html/any-node] (html/replace-vars translation))
+  "templates/objectives-list.html" [[:#clj-objectives-list]] [{:keys [translations data]}]
+  [:ol] (html/content (map objective-list-entry (:objectives data)))
+  [:#clj-objectives-list html/any-node] (html/replace-vars translations))
 
 (html/defsnippet objective-create-page
-  "templates/objectives-create.html" [[:#clj-objective-create]] [{:keys [translation]}]
+  "templates/objectives-create.html" [[:#clj-objective-create]] [{:keys [translations]}]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:#clj-objective-create html/any-node] (html/replace-vars translation))
+  [:#clj-objective-create html/any-node] (html/replace-vars translations))
 
 (html/defsnippet objective-detail-page
-  "templates/objectives-detail.html" [[:#clj-objectives-detail]]
-  [{:keys [translation objective signed-in comments uri]}]
-  [:#clj-objectives-detail html/any-node] (html/replace-vars translation)
-  [:h1] (html/content (:title objective))
-  [:h1] (html/after (article-meta objective translation))
-  [:#clj-obj-goals-value] (html/content (map a-goal (:goals objective)))
-  [:#clj-obj-background-label] (if (empty? (:description objective)) nil identity)
-  [:#clj-obj-background-label] (html/after (text->p-nodes (:description objective)))
-  [:#clj-objectives-detail] (html/after (when-not (:drafting-started objective) (comments-view translation signed-in (:_id objective) comments uri))))
+  "templates/objectives-detail.html" [[:#clj-objectives-detail]] [{:keys [translations data user ring-request] :as context}]
+  [:#clj-objectives-detail html/any-node] (html/replace-vars translations)
+  [:h1] (html/content (get-in data [:objective :title]))
+  [:h1] (html/after (article-meta (:objective data) translations))
+  [:#clj-obj-goals-value] (html/content (map a-goal (get-in data [:objective :goals])))
+  [:#clj-obj-background-label] (if (empty? (get-in data [:objective :description])) nil identity)
+  [:#clj-obj-background-label] (html/after (text->p-nodes (get-in data [:objective :description])))
+  [:#clj-objectives-detail] (html/after (when-not (get-in data [:objective :drafting-started]) (comments-view context))))
 
 
 ;USERS
 (html/defsnippet sign-up
-  "templates/sign-up.html" [[:#clj-sign-up]] [{:keys [translation errors]}]
+  "templates/sign-up.html" [[:#clj-sign-up]] [{:keys [translations doc]}]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:#clj-username-error] (if-let [error-type (:username errors)]
-                           (html/content (translation (keyword "sign-up" (name error-type))))) 
-  [:#clj-sign-up html/any-node] (html/replace-vars translation))
+  [:#clj-username-error] (if-let [error-type (get-in doc [:errors :username])]
+                           (html/content (translations (keyword "sign-up" (name error-type))))) 
+  [:#clj-sign-up html/any-node] (html/replace-vars translations))
 
 
 (defn render-template [template & args]
@@ -347,15 +346,14 @@
     :header {"Content-Type" "text/html"}
     :body text}))
 
-(defn rendered-response [template-name args]
-  (let [user-navigation (if (:signed-in args)
+(defn rendered-response [template-name context]
+  (let [user-navigation (if (:user context)
                              user-navigation-signed-in
                              user-navigation-signed-out)
-        page (render-template base (assoc args
-                                          :content (template-name args)
-                                          :flash-message (:message args)
-                                          :invitation (:invitation args)
-                                          :user-navigation (user-navigation args)))]
-        (if-let [status-code (:status-code args)]
+        ;TODO - simplify this to just pass through context
+        page (render-template base (assoc context
+                                          :content (template-name context)
+                                          :user-navigation (user-navigation context)))]
+        (if-let [status-code (:status-code context)]
           (simple-response page status-code)
           (simple-response page))))

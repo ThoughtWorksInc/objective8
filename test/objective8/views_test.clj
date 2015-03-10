@@ -1,8 +1,7 @@
 (ns objective8.views_test
   (:require [midje.sweet :refer :all]
             [cemerick.friend :as friend]
-            [objective8.views :as views]
-            ))
+            [objective8.views :as views]))
 
 (def test-view identity)
 
@@ -58,15 +57,25 @@
         (fact "pulls out translation information"
               (view-fn "test" ring-request) => (contains {:translations fn?}))
 
-        (fact "pulls out common page information from the translations"
-              (view-fn "test" ring-request) => (contains {:doc {:title "This is a title"
-                                                                :description "This is a description"}}))
+        (fact "pulls out common page information from the translations unless overridden"
+              (view-fn "test" ring-request) => (contains {:doc (contains {:title "This is a title"
+                                                                          :description "This is a description"})})
+              (view-fn "test" ring-request :doc {:title "Title" :description "Description"}) => (contains {:doc (contains {:title "Title"
+                                                                                                                           :description "Description"})}))
+
+        (fact "pulls out flash message if set"
+              (view-fn "test" (assoc ring-request :flash "flash")) => (contains {:doc (contains {:flash "flash"})}))
+
+        (fact "pulls out invitation if set"
+              (view-fn "test" (assoc-in ring-request 
+                                        [:session :invitation]
+                                        "INVITATION")) => (contains {:invitation "INVITATION"}))
 
         (fact "pulls out user information if the user is authenticated with friend")
-              (view-fn "test" ring-request) => (contains {:user {:display-name "Wibble"}})
-              (provided
-                (friend/current-authentication ring-request) => {:display-name "Wibble"})
-        
+        (view-fn "test" ring-request) => (contains {:user {:display-name "Wibble"}})
+        (provided
+          (friend/current-authentication ring-request) => {:display-name "Wibble"})
+
         (fact "user is nil if there is no friend authentication"
               (view-fn "test" ring-request) => (contains {:user nil}) 
               (provided
@@ -74,4 +83,3 @@
 
         (fact "data is passed to the view"
               (view-fn "test" ring-request :data "yay") => (contains {:data {:data "yay"}}))))
-
