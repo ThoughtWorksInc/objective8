@@ -41,6 +41,6 @@ $guidance_text_top_gutter: 1.25em;
     }
   }
   &:visited, & {
-    color: rgba($default_text_color,0.8);
+    color: $default_text_color;
   }
 }

@@ -2,7 +2,7 @@
   position: relative;
   z-index: 10;
   background: $border_color;
-  color: rgba($black,0.8);
+  color: $default_text_color;
   padding: 0.4em 1em 0.6em;
   box-shadow: 0 2px 7px rgba(0,0,0,.15);
   a {

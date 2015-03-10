@@ -39,7 +39,7 @@ $writer_avatar_size: 60px;
 .writer-item-author {
   display: inline-block;
   line-height: 1.1;
-  color: rgba(black, 0.8);
+  color: $default_text_color;
   .draft-writers & {
     width: $writer_avatar_size;
     word-spacing: 30000px;
