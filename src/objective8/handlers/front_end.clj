@@ -103,7 +103,7 @@
                                           request
                                           :objective formatted-objective
                                           :comments comments
-                                          :doc (let [details (str (:title objective) " | Objective8")]
+                                          :doc (let [details (str (:title objective) " | Objective[8]")]
                                                  {:title details
                                                   :description details})))
            (= objective-status ::http-api/not-found) (error-404-response request)
