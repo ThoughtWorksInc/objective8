@@ -22,3 +22,16 @@
   @extend %objective-section;
 }
 
+
+.days-left {
+  text-align: center;
+  text-transform: uppercase;
+  span {
+    display: block;
+  }
+}
+.days-left-day {
+  line-height: 1;
+  font-size: 5em;
+  font-weight: 700;
+}

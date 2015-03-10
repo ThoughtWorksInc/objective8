@@ -2,7 +2,7 @@ mixin guidanceText(heading)
   .guidance-text
     .guidance-buttons
       a.button-hide-guidance-text(href="#")
-        span Hide help
+        span Hide
         =" "
         i.fa.fa-times
     h2.guidance-text-heading #{heading}
@@ -53,3 +53,11 @@ mixin draftWriterItem(name, href, photo)
         img(src="#{photo}")
       .writer-item-author
         = name
+
+
+mixin addQuestionForm(allowFocus)
+  - focus = allowFocus ? true : false
+    form#clj-question-create(method="POST", action="")
+      label(for="question") Add a question
+      textarea#question(name="question", rows="5", cols="10", pattern=".{50,}", maxlength="500", title="${question-create/question-title}", required="required", autofocus=focus)
+      button.button(type="submit") Add question
