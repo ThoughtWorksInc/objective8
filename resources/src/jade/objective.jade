@@ -2,12 +2,11 @@ extends base
 include mixins/_view_helpers
 
 block vars
-  - bodyClass = ""
+  - bodyClass = "objective"
   - pageTitle = "Objective"
 
 block content
-  //refactor to main-content
-  .draft-preview
+  .middle-container
 
     ul.progress-indicator
       li.on
@@ -29,15 +28,16 @@ block content
         li Everyone can comment and make suggestions to contribute towards the draft stage.
 
     .objective-navigation
-      ul
-        li
-          a(href="#outline") Outline
-        li
-          a(href="#questions") Questions
-        li
-          a(href="#writers") Writers
-        li
-          a(href="#comments") Comments
+      .objective-navigation-list-wrapper
+        ul.objective-navigation-list
+          li.on
+            a(href="#outline") Outline
+          li
+            a(href="#writers") Writers
+          li
+            a(href="#questions") Questions
+          li
+            a(href="#comments") Comments
 
     .objective-outline#outline
       h1.draft-title Build safer cycling networks in the streets of Madrid.

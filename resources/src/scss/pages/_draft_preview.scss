@@ -55,13 +55,12 @@
   }
 }
 
-.draft-preview {
+.middle-container {
   max-width: 45em;
-  padding: $alpha_body_vertical_spacing;
+//  padding: $alpha_body_vertical_spacing;
   margin: 0 auto;
-  color: rgba(black, 0.8);
   @include mq(720) {
-    padding: $gamma_body_vertical_spacing 1em;
+//    padding: $gamma_body_vertical_spacing 1em;
   }
 }
 
@@ -71,6 +70,7 @@
   padding: 0 40px 2em 0;
   font-family: $serif;
   font-size: 110%;
+  color: $default_text_color;
   border-bottom: 1px solid $border_color;
   .draft-title {
     font-family: $sans-serif;
