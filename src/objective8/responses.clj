@@ -71,8 +71,10 @@
   [:#navigation html/any-node] (html/replace-vars translations))
 
 (html/defsnippet user-navigation-signed-in
-  "templates/user-navigation/signed-in.html" [[:#clj-user-navigation]] [{:keys [translations]}]
-  [:#clj-user-navigation html/any-node] (html/replace-vars translations))
+  "templates/user-navigation/signed-in.html" [[:#clj-user-navigation]] [{:keys [translations user]}]
+  [:#clj-user-navigation html/any-node] (html/replace-vars translations)
+  [:#clj-display-name] (html/content (:display-name user))
+  )
 
 (html/defsnippet user-navigation-signed-out
   "templates/user-navigation/signed-out.html" [[:#clj-user-navigation]] [{:keys [translations]}]
