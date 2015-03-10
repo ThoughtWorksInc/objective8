@@ -2,15 +2,15 @@ $objective_navigation_height: 80px;
 
 .objective-navigation {
   height: $objective_navigation_height;
-  margin: 0 0 2em 0;
+  margin: 0 0 4em 0;
 }
 
 .objective-navigation-list-wrapper {
   position: absolute;
   left: 0;
   width: 100%;
-  background: rgba($white,0.98);
-//  border-top: 1px solid $border_color;
+  background: rgba($white, 0.98);
+  //  border-top: 1px solid $border_color;
   border-bottom: 1px solid $border_color;
   &.sticky {
     position: fixed;
@@ -21,15 +21,25 @@ $objective_navigation_height: 80px;
 
 .objective-navigation-list {
   height: $objective_navigation_height;
-  max-width: 45em;
-  margin: 0 auto;
+  margin: -1px auto;
   padding: 0;
   list-style: none;
   overflow: hidden;
+  font-size: 75%;
+  @include mq(450) {
+    font-size: 100%;
+    max-width: 45em;
+  }
   li {
     display: inline-block;
-    margin: 0 2em 0 0;
+    margin: 0 0.5em 0 0;
     padding: 0;
+    @include mq(430) {
+      margin-right: 1em;
+    }
+    @include mq(520) {
+      margin-right: 2em;
+    }
   }
   a {
     display: block;
