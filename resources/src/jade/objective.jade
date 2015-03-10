@@ -63,7 +63,8 @@ block content
           | Quirky but has achieved wonders in the London for the boris bikes.
         +objectiveWriterItem('Bob Smith', '#', 'http://placekitten.com/g/82/82')
           | Interested in anything to do with cycling and Spain.
-      a.invite-writer(href="#") Invite a writer
+      a.button.invite-writer(href="#") Invite a writer
+
     .objective-questions#questions
       h2 Recently asked questions
       ol.question-list
@@ -71,8 +72,7 @@ block content
           p What road surface should we use?
         +questionItem('Chris Cheshire', '4 September 2015 07:41')
           p Do we have a colour in mind for the road?
-    .objective-questions-add
-      include questions/question-create
+      a.button(href="#") Ask a question
 
     .objective-comments#comments
       h2 Comments
@@ -83,10 +83,8 @@ block content
           p Oooh Paseo del Prado.
         +commentItem('Jen Bloggs', '1 September 2015 07:41')
           p Paseo del Prado.
-
-    .objective-comments-add
       //h2 Leave a comment
-      include comments/comment-create
+      a.button(href="#") Add a comment
 
 
 block footerScripts
