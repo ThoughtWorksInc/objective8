@@ -1,5 +1,8 @@
 %objective-section {
-  margin-bottom: 4em;
+  margin-bottom: 2em;
+  @include mq(321) {
+    margin-bottom: 4em;
+  }
 }
 
 .objective-outline {
