@@ -367,8 +367,24 @@
 
         (= action "submit")
         (let [{draft :result} (http-api/post-draft {:objective-id objective-id
-                                                      :content parsed-markdown})]
+                                                    :submitter-id (get (friend/current-authentication) :identity)
+                                                    :content parsed-markdown})]
           (response/redirect (str "/objectives/" o-id "/drafts/" (:_id draft))))))
+    (catch NumberFormatException e
+      (log/info "Invalid route: " e)
+      (error-404-response request))))
+
+(defn draft-detail [{{:keys [d-id id]} :route-params :as request}]
+  (try
+    (let [objective-id (Integer/parseInt id)
+          draft-id (Integer/parseInt d-id)
+          {status :status draft :result} (http-api/get-draft objective-id draft-id)]
+      (cond
+        (= status ::http-api/success)
+        (let [draft-content (hc/html (:content draft))]
+          (views/draft-detail "draft-detail" request :draft-content draft-content))  
+        (= status ::http-api/not-found) (error-404-response request)
+        :else {:status 500}))
     (catch NumberFormatException e
       (log/info "Invalid route: " e)
       (error-404-response request))))

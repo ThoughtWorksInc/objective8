@@ -25,9 +25,10 @@
                                                       :get :question-list
                                                       ["/" :q-id] {:get :question
                                                                    "/answers" {:post :add-answer-form-post}}}
-                                        "/drafts" {:get :current-draft}
-                                        "/edit-draft" {:get :edit-draft-get
-                                                       :post :edit-draft-post}}}
+                                        "/drafts" {:get :current-draft
+                                                   ["/" :d-id] {:get :fe/draft}}
+                                        "/edit-draft" {:get :fe/edit-draft-get
+                                                       :post :fe/edit-draft-post}}}
         "comments"          {:post :create-comment-form-post}
         "invitations"       {["/" :uuid] {:get :writer-invitation}}
 
@@ -49,8 +50,8 @@
                                                                              :post :post-candidate-writer}
                                                        "/writer-invitations" {:post :post-invitation
                                                                               ["/" :i-id] {:put :put-invitation-declination}}
-                                                       "/drafts" {:post :post-draft
-                                                                  ["/" :d-id] {:get :get-draft}}}}
+                                                       "/drafts" {:post :api/post-draft
+                                                                  ["/" :d-id] {:get :api/get-draft}}}}
 
                              "/comments"   {:post :post-comment}
                              "/invitations" {:get :get-invitation}}

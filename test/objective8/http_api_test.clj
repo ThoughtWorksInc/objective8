@@ -215,6 +215,7 @@
 
 ;;DRAFTS
 
+(def DRAFT_ID 876)
 (def draft {:content :markdown-as-hiccup
             :objective-id OBJECTIVE_ID
             :submitter-id USER_ID})
@@ -225,3 +226,8 @@
          (contains (str host-url
                         "/api/v1/objectives/" OBJECTIVE_ID
                         "/drafts")) draft) => :api-call-result))
+
+(fact "getting a draft for an objective hits the correct API endpoint"
+      (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => :api-call-result
+      (provided
+        (http-api/default-get-call (contains (utils/path-for :api/get-draft :id OBJECTIVE_ID :d-id DRAFT_ID))) => :api-call-result))

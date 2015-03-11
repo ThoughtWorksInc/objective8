@@ -299,5 +299,18 @@
                    :as request}]
   (let [draft-data (ar/request->draft-data request)
         draft (drafts/store-draft! draft-data)]
-    (successful-post-response (utils/path-for :get-draft :id objective-id :d-id (str (:_id draft)))
+    (successful-post-response (utils/path-for :api/get-draft :id objective-id :d-id (str (:_id draft)))
                               draft)))
+
+(defn get-draft [{{:keys [id d-id]} :route-params :as request}]
+  (try
+    (let [objective-id (Integer/parseInt id)
+          draft-id (Integer/parseInt d-id)]
+      (if-let [draft (drafts/retrieve-draft draft-id)]
+        (-> draft
+            response/response
+            (response/content-type "application/json"))
+        (response/not-found "")))
+    (catch NumberFormatException e
+      (log/info "Invalid route: " e)
+      (invalid-response "Objective id and draft id must be integers"))))

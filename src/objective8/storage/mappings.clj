@@ -98,12 +98,13 @@
     (throw (Exception. "Could not transform map to candidate"))))
 
 (defn map->draft
-  "Converts a clojure map into a json-typed candidate for the database"
+  "Converts a clojure map into a json-typed draft for the database"
   [{:keys [submitter-id objective-id] :as draft}]
   (if (and submitter-id objective-id)
     {:submitter_id submitter-id
      :objective_id objective-id
-     :draft (map->json-type draft)}))
+     :draft (map->json-type draft)}
+    (throw (Exception. "Could not transform map to draft"))))
 
 (defn map->bearer-token
  "Converts a clojure map into a json-typed bearer-token for the database"

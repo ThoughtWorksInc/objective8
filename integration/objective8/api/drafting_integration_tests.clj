@@ -52,15 +52,27 @@
                 the-draft {:objective-id objective-id
                            :submitter-id submitter-id
                            :content "Some content"}
-                {response :response} (p/request app (utils/path-for :post-draft :id objective-id)
+                {response :response} (p/request app (utils/path-for :api/post-draft :id objective-id)
                                             :request-method :post
                                             :content-type "application/json"
                                             :body (json/generate-string the-draft))
                 {draft-id :_id :as stored-draft} (sh/retrieve-latest-draft objective-id)
-                target-path (utils/path-for :get-draft :id objective-id :d-id draft-id)]
+                target-path (utils/path-for :api/get-draft :id objective-id :d-id draft-id)]
             (:body response) => (helpers/json-contains {:_id draft-id
                                                         :objective-id objective-id
                                                         :submitter-id submitter-id
                                                         :content "Some content"})
             (:status response) => 201
             (:headers response) => (helpers/location-contains target-path)))))
+
+(facts "GET /dev/api/v1/objectives/:id/drafts/:d-id"
+       (against-background
+        [(before :contents (do (helpers/db-connection)
+                               (helpers/truncate-tables)))
+         (after :facts (helpers/truncate-tables))]
+
+        (fact "gets a draft for an objective"
+              (let [{objective-id :objective-id draft-id :_id :as draft} (sh/store-a-draft)
+                    {response :response} (p/request app (utils/path-for :api/get-draft :id objective-id :d-id draft-id))]
+                (:status response) => 200
+                (:body response) => (helpers/json-contains draft)))))

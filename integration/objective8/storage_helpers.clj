@@ -88,6 +88,19 @@
                          :objective-id o-id
                          :invitation-id i-id}))))
 
+(defn store-a-draft
+  ([]
+   (store-a-draft {}))
+
+  ([required-entities]
+   (let [{objective-id :_id} (get required-entities :objective (store-an-objective))
+         ;; NB: Candidate id not required, but for consistency, the submitter should be authorised to draft documents for this objective
+         {submitter-id :user-id} (get required-entities :submitter (store-a-candidate))]
+     (storage/pg-store! {:entity :draft
+                         :submitter-id submitter-id
+                         :objective-id objective-id
+                         :content [["h1" "A Heading"] ["p" "A paragraph"]]}))))
+
 (defn retrieve-invitation [invitation-id]
   (-> (storage/pg-retrieve {:entity :invitation :_id invitation-id}) 
       :result

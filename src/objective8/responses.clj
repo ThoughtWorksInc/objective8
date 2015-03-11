@@ -164,6 +164,10 @@
   [:#clj-edit-draft-form] (html/set-attr :action (str "/objectives/" (:objective-id data) "/edit-draft"))
   [:#clj-edit-draft html/any-node] (html/replace-vars translations))
 
+(html/defsnippet draft-detail-page
+  "templates/drafts/draft-detail.html" [:#clj-draft-detail-content] [{:keys [data]}]
+  [:#clj-draft-detail-content] (html/html-content data))
+
 ;INVITATIONS
 (html/defsnippet invitation-create
   "templates/writers/invitation-form.html" [[:#clj-invitation]] [{:keys [translations data] :as context}]
