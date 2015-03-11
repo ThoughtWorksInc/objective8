@@ -77,7 +77,8 @@
   )
 
 (html/defsnippet user-navigation-signed-out
-  "templates/user-navigation/signed-out.html" [[:#clj-user-navigation]] [{:keys [translations]}]
+  "templates/user-navigation/signed-out.html" [[:#clj-user-navigation]] [{:keys [translations ring-request] :as context}]
+  [:a] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" (:uri ring-request)))
   [:#clj-user-navigation html/any-node] (html/replace-vars translations))
 
 ;BASE TEMPLATE
