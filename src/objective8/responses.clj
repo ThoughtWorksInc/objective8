@@ -104,9 +104,9 @@
 
 ;HOME/INDEX
 (html/defsnippet index-page
-  "templates/index.html" [[:#clj-index]] [{:keys [translations user]}]
-  [:.index-get-started] (if user (html/html-content (translations :index/index-get-started-signed-in)) (html/html-content (translations :index/index-get-started-signed-out)))
-  [:.index-get-started] (if user (html/set-attr :title (translations :index/index-get-started-title-signed-in)) (html/set-attr :title (translations :index/index-get-started-title-signed-out)))
+  "templates/index.html" [[:#clj-index]] [{:keys [translations]}]
+  [:.index-get-started] (html/html-content (translations :index/index-get-started))
+  [:.index-get-started] (html/set-attr :title (translations :index/index-get-started-title))
   [:#clj-index html/any-node] (html/replace-vars translations)
   [:.index-intro] (html/after (guidance)))
 
@@ -313,7 +313,8 @@
   [:.clj-objective-link] (html/set-attr :href (str "/objectives/" (:_id objective))))
 
 (html/defsnippet objective-list-page
-  "templates/objectives-list.html" [[:#clj-objectives-list]] [{:keys [translations data]}]
+  "templates/objectives-list.html" [[:#clj-objectives-list]] [{:keys [translations data user]}]
+  [:#clj-create-objective-link] (if user (html/html-content "<a href='objectives/create' class='button index-get-started' title='${objective-list/create-button-title}'>${objective-list/create-button-text}</a>") identity)
   [:ol] (html/content (map objective-list-entry (:objectives data)))
   [:#clj-objectives-list html/any-node] (html/replace-vars translations))
 

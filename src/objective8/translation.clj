@@ -40,10 +40,8 @@
                              :doc-description ""
                              :index-welcome "Collaborative policy making for democratic organisations."
                              :index-intro "Gather community opinion, generate ideas, share, discuss, vote and collaborate with experts to draft new policy."
-                             :index-get-started-signed-out "Join now"
-                             :index-get-started-title-signed-out "Join now"
-                             :index-get-started-signed-in "Create an Objective"
-                             :index-get-started-title-signed-in "Create an Objective"
+                             :index-get-started "Objectives"
+                             :index-get-started-title "Objectives"
                              :index-learn-more "Learn more"
                              :index-learn-more-title "Learn more"}
                      :sign-in {:doc-title "Sign in or Sign up | Objective[8]"
@@ -69,7 +67,7 @@
                
                                   <p><b>Writers</b> work with each other and the community to draft policy.  They use the crowdsourced questions, answers and comments to produce <b>policy drafts</b><span class=\"not-yet-implemented-footnote-marker\">*</span>.  These are further refined through cycles of feedback and redrafting.</p>
 
-                                  <p>You can get involved and have your say by creating and sharing objectives, offering your opinion through <b>comments</b>, asking and answering <b>questions</b>, suggesting policy writers<span class=\"not-yet-implemented-footnote-marker\">*</span>, or even providing feedback on the policy drafts themselves.  The whole process is open and transparent.</p>
+                                  <p>You can get involved and have your say by creating and sharing objectives, offering your opinion through <b>comments</b>, asking and answering <b>questions</b>, suggesting policy writers, or even providing feedback on the policy drafts themselves.  The whole process is open and transparent.</p>
                                   
                                   <p class=\"helper-text\"> <span class=\"not-yet-implemented-footnote-marker\">*</span>As the site is still under development, these features have not yet been implemented. Check back soon!</p> "
                                   :get-started-button-title "Get started"
@@ -83,6 +81,9 @@
                                       :page-title "Objectives"
                                       :create-button-title "Create an objective"
                                       :create-button-text "Create an objective"
+                                      :please "Please"
+                                      :sign-in "sign in"
+                                      :to "to create an objective."
                                       :subtitle "Recently created objectives"
                                       :drafting-begins "Drafting begins on"
                                       :objectives-intro-text "Objective[8] centers its policy drafting process around objectives. An objective is a change that could be achieved by introducing new policy." }
@@ -219,10 +220,8 @@
                              :doc-description ""
                              :index-welcome "Politicos colaborando con organizaciones democráticas"
                              :index-intro "Recolectar la opinion de la comunidad, generar ideas, compartir, discutir, votar y colaborar con expertos para redactar nuevas politicas."
-                             :index-get-started-signed-out "Pariticipa"
-                             :index-get-started-title-signed-out "Pariticipa"
-                             :index-get-started-signed-in "Crea un objetivo"
-                             :index-get-started-title-signed-in "Crea un objetivo"
+                             :index-get-started "Objetivo"
+                             :index-get-started-title "Objetivo"
                              :index-learn-more "Más información"
                              :index-learn-more-title "Más información"}
                      :sign-in {:doc-title "Entrar | Objective[8]"
@@ -253,6 +252,9 @@
                                       :page-title "Spanish(Objectives)"
                                       :create-button-title "Spanish(Create an objective)"
                                       :create-button-text "Spanish(Create an objective)"
+                                      :please "Spanish(Please)"
+                                      :sign-in "Spanish(sign in)"
+                                      :to "Spanish(to create an objective.)"
                                       :subtitle "Spanish(Recently created objectives)"
                                       :drafting-begins "Spanish(Drafting begins on)"
                                       :objectives-intro-text "Spanish(...)"}
