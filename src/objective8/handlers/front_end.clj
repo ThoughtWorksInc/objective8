@@ -381,7 +381,7 @@
           {status :status draft :result} (http-api/get-draft objective-id draft-id)]
       (cond
         (= status ::http-api/success)
-        (let [draft-content (hc/html (:content draft))]
+        (let [draft-content (hc/html (apply list (:content draft)))]
           (views/draft-detail "draft-detail" request :draft-content draft-content))  
         (= status ::http-api/not-found) (error-404-response request)
         :else {:status 500}))

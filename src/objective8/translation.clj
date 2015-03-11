@@ -165,11 +165,15 @@
                                            :accept "Accept"
                                            :decline "Decline"}
                       :invitation-banner {:message "Respond to your invitation to help draft policy"}
-                     :candidate-list {:page-intro "Writers work with each other and the community to draft policy."
+                     :candidate-list {:doc-title "Candidate policy writers | Objective[8]"
+                                      :doc-description "Candidate policy writers..."
+                                      :page-intro "Writers work with each other and the community to draft policy."
                                       :candidate-list-heading "Recently added candidate writers"
                                       :no-candidates "No candidate writers have been invited yet."}
                      :current-draft {:page-intro "Current draft"
                                      :no-drafts "There are currently no drafts for this objective"}
+                     :draft-detail {:doc-title "Policy draft | Objective[8]"
+                                    :doc-description "Draft policy for objective ... "}
                      :edit-draft {:doc-title "Edit draft | Objective[8]"
                                   :doc-description "Draft policy"
                                   :preview "Preview"

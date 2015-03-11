@@ -148,7 +148,6 @@
   [:#clj-error-404-content] (html/html-content (translations :error-404/page-content)))
 
 ;DRAFTS
-
 (html/defsnippet current-draft-page
   "templates/drafts/current-draft.html" [:#clj-current-draft] [{:keys [translation objective signed-in uri]}]
   [:#objective-crumb] (html/set-attr :title (:title objective))
@@ -166,7 +165,7 @@
 
 (html/defsnippet draft-detail-page
   "templates/drafts/draft-detail.html" [:#clj-draft-detail-content] [{:keys [data]}]
-  [:#clj-draft-detail-content] (html/html-content data))
+  [:#clj-draft-detail-content] (html/html-content (:draft-content data)))
 
 ;INVITATIONS
 (html/defsnippet invitation-create
