@@ -8,6 +8,8 @@ button,
   border: 1px solid $green1;
   border-radius: 2em;
   transition: background 0.2s ease-in-out, color 0.2s ease-in-out, border 0.2s ease-in-out;
+  outline-color: transparent;
+
   &:after {
     content: '';
     opacity: 0;
@@ -24,7 +26,7 @@ button,
     background-color: $white;
     text-decoration: none;
     color: $green1;
-    outline-color: transparent;
+    outline-width: 0;
   }
   &:hover {
     background-color: $green1;
@@ -35,6 +37,12 @@ button,
     border-color: $yellow;
     &:after {
       opacity: 1;
+    }
+    &:hover {
+      border-color: transparent;
+      &:after {
+        opacity: 0;
+      }
     }
   }
 }
