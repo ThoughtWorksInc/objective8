@@ -48,19 +48,19 @@
      (after :facts (helpers/truncate-tables))]
     
     (fact "creates a draft"
-          (let [{objective-id :objective-id submitter-id :_id} (sh/store-a-candidate)
+          (let [{objective-id :objective-id submitter-id :user-id} (sh/store-a-candidate)
                 the-draft {:objective-id objective-id
                            :submitter-id submitter-id
                            :content "Some content"}
-                {response :response} (p/request app (utils/path-for :post-draft :id (str objective-id))
+                {response :response} (p/request app (utils/path-for :post-draft :id objective-id)
                                             :request-method :post
                                             :content-type "application/json"
-                                            :body (json/generate-string the-draft))]
-            (:body response) => (helpers/json-contains {:_id integer?
+                                            :body (json/generate-string the-draft))
+                {draft-id :_id :as stored-draft} (sh/retrieve-latest-draft objective-id)
+                target-path (utils/path-for :get-draft :id objective-id :d-id draft-id)]
+            (:body response) => (helpers/json-contains {:_id draft-id
                                                         :objective-id objective-id
                                                         :submitter-id submitter-id
                                                         :content "Some content"})
             (:status response) => 201
-            (:headers response) => (helpers/location-contains (str "/objectives/" objective-id "/drafts/"))))))
-
-
+            (:headers response) => (helpers/location-contains target-path)))))

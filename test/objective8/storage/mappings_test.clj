@@ -131,6 +131,17 @@
                                                            :objective_id OBJECTIVE_ID
                                                            :invitation_id INVITATION_ID})))
 
+;;DRAFTS
+(def draft-map {:submitter-id USER_ID
+                :objective-id OBJECTIVE_ID
+                :content "Some content"})
+
+(facts "About map->draft"
+       (fact "Column values are pulled out and converted, the map gets turned to json"
+             (map->draft draft-map) => (contains {:submitter_id USER_ID
+                                                  :objective_id OBJECTIVE_ID
+                                                  :draft json-type?})))
+
 ;;BEARER-TOKENS
 (def BEARER_NAME "bearer name")
 (def BEARER_TOKEN "123")

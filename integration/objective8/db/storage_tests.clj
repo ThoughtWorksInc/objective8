@@ -7,7 +7,8 @@
             [objective8.storage-helpers :refer [store-a-user
                                                 store-an-objective
                                                 store-an-invitation
-                                                store-a-question]]))
+                                                store-a-question
+                                                store-a-candidate]]))
 
 (facts "Storage tests" :integration
        (against-background
@@ -182,6 +183,18 @@
                       (fact "an invitation's status can be updated"
                             (let [invitation (store-an-invitation)]
                               (:status (storage/pg-update-invitation-status! invitation "accepted")) => "accepted")))
+
+               ;;DRAFTS
+               (facts "about drafts"
+                      (fact "a draft can be stored in the database"
+                            (let [{objective-id :objective-id submitter-id :user-id} (store-a-candidate)
+                                  draft {:entity :draft
+                                         :content "Some content"
+                                         :submitter-id submitter-id
+                                         :objective-id objective-id}
+                                  stored-draft (storage/pg-store! draft)
+                                  retrieve-result (storage/pg-retrieve {:entity :draft :_id (:_id stored-draft)})]
+                              (first (:result retrieve-result)) => (contains stored-draft))))
 
                ;;BEARER-TOKENS
                (facts "about bearer-tokens"

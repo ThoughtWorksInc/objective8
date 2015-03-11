@@ -93,3 +93,8 @@
       :result
       first))
 
+(defn retrieve-latest-draft [objective-id]
+  (-> (storage/pg-retrieve {:entity :draft :objective-id objective-id}
+                           {:sort {:field :_created_at :ordering :DESC}})
+      :result
+      first))

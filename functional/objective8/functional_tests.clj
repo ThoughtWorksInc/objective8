@@ -16,7 +16,7 @@
   (wd/take-screenshot :file (str "functional/objective8/screenshots/" 
                                  filename ".png")))
 
-(defonce journey-state (atom nil))
+(def journey-state (atom nil))
 
 (facts "About user journeys" :functional
        (against-background 

@@ -10,6 +10,7 @@
             [objective8.users :as users]
             [objective8.writers :as writers]
             [objective8.invitations :as invitations]
+            [objective8.drafts :as drafts]
             [objective8.utils :as utils]
             [objective8.api-requests :as ar]
             [objective8.actions :as actions]))
@@ -295,8 +296,8 @@
                                    "/api/v1/objectives/" objective-id) updated-objective)))
 
 (defn post-draft [{{objective-id :id} :route-params
-                   params :params
                    :as request}]
-  (let [stored-draft (assoc params :_id 1)]
-    (successful-post-response (utils/path-for :get-draft :id objective-id :d-id 1)
-                              stored-draft)))
+  (let [draft-data (ar/request->draft-data request)
+        draft (drafts/store-draft! draft-data)]
+    (successful-post-response (utils/path-for :get-draft :id objective-id :d-id (str (:_id draft)))
+                              draft)))

@@ -19,6 +19,7 @@
   (korma/delete m/answer)
   (korma/delete m/question)
   (korma/delete m/comment)
+  (korma/delete m/draft)
   (korma/delete m/objective)
   (korma/delete m/user))
 

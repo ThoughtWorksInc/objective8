@@ -9,6 +9,11 @@
 (def host-url
   (str (config/get-var "HTTPS" "http://") (config/get-var "BASE_URI" "localhost:8080")))
 
+;;Bidi currently doesn't currently work with java.lang.Integer
+(extend-protocol bidi/ParameterEncoding
+  java.lang.Integer
+  (bidi/encode-parameter [s] s))
+
 (defn path-for [& args] (str host-url (apply bidi/path-for routes/routes args)))
 
 (defn generate-random-uuid []
