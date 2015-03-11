@@ -1,0 +1,57 @@
+extends layouts/base
+include mixins/_view_helpers
+
+block vars
+  - bodyClass = "draft"
+  - pageTitle = "Draft"
+
+mixin addCommentButton()
+  .draft-add-inline-comment
+    a(href="#", title="Add a comment")
+      i.fa.fa-plus-square-o.fa-lg
+      | Add comment
+  block
+
+block content
+  .middle-container
+
+    ul.progress-indicator
+      li.complete
+        a(href="/objective") Objective
+      li.on
+        a(href="/draft") Draft
+      li
+        a(href="#") Policy
+
+    +guidanceText('What is a draft?')
+      ul
+        li Drafts are versions of the policy as it is being written.
+        li Drafts are crafted by the writers that have been nominated for an objective.
+        li Everyone can comment and make suggestions.
+
+    .draft-preview-document
+      h1.draft-title Build safer cycling networks in the streets of Madrid.
+      div.no-version(style="text-align: center; margin-bottom: 2em; height: 200px; background: #efefef;")
+        p(style="line-height: 200px; margin: 0;") There are no drafts yet.
+      a.button(href="/draft") Begin draft one
+
+    .draft-writers
+      h2 Writers
+      ul.writer-item-list
+        +draftWriterItem('Jenny Bloggs', '#', 'http://placekitten.com/g/80/80')
+        +draftWriterItem('Boris Johnson', '#', 'http://placekitten.com/g/81/81')
+        +draftWriterItem('Bob Smith', '#', 'http://placekitten.com/g/82/82')
+
+
+    .draft-comments
+      h2 Comments
+      ol.comment-list
+        li Be the first to comment on this draft.
+      a.button(href="#") Add a comment
+
+
+block footerScripts
+  script.
+    $('a').on('click',function(e) {
+      //e.preventDefault();
+    });
