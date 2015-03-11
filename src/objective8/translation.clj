@@ -172,7 +172,8 @@
                                      :no-drafts "There are currently no drafts for this objective"}
                      :edit-draft {:doc-title "Edit draft | Objective[8]"
                                   :doc-description "Draft policy"
-                                  :preview "Preview"}
+                                  :preview "Preview"
+                                  :submit "Submit"}
                      :sign-up {:doc-title "Sign up almost there | Objective[8]"
                                :doc-description ""
                                :page-title "Almost there"
@@ -344,7 +345,8 @@
                                      :no-drafts "Spanish(...)"}
                      :edit-draft {:doc-title "Spanish(...)"
                                   :doc-description "Spanish(...)"
-                                  :preview "Spanish(...)"}
+                                  :preview "Spanish(...)"
+                                  :submit "Spanish(...)"}
                      :sign-up {:doc-title "Perfil | Objective[8]"
                                :doc-description ""
                                :page-title ""

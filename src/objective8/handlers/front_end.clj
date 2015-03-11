@@ -345,19 +345,30 @@
                                                :objective (format-objective objective)
                                                :uri uri
                                                :signed-in (signed-in?)})
-        (= objective-status ::http-api/not-found) (error-404-response t' locale)
+        (= objective-status ::http-api/not-found) (error-404-response request)
         :else {:status 500}))
     (catch NumberFormatException e
       (log/info "Invalid route: " e)
-      (error-404-response t' locale))))
+      (error-404-response request))))
 
 (defn edit-draft-get [{{objective-id :id} :route-params :as request}]
   (views/edit-draft "edit-draft" request :objective-id objective-id))
 
-(defn edit-draft-with-preview [{{objective-id :id} :route-params params :params :as request}]
-  (let [preview (hc/html (eh/to-hiccup (ec/mp (:content params))))]
-    (views/edit-draft "edit-draft" request :objective-id objective-id :preview preview)))
+(defn edit-draft-post [{{o-id :id} :route-params
+                        {content :content action :action} :params
+                        :as request}]
+  (try 
+    (let [parsed-markdown (eh/to-hiccup (ec/mp content))
+          objective-id (Integer/parseInt o-id)]
+      (cond
+        (= action "preview")
+        (let [preview (hc/html parsed-markdown)]
+          (views/edit-draft "edit-draft" request :objective-id objective-id :preview preview))
 
-(defn create-draft [{{o-id :id} :route-params :as request}]
-  (let [{draft :result} (http-api/create-draft {})]
-    (response/redirect (str "/objectives/" o-id "/drafts/" (:_id draft)))))
+        (= action "submit")
+        (let [{draft :result} (http-api/create-draft {:objective-id objective-id
+                                                      :content parsed-markdown})]
+          (response/redirect (str "/objectives/" o-id "/drafts/" (:_id draft))))))
+    (catch NumberFormatException e
+      (log/info "Invalid route: " e)
+      (error-404-response request))))

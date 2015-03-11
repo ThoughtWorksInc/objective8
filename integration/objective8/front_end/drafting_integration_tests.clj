@@ -36,7 +36,8 @@
                                               ih/sign-in-as-existing-user
                                               (p/request edit-draft-url
                                                          :request-method :post
-                                                         :params {:content "A heading\n===\nSome content"}))]
+                                                         :params {:action "preview"
+                                                                  :content "A heading\n===\nSome content"}))]
                  (:status response) => 200
                  (:body response) => (contains "<h1>A heading</h1>")
                  (:body response) => (contains "Some content")))
@@ -47,8 +48,9 @@
                                                       :result {:_id DRAFT_ID}})
                (let [{response :response} (-> user-session
                                               ih/sign-in-as-existing-user
-                                              (p/request (str utils/host-url "/objectives/" OBJECTIVE_ID "/drafts")
+                                              (p/request (str utils/host-url "/objectives/" OBJECTIVE_ID "/edit-draft")
                                                          :request-method :post
-                                                         :params {:some :content}))]
+                                                         :params {:action "submit"
+                                                                  :some :content}))]
                  (:headers response) => (ih/location-contains (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID))
                  (:status response) => 302))))
