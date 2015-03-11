@@ -1,3 +1,5 @@
+// Global
+
 mixin guidanceText(heading)
   .guidance-text
     .guidance-buttons
@@ -7,20 +9,6 @@ mixin guidanceText(heading)
         i.fa.fa-times
     h2.guidance-text-heading #{heading}
     block
-
-mixin objectiveWriterItem(name, href, photo)
-  - href = href || ''
-  - photo = photo || 'http://placekitten.com/g/120/120'
-  li.writer-item
-    a(href="#{href}")
-      .writer-item-photo
-        img(src="#{photo}")
-      .writer-item-text
-        .writer-item-author
-          = name
-        .writer-item-descripton
-          p
-            block
 
 mixin goalItem()
   li.goal-item
@@ -44,6 +32,24 @@ mixin commentItem(author, date)
       block
     a.comment-reply(href="#") Reply
 
+// Objectives
+
+mixin objectiveWriterItem(name, href, photo)
+  - href = href || ''
+  - photo = photo || 'http://placekitten.com/g/120/120'
+  li.writer-item
+    a(href="#{href}")
+      .writer-item-photo
+        img(src="#{photo}")
+      .writer-item-text
+        .writer-item-author
+          = name
+        .writer-item-descripton
+          p
+            block
+
+// Drafts
+
 mixin draftWriterItem(name, href, photo)
   - href = href || ''
   - photo = photo || 'http://placekitten.com/g/120/120'
@@ -54,6 +60,7 @@ mixin draftWriterItem(name, href, photo)
       .writer-item-author
         = name
 
+// Questions
 
 mixin addQuestionForm(allowFocus)
   - focus = allowFocus ? true : false

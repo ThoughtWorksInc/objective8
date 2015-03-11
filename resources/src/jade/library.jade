@@ -1,0 +1,112 @@
+include mixins/_helpers
+include mixins/_view_helpers
+
+mixin documentation()
+  .documentation
+    block
+
+doctype
+html.no-js(lang="en")
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    title Library
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    meta(name="apple-mobile-web-app-status-bar-style", content="black-translucent")
+    meta(name="format-detection", content="telephone=no")
+
+    link(rel="shortcut icon", href="/static/favicon.ico")
+    link(rel="apple-touch-icon", href="static/apple-touch-icon.png")
+
+    +javascriptIncludeTag("modernizr.min")
+    +stylesheetLinkTag("modern","screen")
+    style.
+      .example {
+        padding: 2em 0;
+      }
+      .documentation {
+        margin: 0 0 2em 0;
+      }
+      .documentation h2 {
+        margin-bottom: 0.3em;
+      }
+      .documentation p {
+        margin-bottom: 0.5em;
+      }
+      .documentation p:last-child {
+        margin-bottom: 0;
+      }
+
+
+  body
+    br
+
+    .middle-container
+
+      .example
+        .documentation
+          h2 Guidance text
+          p Used to introduce overview of the page
+        +guidanceText('Title goes here')
+          ul
+            li Suggest paragraph or lists
+
+      .example
+        .documentation
+          h2 Goals
+          p This is a complete list using the goalItem() mixin
+        ul.goal-item-list.fa-ul
+          +goalItem
+            | Deep v heirloom Echo Park
+          +goalItem
+            | Drinking vinegar meggings
+          +goalItem
+            | Jean shorts biodiesel hoodie keytar mlkshk food truck
+
+
+      .example
+        .documentation
+          h2 Question list item
+          p Generated with questionItem(author, date) mixin
+        ol.question-list
+          +questionItem('Chris Cheshire', '3 September 2015 07:41')
+            p What road surface should we use?
+
+      .example
+        .documentation
+          h2 Comment list item
+          p Generated with commentItem(author, date) mixin
+        ol.comment-list
+          +commentItem('Chris Cheshire', '3 September 2015 07:41')
+            p We definitely need to look into Gran Via and Calle Mayor!
+
+      .example
+        .documentation
+          h2 Objective Writer list item
+          p Generated with objectiveWriterItem(name, href, photo) mixin
+          p Currently needs a parent .objective-writers class (TODO: remove dependancy)
+        .objective-writers
+          ul.writer-item-list
+            +objectiveWriterItem('Jenny Bloggs', '#', 'http://placekitten.com/g/80/80')
+              | A cycling enthusiast, responsible for many safety policies in the UK.
+
+      .example
+        .documentation
+          h2 Draft Writer list item
+          p Generated with draftWriterItem(name, href, photo) mixin
+          p Currently needs a parent .draft-writers class (TODO: remove dependancy)
+        .draft-writers
+          ul.writer-item-list
+            +draftWriterItem('Jenny Bloggs', '#', 'http://placekitten.com/g/80/80')
+              | A cycling enthusiast, responsible for many safety policies in the UK.
+
+      .example
+        .documentation
+          h2 Add question form
+          p Generated with addQuestionForm(autofocus)
+          p The optional autofocus param decides whether it should gain focus on page visit.
+        +addQuestionForm()
+
+    br
+
+    +javascriptIncludeTag("scripts.min")
