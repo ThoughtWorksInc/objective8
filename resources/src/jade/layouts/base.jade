@@ -1,5 +1,5 @@
-include mixins/_helpers
-include mixins/_view_helpers
+include ../mixins/_helpers
+include ../mixins/_view_helpers
 
 - var pageTitle = "{{Page Title}}"
 - var bodyClass = ""
@@ -51,7 +51,7 @@ html.no-js(lang="en")
         .masthead-large-screen-nav
           a(href="/objectives", title="Go to to the Objectives list") Objectives
           a(href="/learn-more", title="Learn more about Objective[8]") About
-        include user-navigation/signed-out
+        include ../user-navigation/signed-out
 
     .project-status
       .wrapper#projectStatus
