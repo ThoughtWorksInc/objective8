@@ -80,12 +80,7 @@ block content
 
 
 block footerScripts
-  //script.
-  //  $(window).scroll(function () {
-  //    if ($(this).scrollTop() > 1) {
-  //      $('.masthead').addClass("sticky");
-  //    }
-  //    else {
-  //      $('.masthead').removeClass("sticky");
-  //    }
-  //  });
+  script.
+    $('a').on('click',function(e) {
+      e.preventDefault();
+    });
