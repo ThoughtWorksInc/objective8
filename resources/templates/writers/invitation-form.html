@@ -1,9 +1,9 @@
 <div id="clj-invitation" class="invitation-posts">
 	<form method="POST" action="/">
-		<label for="writer-name">${invitation/writer-name-label}<span class="required">*</span></label>
+		<label for="writer-name">${invitation/writer-name-label}</label>
 		<input id="writer-name" name="writer-name" type="text" pattern=".{3,}" title="${invitation/writer-name-title}" maxlength="50" required>
 
-		<label for="reason">${invitation/reason-label}<span class="required">*</span></label>
+		<label for="reason">${invitation/reason-label}</label>
 		<textarea id="reason" name="reason" rows="3" cols="10" maxlength="1000" title="${invitation/reason-title}" required></textarea>
 
 		<button type="submit" class="button">${invitation/submit}</button>

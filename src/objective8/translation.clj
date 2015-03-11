@@ -147,9 +147,9 @@
                                   :doc-description "Candidate policy writers..."
                                   :page-title "Invite a policy writer"
                                   :page-intro "Do you know someone with the enthusiasm and expertise to help draft this policy?"
-                                  :writer-name-label "I'd like to invite: "
+                                  :writer-name-label "Writer name: "
                                   :writer-name-title "Writer names are a maximum length of 50 characters"
-                                  :reason-label "to help draft this policy, because: "
+                                  :reason-label "They should help draft this policy, because: "
                                   :reason-title "Reasons are a maximum length of 1000 characters"
                                   :submit "Create an invite"}
                      :invitation-sign-in {:please "Please"
