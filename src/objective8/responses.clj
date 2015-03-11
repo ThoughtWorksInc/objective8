@@ -73,8 +73,7 @@
 (html/defsnippet user-navigation-signed-in
   "templates/user-navigation/signed-in.html" [[:#clj-user-navigation]] [{:keys [translations user]}]
   [:#clj-user-navigation html/any-node] (html/replace-vars translations)
-  [:#clj-username] (html/content (:username user))
-  )
+  [:#clj-username] (html/content (:username user)))
 
 (html/defsnippet user-navigation-signed-out
   "templates/user-navigation/signed-out.html" [[:#clj-user-navigation]] [{:keys [translations]}]
@@ -133,12 +132,6 @@
   "templates/project-status.html" [[:#clj-project-status]] [{:keys [translations]}]
   [:#clj-project-status html/any-node] (html/replace-vars translations)
   [:#clj-project-status-detail] (html/html-content (translations :project-status/page-content)))
-
-;LEARN MORE
-(html/defsnippet learn-more-page
-  "templates/learn-more.html" [:#clj-learn-more] [{:keys [translations]}]
-  [:#clj-learn-more html/any-node] (html/replace-vars translations)
-  [:#clj-learn-more-detail] (html/html-content (translations :learn-more/page-content)))
 
 ;ERROR 404
 (html/defsnippet error-404-page
