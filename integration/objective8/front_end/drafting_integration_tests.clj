@@ -44,7 +44,7 @@
          
          (fact "writer can submit a draft"
                (against-background
-                 (http-api/create-draft anything) => {:status ::http-api/success
+                 (http-api/post-draft anything) => {:status ::http-api/success
                                                       :result {:_id DRAFT_ID}})
                (let [{response :response} (-> user-session
                                               ih/sign-in-as-existing-user

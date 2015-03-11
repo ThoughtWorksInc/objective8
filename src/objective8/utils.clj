@@ -1,11 +1,15 @@
 (ns objective8.utils
   (:require [clj-time.format :as time-format]
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
+            [bidi.bidi :as bidi]
             [cemerick.friend :as friend]
+            [objective8.routes :as routes]
             [objective8.config :as config]))
 
 (def host-url
   (str (config/get-var "HTTPS" "http://") (config/get-var "BASE_URI" "localhost:8080")))
+
+(defn path-for [& args] (str host-url (apply bidi/path-for routes/routes args)))
 
 (defn generate-random-uuid []
   (str (java.util.UUID/randomUUID)))

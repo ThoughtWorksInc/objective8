@@ -212,3 +212,16 @@
       (provided
         (http-api/default-get-call (contains (str host-url "/api/v1/objectives/"
                                                   OBJECTIVE_ID "/candidate-writers"))) => :api-call-result))
+
+;;DRAFTS
+
+(def draft {:content :markdown-as-hiccup
+            :objective-id OBJECTIVE_ID
+            :submitter-id USER_ID})
+(fact "posting a draft hits the correct API endpoint"
+      (http-api/post-draft draft) => :api-call-result
+      (provided
+       (http-api/default-post-call
+         (contains (str host-url
+                        "/api/v1/objectives/" OBJECTIVE_ID
+                        "/drafts")) draft) => :api-call-result))

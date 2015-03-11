@@ -366,7 +366,7 @@
           (views/edit-draft "edit-draft" request :objective-id objective-id :preview preview))
 
         (= action "submit")
-        (let [{draft :result} (http-api/create-draft {:objective-id objective-id
+        (let [{draft :result} (http-api/post-draft {:objective-id objective-id
                                                       :content parsed-markdown})]
           (response/redirect (str "/objectives/" o-id "/drafts/" (:_id draft))))))
     (catch NumberFormatException e

@@ -293,3 +293,10 @@
   (let [updated-objective (actions/start-drafting! (Integer/parseInt objective-id))]
     (successful-post-response (str utils/host-url
                                    "/api/v1/objectives/" objective-id) updated-objective)))
+
+(defn post-draft [{{objective-id :id} :route-params
+                   params :params
+                   :as request}]
+  (let [stored-draft (assoc params :_id 1)]
+    (successful-post-response (utils/path-for :get-draft :id objective-id :d-id 1)
+                              stored-draft)))

@@ -8,8 +8,9 @@
             [ring.middleware.flash :refer [wrap-flash]]
             [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
             [ring.middleware.x-headers :refer [wrap-xss-protection wrap-frame-options wrap-content-type-options]]
-            [bidi.ring :refer [make-handler ->Resources]]
+            [bidi.ring :refer [make-handler]]
             [taoensso.tower.ring :refer [wrap-tower]]
+            [objective8.routes :as routes]
             [objective8.config :as config]
             [objective8.utils :as utils]
             [objective8.translation :refer [translation-config]]
@@ -70,64 +71,11 @@
                :post-candidate-writer (m/wrap-bearer-token api-handlers/post-candidate-writer bt/token-provider)
                :put-invitation-declination (m/wrap-bearer-token api-handlers/put-invitation-declination bt/token-provider)
                :get-candidates-for-objective api-handlers/retrieve-candidates
-               :post-start-drafting (m/wrap-bearer-token api-handlers/post-start-drafting bt/token-provider)})
-
-(def routes
-  [
-   "/"  ;; FRONT-END
-        {""                 :index
-        "sign-in"           :sign-in
-        "sign-out"          :sign-out
-        "project-status"    :project-status
-        "learn-more"        :learn-more
-        "static/"           (->Resources {:prefix "public/"})
-        "objectives"        {:get :objective-list
-                             :post :create-objective-form-post
-                             ["/create"] :create-objective-form
-                             ["/" :id] {:get :objective
-                                        "/writer-invitations" {:post :invitation-form-post
-                                                               ["/" :i-id] {:get :accept-or-decline-invitation
-                                                                            "/accept" {:post :accept-invitation}
-                                                                            "/decline" {:post :decline-invitation}
-                                                                            }}
-                                        "/candidate-writers" {:get :candidate-list}
-                                        "/questions" {:post :add-question-form-post
-                                                      :get :question-list
-                                                      ["/" :q-id] {:get :question
-                                                                   "/answers" {:post :add-answer-form-post}}}
-                                        "/drafts" {:get :current-draft}
-                                        "/edit-draft" {:get :edit-draft-get
-                                                       :post :edit-draft-post}}}
-        "comments"          {:post :create-comment-form-post}
-        "invitations"       {["/" :uuid] {:get :writer-invitation}}
-
-        ;; API
-        "api/v1"            {"/users" {:post :post-user-profile
-                                       :get :get-user-by-query
-                                       ["/" :id] :get-user}
-
-                             "/objectives" {:get :get-objectives
-                                            :post :post-objective
-                                            ["/" :id] {:get :get-objective
-                                                       "/comments" :get-comments-for-objective
-                                                       "/questions" {:post :post-question
-                                                                     :get :get-questions-for-objective
-                                                                     ["/" :q-id] {:get :get-question
-                                                                                  "/answers" {:get :get-answers-for-question
-                                                                                              :post :post-answer}}}
-                                                       "/candidate-writers" {:get :get-candidates-for-objective
-                                                                             :post :post-candidate-writer}
-                                                       "/writer-invitations" {:post :post-invitation
-                                                                              ["/" :i-id] {:put :put-invitation-declination}}}}
-
-                             "/comments"   {:post :post-comment}
-                             "/invitations" {:get :get-invitation}}
-
-         ;;DEV-API
-         "dev/api/v1"     {["/objectives/" :id "/start-drafting"] {:post :post-start-drafting}}}])
+               :post-start-drafting (m/wrap-bearer-token api-handlers/post-start-drafting bt/token-provider)
+               :post-draft (m/wrap-bearer-token api-handlers/post-draft bt/token-provider)})
 
 (defn app [app-config]
-  (-> (make-handler routes (some-fn handlers #(when (fn? %) %)))
+  (-> (make-handler routes/routes (some-fn handlers #(when (fn? %) %)))
       (m/wrap-not-found front-end-handlers/error-404)
       (friend/authenticate (:authentication app-config))
       (wrap-tower (:translation app-config))

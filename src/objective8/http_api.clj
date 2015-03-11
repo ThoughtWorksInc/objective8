@@ -166,4 +166,5 @@
 
 ;; DRAFTS
 
-(defn create-draft [draft])
+(defn post-draft [{objective-id :objective-id :as draft}]
+  (default-post-call (utils/path-for :post-draft :id objective-id) draft))
