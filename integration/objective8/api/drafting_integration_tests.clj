@@ -39,7 +39,7 @@
 
         (:status (sh/retrieve-invitation active-invitation-for-other-objective-id)) => "active"))))
 
-(facts "POST /dev/api/v1/objectives/:id/drafts"
+(facts "POST /dev/api/v1/objectives/:id/drafts" :integration
   (against-background
     (m/valid-credentials? anything anything anything) => true)
   (against-background
@@ -65,7 +65,7 @@
             (:status response) => 201
             (:headers response) => (helpers/location-contains target-path)))))
 
-(facts "GET /dev/api/v1/objectives/:id/drafts/:d-id"
+(facts "GET /dev/api/v1/objectives/:id/drafts/:d-id" :integration
        (against-background
         [(before :contents (do (helpers/db-connection)
                                (helpers/truncate-tables)))
