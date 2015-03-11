@@ -21,7 +21,7 @@
     (set (conj writer-roles :signed-in))))
 
 (defn auth-map [user]
-  (workflows/make-auth {:username (:_id user) :roles (roles-for-user user) :display-name (:username user)}
+  (workflows/make-auth {:identity (:_id user) :roles (roles-for-user user) :username (:username user)}
                        {::friend/workflow :objective8.workflows.sign-up/sign-up-workflow}))
 
 (defn authorise [response user]

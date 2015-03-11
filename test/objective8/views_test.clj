@@ -72,9 +72,9 @@
                                         "INVITATION")) => (contains {:invitation "INVITATION"}))
 
         (fact "pulls out user information if the user is authenticated with friend")
-        (view-fn "test" ring-request) => (contains {:user {:display-name "Wibble"}})
+        (view-fn "test" ring-request) => (contains {:user {:username "Wibble"}})
         (provided
-          (friend/current-authentication ring-request) => {:display-name "Wibble"})
+          (friend/current-authentication ring-request) => {:username "Wibble"})
 
         (fact "user is nil if there is no friend authentication"
               (view-fn "test" ring-request) => (contains {:user nil}) 

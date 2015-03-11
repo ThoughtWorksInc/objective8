@@ -73,7 +73,7 @@
 (html/defsnippet user-navigation-signed-in
   "templates/user-navigation/signed-in.html" [[:#clj-user-navigation]] [{:keys [translations user]}]
   [:#clj-user-navigation html/any-node] (html/replace-vars translations)
-  [:#clj-display-name] (html/content (:display-name user))
+  [:#clj-username] (html/content (:username user))
   )
 
 (html/defsnippet user-navigation-signed-out

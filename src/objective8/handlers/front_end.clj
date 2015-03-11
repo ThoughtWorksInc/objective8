@@ -79,7 +79,7 @@
   (views/create-objective-form "objective-create" request))
 
 (defn create-objective-form-post [{:keys [t' locale] :as request}]
-  (if-let [objective (helpers/request->objective request (get (friend/current-authentication) :username))]
+  (if-let [objective (helpers/request->objective request (get (friend/current-authentication) :identity))]
     (let [{status :status stored-objective :result} (http-api/create-objective objective)]
       (cond (= status ::http-api/success)
             (let [objective-url (str utils/host-url "/objectives/" (:_id stored-objective))
@@ -121,7 +121,7 @@
 
 (defn create-comment-form-post [{{objective-id :objective-id} :params
                                  :keys [t' locale] :as request}]
-  (if-let [comment (helpers/request->comment request (get (friend/current-authentication) :username))]
+  (if-let [comment (helpers/request->comment request (get (friend/current-authentication) :identity))]
     (let [{status :status stored-comment :result} (http-api/create-comment comment)]
       (cond
         (= status ::http-api/success)
@@ -160,7 +160,7 @@
       (error-404-response request))))
 
 (defn add-question-form-post [{:keys [uri t' locale] :as request}]
-  (if-let [question (helpers/request->question request (get (friend/current-authentication) :username))]
+  (if-let [question (helpers/request->question request (get (friend/current-authentication) :identity))]
     (let [{status :status stored-question :result} (http-api/create-question question)]
       (cond 
         (= status ::http-api/success)
@@ -198,7 +198,7 @@
 ;; ANSWERS
 
 (defn add-answer-form-post [{:keys [uri t' locale] :as request}]
-  (if-let [answer (helpers/request->answer-info request (get (friend/current-authentication) :username))]
+  (if-let [answer (helpers/request->answer-info request (get (friend/current-authentication) :identity))]
     (let [{status :status stored-answer :result} (http-api/create-answer answer)]
       (cond
         (= status ::http-api/success)
@@ -244,7 +244,7 @@
       (error-404-response request))))
 
 (defn invitation-form-post [{:keys [t' locale] :as request}]
-  (if-let [invitation (helpers/request->invitation-info request (get (friend/current-authentication) :username))]
+  (if-let [invitation (helpers/request->invitation-info request (get (friend/current-authentication) :identity))]
     (let [{status :status stored-invitation :result} (http-api/create-invitation invitation)]
       (cond
         (= status ::http-api/success)
@@ -299,7 +299,7 @@
 
 (defn accept-invitation [{:keys [session]}]
   (if-let [invitation-credentials (:invitation session)]
-    (let [candidate-writer {:invitee-id (get (friend/current-authentication) :username)
+    (let [candidate-writer {:invitee-id (get (friend/current-authentication) :identity)
                             :invitation-uuid (:uuid invitation-credentials)
                             :objective-id (:objective-id invitation-credentials)}
           {status :status} (http-api/post-candidate-writer candidate-writer)]

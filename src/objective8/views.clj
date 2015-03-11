@@ -3,7 +3,7 @@
             [objective8.responses :as responses]))
 
 (defn- user-info [request auth-map]
-  (when auth-map {:display-name (:display-name auth-map)}))
+  (when auth-map {:username (:username auth-map)}))
 
 (defn- doc-info [request page-name translations data]
   (when (and page-name translations) 
