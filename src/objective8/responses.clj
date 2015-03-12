@@ -161,6 +161,7 @@
   "templates/drafts/edit-draft.html" [:#clj-edit-draft] [{:keys [translations data]}]
   [:#clj-edit-draft-preview] (some-> data :preview html/html-content)
   [:#clj-edit-draft-form] (html/set-attr :action (str "/objectives/" (:objective-id data) "/edit-draft"))
+  [:#clj-edit-draft-form :textarea] (html/content (:markdown data))
   [:#clj-edit-draft html/any-node] (html/replace-vars translations))
 
 (html/defsnippet draft-detail-page

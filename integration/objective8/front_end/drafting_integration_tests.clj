@@ -46,7 +46,8 @@
                                                          :params {:action "preview"
                                                                   :content SOME_MARKDOWN}))]
                  (:status response) => 200
-                 (:body response) => (contains SOME_HTML)))
+                 (:body response) => (contains SOME_HTML)
+                 (:body response) => (contains SOME_MARKDOWN)))
          
          (fact "writer can submit a draft"
                (against-background

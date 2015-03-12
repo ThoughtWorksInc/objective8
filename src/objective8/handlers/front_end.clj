@@ -363,7 +363,7 @@
       (cond
         (= action "preview")
         (let [preview (hc/html parsed-markdown)]
-          (views/edit-draft "edit-draft" request :objective-id objective-id :preview preview))
+          (views/edit-draft "edit-draft" request :objective-id objective-id :preview preview :markdown content))
 
         (= action "submit")
         (let [{draft :result} (http-api/post-draft {:objective-id objective-id
