@@ -24,7 +24,7 @@
 
   ([conf]
    (let [port (Integer/parseInt (config/get-var "APP_PORT" "8080"))
-         db-connection (db/connect! db/postgres-spec)]
+         db-connection (db/connect!)]
      (core/initialise-api)
      (alter-var-root #'the-system
                      (constantly {:config conf

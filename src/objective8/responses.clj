@@ -165,7 +165,7 @@
 
 (html/defsnippet draft-detail-page
   "templates/drafts/draft-detail.html" [:#clj-draft-detail-content] [{:keys [data]}]
-  [:#clj-draft-detail-content] (html/html-content (:draft-content data)))
+  [:#clj-draft-detail-content :article] (html/html-content (:draft-content data)))
 
 ;INVITATIONS
 (html/defsnippet invitation-create
