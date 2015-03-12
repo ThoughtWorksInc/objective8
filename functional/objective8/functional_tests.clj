@@ -136,7 +136,8 @@
                  (screenshot "12_edit_draft_empty")
                  
                  (wd/input-text "#clj-edit-draft-content" "Functional test draft title\n===\nSome content")
-                 (wd/click "#clj-edit-draft-submit-button")
+                 (wd/click "button[value='submit']")
+
                  (wait-for-title "Policy draft | Objective[8]")
                  (screenshot "13_submitted_draft")
                  ;; TODO: Check that draft content is present
