@@ -14,7 +14,8 @@
   java.lang.Integer
   (bidi/encode-parameter [s] s))
 
-(defn path-for [& args] (str host-url (apply bidi/path-for routes/routes args)))
+(defn path-for [& args] 
+  (str host-url (apply bidi/path-for routes/routes args)))
 
 (defn generate-random-uuid []
   (str (java.util.UUID/randomUUID)))

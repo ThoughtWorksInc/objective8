@@ -4,10 +4,12 @@
             [clj-webdriver.taxi :as wd]
             [clj-webdriver.core :as wc]
             [clojure.java.io :as io]
+            [clojure.string :as string]
             [endophile.core :as ec]
             [endophile.hiccup :as eh]
             [hiccup.core :as hc]
             [objective8.core :as core]
+            [objective8.actions :as actions]
             [objective8.integration-helpers :as integration-helpers]
             [dev-helpers.stub-twitter :refer [stub-twitter-auth-config]]))
 
@@ -135,42 +137,52 @@
                    (throw e)))
                => "Functional Test Writer Name")
 
-         (fact "Can submit a draft" :functional
-               (try
-                 (wd/to (str (:objective-url @journey-state) "/edit-draft"))
-                 (wait-for-title "Edit draft | Objective[8]")                 
-                 (screenshot "12_edit_draft_empty")
-                 
-                 (wd/input-text "#clj-edit-draft-content" SOME_MARKDOWN)
-                 (wd/click "button[value='preview']")
-                 (wait-for-title "Edit draft | Objective[8]")
-                 (screenshot "13_preview_draft")
+         (against-background 
+           [(before :contents (-> (:objective-url @journey-state)
+                                  (string/split #"/")
+                                  last
+                                  Integer/parseInt
+                                  actions/start-drafting!))]
+           (fact "Can submit a draft" :functional
+                 (try
+                   (wd/to (str (:objective-url @journey-state) "/edit-draft"))
+                   (wait-for-title "Edit draft | Objective[8]")                 
+                   (screenshot "12_edit_draft_empty")
 
-                 (wd/click "button[value='submit']")
+                   (wd/input-text "#clj-edit-draft-content" SOME_MARKDOWN)
+                   (wd/click "button[value='preview']")
+                   (wait-for-title "Edit draft | Objective[8]")
+                   (screenshot "13_preview_draft")
 
-                 (wait-for-title "Policy draft | Objective[8]")
-                 (screenshot "14_submitted_draft")
-                 
-                 {:page-title (wd/title)
-                  :page-source (wd/page-source)}
-                 
-                 (catch Exception e
-                   (screenshot "ERROR-Can-submit-a-draft")
-                   (throw e)))
-               => (contains {:page-title "Policy draft | Objective[8]"
-                             :page-source (contains SOME_HTML)}))
+                   (wd/click "button[value='submit']")
 
-          (fact "Can view current draft" :functional
-                (try
-                  (wd/to (str (:objective-url @journey-state) "/drafts/current"))
-                  (wait-for-title "Policy draft | Objective[8]")
-                  (screenshot "15_current_draft")
+                   (wait-for-title "Policy draft | Objective[8]")
+                   (screenshot "14_submitted_draft")
 
-                  {:page-title (wd/title)
-                   :page-source (wd/page-source)}
+                   {:page-title (wd/title)
+                    :page-source (wd/page-source)}
 
-                  (catch Exception e
-                    (screenshot "ERROR-Can-view-current-draft")
-                    (throw e)))
-                => (contains {:page-title "Policy draft | Objective[8]"
-                              :page-source (contains SOME_HTML)}))))
+                   (catch Exception e
+                     (screenshot "ERROR-Can-submit-a-draft")
+                     (throw e)))
+                 => (contains {:page-title "Policy draft | Objective[8]"
+                               :page-source (contains SOME_HTML)})) 
+
+           (fact "Can view current draft" :functional
+                 (try
+                   (wd/to (:objective-url @journey-state))
+                   (wait-for-title "Functional test headline | Objective[8]")
+                   (screenshot "15_drafting_started_objective")
+
+                   (wd/click ".clj-objective-drafting-link")
+                   (wait-for-title "Policy draft | Objective[8]")
+                   (screenshot "16_current_draft")
+
+                   {:page-title (wd/title)
+                    :page-source (wd/page-source)}
+
+                   (catch Exception e
+                     (screenshot "ERROR-Can-view-current-draft")
+                     (throw e)))
+                 => (contains {:page-title "Policy draft | Objective[8]"
+                               :page-source (contains SOME_HTML)})))))

@@ -126,7 +126,7 @@
   [:div.article-meta html/any-node] (html/replace-vars translations)
   [:.clj-objective-drafting-message] (when (:drafting-started objective) identity)
   [:.clj-objective-drafting-start-date-message] (when-not (:drafting-started objective) identity)
-  [:.clj-objective-drafting-link] (html/set-attr :href (str "/objectives/" (:_id objective) "/drafts")) 
+  [:.clj-objective-drafting-link] (html/set-attr :href (str "/objectives/" (:_id objective) "/drafts/current"))
   [:#clj-obj-end-date-value] (html/content (:end-date objective)))
 
 ;PROJECT STATUS
