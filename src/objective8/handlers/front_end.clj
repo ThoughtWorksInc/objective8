@@ -332,25 +332,6 @@
 
 ;;DRAFTS
 
-(defn current-draft [{{id :id} :route-params
-                      :keys [uri t' locale] :as request}]
-  (try 
-    (let [objective-id (Integer/parseInt id)
-          {objective-status :status objective :result} (http-api/get-objective objective-id)]
-      (cond
-        (= objective-status ::http-api/success)
-        (rendered-response current-draft-page {:translation t'
-                                               :locale (subs (str locale) 1)
-                                               :doc-title (str (:title objective) " | Objective[8]")
-                                               :objective (format-objective objective)
-                                               :uri uri
-                                               :signed-in (signed-in?)})
-        (= objective-status ::http-api/not-found) (error-404-response request)
-        :else {:status 500}))
-    (catch NumberFormatException e
-      (log/info "Invalid route: " e)
-      (error-404-response request))))
-
 (defn edit-draft-get [{{objective-id :id} :route-params :as request}]
   (views/edit-draft "edit-draft" request :objective-id objective-id))
 
@@ -377,14 +358,16 @@
 (defn draft-detail [{{:keys [d-id id]} :route-params :as request}]
   (try
     (let [objective-id (Integer/parseInt id)
-          draft-id (Integer/parseInt d-id)
+          draft-id (if (= d-id "current") 
+                     d-id 
+                     (Integer/parseInt d-id))
           {status :status draft :result} (http-api/get-draft objective-id draft-id)]
       (cond
         (= status ::http-api/success)
         (let [draft-content (hc/html (apply list (:content draft)))]
           (views/draft-detail "draft-detail" request :draft-content draft-content))  
         (= status ::http-api/not-found) (error-404-response request)
-        :else {:status 500}))
+        :else {:status 500})) 
     (catch NumberFormatException e
       (log/info "Invalid route: " e)
       (error-404-response request))))

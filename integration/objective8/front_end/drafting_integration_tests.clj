@@ -73,4 +73,15 @@
             (let [{response :response} (p/request user-session (utils/path-for :fe/draft :id OBJECTIVE_ID :d-id DRAFT_ID))]
               (:status response) => 200
               (:body response) => (contains SOME_HTML)
-              )))
+              ))
+       
+      (fact "anyone can view current draft"
+            (against-background
+              (http-api/get-draft OBJECTIVE_ID "current") => {:status ::http-api/success
+                                                              :result {:_id DRAFT_ID
+                                                                       :content SOME_HICCUP
+                                                                       :objective-id OBJECTIVE_ID
+                                                                       :submitter-id USER_ID}})
+            (let [{response :response} (p/request user-session (utils/path-for :fe/draft :id OBJECTIVE_ID :d-id "current"))]
+              (:status response) => 200
+              (:body response) => (contains SOME_HTML))))

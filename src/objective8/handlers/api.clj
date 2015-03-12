@@ -304,13 +304,14 @@
 
 (defn get-draft [{{:keys [id d-id]} :route-params :as request}]
   (try
-    (let [objective-id (Integer/parseInt id)
-          draft-id (Integer/parseInt d-id)]
-      (if-let [draft (drafts/retrieve-draft draft-id)]
+    (let [objective-id (Integer/parseInt id)]
+      (if-let [draft (if (= d-id "current")
+                       (drafts/retrieve-current-draft objective-id)
+                       (drafts/retrieve-draft (Integer/parseInt d-id)))]
         (-> draft
             response/response
             (response/content-type "application/json"))
-        (response/not-found "")))
+        (response/not-found "")))  
     (catch NumberFormatException e
       (log/info "Invalid route: " e)
       (invalid-response "Objective id and draft id must be integers"))))

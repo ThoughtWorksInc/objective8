@@ -5,6 +5,7 @@
             [objective8.utils :as utils]
             [objective8.integration-helpers :as helpers]
             [objective8.storage-helpers :as sh]
+            [objective8.drafts :as drafts]
             [objective8.middleware :as m]))
 
 (def app (helpers/test-context))
@@ -56,7 +57,7 @@
                                             :request-method :post
                                             :content-type "application/json"
                                             :body (json/generate-string the-draft))
-                {draft-id :_id :as stored-draft} (sh/retrieve-latest-draft objective-id)
+                {draft-id :_id :as stored-draft} (drafts/retrieve-current-draft objective-id)
                 target-path (utils/path-for :api/get-draft :id objective-id :d-id draft-id)]
             (:body response) => (helpers/json-contains {:_id draft-id
                                                         :objective-id objective-id
@@ -73,6 +74,20 @@
 
         (fact "gets a draft for an objective"
               (let [{objective-id :objective-id draft-id :_id :as draft} (sh/store-a-draft)
-                    {response :response} (p/request app (utils/path-for :api/get-draft :id objective-id :d-id draft-id))]
+                    {response :response} (p/request app (utils/path-for :api/get-draft :id objective-id 
+                                                                        :d-id draft-id))]
+                (:status response) => 200
+                (:body response) => (helpers/json-contains draft)))))
+
+(facts "GET /dev/api/v1/objectives/:id/drafts/current" :integration
+       (against-background
+        [(before :contents (do (helpers/db-connection)
+                               (helpers/truncate-tables)))
+         (after :facts (helpers/truncate-tables))]
+
+        (fact "gets a draft for an objective"
+              (let [{objective-id :objective-id :as draft} (sh/store-a-draft)
+                    {response :response} (p/request app (utils/path-for :api/get-draft :id objective-id 
+                                                                        :d-id "current"))]
                 (:status response) => 200
                 (:body response) => (helpers/json-contains draft)))))

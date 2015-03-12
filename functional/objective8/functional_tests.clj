@@ -158,4 +158,19 @@
                    (screenshot "ERROR-Can-submit-a-draft")
                    (throw e)))
                => (contains {:page-title "Policy draft | Objective[8]"
-                             :page-source (contains SOME_HTML)}))))
+                             :page-source (contains SOME_HTML)}))
+
+          (fact "Can view current draft" :functional
+                (try
+                  (wd/to (str (:objective-url @journey-state) "/drafts/current"))
+                  (wait-for-title "Policy draft | Objective[8]")
+                  (screenshot "15_current_draft")
+
+                  {:page-title (wd/title)
+                   :page-source (wd/page-source)}
+
+                  (catch Exception e
+                    (screenshot "ERROR-Can-view-current-draft")
+                    (throw e)))
+                => (contains {:page-title "Policy draft | Objective[8]"
+                              :page-source (contains SOME_HTML)}))))
