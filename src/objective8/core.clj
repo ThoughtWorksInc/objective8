@@ -13,7 +13,7 @@
             [objective8.routes :as routes]
             [objective8.config :as config]
             [objective8.utils :as utils]
-            [objective8.translation :refer [translation-config]]
+            [objective8.translation :refer [configure-translations]]
             [objective8.storage.storage :as storage]
             [objective8.storage.database :as db]
             [objective8.workflows.twitter :refer [twitter-workflow]]
@@ -97,7 +97,7 @@
                     :workflows [twitter-workflow,
                                 sign-up-workflow]
                     :login-uri "/sign-in"}
-   :translation translation-config})
+   :translation (configure-translations)})
 
 (defn get-bearer-token-details []
   (let [bearer-name (config/get-var "API_BEARER_NAME")

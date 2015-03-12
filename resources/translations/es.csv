@@ -1,0 +1,172 @@
+objective-list,create-button-text,Crear un objetivo
+objective-list,sign-in,Entrar
+objective-list,drafting-begins,La redacción empieza en
+objective-list,doc-title,Objetivos | Objective[8]
+objective-list,please,Por favor
+objective-list,page-title,Objetivos
+objective-list,subtitle,Objetivos recientes
+objective-list,objectives-intro-text,Objective[8] centra su proceso de escritura de borradores políticos en los objetivos. Un objetivo es un cambio que puede ser conseguido a partir de una propuesta política
+objective-list,doc-description,
+objective-list,create-button-title,Crear un objetivo
+objective-list,to,para crear un objetivo
+comment-create,comment-title,Los comentarios tienen un máximo de 500 caracteres.
+comment-create,post-button,Añade un comentario
+comment-create,comment-label,Tu comentario
+question-sign-in,sign-in,Entrar
+question-sign-in,please,Por favor
+question-sign-in,to,añadir una pregunta
+candidate-list,page-intro,Los redactores trabajan entre sí y con la comunidad para redactar el borrador
+candidate-list,candidate-list-heading,Redactores incorporados recientemente
+candidate-list,no-candidates,Ningún redactor ha sido invitado por ahora
+index,index-welcome,Creación de politica colaborativa para organizaciones democráticas
+index,index-get-started-title,Objetivos
+index,doc-title,Objective[8]
+index,index-intro,"Recolectar la opinion de la comunidad, generar ideas, compartir, discutir, votar y colaborar con expertos para redactar nuevas politicas."
+index,index-learn-more,Más información
+index,index-learn-more-title,Más información
+index,index-get-started,Objetivos
+index,doc-description,
+sign-in,twitter-sign-in-btn,Entra con Twitter
+sign-in,doc-title,Entrar o registrarte| Objective[8]
+sign-in,reassurance,No compartiremos nunca un contenido en Twitter sin tu permiso
+sign-in,page-title,Entrar o registrarte
+sign-in,twitter-sign-in-title,Entra con Twitter
+sign-in,doc-description,Entra o regístrate a Objective[8]
+project-status,doc-title,Estado del proyecto | Objective [8]
+project-status,page-intro,"Estamos diseñando y desarrollando Objetive[8] en abierto. Esto permite que la herramienta evolucione según la uses, nos des feedback, y los desarrolladores vayan actualizando y subiendo el nuevo contenido."
+project-status,page-title,Fase alfa
+project-status,page-content!,"<p> Es importante que tengas en cuenta que durante este tiempo algunos contenidos pueden ser borrados como parte del proceso. Todas las vistas y los datos que se visualizan aquí son ejemplos prácticos y no represent de forma precisa la vista real del usuario final. </p><h2> Como involucrarse </h2><p>Este proyecto es Software Libre y estamos invitando a la gente a colaborar para mejorar la herramienta. Si eres desarrollador podrás encontrar el código en github en<a href=""https://github.com/ThoughtWorksInc/objective8"" title=""Objective[8] on github"">https://github.com/ThoughtWorksInc/objective8</a>. También estaremos añadiendo nuevos detalles provenientes de las pruebas de usabilidad próximamente. </p><h2> ¿Tienes una idea que aportar? </h2><p> Estamos muy interesados en recoger todo el feedback posible que los usuarios puedan darnos así que os invitamos a dejar comentarios aquí<a href=""https://github.com/ThoughtWorksInc/objective8/issues"">página de comentarios de github </a>.</p>)"
+project-status,doc-description,
+objective-nav,questions,Preguntas
+objective-nav,title,Navegar por
+objective-nav,details,Detalles
+objective-nav,writers,Redactores
+sign-up,welcome,"Tu correo electrónico nos permitirá informarte cuando recibas respuestas a tus comentarios, objetivos y votos."
+sign-up,not-unique,El nombre de usuario ya está en uso
+sign-up,username-label,Nombre de usuario
+sign-up,button,
+sign-up,doc-title,Perfil | Objective[8]
+sign-up,not-well-formed,"El nombre de usuario debe tener de 1 a 16 caracteres, conteniendo solo letras y númenos"
+sign-up,email-label,Correo electrónico
+sign-up,page-title,Casi hemos acabado
+sign-up,username-title,Crea tu nombre de usuario
+sign-up,email-title,Escribe tu cuenta de correo electrónico
+sign-up,doc-description,
+answer-create,answer-title,Las respuestas pueden tener un máximo de 500 caracteres
+answer-create,post-button,Manda tu respuesta
+answer-create,answer-label,Tu respuesta
+learn-more,doc-title,Saber más sobre Objetive[8]
+learn-more,page-intro,Objective8 es una plataforma para facilitar la creación de política colectiva en organizaciones democráticas
+learn-more,sub-title,Información básica
+learn-more,get-started-button-text,Comienza
+learn-more,page-title,Objective[8] 101
+learn-more,get-started-button-title,Comienza
+learn-more,page-content!,"<p><b>Policy</b> is used by governments and organisations to make consistent and fair decisions in order to achieve desired outcomes.</p><p>An <b>objective</b> is a change that could be achieved by introducing new policy.  For example: improving access to public housing, or increasing the safety of our roads.</p><p><b>Writers</b> work with each other and the community to draft policy.  They use the crowdsourced questions, answers and comments to produce <b>policy drafts</b><span class=""not-yet-implemented-footnote-marker"">*</span>.  These are further refined through cycles of feedback and redrafting.</p><p>You can get involved and have your say by creating and sharing objectives, offering your opinion through <b>comments</b>, asking and answering <b>questions</b>, suggesting policy writers, or even providing feedback on the policy drafts themselves.  The whole process is open and transparent.</p><p class=""helper-text""> <span class=""not-yet-implemented-footnote-marker"">*</span>As the site is still under development, these features have not yet been implemented. Check back soon!</p>"
+learn-more,doc-description,
+invitation-sign-in,sign-in,entra
+invitation-sign-in,please,Por favor
+invitation-sign-in,to,para invitar a un nuevo redactor
+objective-create,end-date-placeholder,yyyy-mm-dd
+objective-create,goals-label,Meta
+objective-create,background-prompt,Añade más información de por qué alcanzar este objetivo es necesario o importante
+objective-create,goals-placeholder,Spanish(...)
+objective-create,end-date-label,Fecha de comienzo de la escritura del borrador
+objective-create,doc-title,Crea un objetivo | Objective[8]
+objective-create,headline-placeholder,Spanish(...)
+objective-create,headline-title,"3 caracteres mínimo, 120 caracteres máximo"
+objective-create,goals-prompt,Una meta es lo que te gustaría que tu cambio consiguierea
+objective-create,goals-title,"50 caracteres mínimo, 200 caracteres máximo"
+objective-create,submit,Crear
+objective-create,page-intro,"Un objetivo es un cambio que puede ser conseguido a partir de una propuesta política. Por ejemplo: mejorar el acceso a la vivienda pública, o incrementar la seguridad de nuestras carreteras"
+objective-create,drafting-not-yet-implemented,"Aviso importante: dado que esta herramienta todavía está en desarrollo, la fase de creación del borrador todavía no ha sido implementada"
+objective-create,end-date-title,Por favor escribe la fecha de finalización del proceso
+objective-create,page-title,Crea un objetivo
+objective-create,background-label,Contexto
+objective-create,headline-prompt,El título debe invitar a la contribución o a la discusión
+objective-create,end-date-prompt,"En esta fecha empieza la fase de creación del borrador. Debes dar a los participantes suficiente tiempo para generar información útil, y para proponer y votar potenciales escritores del texto"
+objective-create,doc-description,Crea un objetivo
+objective-create,headline-label,Título
+objective-create,background-title,Escribe una descripcion de máximo 1000 caracteres.
+current-draft,page-intro,Borrador actual
+current-draft,no-drafts,No hay borradores para este objetivo
+invitation-banner,message,Responde a la invitación para ayudar a redactar el documento
+question-list,question-list-heading,Preguntas recientemente añadidas
+question-list,page-intro,"Obtén información de contexto como opiniones y experiencias preguntando algo. Tu pregunta debe ser concreta y específica, ya que las respuestas influirán en el proceso de creación del borrador"
+question-list,no-questions,Todavía no hay preguntas
+question-list,questions-about,Preguntas sobre
+navigation-global,sign-out-title,Cerrar sesión
+navigation-global,sign-in-text,Entrar
+navigation-global,profile-text,Perfil
+navigation-global,sign-out-text,Salir
+navigation-global,profile-title,Ir al perfil de usuario
+navigation-global,sign-in-title,Iniciar sesión
+share-widget,google-plus-text,Compartir en Google+
+share-widget,url-label,Comparte el link
+share-widget,reddit-text,Compartir en Reddit
+share-widget,twitter-text,Compartir en Twitter
+share-widget,url-title,Comparte el link
+share-widget,linkedin-title,Compartir en LinkedIn
+share-widget,title,Compartir
+share-widget,linkedin-text,Compartir en LinkedIn
+share-widget,google-plus-title,Compartir en Google+
+share-widget,twitter-title,Compartir en Twitter
+share-widget,facebook-text,Compartir en Facebook
+share-widget,facebook-title,Compartir en Facebook
+share-widget,reddit-title,Compartir en Reddit
+notifications,go-to-drafting,ir al borrador
+notifications,drafting-has-started,la redacción ha comenzado
+notifications,drafting-started-helper-text,texto de ayuda para comenzar a redactar
+comment-sign-in,sign-in,entra
+comment-sign-in,please,Por favor
+comment-sign-in,to,para empezar a comentar.
+objective-view,goals-label,Metas
+objective-view,end-date-label,Fecha de  finalización del proceso
+objective-view,created-message,Tu objetivo ha sido creado
+objective-view,doc-title,Objetivo | Objective[8]
+objective-view,background-label,Contexto
+objective-view,doc-description,Objetivo ...
+question-view,added-message,Tu pregunta ha sido añadida
+question-view,added-answer-message,Tu respuesta ha sido añadida!
+edit-draft,doc-title,Editar borrador I Objetive[8]
+edit-draft,submit,Enviar
+edit-draft,preview,Vista previa
+edit-draft,doc-description,Borrador
+error-404,doc-title,Spanish(Error 404 | Objective[8])
+error-404,page-intro,Parece que la página a la que intentas acceder no existe. Esto puede deberse a un enlace incorrecto o desactualizado
+error-404,page-title,"Lo sentimos, la página que solicitas no se encuentra"
+error-404,page-content!,"<h2>What can I do now?</h2><ul class=""list-large""><li>Please return to the <a href=""/"" title=""Go to Home"">home page</a>.</li><li>To report an issue visit our <a href=""https://github.com/ThoughtWorksInc/objective8/issues"">github issues page</a>.</li></ul>"
+error-404,doc-description,"Lo sentimos, la página que solicitas no se encuentra"
+answer-view,created-message,Tu respuesta ha sido enviada
+answer-view,no-answers,Nadie ha respondido a esta pregunta aún
+answer-view,answer-title,Respuestas
+comment-view,no-comments,Todavía no hay comentarios
+comment-view,created-message,Tu comentario ha sido creado
+comment-view,comment-title,Comentarios
+invitation,writer-name-title,El nombre del redactor puede tener una longitud máxima de 50 caracteres
+invitation,reason-title,La razón por la que invitas puede tener un máximo de 1000 caracteres
+invitation,reason-label,Debería ayudar a redactar este borrador porque:
+invitation,doc-title,Candidatos a redactores del borrador
+invitation,submit,Crear una invitación
+invitation,page-intro,¿Conoces a alguien con el entusiasmo y la experiencia necesaria para ayudar a redactar este borrador
+invitation,page-title,Invita a un redactor
+invitation,doc-description,Candidatos a redactores del borrador)
+invitation,writer-name-label,Nombre del redactor
+answer-sign-in,sign-in,Entra
+answer-sign-in,please,Por favor
+answer-sign-in,to,para responder a la pregunta
+base,project-status!,"Spanish(ALPHA: We are still in development and testing, <a href=""/project-status"" title=""Find out more about our project status"">find out more</a>)"
+base,header-logo-title,Inicio
+base,header-logo-text,Objective[8]
+base,browsehappy!,Por favor <a href='http://browsehappy.com/' target='_blank' title='Visita browsehappy para aprender más sobre las últimas versiones de tu navegador'>actualiza tu navegador</a> para que tengas una mejor experiencia.
+question-create,question-title,Las preguntas tienen una longitud máxima de 500 caracteres
+question-create,question-label,Pregunta
+question-create,post-button,Añadir
+invitation-response,rsvp-text,Si estas interesados puedes entrar y aceptar la invitación siguiente
+invitation-response,doc-title,Invitación para redactar I Objective[8]
+invitation-response,decline,Declinar el ofrecimiento)
+invitation-response,page-intro,Has sido invitado a redactar un borrador de documento
+invitation-response,sign-in-to-accept,Entrar para aceptar
+invitation-response,page-title,¿Puedes ayudarnos a redactar este borrador?
+invitation-response,for-objective-text,Ayuda a redactar este borrador para conseguir este objetivo
+invitation-response,doc-description,Invitación para ayudar a redactar el borrador
+invitation-response,accept,Aceptar

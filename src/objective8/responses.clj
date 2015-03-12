@@ -3,7 +3,6 @@
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
-            [objective8.translation :refer [translation-config]]
             [objective8.config :as config]
             [objective8.utils :as utils]))
 

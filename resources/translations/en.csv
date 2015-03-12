@@ -1,0 +1,175 @@
+objective-list,create-button-text,Create an objective
+objective-list,sign-in,sign in
+objective-list,drafting-begins,Drafting begins on
+objective-list,doc-title,Objectives | Objective[8]
+objective-list,please,Please
+objective-list,page-title,Objectives
+objective-list,subtitle,Recently created objectives
+objective-list,objectives-intro-text,Objective[8] centers its policy drafting process around objectives. An objective is a change that could be achieved by introducing new policy.
+objective-list,doc-description,
+objective-list,create-button-title,Create an objective
+objective-list,to,to create an objective.
+draft-detail,doc-title,Policy draft | Objective[8]
+draft-detail,doc-description,Draft policy for objective ... 
+comment-create,comment-title,Comments are a maximum length of 500 characters
+comment-create,post-button,Add comment
+comment-create,comment-label,Your comment
+question-sign-in,sign-in,sign in
+question-sign-in,please,Please
+question-sign-in,to,to add a question.
+candidate-list,doc-title,Candidate policy writers | Objective[8]
+candidate-list,page-intro,Writers work with each other and the community to draft policy.
+candidate-list,candidate-list-heading,Recently added candidate writers
+candidate-list,no-candidates,No candidate writers have been invited yet.
+candidate-list,doc-description,Candidate policy writers...
+index,index-welcome,Collaborative policy making for democratic organisations.
+index,index-get-started-title,Objectives
+index,doc-title,Objective[8]
+index,index-intro,"Gather community opinion, generate ideas, share, discuss, vote and collaborate with experts to draft new policy."
+index,index-learn-more,Learn more
+index,index-learn-more-title,Learn more
+index,index-get-started,Objectives
+index,doc-description,
+sign-in,twitter-sign-in-btn,Sign in with twitter
+sign-in,doc-title,Sign in or Sign up | Objective[8]
+sign-in,reassurance,We will never post to Twitter without your permission.
+sign-in,page-title,Sign in or Sign up
+sign-in,twitter-sign-in-title,Sign in with twitter
+sign-in,doc-description,Sign in or Sign up to Objective [8]
+project-status,doc-title,Project status | Objective[8]
+project-status,page-intro,"We are developing and designing Objective[8] in the open. This allows the tool evolve as you use it, as you give feedback, and as the developers update and add content."
+project-status,page-title,Alpha phase
+project-status,page-content!,"<p>It is important to note that during this time data may be removed or destroyed as part of our process. Any of the views and data expressed here is to be used for example purposes only and does not accurately represent the real views of users.</p><h2>How to get involved</h2><p>This project is open source and we are inviting people to collaborate with us to build a better tool. For developers and you can find the code on github at <a href=""https://github.com/ThoughtWorksInc/objective8"" title=""Objective[8] on github"">https://github.com/ThoughtWorksInc/objective8</a>. We will also be adding details for upcoming usability sessions shortly.</p><h2>Have you got an idea?</h2><p>We are really interested in user feedback and are currently inviting people to leave comments our <a href=""https://github.com/ThoughtWorksInc/objective8/issues"">github issues page</a>.</p>"
+project-status,doc-description,
+objective-nav,questions,Questions
+objective-nav,title,Navigation for
+objective-nav,details,Details
+objective-nav,writers,Writers
+sign-up,welcome,"Adding your email address will let us notify you when you receive responses to comments, objectives and votes."
+sign-up,not-unique,Username already exists
+sign-up,username-label,Username
+sign-up,button,Create account
+sign-up,doc-title,Sign up almost there | Objective[8]
+sign-up,not-well-formed,"Username must be 1-16 characters in length, containing only letters and numbers"
+sign-up,email-label,Email
+sign-up,page-title,Almost there
+sign-up,username-title,Create your username
+sign-up,email-title,Add your email title
+sign-up,doc-description,
+answer-create,answer-title,Answers are a maximum length of 500 characters
+answer-create,post-button,Post your answer
+answer-create,answer-label,Your answer
+learn-more,doc-title,Learn more | Objective[8]
+learn-more,page-intro,Objective8 is a platform to enable collaborative policy making for democratic organisations.
+learn-more,sub-title,What are the basics?
+learn-more,get-started-button-text,Get started
+learn-more,page-title,Objective[8] 101
+learn-more,get-started-button-title,Get started
+learn-more,page-content!,"<p><b>Policy</b> is used by governments and organisations to make consistent and fair decisions in order to achieve desired outcomes.</p><p>An <b>objective</b> is a change that could be achieved by introducing new policy.  For example: improving access to public housing, or increasing the safety of our roads.</p><p><b>Writers</b> work with each other and the community to draft policy.  They use the crowdsourced questions, answers and comments to produce <b>policy drafts</b><span class=""not-yet-implemented-footnote-marker"">*</span>.  These are further refined through cycles of feedback and redrafting.</p><p>You can get involved and have your say by creating and sharing objectives, offering your opinion through <b>comments</b>, asking and answering <b>questions</b>, suggesting policy writers, or even providing feedback on the policy drafts themselves.  The whole process is open and transparent.</p><p class=""helper-text""> <span class=""not-yet-implemented-footnote-marker"">*</span>As the site is still under development, these features have not yet been implemented. Check back soon!</p>"
+learn-more,doc-description,
+invitation-sign-in,sign-in,sign in
+invitation-sign-in,please,Please
+invitation-sign-in,to,to invite a policy writer.
+objective-create,end-date-placeholder,yyyy-mm-dd
+objective-create,goals-label,Goals
+objective-create,background-prompt,Provide further information on why achieving this objective is important or necessary
+objective-create,end-date-label,Drafting start date
+objective-create,doc-title,Create an Objective | Objective[8]
+objective-create,headline-title,"3 characters minimum, 120 characters maximum"
+objective-create,goals-prompt,A goal is what you’d like your change to achieve
+objective-create,goals-title,"50 characters minimum, 200 characters maximum"
+objective-create,submit,Create
+objective-create,page-intro,"An objective is a change that could be achieved by introducing new policy. For example: improving access to public housing, or increasing the safety of our roads."
+objective-create,drafting-not-yet-implemented,"(Please note: since this site is still under development, the drafting phase has not yet been implemented)"
+objective-create,end-date-title,Please enter an end date
+objective-create,page-title,Create an objective
+objective-create,background-label,Background
+objective-create,headline-prompt,A headline should encourage contribution or discussion
+objective-create,end-date-prompt,"On this date, the drafting phase begins. You should give participants enough time to generate useful information, and to recruit and vote for potential policy writers."
+objective-create,doc-description,Create an Objective ...
+objective-create,headline-label,Headline
+objective-create,background-title,Enter optional background text up to 1000 characters
+current-draft,page-intro,Current draft
+current-draft,no-drafts,There are currently no drafts for this objective
+invitation-banner,message,Respond to your invitation to help draft policy
+question-list,question-list-heading,Recently asked questions
+question-list,page-intro,"Gather background information such as opinions and experiences by asking a question.  Your question should be focussed and specific, as the answers will influence the policy drafting process."
+question-list,no-questions,There are no questions yet.
+question-list,questions-about,Questions about
+navigation-global,sign-out-title,Go to sign out
+navigation-global,sign-in-text,Sign in
+navigation-global,profile-text,Profile
+navigation-global,sign-out-text,Sign out
+navigation-global,profile-title,Go to user profile
+navigation-global,sign-in-title,Go to sign in
+share-widget,google-plus-text,Google +1
+share-widget,url-label,URL to share
+share-widget,reddit-text,Submit to Reddit
+share-widget,twitter-text,Tweet
+share-widget,url-title,The link to this page
+share-widget,linkedin-title,Share this page on LinkedIn
+share-widget,title,Share this page:
+share-widget,linkedin-text,Share on LinkedIn
+share-widget,google-plus-title,Plus one this page on Google
+share-widget,twitter-title,Share this page on Twitter
+share-widget,facebook-text,Share on Facebook
+share-widget,facebook-title,Share on Facebook...
+share-widget,reddit-title,Submit this page to Reddit
+notifications,go-to-drafting,here.
+notifications,drafting-has-started,Drafting has started on this objective!
+notifications,drafting-started-helper-text,"This means that you can no longer ask or answer questions, comment, or invite new writers.  However, you can follow and contribute to the drafting progress "
+comment-sign-in,sign-in,sign in
+comment-sign-in,please,Please
+comment-sign-in,to,to start commenting.
+objective-view,goals-label,Goals
+objective-view,end-date-label,Drafting begins: 
+objective-view,created-message,Your objective has been created!
+objective-view,doc-title,Objective | Objective[8]
+objective-view,background-label,Background
+objective-view,doc-description,Objective  ...
+question-view,added-message,Your question has been added!
+question-view,added-answer-message,Your answer has been added!
+edit-draft,doc-title,Edit draft | Objective[8]
+edit-draft,submit,Submit
+edit-draft,preview,Preview
+edit-draft,doc-description,Draft policy
+error-404,doc-title,Error 404 | Objective[8]
+error-404,page-intro,The page you were trying to reach at this address doesn't seem to exist. This is usually the result of a bad or outdated link. We apologise for any inconvenience.
+error-404,page-title,Sorry the page you requested can't be found.
+error-404,page-content!,"<h2>What can I do now?</h2><ul class=""list-large""><li>Please return to the <a href=""/"" title=""Go to Home"">home page</a>.</li><li>To report an issue visit our <a href=""https://github.com/ThoughtWorksInc/objective8/issues"">github issues page</a>.</li></ul>"
+error-404,doc-description,Sorry the page you requested can't be found.
+answer-view,created-message,Your answer has been posted!
+answer-view,no-answers,No one has answered this question yet.
+answer-view,answer-title,Answers
+comment-view,no-comments,There are no comments yet.
+comment-view,created-message,Your comment has been added!
+comment-view,comment-title,Comments
+invitation,writer-name-title,Writer names are a maximum length of 50 characters
+invitation,reason-title,Reasons are a maximum length of 1000 characters
+invitation,reason-label,"They should help draft this policy, because: "
+invitation,doc-title,Candidate policy writers | Objective[8]
+invitation,submit,Create an invite
+invitation,page-intro,Do you know someone with the enthusiasm and expertise to help draft this policy?
+invitation,page-title,Invite a policy writer
+invitation,doc-description,Candidate policy writers...
+invitation,writer-name-label,Writer name: 
+answer-sign-in,sign-in,sign in
+answer-sign-in,please,Please
+answer-sign-in,to,to answer this question.
+base,project-status!,"ALPHA: We are still testing, <a href=""/project-status"" title=""Find out more about our project status"">find out more</a>"
+base,header-logo-title,Go to home page
+base,header-logo-text,Objective[8]
+base,browsehappy!,"You are using an <strong>outdated</strong> browser. Please <a href=""http://browsehappy.com/"">upgrade your browser</a> to improve your experience."
+question-create,add-a-question,Add a question to this objective
+question-create,question-title,Questions are a maximum length of 500 characters
+question-create,question-label,Question
+question-create,post-button,Add
+invitation-response,rsvp-text,"If you're interested, you can sign in and accept the invitation below."
+invitation-response,doc-title,Invitation to draft | Objective[8]
+invitation-response,decline,Decline
+invitation-response,page-intro,You've been invited to help draft some policy!
+invitation-response,sign-in-to-accept,Sign in to accept
+invitation-response,page-title,Can you help us to draft some policy?
+invitation-response,for-objective-text,Help write policy to achieve this objective: 
+invitation-response,doc-description,Invitation to help draft policy
+invitation-response,accept,Accept
