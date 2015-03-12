@@ -7,8 +7,6 @@
             [objective8.storage.database :as db]
             [objective8.bearer-tokens :as bearer-tokens]))
 
-(defn db-connection [] (db/connect! db/postgres-spec))
-
 (def app (helpers/test-context))
 (def the-token "token")
 (def some-wrong-token "wrong-token")
@@ -16,7 +14,7 @@
 (def bearer-token-map {:entity :bearer-token :bearer-name the-bearer :bearer-token the-token})
 
 (facts "Bearer token tests" :integration
-       (against-background [(before :contents (do (db-connection) 
+       (against-background [(before :contents (do (helpers/db-connection) 
                                                   (helpers/truncate-tables))) 
                             (after :facts (helpers/truncate-tables))]
 

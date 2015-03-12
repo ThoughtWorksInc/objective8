@@ -92,8 +92,6 @@
       (wrap-frame-options :sameorigin)))
 
 (defonce server (atom nil))
-(defonce postgres-connection-pool (atom nil))
-
 
 (def app-config
   {:authentication {:allow-anon? true
@@ -120,7 +118,7 @@
    (start-server app-config)) 
   ([app-config] 
    (let [port (Integer/parseInt (config/get-var "APP_PORT" "8080"))]
-     (reset! postgres-connection-pool (db/connect! db/postgres-spec))
+     (db/connect!) 
      (initialise-api)
      (log/info (str "Starting objective8 on port " port))
      (reset! server (run-server (app app-config) {:port port})))))

@@ -35,7 +35,8 @@
 
 (facts "About user journeys" :functional
        (against-background 
-        [(before :contents (do (integration-helpers/truncate-tables)
+        [(before :contents (do (integration-helpers/db-connection)
+                               (integration-helpers/truncate-tables)
                                (core/start-server config-without-twitter)
                                (wd/set-driver! {:browser :firefox})
                                (reset! journey-state {})
