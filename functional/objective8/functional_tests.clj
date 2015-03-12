@@ -4,6 +4,9 @@
             [clj-webdriver.taxi :as wd]
             [clj-webdriver.core :as wc]
             [clojure.java.io :as io]
+            [endophile.core :as ec]
+            [endophile.hiccup :as eh]
+            [hiccup.core :as hc]
             [objective8.core :as core]
             [objective8.integration-helpers :as integration-helpers]
             [dev-helpers.stub-twitter :refer [stub-twitter-auth-config]]))
@@ -32,6 +35,9 @@
               file-seq
               (filter #(re-matches #".*\.png$" (.getName %)))
               (map io/delete-file))))
+
+(def SOME_MARKDOWN  "A heading\n===\nSome content")
+(def SOME_HTML (hc/html (eh/to-hiccup (ec/mp SOME_MARKDOWN))))
 
 (facts "About user journeys" :functional
        (against-background 
@@ -135,7 +141,7 @@
                  (wait-for-title "Edit draft | Objective[8]")                 
                  (screenshot "12_edit_draft_empty")
                  
-                 (wd/input-text "#clj-edit-draft-content" "Functional test draft title\n===\nSome content")
+                 (wd/input-text "#clj-edit-draft-content" SOME_MARKDOWN)
                  (wd/click "button[value='preview']")
                  (wait-for-title "Edit draft | Objective[8]")
                  (screenshot "13_preview_draft")
@@ -144,11 +150,12 @@
 
                  (wait-for-title "Policy draft | Objective[8]")
                  (screenshot "14_submitted_draft")
-                 ;; TODO: Check that draft content is present
                  
-                 (wd/title)
+                 {:page-title (wd/title)
+                  :page-source (wd/page-source)}
                  
                  (catch Exception e
                    (screenshot "ERROR-Can-submit-a-draft")
                    (throw e)))
-               => "Policy draft | Objective[8]")))
+               => (contains {:page-title "Policy draft | Objective[8]"
+                             :page-source (contains SOME_HTML)}))))
