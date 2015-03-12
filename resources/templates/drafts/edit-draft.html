@@ -1,7 +1,7 @@
 <div id="clj-edit-draft" class="main-wrapper article-wrapper">
   <article id="clj-edit-draft-preview"></article>
   <form id="clj-edit-draft-form" action="{{/objectives/:id/edit-draft}}" method="POST">
-    <textarea id="clj-edit-draft-content" name="content"></textarea>
+    <textarea id="clj-edit-draft-content" name="content" required></textarea>
     <button type="submit" class="button" name="action" value="preview">${edit-draft/preview}</button>
     <button type="submit" class="button" name="action" value="submit">${edit-draft/submit}</button>
   </form>
