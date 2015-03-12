@@ -41,8 +41,8 @@
 
 (defn sign-out [request]
   (assoc
-   (friend/logout* (response/redirect "/"))
-   :session {}))
+    (friend/logout* (response/redirect "/"))
+    :session {}))
 
 (defn project-status [{:keys [t' locale] :as request}]
   (views/project-status "project-status" request))
@@ -69,11 +69,11 @@
   (let [{status :status objectives :result} (http-api/get-all-objectives)]
     (cond 
       (= status ::http-api/success)
-        (views/objectives-list "objective-list"
-                              request
-                              :objectives (map format-objective objectives))
+      (views/objectives-list "objective-list"
+                             request
+                             :objectives (map format-objective objectives))
       (= status ::http-api/error)
-        {:status 502})))
+      {:status 502})))
 
 (defn create-objective-form [{:keys [t' locale] :as request}]
   (views/create-objective-form "objective-create" request))
@@ -95,27 +95,24 @@
                          message :flash
                          :keys [uri t' locale]
                          :as request}]
-  (try (let [objective-id (Integer/parseInt id)
-             {objective-status :status objective :result} (http-api/get-objective objective-id)
-             {comments-status :status comments :result} (http-api/retrieve-comments objective-id)]
-         (cond
-           (every? #(= ::http-api/success %) [objective-status comments-status])
-           (let [formatted-objective (format-objective objective)]
-             (views/objective-detail-page "objective-details"
-                                          request
-                                          :objective formatted-objective
-                                          :comments comments
-                                          :doc (let [details (str (:title objective) " | Objective[8]")]
-                                                 {:title details
-                                                  :description details})))
-           (= objective-status ::http-api/not-found) (error-404-response request)
+  (let [objective-id (Integer/parseInt id)
+        {objective-status :status objective :result} (http-api/get-objective objective-id)
+        {comments-status :status comments :result} (http-api/retrieve-comments objective-id)]
+    (cond
+      (every? #(= ::http-api/success %) [objective-status comments-status])
+      (let [formatted-objective (format-objective objective)]
+        (views/objective-detail-page "objective-details"
+                                     request
+                                     :objective formatted-objective
+                                     :comments comments
+                                     :doc (let [details (str (:title objective) " | Objective[8]")]
+                                            {:title details
+                                             :description details})))
+      (= objective-status ::http-api/not-found) (error-404-response request)
 
-           (= objective-status ::http-api/invalid-input) {:status 400}
+      (= objective-status ::http-api/invalid-input) {:status 400}
 
-           :else {:status 500}))
-       (catch NumberFormatException e
-         (log/info "Invalid route: " e)
-         (error-404-response request))))
+      :else {:status 500})))
 
 ;; COMMENTS
 
@@ -137,27 +134,23 @@
 ;; QUESTIONS
 
 (defn question-list [{{id :id} :route-params
-                          :keys [uri t' locale] :as request}]
-  (try 
-    (let [objective-id (Integer/parseInt id)
-          {objective-status :status objective :result} (http-api/get-objective objective-id)
-          {questions-status :status questions :result} (http-api/retrieve-questions objective-id)]
-      (cond
-        (every? #(= ::http-api/success %) [objective-status questions-status])
-        (views/question-list "question-list"
-                             request
-                             :objective (format-objective objective)
-                             :questions questions
-                             :doc {:title (str (:title objective) " | Objective[8]")
-                                   :description (str (t' :question-list/questions-about) " " (:title objective))})
-        
-        (= objective-status ::http-api/not-found) (error-404-response request)
-        (= questions-status ::http-api/not-found) (error-404-response request)
-        (= questions-status ::http-api/invalid-input) {:status 400}
-        :else {:status 500}))
-    (catch NumberFormatException e
-      (log/info "Invalid route: " e)
-      (error-404-response request))))
+                      :keys [uri t' locale] :as request}]
+  (let [objective-id (Integer/parseInt id)
+        {objective-status :status objective :result} (http-api/get-objective objective-id)
+        {questions-status :status questions :result} (http-api/retrieve-questions objective-id)]
+    (cond
+      (every? #(= ::http-api/success %) [objective-status questions-status])
+      (views/question-list "question-list"
+                           request
+                           :objective (format-objective objective)
+                           :questions questions
+                           :doc {:title (str (:title objective) " | Objective[8]")
+                                 :description (str (t' :question-list/questions-about) " " (:title objective))})
+
+      (= objective-status ::http-api/not-found) (error-404-response request)
+      (= questions-status ::http-api/not-found) (error-404-response request)
+      (= questions-status ::http-api/invalid-input) {:status 400}
+      :else {:status 500})))
 
 (defn add-question-form-post [{:keys [uri t' locale] :as request}]
   (if-let [question (helpers/request->question request (get (friend/current-authentication) :identity))]
@@ -177,22 +170,19 @@
                         message :flash
                         :keys [uri t' locale]
                         :as request}]
-  (try (let [{question-status :status question :result} (http-api/get-question (Integer/parseInt id) (Integer/parseInt q-id))
-             {answer-status :status answers :result} (http-api/retrieve-answers (:objective-id question) (:_id question))
-             {objective-status :status objective :result} (http-api/get-objective (:objective-id question))]
-         (cond
-           (every? #(= ::http-api/success %) [question-status answer-status objective-status])
-               (views/question-detail "question-detail"
-                                  request
-                                  :objective (format-objective objective)
-                                  :question question
-                                  :answers answers) 
-           (= question-status ::http-api/not-found) (error-404-response request)
-           (= question-status ::http-api/invalid-input) {:status 400}
-           :else {:status 500}))
-       (catch NumberFormatException e
-         (log/info "Invalid route: " e)
-         (error-404-response request))))
+  (let [{question-status :status question :result} (http-api/get-question (Integer/parseInt id) (Integer/parseInt q-id))
+        {answer-status :status answers :result} (http-api/retrieve-answers (:objective-id question) (:_id question))
+        {objective-status :status objective :result} (http-api/get-objective (:objective-id question))]
+    (cond
+      (every? #(= ::http-api/success %) [question-status answer-status objective-status])
+      (views/question-detail "question-detail"
+                             request
+                             :objective (format-objective objective)
+                             :question question
+                             :answers answers) 
+      (= question-status ::http-api/not-found) (error-404-response request)
+      (= question-status ::http-api/invalid-input) {:status 400}
+      :else {:status 500})))
 
 
 ;; ANSWERS
@@ -216,17 +206,16 @@
 
 (defn candidate-list [{{id :id} :route-params
                        :keys [uri t' locale] :as request}]
-  (try
-    (let [objective-id (Integer/parseInt id)
-          {objective-status :status objective :result} (http-api/get-objective objective-id)
-          {candidate-status :status  candidates :result} (http-api/retrieve-candidates objective-id)]
-      (cond
-        (every? #(= ::http-api/success %) [candidate-status objective-status])
-        (views/candidate-list "candidate-list"
-                              request
-                              :objective (format-objective objective)
-                              :candidates candidates)
-        #_(rendered-response candidate-list-page {:translation t'
+  (let [objective-id (Integer/parseInt id)
+        {objective-status :status objective :result} (http-api/get-objective objective-id)
+        {candidate-status :status  candidates :result} (http-api/retrieve-candidates objective-id)]
+    (cond
+      (every? #(= ::http-api/success %) [candidate-status objective-status])
+      (views/candidate-list "candidate-list"
+                            request
+                            :objective (format-objective objective)
+                            :candidates candidates)
+      #_(rendered-response candidate-list-page {:translation t'
                                                 :locale (subs (str locale) 1)
                                                 :doc-title (t' :invitation/doc-title)
                                                 :doc-description (t' :invitation/doc-description)
@@ -235,13 +224,10 @@
                                                 :uri uri
                                                 :invitation (invitation? (:session request))
                                                 :signed-in (signed-in?)})
-        (= objective-status ::http-api/not-found) (error-404-response request)
-        (= candidate-status ::http-api/not-found) (error-404-response request)
-        (= candidate-status ::http-api/invalid-input) {:status 400}
-        :else {:status 500}))
-    (catch NumberFormatException e
-      (log/info "Invalid route: " e)
-      (error-404-response request))))
+      (= objective-status ::http-api/not-found) (error-404-response request)
+      (= candidate-status ::http-api/not-found) (error-404-response request)
+      (= candidate-status ::http-api/invalid-input) {:status 400}
+      :else {:status 500})))
 
 (defn invitation-form-post [{:keys [t' locale] :as request}]
   (if-let [invitation (helpers/request->invitation-info request (get (friend/current-authentication) :identity))]
@@ -338,36 +324,28 @@
 (defn edit-draft-post [{{o-id :id} :route-params
                         {content :content action :action} :params
                         :as request}]
-  (try 
-    (let [parsed-markdown (eh/to-hiccup (ec/mp content))
-          objective-id (Integer/parseInt o-id)]
-      (cond
-        (= action "preview")
-        (let [preview (hc/html parsed-markdown)]
-          (views/edit-draft "edit-draft" request :objective-id objective-id :preview preview :markdown content))
+  (let [parsed-markdown (eh/to-hiccup (ec/mp content))
+        objective-id (Integer/parseInt o-id)]
+    (cond
+      (= action "preview")
+      (let [preview (hc/html parsed-markdown)]
+        (views/edit-draft "edit-draft" request :objective-id objective-id :preview preview :markdown content))
 
-        (= action "submit")
-        (let [{draft :result} (http-api/post-draft {:objective-id objective-id
-                                                    :submitter-id (get (friend/current-authentication) :identity)
-                                                    :content parsed-markdown})]
-          (response/redirect (str "/objectives/" o-id "/drafts/" (:_id draft))))))
-    (catch NumberFormatException e
-      (log/info "Invalid route: " e)
-      (error-404-response request))))
+      (= action "submit")
+      (let [{draft :result} (http-api/post-draft {:objective-id objective-id
+                                                  :submitter-id (get (friend/current-authentication) :identity)
+                                                  :content parsed-markdown})]
+        (response/redirect (str "/objectives/" o-id "/drafts/" (:_id draft)))))))
 
 (defn draft-detail [{{:keys [d-id id]} :route-params :as request}]
-  (try
-    (let [objective-id (Integer/parseInt id)
-          draft-id (if (= d-id "current") 
-                     d-id 
-                     (Integer/parseInt d-id))
-          {status :status draft :result} (http-api/get-draft objective-id draft-id)]
-      (cond
-        (= status ::http-api/success)
-        (let [draft-content (hc/html (apply list (:content draft)))]
-          (views/draft-detail "draft-detail" request :draft-content draft-content))  
-        (= status ::http-api/not-found) (error-404-response request)
-        :else {:status 500})) 
-    (catch NumberFormatException e
-      (log/info "Invalid route: " e)
-      (error-404-response request))))
+  (let [objective-id (Integer/parseInt id)
+        draft-id (if (= d-id "current") 
+                   d-id 
+                   (Integer/parseInt d-id))
+        {status :status draft :result} (http-api/get-draft objective-id draft-id)]
+    (cond
+      (= status ::http-api/success)
+      (let [draft-content (hc/html (apply list (:content draft)))]
+        (views/draft-detail "draft-detail" request :draft-content draft-content))  
+      (= status ::http-api/not-found) (error-404-response request)
+      :else {:status 500})))

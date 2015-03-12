@@ -69,9 +69,9 @@
                       (p/request app (str "/api/v1/objectives/" 123456))
                       => (contains {:response (contains {:status 404})})) 
 
-                (fact "returns a 400 (Bad request) if objective id is not an integer"
+                (fact "returns an error if objective id is not an integer"
                       (p/request app "/api/v1/objectives/NOT-AN-INTEGER")
-                      => (contains {:response (contains {:status 400})}))) 
+                      => (contains {:response (contains {:status 404})}))) 
 
          (facts "about posting objectives"
                 (against-background

@@ -76,13 +76,13 @@
                       [:response :status]) => 400)
 
         (tabular
-         (fact "returns a 400 status if the objective and question ids are not integers"
+         (fact "returns an error if the objective and question ids are not integers"
                (get-in (p/request app (str "/api/v1/objectives/" ?objective_id 
                                            "/questions/" ?question_id "/answers")
                                   :request-method :post
                                   :content-type "application/json"
                                   :body (json/generate-string the-answer))
-                       [:response :status]) => 400)
+                       [:response :status]) => 404)
          ?objective_id  ?question_id
          INVALID_ID     QUESTION_ID
          OBJECTIVE_ID   INVALID_ID

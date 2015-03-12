@@ -53,17 +53,13 @@
       (invalid-response "Username must be unique"))))
 
 (defn get-user [{:keys [route-params] :as request}]
-  (try
-    (let [id (-> (:id route-params)
-                 Integer/parseInt)]
-      (if-let [user (users/retrieve-user id)]
-        (-> user
-            response/response
-            (response/content-type "application/json"))
-        (response/not-found "")))
-    (catch NumberFormatException e
-      (log/info "Invalid route: " e)
-      (invalid-response  "User id must be an integer"))))
+  (let [id (-> (:id route-params)
+               Integer/parseInt)]
+    (if-let [user (users/retrieve-user id)]
+      (-> user
+          response/response
+          (response/content-type "application/json"))
+      (response/not-found ""))))
 
 ;; OBJECTIVE
 (defn post-objective [{:keys [params] :as request}]
@@ -78,18 +74,14 @@
       (invalid-response "Invalid objective post request"))))
 
 (defn get-objective [{:keys [route-params] :as request}]
-  (try
-    (let [id (-> (:id route-params)
-                 Integer/parseInt)]
-      (if-let [objective (objectives/retrieve-objective id)]
-        (-> objective
-            (update-in [:end-date] utils/date-time->iso-time-string)
-            response/response
-            (response/content-type "application/json"))
-        (response/not-found "")))
-    (catch NumberFormatException e
-      (log/info "Invalid route: " e)
-      (invalid-response  "Objective id must be an integer"))))
+  (let [id (-> (:id route-params)
+               Integer/parseInt)]
+    (if-let [objective (objectives/retrieve-objective id)]
+      (-> objective
+          (update-in [:end-date] utils/date-time->iso-time-string)
+          response/response
+          (response/content-type "application/json"))
+      (response/not-found ""))))
 
 (defn get-objectives [_]
   (response/content-type (response/response (objectives/retrieve-objectives)) "application/json"))
@@ -108,17 +100,13 @@
       (invalid-response "Invalid comment post request"))))
 
 (defn retrieve-comments [{:keys [route-params] :as request}]
-  (try
-    (let [id (-> (:id route-params)
-                 Integer/parseInt)]
-      (if-let [comments (comments/retrieve-comments id)]
-        (-> comments
-            response/response
-            (response/content-type "application/json"))
-        (response/not-found "")))
-    (catch NumberFormatException e
-      (log/info "Invalid route: " e)
-      (invalid-response  "Objective id must be an integer"))))
+  (let [id (-> (:id route-params)
+               Integer/parseInt)]
+    (if-let [comments (comments/retrieve-comments id)]
+      (-> comments
+          response/response
+          (response/content-type "application/json"))
+      (response/not-found ""))))
 
 ;;QUESTIONS
 (defn post-question [{:keys [route-params params] :as request}]
@@ -134,9 +122,6 @@
                                        "/questions/" (:_id stored-question))
                                   stored-question)
         (resource-locked-response "New content cannot be posted against this objective as it is now in drafting.")))
-    (catch NumberFormatException e
-      (log/info "Invalid route: " e)
-      (invalid-response  "Objective id must be an integer"))
     (catch Exception e
       (log/info "Error when posting question: " e)
       (invalid-response "Invalid question post request"))))
@@ -145,7 +130,6 @@
   (let [question (questions/retrieve-question question-id)]
     (when-not (= (:objective-id question) objective-id)
       (throw (Exception. "Question does not belong to this objective")))))
-
 
 (defn get-question [{:keys [route-params] :as request}]
   (try
@@ -159,25 +143,18 @@
             response/response
             (response/content-type "application/json"))
         (response/not-found "")))
-    (catch NumberFormatException e
-      (log/info "Invalid route: " e)
-      (invalid-response  "Question id must be an integer"))
     (catch Exception e
       (log/info "Invalid route: " e)
       (invalid-response "Invalid question request for this objective")))) 
 
 (defn retrieve-questions [{:keys [route-params] :as request}]
-  (try
-    (let [objective-id (-> (:id route-params)
-                           Integer/parseInt)]
-      (if-let [questions (questions/retrieve-questions objective-id)]
-        (-> questions
-            response/response
-            (response/content-type "application/json"))
-        (response/not-found "")))
-    (catch NumberFormatException e
-      (log/info "Invalid route: " e)
-      (invalid-response "Objective id must be an integer"))))
+  (let [objective-id (-> (:id route-params)
+                         Integer/parseInt)]
+    (if-let [questions (questions/retrieve-questions objective-id)]
+      (-> questions
+          response/response
+          (response/content-type "application/json"))
+      (response/not-found ""))))
 
 ;;ANSWERS
 (defn post-answer [{:keys [route-params params] :as request}]
@@ -198,9 +175,6 @@
                                          "/answers/" (:_id stored-answer))
                                     stored-answer)
           (resource-locked-response "New content cannot be posted against this objective as it is now in drafting."))))
-    (catch NumberFormatException e
-      (log/info "Invalid route: " e)
-      (invalid-response "Objective and question ids must be integers"))
     (catch Exception e
       (log/info "Error when posting answer: " e)
       (invalid-response "Invalid answer post request"))))
@@ -217,9 +191,6 @@
             response/response
             (response/content-type "application/json"))
         (response/not-found "")))
-    (catch NumberFormatException e
-      (log/info "Invalid route: " e)
-      (invalid-response "Objective and question ids must be integers"))
     (catch Exception e
       (log/info "Invalid route: " e)
       (invalid-response "Invalid answer request for this objective"))))
@@ -237,9 +208,6 @@
                                        "/api/v1/objectives/" (:objective-id stored-invitation)
                                        "/writer-invitations/" (:_id stored-invitation)) stored-invitation)
         (resource-locked-response "New content cannot be posted against this objective as it is now in drafting.")))
-    (catch NumberFormatException e
-      (log/info "Invalid route: " e)
-      (invalid-response "Objective id must be an integer"))
     (catch Exception e
       (log/info "Error when posting an invitation: " e)
       (invalid-response "Invalid invitation post request for this objective"))))
@@ -283,9 +251,6 @@
       (-> candidates
           response/response
           (response/content-type "application/json")))
-    (catch NumberFormatException e
-      (log/info "Invalid route: " e)
-      (invalid-response "Objective id must be an integer"))
     (catch Exception e
       (log/info "Error when retrieving candidates: " e)
       (invalid-response "Invalid candidates get request for this objective"))))

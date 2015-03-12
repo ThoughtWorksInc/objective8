@@ -58,9 +58,9 @@
                     (p/request app (str "/api/v1/users/" 123456))
                     => (contains {:response (contains {:status 404})}))
 
-              (fact "returns a 400 (Bad request) if user id is not an integer"
+              (fact "returns an error if user id is not an integer"
                     (p/request app "/api/v1/users/NOT-AN-INTEGER")
-                    => (contains {:response (contains {:status 400})}))) 
+                    => (contains {:response (contains {:status 404})}))) 
 
        (facts "about querying for users"
               (against-background
