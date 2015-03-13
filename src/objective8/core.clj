@@ -26,54 +26,57 @@
   
   )
 
-(def handlers {; Front End Handlers
-               :index front-end-handlers/index
-               :sign-in front-end-handlers/sign-in
-               :sign-out front-end-handlers/sign-out
-               :project-status front-end-handlers/project-status
-               :learn-more front-end-handlers/learn-more
-               :create-objective-form (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form) #{:signed-in})
-               :create-objective-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form-post) #{:signed-in})
-               :objective-list front-end-handlers/objective-list
-               :objective (utils/anti-forgery-hook front-end-handlers/objective-detail)
-               :create-comment-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-comment-form-post) #{:signed-in})
-               :add-question-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-question-form-post) #{:signed-in})
-               :question-list (utils/anti-forgery-hook front-end-handlers/question-list)
-               :question (utils/anti-forgery-hook front-end-handlers/question-detail)
-               :add-answer-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-answer-form-post) #{:signed-in})
-               :candidate-list (utils/anti-forgery-hook front-end-handlers/candidate-list)
-               :invitation-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/invitation-form-post) #{:signed-in})
-               :writer-invitation front-end-handlers/writer-invitation
-               :accept-or-decline-invitation (utils/anti-forgery-hook front-end-handlers/accept-or-decline-invitation)
-               :accept-invitation (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/accept-invitation) #{:signed-in})
-               :decline-invitation (utils/anti-forgery-hook front-end-handlers/decline-invitation) 
+(def handlers {;; Front End Handlers
+               :fe/index front-end-handlers/index
+               :fe/sign-in front-end-handlers/sign-in
+               :fe/sign-out front-end-handlers/sign-out
+               :fe/project-status front-end-handlers/project-status
+               :fe/learn-more front-end-handlers/learn-more
+               :fe/create-objective-form (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form) #{:signed-in})
+               :fe/create-objective-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form-post) #{:signed-in})
+               :fe/objective-list front-end-handlers/objective-list
+               :fe/objective (utils/anti-forgery-hook front-end-handlers/objective-detail)
+               :fe/create-comment-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-comment-form-post) #{:signed-in})
+               :fe/add-question-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-question-form-post) #{:signed-in})
+               :fe/question-list (utils/anti-forgery-hook front-end-handlers/question-list)
+               :fe/question (utils/anti-forgery-hook front-end-handlers/question-detail)
+               :fe/add-answer-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-answer-form-post) #{:signed-in})
+               :fe/candidate-list (utils/anti-forgery-hook front-end-handlers/candidate-list)
+               :fe/invitation-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/invitation-form-post) #{:signed-in})
+               :fe/writer-invitation front-end-handlers/writer-invitation
+               :fe/accept-or-decline-invitation (utils/anti-forgery-hook front-end-handlers/accept-or-decline-invitation)
+               :fe/accept-invitation (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/accept-invitation) #{:signed-in})
+               :fe/decline-invitation (utils/anti-forgery-hook front-end-handlers/decline-invitation) 
                :fe/edit-draft-get (m/wrap-authorise-writer front-end-handlers/edit-draft-get)
                :fe/edit-draft-post (m/wrap-authorise-writer front-end-handlers/edit-draft-post)
                :fe/draft front-end-handlers/draft-detail
 
                
-               ; API Handlers
-               :post-user-profile (m/wrap-bearer-token api-handlers/post-user-profile bt/token-provider)
-               :get-user-by-query (m/wrap-bearer-token api-handlers/find-user-by-query bt/token-provider)
-               :get-user (m/wrap-bearer-token api-handlers/get-user bt/token-provider)
-               :post-objective (m/wrap-bearer-token api-handlers/post-objective bt/token-provider)
-               :get-objective api-handlers/get-objective
-               :get-objectives api-handlers/get-objectives
-               :get-comments-for-objective api-handlers/retrieve-comments
-               :post-comment (m/wrap-bearer-token api-handlers/post-comment bt/token-provider)
-               :post-question (m/wrap-bearer-token api-handlers/post-question bt/token-provider)
-               :get-question api-handlers/get-question
-               :get-questions-for-objective api-handlers/retrieve-questions
-               :get-answers-for-question api-handlers/retrieve-answers
-               :post-answer (m/wrap-bearer-token api-handlers/post-answer bt/token-provider)
-               :post-invitation (m/wrap-bearer-token api-handlers/post-invitation bt/token-provider)
-               :get-invitation api-handlers/get-invitation
-               :post-candidate-writer (m/wrap-bearer-token api-handlers/post-candidate-writer bt/token-provider)
-               :put-invitation-declination (m/wrap-bearer-token api-handlers/put-invitation-declination bt/token-provider)
-               :get-candidates-for-objective api-handlers/retrieve-candidates
-               :post-start-drafting (m/wrap-bearer-token api-handlers/post-start-drafting bt/token-provider)
+               ;; API Handlers
+               :api/post-user-profile (m/wrap-bearer-token api-handlers/post-user-profile bt/token-provider)
+               :api/get-user-by-query (m/wrap-bearer-token api-handlers/find-user-by-query bt/token-provider)
+               :api/get-user (m/wrap-bearer-token api-handlers/get-user bt/token-provider)
+               :api/post-objective (m/wrap-bearer-token api-handlers/post-objective bt/token-provider)
+               :api/get-objective api-handlers/get-objective
+               :api/get-objectives api-handlers/get-objectives
+               :api/get-comments-for-objective api-handlers/retrieve-comments
+               :api/post-comment (m/wrap-bearer-token api-handlers/post-comment bt/token-provider)
+               :api/post-question (m/wrap-bearer-token api-handlers/post-question bt/token-provider)
+               :api/get-question api-handlers/get-question
+               :api/get-questions-for-objective api-handlers/retrieve-questions
+               :api/get-answers-for-question api-handlers/retrieve-answers
+               :api/post-answer (m/wrap-bearer-token api-handlers/post-answer bt/token-provider)
+               :api/post-invitation (m/wrap-bearer-token api-handlers/post-invitation bt/token-provider)
+               :api/get-invitation api-handlers/get-invitation
+               :api/post-candidate-writer (m/wrap-bearer-token api-handlers/post-candidate-writer bt/token-provider)
+               :api/put-invitation-declination (m/wrap-bearer-token api-handlers/put-invitation-declination bt/token-provider)
+               :api/get-candidates-for-objective api-handlers/retrieve-candidates
                :api/post-draft (m/wrap-bearer-token api-handlers/post-draft bt/token-provider)
-               :api/get-draft api-handlers/get-draft})
+               :api/get-draft api-handlers/get-draft
+
+               ;; DEV API Handlers
+               :dev/post-start-drafting (m/wrap-bearer-token api-handlers/post-start-drafting bt/token-provider)
+})
 
 (defn app [app-config]
   (-> (make-handler routes/routes (some-fn handlers #(when (fn? %) %)))
