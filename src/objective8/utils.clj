@@ -25,6 +25,9 @@
 (defn writer-for [objective-id]
   (keyword (str "writer-for-" objective-id)))
 
+(defn writer-for? [user objective-id]
+  (contains? (:roles user) (writer-for objective-id)))
+
 (defn add-authorisation-role
   "If the session in the request-or-response is already authenticated,
   then adds a new-role to the list of authorised roles, otherwise

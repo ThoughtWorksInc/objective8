@@ -346,6 +346,8 @@
     (cond
       (= status ::http-api/success)
       (let [draft-content (hc/html (apply list (:content draft)))]
-        (views/draft-detail "draft-detail" request :draft-content draft-content))  
-      (= status ::http-api/not-found) (error-404-response request)
+        (views/draft-detail "draft-detail" request :draft-content draft-content :objective-id objective-id))
+      (= status ::http-api/not-found) (if (= d-id "current") 
+                                        (views/draft-detail "draft-detail" request :objective-id objective-id)  
+                                        (error-404-response request))
       :else {:status 500})))

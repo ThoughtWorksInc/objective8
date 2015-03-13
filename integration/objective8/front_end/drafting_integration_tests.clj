@@ -19,7 +19,8 @@
 (def SOME_HICCUP (eh/to-hiccup (ec/mp SOME_MARKDOWN)))
 (def SOME_HTML (hc/html SOME_HICCUP))
 
-(def edit-draft-url (str utils/host-url "/objectives/" OBJECTIVE_ID "/edit-draft"))
+(def edit-draft-url (utils/path-for :fe/edit-draft-get :id OBJECTIVE_ID))
+(def current-draft-url (utils/path-for :fe/draft :id OBJECTIVE_ID :d-id "current"))
 
 (def user-session (ih/test-context))
 
@@ -63,7 +64,7 @@
                  (:status response) => 302))))
 
 (facts "about viewing drafts" :integration
-      (fact "anyone can view a draft"
+      (fact "anyone can view a particular draft"
             (against-background
               (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
                                                              :result {:_id DRAFT_ID
@@ -72,8 +73,7 @@
                                                                       :submitter-id USER_ID}})
             (let [{response :response} (p/request user-session (utils/path-for :fe/draft :id OBJECTIVE_ID :d-id DRAFT_ID))]
               (:status response) => 200
-              (:body response) => (contains SOME_HTML)
-              ))
+              (:body response) => (contains SOME_HTML)))
        
       (fact "anyone can view current draft"
             (against-background
@@ -82,6 +82,24 @@
                                                                        :content SOME_HICCUP
                                                                        :objective-id OBJECTIVE_ID
                                                                        :submitter-id USER_ID}})
-            (let [{response :response} (p/request user-session (utils/path-for :fe/draft :id OBJECTIVE_ID :d-id "current"))]
+            (let [{response :response} (p/request user-session current-draft-url)]
               (:status response) => 200
-              (:body response) => (contains SOME_HTML))))
+              (:body response) => (contains SOME_HTML))) 
+
+       (fact "writer can reach edit-draft page from a draft page"
+             (against-background
+               (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
+               (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                               :result {:_id USER_ID
+                                                                        :username "username"}}
+               (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}} 
+               (http-api/get-draft OBJECTIVE_ID "current") => {:status ::http-api/success
+                                                               :result {:_id DRAFT_ID
+                                                                        :content SOME_HICCUP
+                                                                        :objective-id OBJECTIVE_ID
+                                                                        :submitter-id USER_ID}}) 
+               (-> user-session
+                   ih/sign-in-as-existing-user 
+                   (p/request current-draft-url)
+                   (get-in [:response :body])) => (contains (str "/objectives/" OBJECTIVE_ID "/edit-draft")))) 
+

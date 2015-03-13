@@ -11,6 +11,7 @@ objective-list,create-button-title,Create an objective
 objective-list,to,to create an objective.
 draft-detail,doc-title,Policy draft | Objective[8]
 draft-detail,doc-description,Draft policy for objective ... 
+draft-detail,add-a-draft,Add a draft
 comment-create,comment-title,Comments are a maximum length of 500 characters
 comment-create,post-button,Add comment
 comment-create,comment-label,Your comment

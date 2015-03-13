@@ -164,8 +164,11 @@
   [:#clj-edit-draft html/any-node] (html/replace-vars translations))
 
 (html/defsnippet draft-detail-page
-  "templates/drafts/draft-detail.html" [:#clj-draft-detail-content] [{:keys [data]}]
-  [:#clj-draft-detail-content :article] (html/html-content (:draft-content data)))
+  "templates/drafts/draft-detail.html" [:#clj-draft-detail-content] [{:keys [translations data user]}]
+  [:#clj-draft-detail-content :article] (when (:draft-content data) (html/html-content (:draft-content data)))
+  [:#clj-draft-detail-content :a] (when (utils/writer-for? user (:objective-id data))
+                                    (html/set-attr :href (str "/objectives/" (:objective-id data) "/edit-draft")))
+  [:#clj-draft-detail-content html/any-node] (html/replace-vars translations)) 
 
 ;INVITATIONS
 (html/defsnippet invitation-create
