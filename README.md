@@ -46,6 +46,25 @@ DISPLAY=:1 lein midje :config midje/functional_tests.clj
 start-stop-daemon --stop -x /usr/bin/Xvfb
 ```
 
+####Adding or updating a translation resource
+
+Resources for translating the site into different languages are located under:
+/resources/translations/<locale-identifier>.csv
+
+To start translating into a new locale, or to update translations for
+an existing locale, there is a helper leiningen task that copies keys
+from the default en.csv template into a new or existing templates for
+other locales.  This can be run using:
+```
+lein translation-template <locale-identifier> [& <locale-identifier>]
+```
+For example:
+```
+lein translation-template es el
+```
+will generate or update `/resources/translations/es.csv` and
+`/resources/translations/el.csv`.
+
 ####Running the app
 
 ######Build sass using:
