@@ -48,23 +48,32 @@
                            (helpers/truncate-tables)))
      (after :facts (helpers/truncate-tables))]
     
-    (fact "creates a draft when submitter id is a writer for the objective"
+    (fact "creates a draft when submitter id is a writer for the objective and drafting has started"
           (let [{objective-id :objective-id submitter-id :user-id} (sh/store-a-candidate)
+                _ (sh/start-drafting! objective-id)
                 the-draft {:objective-id objective-id
                            :submitter-id submitter-id
                            :content "Some content"}
                 {response :response} (p/request app (utils/path-for :api/post-draft :id objective-id)
                                             :request-method :post
                                             :content-type "application/json"
-                                            :body (json/generate-string the-draft))
-                {draft-id :_id :as stored-draft} (drafts/retrieve-current-draft objective-id)
-                target-path (utils/path-for :api/get-draft :id objective-id :d-id draft-id)]
-            (:body response) => (helpers/json-contains {:_id draft-id
+                                            :body (json/generate-string the-draft))]
+            (:body response) => (helpers/json-contains {:_id anything
                                                         :objective-id objective-id
                                                         :submitter-id submitter-id
                                                         :content "Some content"})
-            (:status response) => 201
-            (:headers response) => (helpers/location-contains target-path)))
+            (:status response) => 201))
+
+    (fact "a draft is not created when drafting has not started"
+          (let [{objective-id :objective-id submitter-id :user-id} (sh/store-a-candidate)
+                the-draft {:objective-id objective-id
+                           :submitter-id submitter-id
+                           :content "Some content"}
+                {response :response} (p/request app (utils/path-for :api/post-draft :id objective-id)
+                                                :request-method :post
+                                                :content-type "application/json"
+                                                :body (json/generate-string the-draft))]
+            (:status response) => 404))
 
     (fact "a draft is not created when submitter id is not a writer for the objective"
           (let [{objective-id :_id :as objective} (sh/store-an-objective)

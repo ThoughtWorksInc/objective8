@@ -3,6 +3,9 @@
 
 (def open? (complement :drafting-started))
 
+(defn in-drafting? [objective]
+  (when (:drafting-started objective) objective))
+
 (defn store-objective! [objective]
   (storage/pg-store! (assoc objective :entity :objective)))
 

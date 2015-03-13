@@ -1,5 +1,6 @@
 (ns objective8.storage-helpers
-  (:require [objective8.storage.storage :as storage]))
+  (:require [objective8.storage.storage :as storage] 
+            [objective8.actions :as actions]))
 
 
 (def username-index (atom 0))
@@ -100,6 +101,9 @@
                          :submitter-id submitter-id
                          :objective-id objective-id
                          :content [["h1" "A Heading"] ["p" "A paragraph"]]}))))
+
+(defn start-drafting! [objective-id]
+  (actions/start-drafting! objective-id)) 
 
 (defn retrieve-invitation [invitation-id]
   (-> (storage/pg-retrieve {:entity :invitation :_id invitation-id}) 

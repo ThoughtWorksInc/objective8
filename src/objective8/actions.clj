@@ -13,5 +13,6 @@
     (storage/pg-update-objective-status! objective true)))
 
 (defn submit-draft! [{:keys [submitter-id objective-id] :as draft-data}]
-  (when (writers/retrieve-candidate-for-objective submitter-id objective-id)
-    (drafts/store-draft! draft-data)))
+  (when (objectives/in-drafting? (objectives/retrieve-objective objective-id)) 
+    (when (writers/retrieve-candidate-for-objective submitter-id objective-id)
+      (drafts/store-draft! draft-data))))
