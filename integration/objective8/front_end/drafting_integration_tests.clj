@@ -74,7 +74,7 @@
          (fact "writer can submit a draft"
                (against-background
                  (http-api/post-draft anything) => {:status ::http-api/success
-                                                      :result {:_id DRAFT_ID}})
+                                                    :result {:_id DRAFT_ID}})
                (let [{response :response} (-> user-session
                                               ih/sign-in-as-existing-user
                                               (p/request (str utils/host-url "/objectives/" OBJECTIVE_ID "/edit-draft")
@@ -82,7 +82,18 @@
                                                          :params {:action "submit"
                                                                   :some :content}))]
                  (:headers response) => (ih/location-contains (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID))
-                 (:status response) => 302))))
+                 (:status response) => 302))
+         
+         (fact "posting a draft to an objective that's not in drafting returns a 404 response"
+               (against-background
+                 (http-api/post-draft anything) => {:status ::http-api/not-found})
+               (let [{response :response} (-> user-session
+                                              ih/sign-in-as-existing-user
+                                              (p/request (str utils/host-url "/objectives/" OBJECTIVE_ID "/edit-draft")
+                                                         :request-method :post
+                                                         :params {:action "submit"
+                                                                  :some :content}))]
+                 (:status response) => 404))))
 
 (facts "about viewing drafts" :integration
       (fact "anyone can view a particular draft"

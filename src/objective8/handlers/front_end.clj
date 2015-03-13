@@ -339,10 +339,14 @@
         (views/edit-draft "edit-draft" request :objective-id objective-id :preview preview :markdown content))
 
       (= action "submit")
-      (let [{draft :result} (http-api/post-draft {:objective-id objective-id
-                                                  :submitter-id (get (friend/current-authentication) :identity)
-                                                  :content parsed-markdown})]
-        (response/redirect (str "/objectives/" o-id "/drafts/" (:_id draft)))))))
+      (let [{status :status draft :result} (http-api/post-draft {:objective-id objective-id
+                                                                 :submitter-id (get (friend/current-authentication) 
+                                                                                    :identity)
+                                                                 :content parsed-markdown})]
+        (cond
+          (= status ::http-api/success) (response/redirect (str "/objectives/" o-id "/drafts/" (:_id draft)))    
+          (= status ::http-api/not-found) {:status 404}
+          :else {:status 502})))))
 
 (defn draft-detail [{{:keys [d-id id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)
