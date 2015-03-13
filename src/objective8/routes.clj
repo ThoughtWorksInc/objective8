@@ -13,7 +13,7 @@
         "static/"           (->Resources {:prefix "public/"})
         "objectives"        {:get :objective-list
                              :post :create-objective-form-post
-                             ["/create"] :create-objective-form
+                             "/create" {:get :create-objective-form} 
                              ["/" [#"\d+" :id]] {:get :objective
                                         "/writer-invitations" {:post :invitation-form-post
                                                                ["/" [#"\d+" :i-id]] {:get :accept-or-decline-invitation
@@ -25,7 +25,7 @@
                                                       :get :question-list
                                                       ["/" [#"\d+" :q-id]] {:get :question
                                                                             "/answers" {:post :add-answer-form-post}}}
-                                        "/drafts" {["/" :d-id] {:get :fe/draft}}
+                                        "/drafts" {["/" [#"\d+|current" :d-id]] {:get :fe/draft}}
                                         "/edit-draft" {:get :fe/edit-draft-get
                                                        :post :fe/edit-draft-post}}}
         "comments"          {:post :create-comment-form-post}
@@ -50,7 +50,7 @@
                                                        "/writer-invitations" {:post :post-invitation
                                                                               ["/" [#"\d+" :i-id]] {:put :put-invitation-declination}}
                                                        "/drafts" {:post :api/post-draft
-                                                                  ["/" :d-id] {:get :api/get-draft}}}}
+                                                                  ["/" [#"\d+|current" :d-id]] {:get :api/get-draft}}}}
 
                              "/comments"   {:post :post-comment}
                              "/invitations" {:get :get-invitation}}
