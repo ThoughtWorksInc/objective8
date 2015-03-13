@@ -5,6 +5,7 @@
             [endophile.core :as ec]
             [endophile.hiccup :as eh]
             [hiccup.core :as hc]
+            [hiccup.util :as hc-util]
             [cheshire.core :as json]
             [org.httpkit.client :as http]
             [objective8.responses :refer :all]
@@ -331,7 +332,7 @@
 (defn edit-draft-post [{{o-id :id} :route-params
                         {content :content action :action} :params
                         :as request}]
-  (let [parsed-markdown (eh/to-hiccup (ec/mp content))
+  (let [parsed-markdown (eh/to-hiccup (ec/mp (hc-util/escape-html content)))
         objective-id (Integer/parseInt o-id)]
     (cond
       (= action "preview")
