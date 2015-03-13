@@ -13,6 +13,7 @@
 (def TWITTER_ID "twitter-ID")
 (def USER_ID 1)
 (def OBJECTIVE_ID 2)
+(def WRONG_OBJECTIVE_ID (+ OBJECTIVE_ID 100))
 (def DRAFT_ID 3)
 
 (def SOME_MARKDOWN  "A heading\n===\nSome content")
@@ -37,7 +38,27 @@
                (-> user-session
                    ih/sign-in-as-existing-user 
                    (p/request edit-draft-url)
-                   (get-in [:response :status])) => 200) 
+                   (get-in [:response :status])) => 200
+               (provided
+                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                           :result {:_id 6273 :drafting-started true :entity "objective"}})) 
+
+         (fact "edit-draft page can not be reached when objective is not in drafting"
+               (-> user-session
+                   ih/sign-in-as-existing-user 
+                   (p/request edit-draft-url)
+                   (get-in [:response :status])) => 401
+               (provided
+                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                           :result {:_id 6273 :entity "objective"}})) 
+
+         (fact "user who is not a writer for an objective can not view edit-draft page"
+               (-> user-session
+                   ih/sign-in-as-existing-user 
+                   (p/request edit-draft-url)
+                   (get-in [:response :status])) => 403
+               (provided
+                 (http-api/get-user anything) => {:result {:writer-records [{:objective-id WRONG_OBJECTIVE_ID}]}})) 
 
          (fact "writer can preview a draft"
                (let [{response :response} (-> user-session

@@ -319,7 +319,14 @@
 ;;DRAFTS
 
 (defn edit-draft-get [{{objective-id :id} :route-params :as request}]
-  (views/edit-draft "edit-draft" request :objective-id objective-id))
+   (let [{objective-status :status objective :result} (http-api/get-objective (Integer/parseInt objective-id))]
+     (cond
+       (= objective-status ::http-api/success)
+       (if (:drafting-started objective)
+         (views/edit-draft "edit-draft" request :objective-id objective-id)
+         {:status 401}) 
+       (= objective-status ::http-api/not-found) (error-404-response request)
+       :else {:status 500}))) 
 
 (defn edit-draft-post [{{o-id :id} :route-params
                         {content :content action :action} :params
