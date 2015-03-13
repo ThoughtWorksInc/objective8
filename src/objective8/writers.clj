@@ -31,3 +31,8 @@
   (:result (storage/pg-retrieve {:entity :candidate
                                  :user-id user-id}
                                 {:limit 50})))
+
+(defn retrieve-candidate-for-objective [user-id objective-id]
+  (first (:result (storage/pg-retrieve {:entity :candidate
+                                        :user-id user-id
+                                        :objective-id objective-id}))))

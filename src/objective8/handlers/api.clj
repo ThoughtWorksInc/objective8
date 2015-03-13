@@ -260,23 +260,19 @@
     (successful-post-response (str utils/host-url
                                    "/api/v1/objectives/" objective-id) updated-objective)))
 
-(defn post-draft [{{objective-id :id} :route-params
-                   :as request}]
-  (let [draft-data (ar/request->draft-data request)
-        draft (drafts/store-draft! draft-data)]
-    (successful-post-response (utils/path-for :api/get-draft :id objective-id :d-id (str (:_id draft)))
-                              draft)))
+(defn post-draft [{{objective-id :id} :route-params :as request}]
+  (let [draft-data (ar/request->draft-data request)] 
+    (if-let [draft (actions/submit-draft! draft-data)]
+      (successful-post-response (utils/path-for :api/get-draft :id objective-id :d-id (str (:_id draft)))
+                              draft)
+      (response/not-found (str "No writer found with submitter-id " (:submitter-id draft-data) " for objective " objective-id)))))
 
 (defn get-draft [{{:keys [id d-id]} :route-params :as request}]
-  (try
-    (let [objective-id (Integer/parseInt id)]
-      (if-let [draft (if (= d-id "current")
-                       (drafts/retrieve-current-draft objective-id)
-                       (drafts/retrieve-draft (Integer/parseInt d-id)))]
-        (-> draft
-            response/response
-            (response/content-type "application/json"))
-        (response/not-found "")))  
-    (catch NumberFormatException e
-      (log/info "Invalid route: " e)
-      (invalid-response "Objective id and draft id must be integers"))))
+  (let [objective-id (Integer/parseInt id)]
+    (if-let [draft (if (= d-id "current")
+                     (drafts/retrieve-current-draft objective-id)
+                     (drafts/retrieve-draft (Integer/parseInt d-id)))]
+      (-> draft
+          response/response
+          (response/content-type "application/json"))
+      (response/not-found ""))))

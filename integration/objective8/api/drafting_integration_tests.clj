@@ -48,7 +48,7 @@
                            (helpers/truncate-tables)))
      (after :facts (helpers/truncate-tables))]
     
-    (fact "creates a draft"
+    (fact "creates a draft when submitter id is a writer for the objective"
           (let [{objective-id :objective-id submitter-id :user-id} (sh/store-a-candidate)
                 the-draft {:objective-id objective-id
                            :submitter-id submitter-id
@@ -64,7 +64,19 @@
                                                         :submitter-id submitter-id
                                                         :content "Some content"})
             (:status response) => 201
-            (:headers response) => (helpers/location-contains target-path)))))
+            (:headers response) => (helpers/location-contains target-path)))
+
+    (fact "a draft is not created when submitter id is not a writer for the objective"
+          (let [{objective-id :_id :as objective} (sh/store-an-objective)
+                {submitter-id :_id} (sh/store-a-user)
+                the-draft {:objective-id objective-id
+                           :submitter-id submitter-id 
+                           :content "Some content"}
+                {response :response} (p/request app (utils/path-for :api/post-draft :id objective-id)
+                                                :request-method :post
+                                                :content-type "application/json"
+                                                :body (json/generate-string the-draft))]
+            (:status response) => 404)))) 
 
 (facts "GET /dev/api/v1/objectives/:id/drafts/:d-id" :integration
        (against-background
