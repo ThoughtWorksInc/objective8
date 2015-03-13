@@ -84,8 +84,8 @@
     (if (empty? errors)
       (reduce merge {} (map :result load-results))
       (throw
-       (ex-info (apply str "Errors when loading translation resources: "
-                       (interpose " " (map :resource-name errors))) {})))))
+       (ex-info "Errors when loading translation resources"
+                {:causes errors})))))
 
 (def translations-directory "resources/translations")
 

@@ -20,12 +20,14 @@
                                        :tag-2 "template 2 tag 2 content"}}}})
 
       (fact "attempting to parse bad translation resources reports an error"
-            (tr/load-translation (test-resource-locator :_ "error--lookup-path-too-long.csv"))
+            (tr/load-translation (test-resource-locator :rn "error--lookup-path-too-long.csv"))
             => {:status ::tr/parse-error
-                :message "Translation lookup path too long"}
-            (tr/load-translation (test-resource-locator :_ "error--lookup-path-too-short.csv"))
+                :message "Translation lookup path too long"
+                :resource-name :rn}
+            (tr/load-translation (test-resource-locator :rn "error--lookup-path-too-short.csv"))
             => {:status ::tr/parse-error
-                :message "Translation lookup path too short"}))
+                :message "Translation lookup path too short"
+                :resource-name :rn}))
 
 (facts "about loading a set of translation resources"
        (fact "generates a translation dictionary" :integration
@@ -38,3 +40,6 @@
                                     (test-resource-locator :e1 "error--lookup-path-too-long.csv")
                                     (test-resource-locator :e2 "error--lookup-path-too-short.csv")])
              => (throws Exception)))
+
+(fact "live site translation files are correctly loaded"
+      (tr/configure-translations) => map?)
