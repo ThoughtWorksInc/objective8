@@ -49,7 +49,8 @@
                    :plugins [[lein-midje "3.1.3"]
                              [jonase/eastwood "0.2.1"]]
                    :ragtime {:migrations ragtime.sql.files/migrations
-                             :database ~database-connection-url}}
+                             :database ~database-connection-url}
+                   :aliases {"translation-template" ["run" "-m" "dev-helpers.translation/main"]}}
              :uberjar {:aot [objective8.core]}
              :build {:plugins [[org.clojars.strongh/lein-init-script "1.3.1"]]
                      :lis-opts {:redirect-output-to "/var/log/objective8d-init.log"
