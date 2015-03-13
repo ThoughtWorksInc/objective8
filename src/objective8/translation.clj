@@ -18,32 +18,79 @@
                   (.close in-file))))]
         (lazy csv-seq)))
 
-(defn translation-resource-locator [language]
-  (let [filename (str language ".csv")]
-    (fn [] {:resource-name language
-            :resource (io/reader (io/file "resources" "translations" filename))})))
+(defn- csv-line->dictionary-path* [parsed-csv-line]
+  (map (comp keyword string/trim) (pop parsed-csv-line)))
 
 (defn csv-line->dictionary-path [parsed-csv-line]
-  (map (comp keyword string/trim) (pop parsed-csv-line)))
+  (let [path (csv-line->dictionary-path* parsed-csv-line)
+        path-length (count path)]
+    (cond
+      (= path-length 2) path
+      (> path-length 2) (throw (ex-info "path too long" {:cause :long-path}))
+      (< path-length 2) (throw (ex-info "path too short" {:cause :short-path})))))
+
+(def csv-line->dictionary-content peek)
 
 (defn csv-file-name->language-keyword [file-name]
   (keyword (first (string/split file-name #"\.csv$"))))
 
+(defn translation-resource-locator [filename]
+  (fn [] {:resource-name (csv-file-name->language-keyword filename)
+          :resource (io/reader (io/file "resources" "translations" filename))}))
+
+(def parse-error-messages
+  {:long-path "Translation lookup path too long"
+   :short-path "Translation lookup path too short"})
+
+(defn- load-translation* [resource-name resource]
+  (try
+    (let [language-identifier (keyword resource-name)
+          dictionary (->> (lazy-read-csv resource)
+                          (map (juxt csv-line->dictionary-path
+                                     csv-line->dictionary-content))
+                          (reduce (fn [d [ks v]] (assoc-in d ks v)) {}))]
+      {:status ::success :result {language-identifier dictionary}})
+    (catch Exception e
+      (let [{cause :cause} (ex-data e)]
+        {:status ::parse-error
+         :message (parse-error-messages cause)
+         :resource-name resource-name}))
+    (finally
+      (.close resource))))
+
 (defn load-translation [resource-locator]
-  (let [{:keys [resource resource-name]} (resource-locator)
-        language-identifier (keyword resource-name)
-        dictionary (->> (lazy-read-csv resource)
-                        (map (juxt csv-line->dictionary-path peek))
-                        (reduce (fn [d [ks v]] (assoc-in d ks v)) {}))]
-    {language-identifier dictionary}))
+  (let [{:keys [resource-name resource]} (resource-locator)
+        {status :status :as load-result} (load-translation* resource-name resource)]
+    load-result))
+
+(defn translation-file? [file]
+   (re-matches #".*\.csv$" (.getName file)))
+
+(defn find-translation-resources
+  ([path]
+   (find-translation-resources path translation-resource-locator))
+
+  ([path resource-locator-fn]
+   (->> (io/file path)
+        file-seq
+        (filter translation-file?)
+        (map (comp resource-locator-fn #(.getName %))))))
 
 (defn load-translations [resource-locators]
-  (->> resource-locators
-       (map load-translation)
-       (reduce merge {})))
+  (let [load-results (->> resource-locators
+                          (map load-translation))
+        errors (->> load-results
+                    (filter #(= (:status %) ::parse-error)))]
+    (if (empty? errors)
+      (reduce merge {} (map :result load-results))
+      (throw
+       (ex-info (apply str "Errors when loading translation resources: "
+                       (interpose " " (map :resource-name errors))) {})))))
+
+(def translations-directory "resources/translations")
 
 (defn configure-translations []
-  {:dictionary (load-translations (map translation-resource-locator ["en" "es"]))
+  {:dictionary (load-translations (find-translation-resources translations-directory))
    :dev-mode? false
    :fallback-locale :en
    :log-missing-translations-function (fn [{:keys [locale ks scope]}]

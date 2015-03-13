@@ -4,18 +4,37 @@
             [clojure.java.io :as io]
             [objective8.translation :as tr]))
 
-(defn test-resource-locator [language]
-  (let [filename (str language ".csv")]
-    (fn [] {:resource-name language
-            :resource (io/reader (io/file "integration" filename))})))
+(defn test-resource-locator [locale-keyword resource-file]
+  (fn [] {:resource-name locale-keyword
+          :resource (io/reader (io/file "integration" "fixtures" resource-file))}))
 
-(fact "loads translations from a csv resource" :integration
-      (tr/load-translation (test-resource-locator "language")) => {:language {:template-1 {:tag-1 "template 1 tag 1 content"
-                                                                                               :tag-2 "template 1 tag 2 content"}
-                                                                                  :template-2 {:tag-1 "template 2 tag 1 content"
-                                                                                               :tag-2 "template 2 tag 2 content"}}})
+(fact "about loading a translation resource" :integration
+      (fact "loads translations from a csv resource"
+            (tr/load-translation
+             (test-resource-locator :language "language.csv"))
+            => {:status ::tr/success
+                :result {:language
+                         {:template-1 {:tag-1 "template 1 tag 1 content"
+                                       :tag-2 "template 1 tag 2 content"}
+                          :template-2 {:tag-1 "template 2 tag 1 content"
+                                       :tag-2 "template 2 tag 2 content"}}}})
 
-(fact "loads a set of translation resources and generates a translation dictionary" :integration
-      (tr/load-translations [(test-resource-locator "l1")
-                             (test-resource-locator "l2")]) => {:l1 {:template-1 {:tag-1 "a"}}
-                                                                :l2 {:template-1 {:tag-1 "b"}}})
+      (fact "attempting to parse bad translation resources reports an error"
+            (tr/load-translation (test-resource-locator :_ "error--lookup-path-too-long.csv"))
+            => {:status ::tr/parse-error
+                :message "Translation lookup path too long"}
+            (tr/load-translation (test-resource-locator :_ "error--lookup-path-too-short.csv"))
+            => {:status ::tr/parse-error
+                :message "Translation lookup path too short"}))
+
+(facts "about loading a set of translation resources"
+       (fact "generates a translation dictionary" :integration
+             (tr/load-translations [(test-resource-locator :l1 "l1.csv")
+                                    (test-resource-locator :l2 "l2.csv")]) => {:l1 {:template-1 {:tag-1 "a"}}
+                                                                               :l2 {:template-1 {:tag-1 "b"}}})
+
+       (fact "aborts with an exception when there is an error loading a translation file"
+             (tr/load-translations [(test-resource-locator :l1 "l1.csv")
+                                    (test-resource-locator :e1 "error--lookup-path-too-long.csv")
+                                    (test-resource-locator :e2 "error--lookup-path-too-short.csv")])
+             => (throws Exception)))
