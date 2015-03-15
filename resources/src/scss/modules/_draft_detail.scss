@@ -1,4 +1,8 @@
 #clj-draft-detail-content {
+  article {
+    border: 1px solid black;
+    padding: 0.5em;
+  }
   .no-drafts {
     background: lightgray none repeat scroll 0% 0%;
     padding-top: 40%;
