@@ -2,10 +2,6 @@
   (:require [clojure.tools.logging :as log]
             [cemerick.friend :as friend]
             [ring.util.response :as response]
-            [endophile.core :as ec]
-            [endophile.hiccup :as eh]
-            [hiccup.core :as hc]
-            [hiccup.util :as hc-util]
             [cheshire.core :as json]
             [org.httpkit.client :as http]
             [objective8.responses :refer :all]
@@ -332,11 +328,11 @@
 (defn edit-draft-post [{{o-id :id} :route-params
                         {content :content action :action} :params
                         :as request}]
-  (let [parsed-markdown (eh/to-hiccup (ec/mp (hc-util/escape-html content)))
+  (let [parsed-markdown (utils/markdown->hiccup content)
         objective-id (Integer/parseInt o-id)]
     (cond
       (= action "preview")
-      (let [preview (hc/html parsed-markdown)]
+      (let [preview (utils/hiccup->html parsed-markdown)]
         (views/edit-draft "edit-draft" request :objective-id objective-id :preview preview :markdown content))
 
       (= action "submit")
@@ -357,7 +353,7 @@
         {status :status draft :result} (http-api/get-draft objective-id draft-id)]
     (cond
       (= status ::http-api/success)
-      (let [draft-content (hc/html (apply list (:content draft)))]
+      (let [draft-content (utils/hiccup->html (apply list (:content draft)))]
         (views/draft-detail "draft-detail" request :draft-content draft-content :objective-id objective-id))
       (= status ::http-api/not-found) (if (= d-id "current") 
                                         (views/draft-detail "draft-detail" request :objective-id objective-id)  

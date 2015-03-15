@@ -24,3 +24,16 @@
 
        (fact "does nothing if the user is not already authenticated"
              (add-authorisation-role {} :a-role) => {}))
+
+(facts "about converting markdown to hiccup"
+       (fact "correctly converts valid markdown"
+             (hiccup->html (markdown->hiccup "HEADLINE\n===\n\n- l1\n- l2\n"))
+             => "<h1>HEADLINE</h1><ul><li>l1</li><li>l2</li></ul>")
+
+       (fact "suppresses evil html script tag"
+             (hiccup->html (markdown->hiccup "<script>alert('evil')</script>")) 
+             =not=> (contains "<script>"))
+
+       (fact "suppresses evil html link"
+             (hiccup->html (markdown->hiccup "<a href='evil-url'>evil-link</a>")) 
+             =not=> (contains "href"))) 

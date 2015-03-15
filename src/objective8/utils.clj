@@ -3,8 +3,11 @@
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
             [bidi.bidi :as bidi]
             [cemerick.friend :as friend]
+            [endophile.hiccup :as eh]
+            [hiccup.core :as hiccup]
             [objective8.routes :as routes]
-            [objective8.config :as config]))
+            [objective8.config :as config])
+  (:import  [org.pegdown PegDownProcessor Extensions]))
 
 (def host-url
   (str (config/get-var "HTTPS" "http://") (config/get-var "BASE_URI" "localhost:8080")))
@@ -78,10 +81,29 @@
       ((regex-checker #"/objectives/\d+/candidate-writers") target)
       ((regex-checker #"/objectives/\d+/writer-invitations/\d+") target)))
 
-;;DISABLE CSRF for tests
-
-(defn anti-forgery-hook [handler]
+(defn anti-forgery-hook 
+  "Hook enables CSRF when config variable set. Can be disabled for tests"
+  [handler]
   (let [handler-with-anti-forgery (wrap-anti-forgery handler)]
     (fn [request] (if config/enable-csrf
                     (handler-with-anti-forgery request)
                     (handler request)))))
+
+(defn- parse-markdown 
+  "Extends endophile.core's 'md' method to include SUPPRESS_ALL_HTML"
+  [md]
+  (.parseMarkdown
+    (PegDownProcessor.  (int
+                          (bit-or
+                            Extensions/AUTOLINKS
+                            Extensions/SUPPRESS_ALL_HTML
+                            Extensions/FENCED_CODE_BLOCKS)))
+    (char-array md)))
+
+(defn markdown->hiccup [md]
+  (-> md
+      parse-markdown
+      eh/to-hiccup))
+
+(defn hiccup->html [hcp]
+  (hiccup/html hcp))

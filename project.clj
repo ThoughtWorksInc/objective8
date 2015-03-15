@@ -28,6 +28,7 @@
                  [postgresql "9.3-1102.jdbc41"]
                  [ragtime "0.3.8"]
                  [endophile "0.1.2"]
+                 [org.pegdown/pegdown "1.2.0"]
                  [clojure-csv/clojure-csv "2.0.1"]]
   :main objective8.core
   :plugins [[ragtime/ragtime.lein "0.3.8"]]
