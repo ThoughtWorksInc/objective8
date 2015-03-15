@@ -168,8 +168,9 @@
   [:#clj-draft-detail-content :a] (html/set-attr :href (str "/objectives/" 
                                                             (:objective-id data) "/edit-draft"))
   [:#clj-draft-detail-content :article] (if (:draft-content data) 
-                                          (html/html-content (:draft-content data))
-                                           identity)
+                                          (html/do-> (html/remove-class "no-drafts") 
+                                                     (html/html-content (:draft-content data)))
+                                          identity)
   [:#clj-draft-detail-content :a] (when (utils/writer-for? user (:objective-id data))
                                     identity)
   [:#clj-draft-detail-content html/any-node] (html/replace-vars translations)) 
