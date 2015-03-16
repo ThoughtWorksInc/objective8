@@ -14,7 +14,7 @@
 (def OBJECTIVE_ID 234)
 
 
-(facts "comments" :integration
+(facts "comments"
        (binding [config/enable-csrf false]
          (fact "authorised user can post and retrieve comment against an objective"
               (against-background

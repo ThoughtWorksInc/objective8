@@ -38,7 +38,7 @@
   (fn [{response :response}]
     ((contains {:status status}) response)))
 
-(facts "signup" :integration
+(facts "signup"
        (fact "User directly accessing /sign-up page is redirected to /sign-in"
              (p/request test-session sign-up-url) => (check-redirects-to "/sign-in"))
 

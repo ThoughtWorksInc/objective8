@@ -21,7 +21,7 @@
 
 (def default-app (core/app core/app-config))
 
-(facts "about questions" :integration
+(facts "about questions"
        (binding [config/enable-csrf false]
          (fact "authorised user can post and retrieve a question against an objective"
                (against-background

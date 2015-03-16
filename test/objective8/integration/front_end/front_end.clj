@@ -29,7 +29,7 @@
   (fn [peridot-response]
     ((contains url-fragment) (get-in peridot-response [:response :headers "Location"]))))
 
-(facts "front end" :integration
+(facts "front end"
        (binding [config/enable-csrf false]
          (facts "authorisation"
                 (facts "signed in users"

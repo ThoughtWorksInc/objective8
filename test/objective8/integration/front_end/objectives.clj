@@ -21,7 +21,7 @@
 
 (def default-app (core/app core/app-config))
 
-(facts "objectives" :integration
+(facts "objectives"
        (binding [config/enable-csrf false]
          (fact "authorised user can post and retrieve objective"
                (against-background (http-api/create-objective

@@ -10,7 +10,7 @@
 (def OBJECTIVE_ID 234)
 (def QUESTION_ID 2)
 
-(facts "answers" :integration
+(facts "answers"
        (binding [config/enable-csrf false]
          (fact "authorised user can post and retrieve answer to a question"
               (against-background

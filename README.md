@@ -31,11 +31,11 @@ test/run_all_tests.sh
 ```
 To run only unit tests:
 ```
-lein midje :config test/unit_tests.clj
+lein midje objective8.unit.*
 ```
-To run unit and integration tests:
+To run only integration tests:
 ```
-lein midje :config test/integration_tests.clj
+lein midje objective8.integration.*
 ```
 To run only functional tests:
 ```

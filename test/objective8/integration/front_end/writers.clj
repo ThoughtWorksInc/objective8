@@ -35,7 +35,7 @@
 (def default-app (core/app core/app-config))
 (def user-session (helpers/test-context))
 
-(facts "about writers" :integration
+(facts "about writers"
        (binding [config/enable-csrf false]
          (fact "authorised user can invite a policy writer on an objective"
                (against-background
@@ -82,7 +82,7 @@
 
                (default-app candidates-get-request) => (contains {:status 404}))))
 
-(facts "about responding to invitations" :integration
+(facts "about responding to invitations"
        (fact "an invited writer is redirected to the accept/decline page when accessing their invitation link"
              (against-background
               (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success

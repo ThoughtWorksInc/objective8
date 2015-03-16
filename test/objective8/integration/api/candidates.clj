@@ -10,7 +10,7 @@
 
 (def app (helpers/test-context))
 
-(facts "POST /api/v1/objectives/:obj-id/candidate-writers" :integration
+(facts "POST /api/v1/objectives/:obj-id/candidate-writers"
      (against-background
        [(m/valid-credentials? anything anything anything) => true
           (before :contents (do (helpers/db-connection)
@@ -75,7 +75,7 @@
                                                    :body (json/generate-string candidate-data))]
                (:status response) => 403))))
 
-(facts "GET /api/v1/objectives/:id/candidate-writers" :integration
+(facts "GET /api/v1/objectives/:id/candidate-writers"
        (against-background
         [(before :contents (do (helpers/db-connection)
                                (helpers/truncate-tables)))

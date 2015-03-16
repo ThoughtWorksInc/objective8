@@ -10,7 +10,7 @@
                                                             store-a-question
                                                             store-a-candidate]]))
 
-(facts "Storage tests" :integration
+(facts "Storage tests"
        (against-background
         [(before :contents (do (db-connection)
                                (truncate-tables)))

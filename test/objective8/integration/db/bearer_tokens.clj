@@ -12,7 +12,7 @@
    :bearer-name bearer-name 
    :bearer-token bearer-token})
 
-(facts "Bearer tokens" :integration
+(facts "Bearer tokens"
 
        (against-background
          [(before :contents (do (helpers/db-connection)

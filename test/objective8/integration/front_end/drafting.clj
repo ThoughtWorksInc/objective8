@@ -25,7 +25,7 @@
 
 (def user-session (ih/test-context))
 
-(facts "about writing drafts" :integration
+(facts "about writing drafts"
        (against-background
                  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
                  (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
@@ -95,7 +95,7 @@
                                                                   :some :content}))]
                  (:status response) => 404))))
 
-(facts "about viewing drafts" :integration
+(facts "about viewing drafts"
       (fact "anyone can view a particular draft"
             (against-background
               (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success

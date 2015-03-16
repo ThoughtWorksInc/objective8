@@ -10,7 +10,7 @@
 
 (def app (ih/test-context))
 
-(facts "POST /api/v1/up-down-votes" :integration
+(facts "POST /api/v1/up-down-votes"
        (against-background
         (m/valid-credentials? anything anything anything) => true)
        (against-background
@@ -18,7 +18,7 @@
                                (ih/truncate-tables)))
          (after :facts (ih/truncate-tables))]
 
-       (future-fact "Upvotes an answer" :integration ;; Make this generic
+       (future-fact "Upvotes an answer" ;; Make this generic
              (let [{ueid :ueid user-id :user-id} (sh/store-an-answer)
                    {response :response} (p/request app (utils/path-for :api/post-up-down-vote)
                                                    :request-method :post
@@ -29,7 +29,7 @@
                (:status response) => 200))
        
 
-       (future-fact "A second upvote on the same answer is not permitted" :integration
+       (future-fact "A second upvote on the same answer is not permitted"
               (let [{ueid :ueid user-id :user-id} (sh/store-an-answer)
                     {response :response} (-> app
                                              (p/request (utils/path-for :api/post-up-down-vote)

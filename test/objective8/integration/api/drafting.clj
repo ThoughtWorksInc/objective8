@@ -10,7 +10,7 @@
 
 (def app (helpers/test-context))
 
-(facts "POST /dev/api/v1/objectives/obj-id/start-drafting" :integration
+(facts "POST /dev/api/v1/objectives/obj-id/start-drafting"
   (against-background
       (m/valid-credentials? anything anything anything) => true)
   (against-background
@@ -40,7 +40,7 @@
 
         (:status (sh/retrieve-invitation active-invitation-for-other-objective-id)) => "active"))))
 
-(facts "POST /dev/api/v1/objectives/:id/drafts" :integration
+(facts "POST /dev/api/v1/objectives/:id/drafts"
   (against-background
     (m/valid-credentials? anything anything anything) => true)
   (against-background
@@ -87,7 +87,7 @@
                                                 :body (json/generate-string the-draft))]
             (:status response) => 404)))) 
 
-(facts "GET /dev/api/v1/objectives/:id/drafts/:d-id" :integration
+(facts "GET /dev/api/v1/objectives/:id/drafts/:d-id"
        (against-background
         [(before :contents (do (helpers/db-connection)
                                (helpers/truncate-tables)))
@@ -100,7 +100,7 @@
                 (:status response) => 200
                 (:body response) => (helpers/json-contains draft)))))
 
-(facts "GET /dev/api/v1/objectives/:id/drafts/current" :integration
+(facts "GET /dev/api/v1/objectives/:id/drafts/current"
        (against-background
         [(before :contents (do (helpers/db-connection)
                                (helpers/truncate-tables)))

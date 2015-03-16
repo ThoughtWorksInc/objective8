@@ -25,7 +25,7 @@
 
 (def stored-user (assoc user :_id USER_ID))
 
-(facts "GET /api/v1/users/:id" :integration
+(facts "GET /api/v1/users/:id"
        (against-background
         (m/valid-credentials? anything anything anything) => true)
        (against-background
@@ -41,7 +41,7 @@
                     {response :response} (p/request app (str "/api/v1/users/" user-id))]
                 (:body response) => (helpers/json-contains {:writer-records (contains [candidate-record-1 candidate-record-2])})))))
 
-(facts "users" :integration
+(facts "users"
        (facts "about retrieving users by id"
               (against-background
                 (m/valid-credentials? anything anything anything) => true)

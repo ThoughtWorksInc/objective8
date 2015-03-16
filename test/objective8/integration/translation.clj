@@ -8,7 +8,7 @@
   (fn [] {:resource-name locale-keyword
           :resource (io/reader (io/file "test" "objective8" "integration" "fixtures" resource-file))}))
 
-(fact "about loading a translation resource" :integration
+(fact "about loading a translation resource"
       (fact "loads translations from a csv resource"
             (tr/load-translation
              (test-resource-locator :language "language.csv"))
@@ -30,7 +30,7 @@
                 :resource-name :rn}))
 
 (facts "about loading a set of translation resources"
-       (fact "generates a translation dictionary" :integration
+       (fact "generates a translation dictionary"
              (tr/load-translations [(test-resource-locator :l1 "l1.csv")
                                     (test-resource-locator :l2 "l2.csv")]) => {:l1 {:template-1 {:tag-1 "a"}}
                                                                                :l2 {:template-1 {:tag-1 "b"}}})

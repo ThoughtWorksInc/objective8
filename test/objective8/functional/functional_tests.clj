@@ -42,7 +42,7 @@
 (def SOME_MARKDOWN  "A heading\n===\nSome content")
 (def SOME_HTML (hc/html (eh/to-hiccup (ec/mp SOME_MARKDOWN))))
 
-(facts "About user journeys" :functional
+(facts "About user journeys"
        (against-background 
          [(before :contents (do (integration-helpers/db-connection)
                                 (integration-helpers/truncate-tables)
@@ -53,7 +53,7 @@
           (after :contents (do (wd/quit)
                                (integration-helpers/truncate-tables)
                                (core/stop-server)))]
-         (fact "can add an objective" :functional  
+         (fact "can add an objective"
                (try (wd/to "localhost:8080")
                     (wait-for-title "Objective[8]")
                     (screenshot "home_page")
@@ -93,7 +93,7 @@
                       (throw e)))
                =>  "Functional test headline | Objective[8]")
 
-         (fact "Can invite a writer" :functional
+         (fact "Can invite a writer"
                (try (wd/to (:objective-url @journey-state))
                     (wait-for-title "Functional test headline | Objective[8]")
                     (screenshot "objective_page")
@@ -121,7 +121,7 @@
                => (contains {:page-title "Functional test headline | Objective[8]"
                              :flash-message (contains "Your invited writer can accept their invitation")}))
 
-         (fact "Can accept a writer invitation" :functional
+         (fact "Can accept a writer invitation"
                (try
                  (wd/to (:invitation-url @journey-state))
                  (wait-for-title "Invitation to draft | Objective[8]")
@@ -144,7 +144,7 @@
                                   last
                                   Integer/parseInt
                                   actions/start-drafting!))]
-           (fact "Can submit a draft" :functional
+           (fact "Can submit a draft"
                  (try
                    (wd/to (str (:objective-url @journey-state) "/drafts/current"))
                    (wait-for-title "Policy draft | Objective[8]")
@@ -173,7 +173,7 @@
                  => (contains {:page-title "Policy draft | Objective[8]"
                                :page-source (contains SOME_HTML)})) 
 
-           (fact "Can view current draft" :functional
+           (fact "Can view current draft"
                  (try
                    (wd/to (:objective-url @journey-state))
                    (wait-for-title "Functional test headline | Objective[8]")

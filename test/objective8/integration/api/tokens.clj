@@ -13,7 +13,7 @@
 (def the-bearer "bearer")
 (def bearer-token-map {:entity :bearer-token :bearer-name the-bearer :bearer-token the-token})
 
-(facts "Bearer token tests" :integration
+(facts "Bearer token tests"
        (against-background [(before :contents (do (helpers/db-connection) 
                                                   (helpers/truncate-tables))) 
                             (after :facts (helpers/truncate-tables))]

@@ -30,7 +30,7 @@
    :objective-id objective-id
    :created-by-id created-by-id})
 
-(facts "POST /api/v1/objectives/:id/comments" :integration
+(facts "POST /api/v1/objectives/:id/comments"
        (against-background
         (m/valid-credentials? anything anything anything) => true)
        (against-background
@@ -74,7 +74,7 @@
                 (:status response) => 423))))
 
 
-(facts "GET /api/v1/objectives/:id/comments" :integration
+(facts "GET /api/v1/objectives/:id/comments"
        (against-background
         [(before :contents (do (helpers/db-connection)
                                (helpers/truncate-tables)))

@@ -29,7 +29,7 @@
 (def the-answer (an-answer OBJECTIVE_ID QUESTION_ID USER_ID))
 (def the-invalid-answer (dissoc the-answer :question-id))
 
-(facts "POST /api/v1/objectives/:id/questions/:id/answers" :integration
+(facts "POST /api/v1/objectives/:id/questions/:id/answers"
        (against-background
         (m/valid-credentials? anything anything anything) => true)
        (against-background
@@ -97,7 +97,7 @@
                                                     :body "")]
                 (:status response) => 400))))
 
-(facts "GET /api/v1/objectives/:id/questions/:id/answers" :integration
+(facts "GET /api/v1/objectives/:id/questions/:id/answers"
        (against-background
          [(before :contents (do (helpers/db-connection)
                                 (helpers/truncate-tables)))

@@ -40,7 +40,7 @@
   ([objective-id user-id] (json/generate-string (a-question objective-id user-id)))
   ([] (the-question-as-json OBJECTIVE_ID USER_ID)))
 
-(facts "about posting questions" :integration
+(facts "about posting questions"
        (against-background
          (m/valid-credentials? anything anything anything) => true)
        (against-background

@@ -25,7 +25,7 @@
     :objective-id objective-id
     :invited-by-id invited-by-id }))
 
-(facts "POST /api/v1/objectives/:id/writer-invitations" :integration
+(facts "POST /api/v1/objectives/:id/writer-invitations"
        (against-background
         (m/valid-credentials? anything anything anything) => true)
        (against-background
@@ -63,7 +63,7 @@
                                  :body (json/generate-string (an-invitation)))
                       [:response :status]) => 400)))
 
-(facts "GET /api/v1/invitations?uuid=<UUID>" :integration
+(facts "GET /api/v1/invitations?uuid=<UUID>"
        (against-background
          [(m/valid-credentials? anything anything anything) => true 
           (before :contents (do (helpers/db-connection)
@@ -89,7 +89,7 @@
                (get-in (p/request app "/api/v1/invitations?uuid=some-uuid")
                        [:response :status]) => 400)))
 
-(facts "PUT /api/v1/objectives/:obj-id/writer-invitations/:inv-id" :integration
+(facts "PUT /api/v1/objectives/:obj-id/writer-invitations/:inv-id"
        (against-background
         [(m/valid-credentials? anything anything anything) => true 
          (before :contents (do (helpers/db-connection)

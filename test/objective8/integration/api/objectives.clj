@@ -33,7 +33,7 @@
   []
   (:_id (users/store-user! {:twitter-id "anything" :username "username"})))
 
-(facts "objectives" :integration
+(facts "objectives"
        (against-background
          [(before :contents (do 
                               (helpers/db-connection)
