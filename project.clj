@@ -5,7 +5,7 @@
 (defproject objective8 "0.0.1-SNAPSHOT"
   :description "Cool new project to do things and stuff"
   :min-lein-version "2.0.0"
-  :test-paths ["test" "integration" "functional"]
+  :test-paths ["test"] 
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [http-kit "2.1.16"]
                  [org.clojure/tools.logging "0.3.1"]
