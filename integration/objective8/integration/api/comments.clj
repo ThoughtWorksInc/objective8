@@ -1,4 +1,4 @@
-(ns objective8.api.comments-integration-tests
+(ns objective8.integration.api.comments
   (:require [midje.sweet :refer :all]
             [peridot.core :as p]
             [cheshire.core :as json]

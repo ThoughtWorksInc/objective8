@@ -1,4 +1,4 @@
-(ns objective8.db.bearer_tokens_test
+(ns objective8.integration.db.bearer_tokens
   (:require [midje.sweet :refer :all]
             [objective8.bearer-tokens :as bt]
             [objective8.storage.storage :as s]

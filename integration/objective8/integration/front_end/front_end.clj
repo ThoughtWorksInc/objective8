@@ -1,4 +1,4 @@
-(ns objective8.front-end.front-end-integration-tests
+(ns objective8.integration.front-end.front-end
   (:require [midje.sweet :refer :all]
             [ring.mock.request :as mock]
             [peridot.core :as p]

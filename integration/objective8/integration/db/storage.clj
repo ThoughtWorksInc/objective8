@@ -1,4 +1,4 @@
-(ns objective8.db.storage-tests
+(ns objective8.integration.db.storage
   (:require [midje.sweet :refer :all]
             [objective8.storage.storage :as storage]
             [objective8.storage.database :as db]

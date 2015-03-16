@@ -1,4 +1,4 @@
-(ns objective8.front-end.answers-integration-tests
+(ns objective8.integration.front-end.answers
   (:require [midje.sweet :refer :all]
             [peridot.core :as p]
             [oauth.client :as oauth]

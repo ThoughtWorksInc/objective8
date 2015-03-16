@@ -1,4 +1,4 @@
-(ns objective8.front-end.drafting-integration-tests
+(ns objective8.integration.front-end.drafting
   (:require [midje.sweet :refer :all]
             [peridot.core :as p]
             [endophile.core :as ec]

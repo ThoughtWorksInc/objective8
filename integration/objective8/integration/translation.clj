@@ -1,4 +1,4 @@
-(ns objective8.translation-test
+(ns objective8.integration.translation
   (:import [java.io File])
   (:require [midje.sweet :refer :all]
             [clojure.java.io :as io]

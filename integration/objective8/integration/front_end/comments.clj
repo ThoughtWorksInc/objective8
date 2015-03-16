@@ -1,4 +1,4 @@
-(ns objective8.front-end.comments-integration-tests
+(ns objective8.integration.front-end.comments
   (:require [midje.sweet :refer :all]
             [ring.mock.request :as mock]
             [peridot.core :as p]
