@@ -27,23 +27,19 @@ lein ragtime migrate
 
 To run all tests:
 ```
-lein midje
+test/run_all_tests.sh
 ```
 To run only unit tests:
 ```
-lein midje :config midje/unit_tests.clj
+lein midje :config test/unit_tests.clj
 ```
 To run unit and integration tests:
 ```
-lein midje :config midje/integration_tests.clj
+lein midje :config test/integration_tests.clj
 ```
 To run only functional tests:
 ```
-start-stop-daemon --start -b -x /usr/bin/Xvfb -- :1 -screen 0 1280x1024x16
-API_BEARER_NAME=functionalTests
-API_BEARER_TOKEN=functionalTestsToken
-DISPLAY=:1 lein midje :config midje/functional_tests.clj
-start-stop-daemon --stop -x /usr/bin/Xvfb
+test/run_functional_tests.sh
 ```
 
 ####Adding or updating a translation resource
@@ -69,7 +65,7 @@ will generate or update `/resources/translations/es.csv` and
 
 ######Build sass using:
 ```
-./pre-push.sh
+npm install
 ```
 
 ######Running the app with a fake twitter (used for Sign-in) 
