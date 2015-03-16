@@ -1,4 +1,4 @@
-(ns objective8.integration-helpers
+(ns objective8.integration.integration-helpers
   (:require [net.cgrand.enlive-html :as html]
             [midje.sweet :as midje]
             [korma.core :as korma]

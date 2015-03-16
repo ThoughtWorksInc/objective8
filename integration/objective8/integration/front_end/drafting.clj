@@ -6,7 +6,7 @@
             [hiccup.core :as hc]
             [oauth.client :as oauth]
             [objective8.utils :as utils]
-            [objective8.integration-helpers :as ih]
+            [objective8.integration.integration-helpers :as ih]
             [objective8.http-api :as http-api]
             [objective8.config :as config]))
 

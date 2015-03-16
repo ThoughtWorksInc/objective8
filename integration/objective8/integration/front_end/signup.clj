@@ -7,7 +7,7 @@
             [ring.util.codec :as c]
             [objective8.core :as core]
             [objective8.config :as config]
-            [objective8.integration-helpers :as helpers]
+            [objective8.integration.integration-helpers :as helpers]
             [objective8.http-api :as http-api]
             [objective8.utils :as utils]
             [objective8.handlers.front-end :as front-end]  

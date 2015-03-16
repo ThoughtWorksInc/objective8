@@ -4,8 +4,8 @@
             [cheshire.core :as json]
             [objective8.core :as core]
             [objective8.utils :as utils]
-            [objective8.integration-helpers :as ih]
-            [objective8.storage-helpers :as sh]
+            [objective8.integration.integration-helpers :as ih]
+            [objective8.integration.storage-helpers :as sh]
             [objective8.middleware :as m]))
 
 (def app (ih/test-context))

@@ -6,7 +6,7 @@
 
 (defn test-resource-locator [locale-keyword resource-file]
   (fn [] {:resource-name locale-keyword
-          :resource (io/reader (io/file "integration" "fixtures" resource-file))}))
+          :resource (io/reader (io/file "integration" "objective8" "integration" "fixtures" resource-file))}))
 
 (fact "about loading a translation resource" :integration
       (fact "loads translations from a csv resource"

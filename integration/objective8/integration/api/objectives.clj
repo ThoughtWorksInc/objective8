@@ -4,7 +4,7 @@
             [cheshire.core :as json]
             [objective8.utils :as utils]
             [objective8.core :as core]
-            [objective8.integration-helpers :as helpers]
+            [objective8.integration.integration-helpers :as helpers]
             [objective8.objectives :as objectives]
             [objective8.users :as users]
             [objective8.middleware :as m]))

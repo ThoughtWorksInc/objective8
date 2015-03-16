@@ -4,7 +4,7 @@
             [oauth.client :as oauth]
             [objective8.http-api :as http-api]
             [objective8.config :as config]
-            [objective8.integration-helpers :as helpers]))
+            [objective8.integration.integration-helpers :as helpers]))
 
 (def USER_ID 1)
 (def OBJECTIVE_ID 234)

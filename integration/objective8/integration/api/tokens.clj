@@ -2,7 +2,7 @@
   (:require [midje.sweet :refer :all]
             [peridot.core :as p]
             [cheshire.core :as json]
-            [objective8.integration-helpers :as helpers]
+            [objective8.integration.integration-helpers :as helpers]
             [objective8.storage.storage :as storage]
             [objective8.storage.database :as db]
             [objective8.bearer-tokens :as bearer-tokens]))

@@ -2,8 +2,8 @@
   (:require [midje.sweet :refer :all] 
             [peridot.core :as p] 
             [cheshire.core :as json]
-            [objective8.integration-helpers :as helpers] 
-            [objective8.storage-helpers :as sh]
+            [objective8.integration.integration-helpers :as helpers] 
+            [objective8.integration.storage-helpers :as sh]
             [objective8.core :as core]
             [objective8.middleware :as m]
             [objective8.writers :as writers]))

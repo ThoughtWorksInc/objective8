@@ -1,4 +1,4 @@
-(ns objective8.storage-helpers
+(ns objective8.integration.storage-helpers
   (:require [objective8.storage.storage :as storage] 
             [objective8.actions :as actions]))
 

@@ -7,7 +7,7 @@
             [objective8.storage.storage :as storage]
             [objective8.handlers.front-end :as front-end]
             [objective8.http-api :as http-api]
-            [objective8.integration-helpers :as helpers]
+            [objective8.integration.integration-helpers :as helpers]
             [objective8.utils :as utils]
             [objective8.config :as config]
             [objective8.core :as core]))

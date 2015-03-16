@@ -2,13 +2,13 @@
   (:require [midje.sweet :refer :all]
             [objective8.storage.storage :as storage]
             [objective8.storage.database :as db]
-            [objective8.integration-helpers :refer [truncate-tables
-                                                    db-connection]]
-            [objective8.storage-helpers :refer [store-a-user
-                                                store-an-objective
-                                                store-an-invitation
-                                                store-a-question
-                                                store-a-candidate]]))
+            [objective8.integration.integration-helpers :refer [truncate-tables
+                                                                db-connection]]
+            [objective8.integration.storage-helpers :refer [store-a-user
+                                                            store-an-objective
+                                                            store-an-invitation
+                                                            store-a-question
+                                                            store-a-candidate]]))
 
 (facts "Storage tests" :integration
        (against-background

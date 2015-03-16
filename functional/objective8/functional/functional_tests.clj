@@ -10,7 +10,7 @@
             [hiccup.core :as hc]
             [objective8.core :as core]
             [objective8.actions :as actions]
-            [objective8.integration-helpers :as integration-helpers]
+            [objective8.integration.integration-helpers :as integration-helpers]
             [dev-helpers.stub-twitter :refer [stub-twitter-auth-config]]))
 
 (def config-without-twitter (assoc core/app-config :authentication stub-twitter-auth-config))
