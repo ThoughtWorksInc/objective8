@@ -91,8 +91,6 @@ objective-create,end-date-prompt,"On this date, the drafting phase begins. You s
 objective-create,doc-description,Create an Objective ...
 objective-create,headline-label,Headline
 objective-create,background-title,Enter optional background text up to 1000 characters
-current-draft,page-intro,Current draft
-current-draft,no-drafts,There are currently no drafts for this objective
 invitation-banner,message,Respond to your invitation to help draft policy
 question-list,question-list-heading,Recently asked questions
 question-list,page-intro,"Gather background information such as opinions and experiences by asking a question.  Your question should be focussed and specific, as the answers will influence the policy drafting process."
@@ -132,6 +130,7 @@ objective-view,doc-description,Objective  ...
 question-view,added-message,Your question has been added!
 question-view,added-answer-message,Your answer has been added!
 edit-draft,doc-title,Edit draft | Objective[8]
+edit-draft,placeholder,Enter your draft here
 edit-draft,submit,Submit
 edit-draft,preview,Preview
 edit-draft,doc-description,Draft policy
