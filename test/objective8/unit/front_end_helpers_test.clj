@@ -1,4 +1,4 @@
-(ns objective8.front-end-helpers-test
+(ns objective8.unit.front-end-helpers-test
   (:require [midje.sweet :refer :all]
             [objective8.front-end-helpers :refer :all]
             [objective8.utils :as utils]))

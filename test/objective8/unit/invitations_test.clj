@@ -1,4 +1,4 @@
-(ns objective8.invitations-test
+(ns objective8.unit.invitations-test
   (:require [midje.sweet :refer :all]
             [objective8.invitations :as invitations]
             [objective8.storage.storage :as storage]

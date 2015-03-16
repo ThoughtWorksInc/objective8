@@ -1,4 +1,4 @@
-(ns objective8.storage.storage_test
+(ns objective8.unit.storage.storage_test
   (:require [midje.sweet :refer :all]
             [korma.core :as korma]
             [objective8.storage.storage :as s]

@@ -1,4 +1,4 @@
-(ns objective8.workflows.twitter-test
+(ns objective8.unit.workflows.twitter-test
   (:require [objective8.workflows.twitter :refer :all]
             [midje.sweet :refer :all]
             [oauth.client :as oauth]

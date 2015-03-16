@@ -1,4 +1,4 @@
-(ns objective8.up-down-votes-test
+(ns objective8.unit.up-down-votes-test
   (:require [midje.sweet :refer :all]
             [objective8.up-down-votes :refer :all]
             [objective8.storage.storage :as storage]))

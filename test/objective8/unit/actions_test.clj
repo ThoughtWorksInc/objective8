@@ -1,4 +1,4 @@
-(ns objective8.actions-test
+(ns objective8.unit.actions-test
   (:require [midje.sweet :refer :all]
             [objective8.actions :as actions]
             [objective8.up-down-votes :as up-down-votes]))

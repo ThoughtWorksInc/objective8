@@ -1,4 +1,4 @@
-(ns objective8.objectives-test
+(ns objective8.unit.objectives-test
   (:require [midje.sweet :refer :all]
             [objective8.objectives :as objectives]
             [objective8.storage.storage :as storage]))

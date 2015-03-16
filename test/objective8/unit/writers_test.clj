@@ -1,4 +1,4 @@
-(ns objective8.writers-test
+(ns objective8.unit.writers-test
   (:require [midje.sweet :refer :all]
             [objective8.writers :as writers]
             [objective8.invitations :as i]

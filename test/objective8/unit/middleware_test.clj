@@ -1,4 +1,4 @@
-(ns objective8.middleware-test
+(ns objective8.unit.middleware-test
   (:require [midje.sweet :refer :all]
             [cemerick.friend :as friend]
             [cemerick.friend.workflows :as workflows]

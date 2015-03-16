@@ -1,4 +1,4 @@
-(ns objective8.responses-test
+(ns objective8.unit.responses-test
   (:require [midje.sweet :refer :all]
             [net.cgrand.enlive-html :as html]
             [objective8.responses :as responses]

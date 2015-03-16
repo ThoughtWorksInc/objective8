@@ -1,4 +1,4 @@
-(ns objective8.workflows.sign-up-test
+(ns objective8.unit.workflows.sign-up-test
   (:require [midje.sweet :refer :all]
             [cemerick.friend :as friend]
             [objective8.workflows.sign-up :refer :all]

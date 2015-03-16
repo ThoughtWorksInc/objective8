@@ -1,4 +1,4 @@
-(ns objective8.views_test
+(ns objective8.unit.views_test
   (:require [midje.sweet :refer :all]
             [cemerick.friend :as friend]
             [objective8.views :as views]))

@@ -1,4 +1,4 @@
-(ns objective8.http-api-test
+(ns objective8.unit.http-api-test
   (:use org.httpkit.fake)
   (:require [org.httpkit.client :as http]
             [midje.sweet :refer :all]

@@ -1,4 +1,4 @@
-(ns objective8.questions-test
+(ns objective8.unit.questions-test
   (:require [midje.sweet :refer :all]
             [objective8.questions :as questions]
             [objective8.objectives :as objectives]

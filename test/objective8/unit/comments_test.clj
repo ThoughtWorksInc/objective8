@@ -1,4 +1,4 @@
-(ns objective8.comments-test
+(ns objective8.unit.comments-test
   (:require [midje.sweet :refer :all]
             [objective8.comments :as comments]
             [objective8.objectives :as objectives]
