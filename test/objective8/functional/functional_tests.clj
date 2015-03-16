@@ -24,7 +24,7 @@
       (prn (str "Actual: " (wd/title)))
       (throw e))))
 
-(def screenshot-directory "functional/objective8/functional/screenshots")
+(def screenshot-directory "test/objective8/functional/screenshots")
 (def screenshot-number (atom 0))
 (defn screenshot [filename]
   (wd/take-screenshot :file (str screenshot-directory "/"

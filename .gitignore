@@ -10,7 +10,7 @@ resources/public/*.css
 resources/public/*.css.map
 resources/public/*.js
 resources/templates/jade
-functional/objective8/functional/screenshots/*.png
+test/objective8/functional/screenshots/*.png
 ops/.vagrant
 .lein-deps-sum
 lib/
