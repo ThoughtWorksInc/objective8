@@ -58,6 +58,16 @@
      :user_data (map->json-type user)}
     (throw (Exception. "Could not transform map to user"))))
 
+(defn map->up-down-vote
+  "Prepares a clojure map for storage as an up-down-vote"
+  [{:keys [ueid user-id vote-type active] :as up-down-vote}]
+  (if (and ueid user-id (#{:up :down} vote-type) (#{true false} active))
+    {:ueid ueid
+     :user_id user-id
+     :active active
+     :up_vote (= vote-type :up)}
+    (throw (Exception. "Could not transform map to up-down-vote"))))
+
 (defn map->question
   "Converts a clojure map into a json-typed question for the database"
   [{:keys [created-by-id objective-id] :as question}]

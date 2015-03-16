@@ -79,3 +79,6 @@
   (update (mappings/get-mapping {:entity :objective})
           (assoc objective :drafting-started true)
           {:_id (:_id objective)}))
+
+(defn pg-deactivate-up-down-vote! [up-down-vote]
+  )

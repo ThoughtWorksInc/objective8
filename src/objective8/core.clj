@@ -73,6 +73,7 @@
                :api/get-candidates-for-objective api-handlers/retrieve-candidates
                :api/post-draft (m/wrap-bearer-token api-handlers/post-draft bt/token-provider)
                :api/get-draft api-handlers/get-draft
+               :api/post-up-down-vote (m/wrap-bearer-token api-handlers/post-up-down-vote bt/token-provider)
 
                ;; DEV API Handlers
                :dev/post-start-drafting (m/wrap-bearer-token api-handlers/post-start-drafting bt/token-provider)

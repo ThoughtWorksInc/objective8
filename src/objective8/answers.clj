@@ -7,6 +7,7 @@
 
 (defn create-answer! [{obj-id :objective-id :as answer}]
   (when (open? (objectives/retrieve-objective obj-id))
+    ;; TODO: Create unique id
     (store-answer! answer)))
 
 (defn retrieve-answers [question-id]

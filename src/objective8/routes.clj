@@ -53,6 +53,7 @@
                                                                   ["/" [#"\d+|current" :d-id]] {:get :api/get-draft}}}}
 
                              "/comments"   {:post :api/post-comment}
+                             "/up-down-votes" {:post :api/post-up-down-vote}
                              "/invitations" {:get :api/get-invitation}}
 
          ;;DEV-API

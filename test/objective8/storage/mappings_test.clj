@@ -21,6 +21,8 @@
         (.getValue transformed-map) => "{\"is\":\"a map\",\"has\":\"some keys\"}"))
 
 ;; OBJECTIVE
+(def USER_ID 1234)
+
 (facts "About map->objective"
        (fact "Column values are pulled out and converted, the map gets turned to json"
              (let [objective (map->objective {:created-by-id 1
@@ -46,8 +48,35 @@
                     (map->user {:twitter-id "twitter-TWITTERID"}) => (throws Exception "Could not transform map to user")
                     (map->user {:username "username"}) => (throws Exception "Could not transform map to user")))
 
+;;UP-DOWN-VOTES
+(def UEID 3)
+
+(def vote-data {:ueid UEID :user-id USER_ID :vote-type :up :active true})
+(facts "About map->up-down-vote"
+       (tabular
+        (fact "Column values are pulled out and converted"
+              (let [up-down-vote (map->up-down-vote {:ueid UEID :user-id USER_ID :vote-type ?vote-type :active true})]
+                up-down-vote => (contains {:ueid UEID
+                                           :user_id USER_ID
+                                           :up_vote ?up-vote
+                                           :active true})))
+        ?vote-type ?up-vote
+        :up        true
+        :down      false)
+
+       (fact "throws exception if any field is missing"
+             (map->up-down-vote (dissoc vote-data :ueid)) => (throws Exception "Could not transform map to up-down-vote")
+             (map->up-down-vote (dissoc vote-data :user-id)) => (throws Exception "Could not transform map to up-down-vote")
+             (map->up-down-vote (dissoc vote-data :vote-type)) => (throws Exception "Could not transform map to up-down-vote")
+             (map->up-down-vote (dissoc vote-data :active)) => (throws Exception "Could not transform map to up-down-vote"))
+
+       (fact "throws exception if vote type is invalid"
+             (map->up-down-vote (assoc vote-data :vote-type :not-up-or-down)) => (throws Exception "Could not transform map to up-down-vote")))
+
+       (fact "throws exception if active is not a boolean"
+             (map->up-down-vote (assoc vote-data :active :not-a-boolean)) => (throws Exception "Could not transform map to up-down-vote")) 
+
 ;;COMMENT
-(def USER_ID 1234)
 (def OBJECTIVE_ID 2345)
 
 (def comment-map {:created-by-id USER_ID
