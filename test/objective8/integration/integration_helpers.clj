@@ -20,6 +20,7 @@
   (korma/delete m/comment)
   (korma/delete m/draft)
   (korma/delete m/objective)
+  (korma/delete m/global-identifier)
   (korma/delete m/user))
 
 (defn get-anti-forgery-token [request-context]

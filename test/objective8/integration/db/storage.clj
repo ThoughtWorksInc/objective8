@@ -120,11 +120,11 @@
                ;;ANSWERS
                (fact "an answer entity can be stored in the database"
                      (let [{user-id :_id username :username} (store-a-user)
-                           {objective-id :_id} (store-an-objective)
-                           {question-id :_id} (store-a-question)
+                           {question-id :_id objective-id :objective-id} (store-a-question)
                            answer {:entity :answer
                                    :created-by-id user-id
                                    :question-id question-id
+                                   :objective-id objective-id
                                    :answer "An answer"}
                            store-result (storage/pg-store! answer)
                            retrieve-result (storage/pg-retrieve {:entity :answer

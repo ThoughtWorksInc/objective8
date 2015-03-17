@@ -36,6 +36,14 @@
              (map->objective {:a "B" :created-by "Foo"}) => (throws Exception "Could not transform map to objective")
              (map->objective {:a "B" :end-date "Blah"}) => (throws Exception "Could not transform map to objective")))
 
+;;GLOBAL IDENTIFIERS
+(facts "About map->global-identifier"
+       (fact "Column values are pulled out and converted, the map gets turned to json"
+             (let [global-id (map->global-identifier {:objective-id 1})]
+               global-id => (contains {:objective_id 1}))
+       (fact "throws exception if objective-id is missing"
+             (map->global-identifier {}) => (throws Exception "Could not transform map to global-identifier"))))
+
 ;;USER
 (facts "About map->user"
        (fact "Column values are pulled out and converted, the map gets turned to json"
@@ -50,7 +58,6 @@
 
 ;;UP-DOWN-VOTES
 (def GLOBAL_ID 3)
-
 (def vote-data {:global-id GLOBAL_ID :user-id USER_ID :vote-type :up :active true})
 (facts "About map->up-down-vote"
        (tabular
@@ -106,17 +113,23 @@
 (def QUESTION_ID 345)
 
 (def answer-map {:created-by-id USER_ID
-                 :question-id QUESTION_ID})
+                 :question-id QUESTION_ID
+                 :objective-id OBJECTIVE_ID
+                 :global-id GLOBAL_ID})
 
 (facts "About map->answer"
        (fact "Column values are pulled out and converted, the map gets turned to json"
              (let [test-answer (map->answer answer-map)]
                test-answer => (contains {:created_by_id USER_ID
-                                         :question_id QUESTION_ID  
+                                         :question_id QUESTION_ID
+                                         :objective_id OBJECTIVE_ID
+                                         :global_id GLOBAL_ID
                                          :answer json-type?})))
        (fact "throws exception if :created-by-id or :question-id are missing"
-                    (map->answer (dissoc answer-map :created-by-id)) => (throws Exception "Could not transform map to answer")
-                    (map->answer (dissoc answer-map :question-id)) => (throws Exception "Could not transform map to answer")))
+             (map->answer (dissoc answer-map :created-by-id)) => (throws Exception)
+             (map->answer (dissoc answer-map :question-id)) => (throws Exception)
+             (map->answer (dissoc answer-map :objective-id)) => (throws Exception)
+             (map->answer (dissoc answer-map :global-id)) => (throws Exception)))
 
 ;;INVITATIONS
 (def INVITATION_STATUS "active")

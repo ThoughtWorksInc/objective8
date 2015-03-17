@@ -38,7 +38,14 @@
     {:created_by_id created-by-id
      :end_date (tc/to-timestamp end-date)
      :objective (map->json-type objective)}
-    (throw (Exception. "Could not transform map to objective"))))
+      (throw (Exception. "Could not transform map to objective"))))
+
+(defn map->global-identifier
+  "Converts a clojure map into a global-identifier for the DB"
+  [{:keys [objective-id] :as global-identifier}]
+  (if objective-id
+    {:objective_id objective-id}
+    (throw (Exception. "Could not transform map to global-identifier"))))
 
 (defn map->comment
   "Converts a clojure map into a json-typed comment for the database"
@@ -78,12 +85,14 @@
 
 (defn map->answer 
   "Converts a clojure map into a json-typed answer for the database"
-  [{:keys [created-by-id question-id] :as answer}]
-  (if (and created-by-id question-id)
+  [{:keys [created-by-id question-id global-id objective-id] :as answer}]
+  (if (and created-by-id question-id global-id objective-id)
     {:created_by_id created-by-id
      :question_id question-id
+     :objective_id objective-id
+     :global_id global-id
      :answer (map->json-type answer)}
-    (throw (Exception. "Could not transform map to answer"))))
+    (throw (ex-info "Could not transform map to answer" {:data answer}))))
 
 (defn map->invitation
  "Converts a clojure map into a json-typed invitation for the database" 
@@ -135,6 +144,11 @@
                  :username (:username m))))
 
 (declare objective user comment question answer invitation candidate bearer-token)
+
+(korma/defentity global-identifier
+  (korma/pk :_id)
+  (korma/table :objective8.global_identifiers)
+  (korma/prepare map->global-identifier))
 
 (korma/defentity objective
   (korma/pk :_id)
@@ -202,7 +216,8 @@
                :invitation invitation
                :candidate candidate
                :draft draft
-               :bearer-token bearer-token})
+               :bearer-token bearer-token
+               :global-identifier global-identifier})
 
 (defn get-mapping
   "Returns a korma entity for a map"
