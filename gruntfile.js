@@ -149,6 +149,15 @@ module.exports = function(grunt) {
     'jshint',
     'concat',
     'uglify',
+    'watch'
+  ]);
+
+  grunt.registerTask('design',[
+    'sass:dev',
+    'autoprefixer:dev',
+    'jshint',
+    'concat',
+    'uglify',
     'browserSync',
     'watch'
   ]);
