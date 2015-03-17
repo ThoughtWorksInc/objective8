@@ -96,12 +96,10 @@ question-list,question-list-heading,Recently asked questions
 question-list,page-intro,"Gather background information such as opinions and experiences by asking a question.  Your question should be focussed and specific, as the answers will influence the policy drafting process."
 question-list,no-questions,There are no questions yet.
 question-list,questions-about,Questions about
-navigation-global,sign-out-title,Go to sign out
-navigation-global,sign-in-text,Sign in
-navigation-global,profile-text,Profile
+navigation-global,sign-out-title,Sign out
 navigation-global,sign-out-text,Sign out
-navigation-global,profile-title,Go to user profile
-navigation-global,sign-in-title,Go to sign in
+navigation-global,sign-in-title,Sign in
+navigation-global,sign-in-text,Sign in
 share-widget,google-plus-text,Google +1
 share-widget,url-label,URL to share
 share-widget,reddit-text,Submit to Reddit

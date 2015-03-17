@@ -14,6 +14,10 @@ module.exports = function(grunt) {
       sass: {
         files: ['resources/src/scss/**/*.scss'],
         tasks: ['sass:dev', 'autoprefixer:dev']
+      },
+      jade: {
+        files: ['resources/src/jade/**/*.jade'],
+        tasks: ['jade:compile']
       }
     },
 
@@ -146,6 +150,7 @@ module.exports = function(grunt) {
   grunt.registerTask('dev',[
     'sass:dev',
     'autoprefixer:dev',
+    'jade',
     'jshint',
     'concat',
     'uglify',
