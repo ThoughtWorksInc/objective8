@@ -1,6 +1,7 @@
 (ns objective8.views
   (:require [cemerick.friend :as friend]
-            [objective8.responses :as responses]))
+            [objective8.responses :as responses]
+            [objective8.templates.learn-more :as t]))
 
 (defn- user-info [request auth-map]
   (when auth-map {:username (:username auth-map)
@@ -43,7 +44,6 @@
 (def index (view (render-page responses/index-page)))
 (def sign-in (view (render-page responses/sign-in-page)))
 (def project-status (view (render-page responses/project-status-page)))
-(def learn-more (view (render-page responses/learn-more-page)))
 (def sign-up-form (view (render-page responses/sign-up)))
 (def objectives-list (view (render-page responses/objective-list-page)))
 (def create-objective-form (view (render-page responses/objective-create-page)))
@@ -56,3 +56,5 @@
 (def draft-detail (view (render-page responses/draft-detail-page)))
 
 (def four-o-four (view (render-page responses/error-404-page)))
+
+(def new-learn-more-page (view t/learn-more-page))

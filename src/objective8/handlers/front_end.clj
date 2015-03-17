@@ -45,7 +45,9 @@
   (views/project-status "project-status" request))
 
 (defn learn-more [{:keys [t' locale] :as request}]
-  (views/learn-more "learn-more" request))
+  {:status 200
+   :body (views/new-learn-more-page "learn-more" request)
+   :header {"Content-Type" "text/html"}})
 ;; USER PROFILE
 
 (defn sign-up-form [{:keys [t' locale errors] :as request}]
