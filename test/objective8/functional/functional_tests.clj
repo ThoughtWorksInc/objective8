@@ -42,7 +42,7 @@
 (def SOME_MARKDOWN  "A heading\n===\nSome content")
 (def SOME_HTML (hc/html (eh/to-hiccup (ec/mp SOME_MARKDOWN))))
 
-(facts "About user journeys"
+(facts "About user journeys" :functional
        (against-background 
          [(before :contents (do (integration-helpers/db-connection)
                                 (integration-helpers/truncate-tables)
