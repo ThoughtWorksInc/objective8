@@ -156,6 +156,7 @@ module.exports = function(grunt) {
   grunt.registerTask('build',[
     'sass:dist',
     'autoprefixer:dist',
+    'jade',
     'jshint',
     'concat',
     'uglify'
