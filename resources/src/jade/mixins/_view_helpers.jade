@@ -1,5 +1,3 @@
-// Global
-
 mixin guidanceText(heading)
   .guidance-text
     .guidance-buttons
@@ -17,8 +15,6 @@ mixin goalItem()
 
 mixin questionItem(author, date)
   li.question-item
-    //span.question-author #{author}
-    //span.question-date #{date}
     .question-text
       block
     .question-actions
@@ -55,8 +51,6 @@ mixin commentItemBlank()
   li.question-item
     | There are no comments yet.
 
-// Objectives
-
 mixin objectiveWriterItem(name, href, photo)
   - href = href || ''
   - photo = photo || 'http://placekitten.com/g/120/120'
@@ -74,20 +68,6 @@ mixin objectiveWriterItem(name, href, photo)
 mixin objectiveWriterItemBlank()
   li.writer-item
     | No candidate writers have been invited yet.
-
-// Drafts
-
-//mixin draftWriterItem(name, href, photo)
-//  - href = href || ''
-//  - photo = photo || 'http://placekitten.com/g/120/120'
-//  li.writer-item
-//    a(href="#{href}")
-//      .writer-item-photo
-//        img(src="#{photo}")
-//      .writer-item-author
-//        = name
-
-// Questions
 
 mixin addQuestionForm(allowFocus)
   - focus = allowFocus ? true : false
