@@ -5,10 +5,8 @@
 (def objective-template (html/html-resource "templates/jade/objective.html"))
 
 (defn objective-page [context]
-  (let [user (:user context)]
-    (apply str
-           (html/emit*
-             (html/at objective-template
-                      [:.clj-user-navigation-signed-out] (if user
-                                                           (html/substitute (f/user-navigation-signed-in context))
-                                                           (html/substitute (f/user-navigation-signed-out context))))))))
+  (apply str
+         (html/emit*
+           (html/at objective-template
+                    [:title] (html/content (get-in context [:doc :title]))
+                    [:.clj-user-navigation-signed-out] (html/substitute (f/user-navigation-signed-in? context))))))

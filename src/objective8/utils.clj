@@ -79,7 +79,8 @@
     (fn [fragment] (when fragment (re-matches fragment-regex fragment))))
 
 (defn safen-url [target]
-  (or ((regex-checker #"/objectives/\d+") target)
+  (or ((regex-checker #"/learn-more") target)
+      ((regex-checker #"/objectives/\d+") target)
       ((regex-checker #"/objectives/\d+/questions") target)
       ((regex-checker #"/objectives/\d+/questions/\d+") target)
       ((regex-checker #"/objectives/\d+/drafts/\d+") target)
