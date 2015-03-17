@@ -20,6 +20,7 @@ vagrant up
 # type 'vagrant' when asked for a sudoers password
 vagrant ssh
 cd /var/objective8
+npm install
 lein ragtime migrate
 ```
 
@@ -63,7 +64,7 @@ will generate or update `/resources/translations/es.csv` and
 
 ####Running the app
 
-######Build sass using:
+######Build front-end assets (html and css) using:
 ```
 npm install
 ```
