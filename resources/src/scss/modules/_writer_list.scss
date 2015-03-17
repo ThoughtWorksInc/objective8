@@ -8,9 +8,9 @@ $writer_avatar_size: 60px;
   display: inline-block;
   margin: 0 1em 1em 0;
   padding: 0;
-  .draft-writers & {
-    text-align: center;
-  }
+//  .draft-writers & {
+//    text-align: center;
+//  }
   a {
     display: inline-block;
     text-decoration: none;
@@ -22,13 +22,14 @@ $writer_avatar_size: 60px;
   margin-bottom: 0.3em;
   background: $grey-4;
   overflow: hidden;
-  .draft-writers & {
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .objective-writers & {
-    float: left;
-  }
+  float: left;
+//  .draft-writers & {
+//    margin-left: auto;
+//    margin-right: auto;
+//  }
+//  .objective-writers & {
+//    float: left;
+//  }
   img {
     display: block;
     width: 100%;
@@ -40,10 +41,10 @@ $writer_avatar_size: 60px;
   display: inline-block;
   line-height: 1.1;
   color: $default_text_color;
-  .draft-writers & {
-    width: $writer_avatar_size;
-    word-spacing: 30000px;
-  }
+//  .draft-writers & {
+//    width: $writer_avatar_size;
+//    word-spacing: 30000px;
+//  }
 }
 
 .writer-item-text {

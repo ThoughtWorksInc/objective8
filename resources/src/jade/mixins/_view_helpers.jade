@@ -24,6 +24,10 @@ mixin questionItem(author, date)
     .question-actions
       a.comment-reply(href="#") Answer
 
+mixin questionItemBlank()
+  li.question-item
+    | No one has answered this question yet.
+
 mixin commentReply
   - voteUpCount = Math.floor(Math.random() * 100) + 1
   - voteDownCount = Math.floor(Math.random() * 100) + 1
@@ -47,6 +51,10 @@ mixin commentItem(author, date)
       block
     +commentReply
 
+mixin commentItemBlank()
+  li.question-item
+    | There are no comments yet.
+
 // Objectives
 
 mixin objectiveWriterItem(name, href, photo)
@@ -63,17 +71,21 @@ mixin objectiveWriterItem(name, href, photo)
           p
             block
 
+mixin objectiveWriterItemBlank()
+  li.writer-item
+    | No candidate writers have been invited yet.
+
 // Drafts
 
-mixin draftWriterItem(name, href, photo)
-  - href = href || ''
-  - photo = photo || 'http://placekitten.com/g/120/120'
-  li.writer-item
-    a(href="#{href}")
-      .writer-item-photo
-        img(src="#{photo}")
-      .writer-item-author
-        = name
+//mixin draftWriterItem(name, href, photo)
+//  - href = href || ''
+//  - photo = photo || 'http://placekitten.com/g/120/120'
+//  li.writer-item
+//    a(href="#{href}")
+//      .writer-item-photo
+//        img(src="#{photo}")
+//      .writer-item-author
+//        = name
 
 // Questions
 

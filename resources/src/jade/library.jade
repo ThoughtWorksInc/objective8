@@ -74,6 +74,13 @@ html.no-js(lang="en")
 
       .example
         .documentation
+          h2 Blank question list item
+          p Generated with questionItemBlank() mixin
+        ol.question-list
+          +questionItemBlank()
+
+      .example
+        .documentation
           h2 Comment list item
           p Generated with commentItem(author, date) mixin
         ol.comment-list
@@ -82,23 +89,25 @@ html.no-js(lang="en")
 
       .example
         .documentation
-          h2 Objective Writer list item
-          p Generated with objectiveWriterItem(name, href, photo) mixin
-          p Currently needs a parent .objective-writers class (TODO: remove dependancy)
-        .objective-writers
-          ul.writer-item-list
-            +objectiveWriterItem('Jenny Bloggs', '#', 'http://placekitten.com/g/80/80')
-              | A cycling enthusiast, responsible for many safety policies in the UK.
+          h2 Blank comment list item
+          p Generated with commentItemBlank mixin
+        ol.comment-list
+          +commentItemBlank()
 
       .example
         .documentation
-          h2 Draft Writer list item
-          p Generated with draftWriterItem(name, href, photo) mixin
-          p Currently needs a parent .draft-writers class (TODO: remove dependancy)
-        .draft-writers
-          ul.writer-item-list
-            +draftWriterItem('Jenny Bloggs', '#', 'http://placekitten.com/g/80/80')
-              | A cycling enthusiast, responsible for many safety policies in the UK.
+          h2 Objective Writer list item
+          p Generated with objectiveWriterItem(name, href, photo) mixin
+        ul.writer-item-list
+          +objectiveWriterItem('Jenny Bloggs', '#', 'http://placekitten.com/g/80/80')
+            | A cycling enthusiast, responsible for many safety policies in the UK.
+
+      .example
+        .documentation
+          h2 Blank objective writer list item
+          p Generated with objectiveWriterItemBlank(name, href, photo) mixin
+        ul.writer-item-list
+          +objectiveWriterItemBlank()
 
       .example
         .documentation
