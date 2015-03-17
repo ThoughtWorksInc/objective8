@@ -87,13 +87,15 @@
                     (wait-for-title "Functional test headline | Objective[8]")
                     (swap! journey-state assoc :objective-url (wd/current-url))
                     (screenshot "objective_page")
+
                     (wd/title)
+                    
                     (catch Exception e
                       (screenshot "ERROR-Can-add-an-objective") 
                       (throw e)))
-               =>  "Functional test headline | Objective[8]")
+               =>  "Functional test headline | Objective[8]") 
 
-         (fact "Can invite a writer"
+         (future-fact "Can invite a writer"
                (try (wd/to (:objective-url @journey-state))
                     (wait-for-title "Functional test headline | Objective[8]")
                     (screenshot "objective_page")
@@ -121,7 +123,7 @@
                => (contains {:page-title "Functional test headline | Objective[8]"
                              :flash-message (contains "Your invited writer can accept their invitation")}))
 
-         (fact "Can accept a writer invitation"
+         (future-fact "Can accept a writer invitation"
                (try
                  (wd/to (:invitation-url @journey-state))
                  (wait-for-title "Invitation to draft | Objective[8]")
@@ -144,7 +146,7 @@
                                   last
                                   Integer/parseInt
                                   actions/start-drafting!))]
-           (fact "Can submit a draft"
+           (future-fact "Can submit a draft"
                  (try
                    (wd/to (str (:objective-url @journey-state) "/drafts/current"))
                    (wait-for-title "Policy draft | Objective[8]")
@@ -173,7 +175,7 @@
                  => (contains {:page-title "Policy draft | Objective[8]"
                                :page-source (contains SOME_HTML)})) 
 
-           (fact "Can view current draft"
+           (future-fact "Can view current draft"
                  (try
                    (wd/to (:objective-url @journey-state))
                    (wait-for-title "Functional test headline | Objective[8]")

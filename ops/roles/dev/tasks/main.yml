@@ -14,6 +14,11 @@
  - name: install npm
    apt: name=npm state=present
 
+ - name: Node.js | Install packages
+   npm: name={{item}} global=yes
+   with_items:
+     - grunt-cli
+
  - name: install docker.io
    apt: name="docker.io" state=present
 

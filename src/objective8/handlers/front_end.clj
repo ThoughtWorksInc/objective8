@@ -100,13 +100,16 @@
     (cond
       (every? #(= ::http-api/success %) [objective-status comments-status])
       (let [formatted-objective (format-objective objective)]
+        {:status 200
+         :headers {"Content-Type" "text/html"}
+         :body
         (views/objective-detail-page "objective-details"
                                      request
                                      :objective formatted-objective
                                      :comments comments
                                      :doc (let [details (str (:title objective) " | Objective[8]")]
                                             {:title details
-                                             :description details})))
+                                             :description details}))})
       (= objective-status ::http-api/not-found) (error-404-response request)
 
       (= objective-status ::http-api/invalid-input) {:status 400}
