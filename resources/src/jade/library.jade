@@ -21,6 +21,9 @@ html.no-js(lang="en")
     +javascriptIncludeTag("modernizr.min")
     +stylesheetLinkTag("modern","screen")
     style.
+      body {
+        padding: 2em 0;
+      }
       .example {
         padding: 2em 0;
       }
@@ -39,18 +42,21 @@ html.no-js(lang="en")
 
 
   body
-    br
-
-    .example
-      .documentation
-        h2 Masthead signed in
-        p Generated with mastheadSignedIn() mixin
-      header(role="banner")
-        +mastheadSignedIn
-
-
 
     .middle-container
+      .example
+        .documentation
+          h2 Masthead signed out
+          p Generated with mastheadSignedOut() mixin
+        header(role="banner")
+          +mastheadSignedOut
+
+      .example
+        .documentation
+          h2 Masthead signed in
+          p Generated with mastheadSignedIn() mixin
+        header(role="banner")
+          +mastheadSignedIn
 
       .example
         .documentation
@@ -124,7 +130,5 @@ html.no-js(lang="en")
           p Generated with addQuestionForm(autofocus)
           p The optional autofocus param decides whether it should gain focus on page visit.
         +addQuestionForm()
-
-    br
 
     +javascriptIncludeTag("scripts.min")
