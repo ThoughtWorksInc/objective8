@@ -15,10 +15,6 @@
       text-decoration: underline;
     }
   }
-  @include mq(720) {
-    position: fixed;
-    width: 100%;
-  }
 }
 
 .masthead-nav-link {
