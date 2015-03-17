@@ -19,8 +19,5 @@
       (drafts/store-draft! draft-data))))
 
 (defn cast-up-down-vote! [{:keys [global-id user-id vote-type] :as vote-data}]
-  (let [previous-vote (up-down-votes/get-active-vote global-id user-id)]
-    (when-not (= (:vote-type previous-vote) vote-type)
-      (if previous-vote
-        (up-down-votes/update-vote! previous-vote vote-data)
-        (up-down-votes/store-vote! vote-data)))))
+  (when-not (up-down-votes/get-vote global-id user-id)
+    (up-down-votes/store-vote! vote-data)))

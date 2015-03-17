@@ -10,19 +10,12 @@
 (facts "about casting up-down votes"
        (fact "stores a vote if user has no active vote on entity"
              (against-background
-              (up-down-votes/get-active-vote GLOBAL_ID USER_ID) => nil)
+              (up-down-votes/get-vote GLOBAL_ID USER_ID) => nil)
              (actions/cast-up-down-vote! {:global-id GLOBAL_ID :user-id USER_ID :vote-type :up}) => :the-stored-vote
              (provided
               (up-down-votes/store-vote! {:global-id GLOBAL_ID :user-id USER_ID :vote-type :up}) => :the-stored-vote))
 
-       (fact "checks whether the user is trying to recast the same vote"
-             (actions/cast-up-down-vote! {:global-id GLOBAL_ID :user-id USER_ID :vote-type :up}) => nil
+       (fact "fails if the user is trying to cast another vote on the same entity"
+             (actions/cast-up-down-vote! {:global-id GLOBAL_ID :user-id USER_ID :vote-type :down}) => nil
              (provided
-              (up-down-votes/get-active-vote GLOBAL_ID USER_ID) => {:_id VOTE_ID :global-id GLOBAL_ID :user-id USER_ID :vote-type :up}))
-
-       (fact "updates vote if user is changing vote"
-             (against-background
-              (up-down-votes/get-active-vote GLOBAL_ID USER_ID) => {:vote-type :down})
-             (actions/cast-up-down-vote! {:global-id GLOBAL_ID :user-id USER_ID :vote-type :up}) => :the-stored-vote
-             (provided
-              (up-down-votes/update-vote! {:vote-type :down} {:global-id GLOBAL_ID :user-id USER_ID :vote-type :up}) => :the-stored-vote)))
+              (up-down-votes/get-vote GLOBAL_ID USER_ID) => :some-vote)))

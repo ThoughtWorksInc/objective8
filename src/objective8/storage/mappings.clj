@@ -60,11 +60,10 @@
 
 (defn map->up-down-vote
   "Prepares a clojure map for storage as an up-down-vote"
-  [{:keys [global-id user-id vote-type active] :as up-down-vote}]
-  (if (and global-id user-id (#{:up :down} vote-type) (#{true false} active))
-    {:global-id global-id
+  [{:keys [global-id user-id vote-type] :as up-down-vote}]
+  (if (and global-id user-id (#{:up :down} vote-type))
+    {:global_id global-id
      :user_id user-id
-     :active active
      :up_vote (= vote-type :up)}
     (throw (Exception. "Could not transform map to up-down-vote"))))
 

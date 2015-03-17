@@ -55,11 +55,10 @@
 (facts "About map->up-down-vote"
        (tabular
         (fact "Column values are pulled out and converted"
-              (let [up-down-vote (map->up-down-vote {:global-id GLOBAL_ID :user-id USER_ID :vote-type ?vote-type :active true})]
-                up-down-vote => (contains {:global-id GLOBAL_ID
+              (let [up-down-vote (map->up-down-vote {:global-id GLOBAL_ID :user-id USER_ID :vote-type ?vote-type})]
+                up-down-vote => (contains {:global_id GLOBAL_ID
                                            :user_id USER_ID
-                                           :up_vote ?up-vote
-                                           :active true})))
+                                           :up_vote ?up-vote})))
         ?vote-type ?up-vote
         :up        true
         :down      false)
@@ -67,14 +66,10 @@
        (fact "throws exception if any field is missing"
              (map->up-down-vote (dissoc vote-data :global-id)) => (throws Exception "Could not transform map to up-down-vote")
              (map->up-down-vote (dissoc vote-data :user-id)) => (throws Exception "Could not transform map to up-down-vote")
-             (map->up-down-vote (dissoc vote-data :vote-type)) => (throws Exception "Could not transform map to up-down-vote")
-             (map->up-down-vote (dissoc vote-data :active)) => (throws Exception "Could not transform map to up-down-vote"))
+             (map->up-down-vote (dissoc vote-data :vote-type)) => (throws Exception "Could not transform map to up-down-vote"))
 
        (fact "throws exception if vote type is invalid"
              (map->up-down-vote (assoc vote-data :vote-type :not-up-or-down)) => (throws Exception "Could not transform map to up-down-vote")))
-
-       (fact "throws exception if active is not a boolean"
-             (map->up-down-vote (assoc vote-data :active :not-a-boolean)) => (throws Exception "Could not transform map to up-down-vote")) 
 
 ;;COMMENT
 (def OBJECTIVE_ID 2345)
