@@ -38,7 +38,7 @@ $comment_button_spacing: 0.75em;
 .comment-vote-down {
   width: 11px;
   height: 1em;
-  padding-right: $comment_button_spacing;
+  margin-right: $comment_button_spacing;
   overflow: hidden;
   cursor: pointer;
   text-align: center;

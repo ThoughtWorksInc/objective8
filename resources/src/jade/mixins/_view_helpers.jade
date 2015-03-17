@@ -1,3 +1,26 @@
+mixin mastheadSignedOut()
+  .masthead
+    a.masthead-nav-link(href="#navigation")
+      i.fa.fa-bars
+      span.visuallyhidden Skip to navigation
+    a.masthead-logo(href="/", title="Go to home page", rel="home") Objective[8]
+    .masthead-large-screen-nav
+      a(href="/objectives", title="Go to to the Objectives list") Objectives
+      a(href="/learn-more", title="Learn more about Objective[8]") About
+    include ../user-navigation/signed-out
+
+mixin mastheadSignedIn()
+  .masthead
+    a.masthead-nav-link(href="#navigation")
+      i.fa.fa-bars
+      span.visuallyhidden Skip to navigation
+    a.masthead-logo(href="/", title="Go to home page", rel="home") Objective[8]
+    .masthead-large-screen-nav
+      a(href="/objectives", title="Go to to the Objectives list") Objectives
+      a(href="/learn-more", title="Learn more about Objective[8]") About
+    include ../user-navigation/signed-in
+
+
 mixin guidanceText(heading)
   .guidance-text
     .guidance-buttons
@@ -28,14 +51,14 @@ mixin commentReply
   - voteUpCount = Math.floor(Math.random() * 100) + 1
   - voteDownCount = Math.floor(Math.random() * 100) + 1
   .comment-actions
-    a.comment-vote-up(href="#", title="I agree")
+    a.comment-vote-up(href="#", title="Vote up")
       span.comment-vote-count #{voteUpCount}
-      i.fa.fa-angle-up
-      span.vote-direction-text Vote agree
-    a.comment-vote-down(href="#", title="I disagree")
+      i.fa.fa-fw.fa-angle-up
+      span.vote-direction-text Vote down
+    a.comment-vote-down(href="#", title="Vote down")
       span.comment-vote-count #{voteDownCount}
-      i.fa.fa-angle-down
-      span.vote-direction-text Vote disagree
+      i.fa.fa-fw.fa-angle-down
+      span.vote-direction-text Vote down
     a.comment-reply(href="#") Reply
 
 mixin commentItem(author, date)

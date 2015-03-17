@@ -43,15 +43,7 @@ html.no-js(lang="en")
     <![endif]-->
 
     header(role="banner")
-      .masthead
-        a.masthead-nav-link(href="#navigation")
-          i.fa.fa-bars
-          span.visuallyhidden Skip to navigation
-        a.masthead-logo(href="/", title="Go to home page", rel="home") Objective[8]
-        .masthead-large-screen-nav
-          a(href="/objectives", title="Go to to the Objectives list") Objectives
-          a(href="/learn-more", title="Learn more about Objective[8]") About
-        include ../user-navigation/signed-out
+      +mastheadSignedOut
 
     .project-status
       .wrapper#projectStatus
