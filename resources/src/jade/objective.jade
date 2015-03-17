@@ -40,18 +40,9 @@ block content
       //  span.days-left-head Draft begins
       //  span.days-left-day 5
       //  span.days-left-foot days
-      h2 Background
+      //h2 Background
       p London and Paris are two prime examples of cycle super highway heaven.  We need to show the world that madrid too can be the pinnacle in cycling and safety.
       p Street art bitters pour-over, Portland pork belly master cleanse lumbersexual. Aesthetic 90's Shoreditch PBR. Austin sustainable Carles American Apparel, banh mi High Life selvage XOXO plaid stumptown fashion axe skateboard butcher McSweeney's. Master cleanse polaroid Shoreditch DIY, Godard salvia gastropub heirloom Kickstarter fap before they sold out chia. Disrupt Neutra tofu Godard kitsch. Chambray Helvetica plaid chia salvia. Cronut asymmetrical messenger bag, cornhole listicle selvage yr beard Godard stumptown meh sustainable.
-      .objective-goals
-        h2 Goals
-        ul.goal-item-list.fa-ul
-          +goalItem
-            | Deep v heirloom Echo Park
-          +goalItem
-            | Drinking vinegar meggings
-          +goalItem
-            | Jean shorts biodiesel hoodie keytar mlkshk food truck
 
     .objective-writers#writers
       h2 Writers
@@ -76,8 +67,31 @@ block content
     .objective-comments#comments
       h2 Comments
       ol.comment-list
-        +commentItem('Chris Cheshire', '3 September 2015 07:41')
-          p We definitely need to look into Gran Via and Calle Mayor!
+        li.comment-item
+          .comment-meta
+            span.comment-author Joe Blogs
+            span.comment-date 4 September 2015 15:41
+          .comment-text
+            p We definitely need to look into Gran Via and Calle Mayor!
+          +commentReply
+
+          ol.comment-list
+            li.comment-item
+              .comment-meta
+                span.comment-author Matt Smith
+                span.comment-date 4 September 2015 16:21
+              .comment-text
+                p Agreed.  This would be a good location.
+              +commentReply
+
+              ol.comment-list
+                +commentItem('George Maison', '4 September 2015 16:25')
+                  p I was thinking this too!
+                +commentItem('Mike Cruise', '4 September 2015 16:55')
+                  p Sounds goood!
+                li.more-comments-item
+                  a.more-comments-item-link(href="#") More comments
+
         +commentItem('Phil Smith', '2 September 2015 07:41')
           p Oooh Paseo del Prado.
         +commentItem('Jen Bloggs', '1 September 2015 07:41')

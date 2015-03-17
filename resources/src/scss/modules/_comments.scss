@@ -1,8 +1,18 @@
 .comment-list {
   @extend %list-item-container;
+  .comment-list {
+    margin-top: 1em;
+    padding-left: 1.5em;
+    padding-top: 1em;
+    border-left: 4px solid $grey-4;
+  }
 }
 .comment-item {
   @extend %list-item;
+  .comment-item {
+    padding-top: 0;
+    border-bottom: none;
+  }
 }
 .comment-meta {
   @extend %list-item-meta;
@@ -16,6 +26,61 @@
 .comment-text {
   @extend %list-item-text;
 }
+
+$comment_button_spacing: 0.75em;
+.comment-actions {
+  @extend %list-item-actions;
+}
+.comment-vote-count {
+  padding-right: 0.5em;
+}
+.comment-vote-up,
+.comment-vote-down {
+  width: 11px;
+  height: 1em;
+  padding-right: $comment_button_spacing;
+  overflow: hidden;
+  cursor: pointer;
+  text-align: center;
+  &:visited, & {
+    color: $default_text_color;
+  }
+  &:hover, &:visited, & {
+    text-decoration: none;
+  }
+  &:hover {
+    color: rgba($default_text_color,0.5);
+  }
+  &:after {
+    content: '|';
+    padding-left: $comment_button_spacing;
+    color: $default_text_color;
+    text-decoration: none;
+  }
+}
+.vote-direction-text {
+  display: inline-block;
+  width: 0.00001em;
+  height: 0.00001em;
+  overflow: hidden;
+}
 .comment-reply {
   @extend %list-item-reply-button;
 }
+
+.more-comments-item {
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+.more-comments-item-link {
+  &:visited, & {
+    color: $green1;
+    text-decoration: none;
+  }
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+
+

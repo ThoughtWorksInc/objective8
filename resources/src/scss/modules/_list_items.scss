@@ -18,7 +18,7 @@
   padding-right: 0.75em;
   color: $pink;
   text-transform: capitalize; //TODO remove when we have stored display names
-  font-size: 1em;
+  font-size: 0.9em;
 }
 %list-item-date {
   font-size: 0.75em;
@@ -33,6 +33,9 @@
       margin-bottom: 0;
     }
   }
+}
+%list-item-actions {
+  font-size: 87.5%;
 }
 %list-item-reply-button {
   font-weight: 700;
