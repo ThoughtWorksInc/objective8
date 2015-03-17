@@ -58,25 +58,25 @@
 
 ;;UP-DOWN-VOTES
 (def GLOBAL_ID 3)
-(def vote-data {:global-id GLOBAL_ID :user-id USER_ID :vote-type :up :active true})
+(def vote-data {:global-id GLOBAL_ID :created-by-id USER_ID :vote-type :up})
 (facts "About map->up-down-vote"
        (tabular
         (fact "Column values are pulled out and converted"
-              (let [up-down-vote (map->up-down-vote {:global-id GLOBAL_ID :user-id USER_ID :vote-type ?vote-type})]
+              (let [up-down-vote (map->up-down-vote {:global-id GLOBAL_ID :created-by-id USER_ID :vote-type ?vote-type})]
                 up-down-vote => (contains {:global_id GLOBAL_ID
-                                           :user_id USER_ID
-                                           :up_vote ?up-vote})))
-        ?vote-type ?up-vote
-        :up        true
-        :down      false)
+                                           :created_by_id USER_ID
+                                           :vote ?vote})))
+        ?vote-type ?vote
+        :up        1
+        :down      -1)
 
        (fact "throws exception if any field is missing"
-             (map->up-down-vote (dissoc vote-data :global-id)) => (throws Exception "Could not transform map to up-down-vote")
-             (map->up-down-vote (dissoc vote-data :user-id)) => (throws Exception "Could not transform map to up-down-vote")
-             (map->up-down-vote (dissoc vote-data :vote-type)) => (throws Exception "Could not transform map to up-down-vote"))
+             (map->up-down-vote (dissoc vote-data :global-id)) => (throws Exception)
+             (map->up-down-vote (dissoc vote-data :created-by-id)) => (throws Exception)
+             (map->up-down-vote (dissoc vote-data :vote-type)) => (throws Exception))
 
        (fact "throws exception if vote type is invalid"
-             (map->up-down-vote (assoc vote-data :vote-type :not-up-or-down)) => (throws Exception "Could not transform map to up-down-vote")))
+             (map->up-down-vote (assoc vote-data :vote-type :not-up-or-down)) => (throws Exception)))
 
 ;;COMMENT
 (def OBJECTIVE_ID 2345)

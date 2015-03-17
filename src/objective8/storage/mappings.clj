@@ -67,12 +67,12 @@
 
 (defn map->up-down-vote
   "Prepares a clojure map for storage as an up-down-vote"
-  [{:keys [global-id user-id vote-type] :as up-down-vote}]
-  (if (and global-id user-id (#{:up :down} vote-type))
+  [{:keys [global-id created-by-id vote-type] :as up-down-vote}]
+  (if (and global-id created-by-id (#{:up :down} vote-type))
     {:global_id global-id
-     :user_id user-id
-     :up_vote (= vote-type :up)}
-    (throw (Exception. "Could not transform map to up-down-vote"))))
+     :created_by_id created-by-id
+     :vote ({:up 1 :down -1} vote-type)}
+    (throw (ex-info "Could not transform map to up-down-vote" {:data up-down-vote}))))
 
 (defn map->question
   "Converts a clojure map into a json-typed question for the database"
@@ -196,6 +196,24 @@
   (korma/prepare map->candidate)
   (korma/transform (unmap :candidate)))
 
+(defn ressoc [m old-key new-key]
+  (-> m
+      (dissoc old-key)
+      (assoc new-key (old-key m))))
+
+(defn unmap-up-down-vote [{vote :vote :as m}]
+  (-> m
+      (ressoc :global_id :global-id)
+      (ressoc :created_by_id :created-by-id)
+      (dissoc :vote)
+      (assoc :vote-type ({1 :up -1 :down} vote))))
+
+(korma/defentity up-down-vote
+  (korma/pk :_id)
+  (korma/table :objective8.up_down_votes)
+  (korma/prepare map->up-down-vote)
+  (korma/transform unmap-up-down-vote))
+
 (korma/defentity draft
   (korma/pk :_id)
   (korma/table :objective8.drafts)
@@ -215,6 +233,7 @@
                :answer    answer
                :invitation invitation
                :candidate candidate
+               :up-down-vote up-down-vote
                :draft draft
                :bearer-token bearer-token
                :global-identifier global-identifier})
@@ -222,4 +241,6 @@
 (defn get-mapping
   "Returns a korma entity for a map"
   [{:keys [entity]}]
-  (get entities entity))
+  (if-let [_entity (get entities entity)]
+    _entity
+    (throw (ex-info "No entity mapping for " {:entity entity}))))
