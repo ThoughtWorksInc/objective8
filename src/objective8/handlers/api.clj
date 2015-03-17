@@ -278,7 +278,7 @@
       (response/not-found ""))))
 
 (defn post-up-down-vote [request]
-  (let [up-down-vote-data (select-keys [:ueid :user-id :vote-type] (:params request))]
+  (let [up-down-vote-data (select-keys [:global-id :user-id :vote-type] (:params request))]
     (if (actions/cast-up-down-vote! up-down-vote-data)
       {:status 200}
       {:status 403})))

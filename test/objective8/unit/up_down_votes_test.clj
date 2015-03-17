@@ -4,11 +4,11 @@
             [objective8.storage.storage :as storage]))
 
 (def VOTE_ID 1)
-(def UEID 2)
+(def GLOBAL_ID 2)
 (def USER_ID 3)
 
-(def previous-vote {:_id VOTE_ID :ueid UEID :user-id USER_ID :vote-type :up})
-(def new-vote-data {:ueid UEID :user-id USER_ID :vote-type :down})
+(def previous-vote {:_id VOTE_ID :global-id GLOBAL_ID :user-id USER_ID :vote-type :up})
+(def new-vote-data {:global-id GLOBAL_ID :user-id USER_ID :vote-type :down})
 (def new-vote (assoc new-vote-data :entity :up-down-vote :active true))
 
 (fact "update-vote! nullifies previous vote before storing vote"

@@ -11,8 +11,8 @@
   (nullify-vote! previous-vote)
   (store-vote! new-vote-data))
 
-(defn get-active-vote [ueid user-id]
+(defn get-active-vote [global-id user-id]
   (first (:result (storage/pg-retrieve {:entity :up-down-vote
-                                        :ueid ueid
+                                        :global-id global-id
                                         :user-id user-id
                                         :active true}))))

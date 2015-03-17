@@ -18,8 +18,8 @@
     (when (writers/retrieve-candidate-for-objective submitter-id objective-id)
       (drafts/store-draft! draft-data))))
 
-(defn cast-up-down-vote! [{:keys [ueid user-id vote-type] :as vote-data}]
-  (let [previous-vote (up-down-votes/get-active-vote ueid user-id)]
+(defn cast-up-down-vote! [{:keys [global-id user-id vote-type] :as vote-data}]
+  (let [previous-vote (up-down-votes/get-active-vote global-id user-id)]
     (when-not (= (:vote-type previous-vote) vote-type)
       (if previous-vote
         (up-down-votes/update-vote! previous-vote vote-data)
