@@ -47,18 +47,23 @@ mixin questionItemBlank()
   li.question-item
     | No one has answered this question yet.
 
-mixin commentReply
+mixin voteUpDownControls()
   - voteUpCount = Math.floor(Math.random() * 100) + 1
   - voteDownCount = Math.floor(Math.random() * 100) + 1
-  .comment-actions
-    a.comment-vote-up(href="#", title="Vote up")
-      span.comment-vote-count #{voteUpCount}
+  span.clj-reference-vote-up-down-controls
+    a.actions-vote-up(href="#", title="Vote up")
+      span.actions-vote-count #{voteUpCount}
       i.fa.fa-fw.fa-angle-up
       span.vote-direction-text Vote down
-    a.comment-vote-down(href="#", title="Vote down")
-      span.comment-vote-count #{voteDownCount}
+    a.actions-vote-down(href="#", title="Vote down")
+      span.actions-vote-count #{voteDownCount}
       i.fa.fa-fw.fa-angle-down
       span.vote-direction-text Vote down
+
+
+mixin commentReply()
+  .comment-actions
+    +voteUpDownControls
     a.comment-reply(href="#") Reply
 
 mixin commentItem(author, date)

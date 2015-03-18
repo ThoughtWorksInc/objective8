@@ -17,7 +17,7 @@
   @extend %list-item-text;
 }
 .question-actions {
-  @extend %list-item-actions;
+  @extend .list-item-actions;
 }
 .question-reply {
   @extend %list-item-reply-button;

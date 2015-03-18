@@ -131,4 +131,14 @@ html.no-js(lang="en")
           p The optional autofocus param decides whether it should gain focus on page visit.
         +addQuestionForm()
 
+      .example
+        .documentation
+          h2 Vote controls
+          p Generated with voteUpDownControls()
+          p Intended for questions and comments
+        .list-item-actions
+          +voteUpDownControls()
+
+
+
     +javascriptIncludeTag("scripts.min")

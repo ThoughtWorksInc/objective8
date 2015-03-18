@@ -1,0 +1,37 @@
+$vote_button_spacing: 0.75em;
+
+.actions-vote-up,
+.actions-vote-down {
+  width: 11px;
+  height: 1em;
+  margin-right: $vote_button_spacing;
+  overflow: hidden;
+  cursor: pointer;
+  text-align: center;
+  &:visited, & {
+    color: $default_text_color;
+  }
+  &:hover, &:visited, & {
+    text-decoration: none;
+  }
+  &:hover {
+    color: rgba($default_text_color,0.5);
+  }
+  &:after {
+    content: '|';
+    padding-left: $vote_button_spacing;
+    color: $default_text_color;
+    text-decoration: none;
+  }
+}
+.actions-vote-down:last-child {
+  &:after {
+    display: none;
+  }
+}
+.vote-direction-text {
+  display: inline-block;
+  width: 0.00001em;
+  height: 0.00001em;
+  overflow: hidden;
+}

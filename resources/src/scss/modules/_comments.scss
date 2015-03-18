@@ -27,42 +27,11 @@
   @extend %list-item-text;
 }
 
-$comment_button_spacing: 0.75em;
 .comment-actions {
-  @extend %list-item-actions;
+  @extend .list-item-actions;
 }
-.comment-vote-count {
+.actions-vote-count {
   padding-right: 0.5em;
-}
-.comment-vote-up,
-.comment-vote-down {
-  width: 11px;
-  height: 1em;
-  margin-right: $comment_button_spacing;
-  overflow: hidden;
-  cursor: pointer;
-  text-align: center;
-  &:visited, & {
-    color: $default_text_color;
-  }
-  &:hover, &:visited, & {
-    text-decoration: none;
-  }
-  &:hover {
-    color: rgba($default_text_color,0.5);
-  }
-  &:after {
-    content: '|';
-    padding-left: $comment_button_spacing;
-    color: $default_text_color;
-    text-decoration: none;
-  }
-}
-.vote-direction-text {
-  display: inline-block;
-  width: 0.00001em;
-  height: 0.00001em;
-  overflow: hidden;
 }
 .comment-reply {
   @extend %list-item-reply-button;
