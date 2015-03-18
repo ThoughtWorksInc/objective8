@@ -264,3 +264,20 @@
                                   sorted-twitter-ids (vec (map :twitter-id retrieved-users))]
                               sorted-twitter-ids)
                             => ["the-twitter-id3" "the-twitter-id2" "the-twitter-id1"])))))
+
+(facts "about entity specific queries"
+       (against-background
+        [(before :contents (do (db-connection)
+                               (truncate-tables)))
+         (after :facts (truncate-tables))]
+        (fact "retrieving answers for a question also returns aggregate up-down-votes for those answers"
+              (let [question (sh/store-a-question)
+                    {g-id-1 :global-id :as answer-1} (sh/store-an-answer {:question question})
+                    {g-id-2 :global-id :as answer-2} (sh/store-an-answer {:question question})
+                    votes-for-answer-1 [:up :up :down :down :down]
+                    votes-for-answer-2 [:up :up]
+                    stored-votes-for-answer-1 (doall (map #(sh/store-an-up-down-vote g-id-1 %) votes-for-answer-1))
+                    stored-votes-for-answer-2 (doall (map #(sh/store-an-up-down-vote g-id-2 %) votes-for-answer-2))]
+                (storage/pg-retrieve-answers-with-votes-for-question (:_id question))
+                => (contains [(contains (assoc answer-1 :votes {:up 2 :down 3}))
+                              (contains (assoc answer-2 :votes {:up 2 :down 0}))])))))
