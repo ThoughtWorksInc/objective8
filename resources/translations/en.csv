@@ -91,6 +91,13 @@ objective-create,end-date-prompt,"On this date, the drafting phase begins. You s
 objective-create,doc-description,Create an Objective ...
 objective-create,headline-label,Headline
 objective-create,background-title,Enter optional background text up to 1000 characters
+objective-view,goals-label,Goals
+objective-view,end-date-label,Drafting begins: 
+objective-view,created-message,Your objective has been created!
+objective-view,doc-title,Objective | Objective[8]
+objective-view,background-label,Background
+objective-view,doc-description,Objective  ...
+objective-view,writers,Writers
 invitation-banner,message,Respond to your invitation to help draft policy
 question-list,question-list-heading,Recently asked questions
 question-list,page-intro,"Gather background information such as opinions and experiences by asking a question.  Your question should be focussed and specific, as the answers will influence the policy drafting process."
@@ -119,12 +126,6 @@ notifications,drafting-started-helper-text,"This means that you can no longer as
 comment-sign-in,sign-in,sign in
 comment-sign-in,please,Please
 comment-sign-in,to,to start commenting.
-objective-view,goals-label,Goals
-objective-view,end-date-label,Drafting begins: 
-objective-view,created-message,Your objective has been created!
-objective-view,doc-title,Objective | Objective[8]
-objective-view,background-label,Background
-objective-view,doc-description,Objective  ...
 question-view,added-message,Your question has been added!
 question-view,added-answer-message,Your answer has been added!
 edit-draft,doc-title,Edit draft | Objective[8]

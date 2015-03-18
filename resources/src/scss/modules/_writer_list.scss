@@ -5,14 +5,13 @@ $writer_avatar_size: 60px;
 }
 
 .writer-item {
-  display: inline-block;
   margin: 0 1em 1em 0;
   padding: 0;
 //  .draft-writers & {
 //    text-align: center;
 //  }
   a {
-    display: inline-block;
+    display: block;
     text-decoration: none;
   }
 }

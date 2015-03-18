@@ -87,20 +87,20 @@ mixin writerWithImage(name, href, photo)
       .writer-item-text
         .writer-item-author.clj-writer-name
           = name
-        .writer-item-descripton.clj-writer-description
-          p
+        .writer-item-descripton
+          p.clj-writer-description
             block
 
 mixin writerWithoutImage(name, href)
-  li.writer-item.clj-writer-item-with-photo
+  li.writer-item.clj-writer-item-without-photo
     a(href="#{href}")
       .writer-item-photo.clj-writer-no-image
         i.writer-item-no-image-icon.fa.fa-user.fa-3x
       .writer-item-text
         .writer-item-author.clj-writer-name
           = name
-        .writer-item-descripton.clj-writer-description
-          p
+        .writer-item-descripton
+          p.clj-writer-description
             block
 
 mixin objectiveWriterItem(name, href, photo)
@@ -114,8 +114,8 @@ mixin objectiveWriterItem(name, href, photo)
       block
 
 mixin objectiveWriterItemBlank()
-  li.writer-item
-    | No candidate writers have been invited yet.
+  li.writer-item.clj-empty-writer-list-item
+    | !No candidate writers have been invited yet.
 
 mixin addQuestionForm(allowFocus)
   - focus = allowFocus ? true : false
