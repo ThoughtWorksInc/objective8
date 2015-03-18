@@ -63,22 +63,22 @@ mixin voteUpDownControls()
 
 
 mixin commentReply()
-  .comment-actions
+  .comment-actions.clj-comment-actions
     +voteUpDownControls
     a.comment-reply(href="#") Reply
 
 mixin commentItem(author, date)
-  li.comment-item
+  li.comment-item.clj-comment-item
     .comment-meta
-      span.comment-author #{author}
-      span.comment-date #{date}
-    .comment-text
+      span.comment-author.clj-comment-author #{author}
+      span.comment-date.clj-comment-date #{date}
+    .comment-text.clj-comment-text
       block
     +commentReply
 
 mixin commentItemBlank()
-  li.question-item
-    | There are no comments yet.
+  li.comment-item.clj-empty-comment-list-item
+    | !There are no comments yet.
 
 mixin objectiveWriterItem(name, href, photo)
   - href = href || ''

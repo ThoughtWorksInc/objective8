@@ -66,8 +66,8 @@ block content
       a.button.clj-ask-question-link(href="/questions/#questions") !Ask a question
 
     .objective-comments#comments
-      h2 Comments
-      ol.comment-list
+      h2.clj-comments-section-title !Comments
+      ol.comment-list.clj-comment-list
         li.comment-item
           .comment-meta
             span.comment-author Joe Blogs
@@ -97,7 +97,7 @@ block content
           p Oooh Paseo del Prado.
         +commentItem('Jen Bloggs', '1 September 2015 07:41')
           p Paseo del Prado.
-      a.button(href="#") Add a comment
+      a.button.clj-add-comment-link(href="#") !Add a comment
 
 
 block footerScripts

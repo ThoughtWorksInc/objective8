@@ -26,4 +26,7 @@
                       [:.clj-ask-question-link] (html/do-> 
                                                    (html/set-attr "href" (str "/objectives/" (:_id objective) 
                                                                               "/questions"))
-                                                   (html/content (translations :objective-view/ask-a-question))))))))
+                                                   (html/content (translations :objective-view/ask-a-question)))
+                      [:.clj-comments-section-title] (html/content (translations :objective-view/comments))
+                      [:.clj-comment-list] (html/content (f/comment-list context))
+                      )))))

@@ -10,6 +10,8 @@
     (map (fn [p] (html/html [:p p])) (clojure.string/split text
                                                            newline-followed-by-optional-whitespace)))))
 
+;; USER NAVIGATION
+
 (html/defsnippet user-navigation-signed-in
   "templates/jade/library.html" [:.clj-user-navigation-signed-in] [{:keys [translations user]}]
   [:.clj-masthead-sign-out] (html/set-attr "title" (translations :navigation-global/sign-out-title))
@@ -27,6 +29,8 @@
     (user-navigation-signed-in context) 
     (user-navigation-signed-out context)))
 
+;; WRITER LIST
+
 (html/defsnippet empty-writer-list-item
   "templates/jade/library.html" [:.clj-empty-writer-list-item] [{translations :translations}]
   [:.clj-empty-writer-list-item] (html/content (translations :candidate-list/no-candidates)))
@@ -43,6 +47,8 @@
     (if (empty? candidates)
       (empty-writer-list-item context)
       (writer-list-items candidates))))
+
+;; QUESTION LIST
 
 (html/defsnippet empty-question-list-item 
   "templates/jade/library.html" [:.clj-empty-question-list-item] [{translations :translations}]
@@ -62,3 +68,23 @@
     (if (empty? questions)
       (empty-question-list-item context)
       (question-list-items questions translations))))
+
+;; COMMENT LIST
+
+(html/defsnippet empty-comment-list-item 
+  "templates/jade/library.html" [:.clj-empty-comment-list-item] [translations]
+  [:.clj-empty-comment-list-item] (html/content (translations :comment-view/no-comments)))
+
+(html/defsnippet comment-list-items
+  "templates/jade/library.html" [:.clj-comment-item] [comments]
+  [:.clj-comment-item] (html/clone-for [comment comments]
+                                       [:.clj-comment-author] identity
+                                       [:.clj-comment-date] identity
+                                       [:.clj-comment-text] identity)) 
+
+(defn comment-list [{translations :translations :as context}]
+  (let [comments (get-in context [:data :comments])]
+    (if (empty? comments)
+      (empty-comment-list-item translations)
+      (comment-list-items comments))))
+
