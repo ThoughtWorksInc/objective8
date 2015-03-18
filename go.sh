@@ -2,4 +2,4 @@
 
 npm install
 
-./midje/run_all_tests.sh
+./test/run_all_tests.sh
