@@ -57,13 +57,13 @@ block content
       a.button.invite-writer.clj-invite-writer-link(href="#") !Invite a writer
 
     .objective-questions#questions
-      h2 !Recently asked questions
-      ol.question-list
-        +questionItem('Chris Cheshire', '3 September 2015 07:41')
-          p What road surface should we use?
-        +questionItem('Chris Cheshire', '4 September 2015 07:41')
-          p Do we have a colour in mind for the road?
-      a.button(href="/questions/#questions") Ask a question
+      h2.clj-questions-section-title !Recently asked questions
+      ol.question-list.clj-question-list
+        +questionItem('!Chris Cheshire', '3 September 2015 07:41')
+          | !What road surface should we use?
+        +questionItem('!Chris Cheshire', '4 September 2015 07:41')
+          | !Do we have a colour in mind for the road?
+      a.button.clj-ask-question-link(href="/questions/#questions") !Ask a question
 
     .objective-comments#comments
       h2 Comments

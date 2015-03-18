@@ -97,9 +97,10 @@
   (let [objective-id (Integer/parseInt id)
         {objective-status :status objective :result} (http-api/get-objective objective-id)
         {candidate-status :status  candidates :result} (http-api/retrieve-candidates objective-id)  
+        {questions-status :status questions :result} (http-api/retrieve-questions objective-id) 
         {comments-status :status comments :result} (http-api/retrieve-comments objective-id)]
     (cond
-      (every? #(= ::http-api/success %) [objective-status comments-status candidate-status])
+      (every? #(= ::http-api/success %) [objective-status candidate-status questions-status comments-status])
       (let [formatted-objective (format-objective objective)]
         {:status 200
          :headers {"Content-Type" "text/html"}
@@ -108,6 +109,7 @@
                                      request
                                      :objective formatted-objective
                                      :candidates candidates
+                                     :questions questions
                                      :comments comments
                                      :doc (let [details (str (:title objective) " | Objective[8]")]
                                             {:title details

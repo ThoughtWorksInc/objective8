@@ -37,14 +37,15 @@ mixin goalItem()
     block
 
 mixin questionItem(author, date)
-  li.question-item
+  li.question-item.clj-question-item
     .question-text
-      block
+      p.clj-question-text
+        block
     .question-actions
-      a.comment-reply(href="#") Answer
+      a.question-reply.clj-answer-link(href="#") !Answer
 
 mixin questionItemBlank()
-  li.question-item
+  li.question-item.clj-empty-question-list-item
     | No one has answered this question yet.
 
 mixin voteUpDownControls()

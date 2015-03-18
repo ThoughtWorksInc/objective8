@@ -99,6 +99,9 @@ objective-view,background-label,Background
 objective-view,doc-description,Objective  ...
 objective-view,writers,Writers
 objective-view,invite-a-writer,Invite a writer
+objective-view,questions-title,Recently asked questions
+objective-view,answer-link,Answer
+objective-view,ask-a-question,Ask a question
 invitation-banner,message,Respond to your invitation to help draft policy
 question-list,question-list-heading,Recently asked questions
 question-list,page-intro,"Gather background information such as opinions and experiences by asking a question.  Your question should be focussed and specific, as the answers will influence the policy drafting process."

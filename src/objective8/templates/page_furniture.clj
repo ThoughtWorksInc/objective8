@@ -43,3 +43,22 @@
     (if (empty? candidates)
       (empty-writer-list-item context)
       (writer-list-items candidates))))
+
+(html/defsnippet empty-question-list-item 
+  "templates/jade/library.html" [:.clj-empty-question-list-item] [{translations :translations}]
+  [:.clj-empty-question-list-item] (html/content (translations :question-list/no-questions)))
+
+(html/defsnippet question-list-items
+  "templates/jade/library.html" [:.clj-question-item] [questions translations]
+  [:.clj-question-item] (html/clone-for [question questions]
+                                        [:.clj-question-text] (html/content (:question question))
+                                        [:.clj-answer-link] (html/do-> 
+                                                              (html/content (translations :objective-view/answer-link))
+                                                              (html/set-attr "href" (str "/objectives/" (:objective-id question)
+                                                                                         "/questions/" (:_id question))))))
+
+(defn question-list [{translations :translations :as context}]
+  (let [questions (get-in context [:data :questions])]
+    (if (empty? questions)
+      (empty-question-list-item context)
+      (question-list-items questions translations))))
