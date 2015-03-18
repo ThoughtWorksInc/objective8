@@ -1,5 +1,6 @@
 (ns objective8.templates.objective
   (:require [net.cgrand.enlive-html :as html]
+            [net.cgrand.jsoup :as jsoup]
             [objective8.templates.page-furniture :as f]))   
 
 (defn text->p-nodes
@@ -11,7 +12,7 @@
     (map (fn [p] (html/html [:p p])) (clojure.string/split text
                                                            newline-followed-by-optional-whitespace)))))
 
-(def objective-template (html/html-resource "templates/jade/objective.html"))
+(def objective-template (html/html-resource "templates/jade/objective.html" {:parser jsoup/parser}))
 
 (defn objective-page [context]
   (apply str
