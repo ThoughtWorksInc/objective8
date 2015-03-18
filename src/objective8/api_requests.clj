@@ -1,7 +1,12 @@
-(ns objective8.api-requests)
+(ns objective8.api-requests
+  (:require [objective8.utils :as utils]))
 
 (defn request->candidate-data [{params :params :as request}]
   params)
 
 (defn request->draft-data [{params :params :as request}]
   (select-keys params [:objective-id :submitter-id :content]))
+
+(defn request->up-down-vote-data [{params :params :as request}]
+  (some-> (utils/select-all-or-nothing params [:global-id :created-by-id :vote-type])
+          (update-in [:vote-type] keyword)))
