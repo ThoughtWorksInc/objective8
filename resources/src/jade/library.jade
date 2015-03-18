@@ -110,10 +110,18 @@ html.no-js(lang="en")
 
       .example
         .documentation
-          h2 Objective Writer list item
+          h2 Objective Writer list item with photo
           p Generated with objectiveWriterItem(name, href, photo) mixin
         ul.writer-item-list
           +objectiveWriterItem('Jenny Bloggs', '#', 'http://placekitten.com/g/80/80')
+            | A cycling enthusiast, responsible for many safety policies in the UK.
+
+      .example
+        .documentation
+          h2 Objective Writer list item without photo
+          p Generated with objectiveWriterItem(name, href, '') mixin
+        ul.writer-item-list
+          +objectiveWriterItem('Jenny Bloggs', '#', '')
             | A cycling enthusiast, responsible for many safety policies in the UK.
 
       .example
@@ -137,7 +145,5 @@ html.no-js(lang="en")
           p Intended for questions and comments
         .list-item-actions
           +voteUpDownControls()
-
-
 
     +javascriptIncludeTag("scripts.min")
