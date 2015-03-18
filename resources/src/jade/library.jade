@@ -21,6 +21,9 @@ html.no-js(lang="en")
     +javascriptIncludeTag("modernizr.min")
     +stylesheetLinkTag("modern","screen")
     style.
+      body {
+        padding: 2em 0;
+      }
       .example {
         padding: 2em 0;
       }
@@ -39,23 +42,21 @@ html.no-js(lang="en")
 
 
   body
-    br
-
-    .example
-      .documentation
-        h2 Masthead signed in
-        p Generated with mastheadSignedIn() mixin
-      header(role="banner")
-        +mastheadSignedIn
-
-    .example
-      .documentation
-        h2 Masthead signed out
-        p Generated with mastheadSignedOut() mixin
-      header(role="banner")
-        +mastheadSignedOut
 
     .middle-container
+      .example
+        .documentation
+          h2 Masthead signed out
+          p Generated with mastheadSignedOut() mixin
+        header(role="banner")
+          +mastheadSignedOut
+
+      .example
+        .documentation
+          h2 Masthead signed in
+          p Generated with mastheadSignedIn() mixin
+        header(role="banner")
+          +mastheadSignedIn
 
       .example
         .documentation
@@ -110,10 +111,18 @@ html.no-js(lang="en")
 
       .example
         .documentation
-          h2 Objective Writer list item
+          h2 Objective Writer list item with photo
           p Generated with objectiveWriterItem(name, href, photo) mixin
         ul.writer-item-list
           +objectiveWriterItem('Jenny Bloggs', '#', 'http://placekitten.com/g/80/80')
+            | A cycling enthusiast, responsible for many safety policies in the UK.
+
+      .example
+        .documentation
+          h2 Objective Writer list item without photo
+          p Generated with objectiveWriterItem(name, href, '') mixin
+        ul.writer-item-list
+          +objectiveWriterItem('Jenny Bloggs', '#', '')
             | A cycling enthusiast, responsible for many safety policies in the UK.
 
       .example
@@ -129,7 +138,5 @@ html.no-js(lang="en")
           p Generated with addQuestionForm(autofocus)
           p The optional autofocus param decides whether it should gain focus on page visit.
         +addQuestionForm()
-
-    br
 
     +javascriptIncludeTag("scripts.min")

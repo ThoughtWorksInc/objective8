@@ -36,6 +36,13 @@ $writer_avatar_size: 60px;
     height: auto;
   }
 }
+.writer-item-no-image-icon {
+  display: block;
+  height: $writer_avatar_size;
+  line-height: ($writer_avatar_size - 3px);
+  text-align: center;
+  color: rgba($grey-15,0.2);
+}
 
 .writer-item-author {
   display: inline-block;

@@ -74,13 +74,23 @@ mixin commentItemBlank()
   li.question-item
     | There are no comments yet.
 
+mixin writerWithImage(photo)
+  .writer-item-photo.clj-writer-image
+    img(src="#{photo}")
+
+mixin writerWithoutImage()
+  .writer-item-photo.clj-writer-no-image
+    i.writer-item-no-image-icon.fa.fa-user.fa-3x
+
 mixin objectiveWriterItem(name, href, photo)
   - href = href || ''
-  - photo = photo || 'http://placekitten.com/g/120/120'
+  //- photo = photo || 'http://placekitten.com/g/120/120'
   li.writer-item
     a(href="#{href}")
-      .writer-item-photo
-        img(src="#{photo}")
+      if photo == ""
+        +writerWithoutImage()
+      else
+        +writerWithImage(photo)
       .writer-item-text
         .writer-item-author
           = name
