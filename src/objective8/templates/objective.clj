@@ -29,4 +29,5 @@
                                                    (html/content (translations :objective-view/ask-a-question)))
                       [:.clj-comments-section-title] (html/content (translations :objective-view/comments))
                       [:.clj-comment-list] (html/content (f/comment-list context))
+                      [:.clj-comment-create] (html/content (f/comment-create context))
                       )))))

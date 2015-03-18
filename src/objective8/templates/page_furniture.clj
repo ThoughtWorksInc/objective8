@@ -1,5 +1,7 @@
 (ns objective8.templates.page-furniture
-  (:require [net.cgrand.enlive-html :as html]))
+  (:require [net.cgrand.enlive-html :as html]
+            [ring.util.anti-forgery :refer [anti-forgery-field]]  
+            [objective8.utils :as utils]))
 
 (defn text->p-nodes
   "Turns text into a collection of paragraph nodes based on linebreaks.
@@ -78,9 +80,10 @@
 (html/defsnippet comment-list-items
   "templates/jade/library.html" [:.clj-comment-item] [comments]
   [:.clj-comment-item] (html/clone-for [comment comments]
-                                       [:.clj-comment-author] identity
-                                       [:.clj-comment-date] identity
-                                       [:.clj-comment-text] identity)) 
+                                       [:.clj-comment-author] (html/content (:username comment)) 
+                                       [:.clj-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
+                                       [:.clj-comment-text] (html/content (:comment comment))
+                                       [:.clj-comment-actions] nil)) 
 
 (defn comment-list [{translations :translations :as context}]
   (let [comments (get-in context [:data :comments])]
@@ -88,3 +91,23 @@
       (empty-comment-list-item translations)
       (comment-list-items comments))))
 
+;; COMMENT CREATE
+
+(html/defsnippet comment-create-form 
+  "templates/jade/library.html" [:.clj-add-comment-form] [{:keys [translations data]}]
+  [:.clj-add-comment-form] (html/prepend (html/html-snippet (anti-forgery-field)))
+  [:.clj-objective-id-input] (html/set-attr "value" (get-in data [:objective :_id]))
+  [:.clj-add-comment] (html/content (translations :comment-create/post-button)))
+
+(html/defsnippet sign-in-to-comment  
+  "templates/jade/library.html" [:.clj-please-sign-in] [{:keys [translations ring-request]}]
+  [:.clj-before-link] (html/content (str (translations :comment-sign-in/please) " "))
+  [:.clj-sign-in-link] (html/do-> 
+                         (html/set-attr "href" (str "/sign-in?refer=" (:uri ring-request))) 
+                         (html/content (translations :comment-sign-in/sign-in)))
+  [:.clj-after-link] (html/content (str " " (translations :comment-sign-in/to))))
+
+(defn comment-create [{user :user :as context}]
+  (if user
+    (comment-create-form context)
+    (sign-in-to-comment context))) 

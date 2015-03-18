@@ -103,6 +103,18 @@ mixin objectiveWriterItemBlank()
   li.writer-item.clj-empty-writer-list-item
     | !No candidate writers have been invited yet.
 
+mixin addCommentForm()
+  form.clj-add-comment-form(method='POST', action='/comments')
+    input.clj-objective-id-input(name='objective-id', type='hidden')
+    textarea(name='comment', rows='5', cols='10', pattern=".{50,}", maxLength='500', required)
+    button.clj-add-comment(type='submit') !Add a comment
+
+mixin pleaseSignIn()
+  p.clj-please-sign-in
+    span.clj-before-link
+    a.clj-sign-in-link(href='/sign-in')
+    span.clj-after-link
+      
 mixin addQuestionForm(allowFocus)
   - focus = allowFocus ? true : false
     form#clj-question-create(method="POST", action="")

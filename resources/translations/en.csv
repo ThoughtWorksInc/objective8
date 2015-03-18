@@ -14,7 +14,7 @@ draft-detail,doc-description,Draft policy for objective ...
 draft-detail,add-a-draft,Add a draft
 draft-detail,no-drafts,No drafts have been submitted yet
 comment-create,comment-title,Comments are a maximum length of 500 characters
-comment-create,post-button,Add comment
+comment-create,post-button,Add a comment
 comment-create,comment-label,Your comment
 question-sign-in,sign-in,sign in
 question-sign-in,please,Please
