@@ -1,18 +1,11 @@
 (ns objective8.storage.storage
   (:require [korma.core :as korma]
-            [korma.db :as kdb]
             [objective8.storage.mappings :as mappings]))
 
 (defn insert
   "Wrapper around Korma's insert call"
   [entity data]
-  (if (#{:answer} (:entity data))
-    (kdb/transaction
-     (let [{global-id :_id} (korma/insert
-                             mappings/global-identifier
-                             (korma/values {:objective-id (:objective-id data)}))]
-       (korma/insert entity (korma/values (assoc data :global-id global-id)))))
-    (korma/insert entity (korma/values data))))
+  (korma/insert entity (korma/values data)))
 
 (defn pg-store!
   "Transform a map according to its :entity value and save it in the database"

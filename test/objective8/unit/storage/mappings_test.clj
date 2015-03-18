@@ -36,14 +36,6 @@
              (map->objective {:a "B" :created-by "Foo"}) => (throws Exception "Could not transform map to objective")
              (map->objective {:a "B" :end-date "Blah"}) => (throws Exception "Could not transform map to objective")))
 
-;;GLOBAL IDENTIFIERS
-(facts "About map->global-identifier"
-       (fact "Column values are pulled out and converted, the map gets turned to json"
-             (let [global-id (map->global-identifier {:objective-id 1})]
-               global-id => (contains {:objective_id 1}))
-       (fact "throws exception if objective-id is missing"
-             (map->global-identifier {}) => (throws Exception "Could not transform map to global-identifier"))))
-
 ;;USER
 (facts "About map->user"
        (fact "Column values are pulled out and converted, the map gets turned to json"
@@ -58,25 +50,26 @@
 
 ;;UP-DOWN-VOTES
 (def GLOBAL_ID 3)
-(def vote-data {:global-id GLOBAL_ID :created-by-id USER_ID :vote-type :up})
+
+(def vote-data {:global-id GLOBAL_ID :user-id USER_ID :vote-type :up :active true})
 (facts "About map->up-down-vote"
        (tabular
         (fact "Column values are pulled out and converted"
-              (let [up-down-vote (map->up-down-vote {:global-id GLOBAL_ID :created-by-id USER_ID :vote-type ?vote-type})]
+              (let [up-down-vote (map->up-down-vote {:global-id GLOBAL_ID :user-id USER_ID :vote-type ?vote-type})]
                 up-down-vote => (contains {:global_id GLOBAL_ID
-                                           :created_by_id USER_ID
-                                           :vote ?vote})))
-        ?vote-type ?vote
-        :up        1
-        :down      -1)
+                                           :user_id USER_ID
+                                           :up_vote ?up-vote})))
+        ?vote-type ?up-vote
+        :up        true
+        :down      false)
 
        (fact "throws exception if any field is missing"
-             (map->up-down-vote (dissoc vote-data :global-id)) => (throws Exception)
-             (map->up-down-vote (dissoc vote-data :created-by-id)) => (throws Exception)
-             (map->up-down-vote (dissoc vote-data :vote-type)) => (throws Exception))
+             (map->up-down-vote (dissoc vote-data :global-id)) => (throws Exception "Could not transform map to up-down-vote")
+             (map->up-down-vote (dissoc vote-data :user-id)) => (throws Exception "Could not transform map to up-down-vote")
+             (map->up-down-vote (dissoc vote-data :vote-type)) => (throws Exception "Could not transform map to up-down-vote"))
 
        (fact "throws exception if vote type is invalid"
-             (map->up-down-vote (assoc vote-data :vote-type :not-up-or-down)) => (throws Exception)))
+             (map->up-down-vote (assoc vote-data :vote-type :not-up-or-down)) => (throws Exception "Could not transform map to up-down-vote")))
 
 ;;COMMENT
 (def OBJECTIVE_ID 2345)
@@ -113,23 +106,17 @@
 (def QUESTION_ID 345)
 
 (def answer-map {:created-by-id USER_ID
-                 :question-id QUESTION_ID
-                 :objective-id OBJECTIVE_ID
-                 :global-id GLOBAL_ID})
+                 :question-id QUESTION_ID})
 
 (facts "About map->answer"
        (fact "Column values are pulled out and converted, the map gets turned to json"
              (let [test-answer (map->answer answer-map)]
                test-answer => (contains {:created_by_id USER_ID
-                                         :question_id QUESTION_ID
-                                         :objective_id OBJECTIVE_ID
-                                         :global_id GLOBAL_ID
+                                         :question_id QUESTION_ID  
                                          :answer json-type?})))
        (fact "throws exception if :created-by-id or :question-id are missing"
-             (map->answer (dissoc answer-map :created-by-id)) => (throws Exception)
-             (map->answer (dissoc answer-map :question-id)) => (throws Exception)
-             (map->answer (dissoc answer-map :objective-id)) => (throws Exception)
-             (map->answer (dissoc answer-map :global-id)) => (throws Exception)))
+                    (map->answer (dissoc answer-map :created-by-id)) => (throws Exception "Could not transform map to answer")
+                    (map->answer (dissoc answer-map :question-id)) => (throws Exception "Could not transform map to answer")))
 
 ;;INVITATIONS
 (def INVITATION_STATUS "active")

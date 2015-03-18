@@ -18,6 +18,6 @@
     (when (writers/retrieve-candidate-for-objective submitter-id objective-id)
       (drafts/store-draft! draft-data))))
 
-(defn cast-up-down-vote! [{:keys [global-id created-by-id vote-type] :as vote-data}]
-  (when-not (up-down-votes/get-vote global-id created-by-id)
+(defn cast-up-down-vote! [{:keys [global-id user-id vote-type] :as vote-data}]
+  (when-not (up-down-votes/get-vote global-id user-id)
     (up-down-votes/store-vote! vote-data)))

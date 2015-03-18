@@ -4,7 +4,11 @@
             [objective8.storage.database :as db]
             [objective8.integration.integration-helpers :refer [truncate-tables
                                                                 db-connection]]
-            [objective8.integration.storage-helpers :as sh]))
+            [objective8.integration.storage-helpers :refer [store-a-user
+                                                            store-an-objective
+                                                            store-an-invitation
+                                                            store-a-question
+                                                            store-a-candidate]]))
 
 (facts "Storage tests"
        (against-background
@@ -60,7 +64,7 @@
                     (storage/pg-store! objective)))
 
                (fact "an objective entity can be stored in the database"
-                     (let [{user-id :_id username :username} (sh/store-a-user)
+                     (let [{user-id :_id username :username} (store-a-user)
                            store-result (store-an-objective-by user-id)
                            retrieve-result (storage/pg-retrieve {:entity :objective :_id (:_id store-result)})]
                        (first (:result retrieve-result)) => (contains {:created-by-id user-id
@@ -69,13 +73,13 @@
                                                                        :title "title"})))
 
                (fact "the 'drafting-status' of an objective can be updated"
-                     (let [objective (sh/store-an-objective)]
+                     (let [objective (store-an-objective)]
                       (:drafting-started (storage/pg-update-objective-status! objective true)) => true)) 
 
                ;;COMMENTS
                (fact "a comment entity can be stored in the database"
-                     (let [{user-id :_id username :username} (sh/store-a-user)
-                           {objective-id :_id} (sh/store-an-objective)
+                     (let [{user-id :_id username :username} (store-a-user)
+                           {objective-id :_id} (store-an-objective)
                            comment {:entity :comment
                                     :created-by-id user-id
                                     :objective-id objective-id
@@ -88,8 +92,8 @@
 
                ;;QUESTIONS
                (fact "a question entity can be stored in the database"
-                     (let [{user-id :_id username :username} (sh/store-a-user)
-                           {objective-id :_id} (sh/store-an-objective)
+                     (let [{user-id :_id username :username} (store-a-user)
+                           {objective-id :_id} (store-an-objective)
                            question {:entity :question
                                      :created-by-id user-id
                                      :objective-id objective-id
@@ -100,9 +104,9 @@
                                                                        :username username
                                                                        :objective-id objective-id})))
                (fact "questions can be retrieved by objective ID"
-                     (let [{user-id :_id username :username} (sh/store-a-user)
-                           {an-objective-id :_id} (sh/store-an-objective)
-                           {another-objective-id :_id} (sh/store-an-objective)
+                     (let [{user-id :_id username :username} (store-a-user)
+                           {an-objective-id :_id} (store-an-objective)
+                           {another-objective-id :_id} (store-an-objective)
                            question-1 {:entity :question :created-by-id user-id :objective-id an-objective-id :question "A question"}
                            question-2 {:entity :question :created-by-id user-id :objective-id an-objective-id :question "A question"}
                            question-3 {:entity :question :created-by-id user-id :objective-id another-objective-id :question "Another question"}
@@ -115,12 +119,12 @@
 
                ;;ANSWERS
                (fact "an answer entity can be stored in the database"
-                     (let [{user-id :_id username :username} (sh/store-a-user)
-                           {question-id :_id objective-id :objective-id} (sh/store-a-question)
+                     (let [{user-id :_id username :username} (store-a-user)
+                           {objective-id :_id} (store-an-objective)
+                           {question-id :_id} (store-a-question)
                            answer {:entity :answer
                                    :created-by-id user-id
                                    :question-id question-id
-                                   :objective-id objective-id
                                    :answer "An answer"}
                            store-result (storage/pg-store! answer)
                            retrieve-result (storage/pg-retrieve {:entity :answer
@@ -129,24 +133,10 @@
                                                                        :username username
                                                                        :question-id question-id})))
 
-               ;;UP-DOWN-VOTES
-               (fact "an up-down-vote can be stored in the database"
-                     (let [{:keys [global-id created-by-id]} (sh/store-an-answer)
-                           up-down-vote {:entity :up-down-vote
-                                         :created-by-id created-by-id
-                                         :global-id global-id
-                                         :vote-type :up}
-                           store-result (storage/pg-store! up-down-vote)
-                           retrieve-result (storage/pg-retrieve {:entity :up-down-vote
-                                                                 :_id (:_id store-result)})]
-                       (first (:result retrieve-result)) => (contains {:created-by-id created-by-id
-                                                                       :global-id global-id
-                                                                       :vote-type :up})))
-               
                ;;INVITATIONS
                (fact "an invitation entity can be stored in the database"
-                     (let [{user-id :_id} (sh/store-a-user)
-                           {objective-id :_id} (sh/store-an-objective)
+                     (let [{user-id :_id} (store-a-user)
+                           {objective-id :_id} (store-an-objective)
                            invitation {:entity :invitation
                                        :invited-by-id user-id
                                        :objective-id objective-id
@@ -162,7 +152,7 @@
                                                                        :status "active"})))
 
                (fact "an invitation can be retrieved by uuid"
-                     (let [user-id (:_id (sh/store-a-user))
+                     (let [user-id (:_id (store-a-user))
                            objective-id (:_id (storage/pg-store! {:entity :objective
                                                                   :created-by-id user-id
                                                                   :end-date "2015-01-01"}))
@@ -175,9 +165,9 @@
 
                ;;CANDIDATES
                (fact "a candidate entity can be stored in the database"
-                     (let [{user-id :_id} (sh/store-a-user)
-                           {objective-id :_id} (sh/store-an-objective)
-                           {invitation-id :_id} (sh/store-an-invitation)
+                     (let [{user-id :_id} (store-a-user)
+                           {objective-id :_id} (store-an-objective)
+                           {invitation-id :_id} (store-an-invitation)
                            candidate {:entity :candidate
                                       :user-id user-id
                                       :objective-id objective-id
@@ -191,13 +181,13 @@
                ;; INVITATIONS
                (facts "about invitations"
                       (fact "an invitation's status can be updated"
-                            (let [invitation (sh/store-an-invitation)]
+                            (let [invitation (store-an-invitation)]
                               (:status (storage/pg-update-invitation-status! invitation "accepted")) => "accepted")))
 
                ;;DRAFTS
                (facts "about drafts"
                       (fact "a draft can be stored in the database"
-                            (let [{objective-id :objective-id submitter-id :user-id} (sh/store-a-candidate)
+                            (let [{objective-id :objective-id submitter-id :user-id} (store-a-candidate)
                                   draft {:entity :draft
                                          :content "Some content"
                                          :submitter-id submitter-id

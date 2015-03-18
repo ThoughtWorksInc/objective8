@@ -4,7 +4,7 @@
 (defn store-vote! [vote-data]
   (storage/pg-store! (assoc vote-data :entity :up-down-vote)))
 
-(defn get-vote [global-id created-by-id]
+(defn get-vote [global-id user-id]
   (first (:result (storage/pg-retrieve {:entity :up-down-vote
                                         :global-id global-id
-                                        :created-by-id created-by-id}))))
+                                        :user-id user-id}))))

@@ -5,7 +5,6 @@
             [objective8.storage.storage :as storage]))  
 
 (defn create-candidate [{:keys [invitation-uuid invitee-id] :as candidate-data}]
-  ;; TODO: Refactor to use a single -> macro and utils/ressoc
   (try
     (when-let [{:keys [writer-name
                        reason

@@ -12,21 +12,12 @@
 (def host-url
   (str (config/get-var "HTTPS" "http://") (config/get-var "BASE_URI" "localhost:8080")))
 
-;;Map manipulation
-(defn select-all-or-nothing
-  "If m contains all of the keys in required-keys, then returns a
-  submap containing just the required keys, otherwise returns nil"
-  [m required-keys]
-  (let [present-keys (set (keys m))]
-    (when (every? present-keys required-keys)
-      (select-keys m required-keys))))
-
 ;;Bidi currently doesn't currently work with java.lang.Integer
 (extend-protocol bidi/ParameterEncoding
   java.lang.Integer
   (bidi/encode-parameter [s] s))
 
-(defn path-for [& args]
+(defn path-for [& args] 
   (str host-url (apply bidi/path-for routes/routes args)))
 
 (defn generate-random-uuid []

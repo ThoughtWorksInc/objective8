@@ -23,12 +23,3 @@
     (tnr/refresh :after post-reset-hook)
     (prn "Reset")
     config-key))
-
-;; Useful helpers
-(defn print-and-pass-through
-  ([v] (print-and-pass-through v ""))
-  
-  ([v tag]
-   (prn (str tag v))
-   v))
-
