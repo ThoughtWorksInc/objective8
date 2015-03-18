@@ -112,7 +112,7 @@
                      {response :response} (p/request app (str "/api/v1/objectives/" objective-id "/questions/" q-id "/answers"))]
                  (:body response) => (helpers/json-contains (map contains stored-answers))))
 
-         (future-fact "retrieves vote count for each answer"
+         (fact "retrieves vote count for each answer"
                (let [{objective-id :objective-id q-id :_id :as question} (sh/store-a-question)
                      {global-id :global-id} (sh/store-an-answer {:question question})
                      up-votes (doall (for [_ (range 5)] (sh/store-an-up-down-vote global-id :up)))

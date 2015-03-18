@@ -11,7 +11,5 @@
     (store-answer! answer)))
 
 (defn retrieve-answers [question-id]
-  (:result (storage/pg-retrieve {:entity :answer 
-                                 :question-id question-id}
-                                {:limit 50})))
+  (storage/pg-retrieve-answers-with-votes-for-question question-id))
 
