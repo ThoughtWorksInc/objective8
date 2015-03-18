@@ -68,14 +68,25 @@
   ([]
    (store-an-answer {}))
 
-([required-entities]
- (let [{created-by-id :_id} (get required-entities :user (store-a-user))
-       {objective-id :objective-id q-id :_id} (get required-entities :question (store-a-question))]
-   (storage/pg-store! {:entity :answer
-                       :created-by-id created-by-id
-                       :objective-id objective-id
-                       :question-id q-id
-                       :answer "An answer"}))))
+  ([required-entities]
+   (let [{created-by-id :_id} (get required-entities :user (store-a-user))
+         {objective-id :objective-id q-id :_id} (get required-entities :question (store-a-question))]
+     (storage/pg-store! {:entity :answer
+                         :created-by-id created-by-id
+                         :objective-id objective-id
+                         :question-id q-id
+                         :answer "An answer"}))))
+
+(defn store-an-up-down-vote
+  ([global-id vote-type]
+   (store-an-up-down-vote global-id vote-type {}))
+
+  ([global-id vote-type required-entities]
+   (let [user (get required-entities :user (store-a-user))]
+     (storage/pg-store! {:entity :up-down-vote
+                         :global-id global-id
+                         :vote-type vote-type
+                         :created-by-id (:_id user)}))))
 
 (defn store-a-candidate
   ([]

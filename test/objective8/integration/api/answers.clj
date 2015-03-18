@@ -112,6 +112,16 @@
                      {response :response} (p/request app (str "/api/v1/objectives/" objective-id "/questions/" q-id "/answers"))]
                  (:body response) => (helpers/json-contains (map contains stored-answers))))
 
+         (future-fact "retrieves vote count for each answer"
+               (let [{objective-id :objective-id q-id :_id :as question} (sh/store-a-question)
+                     {global-id :global-id} (sh/store-an-answer {:question question})
+                     up-votes (doall (for [_ (range 5)] (sh/store-an-up-down-vote global-id :up)))
+                     down-votes (doall (for [_ (range 3)] (sh/store-an-up-down-vote global-id :down)))
+                     {response :response} (p/request app (utils/path-for :api/get-answers-for-question
+                                                                         :id objective-id
+                                                                         :q-id q-id))]
+                 (:body response) => (helpers/json-contains [(contains {:votes {:up 5 :down 3}})])))
+
          (fact "returns a 400 status if the question does not belong to the objective"
                (let [{q-id :_id o-id :objective-id} (sh/store-a-question)
                      {response :response} (p/request app (str "/api/v1/objectives/" (inc o-id)
