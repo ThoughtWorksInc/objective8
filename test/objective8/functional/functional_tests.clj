@@ -148,9 +148,9 @@
                                   actions/start-drafting!))]
            (fact "Can submit a draft"
                  (try
-                   (wd/to (str (:objective-url @journey-state) "/drafts/current"))
+                   (wd/to (str (:objective-url @journey-state) "/drafts/latest"))
                    (wait-for-title "Policy draft | Objective[8]")
-                   (screenshot "current_draft_no_draft")
+                   (screenshot "latest_draft_no_draft")
 
                    (wd/click "#clj-add-a-draft") 
                    (wait-for-title "Add draft | Objective[8]")
@@ -175,7 +175,7 @@
                  => (contains {:page-title "Policy draft | Objective[8]"
                                :page-source (contains SOME_HTML)})) 
 
-           (fact "Can view current draft"
+           (fact "Can view latest draft"
                  (try
                    (wd/to (:objective-url @journey-state))
                    (wait-for-title "Functional test headline | Objective[8]")
@@ -183,13 +183,13 @@
 
                    (wd/click ".clj-objective-drafting-link")
                    (wait-for-title "Policy draft | Objective[8]")
-                   (screenshot "current_draft")
+                   (screenshot "latest_draft")
 
                    {:page-title (wd/title)
                     :page-source (wd/page-source)}
 
                    (catch Exception e
-                     (screenshot "ERROR-Can-view-current-draft")
+                     (screenshot "ERROR-Can-view-latest-draft")
                      (throw e)))
                  => (contains {:page-title "Policy draft | Objective[8]"
                                :page-source (contains SOME_HTML)}))

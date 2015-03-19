@@ -270,8 +270,8 @@
 
 (defn get-draft [{{:keys [id d-id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)]
-    (if-let [draft (if (= d-id "current")
-                     (drafts/retrieve-current-draft objective-id)
+    (if-let [draft (if (= d-id "latest")
+                     (drafts/retrieve-latest-draft objective-id)
                      (drafts/retrieve-draft (Integer/parseInt d-id)))]
       (-> draft
           response/response

@@ -87,8 +87,8 @@ objective-create,end-date-prompt,"En esta fecha empieza la fase de creación del
 objective-create,doc-description,Crea un objetivo
 objective-create,headline-label,Título
 objective-create,background-title,Escribe una descripcion de máximo 1000 caracteres.
-current-draft,page-intro,Borrador actual
-current-draft,no-drafts,No hay borradores para este objetivo
+latest-draft,page-intro,Borrador actual
+latest-draft,no-drafts,No hay borradores para este objetivo
 invitation-banner,message,Responde a la invitación para ayudar a redactar el documento
 question-list,question-list-heading,Preguntas recientemente añadidas
 question-list,page-intro,"Obtén información de contexto como opiniones y experiencias preguntando algo. Tu pregunta debe ser concreta y específica, ya que las respuestas influirán en el proceso de creación del borrador"

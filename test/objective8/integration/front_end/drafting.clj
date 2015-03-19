@@ -21,7 +21,7 @@
 (def SOME_HTML (hc/html SOME_HICCUP))
 
 (def add-draft-url (utils/path-for :fe/add-draft-get :id OBJECTIVE_ID))
-(def current-draft-url (utils/path-for :fe/draft :id OBJECTIVE_ID :d-id "current"))
+(def latest-draft-url (utils/path-for :fe/draft :id OBJECTIVE_ID :d-id "latest"))
 (def draft-list-url (utils/path-for :fe/draft-list :id OBJECTIVE_ID))
 
 (def user-session (ih/test-context))
@@ -108,14 +108,14 @@
               (:status response) => 200
               (:body response) => (contains SOME_HTML)))
        
-      (fact "anyone can view current draft"
+      (fact "anyone can view latest draft"
             (against-background
-              (http-api/get-draft OBJECTIVE_ID "current") => {:status ::http-api/success
+              (http-api/get-draft OBJECTIVE_ID "latest") => {:status ::http-api/success
                                                               :result {:_id DRAFT_ID
                                                                        :content SOME_HICCUP
                                                                        :objective-id OBJECTIVE_ID
                                                                        :submitter-id USER_ID}})
-            (let [{response :response} (p/request user-session current-draft-url)]
+            (let [{response :response} (p/request user-session latest-draft-url)]
               (:status response) => 200
               (:body response) => (contains SOME_HTML))) 
 
@@ -141,13 +141,13 @@
                                                                :result {:_id USER_ID
                                                                         :username "username"}}
                (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}} 
-               (http-api/get-draft OBJECTIVE_ID "current") => {:status ::http-api/success
+               (http-api/get-draft OBJECTIVE_ID "latest") => {:status ::http-api/success
                                                                :result {:_id DRAFT_ID
                                                                         :content SOME_HICCUP
                                                                         :objective-id OBJECTIVE_ID
                                                                         :submitter-id USER_ID}}) 
                (-> user-session
                    ih/sign-in-as-existing-user 
-                   (p/request current-draft-url)
+                   (p/request latest-draft-url)
                    (get-in [:response :body])) => (contains (str "/objectives/" OBJECTIVE_ID "/add-draft")))) 
 

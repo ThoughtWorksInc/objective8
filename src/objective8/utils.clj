@@ -83,7 +83,7 @@
       ((regex-checker #"/objectives/\d+/questions") target)
       ((regex-checker #"/objectives/\d+/questions/\d+") target)
       ((regex-checker #"/objectives/\d+/drafts/\d+") target)
-      ((regex-checker #"/objectives/\d+/drafts/current") target)
+      ((regex-checker #"/objectives/\d+/drafts/latest") target)
       ((regex-checker #"/objectives/\d+/drafts/add-draft") target)
       ((regex-checker #"/objectives/\d+/writers") target)
       ((regex-checker #"/objectives/\d+/writers/invitation") target)
