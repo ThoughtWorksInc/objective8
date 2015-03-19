@@ -95,12 +95,12 @@
                       (throw e)))
                =>  "Functional test headline | Objective[8]") 
 
-         (future-fact "Can invite a writer"
+         (fact "Can invite a writer"
                (try (wd/to (:objective-url @journey-state))
                     (wait-for-title "Functional test headline | Objective[8]")
                     (screenshot "objective_page")
 
-                    (wd/click "a#clj-objectives-writers")
+                    (wd/click ".func-invite-writer")
                     (wait-for-title "Candidate policy writers | Objective[8]")
                     (screenshot "candidate_writers_page")
 
@@ -111,11 +111,11 @@
                     (wait-for-title "Functional test headline | Objective[8]")
                     (screenshot "objective_with_invitation_flash")
 
-                    (->> (wd/text "div.wrapper>p")
+                    (->> (wd/text ".func-flash-bar")
                          (re-find #"http://.*$")
                          (swap! journey-state assoc :invitation-url))
                     {:page-title (wd/title)
-                     :flash-message (wd/text "div.wrapper>p")}
+                     :flash-message (wd/text ".func-flash-bar")}
 
                     (catch Exception e
                       (screenshot "ERROR-Can-invite-a-writer")
@@ -123,7 +123,7 @@
                => (contains {:page-title "Functional test headline | Objective[8]"
                              :flash-message (contains "Your invited writer can accept their invitation")}))
 
-         (future-fact "Can accept a writer invitation"
+         (fact "Can accept a writer invitation"
                (try
                  (wd/to (:invitation-url @journey-state))
                  (wait-for-title "Invitation to draft | Objective[8]")
@@ -146,7 +146,7 @@
                                   last
                                   Integer/parseInt
                                   actions/start-drafting!))]
-           (future-fact "Can submit a draft"
+           (fact "Can submit a draft"
                  (try
                    (wd/to (str (:objective-url @journey-state) "/drafts/current"))
                    (wait-for-title "Policy draft | Objective[8]")
@@ -175,7 +175,7 @@
                  => (contains {:page-title "Policy draft | Objective[8]"
                                :page-source (contains SOME_HTML)})) 
 
-           (future-fact "Can view current draft"
+           (fact "Can view current draft"
                  (try
                    (wd/to (:objective-url @journey-state))
                    (wait-for-title "Functional test headline | Objective[8]")

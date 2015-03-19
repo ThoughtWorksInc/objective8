@@ -106,7 +106,9 @@
                                                               :result expired-invitation}
               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                         :result {:title OBJECTIVE_TITLE}}
-              (http-api/retrieve-comments anything) => {:status ::http-api/success
+               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success :result []}
+               (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}
+               (http-api/retrieve-comments anything) => {:status ::http-api/success
                                                         :result []})
              (let [{request :request response :response} (-> user-session
                                                              (p/request invitation-url)

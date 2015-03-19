@@ -59,12 +59,12 @@
                                                                    :goal-1 "my objective goal"
                                                                    :description "my objective description"
                                                                    :end-date (utils/string->date-time "2015-12-01")}}
-               (http-api/retrieve-comments OBJECTIVE_ID) => {:status ::http-api/success :result []})
+               (http-api/retrieve-comments OBJECTIVE_ID) => {:status ::http-api/success :result []}
+               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success :result []}
+               (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []})
              (default-app objective-view-get-request) => (contains {:status 200})
              (default-app objective-view-get-request) => (contains {:body (contains "my objective title")})
-             (default-app objective-view-get-request) => (contains {:body (contains "my objective goal")})
-             (default-app objective-view-get-request) => (contains {:body (contains "my objective description")})
-             (default-app objective-view-get-request) => (contains {:body (contains "01-12-2015")}))
+             (default-app objective-view-get-request) => (contains {:body (contains "my objective description")}))
 
        (fact "A user should receive a 404 if an objective doesn't exist"
              (against-background
@@ -77,7 +77,9 @@
                                                          :result {:title "my objective title"
                                                                   :goal-1 "my objective goal"
                                                                   :description "my objective description"
-                                                                  :end-date (utils/string->date-time "2015-12-01")}} 
+                                                                  :end-date (utils/string->date-time "2015-12-01")}}
+               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success :result []}
+               (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}
                (http-api/retrieve-comments OBJECTIVE_ID) => {:status ::http-api/success
                                                              :result [{:_id 1
                                                                        :_created_at "2015-02-12T16:46:18.838Z"
