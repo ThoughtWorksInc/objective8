@@ -30,9 +30,11 @@ mixin voteUpDownControls()
       span.actions-vote-count #{voteDownCount}
       i.fa.fa-fw.fa-angle-down
       span.vote-direction-text Vote down
-      
+
 mixin pleaseSignIn()
   p.clj-please-sign-in
-    span.clj-before-link
-    a.clj-sign-in-link(href='/sign-in')
-    span.clj-after-link
+    span.clj-before-link !Please
+    =" "
+    a.clj-sign-in-link(href='/sign-in') !sign in
+    =" "
+    span.clj-after-link !to ...

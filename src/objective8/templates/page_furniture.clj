@@ -101,11 +101,11 @@
 
 (html/defsnippet sign-in-to-comment  
   "templates/jade/library.html" [:.clj-please-sign-in] [{:keys [translations ring-request]}]
-  [:.clj-before-link] (html/content (str (translations :comment-sign-in/please) " "))
+  [:.clj-before-link] (html/content (translations :comment-sign-in/please))
   [:.clj-sign-in-link] (html/do-> 
                          (html/set-attr "href" (str "/sign-in?refer=" (:uri ring-request))) 
                          (html/content (translations :comment-sign-in/sign-in)))
-  [:.clj-after-link] (html/content (str " " (translations :comment-sign-in/to))))
+  [:.clj-after-link] (html/content (translations :comment-sign-in/to)))
 
 (defn comment-create [{user :user :as context}]
   (if user
