@@ -231,3 +231,8 @@
       (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => :api-call-result
       (provided
         (http-api/default-get-call (contains (utils/path-for :api/get-draft :id OBJECTIVE_ID :d-id DRAFT_ID))) => :api-call-result))
+
+(fact "getting drafts for an objective hits the correct API endpoint"
+      (http-api/get-all-drafts OBJECTIVE_ID) => :api-call-result
+      (provided
+        (http-api/default-get-call (contains (utils/path-for :api/get-drafts-for-objective :id OBJECTIVE_ID))) => :api-call-result))

@@ -51,6 +51,7 @@
                                                        "/writer-invitations" {:post :api/post-invitation
                                                                               ["/" [#"\d+" :i-id]] {:put :api/put-invitation-declination}}
                                                        "/drafts" {:post :api/post-draft
+                                                                  :get :api/get-drafts-for-objective
                                                                   ["/" [#"\d+|current" :d-id]] {:get :api/get-draft}}}}
 
                              "/comments"   {:post :api/post-comment}

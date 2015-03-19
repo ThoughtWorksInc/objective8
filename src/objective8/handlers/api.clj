@@ -255,6 +255,8 @@
       (log/info "Error when retrieving candidates: " e)
       (invalid-response "Invalid candidates get request for this objective"))))
 
+;;DRAFTS
+
 (defn post-start-drafting [{{objective-id :id} :route-params}]
   (let [updated-objective (actions/start-drafting! (Integer/parseInt objective-id))]
     (successful-post-response (str utils/host-url
@@ -276,6 +278,8 @@
           response/response
           (response/content-type "application/json"))
       (response/not-found ""))))
+
+(defn retrieve-drafts [{{objective-id :id} :route-params :as request}])
 
 (defn post-up-down-vote [request]
   (if (some-> request
