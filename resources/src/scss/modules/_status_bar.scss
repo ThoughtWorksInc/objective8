@@ -1,16 +1,16 @@
 .status-bar {
   position: relative;
   z-index: 3;
-  margin-bottom: $alpha_block_spacing;
   padding: 0.3em 1em 0.5em;
+  margin-bottom: $alpha_block_spacing;
   background: $dark_pink;
   color: white;
+  @include mq(720) {
+    margin-bottom: $gamma_block_spacing;
+  }
   p {
     margin-top: 0;
     margin-bottom: 0;
-  }
-  @include mq(720) {
-    margin-bottom: $gamma_block_spacing;
   }
   a {
     color: white;

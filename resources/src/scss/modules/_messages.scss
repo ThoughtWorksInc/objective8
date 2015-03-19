@@ -1,13 +1,18 @@
 .flash-message-success,
 .invitation-banner {
-  padding: 0.5em 1em;
+  padding: 0.3em 1em 0.5em;
   position: relative;
   z-index: 5;
   width: 100%;
   background: $green1;
   color: $white;
+  margin-bottom: $alpha_block_spacing;
+  @include mq(720) {
+    margin-bottom: $gamma_block_spacing;
+  }
   p {
-    margin: 0;
+    margin-top: 0;
+    margin-bottom: 0;
   }
   a {
     color: #E1FFE1;
