@@ -1,3 +1,12 @@
+mixin statusBar
+  .status-bar.clj-status-bar
+    p.clj-status-bar-text
+      | !ALPHA, we are still testing
+
+mixin flashMessageSuccessBar
+  .flash-message-success.clj-flash-message-bar
+    p.clj-flash-message-bar-text !Success! It worked.
+
 mixin mastheadContents()
   .clj-masthead-navigation
     a.masthead-nav-link(href="#navigation")

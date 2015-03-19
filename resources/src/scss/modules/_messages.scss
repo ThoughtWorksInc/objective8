@@ -1,9 +1,8 @@
 .flash-message-success,
 .invitation-banner {
   padding: 0.5em 1em;
-  position: absolute;
+  position: relative;
   z-index: 5;
-  top: 52px;
   width: 100%;
   background: $green1;
   color: $white;

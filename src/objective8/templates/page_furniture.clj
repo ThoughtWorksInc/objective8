@@ -37,6 +37,12 @@
   [:.clj-masthead-sign-out-text] (html/content (translations :navigation-global/sign-out-text))
   [:.clj-username] (html/content (:username user)))
 
+;; STATUS BAR
+
+(html/defsnippet status-flash-bar
+  "templates/jade/library.html" [:.clj-status-bar] [{translations :translations :as context}]
+  [:.clj-status-bar-text] (html/content (translations :status-bar/status-text))
+  )
 
 ;; WRITER LIST
 

@@ -44,12 +44,7 @@ html.no-js(lang="en")
 
     header(role="banner")
       +mastheadSignedOut
-
-    .status-bar
-      p.clj-status-bar-text
-        | ALPHA: We are still testing,
-        =" "
-        a(href="/learn-more", title="Find out more about our project status") find out more
+      +statusBar
 
     #main-content(role="main").main-content
       block content

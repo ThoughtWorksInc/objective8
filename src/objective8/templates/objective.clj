@@ -13,6 +13,7 @@
              (html/at objective-template
                       [:title] (html/content (get-in context [:doc :title]))
                       [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
+                      [:.clj-status-bar] (html/substitute (f/status-flash-bar context))
                       [:.clj-objective-title] (html/content (:title objective))
                       [:.clj-replace-with-objective-detail] (html/substitute (f/text->p-nodes (:description objective)))
                       [:.clj-writers-section-title] (html/content (translations :objective-view/writers))
