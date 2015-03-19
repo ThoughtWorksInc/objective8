@@ -204,7 +204,9 @@
                                          :objective-id objective-id}
                                   stored-draft (storage/pg-store! draft)
                                   retrieve-result (storage/pg-retrieve {:entity :draft :_id (:_id stored-draft)})]
-                              (first (:result retrieve-result)) => (contains stored-draft))))
+                              (first (:result retrieve-result)) => (contains {:objective-id objective-id
+                                                                              :submitter-id submitter-id
+                                                                              :content "Some content"}))))
 
                ;;BEARER-TOKENS
                (facts "about bearer-tokens"

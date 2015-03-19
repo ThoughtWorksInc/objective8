@@ -98,7 +98,7 @@
                     {response :response} (p/request app (utils/path-for :api/get-draft :id objective-id 
                                                                         :d-id draft-id))]
                 (:status response) => 200
-                (:body response) => (helpers/json-contains draft)))))
+                (:body response) => (helpers/json-contains (dissoc draft :username))))))
 
 (facts "GET /dev/api/v1/objectives/:id/drafts"
        (against-background
@@ -127,4 +127,4 @@
                     {response :response} (p/request app (utils/path-for :api/get-draft :id objective-id 
                                                                         :d-id "current"))]
                 (:status response) => 200
-                (:body response) => (helpers/json-contains draft)))))
+                (:body response) => (helpers/json-contains (dissoc draft :username))))))

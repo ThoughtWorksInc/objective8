@@ -217,8 +217,9 @@
 (korma/defentity draft
   (korma/pk :_id)
   (korma/table :objective8.drafts)
+  (korma/belongs-to user {:fk :submitter_id})
   (korma/prepare map->draft)
-  (korma/transform (unmap :draft)))
+  (korma/transform (unmap-with-username :draft)))
 
 (korma/defentity bearer-token
   (korma/pk :_id)
