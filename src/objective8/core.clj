@@ -51,6 +51,7 @@
                :fe/add-draft-post (m/wrap-authorise-writer front-end-handlers/add-draft-post)
                :fe/draft front-end-handlers/draft-detail
                :fe/draft-list front-end-handlers/draft-list
+               :fe/post-up-vote front-end-handlers/post-up-vote
 
                
                ;; API Handlers

@@ -11,6 +11,7 @@
         "project-status"    :fe/project-status
         "learn-more"        :fe/learn-more
         "static/"           (->Resources {:prefix "public/"})
+        "meta/up-vote"      {:post :fe/post-up-vote}
         "objectives"        {:get :fe/objective-list
                              :post :fe/create-objective-form-post
                              "/create" {:get :fe/create-objective-form} 

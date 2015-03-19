@@ -30,7 +30,10 @@
     (get-in (first (html/select (html/html-snippet raw-html) [:#__anti-forgery-token])) [:attrs :value]))))
 
 
-(defn with-sign-in [user-session url & args]
+(defn with-sign-in
+  "CAUTION - this method requires that the oauth flow has been provided over in midje
+             otherwise it will throw null pointer exceptions FIXME"
+  [user-session url & args]
   (let [request-function #(apply p/request % url args)]
     (-> user-session
         ; Hit unauthorized url

@@ -379,3 +379,7 @@
         (= objective-status ::http-api/not-found)
         (error-404-response request)
         :else {:status 500})))
+
+(defn post-up-vote [{:keys [params] :as request}]
+  (response/redirect "/objectives/1/questions/1"))
+
