@@ -39,10 +39,16 @@
 
 ;; STATUS BAR
 
+(html/defsnippet flash-bar "templates/jade/library.html" [:.clj-flash-message-bar] [flash]
+  [:.clj-flash-message-bar-text] (html/content flash))
+
 (html/defsnippet status-flash-bar
-  "templates/jade/library.html" [:.clj-status-bar] [{translations :translations :as context}]
-  [:.clj-status-bar-text] (html/content (translations :status-bar/status-text))
-  )
+  "templates/jade/library.html" [:.clj-status-bar] [{{flash :flash} :ring-request
+                                                     translations :translations :as context}]
+  [:.clj-status-bar] (if flash
+                       (html/substitute (flash-bar flash))
+                       identity)
+  [:.clj-status-bar-text] (html/content (translations :status-bar/status-text)))
 
 ;; WRITER LIST
 

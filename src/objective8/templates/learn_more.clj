@@ -10,6 +10,7 @@
            (html/at learn-more
                     [:title] (html/content (translations :learn-more/doc-title))
                     [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
+                    [:.clj-status-bar] (html/substitute (f/status-flash-bar context))
                     [:.clj-learn-more-heading] (html/content (translations :learn-more/page-title))
                     [:.clj-learn-more-sub-heading] (html/content (translations :learn-more/sub-title))
                     [:.clj-learn-more-lede] (html/content (translations :learn-more/page-intro))
