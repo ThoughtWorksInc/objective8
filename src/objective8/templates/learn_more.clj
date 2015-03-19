@@ -9,7 +9,7 @@
          (html/emit*
            (html/at learn-more
                     [:title] (html/content (translations :learn-more/doc-title))
-                    [:.clj-user-navigation-signed-out] (html/substitute (f/user-navigation-signed-in? context))
+                    [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
                     [:.clj-learn-more-heading] (html/content (translations :learn-more/page-title))
                     [:.clj-learn-more-sub-heading] (html/content (translations :learn-more/sub-title))
                     [:.clj-learn-more-lede] (html/content (translations :learn-more/page-intro))

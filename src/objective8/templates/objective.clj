@@ -12,7 +12,7 @@
            (html/emit*
              (html/at objective-template
                       [:title] (html/content (get-in context [:doc :title]))
-                      [:.clj-user-navigation-signed-out] (html/substitute (f/user-navigation-signed-in? context))
+                      [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
                       [:.clj-objective-title] (html/content (:title objective))
                       [:.clj-replace-with-objective-detail] (html/substitute (f/text->p-nodes (:description objective)))
                       [:.clj-writers-section-title] (html/content (translations :objective-view/writers))
