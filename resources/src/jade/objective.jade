@@ -8,31 +8,31 @@ block vars
 block content
   .middle-container
 
-    ul.progress-indicator
+    ul.progress-indicator.clj-objective-progress-indicator
       li.on
-        a(href="/objective") Objective
+        a(href="/objective") !Objective
       li
-        a(href="/draft") Draft
+        a(href="/draft") !Draft
       li
-        a(href="#") Policy
+        a(href="#") !Policy
 
-    +guidanceText('What is an objective?')
+    +guidanceText('!What is an objective?')
       ul
-        li A policy starts with an idea.
-        li These are catalysts for change.
-        li Everyone can comment and make suggestions to contribute towards the draft stage.
+        li.clj-guidance-text-line-1 !A policy starts with an idea.
+        li.clj-guidance-text-line-2 !These are catalysts for change.
+        li.clj-guidance-text-line-3 !Everyone can comment and make suggestions to contribute towards the draft stage.
 
     .objective-navigation
       .objective-navigation-list-wrapper
         ul.objective-navigation-list
           li
-            a(href="#outline") Objective
+            a.clj-objective-navigation-item-objective(href="#outline") !Objective
           li
-            a(href="#writers") Writers
+            a.clj-objective-navigation-item-writers(href="#writers") !Writers
           li
-            a(href="#questions") Questions
+            a.clj-objective-navigation-item-questions(href="#questions") !Questions
           li
-            a(href="#comments") Comments
+            a.clj-objective-navigation-item-comments(href="#comments") !Comments
 
     .objective-outline#outline
       h1.objective-title.clj-objective-title !Build safer cycling networks in the streets of Madrid.

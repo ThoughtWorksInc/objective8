@@ -5,6 +5,10 @@ masthead,objectives-link,Objectives
 masthead,about-link-title-attr,Learn more about Objective[8]
 masthead,about-link,About
 status-bar,status-text,ALPHA: we are still testing
+objective-guidance,heading,What is an Objective?
+objective-guidance,text-line-1,A policy starts with an idea.
+objective-guidance,text-line-2,These are catalysts for change.
+objective-guidance,text-line-3,Everyone can comment and make suggestions to contribute towards the draft stage.
 objective-list,create-button-text,Create an objective
 objective-list,sign-in,sign in
 objective-list,drafting-begins,Drafting begins on
@@ -53,7 +57,9 @@ project-status,doc-description,
 objective-nav,questions,Questions
 objective-nav,title,Navigation for
 objective-nav,details,Details
+objective-nav,objective,Objective
 objective-nav,writers,Writers
+objective-nav,comments,Comments
 sign-up,welcome,"Adding your email address will let us notify you when you receive responses to comments, objectives and votes."
 sign-up,not-unique,Username already exists
 sign-up,username-label,Username

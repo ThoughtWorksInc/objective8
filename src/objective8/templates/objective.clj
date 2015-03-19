@@ -14,6 +14,18 @@
                       [:title] (html/content (get-in context [:doc :title]))
                       [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
                       [:.clj-status-bar] (html/substitute (f/status-flash-bar context))
+                      [:.clj-objective-progress-indicator] nil
+                      [:.clj-guidance-buttons] nil
+                      [:.clj-guidance-heading] (html/content (translations :objective-guidance/heading))
+                      [:.clj-guidance-text-line-1] (html/content (translations :objective-guidance/text-line-1))
+                      [:.clj-guidance-text-line-2] (html/content (translations :objective-guidance/text-line-2))
+                      [:.clj-guidance-text-line-3] (html/content (translations :objective-guidance/text-line-3))
+
+                      [:.clj-objective-navigation-item-objective] (html/content (translations :objective-nav/objective))
+                      [:.clj-objective-navigation-item-writers] (html/content (translations :objective-nav/writers))
+                      [:.clj-objective-navigation-item-questions] (html/content (translations :objective-nav/questions))
+                      [:.clj-objective-navigation-item-comments] (html/content (translations :objective-nav/comments))
+
                       [:.clj-objective-title] (html/content (:title objective))
                       [:.clj-replace-with-objective-detail] (html/substitute (f/text->p-nodes (:description objective)))
                       [:.clj-writers-section-title] (html/content (translations :objective-view/writers))

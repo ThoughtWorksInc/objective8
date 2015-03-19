@@ -5,12 +5,12 @@ include _writers
 
 mixin guidanceText(heading)
   .guidance-text
-    .guidance-buttons
+    .guidance-buttons.clj-guidance-buttons
       a.button-hide-guidance-text(href="#")
         span Hide
         =" "
         i.fa.fa-times
-    h2.guidance-text-heading #{heading}
+    h2.guidance-text-heading.clj-guidance-heading #{heading}
     block
 
 mixin goalItem()
