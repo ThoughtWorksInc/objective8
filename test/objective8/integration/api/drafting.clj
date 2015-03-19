@@ -100,6 +100,22 @@
                 (:status response) => 200
                 (:body response) => (helpers/json-contains draft)))))
 
+(facts "GET /dev/api/v1/objectives/:id/drafts"
+       (against-background
+        [(before :contents (do (helpers/db-connection)
+                               (helpers/truncate-tables)))
+         (after :facts (helpers/truncate-tables))]
+
+        (fact "gets drafts for an objective"
+              (let [objective (sh/store-an-objective)
+                    stored-drafts (doall (->> (repeat {:objective objective})
+                                              (take 5)
+                                              (map sh/store-a-draft)
+                                              (map #(dissoc % :username))))
+                    {response :response} (p/request app (utils/path-for :api/get-drafts-for-objective :id (:_id objective)))]
+                (:status response) => 200
+                (:body response) => (helpers/json-contains (map contains (reverse stored-drafts)))))))
+
 (facts "GET /dev/api/v1/objectives/:id/drafts/current"
        (against-background
         [(before :contents (do (helpers/db-connection)

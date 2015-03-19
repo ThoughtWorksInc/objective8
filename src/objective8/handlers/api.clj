@@ -256,7 +256,6 @@
       (invalid-response "Invalid candidates get request for this objective"))))
 
 ;;DRAFTS
-
 (defn post-start-drafting [{{objective-id :id} :route-params}]
   (let [updated-objective (actions/start-drafting! (Integer/parseInt objective-id))]
     (successful-post-response (str utils/host-url
@@ -279,7 +278,12 @@
           (response/content-type "application/json"))
       (response/not-found ""))))
 
-(defn retrieve-drafts [{{objective-id :id} :route-params :as request}])
+(defn retrieve-drafts [{{id :id} :route-params :as request}]
+  (let [objective-id (Integer/parseInt id)
+        drafts (drafts/retrieve-drafts objective-id)]
+    (-> drafts 
+        response/response
+        (response/content-type "application/json"))))
 
 (defn post-up-down-vote [request]
   (if (some-> request
