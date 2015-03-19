@@ -24,6 +24,15 @@
       (prn (str "Actual: " (wd/title)))
       (throw e))))
 
+(def not-empty? (comp not empty?))
+
+(defn wait-for-element [q]
+  (try
+    (wd/wait-until #(not-empty? (wd/elements q)) 5000)
+    (catch Exception e
+      (prn (str "Could not find element: " q))
+      (throw e))))
+
 (def screenshot-directory "test/objective8/functional/screenshots")
 (def screenshot-number (atom 0))
 (defn screenshot [filename]
@@ -94,6 +103,43 @@
                       (screenshot "ERROR-Can-add-an-objective") 
                       (throw e)))
                =>  "Functional test headline | Objective[8]")
+
+         (fact "Can add a question"
+               (try (wd/to (:objective-url @journey-state))
+                    (wait-for-title "Functional test headline | Objective[8]")
+                    (screenshot "objective_page")
+
+                    (wd/click "a#clj-objectives-questions") 
+                    (wait-for-element "textarea#question")
+                    (screenshot "questions_page")
+
+                    (-> "textarea#question"
+                        (wd/input-text "Functional test question") 
+                        (wd/submit)) 
+
+                    (wait-for-element "textarea#answer")
+                    (screenshot "question_page")
+
+                    (swap! journey-state assoc :question-url (wd/current-url))
+
+                    (catch Exception e
+                      (screenshot "Error-Can-add-questions")
+                      (throw e))))
+
+         (fact "Can answer a question"
+               (try (wd/to (:question-url @journey-state))
+                    (wait-for-element "textarea#answer")
+
+                    (-> "textarea#answer"
+                        (wd/input-text "Functional test answer") 
+                        (wd/submit)) 
+
+                    (wait-for-element ".answer-text p")
+                    (wd/text ".answer-text p")
+                    (catch Exception e
+                      (screenshot "Error-Can-answer-questions")
+                      (throw e)))
+               => "Functional test answer")
 
          (fact "Can invite a writer"
                (try (wd/to (:objective-url @journey-state))
@@ -195,26 +241,26 @@
                                :page-source (contains SOME_HTML)}))
 
            (future-fact "Can navigate between drafts"
-                 (try
-                   (wd/to (str (:objective-url @journey-state) "/drafts"))
-                   (wait-for-title "Functional test headline | Objective[8]")
-                   (screenshot "list_of_drafts")
+                        (try
+                          (wd/to (str (:objective-url @journey-state) "/drafts"))
+                          (wait-for-title "Functional test headline | Objective[8]")
+                          (screenshot "list_of_drafts")
 
-                   (wd/click "#clj-add-a-draft")
-                   (wait-for-title "Add draft | Objective[8]")
+                          (wd/click "#clj-add-a-draft")
+                          (wait-for-title "Add draft | Objective[8]")
 
-                   (wd/input-text "#clj-add-draft-content" SOME_EDITED_MARKDOWN)
+                          (wd/input-text "#clj-add-draft-content" SOME_EDITED_MARKDOWN)
 
-                   (wd/click "button[value='submit']")
+                          (wd/click "button[value='submit']")
 
-                   (wd/click "#clj-add-a-draft")
-                   (wait-for-title "Add draft | Objective[8]")
-                   (wd/input-text "#clj-add-draft-content" SOME_MORE_EDITED_MARKDOWN)
+                          (wd/click "#clj-add-a-draft")
+                          (wait-for-title "Add draft | Objective[8]")
+                          (wd/input-text "#clj-add-draft-content" SOME_MORE_EDITED_MARKDOWN)
 
-                   (wd/click "#clj-go-to-previous-draft")
+                          (wd/click "#clj-go-to-previous-draft")
 
-                   (wd/page-source)
-                   (catch Exception e
-                     (screenshot "ERROR-Can-navigate-between-drafts")
-                     (throw e)))
-                 => (contains SOME_EDITED_MARKDOWN)))))
+                          (wd/page-source)
+                          (catch Exception e
+                            (screenshot "ERROR-Can-navigate-between-drafts")
+                            (throw e)))
+                        => (contains SOME_EDITED_MARKDOWN)))))
