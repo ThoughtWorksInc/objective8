@@ -59,20 +59,9 @@
 
 @import 'modules/share_widget';
 @import 'modules/get_involved';
-@import 'modules/status_banner';
+@import 'modules/status_bar';
 
 @import 'pages/index';
 @import 'pages/sign_in';
 @import 'pages/objective';
 @import 'pages/draft_preview';
-
-// TEMP! TODO: Remove
-.draft, .objective {
-  .masthead,
-  .project-status {
-    position: static;
-  }
-  .project-status {
-    margin-bottom: $default_block_spacing;
-  }
-}

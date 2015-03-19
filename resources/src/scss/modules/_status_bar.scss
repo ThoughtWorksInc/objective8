@@ -1,12 +1,14 @@
-.project-status {
+.status-bar {
   background: $dark_pink;
   color: white;
+  margin-bottom: $alpha_block_spacing;
   padding: 0.3em 1em 0.5em;
+  p {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
   @include mq(720) {
-    position: fixed;
-    z-index: 5;
-    top: 52px;
-    width: 100%;
+    margin-bottom: $gamma_block_spacing;
   }
   a {
     color: white;
@@ -14,7 +16,7 @@
       color: white;
     }
     &:hover {
-      text-decoration: none;
+      opacity: 0.9;
     }
   }
 }

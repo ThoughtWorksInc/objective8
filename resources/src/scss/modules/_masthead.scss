@@ -42,7 +42,6 @@
   }
 }
 
-
 .masthead-large-screen-nav {
   display: none;
   @include mq(720) {
@@ -58,7 +57,6 @@
   }
 }
 
-
 .masthead-user-nav {
   position: absolute;
   top: 0.8em;
@@ -73,6 +71,14 @@
       position: relative;
       top: -4px;
       margin-left: 0.25em;
+    }
+  }
+  a {
+    &, &:hover {
+      text-decoration: none;
+    }
+    &:hover span {
+      text-decoration: underline;
     }
   }
 }

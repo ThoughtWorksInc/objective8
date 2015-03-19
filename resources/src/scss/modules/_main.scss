@@ -30,8 +30,4 @@
 .main-wrapper-no-sidebar {
   margin: 0 auto;
   max-width: 32em;
-  padding: $alpha_body_vertical_spacing;
-  @include mq(720) {
-    padding: $gamma_body_vertical_spacing 1em;
-  }
 }
