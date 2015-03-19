@@ -25,7 +25,8 @@
                                                       :get :fe/question-list
                                                       ["/" [#"\d+" :q-id]] {:get :fe/question
                                                                             "/answers" {:post :fe/add-answer-form-post}}}
-                                                 "/drafts" {["/" [#"\d+|current" :d-id]] {:get :fe/draft}}
+                                                 "/drafts" {:get :fe/draft-list
+                                                            ["/" [#"\d+|current" :d-id]] {:get :fe/draft}}
                                         "/edit-draft" {:get :fe/edit-draft-get
                                                        :post :fe/edit-draft-post}}}
         "comments"          {:post :fe/create-comment-form-post}

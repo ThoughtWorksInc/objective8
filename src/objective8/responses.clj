@@ -168,6 +168,15 @@
                                     identity)
   [:#clj-draft-detail-content html/any-node] (html/replace-vars translations)) 
 
+(html/defsnippet a-draft
+  "templates/drafts/a-draft.html" [:li] [draft]
+  [:.draft-date] (html/content (utils/iso-time-string->pretty-time (:_created_at draft)))
+  [:.draft-writer] (html/content (:username draft)))
+
+(html/defsnippet draft-list-page
+  "templates/drafts/draft-list.html" [:#clj-draft-list] [{:keys [translations data] :as context}]
+  [:#clj-draft-list :.draft-list] (let [drafts (:drafts data)] (if (empty? drafts) identity (html/content (map a-draft drafts)))))
+
 ;INVITATIONS
 (html/defsnippet invitation-create
   "templates/writers/invitation-form.html" [[:#clj-invitation]] [{:keys [translations data] :as context}]

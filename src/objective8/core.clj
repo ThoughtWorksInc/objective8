@@ -50,6 +50,7 @@
                :fe/edit-draft-get (m/wrap-authorise-writer front-end-handlers/edit-draft-get)
                :fe/edit-draft-post (m/wrap-authorise-writer front-end-handlers/edit-draft-post)
                :fe/draft front-end-handlers/draft-detail
+               :fe/draft-list front-end-handlers/draft-list
 
                
                ;; API Handlers

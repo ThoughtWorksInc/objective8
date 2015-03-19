@@ -22,6 +22,7 @@
 
 (def edit-draft-url (utils/path-for :fe/edit-draft-get :id OBJECTIVE_ID))
 (def current-draft-url (utils/path-for :fe/draft :id OBJECTIVE_ID :d-id "current"))
+(def draft-list-url (utils/path-for :fe/draft-list :id OBJECTIVE_ID))
 
 (def user-session (ih/test-context))
 
@@ -118,6 +119,21 @@
               (:status response) => 200
               (:body response) => (contains SOME_HTML))) 
 
+      (fact "anyone can view list of drafts"
+            (against-background
+              (http-api/get-all-drafts OBJECTIVE_ID) => {:status ::http-api/success
+                                                         :result [{:_id DRAFT_ID
+                                                                  :content SOME_HICCUP
+                                                                  :objective-id OBJECTIVE_ID
+                                                                  :submitter-id USER_ID
+                                                                  :_created_at "2015-02-12T16:46:18.838Z"
+                                                                  :username "UserName"}]})
+            
+            (let [{response :response} (p/request user-session draft-list-url)]
+              (:status response) => 200
+              (:body response) => (contains "12-02-2015 16:46")
+              (:body response) => (contains "UserName")))
+       
        (fact "writer can reach edit-draft page from a draft page"
              (against-background
                (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}

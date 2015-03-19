@@ -40,6 +40,8 @@
 (def journey-state (atom nil))
 
 (def SOME_MARKDOWN  "A heading\n===\nSome content")
+(def SOME_EDITED_MARKDOWN  "A heading\n===\nSome content\nSome more content")
+(def SOME_MORE_EDITED_MARKDOWN  "A heading\n===\nSome content\nSome more content\nAnother line of content")
 (def SOME_HTML (hc/html (eh/to-hiccup (ec/mp SOME_MARKDOWN))))
 
 (facts "About user journeys" :functional
@@ -190,4 +192,29 @@
                      (screenshot "ERROR-Can-view-current-draft")
                      (throw e)))
                  => (contains {:page-title "Policy draft | Objective[8]"
-                               :page-source (contains SOME_HTML)})))))
+                               :page-source (contains SOME_HTML)}))
+
+           (future-fact "Can navigate between drafts"
+                 (try
+                   (wd/to (str (:objective-url @journey-state) "/drafts"))
+                   (wait-for-title "Functional test headline | Objective[8]")
+                   (screenshot "list_of_drafts")
+
+                   (wd/click "#clj-add-a-draft")
+                   (wait-for-title "Edit draft | Objective[8]")
+
+                   (wd/input-text "#clj-edit-draft-content" SOME_EDITED_MARKDOWN)
+
+                   (wd/click "button[value='submit']")
+
+                   (wd/click "#clj-add-a-draft")
+                   (wait-for-title "Edit draft | Objective[8]")
+                   (wd/input-text "#clj-edit-draft-content" SOME_MORE_EDITED_MARKDOWN)
+
+                   (wd/click "#clj-go-to-previous-draft")
+
+                   (wd/page-source)
+                   (catch Exception e
+                     (screenshot "ERROR-Can-navigate-between-drafts")
+                     (throw e)))
+                 => (contains SOME_EDITED_MARKDOWN)))))

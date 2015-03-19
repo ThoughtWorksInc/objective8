@@ -361,3 +361,10 @@
                                         (views/draft-detail "draft-detail" request :objective-id objective-id)  
                                         (error-404-response request))
       :else {:status 500})))
+
+  (defn draft-list  [{{o-id :id} :route-params :as request}]
+    (let [objective-id (Integer/parseInt o-id)
+          {status :status drafts :result} (http-api/get-all-drafts objective-id)]
+      (cond
+        (= status ::http-api/success)
+        (views/draft-list "draft-list" request :objective-id objective-id :drafts drafts))))
