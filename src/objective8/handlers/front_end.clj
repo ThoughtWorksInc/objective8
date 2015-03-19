@@ -367,4 +367,7 @@
           {status :status drafts :result} (http-api/get-all-drafts objective-id)]
       (cond
         (= status ::http-api/success)
-        (views/draft-list "draft-list" request :objective-id objective-id :drafts drafts))))
+        (views/draft-list "draft-list" request :objective-id objective-id :drafts drafts)
+        (= status ::http-api/not-found)
+        (error-404-response request)
+        :else {:status 500})))

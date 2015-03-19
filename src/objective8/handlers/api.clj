@@ -279,11 +279,12 @@
       (response/not-found ""))))
 
 (defn retrieve-drafts [{{id :id} :route-params :as request}]
-  (let [objective-id (Integer/parseInt id)
-        drafts (drafts/retrieve-drafts objective-id)]
-    (-> drafts 
-        response/response
-        (response/content-type "application/json"))))
+  (let [objective-id (Integer/parseInt id)]
+    (if-let [drafts (drafts/retrieve-drafts objective-id)]
+      (-> drafts
+          response/response
+          (response/content-type "application/json"))
+      (response/not-found ""))))
 
 (defn post-up-down-vote [request]
   (if (some-> request
