@@ -1,0 +1,8 @@
+<div id="clj-add-draft" class="main-wrapper-no-sidebar article-wrapper">
+  <article id="clj-add-draft-preview"></article>
+  <form id="clj-add-draft-form" action="{{/objectives/:id/add-draft}}" method="POST">
+    <textarea id="clj-add-draft-content" name="content" placeholder="${add-draft/placeholder}" required></textarea>
+    <button type="submit" class="button" name="action" value="preview">${add-draft/preview}</button>
+    <button type="submit" class="button" name="action" value="submit">${add-draft/submit}</button>
+  </form>
+</div>

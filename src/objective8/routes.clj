@@ -27,8 +27,8 @@
                                                                             "/answers" {:post :fe/add-answer-form-post}}}
                                                  "/drafts" {:get :fe/draft-list
                                                             ["/" [#"\d+|current" :d-id]] {:get :fe/draft}}
-                                        "/edit-draft" {:get :fe/edit-draft-get
-                                                       :post :fe/edit-draft-post}}}
+                                        "/add-draft" {:get :fe/add-draft-get
+                                                       :post :fe/add-draft-post}}}
         "comments"          {:post :fe/create-comment-form-post}
         "invitations"       {["/" :uuid] {:get :fe/writer-invitation}}
 

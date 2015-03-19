@@ -153,12 +153,12 @@
                    (screenshot "current_draft_no_draft")
 
                    (wd/click "#clj-add-a-draft") 
-                   (wait-for-title "Edit draft | Objective[8]")                 
-                   (screenshot "edit_draft_empty")
+                   (wait-for-title "Add draft | Objective[8]")
+                   (screenshot "add_draft_empty")
 
-                   (wd/input-text "#clj-edit-draft-content" SOME_MARKDOWN)
+                   (wd/input-text "#clj-add-draft-content" SOME_MARKDOWN)
                    (wd/click "button[value='preview']")
-                   (wait-for-title "Edit draft | Objective[8]")
+                   (wait-for-title "Add draft | Objective[8]")
                    (screenshot "preview_draft")
 
                    (wd/click "button[value='submit']")
@@ -201,15 +201,15 @@
                    (screenshot "list_of_drafts")
 
                    (wd/click "#clj-add-a-draft")
-                   (wait-for-title "Edit draft | Objective[8]")
+                   (wait-for-title "Add draft | Objective[8]")
 
-                   (wd/input-text "#clj-edit-draft-content" SOME_EDITED_MARKDOWN)
+                   (wd/input-text "#clj-add-draft-content" SOME_EDITED_MARKDOWN)
 
                    (wd/click "button[value='submit']")
 
                    (wd/click "#clj-add-a-draft")
-                   (wait-for-title "Edit draft | Objective[8]")
-                   (wd/input-text "#clj-edit-draft-content" SOME_MORE_EDITED_MARKDOWN)
+                   (wait-for-title "Add draft | Objective[8]")
+                   (wd/input-text "#clj-add-draft-content" SOME_MORE_EDITED_MARKDOWN)
 
                    (wd/click "#clj-go-to-previous-draft")
 

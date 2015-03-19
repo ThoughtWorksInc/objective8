@@ -47,8 +47,8 @@
                :fe/accept-or-decline-invitation (utils/anti-forgery-hook front-end-handlers/accept-or-decline-invitation)
                :fe/accept-invitation (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/accept-invitation) #{:signed-in})
                :fe/decline-invitation (utils/anti-forgery-hook front-end-handlers/decline-invitation) 
-               :fe/edit-draft-get (m/wrap-authorise-writer front-end-handlers/edit-draft-get)
-               :fe/edit-draft-post (m/wrap-authorise-writer front-end-handlers/edit-draft-post)
+               :fe/add-draft-get (m/wrap-authorise-writer front-end-handlers/add-draft-get)
+               :fe/add-draft-post (m/wrap-authorise-writer front-end-handlers/add-draft-post)
                :fe/draft front-end-handlers/draft-detail
                :fe/draft-list front-end-handlers/draft-list
 

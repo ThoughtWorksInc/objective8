@@ -149,17 +149,17 @@
   [:h1] (html/content (:title objective)) 
   [:#clj-current-draft html/any-node] (html/replace-vars translation))
 
-(html/defsnippet edit-draft-page
-  "templates/drafts/edit-draft.html" [:#clj-edit-draft] [{:keys [translations data]}]
-  [:#clj-edit-draft-preview] (some-> data :preview html/html-content)
-  [:#clj-edit-draft-form] (html/set-attr :action (str "/objectives/" (:objective-id data) "/edit-draft"))
-  [:#clj-edit-draft-form :textarea] (html/content (:markdown data))
-  [:#clj-edit-draft html/any-node] (html/replace-vars translations))
+(html/defsnippet add-draft-page
+  "templates/drafts/add-draft.html" [:#clj-add-draft] [{:keys [translations data]}]
+  [:#clj-add-draft-preview] (some-> data :preview html/html-content)
+  [:#clj-add-draft-form] (html/set-attr :action (str "/objectives/" (:objective-id data) "/add-draft"))
+  [:#clj-add-draft-form :textarea] (html/content (:markdown data))
+  [:#clj-add-draft html/any-node] (html/replace-vars translations))
 
 (html/defsnippet draft-detail-page
   "templates/drafts/draft-detail.html" [:#clj-draft-detail-content] [{:keys [translations data user]}]
   [:#clj-draft-detail-content :a] (html/set-attr :href (str "/objectives/" 
-                                                            (:objective-id data) "/edit-draft"))
+                                                            (:objective-id data) "/add-draft"))
   [:#clj-draft-detail-content :article] (if (:draft-content data) 
                                           (html/do-> (html/remove-class "no-drafts") 
                                                      (html/html-content (:draft-content data)))

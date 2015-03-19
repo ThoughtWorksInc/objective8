@@ -127,10 +127,10 @@ objective-view,background-label,Contexto
 objective-view,doc-description,Objetivo ...
 question-view,added-message,Tu pregunta ha sido añadida
 question-view,added-answer-message,Tu respuesta ha sido añadida!
-edit-draft,doc-title,Editar borrador I Objetive[8]
-edit-draft,submit,Enviar
-edit-draft,preview,Vista previa
-edit-draft,doc-description,Borrador
+add-draft,doc-title,Editar borrador I Objetive[8]
+add-draft,submit,Enviar
+add-draft,preview,Vista previa
+add-draft,doc-description,Borrador
 error-404,doc-title,Spanish(Error 404 | Objective[8])
 error-404,page-intro,Parece que la página a la que intentas acceder no existe. Esto puede deberse a un enlace incorrecto o desactualizado
 error-404,page-title,"Lo sentimos, la página que solicitas no se encuentra"

@@ -317,17 +317,17 @@
 
 ;;DRAFTS
 
-(defn edit-draft-get [{{objective-id :id} :route-params :as request}]
+(defn add-draft-get [{{objective-id :id} :route-params :as request}]
    (let [{objective-status :status objective :result} (http-api/get-objective (Integer/parseInt objective-id))]
      (cond
        (= objective-status ::http-api/success)
        (if (:drafting-started objective)
-         (views/edit-draft "edit-draft" request :objective-id objective-id)
+         (views/add-draft "add-draft" request :objective-id objective-id)
          {:status 401}) 
        (= objective-status ::http-api/not-found) (error-404-response request)
        :else {:status 500}))) 
 
-(defn edit-draft-post [{{o-id :id} :route-params
+(defn add-draft-post [{{o-id :id} :route-params
                         {content :content action :action} :params
                         :as request}]
   (let [parsed-markdown (utils/markdown->hiccup content)
@@ -335,7 +335,7 @@
     (cond
       (= action "preview")
       (let [preview (utils/hiccup->html parsed-markdown)]
-        (views/edit-draft "edit-draft" request :objective-id objective-id :preview preview :markdown content))
+        (views/add-draft "add-draft" request :objective-id objective-id :preview preview :markdown content))
 
       (= action "submit")
       (let [{status :status draft :result} (http-api/post-draft {:objective-id objective-id

@@ -20,7 +20,7 @@
 (def SOME_HICCUP (eh/to-hiccup (ec/mp SOME_MARKDOWN)))
 (def SOME_HTML (hc/html SOME_HICCUP))
 
-(def edit-draft-url (utils/path-for :fe/edit-draft-get :id OBJECTIVE_ID))
+(def add-draft-url (utils/path-for :fe/add-draft-get :id OBJECTIVE_ID))
 (def current-draft-url (utils/path-for :fe/draft :id OBJECTIVE_ID :d-id "current"))
 (def draft-list-url (utils/path-for :fe/draft-list :id OBJECTIVE_ID))
 
@@ -35,28 +35,28 @@
                  (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}})
 
        (binding [config/enable-csrf false]
-         (fact "writer for objective can view edit-draft page"
+         (fact "writer for objective can view add-draft page"
                (-> user-session
                    ih/sign-in-as-existing-user 
-                   (p/request edit-draft-url)
+                   (p/request add-draft-url)
                    (get-in [:response :status])) => 200
                (provided
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                            :result {:_id 6273 :drafting-started true :entity "objective"}})) 
 
-         (fact "edit-draft page can not be reached when objective is not in drafting"
+         (fact "add-draft page can not be reached when objective is not in drafting"
                (-> user-session
                    ih/sign-in-as-existing-user 
-                   (p/request edit-draft-url)
+                   (p/request add-draft-url)
                    (get-in [:response :status])) => 401
                (provided
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                            :result {:_id 6273 :entity "objective"}})) 
 
-         (fact "user who is not a writer for an objective can not view edit-draft page"
+         (fact "user who is not a writer for an objective can not view add-draft page"
                (-> user-session
                    ih/sign-in-as-existing-user 
-                   (p/request edit-draft-url)
+                   (p/request add-draft-url)
                    (get-in [:response :status])) => 403
                (provided
                  (http-api/get-user anything) => {:result {:writer-records [{:objective-id WRONG_OBJECTIVE_ID}]}})) 
@@ -64,7 +64,7 @@
          (fact "writer can preview a draft"
                (let [{response :response} (-> user-session
                                               ih/sign-in-as-existing-user
-                                              (p/request edit-draft-url
+                                              (p/request add-draft-url
                                                          :request-method :post
                                                          :params {:action "preview"
                                                                   :content SOME_MARKDOWN}))]
@@ -78,7 +78,7 @@
                                                     :result {:_id DRAFT_ID}})
                (let [{response :response} (-> user-session
                                               ih/sign-in-as-existing-user
-                                              (p/request (str utils/host-url "/objectives/" OBJECTIVE_ID "/edit-draft")
+                                              (p/request (utils/path-for :fe/add-draft-post :id OBJECTIVE_ID)
                                                          :request-method :post
                                                          :params {:action "submit"
                                                                   :some :content}))]
@@ -90,7 +90,7 @@
                  (http-api/post-draft anything) => {:status ::http-api/not-found})
                (let [{response :response} (-> user-session
                                               ih/sign-in-as-existing-user
-                                              (p/request (str utils/host-url "/objectives/" OBJECTIVE_ID "/edit-draft")
+                                              (p/request (utils/path-for :fe/add-draft-post :id OBJECTIVE_ID)
                                                          :request-method :post
                                                          :params {:action "submit"
                                                                   :some :content}))]
@@ -134,7 +134,7 @@
               (:body response) => (contains "12-02-2015 16:46")
               (:body response) => (contains "UserName")))
        
-       (fact "writer can reach edit-draft page from a draft page"
+       (fact "writer can reach add-draft page from a draft page"
              (against-background
                (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
                (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
@@ -149,5 +149,5 @@
                (-> user-session
                    ih/sign-in-as-existing-user 
                    (p/request current-draft-url)
-                   (get-in [:response :body])) => (contains (str "/objectives/" OBJECTIVE_ID "/edit-draft")))) 
+                   (get-in [:response :body])) => (contains (str "/objectives/" OBJECTIVE_ID "/add-draft")))) 
 
