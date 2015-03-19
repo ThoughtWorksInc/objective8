@@ -128,9 +128,9 @@
     (let [{status :status stored-comment :result} (http-api/create-comment comment)]
       (cond
         (= status ::http-api/success)
-        (let [comment-url (str utils/host-url "/objectives/" (:objective-id stored-comment))
+        (let [objective-url (str utils/host-url "/objectives/" (:objective-id stored-comment) "#comments")
               message (t' :comment-view/created-message)]
-          (assoc (response/redirect comment-url) :flash message))
+          (assoc (response/redirect objective-url) :flash message))
 
         (= status ::http-api/invalid-input) {:status 400}
 
