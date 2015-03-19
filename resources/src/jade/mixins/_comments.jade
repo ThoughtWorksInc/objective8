@@ -1,0 +1,23 @@
+mixin commentReply()
+  .comment-actions.clj-comment-actions
+    +voteUpDownControls
+    a.comment-reply(href="#") Reply
+
+mixin commentItem(author, date)
+  li.comment-item.clj-comment-item
+    .comment-meta
+      span.comment-author.clj-comment-author #{author}
+      span.comment-date.clj-comment-date #{date}
+    .comment-text.clj-comment-text
+      block
+    +commentReply
+
+mixin commentItemBlank()
+  li.comment-item.clj-empty-comment-list-item
+    | !There are no comments yet.
+
+mixin addCommentForm()
+  form.clj-add-comment-form(method='POST', action='/comments')
+    input.clj-objective-id-input(name='objective-id', type='hidden')
+    textarea(name='comment', rows='5', cols='10', pattern=".{50,}", maxLength='500', required)
+    button.clj-add-comment(type='submit') !Add a comment

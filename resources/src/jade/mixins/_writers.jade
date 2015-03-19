@@ -1,0 +1,23 @@
+mixin objectiveWriterItem(name, href, photo)
+  - href = href || ''
+  //- photo = photo || 'http://placekitten.com/g/120/120'
+  - liClojureClass = photo == "" ? "clj-writer-item-without-photo" : "clj-writer-item-with-photo"
+
+  li.writer-item(class=liClojureClass)
+    a(href="#{href}")
+      .writer-item-photo
+        if photo == ""
+          i.writer-item-no-image-icon.fa.fa-user.fa-3x
+        else
+          img(src="#{photo}")
+      .writer-item-text
+        .writer-item-author.clj-writer-name
+          = name
+        .writer-item-descripton
+          p.clj-writer-description
+            block
+
+mixin objectiveWriterItemBlank()
+  li.writer-item.clj-empty-writer-list-item
+    | !No candidate writers have been invited yet.
+

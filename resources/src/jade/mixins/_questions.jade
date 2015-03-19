@@ -1,0 +1,18 @@
+mixin questionItem(author, date)
+  li.question-item.clj-question-item
+    .question-text
+      p.clj-question-text
+        block
+    .question-actions
+      a.question-reply.clj-answer-link(href="#") !Answer
+
+mixin questionItemBlank()
+  li.question-item.clj-empty-question-list-item
+    | No one has answered this question yet.
+
+mixin addQuestionForm(allowFocus)
+  - focus = allowFocus ? true : false
+    form#clj-question-create(method="POST", action="")
+      label(for="question") Add a question
+      textarea#question(name="question", rows="5", cols="10", pattern=".{50,}", maxlength="500", title="${question-create/question-title}", required="required", autofocus=focus)
+      button.button(type="submit") Add question

@@ -1,25 +1,7 @@
-mixin mastheadSignedOut()
-  .masthead
-    a.masthead-nav-link(href="#navigation")
-      i.fa.fa-bars
-      span.visuallyhidden Skip to navigation
-    a.masthead-logo(href="/", title="Go to home page", rel="home") Objective[8]
-    .masthead-large-screen-nav
-      a(href="/objectives", title="Go to to the Objectives list") Objectives
-      a(href="/learn-more", title="Learn more about Objective[8]") About
-    include ../user-navigation/signed-out
-
-mixin mastheadSignedIn()
-  .masthead
-    a.masthead-nav-link(href="#navigation")
-      i.fa.fa-bars
-      span.visuallyhidden Skip to navigation
-    a.masthead-logo(href="/", title="Go to home page", rel="home") Objective[8]
-    .masthead-large-screen-nav
-      a(href="/objectives", title="Go to to the Objectives list") Objectives
-      a(href="/learn-more", title="Learn more about Objective[8]") About
-    include ../user-navigation/signed-in
-
+include _masthead
+include _questions
+include _comments
+include _writers
 
 mixin guidanceText(heading)
   .guidance-text
@@ -36,18 +18,6 @@ mixin goalItem()
     i.fa-li.fa.fa-dot-circle-o
     block
 
-mixin questionItem(author, date)
-  li.question-item.clj-question-item
-    .question-text
-      p.clj-question-text
-        block
-    .question-actions
-      a.question-reply.clj-answer-link(href="#") !Answer
-
-mixin questionItemBlank()
-  li.question-item.clj-empty-question-list-item
-    | No one has answered this question yet.
-
 mixin voteUpDownControls()
   - voteUpCount = Math.floor(Math.random() * 100) + 1
   - voteDownCount = Math.floor(Math.random() * 100) + 1
@@ -60,64 +30,9 @@ mixin voteUpDownControls()
       span.actions-vote-count #{voteDownCount}
       i.fa.fa-fw.fa-angle-down
       span.vote-direction-text Vote down
-
-
-mixin commentReply()
-  .comment-actions.clj-comment-actions
-    +voteUpDownControls
-    a.comment-reply(href="#") Reply
-
-mixin commentItem(author, date)
-  li.comment-item.clj-comment-item
-    .comment-meta
-      span.comment-author.clj-comment-author #{author}
-      span.comment-date.clj-comment-date #{date}
-    .comment-text.clj-comment-text
-      block
-    +commentReply
-
-mixin commentItemBlank()
-  li.comment-item.clj-empty-comment-list-item
-    | !There are no comments yet.
-
-mixin objectiveWriterItem(name, href, photo)
-  - href = href || ''
-  //- photo = photo || 'http://placekitten.com/g/120/120'
-  - liClojureClass = photo == "" ? "clj-writer-item-without-photo" : "clj-writer-item-with-photo"
-
-  li.writer-item(class=liClojureClass)
-    a(href="#{href}")
-      .writer-item-photo
-        if photo == ""
-          i.writer-item-no-image-icon.fa.fa-user.fa-3x
-        else
-          img(src="#{photo}")
-      .writer-item-text
-        .writer-item-author.clj-writer-name
-          = name
-        .writer-item-descripton
-          p.clj-writer-description
-            block
-
-mixin objectiveWriterItemBlank()
-  li.writer-item.clj-empty-writer-list-item
-    | !No candidate writers have been invited yet.
-
-mixin addCommentForm()
-  form.clj-add-comment-form(method='POST', action='/comments')
-    input.clj-objective-id-input(name='objective-id', type='hidden')
-    textarea(name='comment', rows='5', cols='10', pattern=".{50,}", maxLength='500', required)
-    button.clj-add-comment(type='submit') !Add a comment
-
+      
 mixin pleaseSignIn()
   p.clj-please-sign-in
     span.clj-before-link
     a.clj-sign-in-link(href='/sign-in')
     span.clj-after-link
-      
-mixin addQuestionForm(allowFocus)
-  - focus = allowFocus ? true : false
-    form#clj-question-create(method="POST", action="")
-      label(for="question") Add a question
-      textarea#question(name="question", rows="5", cols="10", pattern=".{50,}", maxlength="500", title="${question-create/question-title}", required="required", autofocus=focus)
-      button.button(type="submit") Add question
