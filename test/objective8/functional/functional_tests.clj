@@ -143,6 +143,16 @@
                       (throw e)))
                => "Functional test answer")
 
+         (future-fact "Can vote on an answer" 
+               (try (wd/to (:question-url @journey-state))
+                    (wait-for-element "textarea#answer")
+                    (wd/text ".vote-container#count") => "0"
+                    (wd/click ".vote-container#up-vote")
+                    (wd/text ".vote-container#count") => "1"
+                 (catch Exception e
+                   (screenshot "Error-Can-vote-on-an-answer")
+                   (throw e))))
+
          (fact "Can invite a writer"
                (try (wd/to (:objective-url @journey-state))
                     (wait-for-title "Functional test headline | Objective[8]")
