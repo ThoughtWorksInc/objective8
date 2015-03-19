@@ -324,17 +324,17 @@
 
 ;;DRAFTS
 
-(defn edit-draft-get [{{objective-id :id} :route-params :as request}]
+(defn add-draft-get [{{objective-id :id} :route-params :as request}]
    (let [{objective-status :status objective :result} (http-api/get-objective (Integer/parseInt objective-id))]
      (cond
        (= objective-status ::http-api/success)
        (if (:drafting-started objective)
-         (views/edit-draft "edit-draft" request :objective-id objective-id)
+         (views/add-draft "add-draft" request :objective-id objective-id)
          {:status 401}) 
        (= objective-status ::http-api/not-found) (error-404-response request)
        :else {:status 500}))) 
 
-(defn edit-draft-post [{{o-id :id} :route-params
+(defn add-draft-post [{{o-id :id} :route-params
                         {content :content action :action} :params
                         :as request}]
   (let [parsed-markdown (utils/markdown->hiccup content)
@@ -342,7 +342,7 @@
     (cond
       (= action "preview")
       (let [preview (utils/hiccup->html parsed-markdown)]
-        (views/edit-draft "edit-draft" request :objective-id objective-id :preview preview :markdown content))
+        (views/add-draft "add-draft" request :objective-id objective-id :preview preview :markdown content))
 
       (= action "submit")
       (let [{status :status draft :result} (http-api/post-draft {:objective-id objective-id
@@ -356,7 +356,7 @@
 
 (defn draft-detail [{{:keys [d-id id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)
-        draft-id (if (= d-id "current") 
+        draft-id (if (= d-id "latest") 
                    d-id 
                    (Integer/parseInt d-id))
         {status :status draft :result} (http-api/get-draft objective-id draft-id)]
@@ -364,7 +364,18 @@
       (= status ::http-api/success)
       (let [draft-content (utils/hiccup->html (apply list (:content draft)))]
         (views/draft-detail "draft-detail" request :draft-content draft-content :objective-id objective-id))
-      (= status ::http-api/not-found) (if (= d-id "current") 
+      (= status ::http-api/not-found) (if (= d-id "latest") 
                                         (views/draft-detail "draft-detail" request :objective-id objective-id)  
                                         (error-404-response request))
       :else {:status 500})))
+
+  (defn draft-list  [{{o-id :id} :route-params :as request}]
+    (let [objective-id (Integer/parseInt o-id)
+          {objective-status :status} (http-api/get-objective objective-id)
+          {drafts-status :status drafts :result} (http-api/get-all-drafts objective-id)]
+      (cond
+        (every? #(= ::http-api/success %) [drafts-status objective-status])
+        (views/draft-list "draft-list" request :objective-id objective-id :drafts drafts)
+        (= objective-status ::http-api/not-found)
+        (error-404-response request)
+        :else {:status 500})))

@@ -26,10 +26,3 @@
       (provided
         (storage/pg-store! {:entity :answer :answer "something"}) =throws=> (org.postgresql.util.PSQLException.
                                                                               (org.postgresql.util.ServerErrorMessage. "" 0))))
-
-(fact "By default, only the first 50 answers are retrieved"
-      (answers/retrieve-answers QUESTION_ID) => anything 
-      (provided
-        (storage/pg-retrieve {:entity :answer
-                              :question-id QUESTION_ID}
-                             {:limit 50}) => []))

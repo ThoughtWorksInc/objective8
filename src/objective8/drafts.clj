@@ -9,8 +9,14 @@
       :result
       first))
 
-(defn retrieve-current-draft [objective-id]
+(defn retrieve-latest-draft [objective-id]
   (-> (storage/pg-retrieve {:entity :draft :objective-id objective-id}
                            {:sort {:field :_created_at :ordering :DESC}})
       :result
       first))
+
+(defn retrieve-drafts [objective-id]
+  (->> (storage/pg-retrieve {:entity :draft :objective-id objective-id}
+                           {:sort {:field :_created_at :ordering :DESC}})
+       :result 
+       (take 50)))

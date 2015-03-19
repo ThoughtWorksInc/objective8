@@ -86,3 +86,22 @@
   (update (mappings/get-mapping {:entity :objective})
           (assoc objective :drafting-started true)
           {:_id (:_id objective)}))
+
+(defn unmap-answer-with-votes [m]
+  (assoc (mappings/json-type->map (:answer m))
+         :_id (:_id m)
+         :_created_at (mappings/sql-time->iso-time-string (:_created_at m))
+         :username (:username m)
+         :votes {:up (or (:up_votes m) 0) :down (or (:down_votes m) 0)}
+         :entity "answer"))
+
+(defn pg-retrieve-answers-with-votes-for-question [question-id]
+  (apply vector (map unmap-answer-with-votes
+                     (korma/exec-raw ["SELECT answers.*, up_votes, down_votes FROM objective8.answers AS answers
+                                      LEFT JOIN (SELECT global_id, count(vote) as down_votes FROM objective8.up_down_votes WHERE vote < 0 GROUP BY global_id) AS agg
+                                      ON agg.global_id = answers.global_id
+                                      LEFT JOIN (SELECT global_id, count(vote) as up_votes FROM objective8.up_down_votes WHERE vote > 0 GROUP BY global_id) AS agg2
+                                      ON agg2.global_id = answers.global_id
+                                      WHERE answers.question_id = ?
+                                      ORDER BY answers._created_at ASC
+                                      LIMIT 50" [question-id]] :results))))

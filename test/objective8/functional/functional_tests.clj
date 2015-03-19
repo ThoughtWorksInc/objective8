@@ -24,6 +24,15 @@
       (prn (str "Actual: " (wd/title)))
       (throw e))))
 
+(def not-empty? (comp not empty?))
+
+(defn wait-for-element [q]
+  (try
+    (wd/wait-until #(not-empty? (wd/elements q)) 5000)
+    (catch Exception e
+      (prn (str "Could not find element: " q))
+      (throw e))))
+
 (def screenshot-directory "test/objective8/functional/screenshots")
 (def screenshot-number (atom 0))
 (defn screenshot [filename]
@@ -40,6 +49,8 @@
 (def journey-state (atom nil))
 
 (def SOME_MARKDOWN  "A heading\n===\nSome content")
+(def SOME_EDITED_MARKDOWN  "A heading\n===\nSome content\nSome more content")
+(def SOME_MORE_EDITED_MARKDOWN  "A heading\n===\nSome content\nSome more content\nAnother line of content")
 (def SOME_HTML (hc/html (eh/to-hiccup (ec/mp SOME_MARKDOWN))))
 
 (facts "About user journeys" :functional
@@ -95,6 +106,43 @@
                       (throw e)))
                =>  "Functional test headline | Objective[8]") 
 
+         (fact "Can add a question"
+               (try (wd/to (:objective-url @journey-state))
+                    (wait-for-title "Functional test headline | Objective[8]")
+                    (screenshot "objective_page")
+
+                    (wd/click "a#clj-objectives-questions") 
+                    (wait-for-element "textarea#question")
+                    (screenshot "questions_page")
+
+                    (-> "textarea#question"
+                        (wd/input-text "Functional test question") 
+                        (wd/submit)) 
+
+                    (wait-for-element "textarea#answer")
+                    (screenshot "question_page")
+
+                    (swap! journey-state assoc :question-url (wd/current-url))
+
+                    (catch Exception e
+                      (screenshot "Error-Can-add-questions")
+                      (throw e))))
+
+         (fact "Can answer a question"
+               (try (wd/to (:question-url @journey-state))
+                    (wait-for-element "textarea#answer")
+
+                    (-> "textarea#answer"
+                        (wd/input-text "Functional test answer") 
+                        (wd/submit)) 
+
+                    (wait-for-element ".answer-text p")
+                    (wd/text ".answer-text p")
+                    (catch Exception e
+                      (screenshot "Error-Can-answer-questions")
+                      (throw e)))
+               => "Functional test answer")
+
          (fact "Can invite a writer"
                (try (wd/to (:objective-url @journey-state))
                     (wait-for-title "Functional test headline | Objective[8]")
@@ -148,17 +196,17 @@
                                   actions/start-drafting!))]
            (fact "Can submit a draft"
                  (try
-                   (wd/to (str (:objective-url @journey-state) "/drafts/current"))
+                   (wd/to (str (:objective-url @journey-state) "/drafts/latest"))
                    (wait-for-title "Policy draft | Objective[8]")
-                   (screenshot "current_draft_no_draft")
+                   (screenshot "latest_draft_no_draft")
 
                    (wd/click "#clj-add-a-draft") 
-                   (wait-for-title "Edit draft | Objective[8]")                 
-                   (screenshot "edit_draft_empty")
+                   (wait-for-title "Add draft | Objective[8]")
+                   (screenshot "add_draft_empty")
 
-                   (wd/input-text "#clj-edit-draft-content" SOME_MARKDOWN)
+                   (wd/input-text "#clj-add-draft-content" SOME_MARKDOWN)
                    (wd/click "button[value='preview']")
-                   (wait-for-title "Edit draft | Objective[8]")
+                   (wait-for-title "Add draft | Objective[8]")
                    (screenshot "preview_draft")
 
                    (wd/click "button[value='submit']")
@@ -175,7 +223,7 @@
                  => (contains {:page-title "Policy draft | Objective[8]"
                                :page-source (contains SOME_HTML)})) 
 
-           (fact "Can view current draft"
+           (fact "Can view latest draft"
                  (try
                    (wd/to (:objective-url @journey-state))
                    (wait-for-title "Functional test headline | Objective[8]")
@@ -183,13 +231,38 @@
 
                    (wd/click ".clj-objective-drafting-link")
                    (wait-for-title "Policy draft | Objective[8]")
-                   (screenshot "current_draft")
+                   (screenshot "latest_draft")
 
                    {:page-title (wd/title)
                     :page-source (wd/page-source)}
 
                    (catch Exception e
-                     (screenshot "ERROR-Can-view-current-draft")
+                     (screenshot "ERROR-Can-view-latest-draft")
                      (throw e)))
                  => (contains {:page-title "Policy draft | Objective[8]"
-                               :page-source (contains SOME_HTML)})))))
+                               :page-source (contains SOME_HTML)}))
+
+           (future-fact "Can navigate between drafts"
+                        (try
+                          (wd/to (str (:objective-url @journey-state) "/drafts"))
+                          (wait-for-title "Functional test headline | Objective[8]")
+                          (screenshot "list_of_drafts")
+
+                          (wd/click "#clj-add-a-draft")
+                          (wait-for-title "Add draft | Objective[8]")
+
+                          (wd/input-text "#clj-add-draft-content" SOME_EDITED_MARKDOWN)
+
+                          (wd/click "button[value='submit']")
+
+                          (wd/click "#clj-add-a-draft")
+                          (wait-for-title "Add draft | Objective[8]")
+                          (wd/input-text "#clj-add-draft-content" SOME_MORE_EDITED_MARKDOWN)
+
+                          (wd/click "#clj-go-to-previous-draft")
+
+                          (wd/page-source)
+                          (catch Exception e
+                            (screenshot "ERROR-Can-navigate-between-drafts")
+                            (throw e)))
+                        => (contains SOME_EDITED_MARKDOWN)))))

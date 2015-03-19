@@ -124,7 +124,7 @@
   [:div.article-meta html/any-node] (html/replace-vars translations)
   [:.clj-objective-drafting-message] (when (:drafting-started objective) identity)
   [:.clj-objective-drafting-start-date-message] (when-not (:drafting-started objective) identity)
-  [:.clj-objective-drafting-link] (html/set-attr :href (str "/objectives/" (:_id objective) "/drafts/current"))
+  [:.clj-objective-drafting-link] (html/set-attr :href (str "/objectives/" (:_id objective) "/drafts/latest"))
   [:#clj-obj-end-date-value] (html/content (:end-date objective)))
 
 ;PROJECT STATUS
@@ -140,26 +140,26 @@
   [:#clj-error-404-content] (html/html-content (translations :error-404/page-content)))
 
 ;DRAFTS
-(html/defsnippet current-draft-page
-  "templates/drafts/current-draft.html" [:#clj-current-draft] [{:keys [translation objective signed-in uri]}]
+(html/defsnippet latest-draft-page
+  "templates/drafts/latest-draft.html" [:#clj-latest-draft] [{:keys [translation objective signed-in uri]}]
   [:#objective-crumb] (html/set-attr :title (:title objective))
   [:#objective-crumb] (html/content (:title objective))
   [:#objective-crumb] (html/set-attr :href (str "/objectives/" (:_id objective)))
   [:#drafts-crumb] (html/set-attr :href (str "/objectives/" (:_id objective) "/drafts"))
   [:h1] (html/content (:title objective)) 
-  [:#clj-current-draft html/any-node] (html/replace-vars translation))
+  [:#clj-latest-draft html/any-node] (html/replace-vars translation))
 
-(html/defsnippet edit-draft-page
-  "templates/drafts/edit-draft.html" [:#clj-edit-draft] [{:keys [translations data]}]
-  [:#clj-edit-draft-preview] (some-> data :preview html/html-content)
-  [:#clj-edit-draft-form] (html/set-attr :action (str "/objectives/" (:objective-id data) "/edit-draft"))
-  [:#clj-edit-draft-form :textarea] (html/content (:markdown data))
-  [:#clj-edit-draft html/any-node] (html/replace-vars translations))
+(html/defsnippet add-draft-page
+  "templates/drafts/add-draft.html" [:#clj-add-draft] [{:keys [translations data]}]
+  [:#clj-add-draft-preview] (some-> data :preview html/html-content)
+  [:#clj-add-draft-form] (html/set-attr :action (str "/objectives/" (:objective-id data) "/add-draft"))
+  [:#clj-add-draft-form :textarea] (html/content (:markdown data))
+  [:#clj-add-draft html/any-node] (html/replace-vars translations))
 
 (html/defsnippet draft-detail-page
   "templates/drafts/draft-detail.html" [:#clj-draft-detail-content] [{:keys [translations data user]}]
   [:#clj-draft-detail-content :a] (html/set-attr :href (str "/objectives/" 
-                                                            (:objective-id data) "/edit-draft"))
+                                                            (:objective-id data) "/add-draft"))
   [:#clj-draft-detail-content :article] (if (:draft-content data) 
                                           (html/do-> (html/remove-class "no-drafts") 
                                                      (html/html-content (:draft-content data)))
@@ -167,6 +167,15 @@
   [:#clj-draft-detail-content :a] (when (utils/writer-for? user (:objective-id data))
                                     identity)
   [:#clj-draft-detail-content html/any-node] (html/replace-vars translations)) 
+
+(html/defsnippet a-draft
+  "templates/drafts/a-draft.html" [:li] [draft]
+  [:.draft-date] (html/content (utils/iso-time-string->pretty-time (:_created_at draft)))
+  [:.draft-writer] (html/content (:username draft)))
+
+(html/defsnippet draft-list-page
+  "templates/drafts/draft-list.html" [:#clj-draft-list] [{:keys [translations data] :as context}]
+  [:#clj-draft-list :.draft-list] (let [drafts (:drafts data)] (if (empty? drafts) identity (html/content (map a-draft drafts)))))
 
 ;INVITATIONS
 (html/defsnippet invitation-create

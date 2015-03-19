@@ -255,6 +255,7 @@
       (log/info "Error when retrieving candidates: " e)
       (invalid-response "Invalid candidates get request for this objective"))))
 
+;;DRAFTS
 (defn post-start-drafting [{{objective-id :id} :route-params}]
   (let [updated-objective (actions/start-drafting! (Integer/parseInt objective-id))]
     (successful-post-response (str utils/host-url
@@ -269,18 +270,25 @@
 
 (defn get-draft [{{:keys [id d-id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)]
-    (if-let [draft (if (= d-id "current")
-                     (drafts/retrieve-current-draft objective-id)
+    (if-let [draft (if (= d-id "latest")
+                     (drafts/retrieve-latest-draft objective-id)
                      (drafts/retrieve-draft (Integer/parseInt d-id)))]
       (-> draft
           response/response
           (response/content-type "application/json"))
       (response/not-found ""))))
 
+(defn retrieve-drafts [{{id :id} :route-params :as request}]
+  (let [objective-id (Integer/parseInt id)]
+    (if-let [drafts (drafts/retrieve-drafts objective-id)]
+      (-> drafts
+          response/response
+          (response/content-type "application/json"))
+      (response/not-found ""))))
+
 (defn post-up-down-vote [request]
-  (let [up-down-vote-data (ar/request->up-down-vote-data request)]
-    (if (-> request
-            ar/request->up-down-vote-data
-            actions/cast-up-down-vote!)
-      {:status 200}
-      {:status 403})))
+  (if (some-> request
+              ar/request->up-down-vote-data
+              actions/cast-up-down-vote!)
+    {:status 200}
+    {:status 403}))

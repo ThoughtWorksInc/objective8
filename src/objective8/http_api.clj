@@ -171,3 +171,6 @@
 
 (defn post-draft [{objective-id :objective-id :as draft}]
   (default-post-call (utils/path-for :api/post-draft :id objective-id) draft))
+
+(defn get-all-drafts [objective-id]
+  (default-get-call (utils/path-for :api/get-drafts-for-objective :id objective-id)))

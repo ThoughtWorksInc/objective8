@@ -25,9 +25,10 @@
                                                       :get :fe/question-list
                                                       ["/" [#"\d+" :q-id]] {:get :fe/question
                                                                             "/answers" {:post :fe/add-answer-form-post}}}
-                                                 "/drafts" {["/" [#"\d+|current" :d-id]] {:get :fe/draft}}
-                                        "/edit-draft" {:get :fe/edit-draft-get
-                                                       :post :fe/edit-draft-post}}}
+                                                 "/drafts" {:get :fe/draft-list
+                                                            ["/" [#"\d+|latest" :d-id]] {:get :fe/draft}}
+                                        "/add-draft" {:get :fe/add-draft-get
+                                                       :post :fe/add-draft-post}}}
         "comments"          {:post :fe/create-comment-form-post}
         "invitations"       {["/" :uuid] {:get :fe/writer-invitation}}
 
@@ -50,7 +51,8 @@
                                                        "/writer-invitations" {:post :api/post-invitation
                                                                               ["/" [#"\d+" :i-id]] {:put :api/put-invitation-declination}}
                                                        "/drafts" {:post :api/post-draft
-                                                                  ["/" [#"\d+|current" :d-id]] {:get :api/get-draft}}}}
+                                                                  :get :api/get-drafts-for-objective
+                                                                  ["/" [#"\d+|latest" :d-id]] {:get :api/get-draft}}}}
 
                              "/comments"   {:post :api/post-comment}
                              "/up-down-votes" {:post :api/post-up-down-vote}

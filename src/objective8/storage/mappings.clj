@@ -143,7 +143,7 @@
                  :_created_at (sql-time->iso-time-string (:_created_at m))
                  :username (:username m))))
 
-(declare objective user comment question answer invitation candidate bearer-token)
+(declare objective user comment question answer invitation candidate bearer-token up-down-vote)
 
 (korma/defentity global-identifier
   (korma/pk :_id)
@@ -217,8 +217,9 @@
 (korma/defentity draft
   (korma/pk :_id)
   (korma/table :objective8.drafts)
+  (korma/belongs-to user {:fk :submitter_id})
   (korma/prepare map->draft)
-  (korma/transform (unmap :draft)))
+  (korma/transform (unmap-with-username :draft)))
 
 (korma/defentity bearer-token
   (korma/pk :_id)
