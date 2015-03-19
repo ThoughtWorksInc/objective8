@@ -111,7 +111,7 @@
                     (wait-for-title "Functional test headline | Objective[8]")
                     (screenshot "objective_page")
 
-                    (wd/click "a#clj-objectives-questions") 
+                    (wd/click ".func-add-question")
                     (wait-for-element "textarea#question")
                     (screenshot "questions_page")
 
@@ -223,7 +223,7 @@
                  => (contains {:page-title "Policy draft | Objective[8]"
                                :page-source (contains SOME_HTML)})) 
 
-           (fact "Can view latest draft"
+           (future-fact "Can view latest draft"
                  (try
                    (wd/to (:objective-url @journey-state))
                    (wait-for-title "Functional test headline | Objective[8]")
