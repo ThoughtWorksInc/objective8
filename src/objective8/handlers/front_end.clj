@@ -364,10 +364,11 @@
 
   (defn draft-list  [{{o-id :id} :route-params :as request}]
     (let [objective-id (Integer/parseInt o-id)
-          {status :status drafts :result} (http-api/get-all-drafts objective-id)]
+          {objective-status :status} (http-api/get-objective objective-id)
+          {drafts-status :status drafts :result} (http-api/get-all-drafts objective-id)]
       (cond
-        (= status ::http-api/success)
+        (every? #(= ::http-api/success %) [drafts-status objective-status])
         (views/draft-list "draft-list" request :objective-id objective-id :drafts drafts)
-        (= status ::http-api/not-found)
+        (= objective-status ::http-api/not-found)
         (error-404-response request)
         :else {:status 500})))

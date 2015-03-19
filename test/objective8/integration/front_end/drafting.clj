@@ -121,6 +121,7 @@
 
       (fact "anyone can view list of drafts"
             (against-background
+              (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success}
               (http-api/get-all-drafts OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result [{:_id DRAFT_ID
                                                                   :content SOME_HICCUP
