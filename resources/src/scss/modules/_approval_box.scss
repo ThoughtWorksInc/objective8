@@ -1,0 +1,50 @@
+
+.approval-vote-option i {
+  font-size: 2em;
+}
+
+.approval-score {
+  font-size: 1.4em;
+}
+
+.approval-content {
+  padding-right: 1em;
+}
+
+.approval-options {
+  position: absolute;
+  width: 3em;
+  top: 2em;
+  right: 0;
+}
+
+.approval-item {
+  padding-right: 4em;
+  position: relative;
+}
+
+.approval-up {
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  display: block;
+  color: $default_text_color;
+  &:hover {
+    color: $yellow;
+    background:none;
+  } 
+}
+
+.approval-down {
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  display: block;
+  color: $default_text_color;
+  &:hover {
+    color: $pink;
+    background:none;
+  } 
+}

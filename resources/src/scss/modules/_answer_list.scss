@@ -2,7 +2,10 @@
   @extend %list-item-container;
 }
 .answer-item {
-  @extend %list-item;
+  padding: 2em 0em 2em 2em;
+  margin: 0 0 2em 2em;
+  background-color: $grey_4;
+  min-height: 10em;
 }
 .answer-meta {
   @extend %list-item-meta;
@@ -14,8 +17,45 @@
   @extend %list-item-date;
 }
 .answer-text {
-  @extend %list-item-text;
+  font-size: 1.6em;
+  line-height: 1.2em;
 }
 .answer-reply {
   @extend %list-item-reply-button;
+}
+
+.answer-new {
+  padding: 2em 0em 2em 2em;
+  margin: 0 0 2em 2em;
+  background-color: $grey_4;
+}
+
+.answer-reply-box {
+  max-width: 39em;
+  resize: none;
+}
+
+.answer-jump-to-answer {
+  position: absolute;
+  right: 1em;
+  bottom: 1em;
+}
+
+.question-outline {
+  position: relative;
+  margin-bottom: 2em;
+  background-color: $grey_4;
+  padding: 1em 1em 2em 2em;
+}
+
+.question-title {
+  font-size: 2.4em;
+  margin: 0;
+}
+
+.question-leader {
+  color: $green1;
+  font-size: 1.2em;
+  padding-left: 0.7em;
+  margin: 0.2em 0 0 0;
 }
