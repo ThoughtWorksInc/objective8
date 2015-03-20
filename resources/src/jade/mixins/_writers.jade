@@ -21,3 +21,16 @@ mixin writerItemBlank()
   li.writer-item.clj-empty-writer-list-item
     | !No candidate writers have been invited yet.
 
+mixin draftVersionNavigationWriter(name, href, photo)
+  .draft-version-writer
+    .draft-version-writer-photo
+      if photo == ""
+        i.draft-version-writer-no-image-icon.fa.fa-user.fa-3x
+      else
+        img(src="#{photo}")
+    .draft-version-writer-text
+      .draft-version-writer-author
+        = name
+      .draft-version-writer-descripton
+        p
+          block

@@ -1,15 +1,14 @@
-$writer_avatar_size: 60px;
+$writer_avatar_size_alpha: 40px;
+$writer_avatar_size_beta: 60px;
 
 .writer-item-list {
   @extend %list-item-container;
 }
 
 .writer-item {
+  @include cf;
   margin: 0 1em 1em 0;
   padding: 0;
-//  .draft-writers & {
-//    text-align: center;
-//  }
   a {
     display: block;
     text-decoration: none;
@@ -17,18 +16,13 @@ $writer_avatar_size: 60px;
 }
 
 .writer-item-photo {
-  @include circle($writer_avatar_size);
-  margin-bottom: 0.3em;
+  @include circle($writer_avatar_size_alpha);
   background: $grey-4;
   overflow: hidden;
   float: left;
-//  .draft-writers & {
-//    margin-left: auto;
-//    margin-right: auto;
-//  }
-//  .objective-writers & {
-//    float: left;
-//  }
+  @include mq(400) {
+    @include circle($writer_avatar_size_beta);
+  }
   img {
     display: block;
     width: 100%;
@@ -37,27 +31,33 @@ $writer_avatar_size: 60px;
 }
 .writer-item-no-image-icon {
   display: block;
-  height: $writer_avatar_size;
-  line-height: ($writer_avatar_size - 3px);
+  height: $writer_avatar_size_alpha;
+  line-height: ($writer_avatar_size_alpha - 3px);
   text-align: center;
   color: rgba($grey-15,0.2);
+  @include mq(400) {
+    height: $writer_avatar_size_beta;
+    line-height: ($writer_avatar_size_beta - 3px);
+  }
 }
 
 .writer-item-author {
   display: inline-block;
   line-height: 1.1;
   color: $default_text_color;
-//  .draft-writers & {
-//    width: $writer_avatar_size;
-//    word-spacing: 30000px;
-//  }
 }
 
 .writer-item-text {
   padding-top: 5px;
-  padding-left: ($writer_avatar_size + 15px);
+  padding-left: ($writer_avatar_size_alpha + 15px);
+  @include mq(400) {
+    padding-left: ($writer_avatar_size_beta + 15px);
+  }
   @include mq(720) {
     padding-top: 10px;
+  }
+  p:last-child {
+    margin-bottom: 0;
   }
 }
 

@@ -23,6 +23,12 @@
 // eg: div { @include ir }
 
 
+@mixin hide-icon-text() {
+  text-indent: -9999px;
+  i {
+    text-indent: 0;
+  }
+}
 
 // Visually Hidden
 @mixin visuallyhidden {
@@ -40,6 +46,19 @@
   @include visuallyhidden;
 }
 // use directly as a class
+
+
+@mixin revert-visuallyhidden {
+  position: static;
+  overflow: auto;
+  clip: auto;
+  margin: inherit;
+  padding: inherit;
+  width: auto;
+  height: auto;
+  border: inherit;
+}
+
 
 
 // Clear fix

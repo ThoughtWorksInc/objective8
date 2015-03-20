@@ -1,0 +1,33 @@
+.draft-add-inline-comment {
+  $comment_icon_size: 24px;
+  $hit_area_spacer: 10px;
+  position: absolute;
+  right: 0;
+  a {
+    position: relative;
+    display: inline-block;
+    @include size($comment_icon_size);
+    @include hide-icon-text;
+    font-size: 16px;
+    opacity: 0.25;
+    color: currentColor;
+    transition: opacity 250ms ease;
+    &:hover {
+      opacity: 1;
+    }
+    &:after {
+      $hit_area: $comment_icon_size + $hit_area_spacer;
+      content: '';
+      display: block;
+      @include size($hit_area);
+      position: absolute;
+      top: -($hit_area_spacer/2);
+      left: -($hit_area_spacer/2);
+    }
+    i {
+      position: absolute;
+      top: $hit_area_spacer/2;
+      left: 4px;
+    }
+  }
+}

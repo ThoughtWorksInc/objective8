@@ -15,25 +15,41 @@ mixin addCommentButton()
 block content
   .middle-container
 
-    ul.progress-indicator
-      li.complete
-        a(href="/objective") Objective
-      li.on
-        a(href="/draft") Draft
-      li
-        a(href="#") Policy
-
-    ul.draft-tabs
-      li
-        a(href="#") Edit
-      li.on
-        a(href="#") Preview
+    //ul.progress-indicator
+    //  li.complete
+    //    a(href="/objective") Objective
+    //  li.on
+    //    a(href="/draft") Draft
+    //  li
+    //    a(href="#") Policy
+    //
+    //ul.draft-tabs
+    //  li
+    //    a(href="#") Edit
+    //  li.on
+    //    a(href="#") Preview
 
     +guidanceText('What is a draft?')
       ul
         li Drafts are versions of the policy as it is being written.
         li Drafts are crafted by the writers that have been nominated for an objective.
         li Everyone can comment and make suggestions.
+
+    .draft-version-navigation
+      .draft-version-navigation-content-wrapper
+        .draft-version-navigation-content
+          +draftVersionNavigationWriter('Jenny Bloggs', '#', 'http://placekitten.com/g/80/80')
+            | Drafted 5 days ago
+
+          ul.draft-version-navigation-content-controls
+            li.draft-version-navigation-previous
+              a(href="#")
+                i.fa.fa-angle-left
+                span.draft-version-navigation-text Previous
+            li.draft-version-navigation-next
+              a(href="#")
+                span.draft-version-navigation-text Next
+                i.fa.fa-angle-right
 
     .draft-preview-document
       h1.draft-title Build safer cycling networks in the streets of Madrid.
@@ -51,13 +67,6 @@ block content
           li Jean shorts biodiesel hoodie keytar mlkshk food truck
       +addCommentButton
         p Street art bitters pour-over, Portland pork belly master cleanse lumbersexual. Aesthetic 90's Shoreditch PBR. Austin sustainable Carles American Apparel, banh mi High Life selvage XOXO plaid stumptown fashion axe skateboard butcher McSweeney's. Master cleanse polaroid Shoreditch DIY, Godard salvia gastropub heirloom Kickstarter fap before they sold out chia. Disrupt Neutra tofu Godard kitsch. Chambray Helvetica plaid chia salvia. Cronut asymmetrical messenger bag, cornhole listicle selvage yr beard Godard stumptown meh sustainable.
-
-    //.draft-comments
-    //  h2 Comments
-    //  //.draft-comment-promo
-    //  //  p Only signed in members can post a comment on this draft.
-    //  ol.comment-list
-    //    li.helper-text Be the first to comment on this draft.
 
     .draft-writers
       h2 Writers
@@ -85,6 +94,17 @@ block content
 
 block footerScripts
   script.
-    $('a').on('click',function(e) {
-      e.preventDefault();
+    // temp
+    $(document).ready(function () {
+      var pageNav = $('.draft-version-navigation-content-wrapper');
+      console.log(pageNav);
+      var pageNavStickHeight = pageNav.offset().top;
+      $(window).scroll(function () {
+        if ($(this).scrollTop() > pageNavStickHeight) {
+          pageNav.addClass("sticky");
+        }
+        else {
+          pageNav.removeClass("sticky");
+        }
+      });
     });

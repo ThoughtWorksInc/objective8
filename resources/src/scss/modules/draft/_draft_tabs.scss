@@ -1,0 +1,43 @@
+.draft-tabs {
+  $draft_tab_color_off: $grey-4;
+  $draft_tab_color_hover: lighten($green1, 5%);
+  $draft_tab_color_active: $green1;
+  margin: 0 auto 2em auto;
+  padding: 0;
+  list-style: none;
+  text-align: center;
+  li {
+    min-width: 6em;
+    margin: 0 -2px;
+    padding: 0;
+    display: inline-block;
+    background: $draft_tab_color_off;
+    &:first-child {
+      border-radius: 3em 0 0 3em;
+    }
+    &:last-child {
+      border-radius: 0 3em 3em 0;
+    }
+    &.on a {
+      background-color: $draft_tab_color_active;
+      color: $white;
+    }
+  }
+  a {
+    display: block;
+    font-size: 90%;
+    line-height: 1.8;
+    text-decoration: none;
+    background-color: $draft_tab_color_off;
+    color: $grey-15;
+    border-radius: inherit;
+    transition: background 200ms ease, color 200ms ease;
+    &:hover {
+      background-color: $draft_tab_color_hover;
+      color: $white;
+    }
+    &:focus {
+
+    }
+  }
+}
