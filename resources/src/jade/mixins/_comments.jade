@@ -20,4 +20,4 @@ mixin addCommentForm()
   form.clj-add-comment-form(method='POST', action='/comments')
     input.clj-objective-id-input(name='objective-id', type='hidden')
     textarea(name='comment', rows='5', cols='10', pattern=".{50,}", maxLength='500', required)
-    button.clj-add-comment(type='submit') !Add a comment
+    button.button.clj-add-comment(type='submit') !Add a comment
