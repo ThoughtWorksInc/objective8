@@ -13,7 +13,7 @@
 
 .draft-tabs {
   $draft_tab_color_off: $grey-4;
-  $draft_tab_color_hover: lighten($green1,5%);
+  $draft_tab_color_hover: lighten($green1, 5%);
   $draft_tab_color_active: $green1;
   margin: 0 auto 2em auto;
   padding: 0;
@@ -57,12 +57,22 @@
 
 .middle-container {
   max-width: 45em;
-//  padding: $alpha_body_vertical_spacing;
+  //  padding: $alpha_body_vertical_spacing;
   margin: 0 auto;
   @include mq(720) {
-//    padding: $gamma_body_vertical_spacing 1em;
+    //    padding: $gamma_body_vertical_spacing 1em;
   }
 }
+
+.no-draft-version {
+  text-align: center;
+  margin-bottom: 2em;
+  min-height: 200px;
+  background: $grey-3;
+  line-height: 200px;
+}
+
+//(style="line-height: 200px; margin: 0;")
 
 .draft-preview-document {
   position: relative;

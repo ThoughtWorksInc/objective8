@@ -31,16 +31,19 @@ block content
 
     .draft-preview-document
       h1.draft-title Build safer cycling networks in the streets of Madrid.
-      div.no-version(style="text-align: center; margin-bottom: 2em; height: 200px; background: #efefef;")
-        p(style="line-height: 200px; margin: 0;") There are no drafts yet.
+      .no-draft-version
+        | There are no drafts yet.
       a.button(href="/draft") Begin draft one
 
     .draft-writers
       h2 Writers
-      ul.writer-item-list
-        +objectiveWriterItem('Jenny Bloggs', '#', 'http://placekitten.com/g/80/80')
-        +objectiveWriterItem('Boris Johnson', '#', 'http://placekitten.com/g/81/81')
-        +objectiveWriterItem('Bob Smith', '#', 'http://placekitten.com/g/82/82')
+      ul.writer-item-list.clj-writer-item-list
+        +writerItem('!Jenny Bloggs', '#', 'http://placekitten.com/g/80/80')
+          | !A cycling enthusiast, responsible for many safety policies in the UK.
+        +writerItem('!Boris Johnson', '#', 'http://placekitten.com/g/81/81')
+          | !Quirky but has achieved wonders in the London for the boris bikes.
+        +writerItem('!Bob Smith', '#', '')
+          | !Interested in anything to do with cycling and Spain.
 
 
     .draft-comments

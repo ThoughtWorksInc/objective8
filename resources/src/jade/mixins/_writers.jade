@@ -1,4 +1,4 @@
-mixin objectiveWriterItem(name, href, photo)
+mixin writerItem(name, href, photo)
   - href = href || ''
   //- photo = photo || 'http://placekitten.com/g/120/120'
   - liClojureClass = photo == "" ? "clj-writer-item-without-photo" : "clj-writer-item-with-photo"
@@ -17,7 +17,7 @@ mixin objectiveWriterItem(name, href, photo)
           p.clj-writer-description
             block
 
-mixin objectiveWriterItemBlank()
+mixin writerItemBlank()
   li.writer-item.clj-empty-writer-list-item
     | !No candidate writers have been invited yet.
 
