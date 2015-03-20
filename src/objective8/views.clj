@@ -2,7 +2,9 @@
   (:require [cemerick.friend :as friend]
             [objective8.responses :as responses]
             [objective8.templates.learn-more :as learn-more]
-            [objective8.templates.objective :as objective]))  
+            [objective8.templates.objective :as objective]
+            [objective8.templates.question :as question]
+            ))  
 
 (defn- user-info [request auth-map]
   (when auth-map {:username (:username auth-map)
@@ -62,3 +64,4 @@
 
 (def new-learn-more-page (view learn-more/learn-more-page))
 (def objective-detail-page (view objective/objective-page))
+(def question-page (view question/question-page))

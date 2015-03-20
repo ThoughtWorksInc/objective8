@@ -186,6 +186,13 @@
                              :objective (format-objective objective)
                              :question question
                              :answers answers) 
+      ;TODO - uncomment for new style question page
+      #_{:status 200
+       :headers {"Content-Type" "text/html"}      
+       :body (views/question-page "question-detail" request
+                                  :objective (format-objective objective)
+                                  :question question
+                                  :answers answers)}
       (= question-status ::http-api/not-found) (error-404-response request)
       (= question-status ::http-api/invalid-input) {:status 400}
       :else {:status 500})))

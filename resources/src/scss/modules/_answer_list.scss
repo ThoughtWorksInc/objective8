@@ -4,7 +4,7 @@
 .answer-item {
   padding: 2em 0em 2em 2em;
   margin: 0 0 2em 2em;
-  background-color: $grey_4;
+  background-color: $grey-4;
   min-height: 10em;
 }
 .answer-meta {
@@ -27,7 +27,7 @@
 .answer-new {
   padding: 2em 0em 2em 2em;
   margin: 0 0 2em 2em;
-  background-color: $grey_4;
+  background-color: $grey-4;
 }
 
 .answer-reply-box {
@@ -41,10 +41,29 @@
   bottom: 1em;
 }
 
+.question-navigation-wrapper {
+  height: 80px;
+  margin-bottom: 2em;
+}
+
+.question-navigation {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  border-bottom: 1px solid $grey-3;
+}
+
+.question-navigation-breadcrumb {
+  max-width: 45em;
+  margin: -1px auto;
+  height: 80px;
+  line-height: 80px;
+}
+
 .question-outline {
   position: relative;
   margin-bottom: 2em;
-  background-color: $grey_4;
+  background-color: $grey-4;
   padding: 1em 1em 2em 2em;
 }
 
@@ -55,7 +74,8 @@
 
 .question-leader {
   color: $green1;
-  font-size: 1.2em;
+  font-size: 3.2em;
   padding-left: 0.7em;
-  margin: 0.2em 0 0 0;
+  margin: 0.2em 0 1em 0;
+  line-height: 1.2em;
 }
