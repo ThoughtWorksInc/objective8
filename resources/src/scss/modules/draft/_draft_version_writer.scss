@@ -2,9 +2,7 @@ $draft_version_writer_avatar_size_alpha: 40px;
 $draft_version_writer_avatar_size_beta: 60px;
 
 .draft-version-writer {
-  @include cf;
-  width: 50%;
-  float: left;
+  width: 70%;
 }
 
 .draft-version-writer-photo {
