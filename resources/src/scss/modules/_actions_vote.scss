@@ -1,13 +1,18 @@
 $vote_button_spacing: 0.75em;
 
+.actions-up-down-vote-form {
+  display: inline;
+}
 .actions-vote-up,
 .actions-vote-down {
-  width: 11px;
-  height: 1em;
-  margin-right: $vote_button_spacing;
+  -webkit-appearance: none;
+  display: inline-block;  
+ // margin-right: $vote_button_spacing;
   overflow: hidden;
   cursor: pointer;
   text-align: center;
+  background-color: transparent;
+  border: 0;
   &:visited, & {
     color: $default_text_color;
   }

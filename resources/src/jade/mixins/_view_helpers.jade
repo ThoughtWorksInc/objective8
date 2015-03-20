@@ -21,12 +21,12 @@ mixin goalItem()
 mixin voteUpDownControls()
   - voteUpCount = Math.floor(Math.random() * 100) + 1
   - voteDownCount = Math.floor(Math.random() * 100) + 1
-  span.clj-reference-vote-up-down-controls
-    a.actions-vote-up(href="#", title="Vote up")
+  form.actions-up-down-vote-form.clj-up-down-vote-form(method="post")
+    button.actions-vote-up.func-vote-up(type="submit", value="up", title="Vote up")
       span.actions-vote-count #{voteUpCount}
       i.fa.fa-fw.fa-angle-up
       span.vote-direction-text Vote down
-    a.actions-vote-down(href="#", title="Vote down")
+    button.actions-vote-down.func-vote-down(type="submit", value="down", title="Vote down")      
       span.actions-vote-count #{voteDownCount}
       i.fa.fa-fw.fa-angle-down
       span.vote-direction-text Vote down
