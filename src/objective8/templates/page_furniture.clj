@@ -3,6 +3,8 @@
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [objective8.utils :as utils]))
 
+(def library-html "templates/jade/library.html")
+
 (defn text->p-nodes
   "Turns text into a collection of paragraph nodes based on linebreaks.
    Returns nil if no text is supplied"
@@ -14,10 +16,10 @@
 
 ;; MASTHEAD
 
-(html/defsnippet masthead-signed-in "templates/jade/library.html" [:.clj-masthead-signed-in] [] identity)
+(html/defsnippet masthead-signed-in library-html [:.clj-masthead-signed-in] [] identity)
 
 (html/defsnippet masthead
-  "templates/jade/library.html" [:.clj-masthead-signed-out] [{{uri :uri} :ring-request
+  library-html [:.clj-masthead-signed-out] [{{uri :uri} :ring-request
                                                               :keys [translations  user] :as context}]
   [:.clj-masthead-signed-out] (if user
                                 (html/substitute (masthead-signed-in))
@@ -39,25 +41,37 @@
 
 ;; STATUS BAR
 
-(html/defsnippet flash-bar "templates/jade/library.html" [:.clj-flash-message-bar] [flash]
+(html/defsnippet flash-bar library-html [:.clj-flash-message-bar] [flash]
   [:.clj-flash-message-bar-text] (html/content flash))
 
 (html/defsnippet status-flash-bar
-  "templates/jade/library.html" [:.clj-status-bar] [{{flash :flash} :ring-request
-                                                     translations :translations :as context}]
+  library-html [:.clj-status-bar] [{:keys [flash translations] :as context}]
   [:.clj-status-bar] (if flash
                        (html/substitute (flash-bar flash))
                        identity)
   [:.clj-status-bar-text] (html/content (translations :status-bar/status-text)))
 
+
+;; DRAFTING HAS STARTED MESSAGE
+
+(html/defsnippet drafting-message library-html [:.clj-drafting-message] [{{objective :objective} :data
+                                                                         translations :translations
+                                                                         :as context}]
+  [html/any-node] (when (:drafting-started objective) identity)
+  [:.clj-drafting-message-title] (html/content (translations :notifications/drafting-message-title))
+  [:.clj-drafting-message-body] (html/content (translations :notifications/drafting-message-body))
+  [:.clj-drafting-message-link] (html/do->
+                                  (html/set-attr "href" (str "/objectives/" (:_id objective) "/drafts/latest"))
+                                  (html/content (translations :notifications/drafting-message-link))))
+
 ;; WRITER LIST
 
 (html/defsnippet empty-writer-list-item
-  "templates/jade/library.html" [:.clj-empty-writer-list-item] [{translations :translations}]
+  library-html [:.clj-empty-writer-list-item] [{translations :translations}]
   [:.clj-empty-writer-list-item] (html/content (translations :candidate-list/no-candidates)))
 
 (html/defsnippet writer-list-items
-  "templates/jade/library.html" [:.clj-writer-item-without-photo] [candidates]
+  library-html [:.clj-writer-item-without-photo] [candidates]
   [:.clj-writer-item-without-photo :a] nil
   [:.clj-writer-item-without-photo] (html/clone-for [candidate candidates]
                                                     [:.clj-writer-name] (html/content (:writer-name candidate))
@@ -72,11 +86,11 @@
 ;; QUESTION LIST
 
 (html/defsnippet empty-question-list-item
-  "templates/jade/library.html" [:.clj-empty-question-list-item] [{translations :translations}]
+  library-html [:.clj-empty-question-list-item] [{translations :translations}]
   [:.clj-empty-question-list-item] (html/content (translations :question-list/no-questions)))
 
 (html/defsnippet question-list-items
-  "templates/jade/library.html" [:.clj-question-item] [questions translations]
+  library-html [:.clj-question-item] [questions translations]
   [:.clj-question-item] (html/clone-for [question questions]
                                         [:.clj-question-text] (html/content (:question question))
                                         [:.clj-answer-link] (html/do->
@@ -93,11 +107,11 @@
 ;; COMMENT LIST
 
 (html/defsnippet empty-comment-list-item
-  "templates/jade/library.html" [:.clj-empty-comment-list-item] [translations]
+  library-html [:.clj-empty-comment-list-item] [translations]
   [:.clj-empty-comment-list-item] (html/content (translations :comment-view/no-comments)))
 
 (html/defsnippet comment-list-items
-  "templates/jade/library.html" [:.clj-comment-item] [comments]
+  library-html [:.clj-comment-item] [comments]
   [:.clj-comment-item] (html/clone-for [comment comments]
                                        [:.clj-comment-author] (html/content (:username comment))
                                        [:.clj-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
@@ -113,13 +127,13 @@
 ;; COMMENT CREATE
 
 (html/defsnippet comment-create-form
-  "templates/jade/library.html" [:.clj-add-comment-form] [{:keys [translations data]}]
+  library-html [:.clj-add-comment-form] [{:keys [translations data]}]
   [:.clj-add-comment-form] (html/prepend (html/html-snippet (anti-forgery-field)))
   [:.clj-objective-id-input] (html/set-attr "value" (get-in data [:objective :_id]))
   [:.clj-add-comment] (html/content (translations :comment-create/post-button)))
 
 (html/defsnippet sign-in-to-comment
-  "templates/jade/library.html" [:.clj-please-sign-in] [{:keys [translations ring-request]}]
+  library-html [:.clj-please-sign-in] [{:keys [translations ring-request]}]
   [:.clj-before-link] (html/content (translations :comment-sign-in/please))
   [:.clj-sign-in-link] (html/do->
                          (html/set-attr "href" (str "/sign-in?refer=" (:uri ring-request)))

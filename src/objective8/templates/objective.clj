@@ -27,6 +27,7 @@
                       [:.clj-objective-navigation-item-comments] (html/content (translations :objective-nav/comments))
 
                       [:.clj-objective-title] (html/content (:title objective))
+                      [:.clj-drafting-started-wrapper] (html/substitute (f/drafting-message context))
                       [:.clj-replace-with-objective-detail] (html/substitute (f/text->p-nodes (:description objective)))
                       [:.clj-writers-section-title] (html/content (translations :objective-view/writers))
                       [:.clj-writer-item-list] (html/content (f/writer-list context)) 

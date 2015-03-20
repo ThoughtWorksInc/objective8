@@ -24,9 +24,11 @@
 (defn make-view-context [page-name request data]
   (let [auth-map (friend/current-authentication request)
         translations (:t' request)
+        flash (:flash request)
         data (apply hash-map data)]
     {:translations translations 
      :ring-request request
+     :flash flash
      :user (user-info request auth-map)
      :doc (doc-info request page-name translations data)
      :invitation (get-in request [:session :invitation])

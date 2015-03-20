@@ -9,6 +9,12 @@ objective-guidance,heading,What is an Objective?
 objective-guidance,text-line-1,A policy starts with an idea.
 objective-guidance,text-line-2,These are catalysts for change.
 objective-guidance,text-line-3,Everyone can comment and make suggestions to contribute towards the draft stage.
+notifications,go-to-drafting,here.
+notifications,drafting-has-started,Drafting has started on this objective!
+notifications,drafting-started-helper-text,"This means that you can no longer ask or answer questions, comment, or invite new writers.  However, you can follow and contribute to the drafting progress "
+notifications,drafting-message-title,Drafting has started on this objective!
+notifications,drafting-message-body,"This means that you can no longer ask or answer questions, comment, or invite new writers."
+notifications,drafting-message-link,Contribute to the drafting progress.
 objective-list,create-button-text,Create an objective
 objective-list,sign-in,sign in
 objective-list,drafting-begins,Drafting begins on
@@ -140,9 +146,6 @@ share-widget,twitter-title,Share this page on Twitter
 share-widget,facebook-text,Share on Facebook
 share-widget,facebook-title,Share on Facebook...
 share-widget,reddit-title,Submit this page to Reddit
-notifications,go-to-drafting,here.
-notifications,drafting-has-started,Drafting has started on this objective!
-notifications,drafting-started-helper-text,"This means that you can no longer ask or answer questions, comment, or invite new writers.  However, you can follow and contribute to the drafting progress "
 comment-sign-in,sign-in,sign in
 comment-sign-in,please,Please
 comment-sign-in,to,to start commenting.

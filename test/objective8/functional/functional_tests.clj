@@ -223,13 +223,13 @@
                  => (contains {:page-title "Policy draft | Objective[8]"
                                :page-source (contains SOME_HTML)})) 
 
-           (future-fact "Can view latest draft"
+           (fact "Can view latest draft"
                  (try
                    (wd/to (:objective-url @journey-state))
                    (wait-for-title "Functional test headline | Objective[8]")
                    (screenshot "drafting_started_objective")
 
-                   (wd/click ".clj-objective-drafting-link")
+                   (wd/click ".func-drafting-message-link")
                    (wait-for-title "Policy draft | Objective[8]")
                    (screenshot "latest_draft")
 
