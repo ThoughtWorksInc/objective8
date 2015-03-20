@@ -1,9 +1,8 @@
 
 .main-wrapper {
-  padding: 1em;
+//  padding: 1em;
   @include mq(720) {
     padding-left: 280px;
-    padding-top: 104px;
     max-width: 1100px;
     margin: 0 auto;
   }

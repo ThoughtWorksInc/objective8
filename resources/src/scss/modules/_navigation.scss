@@ -82,29 +82,3 @@
     }
   }
 }
-
-
-      // &:before {
-      //   content:'';
-      //   display:block;
-      //   width:17px;
-      //   height:0px;
-      //   box-shadow: 0 4px 1px 1px black;
-      //   -webkit-transform:rotate(-45deg) translateY(2px);
-      //   -webkit-transform-origin: left top;
-      //   top:50%;
-      //   position:absolute;
-      // }
-
-      // &:after {
-      //   content:'';
-      //   display:block;
-      //   width:17px;
-      //   height:0px;
-      //   box-shadow: 0 -4px 1px 1px black;
-      //   -webkit-transform:rotate(45deg) translateY(-2px);
-      //   -webkit-transform-origin: left top;
-      //   top:50%;
-      //   position:absolute;
-      //   z-index:2;
-      // }
