@@ -45,8 +45,8 @@
   [:.clj-flash-message-bar-text] (html/content flash))
 
 (html/defsnippet status-flash-bar
-  library-html [:.clj-status-bar] [{:keys [flash translations] :as context}]
-  [:.clj-status-bar] (if flash
+  library-html [:.clj-status-bar] [{:keys [doc translations] :as context}]
+  [:.clj-status-bar] (if-let [flash (:flash doc)] 
                        (html/substitute (flash-bar flash))
                        identity)
   [:.clj-status-bar-text] (html/content (translations :status-bar/status-text)))
