@@ -111,7 +111,7 @@
                     (wait-for-title "Functional test headline | Objective[8]")
                     (screenshot "objective_page")
 
-                    (wd/click ".func-add-question")
+                    (wd/click ".func--add-question")
                     (wait-for-element "textarea#question")
                     (screenshot "questions_page")
 
@@ -158,7 +158,7 @@
                     (wait-for-title "Functional test headline | Objective[8]")
                     (screenshot "objective_page")
 
-                    (wd/click ".func-invite-writer")
+                    (wd/click ".func--invite-writer")
                     (wait-for-title "Candidate policy writers | Objective[8]")
                     (screenshot "candidate_writers_page")
 
@@ -169,11 +169,11 @@
                     (wait-for-title "Functional test headline | Objective[8]")
                     (screenshot "objective_with_invitation_flash")
 
-                    (->> (wd/text ".func-flash-bar")
+                    (->> (wd/text ".func--flash-bar")
                          (re-find #"http://.*$")
                          (swap! journey-state assoc :invitation-url))
                     {:page-title (wd/title)
-                     :flash-message (wd/text ".func-flash-bar")}
+                     :flash-message (wd/text ".func--flash-bar")}
 
                     (catch Exception e
                       (screenshot "ERROR-Can-invite-a-writer")
@@ -239,7 +239,7 @@
                    (wait-for-title "Functional test headline | Objective[8]")
                    (screenshot "drafting_started_objective")
 
-                   (wd/click ".func-drafting-message-link")
+                   (wd/click ".func--drafting-message-link")
                    (wait-for-title "Policy draft | Objective[8]")
                    (screenshot "latest_draft")
 
