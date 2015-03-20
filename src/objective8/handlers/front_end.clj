@@ -55,8 +55,8 @@
 
 ;; OBJECTIVES
 (defn format-objective [objective]
-  (let [goals (if (objective :goals)
-                (list (objective :goals))
+  (let [goals (if (:goals objective)
+                (list (:goals objective))
                 (remove clojure.string/blank? [(:goal-1 objective) (:goal-2 objective) (:goal-3 objective)]))
         formatted-objective (-> objective
                                 (update-in [:end-date] utils/date-time->pretty-date)
@@ -364,18 +364,28 @@
       (= status ::http-api/success)
       (let [draft-content (utils/hiccup->html (apply list (:content draft)))]
         (views/draft-detail "draft-detail" request :draft-content draft-content :objective-id objective-id))
+
+      (= status ::http-api/forbidden)
+      (response/redirect (utils/local-path-for :fe/draft-list :id objective-id))
+
       (= status ::http-api/not-found) (if (= d-id "latest") 
                                         (views/draft-detail "draft-detail" request :objective-id objective-id)  
                                         (error-404-response request))
       :else {:status 500})))
 
-  (defn draft-list  [{{o-id :id} :route-params :as request}]
-    (let [objective-id (Integer/parseInt o-id)
-          {objective-status :status} (http-api/get-objective objective-id)
+  (defn draft-list  [{{:keys [id]} :route-params :as request}]
+    (let [objective-id (Integer/parseInt id)
+          {objective-status :status objective :result} (http-api/get-objective objective-id)
           {drafts-status :status drafts :result} (http-api/get-all-drafts objective-id)]
       (cond
         (every? #(= ::http-api/success %) [drafts-status objective-status])
-        (views/draft-list "draft-list" request :objective-id objective-id :drafts drafts)
+        (views/draft-list "draft-list" request
+                          :objective (format-objective objective)
+                          :drafts drafts)
+        (= drafts-status ::http-api/forbidden)
+        (views/drafting-not-started "drafting-not-started" request
+                                    :objective (format-objective objective))
+
         (= objective-status ::http-api/not-found)
         (error-404-response request)
         :else {:status 500})))

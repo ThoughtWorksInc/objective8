@@ -56,6 +56,7 @@
 (def add-draft (view (render-page responses/add-draft-page)))
 (def draft-detail (view (render-page responses/draft-detail-page)))
 (def draft-list (view (render-page responses/draft-list-page)))
+(def drafting-not-started (view (render-page responses/drafting-not-started-page)))
 
 (def four-o-four (view (render-page responses/error-404-page)))
 

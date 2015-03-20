@@ -67,6 +67,7 @@
                                   (json/parse-string true))}
       (= status 404) {:status ::not-found}
       (= status 400) {:status ::invalid-input}
+      (= status 403) {:status ::forbidden}
       :else          {:status ::error}))))
 
 ;;USERS

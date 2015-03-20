@@ -29,6 +29,9 @@
 (defn path-for [& args]
   (str host-url (apply bidi/path-for routes/routes args)))
 
+(defn local-path-for [& args]
+  (apply bidi/path-for routes/routes args))
+
 (defn generate-random-uuid []
   (str (java.util.UUID/randomUUID)))
 

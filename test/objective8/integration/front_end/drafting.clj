@@ -117,11 +117,30 @@
                                                                        :submitter-id USER_ID}})
             (let [{response :response} (p/request user-session latest-draft-url)]
               (:status response) => 200
-              (:body response) => (contains SOME_HTML))) 
+              (:body response) => (contains SOME_HTML)))
+
+      (fact "viewing latest draft when drafting hasn't started redirects to /objectives/:id/drafts"
+             (against-background
+              (http-api/get-draft OBJECTIVE_ID "latest") => {:status ::http-api/forbidden})
+            (:response (p/request user-session latest-draft-url)) 
+            => (contains {:status 302
+                          :headers (contains {"Location" (contains (utils/local-path-for :fe/draft-list :id OBJECTIVE_ID))})}))
+       
+       (fact "viewing draft list when drafting hasn't started displays message"
+             (against-background
+               (http-api/get-all-drafts OBJECTIVE_ID) => {:status ::http-api/forbidden}
+               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                         :result {:end-date (utils/string->date-time "2012-12-12")
+                                                                  :drafting-started false}})
+
+             (get-in (p/request user-session draft-list-url)
+                     [:response :body]) => (contains "clj-objective-drafting-start-date-message"))
 
       (fact "anyone can view list of drafts"
             (against-background
-              (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success}
+              (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                        :result {:end-date (utils/string->date-time "2012-12-12")
+                                                                 :drafting-started true}}
               (http-api/get-all-drafts OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result [{:_id DRAFT_ID
                                                                   :content SOME_HICCUP

@@ -23,6 +23,7 @@
          200                 ::http-api/success
          404                 ::http-api/not-found
          400                 ::http-api/invalid-input
+         403                 ::http-api/forbidden
          :anything           ::http-api/error))
 
 (facts "about API POST requests"

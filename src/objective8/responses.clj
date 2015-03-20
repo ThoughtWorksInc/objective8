@@ -140,15 +140,6 @@
   [:#clj-error-404-content] (html/html-content (translations :error-404/page-content)))
 
 ;DRAFTS
-(html/defsnippet latest-draft-page
-  "templates/drafts/latest-draft.html" [:#clj-latest-draft] [{:keys [translation objective signed-in uri]}]
-  [:#objective-crumb] (html/set-attr :title (:title objective))
-  [:#objective-crumb] (html/content (:title objective))
-  [:#objective-crumb] (html/set-attr :href (str "/objectives/" (:_id objective)))
-  [:#drafts-crumb] (html/set-attr :href (str "/objectives/" (:_id objective) "/drafts"))
-  [:h1] (html/content (:title objective)) 
-  [:#clj-latest-draft html/any-node] (html/replace-vars translation))
-
 (html/defsnippet add-draft-page
   "templates/drafts/add-draft.html" [:#clj-add-draft] [{:keys [translations data]}]
   [:#clj-add-draft-preview] (some-> data :preview html/html-content)
@@ -180,9 +171,17 @@
 (html/defsnippet draft-list-page
   "templates/drafts/draft-list.html" [:#clj-draft-list] [{:keys [translations data user] :as context}]
   [:#clj-draft-list :article] (let [drafts (:drafts data)] (if (empty? drafts) identity (html/content (draft-list-container drafts))))
-  [:#clj-draft-list :a] (html/set-attr :href (str "/objectives/" (:objective-id data) "/add-draft"))
-  [:#clj-draft-list :a] (when (utils/writer-for? user (:objective-id data)) identity)
+  [:#clj-draft-list :a] (html/set-attr :href (str "/objectives/" (get-in data [:objective :_id]) "/add-draft"))
+  [:#clj-draft-list :a] (when (utils/writer-for? user (get-in data [:objective :_id])) identity)
+;  [:#clj-draft-list] (if-not (get-in data [:objective :drafting-started])
+;                       (html/content (article-meta (:objective data) translations))
+;                       identity)
   [:#clj-draft-list html/any-node] (html/replace-vars translations))
+
+(html/defsnippet drafting-not-started-page
+  "templates/drafts/drafting-not-started.html" [:.clj-drafting-not-started] [{:keys [translations data] :as context}]
+  [:.clj-obj-end-date-value] (html/content (get-in data [:objective :end-date])) 
+  [:.clj-drafting-not-started html/any-node] (html/replace-vars translations))
 
 ;INVITATIONS
 (html/defsnippet invitation-create
