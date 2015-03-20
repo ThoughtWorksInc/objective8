@@ -43,3 +43,8 @@
   (assoc (select-keys params [:writer-name :reason])
          :objective-id (Integer/parseInt id)
          :invited-by-id user-id))
+
+(defn request->up-vote-info [request user-id]
+  (-> (:params request)
+      (select-keys [:global-id])
+      (assoc :created-by-id user-id :vote-type "up")))

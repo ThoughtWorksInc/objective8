@@ -380,6 +380,7 @@
         (error-404-response request)
         :else {:status 500})))
 
-(defn post-up-vote [{:keys [params] :as request}]
+(defn post-up-vote [request]
+  (http-api/create-up-down-vote (helpers/request->up-vote-info request (get (friend/current-authentication) :identity)))
   (response/redirect "/objectives/1/questions/1"))
 

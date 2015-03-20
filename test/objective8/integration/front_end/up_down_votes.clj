@@ -7,7 +7,7 @@
             [objective8.integration.integration-helpers :as helpers]))
 
 (binding [config/enable-csrf false]
-  (future-fact "Can up vote answers
+  (fact "Can up vote answers
                TODO - Use URIs instead of global ids? e.g. objective/1/questions/7 will always be unique"
         (against-background
           (oauth/access-token anything anything anything) => {:user_id 100}
@@ -20,7 +20,7 @@
           (p/request signed-in-session
                      "http://localhost:8080/meta/up-vote"
                      :request-method :post
-                     :params {:uri "/objectives/1/questions/1/answers/1"}) => (contains {:response (contains {:status 302
-                                                                                         :headers (contains {"Location" (contains "/objectives/1/questions/1")})})})
-         (provided
-           (http-api/create-up-down-vote {:global-id 1 :created-by-id 100 :vote-type "up"}) => :vote)))) 
+                     :params {:global-id 1}) => (contains {:response (contains {:status 302
+                                                                                :headers (contains {"Location" (contains "/objectives/1/questions/1")})})})
+          (provided
+            (http-api/create-up-down-vote {:global-id "1" :created-by-id 100 :vote-type "up"}) => :vote)))) 

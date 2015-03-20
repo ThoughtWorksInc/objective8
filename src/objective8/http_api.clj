@@ -175,5 +175,8 @@
 (defn get-all-drafts [objective-id]
   (default-get-call (utils/path-for :api/get-drafts-for-objective :id objective-id)))
 
+;; VOTES
+
 (defn create-up-down-vote [vote]
-  (throw (Exception. "Not yet implemented")))
+  (default-post-call (utils/path-for :api/post-up-down-vote) vote))
+

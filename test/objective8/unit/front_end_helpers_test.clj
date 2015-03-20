@@ -55,3 +55,6 @@
                    :reason "Just because"
                    :objective-id OBJECTIVE_ID
                    :invited-by-id USER_ID}))
+
+(fact "transforms request to up vote info"
+      (request->up-vote-info {:params {:global-id 100}} USER_ID) => {:global-id 100 :created-by-id USER_ID :vote-type "up"})
