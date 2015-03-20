@@ -13,10 +13,12 @@ $draft_navigation_height: 80px;
   min-height: $draft_navigation_height;
   background: rgba($white, 0.96);
   border-bottom: 1px solid $grey-3;
+  padding-bottom: 1.5em;
   @include mq(450) {
     position: absolute;
     left: 0;
     width: 100%;
+    padding-bottom: 0;
     &.sticky {
       position: fixed;
       top: 0;
