@@ -173,9 +173,16 @@
   [:.draft-date] (html/content (utils/iso-time-string->pretty-time (:_created_at draft)))
   [:.draft-writer] (html/content (:username draft)))
 
+(html/defsnippet draft-list-container
+  "templates/drafts/draft-list-container.html" [:ol] [drafts]
+  [:ol] (html/content (map a-draft drafts)))
+
 (html/defsnippet draft-list-page
-  "templates/drafts/draft-list.html" [:#clj-draft-list] [{:keys [translations data] :as context}]
-  [:#clj-draft-list :.draft-list] (let [drafts (:drafts data)] (if (empty? drafts) identity (html/content (map a-draft drafts)))))
+  "templates/drafts/draft-list.html" [:#clj-draft-list] [{:keys [translations data user] :as context}]
+  [:#clj-draft-list :article] (let [drafts (:drafts data)] (if (empty? drafts) identity (html/content (draft-list-container drafts))))
+  [:#clj-draft-list :a] (html/set-attr :href (str "/objectives/" (:objective-id data) "/add-draft"))
+  [:#clj-draft-list :a] (when (utils/writer-for? user (:objective-id data)) identity)
+  [:#clj-draft-list html/any-node] (html/replace-vars translations))
 
 ;INVITATIONS
 (html/defsnippet invitation-create
