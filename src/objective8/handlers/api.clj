@@ -270,20 +270,39 @@
 
 (defn get-draft [{{:keys [id d-id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)]
-    (if-let [draft (if (= d-id "latest")
-                     (drafts/retrieve-latest-draft objective-id)
-                     (drafts/retrieve-draft (Integer/parseInt d-id)))]
+    (if (= d-id "latest")
+      (let [{status :status draft :result} (actions/retrieve-latest-draft objective-id)]
+        (cond
+          (= status ::actions/success)
+          (-> draft
+              response/response
+              (response/content-type "application/json"))
+
+          (= status ::actions/objective-drafting-not-started)
+          {:status 403}
+
+          :else
+          (response/not-found "")))
+      
+    (if-let [draft (drafts/retrieve-draft (Integer/parseInt d-id))]
       (-> draft
           response/response
           (response/content-type "application/json"))
-      (response/not-found ""))))
+      (response/not-found "")))))
 
-(defn retrieve-drafts [{{id :id} :route-params :as request}]
-  (let [objective-id (Integer/parseInt id)]
-    (if-let [drafts (drafts/retrieve-drafts objective-id)]
+(defn retrieve-drafts [{{:keys [id]} :route-params :as request}]
+  (let [objective-id (Integer/parseInt id)
+        {status :status drafts :result} (actions/retrieve-drafts objective-id)]
+    (cond
+      (= status ::actions/success)
       (-> drafts
           response/response
           (response/content-type "application/json"))
+
+      (= status ::actions/objective-drafting-not-started)
+      {:status 403}
+
+      :else
       (response/not-found ""))))
 
 (defn post-up-down-vote [request]

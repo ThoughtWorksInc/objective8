@@ -373,7 +373,7 @@
                                         (error-404-response request))
       :else {:status 500})))
 
-  (defn draft-list  [{{:keys [id]} :route-params :as request}]
+  (defn draft-list [{{:keys [id]} :route-params :as request}]
     (let [objective-id (Integer/parseInt id)
           {objective-status :status objective :result} (http-api/get-objective objective-id)
           {drafts-status :status drafts :result} (http-api/get-all-drafts objective-id)]
@@ -382,6 +382,7 @@
         (views/draft-list "draft-list" request
                           :objective (format-objective objective)
                           :drafts drafts)
+
         (= drafts-status ::http-api/forbidden)
         (views/drafting-not-started "drafting-not-started" request
                                     :objective (format-objective objective))

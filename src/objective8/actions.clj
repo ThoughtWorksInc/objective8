@@ -18,6 +18,21 @@
     (when (writers/retrieve-candidate-for-objective submitter-id objective-id)
       (drafts/store-draft! draft-data))))
 
+(defn retrieve-drafts [objective-id]
+  (if-let [objective (objectives/retrieve-objective objective-id)]
+    (if (objectives/in-drafting? objective)
+      {:status ::success :result (drafts/retrieve-drafts objective-id)} 
+      {:status ::objective-drafting-not-started})
+    {:status ::not-found}))
+
+(defn retrieve-latest-draft [objective-id]
+  (if (objectives/in-drafting? (objectives/retrieve-objective objective-id))
+    {:status ::success :result (drafts/retrieve-latest-draft objective-id)}
+    {:status ::objective-drafting-not-started}))
+
 (defn cast-up-down-vote! [{:keys [global-id created-by-id vote-type] :as vote-data}]
   (when-not (up-down-votes/get-vote global-id created-by-id)
     (up-down-votes/store-vote! vote-data)))
+
+
+

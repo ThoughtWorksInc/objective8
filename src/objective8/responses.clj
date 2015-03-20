@@ -173,9 +173,6 @@
   [:#clj-draft-list :article] (let [drafts (:drafts data)] (if (empty? drafts) identity (html/content (draft-list-container drafts))))
   [:#clj-draft-list :a] (html/set-attr :href (str "/objectives/" (get-in data [:objective :_id]) "/add-draft"))
   [:#clj-draft-list :a] (when (utils/writer-for? user (get-in data [:objective :_id])) identity)
-;  [:#clj-draft-list] (if-not (get-in data [:objective :drafting-started])
-;                       (html/content (article-meta (:objective data) translations))
-;                       identity)
   [:#clj-draft-list html/any-node] (html/replace-vars translations))
 
 (html/defsnippet drafting-not-started-page

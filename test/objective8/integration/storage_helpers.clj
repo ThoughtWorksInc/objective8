@@ -105,7 +105,7 @@
    (store-a-draft {}))
 
   ([required-entities]
-   (let [{objective-id :_id} (get required-entities :objective (store-an-objective))
+   (let [{objective-id :_id} (get required-entities :objective (store-an-objective-in-draft))
          ;; NB: Candidate id not required, but for consistency, the submitter should be authorised to draft documents for this objective
          {submitter-id :user-id} (get required-entities :submitter (store-a-candidate))]
      (storage/pg-store! {:entity :draft

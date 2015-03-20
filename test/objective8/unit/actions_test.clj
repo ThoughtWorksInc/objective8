@@ -1,11 +1,14 @@
 (ns objective8.unit.actions-test
   (:require [midje.sweet :refer :all]
             [objective8.actions :as actions]
-            [objective8.up-down-votes :as up-down-votes]))
+            [objective8.up-down-votes :as up-down-votes]
+            [objective8.drafts :as drafts]
+            [objective8.objectives :as objectives]))
 
 (def GLOBAL_ID 6)
 (def USER_ID 2)
 (def VOTE_ID 5)
+(def OBJECTIVE_ID 1)
 
 (facts "about casting up-down votes"
        (fact "stores a vote if user has no active vote on entity"
@@ -19,3 +22,26 @@
              (actions/cast-up-down-vote! {:global-id GLOBAL_ID :created-by-id USER_ID :vote-type :down}) => nil
              (provided
               (up-down-votes/get-vote GLOBAL_ID USER_ID) => :some-vote)))
+
+(facts "about retrieving drafts"
+       (fact "can only retrieve drafts for an objective in drafting"
+            (actions/retrieve-drafts OBJECTIVE_ID) => {:status ::actions/objective-drafting-not-started}
+            (provided
+              (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started false}))
+       
+       (fact "retrieves drafts for an objective that is in drafting"
+             (actions/retrieve-drafts OBJECTIVE_ID) => {:status ::actions/success :result :drafts}
+             (provided
+               (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started true}
+               (drafts/retrieve-drafts OBJECTIVE_ID) => :drafts))
+       
+       (fact "can only retrieve latest draft for an objective in drafting"
+             (actions/retrieve-latest-draft OBJECTIVE_ID) => {:status ::actions/objective-drafting-not-started}
+             (provided
+               (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started false}))
+
+       (fact "retrieves latest draft for an objective that is in drafting"
+             (actions/retrieve-latest-draft OBJECTIVE_ID) => {:status ::actions/success :result :draft}
+             (provided
+               (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started true}
+               (drafts/retrieve-latest-draft OBJECTIVE_ID) => :draft)))

@@ -107,14 +107,19 @@
          (after :facts (helpers/truncate-tables))]
 
         (fact "gets drafts for an objective"
-              (let [objective (sh/store-an-objective)
+              (let [objective (sh/store-an-objective-in-draft)
                     stored-drafts (doall (->> (repeat {:objective objective})
                                               (take 5)
                                               (map sh/store-a-draft)
                                               (map #(dissoc % :username))))
                     {response :response} (p/request app (utils/path-for :api/get-drafts-for-objective :id (:_id objective)))]
                 (:status response) => 200
-                (:body response) => (helpers/json-contains (map contains (reverse stored-drafts)))))))
+                (:body response) => (helpers/json-contains (map contains (reverse stored-drafts)))))
+         
+         (fact "returns 403 if objective not in drafting"
+               (let [objective (sh/store-an-objective)]
+                 (get-in (p/request app (utils/path-for :api/get-drafts-for-objective :id (:_id objective)))
+                         [:response :status]) => 403))))
 
 (facts "GET /dev/api/v1/objectives/:id/drafts/latest"
        (against-background

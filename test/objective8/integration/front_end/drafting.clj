@@ -134,7 +134,7 @@
                                                                   :drafting-started false}})
 
              (get-in (p/request user-session draft-list-url)
-                     [:response :body]) => (contains "clj-objective-drafting-start-date-message"))
+                     [:response :body]) => (contains "12-12-2012"))
 
       (fact "anyone can view list of drafts"
             (against-background
