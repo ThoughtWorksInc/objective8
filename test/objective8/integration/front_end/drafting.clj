@@ -103,10 +103,14 @@
                                                              :result {:_id DRAFT_ID
                                                                       :content SOME_HICCUP
                                                                       :objective-id OBJECTIVE_ID
-                                                                      :submitter-id USER_ID}})
+                                                                      :submitter-id USER_ID
+                                                                      :next-draft-id 4
+                                                                      :previous-draft-id 2}})
             (let [{response :response} (p/request user-session (utils/path-for :fe/draft :id OBJECTIVE_ID :d-id DRAFT_ID))]
               (:status response) => 200
-              (:body response) => (contains SOME_HTML)))
+              (:body response) => (contains SOME_HTML)
+              (:body response) => (contains (utils/local-path-for :fe/draft :id OBJECTIVE_ID :d-id 2))
+              (:body response) => (contains (utils/local-path-for :fe/draft :id OBJECTIVE_ID :d-id 4))))
        
       (fact "anyone can view latest draft"
             (against-background

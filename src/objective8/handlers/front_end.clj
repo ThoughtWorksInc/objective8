@@ -363,20 +363,25 @@
 
 (defn draft-detail [{{:keys [d-id id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)
-        draft-id (if (= d-id "latest") 
-                   d-id 
+        draft-id (if (= d-id "latest")
+                   d-id
                    (Integer/parseInt d-id))
         {status :status draft :result} (http-api/get-draft objective-id draft-id)]
     (cond
       (= status ::http-api/success)
       (let [draft-content (utils/hiccup->html (apply list (:content draft)))]
-        (views/draft-detail "draft-detail" request :draft-content draft-content :objective-id objective-id))
+        (views/draft-detail "draft-detail" request
+                            :draft-content draft-content
+                            :objective-id objective-id
+                            :next-draft-id (:next-draft-id draft)
+                            :previous-draft-id (:previous-draft-id draft)))
 
       (= status ::http-api/forbidden)
       (response/redirect (utils/local-path-for :fe/draft-list :id objective-id))
 
-      (= status ::http-api/not-found) (if (= d-id "latest") 
-                                        (views/draft-detail "draft-detail" request :objective-id objective-id)  
+      (= status ::http-api/not-found) (if (= d-id "latest")
+                                        (views/draft-detail "draft-detail" request
+                                                            :objective-id objective-id)
                                         (error-404-response request))
       :else {:status 500})))
 

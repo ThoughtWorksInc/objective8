@@ -148,16 +148,25 @@
   [:#clj-add-draft html/any-node] (html/replace-vars translations))
 
 (html/defsnippet draft-detail-page
-  "templates/drafts/draft-detail.html" [:#clj-draft-detail-content] [{:keys [translations data user]}]
-  [:#clj-draft-detail-content :a] (html/set-attr :href (str "/objectives/" 
-                                                            (:objective-id data) "/add-draft"))
-  [:#clj-draft-detail-content :article] (if (:draft-content data) 
-                                          (html/do-> (html/remove-class "no-drafts") 
+  "templates/drafts/draft-detail.html" [:#clj-draft-detail-content] [{:keys [translations data user] :as context}]
+  [:#clj-draft-detail-content :.clj-add-a-draft] (html/set-attr :href 
+                                                                (utils/local-path-for :fe/add-draft-get 
+                                                                                      :id (:objective-id data)))
+  [:#clj-draft-detail-content :article] (if (:draft-content data)
+                                          (html/do-> (html/remove-class "no-drafts")
                                                      (html/html-content (:draft-content data)))
                                           identity)
-  [:#clj-draft-detail-content :a] (when (utils/writer-for? user (:objective-id data))
-                                    identity)
-  [:#clj-draft-detail-content html/any-node] (html/replace-vars translations)) 
+  [:.clj-previous-draft] (when (:previous-draft-id data)
+                           (html/set-attr :href (utils/local-path-for :fe/draft
+                                                                      :id (:objective-id data)
+                                                                      :d-id (:previous-draft-id data)))) 
+  [:.clj-next-draft] (when (:next-draft-id data)
+                       (html/set-attr :href (utils/local-path-for :fe/draft
+                                                                  :id (:objective-id data)
+                                                                  :d-id (:next-draft-id data)))) 
+  [:#clj-draft-detail-content :.clj-add-a-draft] (when (utils/writer-for? user (:objective-id data))
+                                                 identity)
+  [:#clj-draft-detail-content html/any-node] (html/replace-vars translations))
 
 (html/defsnippet a-draft
   "templates/drafts/a-draft.html" [:li] [draft]
@@ -250,7 +259,7 @@
   [:a] (html/set-attr :href (str "/objectives/" (:objective-id question) "/questions/" (:_id question)))
   [:a] (html/content (text->p-nodes (:question question)))
   [:.question-date] (html/content (utils/iso-time-string->pretty-time (:_created_at question)))) 
-  
+
 (html/defsnippet question-create
   "templates/questions/question-create.html" [:#clj-question-create] [{:keys [data translations] :as context}]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
@@ -374,12 +383,12 @@
 
 (defn rendered-response [template-name context]
   (let [user-navigation (if (:user context)
-                             user-navigation-signed-in
-                             user-navigation-signed-out)
+                          user-navigation-signed-in
+                          user-navigation-signed-out)
         ;TODO - simplify this to just pass through context
         page (render-template base (assoc context
                                           :content (template-name context)
                                           :user-navigation (user-navigation context)))]
-        (if-let [status-code (:status-code context)]
-          (simple-response page status-code)
-          (simple-response page))))
+    (if-let [status-code (:status-code context)]
+      (simple-response page status-code)
+      (simple-response page))))

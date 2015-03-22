@@ -30,6 +30,8 @@ draft-detail,doc-title,Policy draft | Objective[8]
 draft-detail,doc-description,Draft policy for objective ... 
 draft-detail,add-a-draft,Add a draft
 draft-detail,no-drafts,No drafts have been submitted yet
+draft-detail,next-draft,Next
+draft-detail,previous-draft,Previous
 draft-list,no-drafts,No drafts have been submitted yet
 draft-list,add-a-draft,Add a draft
 comment-create,comment-title,Comments are a maximum length of 500 characters

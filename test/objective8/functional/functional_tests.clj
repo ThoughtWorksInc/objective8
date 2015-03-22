@@ -210,7 +210,7 @@
                    (wait-for-title "Policy draft | Objective[8]")
                    (screenshot "latest_draft_no_draft")
 
-                   (wd/click "#clj-add-a-draft") 
+                   (wd/click ".clj-add-a-draft")
                    (wait-for-title "Add draft | Objective[8]")
                    (screenshot "add_draft_empty")
 
