@@ -5,9 +5,24 @@
   (storage/pg-store! (assoc draft :entity :draft)))
 
 (defn retrieve-draft [draft-id]
-  (-> (storage/pg-retrieve {:entity :draft :_id draft-id})
-      :result
-      first))
+  (when-let [draft (storage/pg-retrieve-draft-with-id draft-id)]
+    (let [objective-id (:objective-id draft)
+          created-at (:_created_at_sql_time draft)
+          previous-draft-id (-> (storage/pg-retrieve {:entity :draft
+                                                      :objective-id objective-id
+                                                      :_created_at ['< created-at]})
+                                :result
+                                last
+                                :_id)
+          next-draft-id (-> (storage/pg-retrieve {:entity :draft
+                                                  :objective-id objective-id
+                                                  :_created_at ['> created-at]})
+                            :result
+                            first
+                            :_id)]
+      (-> draft
+          (dissoc :_created_at_dql_time)
+          (assoc :previous-draft-id previous-draft-id :next-draft-id next-draft-id)))))
 
 (defn retrieve-latest-draft [objective-id]
   (-> (storage/pg-retrieve {:entity :draft :objective-id objective-id}
@@ -17,6 +32,6 @@
 
 (defn retrieve-drafts [objective-id]
   (->> (storage/pg-retrieve {:entity :draft :objective-id objective-id}
-                           {:sort {:field :_created_at :ordering :DESC}})
-       :result 
-       (take 50)))
+                            {:limit 50
+                             :sort {:field :_created_at :ordering :DESC}})
+       :result))
