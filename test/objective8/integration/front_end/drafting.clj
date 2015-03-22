@@ -143,7 +143,8 @@
       (fact "anyone can view list of drafts"
             (against-background
               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                        :result {:end-date (utils/string->date-time "2012-12-12")
+                                                        :result {:_id OBJECTIVE_ID
+                                                                 :end-date (utils/string->date-time "2012-12-12")
                                                                  :drafting-started true}}
               (http-api/get-all-drafts OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result [{:_id DRAFT_ID
