@@ -33,6 +33,7 @@ draft-detail,no-drafts,No drafts have been submitted yet
 draft-detail,next-draft,Next
 draft-detail,previous-draft,Previous
 draft-detail,draft-writer,Published by
+draft-list,doc-title,Drafts | Objective[8]
 draft-list,no-drafts,No drafts have been submitted yet
 draft-list,add-a-draft,Add a draft
 comment-create,comment-title,Comments are a maximum length of 500 characters

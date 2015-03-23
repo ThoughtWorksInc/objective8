@@ -392,6 +392,7 @@
         (every? #(= ::http-api/success %) [drafts-status objective-status])
         (views/draft-list "draft-list" request
                           :objective (format-objective objective)
+                          :doc {:title ((:t' request) :draft-list/doc-title)}
                           :drafts drafts)
 
         (= drafts-status ::http-api/forbidden)
