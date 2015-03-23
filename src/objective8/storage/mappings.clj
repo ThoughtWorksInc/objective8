@@ -143,6 +143,13 @@
                  :_created_at (sql-time->iso-time-string (:_created_at m))
                  :username (:username m))))
 
+(defn unmap-with-sql-time [data-key]
+  (fn [m] (assoc (json-type->map (data-key m))
+                 :_id (:_id m)
+                 :_created_at (sql-time->iso-time-string (:_created_at m))
+                 :_created_at_sql_time (:_created_at m)
+                 :username (:username m))))
+
 (declare objective user comment question answer invitation candidate bearer-token up-down-vote)
 
 (korma/defentity global-identifier
@@ -219,7 +226,7 @@
   (korma/table :objective8.drafts)
   (korma/belongs-to user {:fk :submitter_id})
   (korma/prepare map->draft)
-  (korma/transform (unmap-with-username :draft)))
+  (korma/transform (unmap-with-sql-time :draft)))
 
 (korma/defentity bearer-token
   (korma/pk :_id)

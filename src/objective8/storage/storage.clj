@@ -106,17 +106,3 @@
                                       ORDER BY answers._created_at ASC
                                       LIMIT 50" [question-id]] :results))))
 
-(defn unmap-draft-with-sql-time [m]
-  (assoc (mappings/json-type->map (:draft m))
-         :_id (:_id m)
-         :_created_at_sql_time (:_created_at m)
-         :_created_at (mappings/sql-time->iso-time-string (:_created_at m))
-         :username (:username m)))
-
-(defn pg-retrieve-draft-with-id [draft-id]
-  (-> (korma/exec-raw ["SELECT * FROM objective8.drafts AS drafts
-                       LEFT JOIN (SELECT username, _id FROM objective8.users) AS writer
-                       ON writer._id = drafts.submitter_id
-                       WHERE drafts._id = ?" [draft-id]] :results)
-      first
-      unmap-draft-with-sql-time))

@@ -282,4 +282,9 @@
                     stored-votes-for-answer-2 (doall (map #(sh/store-an-up-down-vote g-id-2 %) votes-for-answer-2))]
                 (storage/pg-retrieve-answers-with-votes-for-question (:_id question))
                 => (contains [(contains (assoc answer-1 :votes {:up 2 :down 3}))
-                              (contains (assoc answer-2 :votes {:up 2 :down 0}))])))))
+                              (contains (assoc answer-2 :votes {:up 2 :down 0}))])))
+         
+         (fact "retrieving a draft returns _created_at_sql_time for accurate time comparison between drafts"
+               (let [draft (sh/store-a-draft)
+                     retrieved-draft (first (:result (storage/pg-retrieve {:entity :draft :_id (:_id draft)})))]
+                 (:_created_at_sql_time retrieved-draft)) =not=> nil)))
