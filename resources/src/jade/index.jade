@@ -5,9 +5,33 @@ block vars
 
 block content
 
-  #clj-index
-    .index-hero
-      h1.index-welcome ${index/index-welcome}
-      p.index-intro ${index/index-intro}
-      a.button.index-get-started(href="objectives/create", title="{Get started}") {Get started}
-      a.index-learn-more(href="/learn-more", title="${index/index-learn-more-title}") ${index/index-learn-more}
+  .index-hero
+    h1.index-welcome !Collaborative policy making for democratic organisations.
+    p.index-intro !Gather community opinion, generate ideas, share, discuss, vote and collaborate with experts to draft new policy.
+
+    .grid-container
+      section
+        .grid-column
+          .info-box-icon
+            i.fa.fa-lightbulb-o
+          .info-box-text
+            | !Create an
+            =" "
+            span.info-box-emphasis !objective
+            |  !to describe the change you want to achieve.
+        .grid-column
+            .info-box-icon
+              i.fa.fa-users
+            .info-box-text
+              | !Collaborate on generating ideas, gathering data and finding experts to write policy.
+        .grid-column
+          .info-box-icon
+            i.fa.fa-refresh
+          .info-box-text
+            | !Work together to release and review
+            =" "
+            span.info-box-emphasis !drafts
+            |  !in an open and transparent way.
+
+    a.button.index-get-started(href="/objectives", title="Objectives") !Objectives
+    a.index-learn-more(href="/learn-more", title="Learn more") !Learn more
