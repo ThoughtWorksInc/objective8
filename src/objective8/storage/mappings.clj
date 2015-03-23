@@ -40,13 +40,6 @@
      :objective (map->json-type objective)}
       (throw (Exception. "Could not transform map to objective"))))
 
-(defn map->global-identifier
-  "Converts a clojure map into a global-identifier for the DB"
-  [{:keys [objective-id] :as global-identifier}]
-  (if objective-id
-    {:objective_id objective-id}
-    (throw (Exception. "Could not transform map to global-identifier"))))
-
 (defn map->comment
   "Converts a clojure map into a json-typed comment for the database"
   [{:keys [created-by-id objective-id] :as comment}]
@@ -154,8 +147,7 @@
 
 (korma/defentity global-identifier
   (korma/pk :_id)
-  (korma/table :objective8.global_identifiers)
-  (korma/prepare map->global-identifier))
+  (korma/table :objective8.global_identifiers))
 
 (korma/defentity objective
   (korma/pk :_id)

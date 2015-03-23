@@ -3,14 +3,17 @@
             [korma.db :as kdb]
             [objective8.storage.mappings :as mappings]))
 
+(defn pg-create-global-identifier []
+  (first (korma/exec-raw
+          "INSERT INTO objective8.global_identifiers values(default) RETURNING _id"
+          :results)))
+
 (defn insert
   "Wrapper around Korma's insert call"
   [entity data]
   (if (#{:answer} (:entity data))
     (kdb/transaction
-     (let [{global-id :_id} (korma/insert
-                             mappings/global-identifier
-                             (korma/values {:objective-id (:objective-id data)}))]
+     (let [{global-id :_id} (pg-create-global-identifier)]
        (korma/insert entity (korma/values (assoc data :global-id global-id)))))
     (korma/insert entity (korma/values data))))
 

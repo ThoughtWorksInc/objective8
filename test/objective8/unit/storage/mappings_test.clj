@@ -36,14 +36,6 @@
              (map->objective {:a "B" :created-by "Foo"}) => (throws Exception "Could not transform map to objective")
              (map->objective {:a "B" :end-date "Blah"}) => (throws Exception "Could not transform map to objective")))
 
-;;GLOBAL IDENTIFIERS
-(facts "About map->global-identifier"
-       (fact "Column values are pulled out and converted, the map gets turned to json"
-             (let [global-id (map->global-identifier {:objective-id 1})]
-               global-id => (contains {:objective_id 1}))
-       (fact "throws exception if objective-id is missing"
-             (map->global-identifier {}) => (throws Exception "Could not transform map to global-identifier"))))
-
 ;;USER
 (facts "About map->user"
        (fact "Column values are pulled out and converted, the map gets turned to json"
