@@ -1,0 +1,60 @@
+extends layouts/base
+include mixins/_view_helpers
+
+block vars
+  - bodyClass = "objective"
+  - pageTitle = "!Objective"
+
+block content
+  .middle-container
+
+    //ul.progress-indicator.clj-objective-progress-indicator
+    //  li.on
+    //    a(href="/objective") !Objective
+    //  li
+    //    a(href="/draft") !Draft
+    //  li
+    //    a(href="#") !Policy
+
+    +guidanceText('!Tips for questions')
+      //p Gather background information such as opinions and experiences by asking a question.
+      p Your question should be focussed and specific, as the answers will influence the policy drafting process.
+
+    .objective-navigation
+      .objective-navigation-list-wrapper
+        ul.objective-navigation-list
+          li
+            a.clj-objective-navigation-item-objective(href="/objective")
+              i.fa.fa-angle-left
+              = " "
+              | !Back to objective
+
+    .objective-outline#outline
+      h1.objective-title.clj-objective-title !Build safer cycling networks in the streets of Madrid.
+
+    //.objective-questions#questions
+    //  h2.clj-questions-section-title !Recently asked questions
+    //  ol.question-list.clj-question-list
+    //    +questionItem('!Chris Cheshire', '3 September 2015 07:41')
+    //      | !What road surface should we use?
+    //    +questionItem('!Chris Cheshire', '4 September 2015 07:41')
+    //      | !Do we have a colour in mind for the road?
+
+    h2 Add a question to this objective
+    +addQuestionForm(true)
+
+block footerScripts
+  script.
+    // temp
+    $(document).ready(function () {
+      var pageNav = $('.objective-navigation-list-wrapper');
+      var pageNavStickHeight = pageNav.offset().top;
+      $(window).scroll(function () {
+        if ($(this).scrollTop() > pageNavStickHeight) {
+          pageNav.addClass("sticky");
+        }
+        else {
+          pageNav.removeClass("sticky");
+        }
+      });
+    });
