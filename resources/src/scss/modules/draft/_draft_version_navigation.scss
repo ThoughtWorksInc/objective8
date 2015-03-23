@@ -45,14 +45,15 @@ $draft_navigation_height: 80px;
 $draft_nav_icon_spacer: 0.4em;
 .draft-version-navigation-content-controls {
   position: absolute;
-  top: 25px;
   right: 0.5em;
+  top: 23px;
   padding: 0;
   margin: 0;
   list-style-type: none;
   text-align: right;
   @include mq(450) {
     right: 0.5em;
+    top: 40px;
   }
   @include mq(720) {
     right: 0;
@@ -63,7 +64,6 @@ $draft_nav_icon_spacer: 0.4em;
   a {
     display: block;
     font-weight: 100;
-    font-size: 1.2em;
     color: $default_text_color;
     text-decoration: none;
     &:hover {
