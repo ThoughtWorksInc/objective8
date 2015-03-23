@@ -52,6 +52,7 @@
                :fe/draft front-end-handlers/draft-detail
                :fe/draft-list front-end-handlers/draft-list
                :fe/post-up-vote front-end-handlers/post-up-vote
+               :fe/post-down-vote front-end-handlers/post-down-vote
 
                
                ;; API Handlers

@@ -406,6 +406,10 @@
 (defn post-up-vote [request]
   (-> (helpers/request->up-vote-info request (get (friend/current-authentication) :identity))
       http-api/create-up-down-vote)
-  {:status 200}
-  #_(response/redirect "/objectives/1/questions/1"))
+  {:status 200})
+
+(defn post-down-vote [request]
+  (-> (helpers/request->down-vote-info request (get (friend/current-authentication) :identity))
+      http-api/create-up-down-vote)
+  {:status 200})
 

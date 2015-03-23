@@ -59,3 +59,8 @@
 (fact "transforms request to up vote info"
       (request->up-vote-info {:params {:global-id "100"}} USER_ID) 
       => {:global-id 100 :created-by-id USER_ID :vote-type "up"})
+
+(fact "transforms request to down vote info"
+      (request->down-vote-info {:params {:global-id "100"}} USER_ID)
+      => {:global-id 100 :created-by-id USER_ID :vote-type "down"})
+
