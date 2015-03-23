@@ -33,6 +33,9 @@
                                                      [:.clj-up-score] (constantly (str (get-in answer [:votes :up])))
                                                      [:.clj-down-score] (constantly (str (get-in answer [:votes :down]))))
 
+                      ;TODO - re-enable approval options once redirect is working
+                      [:.approval-options] (constantly nil)
+
                       [:.clj-jump-to-answer] (if user identity nil)
 
                       [:.clj-answer-form] (if user
