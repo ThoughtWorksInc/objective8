@@ -20,7 +20,6 @@
           (p/request signed-in-session
                      "http://localhost:8080/meta/up-vote"
                      :request-method :post
-                     :params {:global-id 1}) => (contains {:response (contains {:status 302
-                                                                                :headers (contains {"Location" (contains "/objectives/1/questions/1")})})})
+                     :params {:global-id "1"}) => (contains {:response (contains {:status 200})})
           (provided
-            (http-api/create-up-down-vote {:global-id "1" :created-by-id 100 :vote-type "up"}) => :vote)))) 
+            (http-api/create-up-down-vote {:global-id 1 :created-by-id 100 :vote-type "up"}) => :vote)))) 
