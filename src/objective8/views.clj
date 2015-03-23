@@ -62,6 +62,6 @@
 
 (def four-o-four (view (render-page responses/error-404-page)))
 
-(def new-learn-more-page (view learn-more/learn-more-page))
+(def learn-more-page (view learn-more/learn-more-page))
 (def objective-detail-page (view objective/objective-page))
 (def question-page (view question/question-page))

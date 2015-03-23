@@ -46,7 +46,7 @@
 
 (defn learn-more [{:keys [t' locale] :as request}]
   {:status 200
-   :body (views/new-learn-more-page "learn-more" request)
+   :body (views/learn-more-page "learn-more" request)
    :header {"Content-Type" "text/html"}})
 ;; USER PROFILE
 
