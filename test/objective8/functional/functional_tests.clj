@@ -118,7 +118,7 @@
                         (wd/input-text "Functional test question") 
                         (wd/submit)) 
 
-                    (wait-for-element "textarea#answer")
+                    (wait-for-element "textarea.func--add-answer")
                     (screenshot "question_page")
 
                     (swap! journey-state assoc :question-url (wd/current-url))
@@ -129,14 +129,14 @@
 
          (fact "Can answer a question"
                (try (wd/to (:question-url @journey-state))
-                    (wait-for-element "textarea#answer")
+                    (wait-for-element "textarea.func--add-answer")
 
-                    (-> "textarea#answer"
+                    (-> "textarea.func--add-answer"
                         (wd/input-text "Functional test answer") 
                         (wd/submit)) 
 
-                    (wait-for-element ".answer-text p")
-                    (wd/text ".answer-text p")
+                    (wait-for-element ".func--answer-text")
+                    (wd/text ".func--answer-text")
                     (catch Exception e
                       (screenshot "Error-Can-answer-questions")
                       (throw e)))
