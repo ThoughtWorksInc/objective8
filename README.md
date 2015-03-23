@@ -43,6 +43,25 @@ To run only functional tests:
 test/run_functional_tests.sh
 ```
 
+During development, you can get finer grained control over running the
+tests by using the `lein midje` command.  For example: to run just the
+integration and unit tests, and have tests automatically re-run when a
+source file is changed, you can use:
+```
+lein midje objective8.unit.* objective8.integration.* :autotest :filters -functional
+```
+
+(the `:filters -functional` option filters out the functional tests
+--- this is required to avoid starting the test server for the
+functional tests)
+
+You can also pass extra configuration to the tests using the :config
+option.  For example: to run just the unit tests without any logging, use:
+```
+lein midje objective8.unit.* :autotest :filters -functional :config config/tests/no-logging.clj
+```
+
+
 ####Adding or updating a translation resource
 
 Resources for translating the site into different languages are located under:

@@ -46,7 +46,8 @@
                                   [org.seleniumhq.selenium/selenium-remote-driver "2.45.0"]
                                   [http-kit.fake "0.2.1"]
                                   [javax.servlet/servlet-api "2.5"]
-                                  [peridot "0.3.1"]]
+                                  [peridot "0.3.1"]
+                                  [clj-logging-config "1.9.12"]]
                    :plugins [[lein-midje "3.1.3"]
                              [jonase/eastwood "0.2.1"]]
                    :ragtime {:migrations ragtime.sql.files/migrations
