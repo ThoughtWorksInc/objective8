@@ -371,10 +371,9 @@
       (= status ::http-api/success)
       (let [draft-content (utils/hiccup->html (apply list (:content draft)))]
         (views/draft-detail "draft-detail" request
-                            :draft-content draft-content
                             :objective-id objective-id
-                            :next-draft-id (:next-draft-id draft)
-                            :previous-draft-id (:previous-draft-id draft)))
+                            :draft-content draft-content
+                            :draft draft))
 
       (= status ::http-api/forbidden)
       (response/redirect (utils/local-path-for :fe/draft-list :id objective-id))

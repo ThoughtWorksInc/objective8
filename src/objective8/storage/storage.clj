@@ -114,7 +114,9 @@
          :username (:username m)))
 
 (defn pg-retrieve-draft-with-id [draft-id]
-  (-> (korma/exec-raw ["SELECT * FROM objective8.drafts
-                       WHERE _id = ?" [draft-id]] :results)
+  (-> (korma/exec-raw ["SELECT * FROM objective8.drafts AS drafts
+                       LEFT JOIN (SELECT username, _id FROM objective8.users) AS writer
+                       ON writer._id = drafts.submitter_id
+                       WHERE drafts._id = ?" [draft-id]] :results)
       first
       unmap-draft-with-sql-time))

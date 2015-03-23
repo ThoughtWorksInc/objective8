@@ -149,21 +149,23 @@
 
 (html/defsnippet draft-detail-page
   "templates/drafts/draft-detail.html" [:#clj-draft-detail-content] [{:keys [translations data user] :as context}]
-  [:#clj-draft-detail-content :.clj-add-a-draft] (html/set-attr :href 
+  [:#clj-draft-detail-content :.clj-add-a-draft] (html/set-attr :href
                                                                 (utils/local-path-for :fe/add-draft-get 
                                                                                       :id (:objective-id data)))
   [:#clj-draft-detail-content :article] (if (:draft-content data)
                                           (html/do-> (html/remove-class "no-drafts")
                                                      (html/html-content (:draft-content data)))
                                           identity)
-  [:.clj-previous-draft] (when (:previous-draft-id data)
+  [:.clj-draft-writer :span] (html/content (get-in data [:draft :username]))
+  [:.clj-draft-writer] (when (:draft-content data) identity)
+  [:.clj-previous-draft] (when (get-in data [:draft :previous-draft-id])
                            (html/set-attr :href (utils/local-path-for :fe/draft
                                                                       :id (:objective-id data)
-                                                                      :d-id (:previous-draft-id data)))) 
-  [:.clj-next-draft] (when (:next-draft-id data)
+                                                                      :d-id (get-in data [:draft :previous-draft-id]))))
+  [:.clj-next-draft] (when (get-in data [:draft :next-draft-id])
                        (html/set-attr :href (utils/local-path-for :fe/draft
                                                                   :id (:objective-id data)
-                                                                  :d-id (:next-draft-id data)))) 
+                                                                  :d-id (get-in data [:draft :next-draft-id]))))
   [:#clj-draft-detail-content :.clj-add-a-draft] (when (utils/writer-for? user (:objective-id data))
                                                  identity)
   [:#clj-draft-detail-content html/any-node] (html/replace-vars translations))
