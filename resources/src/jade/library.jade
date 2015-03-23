@@ -22,7 +22,13 @@ html.no-js(lang="en")
     +stylesheetLinkTag("modern","screen")
     style.
       body {
-        padding: 2em 0;
+        padding: 2em 1em;
+      }
+      @media screen and (min-width: 45em) {
+        body {
+          padding-left: 0;
+          padding-right: 0;
+        }
       }
       .example {
         padding: 2em 0;
@@ -166,13 +172,13 @@ html.no-js(lang="en")
           h2 Add comment form
           p Generated with addCommentForm()
         +addCommentForm()
-        
+
       .example
         .documentation
           h2 Please sign in
           p Generated with pleaseSignIn()
         +pleaseSignIn()
-        
+
       .example
         .documentation
           h2 Vote controls
