@@ -18,6 +18,13 @@ module.exports = function(grunt) {
       jade: {
         files: ['resources/src/jade/**/*.jade'],
         tasks: ['jade:compile']
+      },
+      express: {
+        files:  [ '**/*.js' ],
+        tasks:  [ 'express:dev' ],
+        options: {
+          spawn: false // for grunt-contrib-watch v0.5.0+, "nospawn: true" for lower versions. Without this option specified express won't be reloaded
+        }
       }
     },
 
@@ -130,6 +137,17 @@ module.exports = function(grunt) {
       }
     },
 
+    express: {
+      options: {
+        port: 1234
+      },
+      dev: {
+        options: {
+          script: 'dev-app.js'
+        }
+      }
+    },
+
     browserSync: {
       default_options: {
         bsFiles: {
@@ -164,6 +182,7 @@ module.exports = function(grunt) {
     'concat',
     'uglify',
     'browserSync',
+    'express',
     'watch'
   ]);
 

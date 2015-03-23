@@ -22,6 +22,7 @@
   "devDependencies": {
     "express": "^4.12.1",
     "grunt-browser-sync": "^2.0.0",
+    "grunt-express-server": "^0.4.19",
     "jade": "^1.9.2",
     "serve-favicon": "^2.1.7"
   },
