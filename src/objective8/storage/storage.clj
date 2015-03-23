@@ -11,7 +11,7 @@
 (defn insert
   "Wrapper around Korma's insert call"
   [entity data]
-  (if (#{:answer} (:entity data))
+  (if (#{:answer :objective} (:entity data))
     (kdb/transaction
      (let [{global-id :_id} (pg-create-global-identifier)]
        (korma/insert entity (korma/values (assoc data :global-id global-id)))))

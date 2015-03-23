@@ -22,19 +22,23 @@
 
 ;; OBJECTIVE
 (def USER_ID 1234)
+(def GLOBAL_ID 3)
 
+(def objective-data {:created-by-id 1
+                     :global-id GLOBAL_ID
+                     :end-date "2015-01-01T00:01:01Z"})
 (facts "About map->objective"
        (fact "Column values are pulled out and converted, the map gets turned to json"
-             (let [objective (map->objective {:created-by-id 1
-                                              :end-date "2015-01-01T00:01:01Z"})]
+             (let [objective (map->objective objective-data)]
                objective => (contains {:created_by_id 1
+                                       :global_id GLOBAL_ID
                                        :end_date  time-type?
                                        :objective json-type?})
                (str (:end_date objective)) => (contains "2015-01-01 00:01")))
-       (fact "throws exception if :created-by-id or :end-date are missing"
-             (map->objective {:a "B"}) => (throws Exception "Could not transform map to objective")
-             (map->objective {:a "B" :created-by "Foo"}) => (throws Exception "Could not transform map to objective")
-             (map->objective {:a "B" :end-date "Blah"}) => (throws Exception "Could not transform map to objective")))
+       (fact "throws exception if :created-by-id, :end-date, or :global-id are missing"
+             (map->objective (dissoc objective-data :created-by-id)) => (throws Exception "Could not transform map to objective")
+             (map->objective (dissoc objective-data :end-date)) => (throws Exception "Could not transform map to objective")
+             (map->objective (dissoc objective-data :global-id)) => (throws Exception "Could not transform map to objective")))
 
 ;;USER
 (facts "About map->user"
@@ -49,7 +53,6 @@
                     (map->user {:username "username"}) => (throws Exception "Could not transform map to user")))
 
 ;;UP-DOWN-VOTES
-(def GLOBAL_ID 3)
 (def vote-data {:global-id GLOBAL_ID :created-by-id USER_ID :vote-type :up})
 (facts "About map->up-down-vote"
        (tabular

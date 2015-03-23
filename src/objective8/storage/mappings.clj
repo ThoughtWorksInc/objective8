@@ -33,9 +33,10 @@
 
 (defn map->objective
   "Converts a clojure map into a json-typed objective for the database"
-  [{:keys [created-by-id end-date] :as objective}]
-  (if (and created-by-id end-date)
+  [{:keys [created-by-id end-date global-id] :as objective}]
+  (if (and created-by-id end-date global-id)
     {:created_by_id created-by-id
+     :global_id global-id
      :end_date (tc/to-timestamp end-date)
      :objective (map->json-type objective)}
       (throw (Exception. "Could not transform map to objective"))))
