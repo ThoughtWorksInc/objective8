@@ -9,7 +9,7 @@
   (when (open? (objectives/retrieve-objective objective-id))
     (store-comment! comment)))
 
-(defn retrieve-comments [objective-id]
+(defn retrieve-comments [comment-on-id]
   (:result (storage/pg-retrieve {:entity :comment 
-                                  :objective-id objective-id}
+                                 :comment-on-id comment-on-id}
                                  {:limit 50})))

@@ -102,10 +102,11 @@
 (defn retrieve-comments [{:keys [route-params] :as request}]
   (let [id (-> (:id route-params)
                Integer/parseInt)]
-    (if-let [comments (comments/retrieve-comments id)]
-      (-> comments
-          response/response
-          (response/content-type "application/json"))
+    (if-let [objective (objectives/retrieve-objective id)]
+      (let [comments (comments/retrieve-comments (:global-id objective))]
+        (-> comments
+            response/response
+            (response/content-type "application/json")))
       (response/not-found ""))))
 
 ;;QUESTIONS

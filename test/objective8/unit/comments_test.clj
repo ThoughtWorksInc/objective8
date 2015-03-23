@@ -6,8 +6,10 @@
 
 (def USER_ID 1)
 (def OBJECTIVE_ID 234)
+(def GLOBAL_ID 345)
 
-(def comment {:objective-id OBJECTIVE_ID})
+(def comment {:objective-id OBJECTIVE_ID
+              :comment-on-id GLOBAL_ID})
 
 (fact "A comment can be created when the associated objective is not in drafting"
       (comments/create-comment comment) => :stored-comment
@@ -22,10 +24,10 @@
 
 
 (fact "By default, only the first 50 comments are retrieved"
-      (comments/retrieve-comments OBJECTIVE_ID) => anything
+      (comments/retrieve-comments GLOBAL_ID) => anything
       (provided
        (storage/pg-retrieve {:entity :comment
-                             :objective-id OBJECTIVE_ID}
+                             :comment-on-id GLOBAL_ID}
                             {:limit 50}) => []))
 
 (fact "Postgresql exceptions are not caught"
