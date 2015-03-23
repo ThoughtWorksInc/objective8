@@ -20,10 +20,11 @@ label {
 
 input,
 textarea {
-  margin-bottom: 1em;
-  border: 1px solid #dcdcdc;
-  padding: 0.5em;
+  resize: none;
   width: 100%;
+  margin-bottom: 1em;
+  padding: 0.5em;
+  border: 1px solid #dcdcdc;
 }
 
 .user-input-error-message {

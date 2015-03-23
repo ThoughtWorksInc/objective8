@@ -70,6 +70,7 @@ block content
 
     .objective-comments#comments
       h2.clj-comments-section-title !Comments
+      +addCommentForm()
       ol.comment-list.clj-comment-list
         li.comment-item
           .comment-meta
@@ -100,8 +101,6 @@ block content
           p Oooh Paseo del Prado.
         +commentItem('Jen Bloggs', '1 September 2015 07:41')
           p Paseo del Prado.
-      .comment-create.clj-comment-create
-        +addCommentForm()
 
 block footerScripts
   script.

@@ -17,7 +17,7 @@ mixin commentItemBlank()
     | !There are no comments yet.
 
 mixin addCommentForm()
-  form.clj-add-comment-form(method='POST', action='/comments')
+  form.add-comment-form.clj-add-comment-form(method='POST', action='/comments')
     input.clj-objective-id-input(name='objective-id', type='hidden')
     textarea(name='comment', rows='5', cols='10', pattern=".{50,}", maxLength='500', required)
     button.button.clj-add-comment(type='submit') !Add a comment
