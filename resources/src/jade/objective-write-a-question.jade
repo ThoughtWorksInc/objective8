@@ -32,16 +32,11 @@ block content
     .objective-outline#outline
       h1.objective-title.clj-objective-title !Build safer cycling networks in the streets of Madrid.
 
-    //.objective-questions#questions
-    //  h2.clj-questions-section-title !Recently asked questions
-    //  ol.question-list.clj-question-list
-    //    +questionItem('!Chris Cheshire', '3 September 2015 07:41')
-    //      | !What road surface should we use?
-    //    +questionItem('!Chris Cheshire', '4 September 2015 07:41')
-    //      | !Do we have a colour in mind for the road?
-
-    h2 Add a question to this objective
-    +addQuestionForm(true)
+    .objective-write-a-question
+      h2 Add a question to this objective
+      //- can this be moved inside the mixin? (comment-create / clj ...)
+      .comment-create.clj-comment-create
+        +addQuestionForm(true)
 
 block footerScripts
   script.
