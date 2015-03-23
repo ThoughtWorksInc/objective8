@@ -5,7 +5,8 @@
             [objective8.templates.objective :as objective]
             [objective8.templates.question :as question]
             [objective8.templates.add-question :as add-question]
-            ))
+            [objective8.templates.draft :as draft])) 
+
 
 (defn- user-info [request auth-map]
   (when auth-map {:username (:username auth-map)
@@ -58,7 +59,6 @@
 (def invitation-response (view (render-page responses/invitation-response-page)))
 (def add-draft (view (render-page responses/add-draft-page)))
 (def draft-detail (view (render-page responses/draft-detail-page)))
-(def draft-list (view (render-page responses/draft-list-page)))
 (def drafting-not-started (view (render-page responses/drafting-not-started-page)))
 
 (def four-o-four (view (render-page responses/error-404-page)))
@@ -67,3 +67,4 @@
 (def objective-detail-page (view objective/objective-page))
 (def question-page (view question/question-page))
 (def add-question-page (view add-question/add-question-page))
+(def draft-list (view draft/draft-list-page))

@@ -9,6 +9,9 @@ objective-guidance,heading,What is an Objective?
 objective-guidance,text-line-1,A policy starts with an idea.
 objective-guidance,text-line-2,These are catalysts for change.
 objective-guidance,text-line-3,Everyone can comment and make suggestions to contribute towards the draft stage.
+draft-guidance,heading,What is a draft?
+draft-guidance,text-line-1,Writers work with each other and the community to draft policy.
+draft-guidance,text-line-2,Everyone can comment and make suggestions to contribute towards the draft stage.
 notifications,go-to-drafting,here.
 notifications,drafting-has-started,Drafting has started on this objective!
 notifications,drafting-started-helper-text,"This means that you can no longer ask or answer questions, comment, or invite new writers.  However, you can follow and contribute to the drafting progress "
@@ -34,7 +37,11 @@ draft-detail,next-draft,Next
 draft-detail,previous-draft,Previous
 draft-detail,draft-writer,Published by
 draft-list,doc-title,Drafts | Objective[8]
+draft-list,drafts-for,Drafts for
 draft-list,no-drafts,No drafts have been submitted yet
+draft-list,latest-draft,Latest draft
+draft-list,previous-versions,Previous versions
+draft-list,no-previous-versions,There are no previous versions
 draft-list,add-a-draft,Add a draft
 comment-create,comment-title,Comments are a maximum length of 500 characters
 comment-create,post-button,Add a comment

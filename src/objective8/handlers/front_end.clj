@@ -398,9 +398,11 @@
           {drafts-status :status drafts :result} (http-api/get-all-drafts objective-id)]
       (cond
         (every? #(= ::http-api/success %) [drafts-status objective-status])
-        (views/draft-list "draft-list" request
+        {:status 200
+         :body (views/draft-list "draft-list" request
                           :objective (format-objective objective)
                           :drafts drafts)
+         :headers {"Content-Type" "text/html"}} 
 
         (= drafts-status ::http-api/forbidden)
         (views/drafting-not-started "drafting-not-started" request
