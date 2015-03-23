@@ -8,11 +8,11 @@ mixin questionItem(author, date)
 
 mixin questionItemBlank()
   li.question-item.clj-empty-question-list-item
-    | No one has answered this question yet.
+    | !No one has answered this question yet.
 
 mixin addQuestionForm(allowFocus)
   - focus = allowFocus ? true : false
-    form#clj-question-create(method="POST", action="")
-      label(for="question") Add a question
-      textarea#question(name="question", rows="5", cols="10", pattern=".{50,}", maxlength="500", title="${question-create/question-title}", required="required", autofocus=focus)
-      button.button(type="submit") Add question
+    form.clj-question-create(method="POST", action="")
+      label.clj-label-add-question(for="new-question") !Add a question
+      textarea.clj-textarea-add-question#new-question(name="question", rows="5", cols="10", pattern=".{50,}", maxlength="500", title="${question-create/question-title}", required="required", autofocus=focus)
+      button.button.clj-button-add-question(type="submit") !Add question

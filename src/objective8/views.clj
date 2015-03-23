@@ -4,7 +4,8 @@
             [objective8.templates.learn-more :as learn-more]
             [objective8.templates.objective :as objective]
             [objective8.templates.question :as question]
-            ))  
+            [objective8.templates.add-question :as add-question]
+            ))
 
 (defn- user-info [request auth-map]
   (when auth-map {:username (:username auth-map)
@@ -65,3 +66,4 @@
 (def learn-more-page (view learn-more/learn-more-page))
 (def objective-detail-page (view objective/objective-page))
 (def question-page (view question/question-page))
+(def add-question-page (view add-question/add-question-page))

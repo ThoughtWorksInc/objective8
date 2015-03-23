@@ -146,6 +146,14 @@
         {questions-status :status questions :result} (http-api/retrieve-questions objective-id)]
     (cond
       (every? #(= ::http-api/success %) [objective-status questions-status])
+      #_{:status 200
+       :body (views/add-question-page "question-list"
+               request
+               :objective (format-objective objective)
+               :questions questions
+               :doc {:title (str (:title objective) " | Objective[8]")
+                     :description (str (t' :question-list/questions-about) " " (:title objective))})
+       :headers {"Content-Type" "text/html"}}
       (views/question-list "question-list"
                            request
                            :objective (format-objective objective)
