@@ -403,6 +403,8 @@
         :else {:status 500})))
 
 (defn post-up-vote [request]
-  (http-api/create-up-down-vote (helpers/request->up-vote-info request (get (friend/current-authentication) :identity)))
-  (response/redirect "/objectives/1/questions/1"))
+  (-> (helpers/request->up-vote-info request (get (friend/current-authentication) :identity))
+      http-api/create-up-down-vote)
+  {:status 200}
+  #_(response/redirect "/objectives/1/questions/1"))
 

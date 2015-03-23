@@ -47,4 +47,5 @@
 (defn request->up-vote-info [request user-id]
   (-> (:params request)
       (select-keys [:global-id])
+      (update-in [:global-id] #(Integer/parseInt %) )
       (assoc :created-by-id user-id :vote-type "up")))

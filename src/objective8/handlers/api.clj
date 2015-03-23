@@ -129,6 +129,7 @@
 (defn check-question-matches-objective [question-id objective-id]
   (let [question (questions/retrieve-question question-id)]
     (when-not (= (:objective-id question) objective-id)
+      ;TODO return a 404 here, rather than throwing an exception?
       (throw (Exception. "Question does not belong to this objective")))))
 
 (defn get-question [{:keys [route-params] :as request}]
