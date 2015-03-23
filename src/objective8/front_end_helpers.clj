@@ -13,10 +13,11 @@
 (defn request->comment
   "Returns a map of a comment if all the parts are in the request params."
   [{:keys [params]} user-id]
-  (if-let [objective-id (Integer/parseInt (params :objective-id))]
-    (assoc (select-keys params [:comment])
-            :objective-id objective-id
-            :created-by-id user-id)))
+  (some-> params
+          (utils/select-all-or-nothing [:objective-id :comment-on-id :comment])
+          (update-in [:objective-id] #(Integer/parseInt %))
+          (update-in [:comment-on-id] #(Integer/parseInt %))
+          (assoc :created-by-id user-id)))
 
 (defn request->objective
   "Returns a map of an objective if all the parts are in the

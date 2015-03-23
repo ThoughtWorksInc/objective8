@@ -90,7 +90,7 @@
 (defn post-comment [{:keys [params] :as request}]
   (try
     (if-let [stored-comment (-> params
-                                (select-keys [:comment :objective-id :created-by-id])
+                                (select-keys [:comment :objective-id :created-by-id :comment-on-id])
                                 comments/create-comment)]
       (successful-post-response (str utils/host-url "/api/v1/comments/" (:_id stored-comment))
                                 stored-comment)

@@ -77,17 +77,20 @@
 (def OBJECTIVE_ID 2345)
 
 (def comment-map {:created-by-id USER_ID
-                  :objective-id OBJECTIVE_ID})
+                  :objective-id OBJECTIVE_ID
+                  :comment-on-id GLOBAL_ID})
 
 (facts "About map->comment"
        (fact "Column values are pulled out and converted, the map gets turned to json"
              (let [test-comment (map->comment comment-map)]
               test-comment => (contains {:created_by_id USER_ID
                                          :objective_id OBJECTIVE_ID
+                                         :comment_on_id GLOBAL_ID
                                          :comment json-type?})))
-       (fact "throws exception if :created-by-id or :objective-id are missing"
+       (fact "throws exception if :created-by-id, :objective-id or :comment-on-id are missing"
                     (map->comment (dissoc comment-map :created-by-id)) => (throws Exception "Could not transform map to comment")
-                    (map->comment (dissoc comment-map :objective-id)) => (throws Exception "Could not transform map to comment")))
+                    (map->comment (dissoc comment-map :objective-id)) => (throws Exception "Could not transform map to comment")
+                    (map->comment (dissoc comment-map :comment-on-id)) => (throws Exception "Could not transform map to comment")))
 
 
 ;;QUESTIONS

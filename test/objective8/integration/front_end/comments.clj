@@ -12,6 +12,7 @@
 (def USER_ID 1)
 (def COMMENT_ID 123)
 (def OBJECTIVE_ID 234)
+(def GLOBAL_ID 223)
 
 
 (facts "comments"
@@ -22,10 +23,12 @@
               (against-background
                   (http-api/create-comment {:comment "The comment"
                                             :objective-id OBJECTIVE_ID
+                                            :comment-on-id GLOBAL_ID
                                             :created-by-id USER_ID}) => {:status ::http-api/success
                                                                          :result  {:_id 12
                                                                                    :objective-id OBJECTIVE_ID
                                                                                    :created-by-id USER_ID
+                                                                                   :comment-on-id GLOBAL_ID
                                                                                    :comment "The comment"}})
                (against-background
                  (oauth/access-token anything anything anything) => {:user_id USER_ID}
@@ -33,7 +36,8 @@
                                                      :result {:_id USER_ID}})
                (let [user-session (helpers/test-context)
                      params {:comment "The comment"
-                             :objective-id (str OBJECTIVE_ID)}
+                             :objective-id (str OBJECTIVE_ID)
+                             :comment-on-id (str GLOBAL_ID)}
                      peridot-response (-> user-session
                                           (helpers/with-sign-in (str "http://localhost:8080/objectives/" OBJECTIVE_ID))
                                           (p/request "http://localhost:8080/comments"

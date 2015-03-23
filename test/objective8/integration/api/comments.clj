@@ -25,12 +25,13 @@
 (def the-invalid-comment {:comment "The comment"
                           :objective-id OBJECTIVE_ID })
 
-(defn a-comment [objective-id created-by-id]
+(defn a-comment [comment-on-id objective-id created-by-id]
   {:comment "The comment"
    :objective-id objective-id
+   :comment-on-id comment-on-id
    :created-by-id created-by-id})
 
-(facts "POST /api/v1/objectives/:id/comments"
+(facts "POST /api/v1/comments"
        (against-background
         (m/valid-credentials? anything anything anything) => true)
        (against-background
@@ -39,13 +40,13 @@
          (after :facts (helpers/truncate-tables))]
 
         (fact "the posted comment is stored"
-              (let [{obj-id :_id user-id :created-by-id} (sh/store-an-objective)
-                    comment (a-comment obj-id user-id)
+              (let [{obj-id :_id user-id :created-by-id comment-on-id :global-id} (sh/store-an-objective)
+                    comment-data (a-comment comment-on-id obj-id user-id)
                     {response :response} (p/request app "/api/v1/comments"
                                                     :request-method :post
                                                     :content-type "application/json"
-                                                    :body (json/generate-string comment))]
-                (:body response) => (helpers/json-contains (assoc comment :_id integer?))
+                                                    :body (json/generate-string comment-data))]
+                (:body response) => (helpers/json-contains (assoc comment-data :_id integer?))
                 (:status response) => 201
                 (:headers response) => (helpers/location-contains (str "/api/v1/comments/"))))
 
@@ -65,8 +66,8 @@
                                     :body (json/generate-string the-invalid-comment))) => (contains {:status 400}))
 
         (fact "a 423 (resource locked) status is returned when drafting has started on the objective"
-              (let [{obj-id :_id user-id :created-by-id} (sh/store-an-objective-in-draft)
-                    comment (a-comment obj-id user-id)
+              (let [{obj-id :_id user-id :created-by-id comment-on-id :global-id} (sh/store-an-objective-in-draft)
+                    comment (a-comment comment-on-id obj-id user-id)
                     {response :response} (p/request app (str "/api/v1/comments")
                                                     :request-method :post
                                                     :content-type "application/json"

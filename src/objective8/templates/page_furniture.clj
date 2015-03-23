@@ -130,6 +130,7 @@
   library-html [:.clj-add-comment-form] [{:keys [translations data]}]
   [:.clj-add-comment-form] (html/prepend (html/html-snippet (anti-forgery-field)))
   [:.clj-objective-id-input] (html/set-attr "value" (get-in data [:objective :_id]))
+  [:.clj-comment-on-id-input] (html/set-attr "value" (get-in data [:objective :global-id]))
   [:.clj-add-comment] (html/content (translations :comment-create/post-button)))
 
 (html/defsnippet sign-in-to-comment

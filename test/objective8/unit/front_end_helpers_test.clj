@@ -7,6 +7,7 @@
 (def USER_ID 1)
 (def OBJECTIVE_ID 2)
 (def QUESTION_ID 3)
+(def GLOBAL_ID 5)
 
 (defn requestify [params]
   {:params (assoc params :end-date "2015-01-03")})
@@ -25,10 +26,12 @@
 
 (fact "creates a comment from a request"
       (let [comment (request->comment {:params {:comment "the comment"
-                                                :objective-id (str OBJECTIVE_ID)}}
+                                                :objective-id (str OBJECTIVE_ID)
+                                                :comment-on-id (str GLOBAL_ID)}}
                                         USER_ID)]
            comment => {:comment "the comment"
                        :objective-id OBJECTIVE_ID
+                       :comment-on-id GLOBAL_ID
                        :created-by-id USER_ID}))
 
 (fact "creates a question from a request"

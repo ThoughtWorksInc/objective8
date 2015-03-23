@@ -75,16 +75,18 @@
                ;;COMMENTS
                (fact "a comment entity can be stored in the database"
                      (let [{user-id :_id username :username} (sh/store-a-user)
-                           {objective-id :_id} (sh/store-an-objective)
+                           {objective-id :_id comment-on-id :global-id} (sh/store-an-objective)
                            comment {:entity :comment
                                     :created-by-id user-id
                                     :objective-id objective-id
+                                    :comment-on-id comment-on-id
                                     :comment "A comment"}
                            store-result (storage/pg-store! comment)
                            retrieve-result (storage/pg-retrieve {:entity :comment :_id (:_id store-result)})]
                        (first (:result retrieve-result)) => (contains {:created-by-id user-id
                                                                        :username username
-                                                                       :objective-id objective-id})))
+                                                                       :objective-id objective-id
+                                                                       :comment-on-id comment-on-id})))
 
                ;;QUESTIONS
                (fact "a question entity can be stored in the database"
