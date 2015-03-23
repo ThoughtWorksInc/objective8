@@ -5,7 +5,7 @@
 
 (def question-template (html/html-resource "templates/jade/question.html"))
 
-(defn question-page [{:keys [data user ring-request] :as context}]
+(defn question-page [{:keys [translations data user ring-request] :as context}]
   (let [question (:question data)
         answers (:answers data)
         objective (:objective data)]
@@ -28,7 +28,7 @@
 
                       [:.clj-answer-form] (if user
                                             identity 
-                                            (html/content "!You must sign in to add an answer"))
+                                            (html/content (translations :answer-create/sign-in-reminder)))
                       [:.clj-answer-form] (html/set-attr
                                             "action"
                                             (str "/objectives/" (:_id objective) "/questions/" (:_id question) "/answers"))
