@@ -29,13 +29,16 @@ block content
         .approval-options
           form(action="/meta/up-vote", method="post").approval-vote-option
             input(type="hidden", value="!global-id", name="global-id").clj-answer-id
-            button(type="submit").approval-up
-              i.fa.fa-check
-          .approval-score !27
+            .approval-score 
+              button(type="submit").approval-button.approval-up
+                i.fa.fa-check
+              span.clj-up-score !27
           form(action="/meta/down-vote", method="post").approval-vote-option
             input(type="hidden", value="!global-id", name="global-id").clj-answer-id
-            button(type="submit").approval-down
-              i.fa.fa-times
+            .approval-score 
+              button(type="submit").approval-button.approval-down
+                i.fa.fa-times
+              span.clj-down-score !10
 
       .answer-new
         h3 !How many roads must a man walk down before you can call him a man?
