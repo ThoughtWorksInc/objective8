@@ -1,0 +1,38 @@
+extends layouts/base
+include mixins/_view_helpers
+
+block vars
+  - pageTitle = "!Drafts | Objective[8]"
+
+block content
+  .middle-container
+
+    ul.progress-indicator.clj-objective-progress-indicator
+      li
+        a(href="/objective") !Objective
+      li.on
+        a(href="/draft") !Draft
+      li
+        a(href="#") !Policy
+
+    +guidanceText('!What is a draft?')
+      ul
+        li.clj-guidance-text-line-1 !Writers work with each other and the community to draft policy.
+        li.clj-guidance-text-line-2 !Everyone can comment and make suggestions to contribute towards the draft stage.
+
+    h1.draft-list-title.clj-draft-list-title !Drafts for: Build safer cycling networks in the streets of Madrid.
+
+    .latest-draft-wrapper
+      h2.latest-draft-title.clj-latest-draft-title !Latest draft
+      p.latest-draft-writer.clj-latest-draft-writer !Prof Barry
+      p.latest-draft-time.clj-latest-draft-time !2 days ago
+
+    .previous-drafts-wrapper
+      h2.previous-drafts-title.clj-previous-drafts-title !Previous versions 
+      ul.previous-drafts-list.clj-previous-drafts-list
+        li.previous-draft-item.clj-previous-draft-item
+          p.previous-draft-writer.clj-previous-draft-writer !Prof Barry
+          p.previous-draft-time.clj-previous-draft-time !3 days ago
+        li.previous-draft-item.clj-previous-draft-item
+          p.previous-draft-writer.clj-previous-draft-writer !Prof Belinda
+          p.previous-draft-time.clj-previous-draft-time !8 days ago
