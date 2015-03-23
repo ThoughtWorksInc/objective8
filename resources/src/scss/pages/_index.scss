@@ -1,11 +1,10 @@
 .index-hero {
   max-width: 45em;
-  padding: 1em;
   margin: 0 auto;
-  min-height: 30em;
+  text-align: center;
   @include mq(720) {
-    padding: 6.5em 1em;
-    min-height: 40em;
+    padding-top: 2em;
+    text-align: left;
   }
 }
 

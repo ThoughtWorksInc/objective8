@@ -1,0 +1,68 @@
+extends layouts/base
+include mixins/_view_helpers
+
+block vars
+  - bodyClass = "objective"
+  - pageTitle = "!Objective"
+
+block content
+  .middle-container
+
+    //ul.progress-indicator.clj-objective-progress-indicator
+    //  li.on
+    //    a(href="/objective") !Objective
+    //  li
+    //    a(href="/draft") !Draft
+    //  li
+    //    a(href="#") !Policy
+
+    //+guidanceText('!Why invite a writer?')
+    //  ul
+    //    li.clj-guidance-text-line-1 !...
+    //    li.clj-guidance-text-line-2 !...
+    //    li.clj-guidance-text-line-3 !...
+
+    .objective-navigation
+      .objective-navigation-list-wrapper
+        ul.objective-navigation-list
+          li
+            a.clj-objective-navigation-item-objective(href="/objective")
+              i.fa.fa-angle-left
+              = " "
+              | !Back to objective
+
+    .objective-outline#outline
+      h1.objective-title.clj-objective-title !Build safer cycling networks in the streets of Madrid.
+
+    .objective-writers#writers
+      h2.clj-invite-writer-section-title !Invite a policy writer
+      p Do you know someone with the enthusiasm and expertise to help draft this policy?
+
+      .invitation-posts#clj-invitation
+        form(method="POST", action="/")
+          label.clj-label-writer-name(for="writer-name")
+            | !Writer name
+          input.clj-input-writer-name(id="writer-name", name="writer-name", type="text", pattern=".{3,}", title="${invitation/writer-name-title}", maxlength="50", required="required")
+
+          label.clj-label-writer-reason(for="reason")
+            | !They should help draft this policy, because:
+          textarea.clj-input-writer-reason(id="reason", name="reason", rows="3", cols="10", maxlength="1000", title="Reasons are a maximum length of 1000 characters", required="required")
+
+          button.button.clj-button-invite-writer(type="submit") !Create an invite
+
+
+block footerScripts
+  script.
+    // temp
+    $(document).ready(function () {
+      var pageNav = $('.objective-navigation-list-wrapper');
+      var pageNavStickHeight = pageNav.offset().top;
+      $(window).scroll(function () {
+        if ($(this).scrollTop() > pageNavStickHeight) {
+          pageNav.addClass("sticky");
+        }
+        else {
+          pageNav.removeClass("sticky");
+        }
+      });
+    });
