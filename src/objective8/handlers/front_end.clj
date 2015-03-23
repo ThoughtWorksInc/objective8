@@ -189,10 +189,9 @@
         {objective-status :status objective :result} (http-api/get-objective (:objective-id question))]
     (cond
       (every? #(= ::http-api/success %) [question-status answer-status objective-status])
-      ;TODO - uncomment for new style question page
       {:status 200
        :headers {"Content-Type" "text/html"}      
-       :body (views/question-page "question-detail" request
+       :body (views/question-page "answer-create" request
                                   :objective (format-objective objective)
                                   :question question
                                   :answers answers)}

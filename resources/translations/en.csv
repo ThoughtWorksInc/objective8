@@ -90,8 +90,12 @@ sign-up,page-title,Almost there
 sign-up,username-title,Create your username
 sign-up,email-title,Add your email title
 sign-up,doc-description,
+answer-create,guidance-heading,What is a question?
+answer-create,guidance-text-1,Questions are how Objective[8] gathers community ideas for use in drafting policy
+answer-create,answers-for,Answers for
 answer-create,answer-title,Answers are a maximum length of 500 characters
-answer-create,post-button,Post your answer
+answer-create,jump-to-answer-button,Add a new answer
+answer-create,submit-answer-button,Add my answer
 answer-create,answer-label,Your answer
 answer-create,sign-in-reminder,You must sign in to add an answer
 learn-more,doc-title,Learn more | Objective[8]

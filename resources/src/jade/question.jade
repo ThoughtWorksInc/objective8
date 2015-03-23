@@ -6,7 +6,7 @@ block content
 
     +guidanceText('!How do questions work?')
       ul
-        li.clj-guidance-text-line-1 !Questions are how Objective[8] gathers community ideas to turn into policy
+        li.l8n-guidance-text-line-1 !Questions are how Objective[8] gathers community ideas to turn into policy
 
     .question-navigation-wrapper
       .question-navigation
@@ -16,9 +16,9 @@ block content
 
     .question-outline#outline
       h1.question-title.clj-question-lead-in
-        |!Answers for 
+        span.l8n-answers-for !Answers for 
         p.question-leader.clj-question !How many roads must a man walk down before you can call him a man?
-      label.button.answer-reply(for="add-an-answer").answer-jump-to-answer
+      label(for="add-an-answer").button.answer-reply.answer-jump-to-answer.l8n-jump-to-answer.clj-jump-to-answer
         |!Add a new answer
 
     .clj-drafting-started-wrapper
@@ -41,7 +41,7 @@ block content
               span.clj-down-score !10
 
       .answer-new
-        h3 !How many roads must a man walk down before you can call him a man?
+        h3.clj-question !How many roads must a man walk down before you can call him a man?
         form(action="!add-answer-action", method="POST").clj-answer-form
           textarea(rows=4, name="answer", required="required")#add-an-answer.answer-reply-box
-          button(type="submit").button.answer-reply !Add my answer
+          button(type="submit").button.answer-reply.l8n-submit-answer !Add my answer
