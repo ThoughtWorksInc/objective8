@@ -381,13 +381,15 @@
                    (Integer/parseInt d-id))
         {objective-status :status objective :result} (http-api/get-objective objective-id)] 
     (if (= objective-status ::http-api/success)
-      (let [{draft-status :status draft :result} (http-api/get-draft objective-id draft-id)] 
+      (let [{draft-status :status draft :result} (http-api/get-draft objective-id draft-id)
+            {candidate-status :status candidates :result} (http-api/retrieve-candidates objective-id)] 
         (cond
-          (= draft-status ::http-api/success)  
+          (every? #(= ::http-api/success %) [draft-status candidate-status])
           (let [draft-content (utils/hiccup->html (apply list (:content draft)))]
             {:status 200
              :body (views/draft "draft" request
                                 :objective objective
+                                :candidates candidates
                                 :draft-content draft-content
                                 :draft draft)
              :headers {"Content-Type" "text/html"}})

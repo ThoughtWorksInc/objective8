@@ -119,7 +119,9 @@
       [:.clj-draft-preview-document] (when-let [draft-content (:draft-content data)] 
                                        (html/html-content draft-content)) 
 
-      [:.clj-draft-writers] nil
+      [:.clj-writers-section-title] (html/content (translations :draft/writers))
+      [:.clj-writer-item-list] (html/content (f/writer-list context)) 
+
       [:.clj-draft-comments] nil)))
 
 (defn draft-page [{:keys [translations data] :as context}]

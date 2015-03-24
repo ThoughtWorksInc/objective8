@@ -102,6 +102,7 @@
               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                         :result {:drafting-started true
                                                                  :_id OBJECTIVE_ID}}
+              (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success}
               (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
                                                              :result {:_id DRAFT_ID
                                                                       :_created_at "2015-03-24T17:06:37.714Z"
@@ -123,6 +124,7 @@
               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                         :result {:drafting-started true
                                                                  :_id OBJECTIVE_ID}}
+              (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success}
               (http-api/get-draft OBJECTIVE_ID "latest") => {:status ::http-api/success
                                                               :result {:_id DRAFT_ID
                                                                        :_created_at "2015-03-24T17:06:37.714Z"
@@ -183,6 +185,7 @@
                                                          :result {:_id OBJECTIVE_ID
                                                                   :end-date (utils/string->date-time "2012-12-12")
                                                                   :drafting-started true}}
+               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success}
                (http-api/get-draft OBJECTIVE_ID "latest") => {:status ::http-api/success
                                                               :result {:_id DRAFT_ID
                                                                        :_created_at "2015-03-24T17:06:37.714Z"
