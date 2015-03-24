@@ -131,6 +131,7 @@
                       [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
                       [:.clj-status-bar] (html/substitute (f/status-flash-bar context))
 
+                      [:.clj-guidance-buttons] nil
                       [:.clj-guidance-heading] (html/content (translations :draft-guidance/heading))
                       [:.clj-guidance-text-line-1] (html/content (translations :draft-guidance/text-line-1))
                       [:.clj-guidance-text-line-2] (html/content (translations :draft-guidance/text-line-2))
