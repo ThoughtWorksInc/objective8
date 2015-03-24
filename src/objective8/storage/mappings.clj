@@ -112,10 +112,11 @@
 
 (defn map->draft
   "Converts a clojure map into a json-typed draft for the database"
-  [{:keys [submitter-id objective-id] :as draft}]
-  (if (and submitter-id objective-id)
+  [{:keys [submitter-id objective-id global-id] :as draft}]
+  (if (and submitter-id objective-id global-id)
     {:submitter_id submitter-id
      :objective_id objective-id
+     :global_id global-id
      :draft (map->json-type draft)}
     (throw (Exception. "Could not transform map to draft"))))
 

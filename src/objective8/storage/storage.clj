@@ -11,7 +11,7 @@
 (defn insert
   "Wrapper around Korma's insert call"
   [entity data]
-  (if (#{:answer :objective} (:entity data))
+  (if (#{:answer :objective :draft} (:entity data))
     (kdb/transaction
      (let [{global-id :_id} (pg-create-global-identifier)]
        (korma/insert entity (korma/values (assoc data :global-id global-id)))))
@@ -108,4 +108,3 @@
                                       WHERE answers.question_id = ?
                                       ORDER BY answers._created_at ASC
                                       LIMIT 50" [question-id]] :results))))
-
