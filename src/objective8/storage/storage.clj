@@ -98,7 +98,6 @@
 (defn unmap-answer-with-votes [m]
   (assoc (mappings/json-type->map (:answer m))
          :_id (:_id m)
-         :global-id (:global_id m)
          :_created_at (mappings/sql-time->iso-time-string (:_created_at m))
          :username (:username m)
          :votes {:up (or (:up_votes m) 0) :down (or (:down_votes m) 0)}
