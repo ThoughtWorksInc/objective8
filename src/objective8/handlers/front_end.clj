@@ -139,10 +139,24 @@
 
 ;; QUESTIONS
 
-(defn add-a-question [request]
-  {:status 200
-   :body "hello"}
-  )
+(defn add-a-question [{{id :id} :route-params
+                       :keys [uri t' locale] :as request}]
+  (let [objective-id (Integer/parseInt id)
+        {objective-status :status objective :result} (http-api/get-objective objective-id)]
+        (cond
+          (every? #(= ::http-api/success %) [objective-status])
+          {:status 200
+           :body (views/add-question-page "question-create"
+                   request
+                   :objective (format-objective objective)
+                   :doc {:title (str (t' :question-create/doc-title) " to "(:title objective) " | Objective[8]")
+                         :description (str (t' :question-create/doc-description))}
+                   )
+           :headers {"Content-Type" "text/html"}}
+
+          (= objective-status ::http-api/not-found) (error-404-response request)
+          :else {:status 500})
+        ))
 
 (defn question-list [{{id :id} :route-params
                       :keys [uri t' locale] :as request}]

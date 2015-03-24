@@ -204,6 +204,8 @@ base,project-status!,"ALPHA: We are still testing, <a href=""/project-status"" t
 base,header-logo-title,Go to home page
 base,header-logo-text,Objective[8]
 base,browsehappy!,"You are using an <strong>outdated</strong> browser. Please <a href=""http://browsehappy.com/"">upgrade your browser</a> to improve your experience."
+question-create,doc-title,Add a question
+question-create,doc-description,Add a question to this objective
 question-create,add-a-question,Add a question to this objective
 question-create,guidance-heading,Tips for questions
 question-create,guidance-text,"Your question should be focused and specific, as the answers will influence the policy drafting process."

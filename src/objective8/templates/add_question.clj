@@ -13,6 +13,7 @@
     (html/emit*
       (html/at objective-write-a-question-template
         [:title] (html/content (get-in context [:doc :title]))
+        [(and (html/has [:meta]) (html/attr-has :name "description"))] (html/set-attr "content" (get-in context [:doc :description]))
         [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
         [:.clj-status-bar] (html/substitute (f/status-flash-bar context))
         [:.clj-guidance-buttons] nil
@@ -22,5 +23,7 @@
         [:.l8n-back-to-objective] (html/content (translations :objective-nav/back-to-objective))
         [:.clj-objective-title] (html/content (:title objective))
         [:.l8n-add-question-title] (html/content (translations :question-create/add-a-question))
-        [:.clj-question-create-form] (html/content (f/add-question context)))))))
-
+        [:.clj-question-create-form] (html/content (f/add-question context))
+        [:.clj-question-create-form] (html/set-attr "action" (str "/objectives/" (:_id objective) "/questions"))
+        )
+      ))))
