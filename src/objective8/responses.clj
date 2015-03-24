@@ -147,29 +147,6 @@
   [:#clj-add-draft-form :textarea] (html/content (:markdown data))
   [:#clj-add-draft html/any-node] (html/replace-vars translations))
 
-(html/defsnippet draft-detail-page
-  "templates/drafts/draft-detail.html" [:#clj-draft-detail-content] [{:keys [translations data user] :as context}]
-  [:#clj-draft-detail-content :.clj-add-a-draft] (html/set-attr :href
-                                                                (utils/local-path-for :fe/add-draft-get 
-                                                                                      :id (:objective-id data)))
-  [:#clj-draft-detail-content :article] (if (:draft-content data)
-                                          (html/do-> (html/remove-class "no-drafts")
-                                                     (html/html-content (:draft-content data)))
-                                          identity)
-  [:.clj-draft-writer :span] (html/content (get-in data [:draft :username]))
-  [:.clj-draft-writer] (when (:draft-content data) identity)
-  [:.clj-previous-draft] (when (get-in data [:draft :previous-draft-id])
-                           (html/set-attr :href (utils/local-path-for :fe/draft
-                                                                      :id (:objective-id data)
-                                                                      :d-id (get-in data [:draft :previous-draft-id]))))
-  [:.clj-next-draft] (when (get-in data [:draft :next-draft-id])
-                       (html/set-attr :href (utils/local-path-for :fe/draft
-                                                                  :id (:objective-id data)
-                                                                  :d-id (get-in data [:draft :next-draft-id]))))
-  [:#clj-draft-detail-content :.clj-add-a-draft] (when (utils/writer-for? user (:objective-id data))
-                                                 identity)
-  [:#clj-draft-detail-content html/any-node] (html/replace-vars translations))
-
 ;INVITATIONS
 (html/defsnippet invitation-create
   "templates/writers/invitation-form.html" [[:#clj-invitation]] [{:keys [translations data] :as context}]
@@ -329,17 +306,6 @@
   "templates/objectives-create.html" [[:#clj-objective-create]] [{:keys [translations]}]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
   [:#clj-objective-create html/any-node] (html/replace-vars translations))
-
-(html/defsnippet objective-detail-page
-  "templates/objectives-detail.html" [[:#clj-objectives-detail]] [{:keys [translations data user ring-request] :as context}]
-  [:#clj-objectives-detail html/any-node] (html/replace-vars translations)
-  [:h1] (html/content (get-in data [:objective :title]))
-  [:h1] (html/after (article-meta (:objective data) translations))
-  [:#clj-obj-goals-value] (html/content (map a-goal (get-in data [:objective :goals])))
-  [:#clj-obj-background-label] (if (empty? (get-in data [:objective :description])) nil identity)
-  [:#clj-obj-background-label] (html/after (text->p-nodes (get-in data [:objective :description])))
-  [:#clj-objectives-detail] (html/after (when-not (get-in data [:objective :drafting-started]) (comments-view context))))
-
 
 ;USERS
 (html/defsnippet sign-up

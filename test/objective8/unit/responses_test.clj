@@ -4,16 +4,6 @@
             [objective8.responses :as responses]
             [objective8.utils :as utils]))
 
-(def view-context {:translations (constantly "---")
-                   :ring-request {:uri "CURRENT_PAGE_URI"}
-                   :data {:objective "OBJECTIVE"}})
-
-(fact "'Sign-in to comment' link target on objective detail view refers back to current url"
-      (-> (responses/objective-detail-page view-context)
-          (html/select [:#clj-comment-sign-in-uri])
-          first)
-      => (contains {:attrs (contains {:href (contains "refer=CURRENT_PAGE_URI")})}))
-
 (facts "Splitting text into paragraphs"
        (fact "Newlines are turned into paragraphs"
              (responses/text->p-nodes "Hello\nWorld") =>
