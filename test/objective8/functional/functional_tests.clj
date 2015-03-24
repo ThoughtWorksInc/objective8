@@ -152,11 +152,14 @@
                       (throw e)))
                => "Functional test answer")
 
-         (fact "Can up vote an answer" 
+         (future-fact "Can up vote an answer" 
                       (try (wd/to (:question-url @journey-state))
                            (wait-for-element "textarea.func--add-answer")
+                           (wd/text ".func--up-score") => "0"
                            (wd/click "button.func--up-vote")
-                           (wait-for #(= (wd/text ".func--up-score") "1"))
+                           (wd/to (:question-url @journey-state)) ;TODO - how to handle redirects
+                           (wd/text ".func--up-score") => "1"
+                           
                            (catch Exception e
                              (screenshot "Error-Can-vote-on-an-answer")
                              (throw e))))
