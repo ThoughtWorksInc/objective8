@@ -170,33 +170,6 @@
                                                  identity)
   [:#clj-draft-detail-content html/any-node] (html/replace-vars translations))
 
-(html/defsnippet a-draft
-  "templates/drafts/a-draft.html" [:li] [draft]
-  [:.clj-draft-link] (html/set-attr :href (utils/local-path-for :fe/draft
-                                                                :id (:objective-id draft)
-                                                                :d-id (:_id draft)))
-  [:.clj-draft-date] (html/content (utils/iso-time-string->pretty-time (:_created_at draft)))
-  [:.clj-draft-writer] (html/content (:username draft)))
-
-(html/defsnippet draft-list-container
-  "templates/drafts/draft-list-container.html" [:ol] [drafts]
-  [:ol] (html/content (map a-draft drafts)))
-
-(html/defsnippet draft-list-page
-  "templates/drafts/draft-list.html" [:#clj-draft-list] [{:keys [translations data user] :as context}]
-  [:#clj-draft-list :article] (let [drafts (:drafts data)] (if (empty? drafts) identity (html/content (draft-list-container drafts))))
-  [:#clj-draft-list :.clj-add-a-draft] (html/set-attr :href
-                                                      (utils/local-path-for :fe/add-draft-get
-                                                                            :id (get-in data [:objective :_id])))
-  [:#clj-draft-list :.clj-add-a-draft] (when (utils/writer-for? user (get-in data [:objective :_id]))
-                                         identity)
-  [:#clj-draft-list html/any-node] (html/replace-vars translations))
-
-(html/defsnippet drafting-not-started-page
-  "templates/drafts/drafting-not-started.html" [:.clj-drafting-not-started] [{:keys [translations data] :as context}]
-  [:.clj-obj-end-date-value] (html/content (get-in data [:objective :end-date])) 
-  [:.clj-drafting-not-started html/any-node] (html/replace-vars translations))
-
 ;INVITATIONS
 (html/defsnippet invitation-create
   "templates/writers/invitation-form.html" [[:#clj-invitation]] [{:keys [translations data] :as context}]

@@ -357,50 +357,56 @@
           (= status ::http-api/not-found) {:status 404}
           :else {:status 502})))))
 
-(defn draft-detail [{{:keys [d-id id]} :route-params :as request}]
+(defn draft [{{:keys [d-id id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)
         draft-id (if (= d-id "latest")
                    d-id
                    (Integer/parseInt d-id))
-        {status :status draft :result} (http-api/get-draft objective-id draft-id)]
+        {objective-status :status objective :result} (http-api/get-objective objective-id)] 
+    (if (= objective-status ::http-api/success)
+      (let [{draft-status :status draft :result} (http-api/get-draft objective-id draft-id)] 
+        (cond
+          (= draft-status ::http-api/success)  
+          (let [draft-content (utils/hiccup->html (apply list (:content draft)))]
+            {:status 200
+             :body (views/draft "draft" request
+                                :objective objective
+                                :draft-content draft-content
+                                :draft draft)
+             :headers {"Content-Type" "text/html"}})
+
+          (or (= draft-status ::http-api/forbidden) (= draft-status ::http-api/not-found)) 
+          (if (= d-id "latest")
+            {:status 200
+             :body (views/draft "draft" request
+                                :objective (format-objective objective))
+             :headers {"Content-Type" "text/html"}}
+            (error-404-response request))
+
+          :else {:status 500}))
+      (error-404-response request))))
+
+(defn draft-list [{{:keys [id]} :route-params :as request}]
+  (let [objective-id (Integer/parseInt id)
+        {objective-status :status objective :result} (http-api/get-objective objective-id)
+        {drafts-status :status drafts :result} (http-api/get-all-drafts objective-id)]
     (cond
-      (= status ::http-api/success)
-      (let [draft-content (utils/hiccup->html (apply list (:content draft)))]
-        (views/draft-detail "draft-detail" request
-                            :objective-id objective-id
-                            :draft-content draft-content
-                            :draft draft))
+      (every? #(= ::http-api/success %) [drafts-status objective-status])
+      {:status 200
+       :body (views/draft-list "draft-list" request
+                               :objective (format-objective objective)
+                               :drafts drafts)
+       :headers {"Content-Type" "text/html"}} 
 
-      (= status ::http-api/forbidden)
-      (response/redirect (utils/local-path-for :fe/draft-list :id objective-id))
+      (= drafts-status ::http-api/forbidden)
+      {:status 200
+       :body (views/draft-list "draft-list" request
+                               :objective (format-objective objective))
+       :headers {"Content-Type" "text/html"}}
 
-      (= status ::http-api/not-found) (if (= d-id "latest")
-                                        (views/draft-detail "draft-detail" request
-                                                            :objective-id objective-id)
-                                        (error-404-response request))
+      (= objective-status ::http-api/not-found)
+      (error-404-response request)
       :else {:status 500})))
-
-  (defn draft-list [{{:keys [id]} :route-params :as request}]
-    (let [objective-id (Integer/parseInt id)
-          {objective-status :status objective :result} (http-api/get-objective objective-id)
-          {drafts-status :status drafts :result} (http-api/get-all-drafts objective-id)]
-      (cond
-        (every? #(= ::http-api/success %) [drafts-status objective-status])
-        {:status 200
-         :body (views/draft-list "draft-list" request
-                          :objective (format-objective objective)
-                          :drafts drafts)
-         :headers {"Content-Type" "text/html"}} 
-
-        (= drafts-status ::http-api/forbidden)
-        {:status 200
-         :body (views/draft-list "draft-list" request
-                          :objective (format-objective objective))
-         :headers {"Content-Type" "text/html"}}
-
-        (= objective-status ::http-api/not-found)
-        (error-404-response request)
-        :else {:status 500})))
 
 (defn- redirect-to-params-referer [request]
   (let [location (utils/safen-url (get-in request [:params :refer] "/"))]

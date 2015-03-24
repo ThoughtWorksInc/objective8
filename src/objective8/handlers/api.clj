@@ -299,7 +299,7 @@
     (if (= d-id "latest")
       (let [{status :status draft :result} (actions/retrieve-latest-draft objective-id)]
         (cond
-          (= status ::actions/success)
+          (and (= status ::actions/success) draft)
           (-> draft
               response/response
               (response/content-type "application/json"))

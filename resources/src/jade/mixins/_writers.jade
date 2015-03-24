@@ -29,8 +29,8 @@ mixin draftVersionNavigationWriter(name, href, photo)
       else
         img(src="#{photo}")
     .draft-version-writer-text
-      .draft-version-writer-author
+      .draft-version-writer-author.clj-draft-version-writer-author
         = name
       .draft-version-writer-descripton
-        p
+        p.clj-draft-version-time
           block

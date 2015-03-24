@@ -58,8 +58,6 @@
 (def candidate-list (view (render-page responses/candidate-list-page)))
 (def invitation-response (view (render-page responses/invitation-response-page)))
 (def add-draft (view (render-page responses/add-draft-page)))
-(def draft-detail (view (render-page responses/draft-detail-page)))
-(def drafting-not-started (view (render-page responses/drafting-not-started-page)))
 
 (def four-o-four (view (render-page responses/error-404-page)))
 
@@ -68,3 +66,4 @@
 (def question-page (view question/question-page))
 (def add-question-page (view add-question/add-question-page))
 (def draft-list (view draft/draft-list-page))
+(def draft (view draft/draft-page))

@@ -221,7 +221,7 @@
           (wait-for-title "Policy draft | Objective[8]")
           (screenshot "latest_draft_no_draft")
 
-          (wd/click ".clj-add-a-draft")
+          (wd/click ".func--add-a-draft")
           (wait-for-title "Add draft | Objective[8]")
           (screenshot "add_draft_empty")
 
@@ -269,7 +269,7 @@
           (wait-for-title "Drafts | Objective[8]")
           (screenshot "list_of_drafts")
 
-          (wd/click ".clj-add-a-draft")
+          (wd/click ".func--add-a-draft")
           (wait-for-title "Add draft | Objective[8]")
 
           (wd/input-text "#clj-add-draft-content" SECOND_DRAFT_MARKDOWN)
@@ -278,7 +278,7 @@
           (wait-for-title "Policy draft | Objective[8]")
           (screenshot "second_draft")
 
-          (wd/click ".clj-add-a-draft")
+          (wd/click ".func--add-a-draft")
           (wait-for-title "Add draft | Objective[8]")
           (wd/input-text "#clj-add-draft-content" THIRD_DRAFT_MARKDOWN)
 
@@ -289,11 +289,11 @@
           (wait-for-title "Policy draft | Objective[8]")
           (screenshot "latest_draft_with_previous_button")
 
-          (wd/click ".clj-previous-draft")
+          (wd/click ".func--draft-version-previous-link")
           (wait-for-title "Policy draft | Objective[8]")
           (screenshot "second_draft_with_next")
           
-          (wd/click ".clj-next-draft")
+          (wd/click ".func--draft-version-next-link")
           (wait-for-title "Policy draft | Objective[8]")
           (screenshot "third_draft")
 
