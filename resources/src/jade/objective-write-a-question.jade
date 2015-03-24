@@ -18,7 +18,7 @@ block content
 
     +guidanceText('!Tips for questions')
       //p Gather background information such as opinions and experiences by asking a question.
-      p !Your question should be focussed and specific, as the answers will influence the policy drafting process.
+      p.clj-guidance-text !Your question should be focussed and specific, as the answers will influence the policy drafting process.
 
     .objective-navigation
       .objective-navigation-list-wrapper
@@ -27,15 +27,15 @@ block content
             a.clj-objective-navigation-item-objective(href="/objective")
               i.fa.fa-angle-left
               = " "
-              | !Back to objective
+              span.l8n-back-to-objective !Back to objective
 
     .objective-outline#outline
       h1.objective-title.clj-objective-title !Build safer cycling networks in the streets of Madrid.
 
     .objective-write-a-question
-      h2 !Add a question to this objective
+      h2.clj-add-question-title !Add a question to this objective
       //- can this be moved inside the mixin? (comment-create / clj ...)
-      .comment-create.clj-comment-create
+      .question-create.clj-question-create
         +addQuestionForm(true)
 
 block footerScripts

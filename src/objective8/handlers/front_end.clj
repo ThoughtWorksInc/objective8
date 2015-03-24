@@ -146,7 +146,7 @@
         {questions-status :status questions :result} (http-api/retrieve-questions objective-id)]
     (cond
       (every? #(= ::http-api/success %) [objective-status questions-status])
-      #_{:status 200
+      {:status 200
        :body (views/add-question-page "question-list"
                request
                :objective (format-objective objective)
@@ -154,12 +154,6 @@
                :doc {:title (str (:title objective) " | Objective[8]")
                      :description (str (t' :question-list/questions-about) " " (:title objective))})
        :headers {"Content-Type" "text/html"}}
-      (views/question-list "question-list"
-                           request
-                           :objective (format-objective objective)
-                           :questions questions
-                           :doc {:title (str (:title objective) " | Objective[8]")
-                                 :description (str (t' :question-list/questions-about) " " (:title objective))})
 
       (= objective-status ::http-api/not-found) (error-404-response request)
       (= questions-status ::http-api/not-found) (error-404-response request)
@@ -171,9 +165,9 @@
     (let [{status :status stored-question :result} (http-api/create-question question)]
       (cond 
         (= status ::http-api/success)
-        (let [question-url (str utils/host-url "/objectives/" (:objective-id stored-question) "/questions/" (:_id stored-question))
+        (let [objective-url (str utils/host-url "/objectives/" (:objective-id stored-question) "#questions")
               message (t' :question-view/added-message)]
-          (assoc (response/redirect question-url) :flash message))
+          (assoc (response/redirect objective-url) :flash message))
 
         (= status ::http-api/invalid-input) {:status 400}
 

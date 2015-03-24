@@ -111,15 +111,15 @@
                     (screenshot "objective_page")
 
                     (wd/click ".func--add-question")
-                    (wait-for-element "textarea#question")
+                    (wait-for-element ".func--question-textarea")
                     (screenshot "questions_page")
 
-                    (-> "textarea#question"
+                    (-> ".func--question-textarea"
                         (wd/input-text "Functional test question") 
                         (wd/submit)) 
 
-                    (wait-for-element "textarea.func--add-answer")
-                    (screenshot "question_page")
+                    (wait-for-element ".func--add-question")
+                    (screenshot "objective_page_from_question_page")
 
                     (swap! journey-state assoc :question-url (wd/current-url))
 
@@ -129,11 +129,14 @@
 
          (fact "Can answer a question"
                (try (wd/to (:question-url @journey-state))
-                    (wait-for-element "textarea.func--add-answer")
+                    (wait-for-element ".func--answer-link")
 
-                    (-> "textarea.func--add-answer"
+                    (wd/click ".func--answer-link")
+                    (wait-for-element ".func--add-answer")
+
+                    (-> ".func--add-answer"
                         (wd/input-text "Functional test answer") 
-                        (wd/submit)) 
+                        (wd/submit))
 
                     (wait-for-element ".func--answer-text")
                     (wd/text ".func--answer-text")

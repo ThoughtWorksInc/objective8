@@ -43,7 +43,7 @@
                                                      :request-method :post
                                                      :params params))]
                  peridot-response => (helpers/flash-message-contains "Your question has been added!")
-                 peridot-response => (helpers/headers-location (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID)))))
+                 peridot-response => (helpers/headers-location (str "/objectives/" OBJECTIVE_ID "#questions")))))
 
        (fact "Any user can view a question against an objective"
              (against-background

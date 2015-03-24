@@ -37,7 +37,8 @@ mixin pleaseSignIn()
     =" "
     a.clj-sign-in-link(href='/sign-in') !sign in
     =" "
-    span.clj-after-link !to ...
+    span.clj-after-link
+      block
 
 mixin googleAnalytics(trackingID)
   script.clj-google-analytics.

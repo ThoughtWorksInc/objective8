@@ -80,6 +80,7 @@ objective-nav,details,Details
 objective-nav,objective,Objective
 objective-nav,writers,Writers
 objective-nav,comments,Comments
+objective-nav,back-to-objective,Back to objective
 sign-up,welcome,"Adding your email address will let us notify you when you receive responses to comments, objectives and votes."
 sign-up,not-unique,Username already exists
 sign-up,username-label,Username
@@ -201,9 +202,11 @@ base,header-logo-title,Go to home page
 base,header-logo-text,Objective[8]
 base,browsehappy!,"You are using an <strong>outdated</strong> browser. Please <a href=""http://browsehappy.com/"">upgrade your browser</a> to improve your experience."
 question-create,add-a-question,Add a question to this objective
+question-create,guidance-heading,Tips for questions
+question-create,guidance-text,"Your question should be focused and specific, as the answers will influence the policy drafting process."
 question-create,question-title,Questions are a maximum length of 500 characters
 question-create,question-label,Question
-question-create,post-button,Add
+question-create,post-button,Add question
 invitation-response,rsvp-text,"If you're interested, you can sign in and accept the invitation below."
 invitation-response,doc-title,Invitation to draft | Objective[8]
 invitation-response,decline,Decline

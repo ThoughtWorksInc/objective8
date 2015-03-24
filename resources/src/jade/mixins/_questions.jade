@@ -4,7 +4,7 @@ mixin questionItem(author, date)
       p.clj-question-text
         block
     .question-actions
-      a.question-reply.clj-answer-link(href="#") !Answer
+      a.question-reply.clj-answer-link.func--answer-link(href="#") !Answer
 
 mixin questionItemBlank()
   li.question-item.clj-empty-question-list-item
@@ -12,7 +12,7 @@ mixin questionItemBlank()
 
 mixin addQuestionForm(allowFocus)
   - focus = allowFocus ? true : false
-    form.clj-question-create(method="POST", action="")
+    form.clj-question-create-form(method="POST", action="")
       label.clj-label-add-question(for="new-question") !Add a question
-      textarea.clj-textarea-add-question#new-question(name="question", rows="5", cols="10", pattern=".{50,}", maxlength="500", title="${question-create/question-title}", required="required", autofocus=focus)
-      button.button.clj-button-add-question(type="submit") !Add question
+      textarea.clj-textarea-add-question.func--question-textarea#new-question(name="question", rows="5", cols="10", pattern=".{50,}", maxlength="500", title="!Textarea title", required="required", autofocus=focus)
+      button.button.clj-button-add-question.func--add-question(type="submit") !Add question
