@@ -36,14 +36,7 @@
     (up-down-votes/store-vote! vote-data)))
 
 (defn create-comment! [{:keys [comment-on-uri] :as comment-data}]
-  (if-let [{:keys [objective-id global-id] :as entity} (storage/pg-retrieve-entity-by-uri comment-on-uri)]
-    (if-let [stored-comment (-> comment-data
-                                (assoc :objective-id objective-id
-                                       :comment-on-id global-id)
-                                comments/store-comment!)]
-      {:status ::success
-       :result stored-comment}
-      {:status ::failure})
-    {:status ::entity-does-not-exist
-     :details (str "No entity exists for uri " comment-on-uri)}))
+  (if-let [stored-comment (comments/store-comment! comment-data)]
+    {:status ::success :result stored-comment}
+    {:status ::failure}))
 

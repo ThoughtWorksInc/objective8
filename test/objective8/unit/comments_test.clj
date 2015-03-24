@@ -15,7 +15,7 @@
       (comments/create-comment-on-objective! comment) => :stored-comment
       (provided
        (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started false}
-       (comments/store-comment! comment) => :stored-comment))
+       (storage/pg-store! anything) => :stored-comment))
 
 (fact "Attempting to create a comment against an objective that is in drafting returns nil"
       (comments/create-comment-on-objective! comment) => nil
@@ -31,7 +31,10 @@
                             {:limit 50}) => []))
 
 (fact "Postgresql exceptions are not caught"
-      (comments/store-comment! {:comment "something"}) => (throws org.postgresql.util.PSQLException)
+      (comments/store-comment! {:comment "something"
+                                :comment-on-uri "/some/uri"
+                                :created-by-id 1}) => (throws org.postgresql.util.PSQLException)
       (provided
-        (storage/pg-store! {:entity :comment :comment "something"}) =throws=> (org.postgresql.util.PSQLException.
-                                                                               (org.postgresql.util.ServerErrorMessage. "" 0))))
+        (storage/pg-store! anything) =throws=> (org.postgresql.util.PSQLException.
+                                                (org.postgresql.util.ServerErrorMessage. "" 0))
+        (storage/pg-retrieve-entity-by-uri "/some/uri") => {}))

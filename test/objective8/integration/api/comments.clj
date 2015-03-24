@@ -90,9 +90,7 @@
                     {response :response} (p/request app (str "/api/v1/objectives/" (:_id objective) "/comments"))]
                  (:body response) => (helpers/json-contains (map contains stored-comments))))))
 
-
 (facts "POST /api/v1/meta/comments"
-       ;; Posting to /api/v1/meta/comments takes a JSON body containing the uri of the entity the comment is being posted about
        (against-background
         (m/valid-credentials? anything anything anything) => true)
        (against-background
@@ -115,6 +113,7 @@
                                                             :comment-on-uri uri-for-draft
                                                             :comment "A comment"
                                                             :created-by-id user-id})
+                (:body response) =not=> (helpers/json-contains {:comment-on-id anything})
                 (:headers response) => (helpers/location-contains (str "/api/v1/meta/comments/"))))))
 
 (facts "GET /api/v1/meta/comments?=<uri-for-entity>")
