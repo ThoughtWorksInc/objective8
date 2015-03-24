@@ -1,6 +1,7 @@
 (ns objective8.storage.storage
   (:require [korma.core :as korma]
             [korma.db :as kdb]
+            [objective8.uri-helpers :as uri-helpers]
             [objective8.storage.mappings :as mappings]))
 
 (defn pg-create-global-identifier []
@@ -108,3 +109,7 @@
                                       WHERE answers.question_id = ?
                                       ORDER BY answers._created_at ASC
                                       LIMIT 50" [question-id]] :results))))
+
+(defn pg-retrieve-entity-by-uri [uri]
+  (when-let [query (uri-helpers/entity-query-for-uri uri)]
+    (first (:result (pg-retrieve query)))))

@@ -290,3 +290,21 @@
                (let [draft (sh/store-a-draft)
                      retrieved-draft (first (:result (storage/pg-retrieve {:entity :draft :_id (:_id draft)})))]
                  (:_created_at_sql_time retrieved-draft)) =not=> nil)))
+
+(facts "about retrieving entities by uri"
+       (against-background
+        [(before :contents (do (db-connection)
+                               (truncate-tables)))
+         (after :facts (truncate-tables))]
+        (fact "nonsense uris return nil"
+              (storage/pg-retrieve-entity-by-uri "/some/nonsense") => nil)
+
+        (fact "objectives can be retrieved by uri"
+              (let [{o-id :_id :as objective} (sh/store-an-objective)
+                    objective-uri (str "/objectives/" o-id)]
+                (storage/pg-retrieve-entity-by-uri objective-uri) => (contains (dissoc objective :username))))
+        
+        (fact "drafts can be retrieved by uri"
+              (let [{o-id :objective-id d-id :_id :as draft} (sh/store-a-draft)
+                    draft-uri (str "/objectives/" o-id "/drafts/" d-id)]
+                (storage/pg-retrieve-entity-by-uri draft-uri) => (contains (dissoc draft :username))))))
