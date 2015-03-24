@@ -398,6 +398,7 @@
           (if (= d-id "latest")
             {:status 200
              :body (views/draft "draft" request
+                                :candidates candidates
                                 :objective (format-objective objective))
              :headers {"Content-Type" "text/html"}}
             (error-404-response request))
@@ -408,12 +409,14 @@
 (defn draft-list [{{:keys [id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)
         {objective-status :status objective :result} (http-api/get-objective objective-id)
-        {drafts-status :status drafts :result} (http-api/get-all-drafts objective-id)]
+        {drafts-status :status drafts :result} (http-api/get-all-drafts objective-id)
+        {candidate-status :status candidates :result} (http-api/retrieve-candidates objective-id)]
     (cond
-      (every? #(= ::http-api/success %) [drafts-status objective-status])
+      (every? #(= ::http-api/success %) [drafts-status objective-status candidate-status])
       {:status 200
        :body (views/draft-list "draft-list" request
                                :objective (format-objective objective)
+                               :candidates candidates
                                :drafts drafts)
        :headers {"Content-Type" "text/html"}} 
 

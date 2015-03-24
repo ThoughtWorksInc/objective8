@@ -74,7 +74,10 @@
                       [:.clj-drafts-wrapper] (if (:drafting-started objective)
                                                (drafts-list context)
                                                (html/substitute (str (translations :draft-list/drafting-begins)
-                                                                     " " (:end-date objective)))))))))
+                                                                     " " (:end-date objective))))
+                      
+                      [:.clj-writers-section-title] (html/content (translations :draft-list/writers))
+                      [:.clj-writer-item-list] (html/content (f/writer-list context)))))))
 
 (defn previous-draft-navigation [{:keys [data translations] :as context}]
   (let [draft (:draft data)]

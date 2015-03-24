@@ -148,6 +148,7 @@
        (fact "viewing draft list when drafting hasn't started displays message"
              (against-background
                (http-api/get-all-drafts OBJECTIVE_ID) => {:status ::http-api/forbidden}
+               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success}
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result {:end-date (utils/string->date-time "2012-12-12")
                                                                   :drafting-started false}})
@@ -161,6 +162,7 @@
                                                          :result {:_id OBJECTIVE_ID
                                                                   :end-date (utils/string->date-time "2012-12-12")
                                                                   :drafting-started true}}
+               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success}
                (http-api/get-all-drafts OBJECTIVE_ID) => {:status ::http-api/success
                                                           :result [{:_id DRAFT_ID
                                                                     :content SOME_HICCUP
