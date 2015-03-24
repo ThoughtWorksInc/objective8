@@ -121,7 +121,15 @@
 (fact "retrieving comments for an objective hits the correct API endpoint"
       (http-api/retrieve-comments OBJECTIVE_ID) => :api-call-result
       (provided
-        (http-api/default-get-call (contains (str "/api/v1/objectives/" OBJECTIVE_ID "/comments"))) => :api-call-result))
+       (http-api/default-get-call (contains (str "/api/v1/objectives/" OBJECTIVE_ID "/comments"))) => :api-call-result))
+
+(def some-uri "/some/uri")
+(def comment-data {:comment-on-uri some-uri :created-by-id USER_ID :comment "A comment"})
+
+(fact "posting a comment on an entity hits the correct API endpoint"
+      (http-api/post-comment comment-data) => :api-call-result
+      (provided
+       (http-api/default-post-call (contains "/api/v1/meta/comments") comment-data) => :api-call-result))
 
 ;; QUESTIONS
 

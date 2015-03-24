@@ -61,11 +61,10 @@
           (response/content-type "application/json"))
       (response/not-found ""))))
 
-;; OBJECTIVE
-(defn post-objective [{:keys [params] :as request}]
+;; OBJECTIVES
+(defn post-objective [request]
   (try
-    (let [objective (-> params
-                        (select-keys [:title :goal-1 :goal-2 :goal-3 :description :end-date :created-by-id]))
+    (let [objective (ar/request->objective-data request)
           stored-objective (objectives/store-objective! objective)
           resource-location (str utils/host-url "/api/v1/objectives/" (:_id stored-objective))]
       (successful-post-response resource-location stored-objective))

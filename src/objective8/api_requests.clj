@@ -1,6 +1,9 @@
 (ns objective8.api-requests
   (:require [objective8.utils :as utils]))
 
+(defn request->objective-data [{params :params :as request}]
+  (select-keys params [:title :goal-1 :goal-2 :goal-3 :description :end-date :created-by-id]))
+
 (defn request->candidate-data [{params :params :as request}]
   params)
 
