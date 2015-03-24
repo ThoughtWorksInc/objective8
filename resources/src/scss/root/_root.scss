@@ -10,7 +10,7 @@
 }
 
 html {
-  font-size: $doc-font-size;
+  font-size: #{$doc-font-size + px};
 }
 
 body {
