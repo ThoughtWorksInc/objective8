@@ -88,6 +88,12 @@ will generate or update `/resources/translations/es.csv` and
 npm install
 ```
 
+######Designing in the browser
+This allows you to rapidly design.  You can create jade, modify the sass and js.  These will all be live reloaded.
+```
+grunt design
+```
+
 ######Running the app with a fake twitter (used for Sign-in) 
 ```
 lein repl
