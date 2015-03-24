@@ -33,11 +33,11 @@ mixin voteUpDownControls()
 
 mixin pleaseSignIn()
   p.clj-please-sign-in
-    span.clj-before-link !Please
+    span.clj-before-link.l8n-before-link !Please
     =" "
-    a.clj-sign-in-link(href='/sign-in') !sign in
+    a.clj-sign-in-link.l8n-sign-in-link(href='/sign-in') !sign in
     =" "
-    span.clj-after-link
+    span.clj-after-link.l8n-after-link
       block
 
 mixin googleAnalytics(trackingID)

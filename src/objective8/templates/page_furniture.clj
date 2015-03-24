@@ -107,17 +107,17 @@
 (html/defsnippet add-question-form
   library-html [:.clj-question-create-form] [{:keys [translations data]}]
   [:.clj-question-create-form] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:.clj-label-add-question] (html/content (translations :question-create/question-label))
-  [:.clj-textarea-add-question] (html/set-attr "title" (translations :question-create/question-title))
-  [:.clj-button-add-question] (html/content (translations :question-create/post-button)))
+  [:.l8n-label-add-question] (html/content (translations :question-create/question-label))
+  [:.l8n-textarea-add-question] (html/set-attr "title" (translations :question-create/question-title))
+  [:.l8n-button-add-question] (html/content (translations :question-create/post-button)))
 
 (html/defsnippet sign-in-to-add-question
   library-html [:.clj-please-sign-in] [{:keys [translations ring-request]}]
-  [:.clj-before-link] (html/content (translations :question-sign-in/please))
-  [:.clj-sign-in-link] (html/do->
+  [:.l8n-before-link] (html/content (translations :question-sign-in/please))
+  [:.l8n-sign-in-link] (html/do->
                          (html/set-attr "href" (str "/sign-in?refer=" (:uri ring-request)))
                          (html/content (translations :question-sign-in/sign-in)))
-  [:.clj-after-link] (html/content (translations :question-sign-in/to)))
+  [:.l8n-after-link] (html/content (translations :question-sign-in/to)))
 
 (defn add-question [{user :user :as context}]
   (if user
