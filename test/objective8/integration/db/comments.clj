@@ -10,7 +10,7 @@
                                (ih/truncate-tables)))
          (after :facts (ih/truncate-tables))]
 
-        (fact "comments are stored against a URI"
+        (fact "comments can be stored against a draft"
               (let [{user-id :_id :as user} (sh/store-a-user)
                     {o-id :objective-id d-id :_id global-id :global-id} (sh/store-a-draft)
                     uri-for-draft (str "/objectives/" o-id "/drafts/" d-id)
@@ -19,6 +19,19 @@
                                   :created-by-id user-id}]
                 (comments/store-comment! comment-data) => (contains {:_id integer?
                                                                      :comment-on-uri uri-for-draft
+                                                                     :comment "A comment"
+                                                                     :created-by-id user-id})
+                (comments/store-comment! comment-data) =not=> (contains {:comment-on-id anything})))
+
+        (fact "comments can be stored against an objective"
+              (let [{user-id :_id :as user} (sh/store-a-user)
+                    {o-id :_id global-id :global-id} (sh/store-an-objective)
+                    uri-for-objective (str "/objectives/" o-id)
+                    comment-data {:comment-on-uri uri-for-objective
+                                  :comment "A comment"
+                                  :created-by-id user-id}]
+                (comments/store-comment! comment-data) => (contains {:_id integer?
+                                                                     :comment-on-uri uri-for-objective
                                                                      :comment "A comment"
                                                                      :created-by-id user-id})
                 (comments/store-comment! comment-data) =not=> (contains {:comment-on-id anything})))))

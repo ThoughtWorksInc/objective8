@@ -13,7 +13,7 @@
 (def COMMENT_ID 123)
 (def OBJECTIVE_ID 234)
 (def GLOBAL_ID 223)
-
+(def OBJECTIVE_URI (str "/objectives/" OBJECTIVE_ID))
 
 (facts "comments"
        (binding [config/enable-csrf false]
@@ -21,27 +21,26 @@
               (against-background
                   (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success})
               (against-background
-                  (http-api/create-comment {:comment "The comment"
-                                            :objective-id OBJECTIVE_ID
-                                            :comment-on-id GLOBAL_ID
-                                            :created-by-id USER_ID}) => {:status ::http-api/success
-                                                                         :result  {:_id 12
-                                                                                   :objective-id OBJECTIVE_ID
-                                                                                   :created-by-id USER_ID
-                                                                                   :comment-on-id GLOBAL_ID
-                                                                                   :comment "The comment"}})
+               (http-api/post-comment {:comment "The comment"
+                                       :comment-on-uri OBJECTIVE_URI
+                                       :created-by-id USER_ID}) => {:status ::http-api/success
+                                                                    :result  {:_id 12
+                                                                              :created-by-id USER_ID
+                                                                              :comment-on-uri OBJECTIVE_URI
+                                                                              :comment "The comment"}})
                (against-background
                  (oauth/access-token anything anything anything) => {:user_id USER_ID}
                  (http-api/create-user anything) => {:status ::http-api/success
                                                      :result {:_id USER_ID}})
                (let [user-session (helpers/test-context)
                      params {:comment "The comment"
-                             :objective-id (str OBJECTIVE_ID)
-                             :comment-on-id (str GLOBAL_ID)}
-                     peridot-response (-> user-session
-                                          (helpers/with-sign-in (str "http://localhost:8080/objectives/" OBJECTIVE_ID))
-                                          (p/request "http://localhost:8080/comments"
-                                                     :request-method :post
-                                                     :params params))]
-                 peridot-response => (helpers/flash-message-contains "Your comment has been added!")
-                 peridot-response => (helpers/headers-location (str "/objectives/" OBJECTIVE_ID))))))
+                             :objective-id OBJECTIVE_ID
+                             :refer OBJECTIVE_URI}
+                     {response :response} (-> user-session
+                                              (helpers/with-sign-in (str "http://localhost:8080/objectives/" OBJECTIVE_ID))
+                                              (p/request "http://localhost:8080/comments"
+                                                         :request-method :post
+                                                         :params params))]
+                 (:flash response) => (contains "Your comment has been added!")
+                 (:headers response) => (helpers/location-contains (str "/objectives/" OBJECTIVE_ID))
+                 (:status response) => 302))))

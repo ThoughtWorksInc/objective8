@@ -21,6 +21,11 @@
     (when (every? present-keys required-keys)
       (select-keys m required-keys))))
 
+(defn ressoc [m old-key new-key]
+  (-> m
+      (dissoc old-key)
+      (assoc new-key (old-key m))))
+
 ;;Bidi currently doesn't currently work with java.lang.Integer
 (extend-protocol bidi/ParameterEncoding
   java.lang.Integer

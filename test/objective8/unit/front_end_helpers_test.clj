@@ -24,15 +24,13 @@
                                             USER_ID)]
           (:created-by-id objective) => 1))
 
-(fact "creates a comment from a request"
-      (let [comment (request->comment {:params {:comment "the comment"
-                                                :objective-id (str OBJECTIVE_ID)
-                                                :comment-on-id (str GLOBAL_ID)}}
-                                        USER_ID)]
-           comment => {:comment "the comment"
-                       :objective-id OBJECTIVE_ID
-                       :comment-on-id GLOBAL_ID
-                       :created-by-id USER_ID}))
+(fact "extracts comment data from a request"
+      (let [comment-data (request->comment-data {:params {:comment "the comment"
+                                                          :refer "/some/uri"}}
+                                                USER_ID)]
+        comment-data => {:comment "the comment"
+                         :comment-on-uri "/some/uri"
+                         :created-by-id USER_ID}))
 
 (fact "creates a question from a request"
       (let [question (request->question {:route-params {:id (str OBJECTIVE_ID)}

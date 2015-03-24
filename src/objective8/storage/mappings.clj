@@ -198,15 +198,10 @@
   (korma/prepare map->candidate)
   (korma/transform (unmap :candidate)))
 
-(defn ressoc [m old-key new-key]
-  (-> m
-      (dissoc old-key)
-      (assoc new-key (old-key m))))
-
 (defn unmap-up-down-vote [{vote :vote :as m}]
   (-> m
-      (ressoc :global_id :global-id)
-      (ressoc :created_by_id :created-by-id)
+      (utils/ressoc :global_id :global-id)
+      (utils/ressoc :created_by_id :created-by-id)
       (dissoc :vote)
       (assoc :vote-type ({1 :up -1 :down} vote))))
 

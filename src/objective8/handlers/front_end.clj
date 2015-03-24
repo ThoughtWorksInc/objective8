@@ -122,13 +122,13 @@
 
 ;; COMMENTS
 
-(defn create-comment-form-post [{{objective-id :objective-id} :params
+(defn create-comment-form-post [{{objective-id :objective-id :as params} :params
                                  :keys [t' locale] :as request}]
-  (if-let [comment (helpers/request->comment request (get (friend/current-authentication) :identity))]
-    (let [{status :status stored-comment :result} (http-api/create-comment comment)]
+  (if-let [comment-data (helpers/request->comment-data request (get (friend/current-authentication) :identity))]
+    (let [{status :status stored-comment :result} (http-api/post-comment comment-data)]
       (cond
         (= status ::http-api/success)
-        (let [objective-url (str utils/host-url "/objectives/" (:objective-id stored-comment) "#comments")
+        (let [objective-url (str utils/host-url "/objectives/" objective-id "#comments")
               message (t' :comment-view/created-message)]
           (assoc (response/redirect objective-url) :flash message))
 

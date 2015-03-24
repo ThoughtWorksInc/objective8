@@ -10,13 +10,12 @@
           :created-by-id user-id
           :objective-id (Integer/parseInt id)))
 
-(defn request->comment
+(defn request->comment-data
   "Returns a map of a comment if all the parts are in the request params."
   [{:keys [params]} user-id]
   (some-> params
-          (utils/select-all-or-nothing [:objective-id :comment-on-id :comment])
-          (update-in [:objective-id] #(Integer/parseInt %))
-          (update-in [:comment-on-id] #(Integer/parseInt %))
+          (utils/select-all-or-nothing [:refer :comment])
+          (utils/ressoc :refer :comment-on-uri)
           (assoc :created-by-id user-id)))
 
 (defn request->objective

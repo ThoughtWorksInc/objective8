@@ -3,7 +3,7 @@
             [ring.mock.request :as mock]
             [peridot.core :as p]
             [oauth.client :as oauth]
-            [objective8.front-end-helpers :refer [request->comment request->objective]]
+            [objective8.front-end-helpers :refer [request->objective]]
             [objective8.storage.storage :as storage]
             [objective8.handlers.front-end :as front-end]
             [objective8.http-api :as http-api]
@@ -53,20 +53,8 @@
                                        (helpers/with-sign-in "http://localhost:8080/objectives/create")
                                        (p/request "http://localhost:8080/objectives" :request-method :post))]
                                response => (check-status 302)
-                               response => (check-redirect-url (str "/objectives/" OBJECTIVE_ID))))
-                       ;TODO APi returns 302, and unauthorised returns 302, do we need these tests?
-                       (fact "can post a new comment to an objective"
-                             (against-background
-                               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success} 
-                               (request->comment anything anything) => :a-comment
-                               (http-api/create-comment :a-comment) => {:status ::http-api/success
-                                                                        :result {:_id "the-comment-id"}})
-                             (let [response
-                                   (-> (p/session default-app)
-                                       (helpers/with-sign-in (str utils/host-url "/objectives/" OBJECTIVE_ID))
-                                       (p/request "http://localhost:8080/comments" :request-method :post
-                                                  :params {:objective-id OBJECTIVE_ID}))]
-                               response => (check-status 302))))
+                               response => (check-redirect-url (str "/objectives/" OBJECTIVE_ID)))))
+
                 (facts "unauthorised users"
                        (fact "cannot reach the objective creation page"
                              (default-app objectives-create-request) => (contains {:status 302}))

@@ -9,13 +9,13 @@
       (dissoc :comment-on-id)))
 
 (defn store-comment! [{:keys [comment-on-uri] :as comment-data}]
-  (when-let [{:keys [objective-id global-id]} (storage/pg-retrieve-entity-by-uri comment-on-uri)]
+  (when-let [{:keys [objective-id _id global-id]} (storage/pg-retrieve-entity-by-uri comment-on-uri)]
     (some-> comment-data
             (utils/select-all-or-nothing [:comment
                                           :created-by-id])
             (assoc :entity :comment
                    :comment-on-id global-id
-                   :objective-id objective-id)
+                   :objective-id (or objective-id _id))
             (dissoc :comment-on-uri)
             storage/pg-store!
             (replace-global-id comment-on-uri))))

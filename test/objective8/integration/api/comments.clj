@@ -114,6 +114,7 @@
                                                             :comment "A comment"
                                                             :created-by-id user-id})
                 (:body response) =not=> (helpers/json-contains {:comment-on-id anything})
+;                (:body response) =not=> (helpers/json-contains {:objective-id anything})
                 (:headers response) => (helpers/location-contains (str "/api/v1/meta/comments/"))))))
 
 (facts "GET /api/v1/meta/comments?uri=<uri>"
