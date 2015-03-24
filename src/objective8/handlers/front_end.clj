@@ -399,8 +399,10 @@
          :headers {"Content-Type" "text/html"}} 
 
         (= drafts-status ::http-api/forbidden)
-        (views/drafting-not-started "drafting-not-started" request
-                                    :objective (format-objective objective))
+        {:status 200
+         :body (views/draft-list "draft-list" request
+                          :objective (format-objective objective))
+         :headers {"Content-Type" "text/html"}}
 
         (= objective-status ::http-api/not-found)
         (error-404-response request)

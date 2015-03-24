@@ -43,6 +43,7 @@ draft-list,latest-draft,Latest draft
 draft-list,previous-versions,Previous versions
 draft-list,no-previous-versions,There are no previous versions
 draft-list,add-a-draft,Add a draft
+draft-list,drafting-begins,Drafting begins on
 comment-create,comment-title,Comments are a maximum length of 500 characters
 comment-create,post-button,Add a comment
 comment-create,comment-label,Your comment
