@@ -83,6 +83,7 @@
 
 (defn safen-url [target]
   (or ((regex-checker #"/learn-more") target)
+      ((regex-checker #"/") target)
       ((regex-checker #"/objectives/\d+") target)
       ((regex-checker #"/objectives/\d+/questions") target)
       ((regex-checker #"/objectives/\d+/questions/\d+") target)

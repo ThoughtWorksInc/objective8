@@ -20,7 +20,9 @@
           (p/request signed-in-session
                      "http://localhost:8080/meta/up-vote"
                      :request-method :post
-                     :params {:global-id "1"}) => (contains {:response (contains {:status 200})})
+                     :params {:global-id "1" :refer "/objectives/1/questions/1"}) =>
+          (contains {:response (contains {:status 302
+                                          :headers (contains {"Location" "/objectives/1/questions/1"})})})
           (provided
             (http-api/create-up-down-vote {:global-id 1 :created-by-id 100 :vote-type "up"}) => :vote)))
 
@@ -32,12 +34,13 @@
           (http-api/get-question 1 1) => {:is :a-question})
 
         (let [signed-in-session (-> (helpers/test-context)
-                                    (helpers/with-sign-in "http://localhost:8080/objectives/1/questions/1")
-                                    )]
+                                    (helpers/with-sign-in "http://localhost:8080/objectives/1/questions/1"))]
           (:response signed-in-session) => (contains {:status 200})
           (p/request signed-in-session
                      "http://localhost:8080/meta/down-vote"
                      :request-method :post
-                     :params {:global-id "1"})) => (contains {:response (contains {:status 200})})
+                     :params {:global-id "1" :refer "/objectives/1/questions/1"})) =>
+        (contains {:response (contains {:status 302
+                                        :headers (contains {"Location" "/objectives/1/questions/1"})})})
         (provided
           (http-api/create-up-down-vote {:global-id 1 :created-by-id 100 :vote-type "down"}) => :vote))) 

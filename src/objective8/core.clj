@@ -51,8 +51,8 @@
                :fe/add-draft-post (m/wrap-authorise-writer front-end-handlers/add-draft-post)
                :fe/draft front-end-handlers/draft-detail
                :fe/draft-list front-end-handlers/draft-list
-               :fe/post-up-vote front-end-handlers/post-up-vote
-               :fe/post-down-vote front-end-handlers/post-down-vote
+               :fe/post-up-vote (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-up-vote) #{:signed-in}) 
+               :fe/post-down-vote (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-down-vote) #{:signed-in}) 
 
                
                ;; API Handlers

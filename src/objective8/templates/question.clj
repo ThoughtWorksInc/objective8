@@ -28,13 +28,12 @@
                       [[html/text-node (html/left :a.clj-objective-link)]] (constantly (str " > " (:question question)))
                       [:.clj-question] (html/content (:question question))
                       [:.clj-answer] (html/clone-for [answer answers]
+                                                     [:.clj-approval-form] (html/prepend (html/html-snippet (anti-forgery-field)))
                                                      [:.clj-answer-text] (html/content (:answer answer))
                                                      [:.clj-answer-id] (html/set-attr "value" (:global-id answer))
-                                                     [:.clj-up-score] (constantly (str (get-in answer [:votes :up])))
-                                                     [:.clj-down-score] (constantly (str (get-in answer [:votes :down]))))
-
-                      ;TODO - re-enable approval options once redirect is working
-                      [:.approval-options] (constantly nil)
+                                                     [:.clj-refer] (html/set-attr "value" (str "/objectives/" (:_id objective) "/questions/" (:_id question)))
+                                                     [:.clj-up-score] (html/content (str (get-in answer [:votes :up])))
+                                                     [:.clj-down-score] (html/content (str (get-in answer [:votes :down]))))
 
                       [:.clj-jump-to-answer] (if user identity nil)
 

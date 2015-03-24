@@ -402,13 +402,17 @@
         (error-404-response request)
         :else {:status 500})))
 
+(defn- redirect-to-params-referer [request]
+  (let [location (utils/safen-url (get-in request [:params :refer] "/"))]
+    (response/redirect location)))
+
 (defn post-up-vote [request]
   (-> (helpers/request->up-vote-info request (get (friend/current-authentication) :identity))
       http-api/create-up-down-vote)
-  {:status 200})
+  (redirect-to-params-referer request))
 
 (defn post-down-vote [request]
   (-> (helpers/request->down-vote-info request (get (friend/current-authentication) :identity))
       http-api/create-up-down-vote)
-  {:status 200})
+  (redirect-to-params-referer request))
 

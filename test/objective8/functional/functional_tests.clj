@@ -31,6 +31,13 @@
       (prn (str "Could not find element: " q))
       (throw e))))
 
+(defn wait-for [pred]
+  (try
+    (wd/wait-until pred 5000)
+    (catch Exception e
+      (prn (str "Waiting for predicate failed"))
+      (throw e))))
+
 (def screenshot-directory "test/objective8/functional/screenshots")
 (def screenshot-number (atom 0))
 (defn screenshot [filename]
@@ -145,12 +152,11 @@
                       (throw e)))
                => "Functional test answer")
 
-         (future-fact "Can vote on an answer" 
+         (fact "Can up vote an answer" 
                       (try (wd/to (:question-url @journey-state))
-                           (wait-for-element "textarea#answer")
-                           (wd/text ".vote-container#count") => "0"
-                           (wd/click ".vote-container#up-vote")
-                           (wd/text ".vote-container#count") => "1"
+                           (wait-for-element "textarea.func--add-answer")
+                           (wd/click "button.func--up-vote")
+                           (wait-for #(= (wd/text ".func--up-score") "1"))
                            (catch Exception e
                              (screenshot "Error-Can-vote-on-an-answer")
                              (throw e))))
