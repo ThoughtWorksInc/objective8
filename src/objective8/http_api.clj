@@ -109,9 +109,6 @@
 
 ;; COMMENTS
 
-(defn create-comment [comment]
-  (default-post-call (str utils/host-url "/api/v1/comments") comment))
-
 (defn retrieve-comments [objective-id]
   (default-get-call (str utils/host-url "/api/v1/objectives/" objective-id "/comments")))
 

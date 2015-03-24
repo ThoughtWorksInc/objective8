@@ -113,11 +113,6 @@
 
 ;; COMMENTS
 
-(fact "creating a comment hits the correct API endpoint"
-      (http-api/create-comment {:some :data}) => :api-call-result
-      (provided
-        (http-api/default-post-call (contains "/api/v1/comments") {:some :data}) => :api-call-result))
-
 (fact "retrieving comments for an objective hits the correct API endpoint"
       (http-api/retrieve-comments OBJECTIVE_ID) => :api-call-result
       (provided

@@ -31,50 +31,6 @@
    :comment-on-id comment-on-id
    :created-by-id created-by-id})
 
-(facts "POST /api/v1/comments"
-       (against-background
-        (m/valid-credentials? anything anything anything) => true)
-       (against-background
-        [(before :contents (do (helpers/db-connection)
-                               (helpers/truncate-tables)))
-         (after :facts (helpers/truncate-tables))]
-
-        (fact "the posted comment is stored"
-              (let [{obj-id :_id user-id :created-by-id comment-on-id :global-id} (sh/store-an-objective)
-                    comment-data (a-comment comment-on-id obj-id user-id)
-                    {response :response} (p/request app "/api/v1/comments"
-                                                    :request-method :post
-                                                    :content-type "application/json"
-                                                    :body (json/generate-string comment-data))]
-                (:body response) => (helpers/json-contains (assoc comment-data :_id integer?))
-                (:status response) => 201
-                (:headers response) => (helpers/location-contains (str "/api/v1/comments/"))))
-
-        (fact "a 400 status is returned if a PSQLException is raised"
-              (against-background
-               (comments/store-comment! anything) =throws=> (org.postgresql.util.PSQLException. 
-                                                             (org.postgresql.util.ServerErrorMessage. "" 0)))
-              (:response (p/request app "/api/v1/comments"
-                                    :request-method :post
-                                    :content-type "application/json"
-                                    :body the-comment-as-json)) => (contains {:status 400}))
-
-        (fact "a 400 status is returned if a map->comment exception is raised"
-              (:response (p/request app "/api/v1/comments"
-                                    :request-method :post
-                                    :content-type "application/json"
-                                    :body (json/generate-string the-invalid-comment))) => (contains {:status 400}))
-
-        (fact "a 423 (resource locked) status is returned when drafting has started on the objective"
-              (let [{obj-id :_id user-id :created-by-id comment-on-id :global-id} (sh/store-an-objective-in-draft)
-                    comment (a-comment comment-on-id obj-id user-id)
-                    {response :response} (p/request app (str "/api/v1/comments")
-                                                    :request-method :post
-                                                    :content-type "application/json"
-                                                    :body (json/generate-string comment))]
-                (:status response) => 423))))
-
-
 (facts "GET /api/v1/objectives/:id/comments"
        (against-background
         [(before :contents (do (helpers/db-connection)

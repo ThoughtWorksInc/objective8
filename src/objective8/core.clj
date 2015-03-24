@@ -84,7 +84,6 @@
                :dev/post-start-drafting (m/wrap-bearer-token api-handlers/post-start-drafting bt/token-provider)
 
                ;; Deprecated handlers - these will be removed as part of #19
-               :api/post-comment-DEPRECATED (m/wrap-bearer-token api-handlers/post-comment-DEPRECATED bt/token-provider)
                :api/get-comments-for-objective api-handlers/retrieve-comments-DEPRECATED
                })
 
