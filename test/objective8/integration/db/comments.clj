@@ -22,3 +22,19 @@
                                                                     :comment "A comment"
                                                                     :created-by-id user-id})
                (comments/store-comment! comment-data) =not=> (contains {:comment-on-id anything}))))
+
+(facts "about getting comments by uri"
+       (against-background
+        [(before :contents (do (ih/db-connection)
+                               (ih/truncate-tables)))
+         (after :facts (ih/truncate-tables))]
+        (fact "gets the comments"
+              (let [user (sh/store-a-user)
+                    {draft-id :_id objective-id :objective-id :as draft} (sh/store-a-draft)
+                    draft-uri (str "/objectives/" objective-id "/drafts/" draft-id)
+                    stored-comments (doall (->> (repeat {:entity draft :user user})
+                                                (take 5)
+                                                (map sh/store-a-comment)
+                                                (map #(dissoc % :username :comment-on-id))
+                                                (map #(assoc % :comment-on-uri draft-uri))))]
+                (comments/get-comments draft-uri) => (contains (map contains stored-comments))))))

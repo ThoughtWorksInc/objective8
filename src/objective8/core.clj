@@ -62,8 +62,8 @@
                :api/post-objective (m/wrap-bearer-token api-handlers/post-objective bt/token-provider)
                :api/get-objective api-handlers/get-objective
                :api/get-objectives api-handlers/get-objectives
-               :api/get-comments-for-objective api-handlers/retrieve-comments
                :api/post-comment (m/wrap-bearer-token api-handlers/post-comment bt/token-provider)
+               :api/get-comments api-handlers/get-comments
                :api/post-question (m/wrap-bearer-token api-handlers/post-question bt/token-provider)
                :api/get-question api-handlers/get-question
                :api/get-questions-for-objective api-handlers/retrieve-questions
@@ -82,8 +82,9 @@
                ;; DEV API Handlers
                :dev/post-start-drafting (m/wrap-bearer-token api-handlers/post-start-drafting bt/token-provider)
 
-               ;; Deprecated handlers - remove when no longer used
+               ;; Deprecated handlers - these will be removed as part of #19
                :api/post-comment-DEPRECATED (m/wrap-bearer-token api-handlers/post-comment-DEPRECATED bt/token-provider)
+               :api/get-comments-for-objective api-handlers/retrieve-comments-DEPRECATED
                })
 
 (defn app [app-config]

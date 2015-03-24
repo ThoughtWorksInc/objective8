@@ -57,7 +57,8 @@
                                                                   ["/" [#"\d+|latest" :d-id]] {:get :api/get-draft}}}}
 
                              "/comments"   {:post :api/post-comment-DEPRECATED}
-                             "/meta" {"/comments" {:post :api/post-comment}}
+                             "/meta" {"/comments" {:post :api/post-comment
+                                                   :get :api/get-comments}}
                              "/up-down-votes" {:post :api/post-up-down-vote}
                              "/invitations" {:get :api/get-invitation}}
 

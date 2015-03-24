@@ -83,7 +83,7 @@
 
         (fact "retrieves comments for an objective ID"
               (let [objective (sh/store-an-objective)
-                    stored-comments (doall (->> (repeat {:objective objective})
+                    stored-comments (doall (->> (repeat {:entity objective})
                                                 (take 5)
                                                 (map sh/store-a-comment)
                                                 (map #(dissoc % :username))))
@@ -116,4 +116,20 @@
                 (:body response) =not=> (helpers/json-contains {:comment-on-id anything})
                 (:headers response) => (helpers/location-contains (str "/api/v1/meta/comments/"))))))
 
-(facts "GET /api/v1/meta/comments?=<uri-for-entity>")
+(facts "GET /api/v1/meta/comments?uri=<uri>"
+       (against-background
+        [(before :contents (do (helpers/db-connection)
+                               (helpers/truncate-tables)))
+         (after :facts (helpers/truncate-tables))]
+        (fact "retrieves comments for the entity at <uri>"
+              (let [user (sh/store-a-user)
+                    {draft-id :_id objective-id :objective-id :as draft} (sh/store-a-draft)
+                    draft-uri (str "/objectives/" objective-id "/drafts/" draft-id)
+                    stored-comments (doall (->> (repeat {:entity draft :user user})
+                                                (take 5)
+                                                (map sh/store-a-comment)
+                                                (map #(dissoc % :username :comment-on-id))
+                                                (map #(assoc % :comment-on-uri draft-uri))))
+                    escaped-draft-uri (str "%2fobjectives%2f" objective-id "%2fdrafts%2f" draft-id)
+                    {response :response} (p/request app (str "/api/v1/meta/comments?uri=" escaped-draft-uri))]
+                (:body response) => (helpers/json-contains (map contains stored-comments))))))

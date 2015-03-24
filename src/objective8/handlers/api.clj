@@ -99,6 +99,16 @@
       (log/info "Error when posting comment: " e)
       (invalid-response "Invalid comment post request"))))
 
+(defn retrieve-comments-DEPRECATED [{:keys [route-params] :as request}]
+  (let [id (-> (:id route-params)
+               Integer/parseInt)]
+    (if-let [objective (objectives/retrieve-objective id)]
+      (let [comments (comments/retrieve-comments (:global-id objective))]
+        (-> comments
+            response/response
+            (response/content-type "application/json")))
+      (response/not-found ""))))
+
 (defn post-comment [{:keys [params] :as request}]
   (try
     (let [comment-data (ar/request->comment-data request)
@@ -108,17 +118,20 @@
         (successful-post-response (str utils/host-url "/api/v1/meta/comments/" (:_id comment))
                                   comment)
 
-        :else {:status 400}))))
+        :else {:status 400}))
+    (catch Exception e
+      (log/info "Error when posting comment: " e)
+      (invalid-response "Invalid comment post request"))))
 
-(defn retrieve-comments [{:keys [route-params] :as request}]
-  (let [id (-> (:id route-params)
-               Integer/parseInt)]
-    (if-let [objective (objectives/retrieve-objective id)]
-      (let [comments (comments/retrieve-comments (:global-id objective))]
-        (-> comments
-            response/response
-            (response/content-type "application/json")))
-      (response/not-found ""))))
+(defn get-comments [{:keys [params] :as request}]
+  (let [{status :status comments :result} (actions/get-comments (:uri params))]
+    (cond
+      (= status ::actions/success)
+      (-> comments
+          response/response
+          (response/content-type "application/json"))
+
+      :else (response/not-found ""))))
 
 ;;QUESTIONS
 (defn post-question [{:keys [route-params params] :as request}]

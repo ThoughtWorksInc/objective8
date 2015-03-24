@@ -40,3 +40,5 @@
     {:status ::success :result stored-comment}
     {:status ::failure}))
 
+(defn get-comments [entity-uri]
+  {:status ::success :result (comments/get-comments entity-uri)})
