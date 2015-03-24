@@ -159,146 +159,150 @@
                            (wd/click "button.func--up-vote")
                            (wd/to (:question-url @journey-state)) ;TODO - how to handle redirects
                            (wd/text ".func--up-score") => "1"
-                           
+
                            (catch Exception e
                              (screenshot "Error-Can-vote-on-an-answer")
                              (throw e))))
 
-         (fact "Can invite a writer"
-               (try (wd/to (:objective-url @journey-state))
-                    (wait-for-title "Functional test headline | Objective[8]")
-                    (screenshot "objective_page")
+          (fact "Can invite a writer"
+                (try (wd/to (:objective-url @journey-state))
+                     (wait-for-title "Functional test headline | Objective[8]")
+                     (screenshot "objective_page")
 
-                    (wd/click ".func--invite-writer")
-                    (wait-for-title "Candidate policy writers | Objective[8]")
-                    (screenshot "candidate_writers_page")
+                     (wd/click ".func--invite-writer")
+                     (wait-for-title "Candidate policy writers | Objective[8]")
+                     (screenshot "candidate_writers_page")
 
-                    (wd/input-text "#writer-name" "Functional test writer name")
-                    (-> "#reason"
-                        (wd/input-text "Functional test invitation reason")
-                        wd/submit)
-                    (wait-for-title "Functional test headline | Objective[8]")
-                    (screenshot "objective_with_invitation_flash")
+                     (wd/input-text "#writer-name" "Functional test writer name")
+                     (-> "#reason"
+                         (wd/input-text "Functional test invitation reason")
+                         wd/submit)
+                     (wait-for-title "Functional test headline | Objective[8]")
+                     (screenshot "objective_with_invitation_flash")
 
-                    (->> (wd/text ".func--flash-bar")
-                         (re-find #"http://.*$")
-                         (swap! journey-state assoc :invitation-url))
+                     (->> (wd/text ".func--flash-bar")
+                          (re-find #"http://.*$")
+                          (swap! journey-state assoc :invitation-url))
+                     {:page-title (wd/title)
+                      :flash-message (wd/text ".func--flash-bar")}
+
+                     (catch Exception e
+                       (screenshot "ERROR-Can-invite-a-writer")
+                       (throw e)))
+                => (contains {:page-title "Functional test headline | Objective[8]"
+                              :flash-message (contains "Your invited writer can accept their invitation")}))
+
+          (fact "Can accept a writer invitation"
+                (try
+                  (wd/to (:invitation-url @journey-state))
+                  (wait-for-title "Invitation to draft | Objective[8]")
+                  (screenshot "invitation_url")
+
+                  (wd/submit "#clj-invitation-response-accept")
+                  (wait-for-title "Candidate policy writers | Objective[8]")
+                  (screenshot "candidate_writers_as_recently_added_writer")
+
+                  (wd/text "span.candidate-name")
+
+                  (catch Exception e
+                    (screenshot "ERROR-Can-accept-a-writer-invitation")
+                    (throw e)))
+                => "Functional Test Writer Name")
+
+          (against-background 
+            [(before :contents (-> (:objective-url @journey-state)
+                                   (string/split #"/")
+                                   last
+                                   Integer/parseInt
+                                   actions/start-drafting!))]
+            (fact "Can submit a draft"
+                  (try
+                    (wd/to (str (:objective-url @journey-state) "/drafts/latest"))
+                    (wait-for-title "Policy draft | Objective[8]")
+                    (screenshot "latest_draft_no_draft")
+
+                    (wd/click ".func--add-a-draft")
+                    (wait-for-title "Add draft | Objective[8]")
+                    (screenshot "add_draft_empty")
+
+                    (wd/input-text "#clj-add-draft-content" FIRST_DRAFT_MARKDOWN)
+                    (wd/click "button[value='preview']")
+                    (wait-for-title "Add draft | Objective[8]")
+                    (screenshot "preview_draft")
+
+                    (wd/click "button[value='submit']")
+
+                    (wait-for-title "Policy draft | Objective[8]")
+                    (screenshot "submitted_draft")
+
                     {:page-title (wd/title)
-                     :flash-message (wd/text ".func--flash-bar")}
+                     :page-source (wd/page-source)}
 
                     (catch Exception e
-                      (screenshot "ERROR-Can-invite-a-writer")
+                      (screenshot "ERROR-Can-submit-a-draft")
                       (throw e)))
-               => (contains {:page-title "Functional test headline | Objective[8]"
-                             :flash-message (contains "Your invited writer can accept their invitation")}))
+                  => (contains {:page-title "Policy draft | Objective[8]"
+                                :page-source (contains FIRST_DRAFT_HTML)})) 
 
-(fact "Can accept a writer invitation"
-      (try
-        (wd/to (:invitation-url @journey-state))
-        (wait-for-title "Invitation to draft | Objective[8]")
-        (screenshot "invitation_url")
+            (fact "Can view latest draft"
+                  (try
+                    (wd/to (:objective-url @journey-state))
+                    (wait-for-title "Functional test headline | Objective[8]")
+                    (screenshot "drafting_started_objective")
 
-        (wd/submit "#clj-invitation-response-accept")
-        (wait-for-title "Candidate policy writers | Objective[8]")
-        (screenshot "candidate_writers_as_recently_added_writer")
+                    (wd/click ".func--drafting-message-link")
+                    (wait-for-title "Drafts | Objective[8]")
+                    (screenshot "drafts_list_with_one_draft")
 
-        (wd/text "span.candidate-name")
+                    (wd/click ".func--latest-draft-link")
+                    (wait-for-title "Policy draft | Objective[8]")
+                    (screenshot "latest_draft")
 
-        (catch Exception e
-          (screenshot "ERROR-Can-accept-a-writer-invitation")
-          (throw e)))
-      => "Functional Test Writer Name")
+                    {:page-title (wd/title)
+                     :page-source (wd/page-source)}
 
-(against-background 
-  [(before :contents (-> (:objective-url @journey-state)
-                         (string/split #"/")
-                         last
-                         Integer/parseInt
-                         actions/start-drafting!))]
-  (fact "Can submit a draft"
-        (try
-          (wd/to (str (:objective-url @journey-state) "/drafts/latest"))
-          (wait-for-title "Policy draft | Objective[8]")
-          (screenshot "latest_draft_no_draft")
+                    (catch Exception e
+                      (screenshot "ERROR-Can-view-latest-draft")
+                      (throw e)))
+                  => (contains {:page-title "Policy draft | Objective[8]"
+                                :page-source (contains FIRST_DRAFT_HTML)}))
 
-          (wd/click ".func--add-a-draft")
-          (wait-for-title "Add draft | Objective[8]")
-          (screenshot "add_draft_empty")
+            (fact "Can navigate between drafts"
+                  (try
+                    (wd/to (str (:objective-url @journey-state) "/drafts"))
+                    (wait-for-title "Drafts | Objective[8]")
+                    (screenshot "list_of_drafts")
 
-          (wd/input-text "#clj-add-draft-content" FIRST_DRAFT_MARKDOWN)
-          (wd/click "button[value='preview']")
-          (wait-for-title "Add draft | Objective[8]")
-          (screenshot "preview_draft")
+                    (wd/click ".func--add-a-draft")
+                    (wait-for-title "Add draft | Objective[8]")
 
-          (wd/click "button[value='submit']")
+                    (wd/input-text "#clj-add-draft-content" SECOND_DRAFT_MARKDOWN)
 
-          (wait-for-title "Policy draft | Objective[8]")
-          (screenshot "submitted_draft")
+                    (wd/click "button[value='submit']")
+                    (wait-for-title "Policy draft | Objective[8]")
+                    (screenshot "second_draft")
 
-          {:page-title (wd/title)
-           :page-source (wd/page-source)}
+                    (wd/click ".func--add-a-draft")
+                    (wait-for-title "Add draft | Objective[8]")
+                    (wd/input-text "#clj-add-draft-content" THIRD_DRAFT_MARKDOWN)
 
-          (catch Exception e
-            (screenshot "ERROR-Can-submit-a-draft")
-            (throw e)))
-        => (contains {:page-title "Policy draft | Objective[8]"
-                      :page-source (contains FIRST_DRAFT_HTML)})) 
+                    (wd/click "button[value='submit']")
+                    (wait-for-title "Policy draft | Objective[8]")
 
-  (fact "Can view latest draft"
-        (try
-          (wd/to (:objective-url @journey-state))
-          (wait-for-title "Functional test headline | Objective[8]")
-          (screenshot "drafting_started_objective")
+                    (wd/to (str (:objective-url @journey-state) "/drafts/latest"))
+                    (wait-for-title "Policy draft | Objective[8]")
+                    (screenshot "latest_draft_with_previous_button")
 
-          (wd/click ".func--drafting-message-link")
-          (wait-for-title "Policy draft | Objective[8]")
-          (screenshot "latest_draft")
+                    (wd/click ".func--draft-version-previous-link")
+                    (wait-for-title "Policy draft | Objective[8]")
+                    (screenshot "second_draft_with_next")
 
-          {:page-title (wd/title)
-           :page-source (wd/page-source)}
+                    (wd/click ".func--draft-version-next-link")
+                    (wait-for-title "Policy draft | Objective[8]")
+                    (screenshot "third_draft")
 
-          (catch Exception e
-            (screenshot "ERROR-Can-view-latest-draft")
-            (throw e)))
-        => (contains {:page-title "Policy draft | Objective[8]"
-                      :page-source (contains FIRST_DRAFT_HTML)}))
-
-  (fact "Can navigate between drafts"
-        (try
-          (wd/to (str (:objective-url @journey-state) "/drafts"))
-          (wait-for-title "Drafts | Objective[8]")
-          (screenshot "list_of_drafts")
-
-          (wd/click ".func--add-a-draft")
-          (wait-for-title "Add draft | Objective[8]")
-
-          (wd/input-text "#clj-add-draft-content" SECOND_DRAFT_MARKDOWN)
-
-          (wd/click "button[value='submit']")
-          (wait-for-title "Policy draft | Objective[8]")
-          (screenshot "second_draft")
-
-          (wd/click ".func--add-a-draft")
-          (wait-for-title "Add draft | Objective[8]")
-          (wd/input-text "#clj-add-draft-content" THIRD_DRAFT_MARKDOWN)
-
-          (wd/click "button[value='submit']")
-          (wait-for-title "Policy draft | Objective[8]")
-
-          (wd/to (str (:objective-url @journey-state) "/drafts/latest"))
-          (wait-for-title "Policy draft | Objective[8]")
-          (screenshot "latest_draft_with_previous_button")
-
-          (wd/click ".func--draft-version-previous-link")
-          (wait-for-title "Policy draft | Objective[8]")
-          (screenshot "second_draft_with_next")
-          
-          (wd/click ".func--draft-version-next-link")
-          (wait-for-title "Policy draft | Objective[8]")
-          (screenshot "third_draft")
-
-          (wd/page-source)
-          (catch Exception e
-            (screenshot "ERROR-Can-navigate-between-drafts")
-            (throw e)))
-        => (contains THIRD_DRAFT_HTML))))) 
+                    (wd/page-source)
+                    (catch Exception e
+                      (screenshot "ERROR-Can-navigate-between-drafts")
+                      (throw e)))
+                  => (contains THIRD_DRAFT_HTML))))) 

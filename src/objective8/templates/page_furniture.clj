@@ -61,7 +61,7 @@
   [:.clj-drafting-message-title] (html/content (translations :notifications/drafting-message-title))
   [:.clj-drafting-message-body] (html/content (translations :notifications/drafting-message-body))
   [:.clj-drafting-message-link] (html/do->
-                                  (html/set-attr "href" (str "/objectives/" (:_id objective) "/drafts/latest"))
+                                  (html/set-attr "href" (str "/objectives/" (:_id objective) "/drafts"))
                                   (html/content (translations :notifications/drafting-message-link))))
 
 ;; WRITER LIST
