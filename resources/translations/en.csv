@@ -190,15 +190,27 @@ answer-view,answer-title,Answers
 comment-view,no-comments,There are no comments yet.
 comment-view,created-message,Your comment has been added!
 comment-view,comment-title,Comments
+invite-writer,doc-title,"Invite a writer -"
+invite-writer,doc-description,Invite a writer to draft policy
+invite-writer,section-title,Invite a policy writer
+invite-writer,do-you-know-a-writer,Do you know someone with the enthusiasm and expertise to help draft this policy?
+invite-writer,sign-in,sign in
+invite-writer,sign-in-please,Please
+invite-writer,sign-in-to,to invite a policy writer.
+invite-writer,writer-name-label,Writer name
+invite-writer,writer-reason-label,"They should help draft this policy, because:"
+invite-writer,writer-name-attr-title,Writer names are a maximum length of 50 characters
+invite-writer,writer-reason-attr-title,Reasons are a maximum length of 1000 characters
+invite-writer,invite-button,Create an invite
 invitation,writer-name-title,Writer names are a maximum length of 50 characters
 invitation,reason-title,Reasons are a maximum length of 1000 characters
 invitation,reason-label,"They should help draft this policy, because: "
-invitation,doc-title,Candidate policy writers | Objective[8]
+invitation,doc-title,Candidate policy writers
+invitation,doc-description,Candidate policy writers...
 invitation,submit,Create an invite
 invitation,page-intro,Do you know someone with the enthusiasm and expertise to help draft this policy?
 invitation,page-title,Invite a policy writer
-invitation,doc-description,Candidate policy writers...
-invitation,writer-name-label,Writer name: 
+invitation,writer-name-label,Writer name:
 answer-sign-in,sign-in,sign in
 answer-sign-in,please,Please
 answer-sign-in,to,to answer this question.

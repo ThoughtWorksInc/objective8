@@ -29,26 +29,16 @@ block content
             a.clj-objective-navigation-item-objective(href="/objective")
               i.fa.fa-angle-left
               = " "
-              | !Back to objective
+              span.l8n-back-to-objective !Back to objective
 
     .objective-outline#outline
       h1.objective-title.clj-objective-title !Build safer cycling networks in the streets of Madrid.
 
     .objective-writers#writers
-      h2.clj-invite-writer-section-title !Invite a policy writer
-      p Do you know someone with the enthusiasm and expertise to help draft this policy?
+      h2.clj-invite-writer-section-title.l8n-invite-writer-section-title !Invite a policy writer
+      p.l8n-do-you-know-a-writer !Do you know someone with the enthusiasm and expertise to help draft this policy?
 
-      .invitation-posts#clj-invitation
-        form(method="POST", action="/")
-          label.clj-label-writer-name(for="writer-name")
-            | !Writer name
-          input.clj-input-writer-name(id="writer-name", name="writer-name", type="text", pattern=".{3,}", title="${invitation/writer-name-title}", maxlength="50", required="required")
-
-          label.clj-label-writer-reason(for="reason")
-            | !They should help draft this policy, because:
-          textarea.clj-input-writer-reason(id="reason", name="reason", rows="3", cols="10", maxlength="1000", title="Reasons are a maximum length of 1000 characters", required="required")
-
-          button.button.clj-button-invite-writer(type="submit") !Create an invite
+      +inviteWriterForm()
 
 
 block footerScripts

@@ -228,7 +228,24 @@
         :else {:status 502}))
     {:status 400}))
 
-;; WRITERS 
+;; WRITERS
+
+(defn invite-writer [{{id :id} :route-params
+                      :keys [uri t' locale] :as request}]
+  (let [objective-id (Integer/parseInt id)
+        {objective-status :status objective :result} (http-api/get-objective objective-id)]
+    (cond
+      (every? #(= ::http-api/success %) [objective-status])
+
+      {:status 200
+       :body (views/invite-writer-page "invite-writer" request
+               :objective (format-objective objective)
+               :doc {:title (str (t' :invite-writer/doc-description) " " (:title objective) " | Objective[8]")
+                     :description (str (t' :invite-writer/doc-description) " " (:title objective))})
+       :headers {"Content-Type" "text/html"}}
+
+      (= objective-status ::http-api/not-found) (error-404-response request)
+      :else {:status 500})))
 
 (defn candidate-list [{{id :id} :route-params
                        :keys [uri t' locale] :as request}]
@@ -317,7 +334,7 @@
           {status :status} (http-api/post-candidate-writer candidate-writer)]
       (cond
         (= status ::http-api/success)
-        (-> (str utils/host-url "/objectives/" (:objective-id invitation-credentials) "/candidate-writers")
+        (-> (str utils/host-url "/objectives/" (:objective-id invitation-credentials) "#writers")
             response/redirect
             (assoc :session session)
             remove-invitation-credentials

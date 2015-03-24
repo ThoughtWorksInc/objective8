@@ -305,4 +305,4 @@
                     (catch Exception e
                       (screenshot "ERROR-Can-navigate-between-drafts")
                       (throw e)))
-                  => (contains THIRD_DRAFT_HTML))))) 
+                  => (contains THIRD_DRAFT_HTML)))))

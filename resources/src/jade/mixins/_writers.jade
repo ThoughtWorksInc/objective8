@@ -1,3 +1,11 @@
+mixin inviteWriterForm()
+  form.invitation-posts.clj-invite-a-writer-form(method="POST", action="/")
+    label.clj-label-writer-name.l8n-label-writer-name.func--writer-name(for="writer-name") !Writer name
+    input.clj-input-writer-name.l8n-input-writer-name(id="writer-name", name="writer-name", type="text", pattern=".{3,}", title="${invitation/writer-name-title}", maxlength="50", required="required")
+    label.clj-label-writer-reason.l8n-label-writer-reason(for="reason") !They should help draft this policy, because:
+    textarea.clj-input-writer-reason.l8n-input-writer-reason.func--writer-reason(id="reason", name="reason", rows="3", cols="10", maxlength="1000", title="Reasons are a maximum length of 1000 characters", required="required")
+    button.button.clj-button-invite-writer.l8n-button-invite-writer.func--invite-writer(type="submit") !Create an invite
+
 mixin writerItem(name, href, photo)
   - href = href || ''
   //- photo = photo || 'http://placekitten.com/g/120/120'
@@ -11,7 +19,7 @@ mixin writerItem(name, href, photo)
         else
           img(src="#{photo}")
       .writer-item-text
-        .writer-item-author.clj-writer-name
+        .writer-item-author.clj-writer-name.func--writer-name
           = name
         .writer-item-descripton
           p.clj-writer-description

@@ -160,7 +160,7 @@
                                             (p/request accept-invitation-url 
                                                        :request-method :post)
                                             p/follow-redirect)]
-                 (:uri request)) => (contains (str "/objectives/" OBJECTIVE_ID "/candidate-writers"))
+                 (:uri request)) => (contains (str "/objectives/" OBJECTIVE_ID))
                  (provided
                   (http-api/post-candidate-writer {:invitee-id USER_ID
                                                    :invitation-uuid UUID

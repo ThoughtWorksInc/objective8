@@ -43,6 +43,7 @@
                :fe/add-a-question (utils/anti-forgery-hook front-end-handlers/add-a-question)
                :fe/add-answer-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-answer-form-post) #{:signed-in})
                :fe/candidate-list (utils/anti-forgery-hook front-end-handlers/candidate-list)
+               :fe/invite-writer (utils/anti-forgery-hook front-end-handlers/invite-writer)
                :fe/invitation-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/invitation-form-post) #{:signed-in})
                :fe/writer-invitation front-end-handlers/writer-invitation
                :fe/accept-or-decline-invitation (utils/anti-forgery-hook front-end-handlers/accept-or-decline-invitation)

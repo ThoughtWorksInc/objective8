@@ -33,7 +33,7 @@
                       [:.clj-writer-item-list] (html/content (f/writer-list context)) 
                       [:.clj-invite-writer-link] (html/do-> 
                                                    (html/set-attr "href" (str "/objectives/" (:_id objective) 
-                                                                              "/candidate-writers"))
+                                                                              "/invite-writer"))
                                                    (html/content (translations :objective-view/invite-a-writer)))
                       [:.clj-questions-section-title] (html/content (translations :objective-view/questions-title))
                       [:.clj-question-list] (html/content (f/question-list context)) 

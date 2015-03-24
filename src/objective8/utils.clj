@@ -97,6 +97,7 @@
       ((regex-checker #"/objectives/\d+/drafts/\d+") target)
       ((regex-checker #"/objectives/\d+/drafts/latest") target)
       ((regex-checker #"/objectives/\d+/drafts/add-draft") target)
+      ((regex-checker #"/objectives/\d+/invite-writer") target)
       ((regex-checker #"/objectives/\d+/writers") target)
       ((regex-checker #"/objectives/\d+/writers/invitation") target)
       ((regex-checker #"/objectives/\d+/candidate-writers") target)
