@@ -104,6 +104,7 @@
                                                                  :_id OBJECTIVE_ID}}
               (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
                                                              :result {:_id DRAFT_ID
+                                                                      :_created_at "2015-03-24T17:06:37.714Z"
                                                                       :content SOME_HICCUP
                                                                       :objective-id OBJECTIVE_ID
                                                                       :submitter-id USER_ID
@@ -124,6 +125,7 @@
                                                                  :_id OBJECTIVE_ID}}
               (http-api/get-draft OBJECTIVE_ID "latest") => {:status ::http-api/success
                                                               :result {:_id DRAFT_ID
+                                                                       :_created_at "2015-03-24T17:06:37.714Z"
                                                                        :content SOME_HICCUP
                                                                        :objective-id OBJECTIVE_ID
                                                                        :submitter-id USER_ID}})
@@ -183,6 +185,7 @@
                                                                   :drafting-started true}}
                (http-api/get-draft OBJECTIVE_ID "latest") => {:status ::http-api/success
                                                               :result {:_id DRAFT_ID
+                                                                       :_created_at "2015-03-24T17:06:37.714Z"
                                                                        :content SOME_HICCUP
                                                                        :objective-id OBJECTIVE_ID
                                                                        :submitter-id USER_ID}}) 

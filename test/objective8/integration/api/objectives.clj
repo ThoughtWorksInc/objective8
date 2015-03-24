@@ -62,8 +62,7 @@
                (fact "can retrieve an objective using its id"
                      (let [{user-id :_id username :username} (sh/store-a-user) 
                            stored-objective (objectives/store-objective! (assoc the-objective :created-by-id user-id))
-                           objective-url (str "/api/v1/objectives/" (:_id stored-objective))
-                           _ (prn (assoc stored-objective :username username))]
+                           objective-url (str "/api/v1/objectives/" (:_id stored-objective))]
                        (get-in (p/request app objective-url)
                                [:response :body]) => (helpers/json-contains (assoc stored-objective :username username))))
 

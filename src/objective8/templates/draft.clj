@@ -96,7 +96,7 @@
   (let [draft (:draft data)]
     (html/transformation
       [:.clj-draft-version-writer-author] (html/content (:username draft))
-      [:.clj-draft-version-time] (html/content (:_created_at draft))
+      [:.clj-draft-version-time] (html/content (utils/iso-time-string->pretty-time (:_created_at draft)))
       [:.clj-draft-version-navigation-previous] (when (:previous-draft-id draft)
                                                   (previous-draft-navigation context))
       [:.clj-draft-version-navigation-next] (when (:next-draft-id draft)
