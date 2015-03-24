@@ -164,52 +164,53 @@
                              (screenshot "Error-Can-vote-on-an-answer")
                              (throw e))))
 
-          (fact "Can invite a writer"
-                (try (wd/to (:objective-url @journey-state))
-                     (wait-for-title "Functional test headline | Objective[8]")
-                     (screenshot "objective_page")
+         (fact "Can invite a writer"
+           (try (wd/to (:objective-url @journey-state))
+                (wait-for-title "Functional test headline | Objective[8]")
+                (screenshot "objective_page")
 
-                     (wd/click ".func--invite-writer")
-                     (wait-for-title "Candidate policy writers | Objective[8]")
-                     (screenshot "candidate_writers_page")
+                (wd/click ".func--invite-writer")
+                (wait-for-element ".func--invite-writer")
+                (screenshot "invite_writer_page")
 
-                     (wd/input-text "#writer-name" "Functional test writer name")
-                     (-> "#reason"
-                         (wd/input-text "Functional test invitation reason")
-                         wd/submit)
-                     (wait-for-title "Functional test headline | Objective[8]")
-                     (screenshot "objective_with_invitation_flash")
+                (wd/input-text ".func--writer-name" "Functional Test Writer Name")
+                (-> ".func--writer-reason"
+                  (wd/input-text "Functional test invitation reason")
+                  wd/submit)
+                (wait-for-title "Functional test headline | Objective[8]")
+                (screenshot "objective_with_invitation_flash")
 
-                     (->> (wd/text ".func--flash-bar")
-                          (re-find #"http://.*$")
-                          (swap! journey-state assoc :invitation-url))
-                     {:page-title (wd/title)
-                      :flash-message (wd/text ".func--flash-bar")}
+                (->> (wd/text ".func--flash-bar")
+                  (re-find #"http://.*$")
+                  (swap! journey-state assoc :invitation-url))
+                {:page-title (wd/title)
+                 :flash-message (wd/text ".func--flash-bar")}
 
-                     (catch Exception e
-                       (screenshot "ERROR-Can-invite-a-writer")
-                       (throw e)))
-                => (contains {:page-title "Functional test headline | Objective[8]"
-                              :flash-message (contains "Your invited writer can accept their invitation")}))
+                (catch Exception e
+                  (screenshot "ERROR-Can-invite-a-writer")
+                  (throw e)))
+           => (contains {:page-title "Functional test headline | Objective[8]"
+                         :flash-message (contains "Your invited writer can accept their invitation")}))
 
-          (fact "Can accept a writer invitation"
-                (try
-                  (wd/to (:invitation-url @journey-state))
-                  (wait-for-title "Invitation to draft | Objective[8]")
-                  (screenshot "invitation_url")
 
-                  (wd/submit "#clj-invitation-response-accept")
-                  (wait-for-title "Candidate policy writers | Objective[8]")
-                  (screenshot "candidate_writers_as_recently_added_writer")
+         (fact "Can accept a writer invitation"
+           (try
+             (wd/to (:invitation-url @journey-state))
+             (wait-for-title "Invitation to draft | Objective[8]")
+             (screenshot "invitation_url")
 
-                  (wd/text "span.candidate-name")
+             (wd/submit "#clj-invitation-response-accept")
+             (wait-for-element ".func--objective-page")
+             (screenshot "objective_page_from_recently_added_writer")
 
-                  (catch Exception e
-                    (screenshot "ERROR-Can-accept-a-writer-invitation")
-                    (throw e)))
-                => "Functional Test Writer Name")
+             (wd/text ".func--writer-name")
 
-          (against-background 
+             (catch Exception e
+               (screenshot "ERROR-Can-accept-a-writer-invitation")
+               (throw e)))
+           => "Functional Test Writer Name")
+
+          (against-background
             [(before :contents (-> (:objective-url @journey-state)
                                    (string/split #"/")
                                    last
@@ -242,7 +243,7 @@
                       (screenshot "ERROR-Can-submit-a-draft")
                       (throw e)))
                   => (contains {:page-title "Policy draft | Objective[8]"
-                                :page-source (contains FIRST_DRAFT_HTML)})) 
+                                :page-source (contains FIRST_DRAFT_HTML)}))
 
             (fact "Can view latest draft"
                   (try
