@@ -139,6 +139,11 @@
 
 ;; QUESTIONS
 
+(defn add-a-question [request]
+  {:status 200
+   :body "hello"}
+  )
+
 (defn question-list [{{id :id} :route-params
                       :keys [uri t' locale] :as request}]
   (let [objective-id (Integer/parseInt id)

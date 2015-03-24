@@ -23,6 +23,7 @@
                                                                                      "/decline" {:post :fe/decline-invitation}
                                                                                      }}
                                         "/candidate-writers" {:get :fe/candidate-list}
+                                        "/add-question" {:get :fe/add-a-question}
                                         "/questions" {:post :fe/add-question-form-post
                                                       :get :fe/question-list
                                                       ["/" [#"\d+" :q-id]] {:get :fe/question

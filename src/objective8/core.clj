@@ -40,6 +40,7 @@
                :fe/add-question-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-question-form-post) #{:signed-in})
                :fe/question-list (utils/anti-forgery-hook front-end-handlers/question-list)
                :fe/question (utils/anti-forgery-hook front-end-handlers/question-detail)
+               :fe/add-a-question (utils/anti-forgery-hook front-end-handlers/add-a-question)
                :fe/add-answer-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-answer-form-post) #{:signed-in})
                :fe/candidate-list (utils/anti-forgery-hook front-end-handlers/candidate-list)
                :fe/invitation-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/invitation-form-post) #{:signed-in})
