@@ -4,6 +4,7 @@
             [objective8.writers :as writers]
             [objective8.drafts :as drafts]
             [objective8.up-down-votes :as up-down-votes]
+            [objective8.comments :as comments]
             [objective8.storage.storage :as storage]))
 
 (defn start-drafting! [objective-id]
@@ -34,5 +35,15 @@
   (when-not (up-down-votes/get-vote global-id created-by-id)
     (up-down-votes/store-vote! vote-data)))
 
-
+(defn create-comment! [{:keys [comment-on-uri] :as comment-data}]
+  (if-let [{:keys [objective-id global-id] :as entity} (storage/pg-retrieve-entity-by-uri comment-on-uri)]
+    (if-let [stored-comment (-> comment-data
+                                (assoc :objective-id objective-id
+                                       :comment-on-id global-id)
+                                comments/store-comment!)]
+      {:status ::success
+       :result stored-comment}
+      {:status ::failure})
+    {:status ::entity-does-not-exist
+     :details (str "No entity exists for uri " comment-on-uri)}))
 

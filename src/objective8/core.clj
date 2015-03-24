@@ -81,7 +81,10 @@
 
                ;; DEV API Handlers
                :dev/post-start-drafting (m/wrap-bearer-token api-handlers/post-start-drafting bt/token-provider)
-})
+
+               ;; Deprecated handlers - remove when no longer used
+               :api/post-comment-DEPRECATED (m/wrap-bearer-token api-handlers/post-comment-DEPRECATED bt/token-provider)
+               })
 
 (defn app [app-config]
   (-> (make-handler routes/routes (some-fn handlers #(when (fn? %) %)))

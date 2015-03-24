@@ -87,17 +87,28 @@
   (response/content-type (response/response (objectives/retrieve-objectives)) "application/json"))
 
 ;; COMMENT
-(defn post-comment [{:keys [params] :as request}]
+(defn post-comment-DEPRECATED [{:keys [params] :as request}]
   (try
     (if-let [stored-comment (-> params
                                 (select-keys [:comment :objective-id :created-by-id :comment-on-id])
-                                comments/create-comment)]
+                                comments/create-comment-on-objective!)]
       (successful-post-response (str utils/host-url "/api/v1/comments/" (:_id stored-comment))
                                 stored-comment)
       (resource-locked-response "New content cannot be posted against this objective as it is now in drafting."))
     (catch Exception e
       (log/info "Error when posting comment: " e)
       (invalid-response "Invalid comment post request"))))
+
+(defn post-comment [{:keys [params] :as request}]
+  (try
+    (let [comment-data (ar/request->comment-data request)
+          {status :status comment :result} (actions/create-comment! comment-data)]
+      (cond
+        (= status ::actions/success)
+        (successful-post-response (str utils/host-url "/api/v1/meta/comments/" (:_id comment))
+                                  comment)
+
+        :else {:status 400}))))
 
 (defn retrieve-comments [{:keys [route-params] :as request}]
   (let [id (-> (:id route-params)

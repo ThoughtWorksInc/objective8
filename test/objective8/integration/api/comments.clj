@@ -89,3 +89,32 @@
                                                 (map #(dissoc % :username))))
                     {response :response} (p/request app (str "/api/v1/objectives/" (:_id objective) "/comments"))]
                  (:body response) => (helpers/json-contains (map contains stored-comments))))))
+
+
+(facts "POST /api/v1/meta/comments"
+       ;; Posting to /api/v1/meta/comments takes a JSON body containing the uri of the entity the comment is being posted about
+       (against-background
+        (m/valid-credentials? anything anything anything) => true)
+       (against-background
+        [(before :contents (do (helpers/db-connection)
+                               (helpers/truncate-tables)))
+         (after :facts (helpers/truncate-tables))]
+        (fact "the posted comment is stored"
+              (let [{user-id :_id :as user} (sh/store-a-user)
+                    {o-id :objective-id d-id :_id global-id :global-id} (sh/store-a-draft)
+                    uri-for-draft (str "/objectives/" o-id "/drafts/" d-id)
+                    comment-data {:comment-on-uri uri-for-draft
+                                  :comment "A comment"
+                                  :created-by-id user-id}
+                    {response :response} (p/request app (str "/api/v1/meta/comments")
+                                                    :request-method :post
+                                                    :content-type "application/json"
+                                                    :body (json/generate-string comment-data))]
+                (:status response) => 201
+                (:body response) => (helpers/json-contains {:_id integer?
+                                                            :comment-on-uri uri-for-draft
+                                                            :comment "A comment"
+                                                            :created-by-id user-id})
+                (:headers response) => (helpers/location-contains (str "/api/v1/meta/comments/"))))))
+
+(facts "GET /api/v1/meta/comments?=<uri-for-entity>")

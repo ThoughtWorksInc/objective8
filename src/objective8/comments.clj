@@ -5,7 +5,7 @@
 (defn store-comment! [comment]
  (storage/pg-store! (assoc comment :entity :comment)))
 
-(defn create-comment [{objective-id :objective-id :as comment}]
+(defn create-comment-on-objective! [{objective-id :objective-id :as comment}]
   (when (open? (objectives/retrieve-objective objective-id))
     (store-comment! comment)))
 

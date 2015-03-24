@@ -3,7 +3,9 @@
             [objective8.actions :as actions]
             [objective8.up-down-votes :as up-down-votes]
             [objective8.drafts :as drafts]
-            [objective8.objectives :as objectives]))
+            [objective8.objectives :as objectives]
+            [objective8.comments :as comments]
+            [objective8.storage.storage :as storage]))
 
 (def GLOBAL_ID 6)
 (def USER_ID 2)
@@ -45,3 +47,13 @@
              (provided
                (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started true}
                (drafts/retrieve-latest-draft OBJECTIVE_ID) => :draft)))
+
+(facts "about creating comments"
+       (fact "creates a comment against the entity referred identified by the :comment-on-uri"
+             (actions/create-comment! {:comment-on-uri :some-uri}) => {:status ::actions/success
+                                                                       :result :the-stored-comment}
+             (provided
+              (storage/pg-retrieve-entity-by-uri :some-uri) => {:global-id :some-global-id :objective-id :some-objective-id}
+              (comments/store-comment! {:comment-on-uri :some-uri
+                                        :comment-on-id :some-global-id
+                                        :objective-id :some-objective-id}) => :the-stored-comment)))

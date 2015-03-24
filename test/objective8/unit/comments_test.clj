@@ -12,13 +12,13 @@
               :comment-on-id GLOBAL_ID})
 
 (fact "A comment can be created when the associated objective is not in drafting"
-      (comments/create-comment comment) => :stored-comment
+      (comments/create-comment-on-objective! comment) => :stored-comment
       (provided
        (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started false}
        (comments/store-comment! comment) => :stored-comment))
 
 (fact "Attempting to create a comment against an objective that is in drafting returns nil"
-      (comments/create-comment comment) => nil
+      (comments/create-comment-on-objective! comment) => nil
       (provided
         (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started true}))
 

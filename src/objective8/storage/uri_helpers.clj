@@ -1,4 +1,4 @@
-(ns objective8.uri-helpers
+(ns objective8.storage.uri-helpers
   (:require [bidi.bidi :as bidi]))
 
 (def uri-routes
@@ -10,6 +10,6 @@
     (cond
       (= entity :objective) {:entity :objective
                              :_id (Integer/parseInt (:objective-id route-params))}
-      
+
       (= entity :draft) {:entity :draft
                          :_id (Integer/parseInt (:draft-id route-params))})))
