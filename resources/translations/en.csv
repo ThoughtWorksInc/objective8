@@ -20,6 +20,7 @@ notifications,drafting-message-title,Drafting has started on this objective!
 notifications,drafting-message-body,"This means that you can no longer ask or answer questions, comment, or invite new writers."
 notifications,drafting-message-link,Contribute to the drafting progress.
 index,doc-title,Objective[8]
+index,doc-description,Objective[8]
 index,index-welcome,Collaborative policy making for democratic organisations.
 index,index-get-started-title,Objectives
 index,index-intro,"Gather community opinion, generate ideas, share, discuss, vote and collaborate with experts to draft new policy."
@@ -54,6 +55,7 @@ draft,no-draft,No drafts have been submitted yet
 draft,drafting-begins,Drafting begins on
 draft,writers,Writers
 draft-list,doc-title,Drafts | Objective[8]
+draft-list,doc-description,
 draft-list,drafts-for,Drafts for
 draft-list,no-drafts,No drafts have been submitted yet
 draft-list,latest-draft,Latest draft
