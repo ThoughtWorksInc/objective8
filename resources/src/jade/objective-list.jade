@@ -1,0 +1,29 @@
+extends layouts/base
+include mixins/_view_helpers
+
+block vars
+  - pageTitle = "!Objectives | Objective[8]"
+
+block content
+  .middle-container
+
+    +guidanceText('!What are objectives?')
+      ul
+        li.l8n-guidance-text-line-1 !Objective[8] centers its policy drafting process around objectives.
+        li.l8n-guidance-text-line-2 !An objective is a change that could be achieved by introducing new policy.
+
+    h1.l8n-objective-list-title !Objectives
+
+    a.button.create-objective-link.l8n-create-objective-link(href="/objectives/create") !Create an objective
+
+    h2.l8n-objective-list-subtitle !Recently created objectives
+
+    ol.unstyled-list
+      li.objective-list-item.clj-objective-list-item
+        a.objective-list-item-link.clj-objective-list-item-link.func--objective-list-item-link(href="/objectives/[id]")
+          h3.objective-list-item-title.clj-objective-list-item-title !Build safer cycling networks in the streets of Madrid.
+          p.helper-text
+            span.l8n-drafting-begins !Drafting begins in
+            =" "
+            span.inline-date.clj-objective-drafting-begins-date !30 days
+          p.preview-text.clj-objective-brief-description !London and Pairs are two prime examples of cycle super highway heaven. We need to show the world that Madrid too can be the pinncale in cycli...

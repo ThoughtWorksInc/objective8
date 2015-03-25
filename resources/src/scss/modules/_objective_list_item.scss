@@ -1,4 +1,4 @@
-.objective-item {
+.objective-list-item-link {
   text-decoration: none;
   display: block;
   padding: 1em;
@@ -16,12 +16,9 @@
     color: $black;
   }
 }
-.objective-item-title {
+.objective-list-item-title {
   margin: 0 0 0.2em;
   line-height: 1.2;
   text-decoration: underline;
   color: $link-colour;
-}
-.objective-item-date {
-  margin: 0 0 0.2em;
 }

@@ -51,7 +51,6 @@
 (def sign-in (view (render-page responses/sign-in-page)))
 (def project-status (view (render-page responses/project-status-page)))
 (def sign-up-form (view (render-page responses/sign-up)))
-(def objectives-list (view (render-page responses/objective-list-page)))
 (def create-objective-form (view (render-page responses/objective-create-page)))
 (def question-list (view (render-page responses/question-list-page)))
 (def question-detail (view (render-page responses/question-view-page)))
@@ -62,6 +61,7 @@
 (def four-o-four (view (render-page responses/error-404-page)))
 
 (def index (view index/index-page))
+(def objective-list (view objective/objective-list-page))
 (def learn-more-page (view learn-more/learn-more-page))
 (def objective-detail-page (view objective/objective-page))
 (def question-page (view question/question-page))

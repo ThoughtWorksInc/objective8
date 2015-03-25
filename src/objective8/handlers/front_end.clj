@@ -46,10 +46,11 @@
 (defn project-status [{:keys [t' locale] :as request}]
   (views/project-status "project-status" request))
 
-(defn learn-more [{:keys [t' locale] :as request}]
+(defn learn-more [request]
   {:status 200
-   :body (views/learn-more-page "learn-more" request)
-   :header {"Content-Type" "text/html"}})
+   :header {"Content-Type" "text/html"}  
+   :body (views/learn-more-page "learn-more" request)})
+
 ;; USER PROFILE
 
 (defn sign-up-form [{:keys [t' locale errors] :as request}]
@@ -66,13 +67,15 @@
                                 (dissoc :goal-1 :goal-2 :goal-3))]
     formatted-objective))
 
-(defn objective-list [{:keys [t' locale] :as request}]
+(defn objective-list [request]
   (let [{status :status objectives :result} (http-api/get-all-objectives)]
     (cond 
       (= status ::http-api/success)
-      (views/objectives-list "objective-list"
-                             request
-                             :objectives (map format-objective objectives))
+      {:status 200
+       :header {"Content-Type" "text/html"}  
+       :body (views/objective-list "objective-list" request
+                                   :objectives (map format-objective objectives))} 
+      
       (= status ::http-api/error)
       {:status 502})))
 
@@ -92,10 +95,7 @@
             :else {:status 502}))
     {:status 400}))
 
-(defn objective-detail [{{id :id} :route-params
-                         message :flash
-                         :keys [uri t' locale]
-                         :as request}]
+(defn objective-detail [{{:keys [id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)
         {objective-status :status objective :result} (http-api/get-objective objective-id)
         {candidate-status :status  candidates :result} (http-api/retrieve-candidates objective-id)  

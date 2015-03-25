@@ -9,6 +9,9 @@ objective-guidance,heading,What is an Objective?
 objective-guidance,text-line-1,A policy starts with an idea.
 objective-guidance,text-line-2,These are catalysts for change.
 objective-guidance,text-line-3,Everyone can comment and make suggestions to contribute towards the draft stage.
+objectives-guidance,heading,What are objectives?
+objectives-guidance,text-line-1,Objective[8] centers its policy drafting process around objectives.
+objectives-guidance,text-line-2,An objective is a change that could be achieved by introducing new policy.
 draft-guidance,heading,What is a draft?
 draft-guidance,text-line-1,Drafts are versions of the policy as it is being written.
 draft-guidance,text-line-2,Drafts are crafted by the writers that have been nominated for an objective.
@@ -33,17 +36,12 @@ index,draft-info-keyword,drafts
 index,draft-info-end,in an open and transparent way.
 index,objectives,Objectives
 index,learn-more,Learn more
-objective-list,create-button-text,Create an objective
-objective-list,sign-in,sign in
-objective-list,drafting-begins,Drafting begins on
 objective-list,doc-title,Objectives | Objective[8]
-objective-list,please,Please
-objective-list,page-title,Objectives
-objective-list,subtitle,Recently created objectives
-objective-list,objectives-intro-text,Objective[8] centers its policy drafting process around objectives. An objective is a change that could be achieved by introducing new policy.
 objective-list,doc-description,
-objective-list,create-button-title,Create an objective
-objective-list,to,to create an objective.
+objective-list,page-title,Objectives
+objective-list,create-objective-link,Create an objective
+objective-list,subtitle,Recently created objectives
+objective-list,drafting-begins,Drafting begins on
 draft,doc-title,Policy draft | Objective[8]
 draft,doc-description,Draft policy for objective ... 
 draft,add-a-draft,Add a draft
