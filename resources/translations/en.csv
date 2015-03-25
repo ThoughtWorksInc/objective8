@@ -51,6 +51,7 @@ draft,previous-draft,Previous
 draft,draft-writer,Published by
 draft,no-draft,No drafts have been submitted yet
 draft,drafting-begins,Drafting begins in
+draft,days,days
 draft,writers,Writers
 draft-list,doc-title,Drafts | Objective[8]
 draft-list,doc-description,
@@ -61,6 +62,7 @@ draft-list,previous-versions,Previous versions
 draft-list,no-previous-versions,There are no previous versions
 draft-list,add-a-draft,Add a draft
 draft-list,drafting-begins,Drafting begins in
+draft-list,days,days
 draft-list,writers,Writers
 comment-create,comment-title,Comments are a maximum length of 500 characters
 comment-create,post-button,Add a comment
