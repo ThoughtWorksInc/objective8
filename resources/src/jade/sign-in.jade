@@ -1,0 +1,20 @@
+extends layouts/base
+include mixins/_view_helpers
+
+block vars
+  - bodyClass = ""
+  - pageTitle = "! Sign in"
+
+block content
+
+  .middle-container
+
+    .sign-in-container
+      h1.sign-in-title.l8n-sign-in-title !Sign in
+
+      form.sign-in-form.clj-sign-in-twitter(method="post", action="twitter-sign-in")
+        button.btn-social.btn-twitter.btn-lg(type="submit")
+          i.fa.fa-twitter
+          span.l8n-sign-in-with-twitter !Sign in with Twitter
+
+      p.helper-text.l8n-twitter-help-text !We will never post to Twitter without your permission.
