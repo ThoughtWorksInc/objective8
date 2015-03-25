@@ -27,6 +27,8 @@
                       [:.l8n-objective-navigation-item-questions] (html/content (translations :objective-nav/questions))
                       [:.l8n-objective-navigation-item-comments] (html/content (translations :objective-nav/comments))
 
+                      [:.clj-star-container] nil
+
                       [:.clj-objective-title] (html/content (:title objective))
                       [:.clj-drafting-started-wrapper] (html/substitute (f/drafting-message context))
                       [:.clj-replace-with-objective-detail] (html/substitute (f/text->p-nodes (:description objective)))

@@ -71,3 +71,26 @@ $objective_navigation_height: 80px;
   }
 }
 
+.star-container {
+  perspective: 800px;
+  margin-bottom: 1em;
+}
+
+.star {
+  transition: transform 1s;
+  transform-style: preserve-3d;
+  width: 45px;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 2em;
+  color: $dark_pink;
+  &:hover {
+    color: $yellow;
+    transform: translateZ(300px) rotate3d(0,1,0,180deg);
+  }
+  &.starred {
+    color: $yellow;
+  }
+}
+
