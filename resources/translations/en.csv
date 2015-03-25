@@ -12,6 +12,10 @@ objective-guidance,text-line-3,Everyone can comment and make suggestions to cont
 objectives-guidance,heading,What are objectives?
 objectives-guidance,text-line-1,Objective[8] centers its policy drafting process around objectives.
 objectives-guidance,text-line-2,An objective is a change that could be achieved by introducing new policy.
+create-objective-guidance,heading,Creating an objective
+create-objective-guidance,item-1,"An objective is a change that could be achieved by introducing new policy. For example: improving access to public housing, or increasing the safety of our roads."
+create-objective-guidance,item-2,Your objective has just 30 days until it's transformed into a working draft.
+create-objective-guidance,item-3,Share your objective to encourage collaboration.
 draft-guidance,heading,What is a draft?
 draft-guidance,text-line-1,Drafts are versions of the policy as it is being written.
 draft-guidance,text-line-2,Drafts are crafted by the writers that have been nominated for an objective.
@@ -42,6 +46,16 @@ objective-list,page-title,Objectives
 objective-list,create-objective-link,Create an objective
 objective-list,subtitle,Recently created objectives
 objective-list,drafting-begins,Drafting begins on
+create-objective,doc-title,Create an Objective | Objective[8]
+create-objective,doc-description,
+create-objective,page-title,Create an objective
+create-objective,headline,Headline
+create-objective,headline-prompt,A headline should encourage contribution or discussion
+create-objective,goals,Goals
+create-objective,goals-prompt,A goal is what you’d like your change to achieve
+create-objective,background,Background
+create-objective,background-prompt,Provide further information on why achieving this objective is important or necessary
+create-objective,submit-text,Create
 draft,doc-title,Policy draft | Objective[8]
 draft,doc-description,Draft policy for objective ... 
 draft,add-a-draft,Add a draft
@@ -123,25 +137,6 @@ learn-more,get-started-button-title,Get started
 invitation-sign-in,sign-in,sign in
 invitation-sign-in,please,Please
 invitation-sign-in,to,to invite a policy writer.
-objective-create,end-date-placeholder,yyyy-mm-dd
-objective-create,goals-label,Goals
-objective-create,background-prompt,Provide further information on why achieving this objective is important or necessary
-objective-create,end-date-label,Drafting start date
-objective-create,doc-title,Create an Objective | Objective[8]
-objective-create,headline-title,"3 characters minimum, 120 characters maximum"
-objective-create,goals-prompt,A goal is what you’d like your change to achieve
-objective-create,goals-title,"50 characters minimum, 200 characters maximum"
-objective-create,submit,Create
-objective-create,page-intro,"An objective is a change that could be achieved by introducing new policy. For example: improving access to public housing, or increasing the safety of our roads."
-objective-create,drafting-not-yet-implemented,"(Please note: since this site is still under development, the drafting phase has not yet been implemented)"
-objective-create,end-date-title,Please enter an end date
-objective-create,page-title,Create an objective
-objective-create,background-label,Background
-objective-create,headline-prompt,A headline should encourage contribution or discussion
-objective-create,end-date-prompt,"On this date, the drafting phase begins. You should give participants enough time to generate useful information, and to recruit and vote for potential policy writers."
-objective-create,doc-description,Create an Objective ...
-objective-create,headline-label,Headline
-objective-create,background-title,Enter optional background text up to 1000 characters
 objective-view,goals-label,Goals
 objective-view,end-date-label,Drafting begins: 
 objective-view,created-message,Your objective has been created!

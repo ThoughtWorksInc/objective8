@@ -80,8 +80,10 @@
       (= status ::http-api/error)
       {:status 502})))
 
-(defn create-objective-form [{:keys [t' locale] :as request}]
-  (views/create-objective-form "objective-create" request))
+(defn create-objective-form [request]
+  {:status 200
+   :header {"Content-Type" "text/html"}  
+   :body (views/create-objective "create-objective" request)})
 
 (defn create-objective-form-post [{:keys [t' locale] :as request}]
   (if-let [objective (helpers/request->objective request (get (friend/current-authentication) :identity))]

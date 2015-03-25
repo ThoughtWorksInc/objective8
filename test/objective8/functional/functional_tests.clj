@@ -95,13 +95,12 @@
                     (screenshot "create_objective_page")
                     (wait-for-title "Create an Objective | Objective[8]")
 
-                    (wd/input-text "#objective-title" "Functional test headline")
-                    (wd/input-text "#objective-goals" "Functional test goal")
-                    (wd/input-text "#objective-description" 
-                                   "Functional test description with lots of hipster-ipsum:
-                                   Master cleanse squid nulla, ugh kitsch biodiesel cronut food truck. Nostrud Schlitz tempor farm-to-table skateboard, wayfarers adipisicing Pitchfork sunt Neutra brunch four dollar toast forage placeat. Fugiat lo-fi sed polaroid Portland et tofu Austin. Blue Bottle labore forage, in bitters incididunt ugh delectus seitan flannel. Mixtape migas cardigan, quis American Apparel culpa aliquip cupidatat et nisi scenester. Labore sriracha Etsy flannel XOXO. Normcore selvage do vero keytar synth.")
-                    (-> "#objective-end-date" 
-                        (wd/input-text "2015-12-25")
+                    (wd/input-text ".func--input-objective-title" "Functional test headline")
+                    (wd/input-text ".func--input-objective-goal-1" "Functional test goal")
+                    (-> ".func--input-objective-background"
+                        (wd/input-text 
+                          "Functional test description with lots of hipster-ipsum:
+                          Master cleanse squid nulla, ugh kitsch biodiesel cronut food truck. Nostrud Schlitz tempor farm-to-table skateboard, wayfarers adipisicing Pitchfork sunt Neutra brunch four dollar toast forage placeat. Fugiat lo-fi sed polaroid Portland et tofu Austin. Blue Bottle labore forage, in bitters incididunt ugh delectus seitan flannel. Mixtape migas cardigan, quis American Apparel culpa aliquip cupidatat et nisi scenester. Labore sriracha Etsy flannel XOXO. Normcore selvage do vero keytar synth.")
                         wd/submit) 
 
                     (wait-for-title "Functional test headline | Objective[8]")

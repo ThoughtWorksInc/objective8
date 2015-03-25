@@ -3,6 +3,7 @@
             [objective8.responses :as responses]
             [objective8.templates.index :as index]
             [objective8.templates.learn-more :as learn-more]
+            [objective8.templates.create-objective :as create-objective]
             [objective8.templates.objective :as objective]
             [objective8.templates.question :as question]
             [objective8.templates.add-question :as add-question]
@@ -51,7 +52,6 @@
 (def sign-in (view (render-page responses/sign-in-page)))
 (def project-status (view (render-page responses/project-status-page)))
 (def sign-up-form (view (render-page responses/sign-up)))
-(def create-objective-form (view (render-page responses/objective-create-page)))
 (def question-list (view (render-page responses/question-list-page)))
 (def question-detail (view (render-page responses/question-view-page)))
 (def candidate-list (view (render-page responses/candidate-list-page)))
@@ -63,6 +63,7 @@
 (def index (view index/index-page))
 (def objective-list (view objective/objective-list-page))
 (def learn-more-page (view learn-more/learn-more-page))
+(def create-objective (view create-objective/create-objective-page))
 (def objective-detail-page (view objective/objective-page))
 (def question-page (view question/question-page))
 (def add-question-page (view add-question/add-question-page))
