@@ -19,11 +19,5 @@ block content
     h2.l8n-objective-list-subtitle !Recently created objectives
 
     ol.unstyled-list
-      li.objective-list-item.clj-objective-list-item
-        a.objective-list-item-link.clj-objective-list-item-link.func--objective-list-item-link(href="/objectives/[id]")
-          h3.objective-list-item-title.clj-objective-list-item-title !Build safer cycling networks in the streets of Madrid.
-          p.helper-text
-            span.l8n-drafting-begins !Drafting begins in
-            =" "
-            span.inline-date.clj-objective-drafting-begins-date !30 days
-          p.preview-text.clj-objective-brief-description !London and Pairs are two prime examples of cycle super highway heaven. We need to show the world that Madrid too can be the pinncale in cycli...
+      +objectiveListItem('!Build safer cycling networks in the streets of Madrid.', 30)
+        | !London and Pairs are two prime examples of cycle super highway heaven. We need to show the world that Madrid too can be the pinncale in cycli...
