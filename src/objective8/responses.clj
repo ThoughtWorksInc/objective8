@@ -270,16 +270,6 @@
   [:#clj-comments-view html/any-node] (html/replace-vars translations)
   [:#clj-comments-view :.comment-list] (let [comments (:comments data)] (if (empty? comments) identity (html/content (map a-comment comments)))))
 
-;OBJECTIVES
-(html/defsnippet a-goal
-  "templates/goal.html" [:li] [goal]
-  [:li] (html/content goal))
-
-(html/defsnippet objective-create-page
-  "templates/objectives-create.html" [[:#clj-objective-create]] [{:keys [translations]}]
-  [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:#clj-objective-create html/any-node] (html/replace-vars translations))
-
 ;USERS
 (html/defsnippet sign-up
   "templates/sign-up.html" [[:#clj-sign-up]] [{:keys [translations doc]}]
