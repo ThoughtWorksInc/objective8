@@ -1,0 +1,25 @@
+extends layouts/base
+include mixins/_view_helpers
+
+block vars
+  - bodyClass = ""
+  - pageTitle = "! Sign in"
+
+block content
+
+  .sign-up-container
+    h1.sign-in-title.l8n-sign-up-title !Almost there
+    p.lead.l8n-sign-up-description !Adding your email address will let us notify you when you receive responses to comments, objectives and votes.
+
+    form.sign-up-form.clj-create-objective-form(action="/sign-up" method="POST")
+      label.l8n-label-username(for="username") !Username
+      input.clj-input-username(id="username", name="username", type="text", maxlength="16", required="required")
+      label.l8n-label-email-address(for="email-address") !Email
+      input.clj-input-email-address(id="email-address", name="email-address", type="email", required="required")
+      button.button.l8n-sign-up(type="submit") !Create account
+
+
+
+
+
+

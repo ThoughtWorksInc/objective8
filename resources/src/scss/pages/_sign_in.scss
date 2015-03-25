@@ -10,7 +10,7 @@
   margin: 0 auto 0.5em;
   padding: 1em;
   text-align: center;
-  border-radius: 3px;
+  border-radius: 6px;
   @include mq(720) {
     padding: 2em;
   }
@@ -20,4 +20,15 @@
   display: inline-block;
   max-width: 15.5em;
   margin-bottom: 0.5em;
+}
+
+.sign-up-container {
+  max-width: 30em;
+  border: 1px solid $grey-3;
+  margin: 0 auto 0.5em;
+  padding: 1em;
+  border-radius: 4px;
+  @include mq(720) {
+    padding: 2em;
+  }
 }
