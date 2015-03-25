@@ -9,6 +9,7 @@
             [objective8.templates.add-question :as add-question]
             [objective8.templates.invite-writer :as invite-writer]
             [objective8.templates.draft :as draft]
+            [objective8.templates.draft-list :as draft-list]
             [objective8.templates.sign-in :as sign-in]))
 
 
@@ -68,6 +69,6 @@
 (def question-page (view question/question-page))
 (def add-question-page (view add-question/add-question-page))
 (def invite-writer-page (view invite-writer/invite-writer-page))
-(def draft-list (view draft/draft-list-page))
+(def draft-list (view draft-list/draft-list-page))
 (def draft (view draft/draft-page))
 (def sign-in (view sign-in/sign-in-page))
