@@ -1,8 +1,0 @@
-.main-wrapper-no-sidebar#clj-users-email
-  h1 ${users-email/page-title}
-  p ${users-email/user-email-welcome}
-  form#create-objective-form(method="POST", action="/sign-up")
-    label.clj-users-email-label(for="email-address") ${users-email/email-label}
-    input.clj-users-email-title#email-address(name="email-address", type="email", title="${users-email/email-title}", required="required")
-
-    button.button(type="submit") ${users-email/button}

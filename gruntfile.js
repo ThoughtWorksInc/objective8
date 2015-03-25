@@ -148,6 +148,12 @@ module.exports = function(grunt) {
       }
     },
 
+    clean: {
+      build: {
+        src: [ 'resources/templates/jade' ]
+      }
+    },
+
     browserSync: {
       default_options: {
         bsFiles: {
@@ -166,6 +172,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('dev',[
+    'clean:build',
     'sass:dev',
     'autoprefixer:dev',
     'jade',
@@ -187,6 +194,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('build',[
+    'clean:build',
     'sass:dist',
     'autoprefixer:dist',
     'jade',
