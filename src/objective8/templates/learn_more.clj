@@ -4,11 +4,12 @@
 
 (def learn-more (html/html-resource "templates/jade/learn-more.html"))
 
-(defn learn-more-page [{translations :translations :as context}]
+(defn learn-more-page [{:keys [translations doc] :as context}]
   (apply str
          (html/emit*
            (html/at learn-more
-                    [:title] (html/content (translations :learn-more/doc-title))
+                    [:title] (html/content (:title doc))
+                    [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
                     [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
                     [:.clj-status-bar] (html/substitute (f/status-flash-bar context))
                     [:.clj-learn-more-heading] (html/content (translations :learn-more/page-title))

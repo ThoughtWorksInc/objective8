@@ -15,7 +15,7 @@
 (defn- local-draft-path
   ([draft] (local-draft-path draft false))
   ([draft latest] (if draft (utils/local-path-for :fe/draft :id (:objective-id draft) :d-id
-                                       (if latest "latest" (:_id draft))))))
+                                                  (if latest "latest" (:_id draft))))))
 
 (defn previous-drafts [previous-drafts]
   (html/transformation [:.clj-previous-draft-item]
@@ -55,12 +55,13 @@
       [:.clj-writers-section-title] (html/content (translations :draft-list/writers))
       [:.clj-writer-item-list] (html/content (f/writer-list context)))))
 
-(defn draft-list-page [{:keys [translations data] :as context}]
+(defn draft-list-page [{:keys [translations data doc] :as context}]
   (let [objective (:objective data)]
     (apply str
            (html/emit*
              (html/at draft-list-template
-                      [:title] (html/content (get-in context [:doc :title]))
+                      [:title] (html/content (:title doc))
+                      [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
                       [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
                       [:.clj-status-bar] (html/substitute (f/status-flash-bar context))
                       [:.clj-objective-progress-indicator] nil
@@ -78,10 +79,10 @@
                                                (drafts-list context)
                                                (html/do->
                                                  (html/set-attr "drafting-begins-date"
-                                                               (:end-date objective))
+                                                                (:end-date objective))
                                                  (html/content (str (translations :draft-list/drafting-begins)
-                                                                     " " (:drafting-begins-in objective)
-                                                                     " " (translations :draft-list/days))))))))))
+                                                                    " " (:drafting-begins-in objective)
+                                                                    " " (translations :draft-list/days))))))))))
 
 (defn previous-draft-navigation [{:keys [data translations] :as context}]
   (let [draft (:draft data)]
@@ -136,7 +137,8 @@
     (apply str
            (html/emit*
              (html/at draft-template
-                      [:title] (html/content (get-in context [:doc :title]))
+                      [:title] (html/content (:title doc))
+                      [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
                       [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
                       [:.clj-status-bar] (html/substitute (f/status-flash-bar context))
 
@@ -152,5 +154,5 @@
                                                 (html/set-attr "drafting-begins-date"
                                                                (:end-date objective))
                                                 (html/content (str (translations :draft/drafting-begins)
-                                                                    " " (:drafting-begins-in objective)
-                                                                    " " (translations :draft/days))))))))))
+                                                                   " " (:drafting-begins-in objective)
+                                                                   " " (translations :draft/days))))))))))

@@ -12,7 +12,7 @@
   (fn [k] 
     #(assoc % :content (translations k))))
 
-(defn question-page [{:keys [translations data user ring-request] :as context}]
+(defn question-page [{:keys [translations data user ring-request doc] :as context}]
   (let [question (:question data)
         answers (:answers data)
         objective (:objective data)
@@ -20,7 +20,8 @@
     (apply str
            (html/emit*
              (html/at question-template
-                      [:title] (html/content (get-in context [:doc :title]))
+                      [:title] (html/content (:title doc))
+                      [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
                       [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
                       [:.clj-status-bar] (html/substitute (f/status-flash-bar context))
                       [:.clj-objective-link] (html/set-attr "href" (str "/objectives/" (:_id objective)))
