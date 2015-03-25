@@ -132,7 +132,7 @@
 
       [:.clj-draft-comments] nil)))
 
-(defn draft-page [{:keys [translations data] :as context}]
+(defn draft-page [{:keys [translations data doc] :as context}]
   (let [objective (:objective data)]
     (apply str
            (html/emit*
