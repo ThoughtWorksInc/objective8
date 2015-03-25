@@ -275,25 +275,6 @@
   "templates/goal.html" [:li] [goal]
   [:li] (html/content goal))
 
-(defn shorten-content [content]
-  (let [content (or content "")
-        shortened-content (clojure.string/trim (subs content 0 (min (count content) 100)))]
-    (when-not (empty? shortened-content)
-      (str shortened-content "..."))))
-
-(html/defsnippet objective-list-entry {:parser jsoup/parser}
-  "templates/objectives-list.html" [:.clj-objectives-list-entry] [objective]
-  [:.clj-objective-title] (html/content (:title objective))
-  [:.clj-objective-brief-description] (html/content (shorten-content (:description objective)))
-  [:.clj-objective-end-date] (html/content (:end-date objective))
-  [:.clj-objective-link] (html/set-attr :href (str "/objectives/" (:_id objective))))
-
-(html/defsnippet objective-list-page
-  "templates/objectives-list.html" [[:#clj-objectives-list]] [{:keys [translations data user]}]
-  [:#clj-create-objective-link] (if user (html/html-content "<a href='objectives/create' class='button index-get-started' title='${objective-list/create-button-title}'>${objective-list/create-button-text}</a>") identity)
-  [:ol] (html/content (map objective-list-entry (:objectives data)))
-  [:#clj-objectives-list html/any-node] (html/replace-vars translations))
-
 (html/defsnippet objective-create-page
   "templates/objectives-create.html" [[:#clj-objective-create]] [{:keys [translations]}]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
