@@ -4,6 +4,14 @@
             [objective8.utils :as utils]))
 
 (def library-html "templates/jade/library.html")
+(def library-html-resource (html/html-resource library-html))
+
+(defn translator
+  "Returns a translation function which replaces the
+   content of nodes with translations for k"
+  [{:keys [translations] :as context}]
+  (fn [k] 
+    #(assoc % :content (translations k))))
 
 (defn text->p-nodes
   "Turns text into a collection of paragraph nodes based on linebreaks.
@@ -16,28 +24,29 @@
 
 ;; MASTHEAD
 
-(html/defsnippet masthead-signed-in library-html [:.clj-masthead-signed-in] [] identity)
+(def masthead-snippet (html/select library-html-resource [:.clj-masthead-signed-out])) 
+(def masthead-signed-in-snippet (html/select library-html-resource [:.clj-masthead-signed-in]))
 
-(html/defsnippet masthead
-  library-html [:.clj-masthead-signed-out] [{{uri :uri} :ring-request
-                                                              :keys [translations  user] :as context}]
-  [:.clj-masthead-signed-out] (if user
-                                (html/substitute (masthead-signed-in))
-                                identity)
-  [:.clj-masthead-skip-text] (html/content (translations :masthead/skip-to-navigation))
-  [:.clj-masthead-logo] (html/set-attr "title" (translations :masthead/logo-title-attr))
-  [:.clj-masthead-objectives-link] (html/do->
-                                     (html/set-attr "title" (translations :masthead/objectives-link-title-attr))
-                                     (html/content (translations :masthead/objectives-link)))
-  [:.clj-masthead-about-link] (html/do->
-                                (html/set-attr "title" (translations :masthead/about-link-title-attr))
-                                (html/content (translations :masthead/about-link)))
-  [:.clj-masthead-sign-in] (html/set-attr "title" (translations :navigation-global/sign-in-title))
-  [:.clj-masthead-sign-in] (html/set-attr "href" (str "/sign-in?refer=" uri))
-  [:.clj-masthead-sign-in-text] (html/content (translations :navigation-global/sign-in-text))
-  [:.clj-masthead-sign-out] (html/set-attr "title" (translations :navigation-global/sign-out-title))
-  [:.clj-masthead-sign-out-text] (html/content (translations :navigation-global/sign-out-text))
-  [:.clj-username] (html/content (:username user)))
+(defn masthead [{{uri :uri} :ring-request :keys [translations  user] :as context}]
+  (let [tl8 (translator context)]
+    (html/at masthead-snippet
+             [:.clj-masthead-signed-out] (if user
+                                           (html/substitute masthead-signed-in-snippet)
+                                           identity)
+             [:.clj-masthead-skip-text] (tl8 :masthead/skip-to-navigation)
+             [:.clj-masthead-logo] (html/set-attr "title" (translations :masthead/logo-title-attr))
+             [:.clj-masthead-objectives-link] (html/do->
+                                                (html/set-attr "title" (translations :masthead/objectives-link-title-attr))
+                                                (tl8 :masthead/objectives-link))
+             [:.clj-masthead-about-link] (html/do->
+                                           (html/set-attr "title" (translations :masthead/about-link-title-attr))
+                                           (tl8 :masthead/about-link))
+             [:.clj-masthead-sign-in] (html/set-attr "title" (translations :navigation-global/sign-in-title))
+             [:.clj-masthead-sign-in] (html/set-attr "href" (str "/sign-in?refer=" uri))
+             [:.clj-masthead-sign-in-text] (tl8 :navigation-global/sign-in-text)
+             [:.clj-masthead-sign-out] (html/set-attr "title" (translations :navigation-global/sign-out-title))
+             [:.clj-masthead-sign-out-text] (tl8 :navigation-global/sign-out-text)
+             [:.clj-username] (html/content (:username user)))))
 
 ;; STATUS BAR
 
@@ -55,8 +64,8 @@
 ;; DRAFTING HAS STARTED MESSAGE
 
 (html/defsnippet drafting-message library-html [:.clj-drafting-message] [{{objective :objective} :data
-                                                                         translations :translations
-                                                                         :as context}]
+                                                                          translations :translations
+                                                                          :as context}]
   [html/any-node] (when (:drafting-started objective) identity)
   [:.clj-drafting-message-title] (html/content (translations :notifications/drafting-message-title))
   [:.clj-drafting-message-body] (html/content (translations :notifications/drafting-message-body))

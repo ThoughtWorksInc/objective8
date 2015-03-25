@@ -5,18 +5,11 @@
 
 (def question-template (html/html-resource "templates/jade/question.html"))
 
-(defn translator
-  "Returns a translation function which replaces the
-   content of nodes with translations for k"
-  [{:keys [translations] :as context}]
-  (fn [k] 
-    #(assoc % :content (translations k))))
-
 (defn question-page [{:keys [translations data user ring-request doc] :as context}]
   (let [question (:question data)
         answers (:answers data)
         objective (:objective data)
-        tl8 (translator context)]
+        tl8 (f/translator context)]
     (apply str
            (html/emit*
              (html/at question-template
