@@ -18,21 +18,21 @@ block content
 
     +guidanceText('!What is an objective?')
       ul
-        li.clj-guidance-text-line-1 !A policy starts with an idea.
-        li.clj-guidance-text-line-2 !These are catalysts for change.
-        li.clj-guidance-text-line-3 !Everyone can comment and make suggestions to contribute towards the draft stage.
+        li.l8n-guidance-text-line-1 !A policy starts with an idea.
+        li.l8n-guidance-text-line-2 !These are catalysts for change.
+        li.l8n-guidance-text-line-3 !Everyone can comment and make suggestions to contribute towards the draft stage.
 
     .objective-navigation
       .objective-navigation-list-wrapper
         ul.objective-navigation-list
           li
-            a.clj-objective-navigation-item-objective(href="#outline") !Objective
+            a.l8n-objective-navigation-item-objective(href="#outline") !Objective
           li
-            a.clj-objective-navigation-item-writers(href="#writers") !Writers
+            a.l8n-objective-navigation-item-writers(href="#writers") !Writers
           li
-            a.clj-objective-navigation-item-questions(href="#questions") !Questions
+            a.l8n-objective-navigation-item-questions(href="#questions") !Questions
           li
-            a.clj-objective-navigation-item-comments(href="#comments") !Comments
+            a.l8n-objective-navigation-item-comments(href="#comments") !Comments
 
     .objective-outline#outline
       h1.objective-title.clj-objective-title.func--objective-page !Build safer cycling networks in the streets of Madrid.
@@ -49,7 +49,7 @@ block content
         p !Street art bitters pour-over, Portland pork belly master cleanse lumbersexual. Aesthetic 90's Shoreditch PBR. Austin sustainable Carles American Apparel, banh mi High Life selvage XOXO plaid stumptown fashion axe skateboard butcher McSweeney's. Master cleanse polaroid Shoreditch DIY, Godard salvia gastropub heirloom Kickstarter fap before they sold out chia. Disrupt Neutra tofu Godard kitsch. Chambray Helvetica plaid chia salvia. Cronut asymmetrical messenger bag, cornhole listicle selvage yr beard Godard stumptown meh sustainable.
 
     .objective-writers#writers
-      h2.clj-writers-section-title !Writers
+      h2.l8n-writers-section-title !Writers
       ul.writer-item-list.clj-writer-item-list
         +writerItem('!Jenny Bloggs', '#', 'http://placekitten.com/g/80/80')
           | !A cycling enthusiast, responsible for many safety policies in the UK.
@@ -57,19 +57,19 @@ block content
           | !Quirky but has achieved wonders in the London for the boris bikes.
         +writerItem('!Bob Smith', '#', '')
           | !Interested in anything to do with cycling and Spain.
-      a.button.invite-writer.clj-invite-writer-link.func--invite-writer(href="/objective-invite-writer") !Invite a writer
+      a.button.invite-writer.clj-invite-writer-link.l8n-invite-writer-link.func--invite-writer(href="/objective-invite-writer") !Invite a writer
 
     .objective-questions#questions
-      h2.clj-questions-section-title !Recently asked questions
+      h2.l8n-questions-section-title !Recently asked questions
       ol.question-list.clj-question-list
         +questionItem('!Chris Cheshire', '3 September 2015 07:41')
           | !What road surface should we use?
         +questionItem('!Chris Cheshire', '4 September 2015 07:41')
           | !Do we have a colour in mind for the road?
-      a.button.clj-ask-question-link.func--add-question(href="/objective-write-a-question") !Ask a question
+      a.button.clj-ask-question-link.l8n-ask-question-link.func--add-question(href="/objective-write-a-question") !Ask a question
 
     .objective-comments#comments
-      h2.clj-comments-section-title !Comments
+      h2.l8n-comments-section-title !Comments
       .clj-comment-create
         +addCommentForm()
       ol.comment-list.clj-comment-list
@@ -78,7 +78,7 @@ block content
             span.comment-author Joe Blogs
             span.comment-date 4 September 2015 15:41
           .comment-text
-            p We definitely need to look into Gran Via and Calle Mayor!
+            p !We definitely need to look into Gran Via and Calle Mayor!
           +commentReply
 
           ol.comment-list
@@ -87,7 +87,7 @@ block content
                 span.comment-author Matt Smith
                 span.comment-date 4 September 2015 16:21
               .comment-text
-                p Agreed.  This would be a good location.
+                p !Agreed.  This would be a good location.
               +commentReply
 
               ol.comment-list
@@ -99,9 +99,9 @@ block content
                   a.more-comments-item-link(href="#") More comments
 
         +commentItem('Phil Smith', '2 September 2015 07:41')
-          p Oooh Paseo del Prado.
+          p !Oooh Paseo del Prado.
         +commentItem('Jen Bloggs', '1 September 2015 07:41')
-          p Paseo del Prado.
+          p !Paseo del Prado.
 
 block footerScripts
   script.
