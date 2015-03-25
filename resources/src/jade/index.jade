@@ -6,8 +6,8 @@ block vars
 block content
 
   .index-hero
-    h1.index-welcome !Collaborative policy making for democratic organisations.
-    p.index-intro !Gather community opinion, generate ideas, share, discuss, vote and collaborate with experts to draft new policy.
+    h1.index-welcome.clj-index-welcome !Collaborative policy making for democratic organisations.
+    p.index-intro.clj-index-intro !Gather community opinion, generate ideas, share, discuss, vote and collaborate with experts to draft new policy.
 
     .grid-container
       section
@@ -15,23 +15,25 @@ block content
           .info-box-icon
             i.fa.fa-lightbulb-o
           .info-box-text
-            | !Create an
+            span.clj-create-objective-begin !Create an
             =" "
-            span.info-box-emphasis !objective
-            |  !to describe the change you want to achieve.
+            span.info-box-emphasis.clj-create-objective-keyword !objective
+            =" "
+            span.clj-create-objective-end !to describe the change you want to achieve.
         .grid-column
             .info-box-icon
               i.fa.fa-users
-            .info-box-text
+            .info-box-text.clj-collaborate-info
               | !Collaborate on generating ideas, gathering data and finding experts to write policy.
         .grid-column
           .info-box-icon
             i.fa.fa-refresh
           .info-box-text
-            | !Work together to release and review
+            span.clj-draft-info-begin !Work together to release and review
             =" "
-            span.info-box-emphasis !drafts
-            |  !in an open and transparent way.
+            span.info-box-emphasis.clj-draft-info-keyword !drafts
+            =" "
+            span.clj-draft-info-end !in an open and transparent way.
 
-    a.button.index-get-started(href="/objectives", title="Objectives") !Objectives
-    a.index-learn-more(href="/learn-more", title="Learn more") !Learn more
+    a.button.objectives-link.clj-objectives-link(href="/objectives") !Objectives
+    a.index-learn-more.clj-learn-more-link(href="/learn-more") !Learn more

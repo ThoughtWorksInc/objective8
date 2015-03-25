@@ -19,6 +19,19 @@ notifications,drafting-started-helper-text,"This means that you can no longer as
 notifications,drafting-message-title,Drafting has started on this objective!
 notifications,drafting-message-body,"This means that you can no longer ask or answer questions, comment, or invite new writers."
 notifications,drafting-message-link,Contribute to the drafting progress.
+index,doc-title,Objective[8]
+index,index-welcome,Collaborative policy making for democratic organisations.
+index,index-get-started-title,Objectives
+index,index-intro,"Gather community opinion, generate ideas, share, discuss, vote and collaborate with experts to draft new policy."
+index,create-objective-begin,Create an
+index,create-objective-keyword,objective
+index,create-objective-end,to describe the change you want to achieve.
+index,collaborate-info,"Collaborate on generating ideas, gathering data and finding experts to writer policy."
+index,draft-info-begin,Work together to release and review
+index,draft-info-keyword,drafts
+index,draft-info-end,in an open and transparent way.
+index,objectives,Objectives
+index,learn-more,Learn more
 objective-list,create-button-text,Create an objective
 objective-list,sign-in,sign in
 objective-list,drafting-begins,Drafting begins on
@@ -60,14 +73,6 @@ candidate-list,page-intro,Writers work with each other and the community to draf
 candidate-list,candidate-list-heading,Recently added candidate writers
 candidate-list,no-candidates,No candidate writers have been invited yet.
 candidate-list,doc-description,Candidate policy writers...
-index,index-welcome,Collaborative policy making for democratic organisations.
-index,index-get-started-title,Objectives
-index,doc-title,Objective[8]
-index,index-intro,"Gather community opinion, generate ideas, share, discuss, vote and collaborate with experts to draft new policy."
-index,index-learn-more,Learn more
-index,index-learn-more-title,Learn more
-index,index-get-started,Objectives
-index,doc-description,
 sign-in,twitter-sign-in-btn,Sign in with twitter
 sign-in,doc-title,Sign in or Sign up | Objective[8]
 sign-in,reassurance,We will never post to Twitter without your permission.

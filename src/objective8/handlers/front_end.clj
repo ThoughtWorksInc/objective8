@@ -26,8 +26,10 @@
 (defn error-404 [request]
   (error-404-response request))
 
-(defn index [{:keys [t' locale] :as request}]
-  (views/index "index" request))
+(defn index [request]
+  {:status 200
+   :headers {"Content-Type" "text/html"}
+   :body (views/index "index" request)})
 
 (defn sign-in [{{refer :refer} :params
                 :keys [t' locale]
