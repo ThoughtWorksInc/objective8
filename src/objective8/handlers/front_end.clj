@@ -31,12 +31,11 @@
    :headers {"Content-Type" "text/html"}
    :body (views/index "index" request)})
 
-(defn sign-in [{{refer :refer} :params
-                :keys [t' locale]
-                :as request}]
-  (-> (views/sign-in "sign-in" request)
-      (assoc :session (:session request))
-      (assoc-in [:session :sign-in-referrer] refer)))
+(defn sign-in [{{refer :refer} :params :as request}]
+  {:status 200
+   :header {"Content-Type" "text/html"}  
+   :body (views/sign-in "sign-in" request)
+   :session (assoc (:session request) :sign-in-referrer refer)})
 
 (defn sign-out [request]
   (assoc

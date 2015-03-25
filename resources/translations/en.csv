@@ -5,6 +5,11 @@ masthead,objectives-link,Objectives
 masthead,about-link-title-attr,Learn more about Objective[8]
 masthead,about-link,About
 status-bar,status-text,ALPHA: we are still testing
+sign-in,doc-title,Sign in or Sign up | Objective[8]
+sign-in,doc-description,Sign in or Sign up to Objective [8]
+sign-in,page-title,Sign in or Sign up
+sign-in,sign-in-with-twitter,Sign in with twitter
+sign-in,twitter-help-text,We will never post to Twitter without your permission.
 objective-guidance,heading,What is an Objective?
 objective-guidance,text-line-1,A policy starts with an idea.
 objective-guidance,text-line-2,These are catalysts for change.
@@ -89,12 +94,6 @@ candidate-list,page-intro,Writers work with each other and the community to draf
 candidate-list,candidate-list-heading,Recently added candidate writers
 candidate-list,no-candidates,No candidate writers have been invited yet.
 candidate-list,doc-description,Candidate policy writers...
-sign-in,twitter-sign-in-btn,Sign in with twitter
-sign-in,doc-title,Sign in or Sign up | Objective[8]
-sign-in,reassurance,We will never post to Twitter without your permission.
-sign-in,page-title,Sign in or Sign up
-sign-in,twitter-sign-in-title,Sign in with twitter
-sign-in,doc-description,Sign in or Sign up to Objective [8]
 project-status,doc-title,Project status | Objective[8]
 project-status,page-intro,"We are developing and designing Objective[8] in the open. This allows the tool evolve as you use it, as you give feedback, and as the developers update and add content."
 project-status,page-title,Alpha phase

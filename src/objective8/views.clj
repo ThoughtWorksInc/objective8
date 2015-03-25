@@ -8,7 +8,8 @@
             [objective8.templates.question :as question]
             [objective8.templates.add-question :as add-question]
             [objective8.templates.invite-writer :as invite-writer]
-            [objective8.templates.draft :as draft]))
+            [objective8.templates.draft :as draft]
+            [objective8.templates.sign-in :as sign-in]))
 
 
 (defn- user-info [request auth-map]
@@ -49,7 +50,6 @@
 (defn- render-page [page]
   (fn [context] (responses/rendered-response page context)))
 
-(def sign-in (view (render-page responses/sign-in-page)))
 (def project-status (view (render-page responses/project-status-page)))
 (def sign-up-form (view (render-page responses/sign-up)))
 (def question-list (view (render-page responses/question-list-page)))
@@ -70,3 +70,4 @@
 (def invite-writer-page (view invite-writer/invite-writer-page))
 (def draft-list (view draft/draft-list-page))
 (def draft (view draft/draft-page))
+(def sign-in (view sign-in/sign-in-page))

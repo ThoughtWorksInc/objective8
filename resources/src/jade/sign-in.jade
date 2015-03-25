@@ -8,10 +8,9 @@ block vars
 block content
 
   .sign-in-container
-    h1.sign-in-title.l8n-sign-in-title !Sign in
+    h1.sign-in-title.l8n-sign-in-title !Sign in or Sign up
     p.helper-text.l8n-twitter-help-text !We will never post to Twitter without your permission.
     form.sign-in-form.clj-sign-in-twitter(method="post", action="twitter-sign-in")
-      button.btn-social.btn-twitter.btn-lg(type="submit")
+      button.btn-social.btn-twitter.btn-lg.func--sign-in-with-twitter(type="submit")
         i.fa.fa-twitter
         span.l8n-sign-in-with-twitter !Sign in with Twitter
-

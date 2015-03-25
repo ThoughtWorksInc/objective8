@@ -83,7 +83,7 @@
                     (wait-for-title "Sign in or Sign up | Objective[8]")
                     (screenshot "sign_in_page")
 
-                    (wd/click "button[title='Sign in with twitter']") 
+                    (wd/click ".func--sign-in-with-twitter") 
                     (wait-for-title "Sign up almost there | Objective[8]")
                     (screenshot "sign_up_almost_there")
 
