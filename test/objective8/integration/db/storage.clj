@@ -296,15 +296,32 @@
         [(before :contents (do (db-connection)
                                (truncate-tables)))
          (after :facts (truncate-tables))]
+
         (fact "nonsense uris return nil"
               (storage/pg-retrieve-entity-by-uri "/some/nonsense") => nil)
+
+        (fact "by default, entities are retrieved without global id"
+              (let [{objective-id :_id :as objective} (sh/store-an-objective)
+                    uri (str "/objectives/" objective-id)]
+                (storage/pg-retrieve-entity-by-uri uri) => (contains (dissoc objective :username :global-id))
+                (storage/pg-retrieve-entity-by-uri uri) =not=> (contains {:global-id anything})))
+
+        (fact "global id can be optionally included"
+              (let [{objective-id :_id global-id :global-id :as objective} (sh/store-an-objective)
+                    uri (str "/objectives/" objective-id)]
+                (storage/pg-retrieve-entity-by-uri uri :with-global-id) => (contains {:global-id global-id})))
+
+        (fact "uri is included in the retrieved entity"
+              (let [{objective-id :_id global-id :global-id :as objective} (sh/store-an-objective)
+                    uri (str "/objectives/" objective-id)]
+                (storage/pg-retrieve-entity-by-uri uri) => (contains {:uri uri})))
 
         (fact "objectives can be retrieved by uri"
               (let [{o-id :_id :as objective} (sh/store-an-objective)
                     objective-uri (str "/objectives/" o-id)]
-                (storage/pg-retrieve-entity-by-uri objective-uri) => (contains (dissoc objective :username))))
+                (storage/pg-retrieve-entity-by-uri objective-uri :with-global-id) => (contains (dissoc objective :username))))
         
         (fact "drafts can be retrieved by uri"
               (let [{o-id :objective-id d-id :_id :as draft} (sh/store-a-draft)
                     draft-uri (str "/objectives/" o-id "/drafts/" d-id)]
-                (storage/pg-retrieve-entity-by-uri draft-uri) => (contains (dissoc draft :username))))))
+                (storage/pg-retrieve-entity-by-uri draft-uri :with-global-id) => (contains (dissoc draft :username))))))

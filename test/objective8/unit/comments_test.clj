@@ -29,12 +29,3 @@
        (storage/pg-retrieve {:entity :comment
                              :comment-on-id GLOBAL_ID}
                             {:limit 50}) => []))
-
-(fact "Postgresql exceptions are not caught"
-      (comments/store-comment! {:comment "something"
-                                :comment-on-uri "/some/uri"
-                                :created-by-id 1}) => (throws org.postgresql.util.PSQLException)
-      (provided
-        (storage/pg-store! anything) =throws=> (org.postgresql.util.PSQLException.
-                                                (org.postgresql.util.ServerErrorMessage. "" 0))
-        (storage/pg-retrieve-entity-by-uri "/some/uri") => {}))

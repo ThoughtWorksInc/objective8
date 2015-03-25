@@ -47,3 +47,21 @@
              (provided
                (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started true}
                (drafts/retrieve-latest-draft OBJECTIVE_ID) => :draft)))
+
+(def an-objective-not-in-drafting {:drafting-started false})
+(def an-objective-in-drafting {:drafting-started true})
+(def comment-data {:comment-on-uri :entity-uri
+                   :comment "A comment"
+                   :created-by-id USER_ID})
+
+(facts "about commenting"
+       (fact "can comment on an objective that is not in drafting"
+             (actions/create-comment! comment-data) => {:status ::actions/success :result :the-stored-comment}
+             (provided
+              (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => an-objective-not-in-drafting
+              (comments/store-comment-for! an-objective-not-in-drafting comment-data) => :the-stored-comment))
+
+       (fact "cannot comment on an objective that is in drafting"
+             (actions/create-comment! comment-data) => {:status ::actions/objective-drafting-started}
+             (provided
+              (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => an-objective-in-drafting)))

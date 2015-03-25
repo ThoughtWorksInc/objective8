@@ -68,9 +68,22 @@
         :result result})
      (throw (Exception. "Query map requires an :entity key")))))
 
-(defn pg-retrieve-entity-by-uri [uri]
-  (when-let [query (uri-helpers/entity-query-for-uri uri)]
-    (first (:result (pg-retrieve query)))))
+(defn pg-retrieve-entity-by-uri [uri & options]
+  "Retrieves an entity from the DB by its uri.  Returns nil if entity
+  not found, or the uri is invalid.  By default, the global-id for the
+  entity is not included.
+
+Options: :with-global-id -- includes the global-id in the entity."
+  (let [options (set options)
+        optionally-remove-global-id (if (options :with-global-id)
+                                      identity
+                                      #(dissoc % :global-id))]
+    (when-let [query (uri-helpers/entity-query-for-uri uri)]
+      (-> (pg-retrieve query)
+          :result
+          first
+          (assoc :uri uri)
+          optionally-remove-global-id))))
 
 (defn update [entity new-fields where]
   (korma/update entity 

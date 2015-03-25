@@ -36,9 +36,12 @@
     (up-down-votes/store-vote! vote-data)))
 
 (defn create-comment! [{:keys [comment-on-uri] :as comment-data}]
-  (if-let [stored-comment (comments/store-comment! comment-data)]
-    {:status ::success :result stored-comment}
-    {:status ::failure}))
+  (let [entity-to-comment-on (storage/pg-retrieve-entity-by-uri comment-on-uri :with-global-id)]
+    (if (objectives/open? entity-to-comment-on)
+      (if-let [stored-comment (comments/store-comment-for! entity-to-comment-on comment-data)]
+        {:status ::success :result stored-comment}
+        {:status ::failure})
+      {:status ::objective-drafting-started})))
 
 (defn get-comments [entity-uri]
   {:status ::success :result (comments/get-comments entity-uri)})
