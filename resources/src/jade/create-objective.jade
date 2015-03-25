@@ -1,0 +1,45 @@
+extends layouts/base
+include mixins/_view_helpers
+
+block vars
+  - bodyClass = ""
+  - pageTitle = "! Create Objective"
+
+block content
+
+  .middle-container
+
+    +guidanceText('!Creating an objective')
+      ul
+        li.l8n-guidance-1 !An objective is a change that could be achieved by introducing new policy. For example: improving access to public housing, or increasing the safety of our roads.
+        li.l8n-guidance-2 !Your objective has just 30 days until it's transformed into a working draft.
+        li.l8n-guidance-3 !Share your objective to encourage collaboration.
+
+    h1 Create objective
+    form(method="POST", action="/objectives")
+      label.l8n-objective-title(for="objective-title") !Headline
+        span.required *
+      p.label-helper.l8n-objective-title-helper !A headline should encourage contribution or discussion
+      input.clj-input-objective-title.func--input-objective-title(id="objective-title", name="title", type="text", pattern=".{3,}", maxlength="120", required="required")
+
+      label.l8n-objective-goal-1(for="objective-goals") Goals
+        span.required *
+      p.label-helper.l8n-objective-goal-1-helper !A goal is what you’d like your change to achieve
+      input.clj-input-objective-goal-1.func--input-objective-goal-1(id="objective-goals", name="goal-1", type="text", pattern=".{3,}", required="required")
+
+      label.visuallyhidden.l8n-objective-goal-2(for="objective-goals-2") !Goal 2
+      input.clj-input-objective-goal-2.func--input-objective-goal-2(id="objective-goals-2", name="goal-2", type="text", pattern=".{3,}")
+
+      label.visuallyhidden.l8n-objective-goal-3(for="objective-goals-3") !Goal 3
+      input.clj-input-objective-goal-3.func--input-objective-goal-3(id="objective-goals-3", name="goal-3", type="text", pattern=".{3,}")
+
+      label.l8n-objective-background(for="objective-description") !Background
+      p.label-helper.l8n-objective-background-helper !Provide further information on why achieving this objective is important or necessary
+      textarea.clj-input-objective-background(id="objective-description", name="description", rows="10", cols="10", maxlength="5000")
+
+      //label(for="objective-end-date") !Drafting start date
+      //  span.required *
+      //p.label-helper !On this date, the drafting phase begins. You should give participants enough time to generate useful information, and to recruit and vote for potential policy writers.
+      //input(id="objective-end-date", name="end-date", type="date", placeholder="!yyyy-mm-dd", required="required")
+
+      button.button.clj-create-objective.l8n-create-objective.func--create-objective(type="submit") !Create
