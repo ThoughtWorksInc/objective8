@@ -101,14 +101,6 @@
 (html/defsnippet guidance
   "templates/big-guidance.html" [[:.grid-container]] [])
 
-;HOME/INDEX
-(html/defsnippet index-page
-  "templates/index.html" [[:#clj-index]] [{:keys [translations]}]
-  [:.index-get-started] (html/html-content (translations :index/index-get-started))
-  [:.index-get-started] (html/set-attr :title (translations :index/index-get-started-title))
-  [:#clj-index html/any-node] (html/replace-vars translations)
-  [:.index-intro] (html/after (guidance)))
-
 ;SIGN IN
 (html/defsnippet sign-in-twitter
   "templates/sign-in-twitter.html" [[:#clj-sign-in-twitter]] [])
