@@ -101,15 +101,6 @@
 (html/defsnippet guidance
   "templates/big-guidance.html" [[:.grid-container]] [])
 
-;SIGN IN
-(html/defsnippet sign-in-twitter
-  "templates/sign-in-twitter.html" [[:#clj-sign-in-twitter]] [])
-
-(html/defsnippet sign-in-page
-  "templates/sign-in.html" [[:#clj-sign-in-page]] [{:keys [translations]}]
-  [:h1] (html/after (sign-in-twitter))
-  [:#clj-sign-in-page html/any-node] (html/replace-vars translations))
-
 ;;ARTICLE META
 (html/defsnippet article-meta
   "templates/article-meta.html" [:div.article-meta] [objective translations]
