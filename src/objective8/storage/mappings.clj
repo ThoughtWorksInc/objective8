@@ -133,18 +133,17 @@
                  :_id (:_id m)
                  :_created_at (sql-time->iso-time-string (:_created_at m)))))
 
-(defn unmap-with-username [data-key]
-  (fn [m] (assoc (json-type->map (data-key m))
-                 :_id (:_id m)
-                 :_created_at (sql-time->iso-time-string (:_created_at m))
-                 :username (:username m))))
+(defn with-username [unmap-fn]
+  (fn [m] (-> (unmap-fn m)
+              (assoc :username (:username m)))))
 
-(defn unmap-with-sql-time [data-key]
-  (fn [m] (assoc (json-type->map (data-key m))
-                 :_id (:_id m)
-                 :_created_at (sql-time->iso-time-string (:_created_at m))
-                 :_created_at_sql_time (:_created_at m)
-                 :username (:username m))))
+(defn with-sql-time [unmap-fn]
+  (fn [m] (-> (unmap-fn m)
+              (assoc :_created_at_sql_time (:_created_at m)))))
+
+(defn with-global-id [unmap-fn]
+  (fn [m] (-> (unmap-fn m)
+              (assoc :global-id (:global_id m)))))
 
 (declare objective user comment question answer invitation candidate bearer-token up-down-vote)
 
@@ -157,7 +156,7 @@
   (korma/table :objective8.objectives)
   (korma/belongs-to user {:fk :created_by_id})
   (korma/prepare map->objective)
-  (korma/transform (unmap-with-username :objective)))
+  (korma/transform (-> (unmap :objective) with-username with-global-id)))
 
 (korma/defentity user
   (korma/pk :_id)
@@ -170,21 +169,21 @@
   (korma/table :objective8.comments)
   (korma/belongs-to user {:fk :created_by_id})
   (korma/prepare map->comment)
-  (korma/transform (unmap-with-username :comment)))
+  (korma/transform (-> (unmap :comment) with-username)))
 
 (korma/defentity question
   (korma/pk :_id)
   (korma/table :objective8.questions)
   (korma/belongs-to user {:fk :created_by_id})
   (korma/prepare map->question)
-  (korma/transform (unmap-with-username :question)))
+  (korma/transform (-> (unmap :question) with-username)))
 
 (korma/defentity answer
   (korma/pk :_id)
   (korma/table :objective8.answers)
   (korma/belongs-to user {:fk :created_by_id})
   (korma/prepare map->answer)
-  (korma/transform (unmap-with-username :answer)))
+  (korma/transform (-> (unmap :answer) with-username)))
 
 (korma/defentity invitation
   (korma/pk :_id)
@@ -216,7 +215,7 @@
   (korma/table :objective8.drafts)
   (korma/belongs-to user {:fk :submitter_id})
   (korma/prepare map->draft)
-  (korma/transform (unmap-with-sql-time :draft)))
+  (korma/transform (-> (unmap :draft) with-username with-sql-time with-global-id)))
 
 (korma/defentity bearer-token
   (korma/pk :_id)
