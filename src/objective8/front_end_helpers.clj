@@ -22,7 +22,7 @@
   "Returns a map of an objective if all the parts are in the
   request params. Otherwise returns nil"
   [{:keys [params]} user-id]
-    (let [iso-time (utils/string->date-time (:end-date params))]
+    (let [iso-time (utils/date-time->date-time-plus-30-days (utils/current-time))]
       (assoc (select-keys params [:title :goal-1 :goal-2 :goal-3 :description ])
                                   :end-date iso-time
                                   :created-by-id user-id)))

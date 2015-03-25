@@ -10,7 +10,7 @@
 (def GLOBAL_ID 5)
 
 (defn requestify [params]
-  {:params (assoc params :end-date "2015-01-03")})
+  {:params (dissoc params :end-date)})
 
 (def date-time (utils/string->date-time "2015-01-03"))
 
@@ -22,7 +22,8 @@
 (fact "creates an objective from a request"
         (let [objective (request->objective (requestify test-objective)
                                             USER_ID)]
-          (:created-by-id objective) => 1))
+          (:created-by-id objective) => 1
+          (:end-date objective) =not=> nil))
 
 (fact "extracts comment data from a request"
       (let [comment-data (request->comment-data {:params {:comment "the comment"

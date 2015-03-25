@@ -31,9 +31,13 @@
 (facts "objectives"
        (binding [config/enable-csrf false]
          (fact "authorised user can post and retrieve objective"
-               (against-background (http-api/create-objective
-                                    (contains (assoc basic-objective :created-by-id USER_ID))) => {:status ::http-api/success
-                                                                                                   :result {:_id OBJECTIVE_ID}})
+               (against-background (http-api/create-objective 
+                                     (contains {:title "my objective title"
+                                                :goal-1 "my objective goal"
+                                                :description "my objective description"
+                                                :end-date anything
+                                                :created-by-id USER_ID})) => {:status ::http-api/success
+                                                                              :result {:_id OBJECTIVE_ID}})
                (against-background
                  ;; Twitter authentication background
                  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
@@ -41,8 +45,7 @@
                                                      :result {:_id USER_ID}})
                (let [params {:title "my objective title"
                              :goal-1 "my objective goal"
-                             :description "my objective description"
-                             :end-date "2012-12-12"}
+                             :description "my objective description"}
                      response (:response
                                 (-> user-session
                                     (helpers/with-sign-in "http://localhost:8080/objectives/create")

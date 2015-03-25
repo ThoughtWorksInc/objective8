@@ -1,5 +1,6 @@
 (ns objective8.utils
   (:require [clj-time.format :as time-format]
+            [clj-time.core :as time-core]
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
             [bidi.bidi :as bidi]
             [cemerick.friend :as friend]
@@ -60,6 +61,9 @@
 
 ;;TIME FORMATTING
 
+(defn current-time []
+  (time-core/now))
+
 (defn string->date-time [date-string]
   (time-format/parse (time-format/formatters :year-month-day) date-string))
 
@@ -82,7 +86,10 @@
 (defn iso-time-string->pretty-time [iso-time-string]
   (time-format/unparse pretty-date-time (time-string->date-time iso-time-string)))
 
-(defn- regex-checker
+(defn date-time->date-time-plus-30-days [date-time]
+  (time-core/plus date-time (time-core/days 30)))
+
+(  defn- regex-checker
   [fragment-regex]
     (fn [fragment] (when fragment (re-matches fragment-regex fragment))))
 
