@@ -50,7 +50,10 @@
 
       [:.clj-previous-drafts-list] (if (empty? (rest drafts))
                                      (html/substitute (translations :draft-list/no-previous-versions))
-                                     (previous-drafts (rest drafts))))))
+                                     (previous-drafts (rest drafts)))
+
+      [:.clj-writers-section-title] (html/content (translations :draft-list/writers))
+      [:.clj-writer-item-list] (html/content (f/writer-list context)))))
 
 (defn draft-list-page [{:keys [translations data] :as context}]
   (let [objective (:objective data)]
@@ -74,26 +77,23 @@
                       [:.clj-drafts-wrapper] (if (:drafting-started objective)
                                                (drafts-list context)
                                                (html/substitute (str (translations :draft-list/drafting-begins)
-                                                                     " " (:end-date objective))))
-                      
-                      [:.clj-writers-section-title] (html/content (translations :draft-list/writers))
-                      [:.clj-writer-item-list] (html/content (f/writer-list context)))))))
+                                                                     " " (:end-date objective)))))))))
 
 (defn previous-draft-navigation [{:keys [data translations] :as context}]
   (let [draft (:draft data)]
-  (html/transformation
-    [:.clj-draft-version-previous-link] (html/set-attr "href" 
-                                                       (utils/local-path-for :fe/draft :id (:objective-id draft) 
-                                                                             :d-id (:previous-draft-id draft)))
-    [:.clj-draft-version-navigation-previous-text] (html/content (translations :draft/previous-draft)))))
+    (html/transformation
+      [:.clj-draft-version-previous-link] (html/set-attr "href" 
+                                                         (utils/local-path-for :fe/draft :id (:objective-id draft) 
+                                                                               :d-id (:previous-draft-id draft)))
+      [:.clj-draft-version-navigation-previous-text] (html/content (translations :draft/previous-draft)))))
 
 (defn next-draft-navigation [{:keys [data translations] :as context}]
   (let [draft (:draft data)]
-  (html/transformation
-    [:.clj-draft-version-next-link] (html/set-attr "href" 
-                                                   (utils/local-path-for :fe/draft :id (:objective-id draft) 
-                                                                         :d-id (:next-draft-id draft)))
-    [:.clj-draft-version-navigation-next-text] (html/content (translations :draft/next-draft)))))
+    (html/transformation
+      [:.clj-draft-version-next-link] (html/set-attr "href" 
+                                                     (utils/local-path-for :fe/draft :id (:objective-id draft) 
+                                                                           :d-id (:next-draft-id draft)))
+      [:.clj-draft-version-navigation-next-text] (html/content (translations :draft/next-draft)))))
 
 (defn draft-version-navigation [{:keys [data] :as context}]
   (let [draft (:draft data)]
