@@ -137,24 +137,26 @@
 
       (fact "viewing latest draft when drafting hasn't started displays message"
              (against-background
-               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                         :result {:drafting-started false
-                                                                  :_id OBJECTIVE_ID
-                                                                  :end-date (utils/string->date-time "2012-12-12")}}
+               (http-api/get-objective OBJECTIVE_ID) =>
+               {:status ::http-api/success
+                :result {:drafting-started false
+                         :_id OBJECTIVE_ID
+                         :end-date (utils/date-time->date-time-plus-30-days (utils/current-time))}}
                (http-api/get-draft OBJECTIVE_ID "latest") => {:status ::http-api/forbidden})
             (get-in (p/request user-session latest-draft-url)
-                    [:response :body]) => (contains "12-12-2012"))
+                    [:response :body]) => (contains "29 days"))
 
        (fact "viewing draft list when drafting hasn't started displays message"
              (against-background
                (http-api/get-all-drafts OBJECTIVE_ID) => {:status ::http-api/forbidden}
                (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success}
-               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                         :result {:end-date (utils/string->date-time "2012-12-12")
-                                                                  :drafting-started false}})
+               (http-api/get-objective OBJECTIVE_ID) => 
+               {:status ::http-api/success
+                :result {:end-date (utils/date-time->date-time-plus-30-days (utils/current-time))
+                         :drafting-started false}})
 
              (get-in (p/request user-session draft-list-url)
-                     [:response :body]) => (contains "12-12-2012"))
+                     [:response :body]) => (contains "29 days"))
 
        (fact "anyone can view list of drafts"
              (against-background

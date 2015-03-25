@@ -64,6 +64,11 @@
 (defn current-time []
   (time-core/now))
 
+(defn days-until [date-time]
+  (if (= date-time (time-core/earliest (current-time) date-time))
+    0
+    (time-core/in-days (time-core/interval (current-time) date-time))))
+
 (defn string->date-time [date-string]
   (time-format/parse (time-format/formatters :year-month-day) date-string))
 

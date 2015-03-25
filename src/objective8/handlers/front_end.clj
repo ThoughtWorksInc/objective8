@@ -62,8 +62,9 @@
                 (list (:goals objective))
                 (remove clojure.string/blank? [(:goal-1 objective) (:goal-2 objective) (:goal-3 objective)]))
         formatted-objective (-> objective
-                                (update-in [:end-date] utils/date-time->pretty-date)
                                 (assoc :goals goals)
+                                (assoc :drafting-begins-in (str (utils/days-until (:end-date objective)) " days"))
+                                (update-in [:end-date] utils/date-time->pretty-date)
                                 (dissoc :goal-1 :goal-2 :goal-3))]
     formatted-objective))
 

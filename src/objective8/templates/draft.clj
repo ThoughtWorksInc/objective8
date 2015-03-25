@@ -77,7 +77,7 @@
                       [:.clj-drafts-wrapper] (if (:drafting-started objective)
                                                (drafts-list context)
                                                (html/substitute (str (translations :draft-list/drafting-begins)
-                                                                     " " (:end-date objective)))))))))
+                                                                     " " (:drafting-begins-in objective)))))))))
 
 (defn previous-draft-navigation [{:keys [data translations] :as context}]
   (let [draft (:draft data)]
@@ -145,4 +145,4 @@
                       [:.clj-draft-wrapper] (if (:drafting-started objective)
                                               (draft-wrapper context)
                                               (html/substitute (str (translations :draft/drafting-begins)
-                                                                    " " (:end-date objective)))))))))
+                                                                    " " (:drafting-begins-in objective)))))))))
