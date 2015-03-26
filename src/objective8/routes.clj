@@ -5,15 +5,15 @@
 (def routes
   [
    "/"  ;; FRONT-END
-   {""                 :fe/index
+   {""                  :fe/index
     "sign-in"           :fe/sign-in
     "sign-out"          :fe/sign-out
     "project-status"    :fe/project-status
     "learn-more"        :fe/learn-more
     "static/"           (->Resources {:prefix "public/"})
-    "meta/up-vote"      {:post :fe/post-up-vote}
-    "meta/down-vote"    {:post :fe/post-down-vote}
-    "comments"          {:post :fe/post-comment}
+    "meta"              {"/up-vote"      {:post :fe/post-up-vote}
+                         "/down-vote"    {:post :fe/post-down-vote}
+                         "/comments"     {:post :fe/post-comment}}
     "objectives"        {:get :fe/objective-list
                          :post :fe/create-objective-form-post
                          "/create" {:get :fe/create-objective-form} 

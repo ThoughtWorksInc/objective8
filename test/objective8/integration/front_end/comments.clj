@@ -6,6 +6,7 @@
             [objective8.handlers.front-end :as front-end]
             [objective8.http-api :as http-api]
             [objective8.config :as config]
+            [objective8.utils :as utils]
             [objective8.integration.integration-helpers :as helpers]
             [objective8.core :as core]))
 
@@ -38,7 +39,7 @@
                              :comment-on-uri OBJECTIVE_URI}
                      {response :response} (-> user-session
                                               (helpers/with-sign-in (str "http://localhost:8080/objectives/" OBJECTIVE_ID))
-                                              (p/request "http://localhost:8080/comments"
+                                              (p/request (utils/path-for :fe/post-comment)
                                                          :request-method :post
                                                          :params params))]
                  (:flash response) => (contains "Your comment has been added!")

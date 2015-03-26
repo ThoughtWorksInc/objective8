@@ -61,4 +61,4 @@
                        (fact "cannot post a new objective"
                              (default-app objectives-post-request) => (contains {:status 302}))
                        (fact "cannot post a comment"
-                             (default-app (mock/request :post "/comments")) => (contains {:status 302}))))))
+                             (default-app (mock/request :post "/meta/comments")) => (contains {:status 302}))))))
