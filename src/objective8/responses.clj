@@ -261,15 +261,6 @@
   [:#clj-comments-view html/any-node] (html/replace-vars translations)
   [:#clj-comments-view :.comment-list] (let [comments (:comments data)] (if (empty? comments) identity (html/content (map a-comment comments)))))
 
-;USERS
-(html/defsnippet sign-up
-  "templates/sign-up.html" [[:#clj-sign-up]] [{:keys [translations doc]}]
-  [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:#clj-username-error] (if-let [error-type (get-in doc [:errors :username])]
-                           (html/content (translations (keyword "sign-up" (name error-type))))) 
-  [:#clj-sign-up html/any-node] (html/replace-vars translations))
-
-
 (defn render-template [template & args]
   (apply str (apply template args)))
 
