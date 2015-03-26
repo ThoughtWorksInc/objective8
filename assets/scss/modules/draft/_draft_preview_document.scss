@@ -1,11 +1,14 @@
 .draft-preview-document {
   position: relative;
-  margin: 0 0 0 0;
-  padding: 0 40px 2em 0;
+  margin-bottom: 2em;
+  padding: 2em 40px 2em 0;
   font-family: $serif;
   font-size: 110%;
   color: $default_text_color;
   border-bottom: 1px solid $border_color;
+  @include mq(321) {
+    margin-bottom: 4em;
+  }
   .draft-title {
     font-family: $sans-serif;
     letter-spacing: -0.025em;

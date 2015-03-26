@@ -1,22 +1,19 @@
-#clj-draft-detail-content {
-  article {
-    border: 1px solid black;
-    padding: 0.5em;
-  }
-  .no-drafts {
-    background: lightgray none repeat scroll 0% 0%;
-    padding-top: 40%;
-    padding-bottom: 40%;
-    text-align: center;
-    }
-  }
-
-#clj-add-a-draft {
-    margin-top: 2em;
-    float: right;
+.add-a-draft-wrapper {
+  text-align: center;
+  margin-bottom: 2em;
 }
 
-.add-a-draft-wrapper {
-    text-align: center;
-    margin-bottom: 2em;
+
+%draft-section {
+  margin-bottom: 2em;
+  @include mq(321) {
+    margin-bottom: 4em;
+  }
+}
+
+.draft-writers {
+  @extend %draft-section;
+}
+.draft-comments {
+  @extend %draft-section;
 }
