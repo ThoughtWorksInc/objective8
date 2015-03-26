@@ -33,9 +33,6 @@
 .comment-actions {
   @extend .list-item-actions;
 }
-.actions-vote-count {
-  padding-right: 0.5em;
-}
 .comment-reply {
   @extend %list-item-reply-button;
 }

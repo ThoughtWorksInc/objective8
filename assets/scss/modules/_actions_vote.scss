@@ -1,13 +1,15 @@
 $vote_button_spacing: 0.75em;
 
 .actions-up-down-vote-form {
-  display: inline;
+  display: inline-block;
+  margin-right: 0.5em;
 }
 .actions-vote-up,
 .actions-vote-down {
   -webkit-appearance: none;
-  display: inline-block;  
- // margin-right: $vote_button_spacing;
+  display: inline-block;
+  padding-left: 0;
+  padding-right: 0;
   overflow: hidden;
   cursor: pointer;
   text-align: center;
@@ -22,21 +24,26 @@ $vote_button_spacing: 0.75em;
   &:hover {
     color: rgba($default_text_color,0.5);
   }
-  &:after {
-    content: '|';
-    padding-left: $vote_button_spacing;
-    color: $default_text_color;
-    text-decoration: none;
-  }
 }
 .actions-vote-down:last-child {
   &:after {
     display: none;
   }
 }
+.actions-vote-count {
+  min-width: 1.5em;
+  padding-right: 0.5em;
+  text-align: left;
+}
 .vote-direction-text {
   display: inline-block;
   width: 0.00001em;
   height: 0.00001em;
   overflow: hidden;
+}
+
+.actions-vote-spacer {
+  display: inline-block;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
 }
