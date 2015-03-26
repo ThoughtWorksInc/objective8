@@ -25,3 +25,23 @@ p {
   font-size: 0.8em;
   color: $grey-1;
 }
+
+
+table {
+  margin-bottom: 1em;
+}
+th, td {
+  padding-right: 2em;
+  text-align: left;
+  &:last-child {
+    padding-right: 0;
+  }
+}
+th {
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid currentColor;
+}
+td {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+}
