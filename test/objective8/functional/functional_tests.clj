@@ -125,14 +125,14 @@
 
                     (wd/click ".func--add-question")
                     (wait-for-element ".func--question-textarea")
-                    (screenshot "questions_page")
+                    (screenshot "add_question_page")
 
                     (-> ".func--question-textarea"
                         (wd/input-text "Functional test question") 
                         (wd/submit)) 
 
                     (wait-for-element ".func--add-question")
-                    (screenshot "objective_page_from_question_page")
+                    (screenshot "objective_page_with_question")
 
                     (swap! journey-state assoc :question-url (wd/current-url))
 

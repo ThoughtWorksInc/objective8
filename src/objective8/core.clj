@@ -37,10 +37,10 @@
                :fe/objective-list front-end-handlers/objective-list
                :fe/objective (utils/anti-forgery-hook front-end-handlers/objective-detail)
                :fe/create-comment-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-comment-form-post) #{:signed-in})
+               :fe/add-a-question (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-a-question) #{:signed-in}) 
                :fe/add-question-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-question-form-post) #{:signed-in})
                :fe/question-list (utils/anti-forgery-hook front-end-handlers/question-list)
                :fe/question (utils/anti-forgery-hook front-end-handlers/question-detail)
-               :fe/add-a-question (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-a-question) #{:signed-in}) 
                :fe/add-answer-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-answer-form-post) #{:signed-in})
                :fe/candidate-list (utils/anti-forgery-hook front-end-handlers/candidate-list)
                :fe/invite-writer (utils/anti-forgery-hook front-end-handlers/invite-writer)

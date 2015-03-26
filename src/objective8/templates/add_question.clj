@@ -1,8 +1,7 @@
 (ns objective8.templates.add-question
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
-            [objective8.templates.page-furniture :as f]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]))
+            [objective8.templates.page-furniture :as f]))
 
 (def objective-write-a-question-template (html/html-resource "templates/jade/objective-write-a-question.html" {:parser jsoup/parser}))
 
@@ -23,5 +22,4 @@
                       [:.clj-objective-title] (html/content (:title objective))
                       [:.l8n-add-question-title] (html/content (translations :question-create/add-a-question))
                       [:.clj-question-create-form] (html/content (f/add-question context))
-                      [:.clj-question-create-form] (html/set-attr "action" (str "/objectives/" (:_id objective) "/questions"))
-                      )))))
+                      [:.clj-question-create-form] (html/set-attr "action" (str "/objectives/" (:_id objective) "/questions")))))))
