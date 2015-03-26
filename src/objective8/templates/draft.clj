@@ -76,5 +76,5 @@
                                                 (html/set-attr "drafting-begins-date"
                                                                (:end-date objective))
                                                 (html/content (str (translations :draft/drafting-begins)
-                                                                   " " (:drafting-begins-in objective)
+                                                                   " " (:days-until-drafting-begins objective) 
                                                                    " " (translations :draft/days))))))))))

@@ -65,7 +65,7 @@
   (time-core/now))
 
 (defn days-until [date-time]
-  (if (= date-time (time-core/earliest (current-time) date-time))
+  (if (time-core/after? (current-time) date-time)
     0
     (time-core/in-days (time-core/interval (current-time) date-time))))
 
