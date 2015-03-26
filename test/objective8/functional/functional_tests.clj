@@ -275,6 +275,23 @@
                   => (contains {:page-title "Policy draft | Objective[8]"
                                 :page-source (contains FIRST_DRAFT_HTML)}))
 
+            (fact "Can comment on a draft"
+                  (try
+                    (wd/to (str (:objective-url @journey-state) "/drafts/latest"))
+                    (wait-for-title "Policy draft | Objective[8]")
+
+                    (wd/input-text ".func--comment-form-text-area" "Functional test comment text")
+                    (wd/click ".func--comment-form-submit")
+                    (wait-for-title "Policy draft | Objective[8]")
+                    (screenshot "draft_with_comment")
+
+                    (wd/page-source)
+
+                    (catch Exception e
+                      (screenshot "ERROR-Can-comment-on-a-draft")
+                      (throw e)))
+                  => (contains "Functional test comment text"))
+
             (fact "Can navigate between drafts"
                   (try
                     (wd/to (str (:objective-url @journey-state) "/drafts"))

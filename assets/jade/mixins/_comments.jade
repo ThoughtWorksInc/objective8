@@ -20,5 +20,5 @@ mixin addCommentForm()
   form.add-comment-form.clj-add-comment-form(method='POST', action='/comments')
     input.clj-refer(name='refer', type='hidden', value='!redirect-after-post-uri')
     input.clj-comment-on-uri(name='comment-on-uri', type='hidden', value='!entity-to-comment-on-uri')
-    textarea(name='comment', rows='5', cols='10', pattern=".{50,}", maxLength='500', required)
-    button.button.clj-add-comment(type='submit') !Add a comment
+    textarea.func--comment-form-text-area(name='comment', rows='5', cols='10', pattern=".{50,}", maxLength='500', required)
+    button.button.clj-add-comment.func--comment-form-submit(type='submit') !Add a comment
