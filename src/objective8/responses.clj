@@ -122,14 +122,6 @@
   [:#clj-error-404 html/any-node] (html/replace-vars translations)
   [:#clj-error-404-content] (html/html-content (translations :error-404/page-content)))
 
-;DRAFTS
-(html/defsnippet add-draft-page
-  "templates/drafts/add-draft.html" [:#clj-add-draft] [{:keys [translations data]}]
-  [:#clj-add-draft-preview] (some-> data :preview html/html-content)
-  [:#clj-add-draft-form] (html/set-attr :action (str "/objectives/" (:objective-id data) "/add-draft"))
-  [:#clj-add-draft-form :textarea] (html/content (:markdown data))
-  [:#clj-add-draft html/any-node] (html/replace-vars translations))
-
 ;INVITATIONS
 (html/defsnippet invitation-create
   "templates/writers/invitation-form.html" [[:#clj-invitation]] [{:keys [translations data] :as context}]
