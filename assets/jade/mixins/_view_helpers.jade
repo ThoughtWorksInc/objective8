@@ -3,6 +3,7 @@ include _questions
 include _comments
 include _writers
 include _objectives
+include _draft
 
 mixin guidanceText(heading)
   .guidance-text
@@ -27,7 +28,8 @@ mixin voteUpDownControls()
       span.actions-vote-count #{voteUpCount}
       i.fa.fa-fw.fa-angle-up
       span.vote-direction-text Vote down
-    button.actions-vote-down.func-vote-down(type="submit", value="down", title="Vote down")      
+    .actions-vote-spacer |
+    button.actions-vote-down.func-vote-down(type="submit", value="down", title="Vote down")
       span.actions-vote-count #{voteDownCount}
       i.fa.fa-fw.fa-angle-down
       span.vote-direction-text Vote down
