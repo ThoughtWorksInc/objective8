@@ -32,7 +32,7 @@ $draft_navigation_height: 80px;
   margin: -1px auto;
   @include mq(450) {
     min-height: $draft_navigation_height;
-    max-width: 45em;
+    max-width: $max_content_width;
     padding: 0.5em;
     font-size: 100%;
   }

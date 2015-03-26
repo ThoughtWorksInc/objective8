@@ -7,6 +7,7 @@
 
 .objective-outline {
   @extend %objective-section;
+  position: relative;
   color: $default_text_color;
 }
 
@@ -23,15 +24,70 @@
 }
 
 
-.days-left {
-  text-align: center;
-  text-transform: uppercase;
-  span {
-    display: block;
+.objective-outline-header {
+  position: relative;
+  padding-top: 1.6em;
+  margin-top: 0.6em;
+  border-top: 2px solid $default_text_color;
+  @include mq(760) {
+    padding-top: 0;
+    margin-top: 0;
+    border-top: 0;
   }
 }
+.objective-star-container {
+  position: absolute;
+  top: -43px;
+  width: 31px;
+  perspective: 1000px;
+  @include mq(760) {
+    top: 9px;
+    left: -45px;
+  }
+}
+.objective-star {
+  @include star(31px,1.5em);
+  height: 34px;
+  line-height: 34px;
+  @include mq(760) {
+    font-size: 2em;
+  }
+}
+
+.days-left {
+  margin-bottom: 0;
+  text-align: right;
+  @include mq(760) {
+    float: right;
+    width: 150px;
+    margin-bottom: 1em;
+    margin-left: 1em;
+    border-left: 7px solid $default_text_color;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  span {
+//    margin-right: 0.25em; // if spaces are stripped...
+    @include mq(760) {
+      margin-right: 0;
+      display: block;
+    }
+  }
+}
+.days-left-head {
+
+}
 .days-left-day {
-  line-height: 1;
-  font-size: 5em;
   font-weight: 700;
+  font-size: 120%;
+  @include mq(760) {
+    line-height: 1;
+    font-size: 5em;
+  }
+}
+.days-left-foot {
+  font-weight: 700;
+  @include mq(760) {
+    font-size: 2em;
+  }
 }

@@ -30,6 +30,7 @@
 @import 'font_awesome/icons';
 
 @import 'mixins/dimensions';
+@import 'mixins/star';
 
 @import 'modules/bootstrap_social';
 
@@ -49,8 +50,8 @@
 @import 'modules/invitation_response';
 @import 'modules/info-box';
 @import 'modules/objective_navigation';
-@import 'modules/writer_list';
 @import 'modules/objective_list_item';
+@import 'modules/writer_list';
 @import 'modules/candidate_item';
 @import 'modules/progress_indicator';
 @import 'modules/guidance_text';

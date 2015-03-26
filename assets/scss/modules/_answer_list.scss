@@ -54,7 +54,7 @@
 }
 
 .question-navigation-breadcrumb {
-  max-width: 45em;
+  max-width: $max_content_width;
   margin: -1px auto;
   height: 80px;
   line-height: 80px;

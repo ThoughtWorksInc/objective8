@@ -1,5 +1,5 @@
 .index-hero {
-  max-width: 45em;
+  max-width: $max_content_width;
   margin: 0 auto;
   text-align: center;
   @include mq(720) {
