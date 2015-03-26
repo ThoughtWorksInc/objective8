@@ -180,10 +180,10 @@
 ;; COMMENT CREATE
 
 (html/defsnippet comment-create-form
-  library-html [:.clj-add-comment-form] [{:keys [translations data]}]
+  library-html [:.clj-add-comment-form] [{:keys [translations data ring-request]} comment-target]
   [:.clj-add-comment-form] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:.clj-objective-id-input] (html/set-attr "value" (get-in data [:objective :_id]))
-  [:.clj-refer] (html/set-attr "value" (get-in data [:objective :uri]))
+  [:.clj-refer] (html/set-attr "value" (:uri ring-request))
+  [:.clj-comment-on-uri] (html/set-attr "value" (get-in data [comment-target :uri]))
   [:.clj-add-comment] (html/content (translations :comment-create/post-button)))
 
 (html/defsnippet sign-in-to-comment
@@ -194,7 +194,7 @@
                          (html/content (translations :comment-sign-in/sign-in)))
   [:.clj-after-link] (html/content (translations :comment-sign-in/to)))
 
-(defn comment-create [{user :user :as context}]
+(defn comment-create [{user :user :as context} comment-target]
   (if user
-    (comment-create-form context)
+    (comment-create-form context comment-target)
     (sign-in-to-comment context)))

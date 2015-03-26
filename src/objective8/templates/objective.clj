@@ -57,4 +57,4 @@
                       [:.l8n-comments-section-title] (html/content (translations :objective-view/comments))
                       [:.clj-comment-list] (html/content (f/comment-list context))
                       [:.clj-comment-create] (when-not (:drafting-started objective)
-                                               (html/content (f/comment-create context))))))))
+                                               (html/content (f/comment-create context :objective))))))))

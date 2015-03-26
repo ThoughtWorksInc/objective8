@@ -28,7 +28,14 @@
                       :description "my objective description"
                       :end-date (utils/string->date-time "2012-12-12")})
 
+
+
 (facts "objectives"
+       (against-background
+        ;; Twitter authentication background
+        (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
+        (http-api/create-user anything) => {:status ::http-api/success
+                                            :result {:_id USER_ID}})
        (binding [config/enable-csrf false]
          (fact "authorised user can post and retrieve objective"
                (against-background (http-api/create-objective 
@@ -38,11 +45,6 @@
                                                 :end-date anything
                                                 :created-by-id USER_ID})) => {:status ::http-api/success
                                                                               :result {:_id OBJECTIVE_ID}})
-               (against-background
-                 ;; Twitter authentication background
-                 (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
-                 (http-api/create-user anything) => {:status ::http-api/success
-                                                     :result {:_id USER_ID}})
                (let [params {:title "my objective title"
                              :goal-1 "my objective goal"
                              :description "my objective description"}
@@ -73,30 +75,32 @@
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/not-found})
              (default-app objective-view-get-request) => (contains {:status 404}))
 
-       (fact "Any user can view comments on an objective"
-             (against-background
+       (facts "about comments"
+              (against-background
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result basic-objective}
                (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success :result []}
                (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}
-               (http-api/retrieve-comments OBJECTIVE_ID) => {:status ::http-api/success
-                                                             :result [{:_id 1
-                                                                       :_created_at "2015-02-12T16:46:18.838Z"
-                                                                       :objective-id OBJECTIVE_ID
-                                                                       :created-by-id USER_ID
-                                                                       :comment "Comment 1"}]})
-             (let [peridot-response (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))]
-               peridot-response) => (contains {:response (contains {:body (contains "Comment 1")})}))
-
-       (fact "An objective that is in drafting cannot be commented on"
-             (against-background
-               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                         :result (assoc basic-objective :drafting-started true)}
-               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success :result []}
-               (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}
                (http-api/retrieve-comments OBJECTIVE_ID) => {:status ::http-api/success :result []})
-             (let [{response :response} (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))]
-               (:body response) =not=> (contains "clj-comment-create")))
+
+              (fact "Any user can view comments on an objective"
+                    (against-background
+                     (http-api/retrieve-comments OBJECTIVE_ID) => {:status ::http-api/success
+                                                                   :result [{:_id 1
+                                                                             :_created_at "2015-02-12T16:46:18.838Z"
+                                                                             :objective-id OBJECTIVE_ID
+                                                                             :created-by-id USER_ID
+                                                                             :comment "Comment 1"}]})
+                    (let [peridot-response (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))]
+                      peridot-response) => (contains {:response (contains {:body (contains "Comment 1")})}))
+
+              (fact "An objective that is in drafting cannot be commented on"
+                    (against-background
+                     (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                               :result (assoc basic-objective :drafting-started true)})
+                    (let [{response :response} (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))
+                          ]
+                      (:body response) =not=> (contains "clj-comment-create"))))
 
        (fact "A user should see an error page when they attempt to access an objective with a non-integer ID"
              (default-app invalid-objective-view-get-request) => (contains {:status 404})))

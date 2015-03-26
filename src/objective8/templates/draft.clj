@@ -52,7 +52,9 @@
       [:.clj-writers-section-title] (html/content (translations :draft/writers))
       [:.clj-writer-item-list] (html/content (f/writer-list context)) 
 
-      [:.clj-draft-comments] nil)))
+      [:.l8n-comments-section-title] (html/content (translations :draft/comments))
+      [:.clj-comment-list] (html/content (f/comment-list context))
+      [:.clj-comment-create] (html/content (f/comment-create context :draft)))))
 
 (defn draft-page [{:keys [translations data doc] :as context}]
   (let [objective (:objective data)]

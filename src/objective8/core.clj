@@ -51,7 +51,7 @@
                :fe/decline-invitation (utils/anti-forgery-hook front-end-handlers/decline-invitation) 
                :fe/add-draft-get (m/wrap-authorise-writer (utils/anti-forgery-hook front-end-handlers/add-draft-get))
                :fe/add-draft-post (m/wrap-authorise-writer (utils/anti-forgery-hook front-end-handlers/add-draft-post))
-               :fe/draft front-end-handlers/draft
+               :fe/draft (utils/anti-forgery-hook front-end-handlers/draft)
                :fe/draft-list front-end-handlers/draft-list
                :fe/post-up-vote (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-up-vote) #{:signed-in}) 
                :fe/post-down-vote (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-down-vote) #{:signed-in}) 

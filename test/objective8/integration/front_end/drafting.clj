@@ -111,7 +111,9 @@
                                                                       :submitter-id USER_ID
                                                                       :username "username"
                                                                       :next-draft-id 4
-                                                                      :previous-draft-id 2}})
+                                                                      :previous-draft-id 2}}
+              (http-api/get-comments anything) => {:status ::http-api/success :result []})
+
             (let [{response :response} (p/request user-session (utils/path-for :fe/draft :id OBJECTIVE_ID 
                                                                                :d-id DRAFT_ID))]
               (:status response) => 200
@@ -130,7 +132,8 @@
                                                                        :_created_at "2015-03-24T17:06:37.714Z"
                                                                        :content SOME_HICCUP
                                                                        :objective-id OBJECTIVE_ID
-                                                                       :submitter-id USER_ID}})
+                                                                       :submitter-id USER_ID}}
+              (http-api/get-comments anything) => {:status ::http-api/success :result []})
             (let [{response :response} (p/request user-session latest-draft-url)]
               (:status response) => 200
               (:body response) => (contains SOME_HTML)))
@@ -195,7 +198,8 @@
                                                                        :_created_at "2015-03-24T17:06:37.714Z"
                                                                        :content SOME_HICCUP
                                                                        :objective-id OBJECTIVE_ID
-                                                                       :submitter-id USER_ID}}) 
+                                                                       :submitter-id USER_ID}}
+               (http-api/get-comments anything) => {:status ::http-api/success :result []})
              (-> user-session
                  ih/sign-in-as-existing-user 
                  (p/request latest-draft-url)

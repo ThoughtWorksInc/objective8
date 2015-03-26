@@ -60,15 +60,15 @@
    (default-get-call url {}))
 
   ([url options]
-  (let [{:keys [body status]} (get-request url options)]
-    (cond
-      (= status 200) {:status ::success
-                      :result (-> body
-                                  (json/parse-string true))}
-      (= status 404) {:status ::not-found}
-      (= status 400) {:status ::invalid-input}
-      (= status 403) {:status ::forbidden}
-      :else          {:status ::error}))))
+   (let [{:keys [body status]} (get-request url options)]
+     (cond
+       (= status 200) {:status ::success
+                       :result (-> body
+                                   (json/parse-string true))}
+       (= status 404) {:status ::not-found}
+       (= status 400) {:status ::invalid-input}
+       (= status 403) {:status ::forbidden}
+       :else          {:status ::error}))))
 
 ;;USERS
 
@@ -114,6 +114,9 @@
 
 (defn post-comment [comment-data]
   (default-post-call (utils/path-for :api/post-comment) comment-data))
+
+(defn get-comments [entity]
+  (default-get-call (utils/path-for :api/get-comments) {:query-params {:uri (:uri entity)}}))
 
 ;; QUESTIONS
 

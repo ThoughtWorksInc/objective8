@@ -18,6 +18,16 @@
 (defn error-404-response [request]
   (assoc (views/four-o-four "error-404" request) :status 404))
 
+(defn- redirect-to-params-referer
+  ([request]
+   (redirect-to-params-referer request nil))
+
+  ([request fragment]
+   (let [location (utils/safen-url (get-in request [:params :refer] "/"))
+         fragment (utils/safen-fragment fragment)
+         redirect-url (str location (when fragment (str "#" fragment)))]
+     (response/redirect redirect-url))))
+
 (defn invitation? [session]
   (:invitation session))
 
@@ -128,15 +138,15 @@
 
 ;; COMMENTS
 
-(defn create-comment-form-post [{{objective-id :objective-id :as params} :params
+(defn create-comment-form-post [{{refer-url :refer :as params} :params
                                  :keys [t' locale] :as request}]
   (if-let [comment-data (helpers/request->comment-data request (get (friend/current-authentication) :identity))]
     (let [{status :status stored-comment :result} (http-api/post-comment comment-data)]
       (cond
         (= status ::http-api/success)
-        (let [objective-url (str utils/host-url "/objectives/" objective-id "#comments")
-              message (t' :comment-view/created-message)]
-          (assoc (response/redirect objective-url) :flash message))
+        (let [message (t' :comment-view/created-message)]
+          (-> (redirect-to-params-referer request "comments")
+              (assoc :flash message)))
 
         (= status ::http-api/invalid-input) {:status 400}
 
@@ -410,14 +420,16 @@
         {objective-status :status objective :result} (http-api/get-objective objective-id)] 
     (if (= objective-status ::http-api/success)
       (let [{draft-status :status draft :result} (http-api/get-draft objective-id draft-id)
-            {candidate-status :status candidates :result} (http-api/retrieve-candidates objective-id)] 
+            {comments-status :status comments :result} (http-api/get-comments draft)
+            {candidate-status :status candidates :result} (http-api/retrieve-candidates objective-id)]
         (cond
-          (every? #(= ::http-api/success %) [draft-status candidate-status])
+          (every? #(= ::http-api/success %) [draft-status candidate-status comments-status])
           (let [draft-content (utils/hiccup->html (apply list (:content draft)))]
             {:status 200
              :body (views/draft "draft" request
                                 :objective objective
                                 :candidates candidates
+                                :comments comments
                                 :draft-content draft-content
                                 :draft draft)
              :headers {"Content-Type" "text/html"}})
@@ -427,6 +439,7 @@
             {:status 200
              :body (views/draft "draft" request
                                 :candidates candidates
+                                :comments comments
                                 :objective (format-objective objective))
              :headers {"Content-Type" "text/html"}}
             (error-404-response request))
@@ -457,10 +470,6 @@
       (= objective-status ::http-api/not-found)
       (error-404-response request)
       :else {:status 500})))
-
-(defn- redirect-to-params-referer [request]
-  (let [location (utils/safen-url (get-in request [:params :refer] "/"))]
-    (response/redirect location)))
 
 (defn post-up-vote [request]
   (-> (helpers/request->up-vote-info request (get (friend/current-authentication) :identity))

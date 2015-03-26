@@ -34,13 +34,14 @@
                                                      :result {:_id USER_ID}})
                (let [user-session (helpers/test-context)
                      params {:comment "The comment"
-                             :objective-id OBJECTIVE_ID
-                             :refer OBJECTIVE_URI}
+                             :refer (str "/objectives/" OBJECTIVE_ID)
+                             :comment-on-uri OBJECTIVE_URI}
                      {response :response} (-> user-session
                                               (helpers/with-sign-in (str "http://localhost:8080/objectives/" OBJECTIVE_ID))
                                               (p/request "http://localhost:8080/comments"
                                                          :request-method :post
-                                                         :params params))]
+                                                         :params params))
+                     _ (prn response)]
                  (:flash response) => (contains "Your comment has been added!")
                  (:headers response) => (helpers/location-contains (str "/objectives/" OBJECTIVE_ID))
                  (:status response) => 302))))

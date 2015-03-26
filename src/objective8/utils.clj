@@ -97,7 +97,7 @@
 (defn date-time->date-time-plus-30-days [date-time]
   (time-core/plus date-time (time-core/days 30)))
 
-(  defn- regex-checker
+(defn- regex-checker
   [fragment-regex]
     (fn [fragment] (when fragment (re-matches fragment-regex fragment))))
 
@@ -117,6 +117,9 @@
       ((regex-checker #"/objectives/\d+/writers/invitation") target)
       ((regex-checker #"/objectives/\d+/candidate-writers") target)
       ((regex-checker #"/objectives/\d+/writer-invitations/\d+") target)))
+
+(defn safen-fragment [fragment]
+  (or ((regex-checker #"comments") fragment)))
 
 (defn anti-forgery-hook 
   "Hook enables CSRF when config variable set. Can be disabled for tests"

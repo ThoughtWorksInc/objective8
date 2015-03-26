@@ -126,6 +126,13 @@
       (provided
        (http-api/default-post-call (contains "/api/v1/meta/comments") comment-data) => :api-call-result))
 
+(fact "getting comments for an entity hits the correct API endpoint"
+      (http-api/get-comments {:uri "/the/uri"}) => :api-call-result
+      (provided
+       (http-api/default-get-call
+         (contains (utils/path-for :api/get-comments))
+         {:query-params {:uri "/the/uri"}}) => :api-call-result))
+
 ;; QUESTIONS
 
 (def the-question {:some :data
