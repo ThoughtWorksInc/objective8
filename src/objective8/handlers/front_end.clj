@@ -372,7 +372,9 @@
      (cond
        (= objective-status ::http-api/success)
        (if (:drafting-started objective)
-         (views/add-draft "add-draft" request :objective-id objective-id)
+         {:status 200
+          :headers {"Content-Type" "text/html"}      
+          :body (views/add-draft "add-draft" request :objective-id objective-id)} 
          {:status 401}) 
        (= objective-status ::http-api/not-found) (error-404-response request)
        :else {:status 500}))) 
@@ -385,7 +387,10 @@
     (cond
       (= action "preview")
       (let [preview (utils/hiccup->html parsed-markdown)]
-        (views/add-draft "add-draft" request :objective-id objective-id :preview preview :markdown content))
+        {:status 200
+         :headers {"Content-Type" "text/html"}      
+         :body (views/add-draft "add-draft" request :objective-id objective-id 
+                                :preview preview :markdown content)})
 
       (= action "submit")
       (let [{status :status draft :result} (http-api/post-draft {:objective-id objective-id

@@ -7,8 +7,7 @@
 (def objective-write-a-question-template (html/html-resource "templates/jade/objective-write-a-question.html" {:parser jsoup/parser}))
 
 (defn add-question-page [{:keys [translations data doc] :as context}]
-  (let [
-        objective (:objective data)]
+  (let [objective (:objective data)]
     (apply str
            (html/emit*
              (html/at objective-write-a-question-template

@@ -11,6 +11,7 @@
             [objective8.templates.invite-writer :as invite-writer]
             [objective8.templates.draft :as draft]
             [objective8.templates.draft-list :as draft-list]
+            [objective8.templates.add-draft :as add-draft]
             [objective8.templates.sign-in :as sign-in]  
             [objective8.templates.sign-up :as sign-up]))
 
@@ -58,7 +59,6 @@
 (def question-detail (view (render-page responses/question-view-page)))
 (def candidate-list (view (render-page responses/candidate-list-page)))
 (def invitation-response (view (render-page responses/invitation-response-page)))
-(def add-draft (view (render-page responses/add-draft-page)))
 
 (def four-o-four (view (render-page responses/error-404-page)))
 
@@ -72,5 +72,6 @@
 (def invite-writer-page (view invite-writer/invite-writer-page))
 (def draft-list (view draft-list/draft-list-page))
 (def draft (view draft/draft-page))
+(def add-draft (view add-draft/add-draft-page))
 (def sign-in (view sign-in/sign-in-page))
 (def sign-up (view sign-up/sign-up-page))

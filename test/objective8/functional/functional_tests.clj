@@ -232,12 +232,12 @@
                     (wait-for-title "Add draft | Objective[8]")
                     (screenshot "add_draft_empty")
 
-                    (wd/input-text "#clj-add-draft-content" FIRST_DRAFT_MARKDOWN)
-                    (wd/click "button[value='preview']")
+                    (wd/input-text ".func--add-draft-content" FIRST_DRAFT_MARKDOWN)
+                    (wd/click ".func--preview-action")
                     (wait-for-title "Add draft | Objective[8]")
                     (screenshot "preview_draft")
 
-                    (wd/click "button[value='submit']")
+                    (wd/click ".func--submit-action")
 
                     (wait-for-title "Policy draft | Objective[8]")
                     (screenshot "submitted_draft")
@@ -282,18 +282,17 @@
 
                     (wd/click ".func--add-a-draft")
                     (wait-for-title "Add draft | Objective[8]")
+                    (wd/input-text ".func--add-draft-content" SECOND_DRAFT_MARKDOWN)
 
-                    (wd/input-text "#clj-add-draft-content" SECOND_DRAFT_MARKDOWN)
-
-                    (wd/click "button[value='submit']")
+                    (wd/click ".func--submit-action")
                     (wait-for-title "Policy draft | Objective[8]")
                     (screenshot "second_draft")
 
                     (wd/click ".func--add-a-draft")
                     (wait-for-title "Add draft | Objective[8]")
-                    (wd/input-text "#clj-add-draft-content" THIRD_DRAFT_MARKDOWN)
+                    (wd/input-text ".func--add-draft-content" THIRD_DRAFT_MARKDOWN)
 
-                    (wd/click "button[value='submit']")
+                    (wd/click ".func--submit-action")
                     (wait-for-title "Policy draft | Objective[8]")
 
                     (wd/to (str (:objective-url @journey-state) "/drafts/latest"))

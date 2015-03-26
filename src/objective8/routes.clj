@@ -5,36 +5,36 @@
 (def routes
   [
    "/"  ;; FRONT-END
-        {""                 :fe/index
-        "sign-in"           :fe/sign-in
-        "sign-out"          :fe/sign-out
-        "project-status"    :fe/project-status
-        "learn-more"        :fe/learn-more
-        "static/"           (->Resources {:prefix "public/"})
-        "meta/up-vote"      {:post :fe/post-up-vote}
-        "meta/down-vote"    {:post :fe/post-down-vote}
-        "objectives"        {:get :fe/objective-list
-                             :post :fe/create-objective-form-post
-                             "/create" {:get :fe/create-objective-form} 
-                             ["/" [#"\d+" :id]] {:get :fe/objective
-                                        "/invite-writer" {:get :fe/invite-writer}
-                                        "/writer-invitations" {:post :fe/invitation-form-post
-                                                               ["/" [#"\d+" :i-id]] {:get :fe/accept-or-decline-invitation
-                                                                                     "/accept" {:post :fe/accept-invitation}
-                                                                                     "/decline" {:post :fe/decline-invitation}
-                                                                                     }}
-                                        "/candidate-writers" {:get :fe/candidate-list}
-                                        "/add-question" {:get :fe/add-a-question}
-                                        "/questions" {:post :fe/add-question-form-post
-                                                      :get :fe/question-list
-                                                      ["/" [#"\d+" :q-id]] {:get :fe/question
-                                                                            "/answers" {:post :fe/add-answer-form-post}}}
-                                                 "/drafts" {:get :fe/draft-list
-                                                            ["/" [#"\d+|latest" :d-id]] {:get :fe/draft}}
-                                        "/add-draft" {:get :fe/add-draft-get
-                                                       :post :fe/add-draft-post}}}
-        "comments"          {:post :fe/create-comment-form-post}
-        "invitations"       {["/" :uuid] {:get :fe/writer-invitation}}
+   {""                 :fe/index
+    "sign-in"           :fe/sign-in
+    "sign-out"          :fe/sign-out
+    "project-status"    :fe/project-status
+    "learn-more"        :fe/learn-more
+    "static/"           (->Resources {:prefix "public/"})
+    "meta/up-vote"      {:post :fe/post-up-vote}
+    "meta/down-vote"    {:post :fe/post-down-vote}
+    "objectives"        {:get :fe/objective-list
+                         :post :fe/create-objective-form-post
+                         "/create" {:get :fe/create-objective-form} 
+                         ["/" [#"\d+" :id]] {:get :fe/objective
+                                             "/invite-writer" {:get :fe/invite-writer}
+                                             "/writer-invitations" {:post :fe/invitation-form-post
+                                                                    ["/" [#"\d+" :i-id]] {:get :fe/accept-or-decline-invitation
+                                                                                          "/accept" {:post :fe/accept-invitation}
+                                                                                          "/decline" {:post :fe/decline-invitation}
+                                                                                          }}
+                                             "/candidate-writers" {:get :fe/candidate-list}
+                                             "/add-question" {:get :fe/add-a-question}
+                                             "/questions" {:post :fe/add-question-form-post
+                                                           :get :fe/question-list
+                                                           ["/" [#"\d+" :q-id]] {:get :fe/question
+                                                                                 "/answers" {:post :fe/add-answer-form-post}}}
+                                             "/drafts" {:get :fe/draft-list
+                                                        ["/" [#"\d+|latest" :d-id]] {:get :fe/draft}}
+                                             "/add-draft" {:get :fe/add-draft-get
+                                                           :post :fe/add-draft-post}}}
+    "comments"          {:post :fe/create-comment-form-post}
+    "invitations"       {["/" :uuid] {:get :fe/writer-invitation}}
 
         ;; API
         "api/v1"            {"/users" {:post :api/post-user-profile
