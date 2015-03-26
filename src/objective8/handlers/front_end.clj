@@ -416,35 +416,35 @@
         draft-id (if (= d-id "latest")
                    d-id
                    (Integer/parseInt d-id))
-        {objective-status :status objective :result} (http-api/get-objective objective-id)] 
-    (if (= objective-status ::http-api/success)
-      (let [{draft-status :status draft :result} (http-api/get-draft objective-id draft-id)
-            {comments-status :status comments :result} (http-api/get-comments (:uri draft))
-            {candidate-status :status candidates :result} (http-api/retrieve-candidates objective-id)]
-        (cond
-          (every? #(= ::http-api/success %) [draft-status candidate-status comments-status])
-          (let [draft-content (utils/hiccup->html (apply list (:content draft)))]
-            {:status 200
-             :body (views/draft "draft" request
-                                :objective objective
-                                :candidates candidates
-                                :comments comments
-                                :draft-content draft-content
-                                :draft draft)
-             :headers {"Content-Type" "text/html"}})
+        {objective-status :status objective :result} (http-api/get-objective objective-id)
+        {draft-status :status draft :result} (http-api/get-draft objective-id draft-id)
+        {comments-status :status comments :result} (http-api/get-comments (:uri draft))
+        {candidate-status :status candidates :result} (http-api/retrieve-candidates objective-id)]
+    (cond
+      (every? #(= ::http-api/success %) [objective-status draft-status candidate-status comments-status])
+      (let [draft-content (utils/hiccup->html (apply list (:content draft)))]
+        {:status 200
+         :body (views/draft "draft" request
+                            :objective objective
+                            :candidates candidates
+                            :comments comments
+                            :draft-content draft-content
+                            :draft draft)
+         :headers {"Content-Type" "text/html"}})
 
-          (or (= draft-status ::http-api/forbidden) (= draft-status ::http-api/not-found)) 
-          (if (= d-id "latest")
-            {:status 200
-             :body (views/draft "draft" request
-                                :candidates candidates
-                                :comments comments
-                                :objective (format-objective objective))
-             :headers {"Content-Type" "text/html"}}
-            (error-404-response request))
+      (= objective-status ::http-api/not-found)
+      (error-404-response request)
 
-          :else {:status 500}))
-      (error-404-response request))))
+      (or (= draft-status ::http-api/forbidden) (= draft-status ::http-api/not-found))
+      (if (= d-id "latest")
+        {:status 200
+         :body (views/draft "draft" request
+                            :candidates candidates
+                            :objective (format-objective objective))
+         :headers {"Content-Type" "text/html"}}
+        (error-404-response request))
+
+      :else {:status 500})))
 
 (defn draft-list [{{:keys [id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)

@@ -32,9 +32,11 @@
       [:.clj-draft-version-navigation-next] (when (:next-draft-id draft)
                                               (next-draft-navigation context)))))
 
+
 (defn draft-wrapper [{:keys [data translations user] :as context}]
   (let [draft (:draft data)
         {objective-id :_id} (:objective data)]
+
     (html/transformation
       [:.clj-draft-version-navigation] (if draft
                                          (draft-version-navigation context)
@@ -50,11 +52,12 @@
                                        (html/html-content draft-content)) 
 
       [:.clj-writers-section-title] (html/content (translations :draft/writers))
-      [:.clj-writer-item-list] (html/content (f/writer-list context)) 
-
-      [:.l8n-comments-section-title] (html/content (translations :draft/comments))
-      [:.clj-comment-list] (html/content (f/comment-list context))
-      [:.clj-comment-create] (html/content (f/comment-create context :draft)))))
+      [:.clj-writer-item-list] (html/content (f/writer-list context))
+      [:.clj-draft-comments] (when draft
+                               (html/transformation
+                                [:.l8n-comments-section-title] (html/content (translations :draft/comments))
+                                [:.clj-comment-list] (html/content (f/comment-list context))
+                                [:.clj-comment-create] (html/content (f/comment-create context :draft)))))))
 
 (defn draft-page [{:keys [translations data doc] :as context}]
   (let [objective (:objective data)]
