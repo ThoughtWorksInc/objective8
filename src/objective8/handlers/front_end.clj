@@ -112,9 +112,9 @@
 (defn objective-detail [{{:keys [id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)
         {objective-status :status objective :result} (http-api/get-objective objective-id)
-        {candidate-status :status  candidates :result} (http-api/retrieve-candidates objective-id)  
+        {candidate-status :status candidates :result} (http-api/retrieve-candidates objective-id)  
         {questions-status :status questions :result} (http-api/retrieve-questions objective-id) 
-        {comments-status :status comments :result} (http-api/get-comments objective)]
+        {comments-status :status comments :result} (http-api/get-comments (:uri objective))]
     (cond
       (every? #(= ::http-api/success %) [objective-status candidate-status questions-status comments-status])
       (let [formatted-objective (format-objective objective)]
@@ -419,7 +419,7 @@
         {objective-status :status objective :result} (http-api/get-objective objective-id)] 
     (if (= objective-status ::http-api/success)
       (let [{draft-status :status draft :result} (http-api/get-draft objective-id draft-id)
-            {comments-status :status comments :result} (http-api/get-comments draft)
+            {comments-status :status comments :result} (http-api/get-comments (:uri draft))
             {candidate-status :status candidates :result} (http-api/retrieve-candidates objective-id)]
         (cond
           (every? #(= ::http-api/success %) [draft-status candidate-status comments-status])

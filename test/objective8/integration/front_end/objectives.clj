@@ -9,6 +9,7 @@
             [objective8.integration.integration-helpers :as helpers]
             [objective8.utils :as utils]
             [objective8.core :as core]))
+
 (def TWITTER_ID "TWITTER_ID")
 
 (def OBJECTIVE_ID 234)
@@ -64,7 +65,7 @@
              (against-background
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result basic-objective}
-               (http-api/get-comments (contains {:uri (str "/objectives/" OBJECTIVE_ID)})) => {:status ::http-api/success :result []}
+               (http-api/get-comments anything)=> {:status ::http-api/success :result []}
                (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success :result []}
                (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []})
              (default-app objective-view-get-request) => (contains {:status 200})
@@ -82,17 +83,16 @@
                                                          :result basic-objective}
                (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success :result []}
                (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}
-               (http-api/get-comments (contains {:uri (str "/objectives/" OBJECTIVE_ID)})) => {:status ::http-api/success :result []})
+               (http-api/get-comments anything) => {:status ::http-api/success :result []})
 
               (fact "Any user can view comments on an objective"
                     (against-background
-                     (http-api/get-comments
-                      (contains {:uri (str "/objectives/" OBJECTIVE_ID)})) => {:status ::http-api/success
-                                                                               :result [{:_id 1
-                                                                                         :_created_at "2015-02-12T16:46:18.838Z"
-                                                                                         :objective-id OBJECTIVE_ID
-                                                                                         :created-by-id USER_ID
-                                                                                         :comment "Comment 1"}]})
+                      (http-api/get-comments anything) => {:status ::http-api/success
+                                                           :result [{:_id 1
+                                                                     :_created_at "2015-02-12T16:46:18.838Z"
+                                                                     :objective-id OBJECTIVE_ID
+                                                                     :created-by-id USER_ID
+                                                                     :comment "Comment 1"}]})
                     (let [peridot-response (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))]
                       peridot-response) => (contains {:response (contains {:body (contains "Comment 1")})}))
 
@@ -100,8 +100,7 @@
                     (against-background
                      (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                                :result (assoc basic-objective :drafting-started true)})
-                    (let [{response :response} (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))
-                          ]
+                    (let [{response :response} (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))]
                       (:body response) =not=> (contains "clj-comment-create"))))
 
        (fact "A user should see an error page when they attempt to access an objective with a non-integer ID"

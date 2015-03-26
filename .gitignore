@@ -21,3 +21,4 @@ hs_err*.log
 init-script
 .idea/
 profiles.clj
+latest.dump
