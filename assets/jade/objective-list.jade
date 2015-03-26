@@ -14,10 +14,11 @@ block content
 
     h1.l8n-objective-list-title !Objectives
 
-    a.button.create-objective-link.l8n-create-objective-link(href="/objectives/create") !Create an objective
+    .objectives-list-actions
+      a.button.create-objective-link.l8n-create-objective-link(href="/objectives/create") !Create an objective
 
-    h2.l8n-objective-list-subtitle !Recently created objectives
-
-    ol.unstyled-list
-      +objectiveListItem('!Build safer cycling networks in the streets of Madrid.', 30)
-        | !London and Pairs are two prime examples of cycle super highway heaven. We need to show the world that Madrid too can be the pinncale in cycli...
+    .recent-objectives
+      h2.l8n-objective-list-subtitle !Recently created objectives
+      ol.unstyled-list
+        +objectiveListItem('!Build safer cycling networks in the streets of Madrid.', 30)
+          | !London and Pairs are two prime examples of cycle super highway heaven. We need to show the world that Madrid too can be the pinncale in cycli...
