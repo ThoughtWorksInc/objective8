@@ -4,19 +4,25 @@ module.exports = function(grunt) {
 
   require('load-grunt-tasks')(grunt);
 
+  var folders = {
+    src: 'resources/src',
+    output: 'resources'
+  };
+
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    folders: folders,
 
     watch: {
       gruntfile: {
         files: ['gruntfile.js']
       },
       sass: {
-        files: ['resources/src/scss/**/*.scss'],
+        files: ['<%= folders.src %>/scss/**/*.scss'],
         tasks: ['sass:dev', 'autoprefixer:dev']
       },
       jade: {
-        files: ['resources/src/jade/**/*.jade'],
+        files: ['<%= folders.src %>/jade/**/*.jade'],
         tasks: ['jade:compile']
       },
       express: {
@@ -41,13 +47,13 @@ module.exports = function(grunt) {
         },
         files: [
           {
-            cwd: "resources/src/jade",
+            cwd: '<%= folders.src %>/jade',
             src: [
               '**/*.jade',
               '!**/_*.jade',
               '!layout/**'
             ],
-            dest: "resources/templates/jade",
+            dest: '<%= folders.output %>/templates/jade',
             expand: true,
             ext: ".html"
           }
@@ -63,9 +69,9 @@ module.exports = function(grunt) {
           outputStyle: 'expanded'
         },
         files: {
-          'resources/public/basic.css': 'resources/src/scss/basic.scss',
-          'resources/public/ie8.css': 'resources/src/scss/ie8.scss',
-          'resources/public/modern.css': 'resources/src/scss/modern.scss'
+          '<%= folders.output %>/public/basic.css': '<%= folders.src %>/scss/basic.scss',
+          '<%= folders.output %>/public/ie8.css': '<%= folders.src %>/scss/ie8.scss',
+          '<%= folders.output %>/public/modern.css': '<%= folders.src %>/scss/modern.scss'
         }
       },
       dist: {
@@ -74,9 +80,9 @@ module.exports = function(grunt) {
           outputStyle: 'compressed'
         },
         files: {
-          'resources/public/basic.css': 'resources/src/scss/basic.scss',
-          'resources/public/ie8.css': 'resources/src/scss/ie8.scss',
-          'resources/public/modern.css': 'resources/src/scss/modern.scss'
+          '<%= folders.output %>/public/basic.css': '<%= folders.src %>/scss/basic.scss',
+          '<%= folders.output %>/public/ie8.css': '<%= folders.src %>/scss/ie8.scss',
+          '<%= folders.output %>/public/modern.css': '<%= folders.src %>/scss/modern.scss'
         }
       }
     },
@@ -90,7 +96,7 @@ module.exports = function(grunt) {
           map: true
         },
         no_dest: {
-          src: 'resources/public/modern.css'
+          src: '<%= folders.output %>/public/modern.css'
         }
       },
       dist: {
@@ -98,7 +104,7 @@ module.exports = function(grunt) {
           map: false
         },
         no_dest: {
-          src: 'resources/public/modern.css'
+          src: '<%= folders.output %>/public/modern.css'
         }
       }
     },
@@ -110,30 +116,30 @@ module.exports = function(grunt) {
         reporter: require('jshint-stylish')
       },
       all: [
-        'resources/src/custom/{,*/}*.js',
-        '!resources/src/vendor/*'
+        '<%= folders.src %>/custom/{,*/}*.js',
+        '!<%= folders.output %>/src/vendor/*'
       ]
     },
     //Stick everything together, you'll need to specify JS files in the correct order here.
     concat: {
       dist: {
         src: [
-          'resources/src/js/vendor/jquery-1.11.2.js',
-          'resources/src/js/vendor/webfont.js',
-          'resources/src/js/custom/**/*.js'
+          '<%= folders.src %>/js/vendor/jquery-1.11.2.js',
+          '<%= folders.src %>/js/vendor/webfont.js',
+          '<%= folders.src %>/js/custom/**/*.js'
         ],
-        dest: 'resources/public/scripts.js'
+        dest: '<%= folders.output %>/public/scripts.js'
       }
     },
     //Uglify
     uglify: {
       modernizr: {
-        src: 'resources/src/js/vendor/modernizr.js',
-        dest: 'resources/public/modernizr.min.js'
+        src: '<%= folders.src %>/js/vendor/modernizr.js',
+        dest: '<%= folders.output %>/public/modernizr.min.js'
       },
       build: {
-        src: 'resources/public/scripts.js',
-        dest: 'resources/public/scripts.min.js'
+        src: '<%= folders.output %>/public/scripts.js',
+        dest: '<%= folders.output %>/public/scripts.min.js'
       }
     },
 
@@ -150,7 +156,7 @@ module.exports = function(grunt) {
 
     clean: {
       build: {
-        src: [ 'resources/templates/jade' ]
+        src: [ '<%= folders.output %>/templates/jade' ]
       }
     },
 
@@ -158,8 +164,8 @@ module.exports = function(grunt) {
       default_options: {
         bsFiles: {
           src: [
-            "resources/public/*.css",
-            "resources/src/jade/**/*.jade"
+            '<%= folders.output %>/public/*.css',
+            '<%= folders.src %>/jade/**/*.jade'
           ]
         },
         options: {
