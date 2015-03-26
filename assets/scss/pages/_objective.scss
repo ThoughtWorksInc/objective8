@@ -59,9 +59,10 @@
   text-align: right;
   @include mq(760) {
     float: right;
-    width: 150px;
+    width: 165px;
     margin-bottom: 1em;
     margin-left: 1em;
+    padding-left: 1em;
     border-left: 7px solid $default_text_color;
     text-transform: uppercase;
     text-align: center;
