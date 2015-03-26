@@ -180,6 +180,7 @@
                 (screenshot "invite_writer_page")
 
                 (wd/input-text ".func--writer-name" "Functional Test Writer Name")
+                (wd/input-text ".func--writer-email" "func_test_candidate@domain.com")
                 (-> ".func--writer-reason"
                   (wd/input-text "Functional test invitation reason")
                   wd/submit)

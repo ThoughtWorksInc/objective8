@@ -202,8 +202,10 @@ invite-writer,sign-in,sign in
 invite-writer,sign-in-please,Please
 invite-writer,sign-in-to,to invite a policy writer.
 invite-writer,writer-name-label,Writer name
+invite-writer,writer-email-label,Writer email
 invite-writer,writer-reason-label,"They should help draft this policy, because:"
 invite-writer,writer-name-attr-title,Writer names are a maximum length of 50 characters
+invite-writer,writer-email-attr-title,Writer email must be valid email address
 invite-writer,writer-reason-attr-title,Reasons are a maximum length of 1000 characters
 invite-writer,invite-button,Create an invite
 invitation,writer-name-title,Writer names are a maximum length of 50 characters

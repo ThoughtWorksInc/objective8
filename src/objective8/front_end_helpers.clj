@@ -40,7 +40,7 @@
   "Returns a map with the invitation details if all the parts are in the request. Otherwise return nil"
   [{{id :id} :route-params :keys [params]} 
    user-id]
-  (assoc (select-keys params [:writer-name :reason])
+  (assoc (select-keys params [:writer-name :writer-email :reason])
          :objective-id (Integer/parseInt id)
          :invited-by-id user-id))
 
