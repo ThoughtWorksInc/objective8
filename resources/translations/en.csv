@@ -10,6 +10,15 @@ sign-in,doc-description,Sign in or Sign up to Objective [8]
 sign-in,page-title,Sign in or Sign up
 sign-in,sign-in-with-twitter,Sign in with twitter
 sign-in,twitter-help-text,We will never post to Twitter without your permission.
+sign-up,doc-title,Sign up | Objective[8]
+sign-up,doc-description,
+sign-up,page-title,Almost there
+sign-up,welcome,"Adding your email address will let us notify you when you receive responses to comments, objectives and votes."
+sign-up,username-label,Username
+sign-up,not-unique,Username already exists
+sign-up,not-well-formed,"Username must be 1-16 characters in length, containing only letters and numbers"
+sign-up,email-label,Email
+sign-up,button,Create account
 objective-guidance,heading,What is an Objective?
 objective-guidance,text-line-1,A policy starts with an idea.
 objective-guidance,text-line-2,These are catalysts for change.
@@ -108,17 +117,6 @@ objective-nav,objective,Objective
 objective-nav,writers,Writers
 objective-nav,comments,Comments
 objective-nav,back-to-objective,Back to objective
-sign-up,welcome,"Adding your email address will let us notify you when you receive responses to comments, objectives and votes."
-sign-up,not-unique,Username already exists
-sign-up,username-label,Username
-sign-up,button,Create account
-sign-up,doc-title,Sign up almost there | Objective[8]
-sign-up,not-well-formed,"Username must be 1-16 characters in length, containing only letters and numbers"
-sign-up,email-label,Email
-sign-up,page-title,Almost there
-sign-up,username-title,Create your username
-sign-up,email-title,Add your email title
-sign-up,doc-description,
 answer-create,guidance-heading,What is a question?
 answer-create,guidance-text-1,Questions are how Objective[8] gathers community ideas for use in drafting policy
 answer-create,answers-for,Answers for

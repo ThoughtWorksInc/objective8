@@ -11,7 +11,8 @@
             [objective8.templates.invite-writer :as invite-writer]
             [objective8.templates.draft :as draft]
             [objective8.templates.draft-list :as draft-list]
-            [objective8.templates.sign-in :as sign-in]))
+            [objective8.templates.sign-in :as sign-in]  
+            [objective8.templates.sign-up :as sign-up]))
 
 
 (defn- user-info [request auth-map]
@@ -53,7 +54,6 @@
   (fn [context] (responses/rendered-response page context)))
 
 (def project-status (view (render-page responses/project-status-page)))
-(def sign-up-form (view (render-page responses/sign-up)))
 (def question-list (view (render-page responses/question-list-page)))
 (def question-detail (view (render-page responses/question-view-page)))
 (def candidate-list (view (render-page responses/candidate-list-page)))
@@ -73,3 +73,4 @@
 (def draft-list (view draft-list/draft-list-page))
 (def draft (view draft/draft-page))
 (def sign-in (view sign-in/sign-in-page))
+(def sign-up (view sign-up/sign-up-page))

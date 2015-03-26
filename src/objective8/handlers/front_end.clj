@@ -53,7 +53,9 @@
 ;; USER PROFILE
 
 (defn sign-up-form [{:keys [t' locale errors] :as request}]
-  (views/sign-up-form "sign-up" request :errors errors))
+  {:status 200
+   :header {"Content-Type" "text/html"}  
+   :body (views/sign-up "sign-up" request :errors errors)})
 
 ;; OBJECTIVES
 (defn format-objective [objective]
