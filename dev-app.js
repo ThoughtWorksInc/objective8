@@ -14,7 +14,7 @@ app.use('/public', express.static(__dirname + '/resources/public'));
 app.use(favicon('./resources/public/favicon.ico'));
 
 app.set('view engine', 'jade');
-app.set('views', './resources/src/jade');
+app.set('views', './assets/jade');
 
 function beforeAllFilter(req, res, next) {
   app.locals.pretty = true;

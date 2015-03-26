@@ -5,7 +5,7 @@ module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
 
   var folders = {
-    src: 'resources/src',
+    src: 'assets',
     output: 'resources'
   };
 
