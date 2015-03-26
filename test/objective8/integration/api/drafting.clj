@@ -51,13 +51,13 @@
     (fact "creates a draft when submitter id is a writer for the objective and drafting has started"
           (let [{objective-id :objective-id submitter-id :user-id} (sh/store-a-candidate)
                 _ (sh/start-drafting! objective-id)
-                the-draft {:objective-id objective-id
-                           :submitter-id submitter-id
-                           :content "Some content"}
+                draft-data {:objective-id objective-id
+                            :submitter-id submitter-id
+                            :content "Some content"}
                 {response :response} (p/request app (utils/path-for :api/post-draft :id objective-id)
                                             :request-method :post
                                             :content-type "application/json"
-                                            :body (json/generate-string the-draft))]
+                                            :body (json/generate-string draft-data))]
             (:body response) => (helpers/json-contains {:_id anything
                                                         :objective-id objective-id
                                                         :submitter-id submitter-id
@@ -94,26 +94,12 @@
          (after :facts (helpers/truncate-tables))]
 
          (fact "gets a draft for an objective"
-               (let [{objective-id :objective-id draft-id :_id :as draft} (sh/store-a-draft)
+               (let [{objective-id :objective-id draft-id :_id} (sh/store-a-draft)
+                     draft (drafts/retrieve-draft draft-id)
                      {response :response} (p/request app (utils/path-for :api/get-draft :id objective-id 
                                                                          :d-id draft-id))]
                  (:status response) => 200
-                 (:body response) => (helpers/json-contains (-> draft 
-                                                                (dissoc :username :_created_at_sql_time)))))
-
-         (fact "returns draft-id for previous and next drafts"
-               (let [objective (sh/store-an-objective-in-draft)
-                     {first-draft-id :_id} (sh/store-a-draft {:objective objective})
-                     {second-draft-id :_id :as second-draft} (sh/store-a-draft {:objective objective})
-                     {third-draft-id :_id} (sh/store-a-draft {:objective objective})]
-                 (get-in (p/request app (utils/path-for :api/get-draft
-                                                        :id (:_id objective)
-                                                        :d-id second-draft-id))
-                         [:response :body]) => (helpers/json-contains
-                                                 (-> second-draft
-                                                     (dissoc :username :_created_at_sql_time)
-                                                     (assoc :next-draft-id third-draft-id
-                                                            :previous-draft-id first-draft-id)))))))
+                 (:body response) => (helpers/json-contains draft)))))
 
 (facts "GET /dev/api/v1/objectives/:id/drafts"
        (against-background
@@ -129,7 +115,7 @@
                                                (map #(dissoc % :username :_created_at_sql_time))))
                      {response :response} (p/request app (utils/path-for :api/get-drafts-for-objective :id (:_id objective)))]
                  (:status response) => 200
-                 (:body response) => (helpers/json-contains (map contains (reverse stored-drafts)))))
+                 (:body response) => (helpers/json-contains (map contains (-> stored-drafts :_id reverse)))))
 
          (fact "returns 403 if objective not in drafting"
                (let [objective (sh/store-an-objective)]
@@ -142,21 +128,25 @@
                                 (helpers/truncate-tables)))
           (after :facts (helpers/truncate-tables))]
 
-         (fact "gets a draft for an objective"
-               (let [{objective-id :objective-id :as draft} (sh/store-a-draft)
-                     {response :response} (p/request app (utils/path-for :api/get-draft :id objective-id 
+         (fact "gets the latest draft for an objective"
+               (let [{objective-id :_id :as objective} (sh/store-an-objective-in-draft)
+
+                     first-draft (sh/store-a-draft {:objective objective})
+                     {second-draft-id :draft-id} (sh/store-a-draft {:objective objective})
+
+                     latest-draft (drafts/retrieve-draft second-draft-id)
+                     
+                     {response :response} (p/request app (utils/path-for :api/get-draft :id objective-id
                                                                          :d-id "latest"))]
                  (:status response) => 200
-                 (:body response) => (helpers/json-contains (dissoc draft :username :_created_at_sql_time))))
+                 (:body response) => (helpers/json-contains latest-draft)))
          
          (fact "returns draft-id for previous draft"
                (let [objective (sh/store-an-objective-in-draft)
                      {first-draft-id :_id} (sh/store-a-draft {:objective objective})
                      {second-draft-id :_id :as second-draft} (sh/store-a-draft {:objective objective})]
+                 
                  (get-in (p/request app (utils/path-for :api/get-draft
                                                         :id (:_id objective)
                                                         :d-id "latest"))
-                         [:response :body]) => (helpers/json-contains
-                                                 (-> second-draft
-                                                     (dissoc :username :_created_at_sql_time)
-                                                     (assoc :previous-draft-id first-draft-id)))))))
+                         [:response :body]) => (helpers/json-contains {:previous-draft-id first-draft-id})))))

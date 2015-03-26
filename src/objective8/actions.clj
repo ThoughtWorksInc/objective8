@@ -8,7 +8,7 @@
             [objective8.storage.storage :as storage]))
 
 (defn start-drafting! [objective-id]
-  (let [objective (objectives/retrieve-objective objective-id)]
+  (let [objective (storage/pg-retrieve-entity-by-uri (str "/objectives/" objective-id) :with-global-id)]
 
     (doall (->> (invitations/retrieve-active-invitations objective-id)
                 (map invitations/expire-invitation!)))

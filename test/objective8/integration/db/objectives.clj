@@ -24,8 +24,7 @@
                                                                            :description "description"
                                                                            :goals "goals"
                                                                            :title "title"})
-                ;(objectives/store-objective! objective-data) =not=> (contains {:global-id anything})
-                ))))
+                (objectives/store-objective! objective-data) =not=> (contains {:global-id anything})))))
 
 (facts "about getting objectives"
        (against-background
@@ -42,7 +41,7 @@
                                     :title "title"}
                     {objective-id :_id :as stored-objective} (objectives/store-objective! objective-data)]
                 (objectives/retrieve-objective objective-id) => (assoc stored-objective :username username)
-                ;(objectives/retrieve-objective objective-id) =not=> (contains {:global-id anything})
+                (objectives/retrieve-objective objective-id) =not=> (contains {:global-id anything})
                 ))
 
         (fact "can retrieve a list of objectives"
@@ -54,5 +53,4 @@
                                     :title "title"}
                     {objective-id :_id :as stored-objective} (objectives/store-objective! objective-data)]
                 (objectives/retrieve-objectives) => [(assoc stored-objective :username username)]
-                ;(objectives/retrieve-objective objective-id) =not=> (contains {:global-id anything})
-                ))))
+                (first (objectives/retrieve-objectives)) =not=> (contains {:global-id anything})))))

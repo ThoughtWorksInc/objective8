@@ -27,6 +27,9 @@
       (dissoc old-key)
       (assoc new-key (old-key m))))
 
+(defn update-in-self [m key-route update-fn]
+  (assoc-in m key-route (update-fn m)))
+
 ;;Bidi currently doesn't currently work with java.lang.Integer
 (extend-protocol bidi/ParameterEncoding
   java.lang.Integer

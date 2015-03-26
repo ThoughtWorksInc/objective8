@@ -89,7 +89,7 @@
 (defn retrieve-comments-DEPRECATED [{:keys [route-params] :as request}]
   (let [id (-> (:id route-params)
                Integer/parseInt)]
-    (if-let [objective (objectives/retrieve-objective id)]
+    (if-let [objective (storage/pg-retrieve-entity-by-uri (str "/objectives/" id) :with-global-id)]
       (let [comments (comments/retrieve-comments (:global-id objective))]
         (-> comments
             response/response
