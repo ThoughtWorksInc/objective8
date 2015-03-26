@@ -5,6 +5,15 @@
 
 (def objective-template (html/html-resource "templates/jade/objective.html" {:parser jsoup/parser}))
 
+(defn drafting-begins [objective translations]
+  (html/transformation
+    [:.l8n-days-left-head] (html/content (translations :objective-view/drafting-begins)) 
+    [:.clj-days-left-day] (html/do->
+                            (html/set-attr "drafting-begins-date"
+                                           (:end-date objective)) 
+                            (html/content (str (:days-until-drafting-begins objective)))) 
+    [:.l8n-days-left-foot] (html/content (str " " (translations :objective-view/days)))))
+
 (defn objective-page [{:keys [translations data doc] :as context}]
   (let [objective (:objective data)
         candidates (:candidates data)]
@@ -29,6 +38,9 @@
                       [:.clj-star-container] nil
 
                       [:.clj-objective-title] (html/content (:title objective))
+
+                      [:.clj-days-left] (when-not (:drafting-started objective)
+                                          (drafting-begins objective translations))
                       [:.clj-drafting-started-wrapper] (html/substitute (f/drafting-message context))
                       [:.clj-replace-with-objective-detail] (html/substitute (f/text->p-nodes (:description objective)))
                       [:.l8n-writers-section-title] (html/content (translations :objective-view/writers))
@@ -40,7 +52,7 @@
                       [:.l8n-questions-section-title] (html/content (translations :objective-view/questions-title))
                       [:.clj-question-list] (html/content (f/question-list context)) 
                       [:.clj-ask-question-link] (html/set-attr "href" (str "/objectives/" (:_id objective) 
-                                                                              "/add-question"))
+                                                                           "/add-question"))
                       [:.l8n-ask-question-link] (html/content (translations :objective-view/ask-a-question))
                       [:.l8n-comments-section-title] (html/content (translations :objective-view/comments))
                       [:.clj-comment-list] (html/content (f/comment-list context))

@@ -136,8 +136,10 @@ learn-more,get-started-button-title,Get started
 invitation-sign-in,sign-in,sign in
 invitation-sign-in,please,Please
 invitation-sign-in,to,to invite a policy writer.
+objective-view,days,days
+objective-view,drafting-begins,Drafting begins in
 objective-view,goals-label,Goals
-objective-view,end-date-label,Drafting begins: 
+objective-view,end-date-label,Drafting begins:
 objective-view,created-message,Your objective has been created!
 objective-view,doc-title,Objective | Objective[8]
 objective-view,background-label,Background
