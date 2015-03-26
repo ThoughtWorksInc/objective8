@@ -18,7 +18,9 @@
                     [:.clj-add-draft-preview] (when-let [preview (:preview data)]
                                                 (html/html-content preview))
 
-                    [:.clj-add-draft-form] (html/set-attr :action (str "/objectives/" (:objective-id data) "/add-draft"))
+                    [:.clj-add-draft-form] (html/do-> 
+                                             (html/set-attr :action (str "/objectives/" (:objective-id data) "/add-draft")) 
+                                             (html/prepend (html/html-snippet (anti-forgery-field)))) 
                     [:.clj-add-draft-content] (html/do-> 
                                                 (html/set-attr :placeholder (translations :add-draft/placeholder))
                                                 (html/content (:markdown data))) 

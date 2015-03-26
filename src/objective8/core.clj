@@ -40,7 +40,7 @@
                :fe/add-question-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-question-form-post) #{:signed-in})
                :fe/question-list (utils/anti-forgery-hook front-end-handlers/question-list)
                :fe/question (utils/anti-forgery-hook front-end-handlers/question-detail)
-               :fe/add-a-question (utils/anti-forgery-hook front-end-handlers/add-a-question)
+               :fe/add-a-question (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-a-question) #{:signed-in}) 
                :fe/add-answer-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-answer-form-post) #{:signed-in})
                :fe/candidate-list (utils/anti-forgery-hook front-end-handlers/candidate-list)
                :fe/invite-writer (utils/anti-forgery-hook front-end-handlers/invite-writer)
@@ -49,8 +49,8 @@
                :fe/accept-or-decline-invitation (utils/anti-forgery-hook front-end-handlers/accept-or-decline-invitation)
                :fe/accept-invitation (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/accept-invitation) #{:signed-in})
                :fe/decline-invitation (utils/anti-forgery-hook front-end-handlers/decline-invitation) 
-               :fe/add-draft-get (m/wrap-authorise-writer front-end-handlers/add-draft-get)
-               :fe/add-draft-post (m/wrap-authorise-writer front-end-handlers/add-draft-post)
+               :fe/add-draft-get (m/wrap-authorise-writer (utils/anti-forgery-hook front-end-handlers/add-draft-get))
+               :fe/add-draft-post (m/wrap-authorise-writer (utils/anti-forgery-hook front-end-handlers/add-draft-post))
                :fe/draft front-end-handlers/draft
                :fe/draft-list front-end-handlers/draft-list
                :fe/post-up-vote (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-up-vote) #{:signed-in}) 
