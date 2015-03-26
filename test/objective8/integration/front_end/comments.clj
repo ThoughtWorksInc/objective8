@@ -40,8 +40,7 @@
                                               (helpers/with-sign-in (str "http://localhost:8080/objectives/" OBJECTIVE_ID))
                                               (p/request "http://localhost:8080/comments"
                                                          :request-method :post
-                                                         :params params))
-                     _ (prn response)]
+                                                         :params params))]
                  (:flash response) => (contains "Your comment has been added!")
                  (:headers response) => (helpers/location-contains (str "/objectives/" OBJECTIVE_ID))
                  (:status response) => 302))))

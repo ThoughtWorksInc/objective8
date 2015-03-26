@@ -87,14 +87,15 @@
 (facts "about responding to invitations"
        (fact "an invited writer is redirected to the accept/decline page when accessing their invitation link"
              (against-background
-               (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success
-                                                               :result {:_id INVITATION_ID
-                                                                        :invited-by-id USER_ID
-                                                                        :objective-id OBJECTIVE_ID
-                                                                        :uuid UUID
-                                                                        :status "active"}}
-               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                         :result {:title OBJECTIVE_TITLE}})
+              (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success
+                                                              :result {:_id INVITATION_ID
+                                                                       :invited-by-id USER_ID
+                                                                       :objective-id OBJECTIVE_ID
+                                                                       :uuid UUID
+                                                                       :status "active"}}
+              (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                        :result {:title OBJECTIVE_TITLE
+                                                                 :uri :objective-uri}})
              (let [accept-decline-url (str "/objectives/" OBJECTIVE_ID "/writer-invitations/" INVITATION_ID)
                    peridot-response (-> user-session
                                         (p/request invitation-url)
@@ -104,14 +105,15 @@
 
        (fact "a user is redirected to the objective details page with a flash message if the invitation has expired"
              (against-background
-               (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success
-                                                               :result expired-invitation}
-               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                         :result {:title OBJECTIVE_TITLE}}
-               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success :result []}
-               (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}
-               (http-api/retrieve-comments anything) => {:status ::http-api/success
-                                                         :result []})
+              (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success
+                                                              :result expired-invitation}
+              (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                        :result {:title OBJECTIVE_TITLE
+                                                                 :uri :objective-uri}}
+              (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success :result []}
+              (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}
+              (http-api/get-comments anything) => {:status ::http-api/success
+                                                   :result []})
              (let [{request :request response :response} (-> user-session
                                                              (p/request invitation-url)
                                                              p/follow-redirect)]

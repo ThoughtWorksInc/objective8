@@ -27,7 +27,7 @@
 
 (fact "extracts comment data from a request"
       (let [comment-data (request->comment-data {:params {:comment "the comment"
-                                                          :refer "/some/uri"}}
+                                                          :comment-on-uri "/some/uri"}}
                                                 USER_ID)]
         comment-data => {:comment "the comment"
                          :comment-on-uri "/some/uri"

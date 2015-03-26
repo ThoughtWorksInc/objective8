@@ -13,6 +13,7 @@
     "static/"           (->Resources {:prefix "public/"})
     "meta/up-vote"      {:post :fe/post-up-vote}
     "meta/down-vote"    {:post :fe/post-down-vote}
+    "comments"          {:post :fe/post-comment}
     "objectives"        {:get :fe/objective-list
                          :post :fe/create-objective-form-post
                          "/create" {:get :fe/create-objective-form} 
@@ -33,35 +34,33 @@
                                                         ["/" [#"\d+|latest" :d-id]] {:get :fe/draft}}
                                              "/add-draft" {:get :fe/add-draft-get
                                                            :post :fe/add-draft-post}}}
-    "comments"          {:post :fe/create-comment-form-post}
     "invitations"       {["/" :uuid] {:get :fe/writer-invitation}}
 
-        ;; API
-        "api/v1"            {"/users" {:post :api/post-user-profile
-                                       :get :api/get-user-by-query
-                                       ["/" [#"\d+" :id]] :api/get-user}
+    ;; API
+    "api/v1"            {"/users" {:post :api/post-user-profile
+                                   :get :api/get-user-by-query
+                                   ["/" [#"\d+" :id]] :api/get-user}
 
-                             "/objectives" {:get :api/get-objectives
-                                            :post :api/post-objective
-                                            ["/" [#"\d+" :id]] {:get :api/get-objective
-                                                       "/comments" :api/get-comments-for-objective
-                                                       "/questions" {:post :api/post-question
-                                                                     :get :api/get-questions-for-objective
-                                                                     ["/" [#"\d+" :q-id]] {:get :api/get-question
-                                                                                  "/answers" {:get :api/get-answers-for-question
-                                                                                              :post :api/post-answer}}}
-                                                       "/candidate-writers" {:get :api/get-candidates-for-objective
-                                                                             :post :api/post-candidate-writer}
-                                                       "/writer-invitations" {:post :api/post-invitation
-                                                                              ["/" [#"\d+" :i-id]] {:put :api/put-invitation-declination}}
-                                                       "/drafts" {:post :api/post-draft
-                                                                  :get :api/get-drafts-for-objective
-                                                                  ["/" [#"\d+|latest" :d-id]] {:get :api/get-draft}}}}
+                         "/objectives" {:get :api/get-objectives
+                                        :post :api/post-objective
+                                        ["/" [#"\d+" :id]] {:get :api/get-objective
+                                                            "/questions" {:post :api/post-question
+                                                                          :get :api/get-questions-for-objective
+                                                                          ["/" [#"\d+" :q-id]] {:get :api/get-question
+                                                                                                "/answers" {:get :api/get-answers-for-question
+                                                                                                            :post :api/post-answer}}}
+                                                            "/candidate-writers" {:get :api/get-candidates-for-objective
+                                                                                  :post :api/post-candidate-writer}
+                                                            "/writer-invitations" {:post :api/post-invitation
+                                                                                   ["/" [#"\d+" :i-id]] {:put :api/put-invitation-declination}}
+                                                            "/drafts" {:post :api/post-draft
+                                                                       :get :api/get-drafts-for-objective
+                                                                       ["/" [#"\d+|latest" :d-id]] {:get :api/get-draft}}}}
 
-                             "/meta" {"/comments" {:post :api/post-comment
-                                                   :get :api/get-comments}}
-                             "/up-down-votes" {:post :api/post-up-down-vote}
-                             "/invitations" {:get :api/get-invitation}}
+                         "/meta" {"/comments" {:post :api/post-comment
+                                               :get :api/get-comments}}
+                         "/up-down-votes" {:post :api/post-up-down-vote}
+                         "/invitations" {:get :api/get-invitation}}
 
-         ;;DEV-API
-        "dev/api/v1"     {["/objectives/" :id "/start-drafting"] {:post :dev/post-start-drafting}}}])
+    ;;DEV-API
+    "dev/api/v1"     {["/objectives/" :id "/start-drafting"] {:post :dev/post-start-drafting}}}])

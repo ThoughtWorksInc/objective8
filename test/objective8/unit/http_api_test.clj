@@ -112,12 +112,6 @@
                                                                             :end-date "2015-01-31T00:00:00.000Z" }}))
 
 ;; COMMENTS
-
-(fact "retrieving comments for an objective hits the correct API endpoint"
-      (http-api/retrieve-comments OBJECTIVE_ID) => :api-call-result
-      (provided
-       (http-api/default-get-call (contains (str "/api/v1/objectives/" OBJECTIVE_ID "/comments"))) => :api-call-result))
-
 (def some-uri "/some/uri")
 (def comment-data {:comment-on-uri some-uri :created-by-id USER_ID :comment "A comment"})
 

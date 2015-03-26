@@ -114,7 +114,7 @@
         {objective-status :status objective :result} (http-api/get-objective objective-id)
         {candidate-status :status  candidates :result} (http-api/retrieve-candidates objective-id)  
         {questions-status :status questions :result} (http-api/retrieve-questions objective-id) 
-        {comments-status :status comments :result} (http-api/retrieve-comments objective-id)]
+        {comments-status :status comments :result} (http-api/get-comments objective)]
     (cond
       (every? #(= ::http-api/success %) [objective-status candidate-status questions-status comments-status])
       (let [formatted-objective (format-objective objective)]
@@ -138,8 +138,7 @@
 
 ;; COMMENTS
 
-(defn create-comment-form-post [{{refer-url :refer :as params} :params
-                                 :keys [t' locale] :as request}]
+(defn post-comment [{:keys [t'] :as request}]
   (if-let [comment-data (helpers/request->comment-data request (get (friend/current-authentication) :identity))]
     (let [{status :status stored-comment :result} (http-api/post-comment comment-data)]
       (cond

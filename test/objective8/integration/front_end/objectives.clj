@@ -26,7 +26,8 @@
 (def basic-objective {:title "my objective title"
                       :goal-1 "my objective goal"
                       :description "my objective description"
-                      :end-date (utils/string->date-time "2012-12-12")})
+                      :end-date (utils/string->date-time "2012-12-12")
+                      :uri (str "/objectives/" OBJECTIVE_ID)})
 
 
 
@@ -63,7 +64,7 @@
              (against-background
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result basic-objective}
-               (http-api/retrieve-comments OBJECTIVE_ID) => {:status ::http-api/success :result []}
+               (http-api/get-comments (contains {:uri (str "/objectives/" OBJECTIVE_ID)})) => {:status ::http-api/success :result []}
                (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success :result []}
                (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []})
              (default-app objective-view-get-request) => (contains {:status 200})
@@ -81,16 +82,17 @@
                                                          :result basic-objective}
                (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success :result []}
                (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}
-               (http-api/retrieve-comments OBJECTIVE_ID) => {:status ::http-api/success :result []})
+               (http-api/get-comments (contains {:uri (str "/objectives/" OBJECTIVE_ID)})) => {:status ::http-api/success :result []})
 
               (fact "Any user can view comments on an objective"
                     (against-background
-                     (http-api/retrieve-comments OBJECTIVE_ID) => {:status ::http-api/success
-                                                                   :result [{:_id 1
-                                                                             :_created_at "2015-02-12T16:46:18.838Z"
-                                                                             :objective-id OBJECTIVE_ID
-                                                                             :created-by-id USER_ID
-                                                                             :comment "Comment 1"}]})
+                     (http-api/get-comments
+                      (contains {:uri (str "/objectives/" OBJECTIVE_ID)})) => {:status ::http-api/success
+                                                                               :result [{:_id 1
+                                                                                         :_created_at "2015-02-12T16:46:18.838Z"
+                                                                                         :objective-id OBJECTIVE_ID
+                                                                                         :created-by-id USER_ID
+                                                                                         :comment "Comment 1"}]})
                     (let [peridot-response (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))]
                       peridot-response) => (contains {:response (contains {:body (contains "Comment 1")})}))
 

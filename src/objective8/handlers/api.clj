@@ -86,16 +86,6 @@
   (response/content-type (response/response (objectives/retrieve-objectives)) "application/json"))
 
 ;; COMMENT
-(defn retrieve-comments-DEPRECATED [{:keys [route-params] :as request}]
-  (let [id (-> (:id route-params)
-               Integer/parseInt)]
-    (if-let [objective (storage/pg-retrieve-entity-by-uri (str "/objectives/" id) :with-global-id)]
-      (let [comments (comments/retrieve-comments (:global-id objective))]
-        (-> comments
-            response/response
-            (response/content-type "application/json")))
-      (response/not-found ""))))
-
 (defn post-comment [{:keys [params] :as request}]
   (try
     (let [comment-data (ar/request->comment-data request)

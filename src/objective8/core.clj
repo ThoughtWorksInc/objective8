@@ -36,7 +36,6 @@
                :fe/create-objective-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form-post) #{:signed-in})
                :fe/objective-list front-end-handlers/objective-list
                :fe/objective (utils/anti-forgery-hook front-end-handlers/objective-detail)
-               :fe/create-comment-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-comment-form-post) #{:signed-in})
                :fe/add-a-question (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-a-question) #{:signed-in}) 
                :fe/add-question-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-question-form-post) #{:signed-in})
                :fe/question-list (utils/anti-forgery-hook front-end-handlers/question-list)
@@ -53,8 +52,10 @@
                :fe/add-draft-post (m/wrap-authorise-writer (utils/anti-forgery-hook front-end-handlers/add-draft-post))
                :fe/draft (utils/anti-forgery-hook front-end-handlers/draft)
                :fe/draft-list front-end-handlers/draft-list
+
                :fe/post-up-vote (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-up-vote) #{:signed-in}) 
                :fe/post-down-vote (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-down-vote) #{:signed-in}) 
+               :fe/post-comment (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-comment) #{:signed-in})
 
                
                ;; API Handlers
@@ -83,9 +84,6 @@
 
                ;; DEV API Handlers
                :dev/post-start-drafting (m/wrap-bearer-token api-handlers/post-start-drafting bt/token-provider)
-
-               ;; Deprecated handlers - these will be removed as part of #19
-               :api/get-comments-for-objective api-handlers/retrieve-comments-DEPRECATED
                })
 
 (defn app [app-config]

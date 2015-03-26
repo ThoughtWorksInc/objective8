@@ -14,8 +14,7 @@
   "Returns a map of a comment if all the parts are in the request params."
   [{:keys [params]} user-id]
   (some-> params
-          (utils/select-all-or-nothing [:refer :comment])
-          (utils/ressoc :refer :comment-on-uri)
+          (utils/select-all-or-nothing [:comment-on-uri :comment])
           (assoc :created-by-id user-id)))
 
 (defn request->objective

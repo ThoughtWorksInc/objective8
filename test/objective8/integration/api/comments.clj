@@ -31,21 +31,6 @@
    :comment-on-id comment-on-id
    :created-by-id created-by-id})
 
-(facts "GET /api/v1/objectives/:id/comments"
-       (against-background
-        [(before :contents (do (helpers/db-connection)
-                               (helpers/truncate-tables)))
-         (after :facts (helpers/truncate-tables))]
-
-        (fact "retrieves comments for an objective ID"
-              (let [objective (sh/store-an-objective)
-                    stored-comments (doall (->> (repeat {:entity objective})
-                                                (take 5)
-                                                (map sh/store-a-comment)
-                                                (map #(dissoc % :username))))
-                    {response :response} (p/request app (str "/api/v1/objectives/" (:_id objective) "/comments"))]
-                 (:body response) => (helpers/json-contains (map contains stored-comments))))))
-
 (facts "POST /api/v1/meta/comments"
        (against-background
         (m/valid-credentials? anything anything anything) => true)

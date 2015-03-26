@@ -108,10 +108,6 @@
       api-result)))
 
 ;; COMMENTS
-
-(defn retrieve-comments [objective-id]
-  (default-get-call (str utils/host-url "/api/v1/objectives/" objective-id "/comments")))
-
 (defn post-comment [comment-data]
   (default-post-call (utils/path-for :api/post-comment) comment-data))
 
