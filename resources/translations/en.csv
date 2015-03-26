@@ -50,7 +50,8 @@ objective-list,doc-description,
 objective-list,page-title,Objectives
 objective-list,create-objective-link,Create an objective
 objective-list,subtitle,Recently created objectives
-objective-list,drafting-begins,Drafting begins on
+objective-list,drafting-begins,Drafting begins in
+objective-list,days,days
 create-objective,doc-title,Create an Objective | Objective[8]
 create-objective,doc-description,
 create-objective,page-title,Create an objective

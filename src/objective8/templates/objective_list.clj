@@ -36,5 +36,10 @@
                                                [:.clj-objective-list-item-link] (html/set-attr "href" (str "/objectives/" (:_id objective)))
                                                [:.clj-objective-list-item-title] (html/content (:title objective))
                                                [:.l8n-drafting-begins] (html/content (translations :objective-list/drafting-begins))
-                                               [:.clj-objective-drafting-begins-date] (html/content (:end-date objective))
+                                               [:.clj-objective-drafting-begins-date] (html/do->
+                                                                                        (html/set-attr "drafting-begins-date"
+                                                                                                       (:end-date objective)) 
+                                                                                        (html/content (str (:days-until-drafting-begins objective)
+                                                                                                           " " 
+                                                                                                           (translations :objective-list/days)))) 
                                                [:.clj-objective-brief-description] (html/content (brief-description objective))))))))
