@@ -13,8 +13,8 @@
 
 (defn writer-invitation [flash objective translations]
   (html/transformation
-    [:.l8n-invitation-guidance-text-line-1] (html/content (translations :invitation-guidance/text-line-1))
-    [:.l8n-invitation-guidance-text-line-2] (html/content (translations :invitation-guidance/text-line-2))
+    [:.l8n-invitation-guidance-text-line-1] (html/content (translations :invitation/guidance-text-line-1))
+    [:.l8n-invitation-guidance-text-line-2] (html/content (translations :invitation/guidance-text-line-2))
     [:.clj-invitation-url] (html/set-attr "value" (:invitation-url flash))
     [:.clj-mail-to] (html/do->
                       (html/set-attr "href" (mail-to-string flash
