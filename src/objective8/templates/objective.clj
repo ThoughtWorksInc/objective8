@@ -7,21 +7,21 @@
 
 (defn mail-to-string [flash objective translations]
   (str "mailto:" (:writer-email flash)
-       "?subject=" (translations :invitation/email-subject)
-       "&body=" (translations :invitation/email-body-line-1) " " (:title objective)
-       "%0d%0d" (translations :invitation/email-body-line-2) "%0d" (:invitation-url flash)))
+       "?subject=" (translations :invitation-modal/email-subject)
+       "&body=" (translations :invitation-modal/email-body-line-1) " " (:title objective)
+       "%0d%0d" (translations :invitation-modal/email-body-line-2) "%0d" (:invitation-url flash)))
 
 (defn writer-invitation [flash objective translations]
   (html/transformation
-    [:.l8n-invitation-guidance-text-line-1] (html/content (translations :invitation/guidance-text-line-1))
-    [:.l8n-invitation-guidance-text-line-2] (html/content (translations :invitation/guidance-text-line-2))
-    [:.l8n-invitation-guidance-text-line-3] (html/content (translations :invitation/guidance-text-line-3))
+    [:.l8n-invitation-guidance-text-line-1] (html/content (translations :invitation-modal/guidance-text-line-1))
+    [:.l8n-invitation-guidance-text-line-2] (html/content (translations :invitation-modal/guidance-text-line-2))
+    [:.l8n-invitation-guidance-text-line-3] (html/content (translations :invitation-modal/guidance-text-line-3))
     [:.clj-invitation-url] (html/set-attr "value" (:invitation-url flash))
     [:.clj-mail-to] (html/do->
                       (html/set-attr "href" (mail-to-string flash
                                                             objective
                                                             translations))
-                      (html/content (translations :invitation/mail-to-text)))))
+                      (html/content (translations :invitation-modal/mail-to-text)))))
 
 (defn drafting-begins [objective translations]
   (html/transformation
