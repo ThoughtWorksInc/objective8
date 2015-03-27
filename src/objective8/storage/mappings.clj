@@ -134,8 +134,10 @@
                  :_created_at (sql-time->iso-time-string (:_created_at m)))))
 
 (defn with-username [unmap-fn]
-  (fn [m] (-> (unmap-fn m)
-              (assoc :username (:username m)))))
+  (fn [m] (let [m' (unmap-fn m)]
+            (if (contains? m :username)
+              (assoc m' :username (:username m))
+              m'))))
 
 (defn with-sql-time [unmap-fn]
   (fn [m] (-> (unmap-fn m)

@@ -107,8 +107,7 @@
                (let [{objective-id :objective-id q-id :_id :as question} (sh/store-a-question)
                      stored-answers (doall (->> (repeat {:question question})
                                                 (take 5)
-                                                (map sh/store-an-answer)
-                                                (map #(dissoc % :username))))
+                                                (map sh/store-an-answer)))
                      {response :response} (p/request app (str "/api/v1/objectives/" objective-id "/questions/" q-id "/answers"))]
                  (:body response) => (helpers/json-contains (map contains stored-answers))))
 

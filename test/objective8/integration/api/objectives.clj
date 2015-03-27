@@ -89,7 +89,7 @@
                                                            :content-type "application/json"
                                                            :body (json/generate-string the-objective))]
                        (:body response) => (helpers/json-contains (assoc the-objective :uri (contains "/objectives/")))
-;                       (:body response) =not=> (helpers/json-contains {:global-id anything})
+                       (:body response) =not=> (helpers/json-contains {:global-id anything})
                        (:headers response) => (helpers/location-contains (str "/api/v1/objectives/"))
                        (:status response) => 201))
 

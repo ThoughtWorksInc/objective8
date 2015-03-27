@@ -49,6 +49,6 @@
                     stored-comments (doall (->> (repeat {:entity draft :user user})
                                                 (take 5)
                                                 (map sh/store-a-comment)
-                                                (map #(dissoc % :username :comment-on-id))
+                                                (map #(dissoc % :comment-on-id))
                                                 (map #(assoc % :comment-on-uri draft-uri))))]
                 (comments/get-comments draft-uri) => (contains (map contains stored-comments))))))

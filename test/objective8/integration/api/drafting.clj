@@ -112,7 +112,7 @@
                      stored-drafts (doall (->> (repeat {:objective objective})
                                                (take 5)
                                                (map sh/store-a-draft)
-                                               (map #(dissoc % :username :_created_at_sql_time))))
+                                               (map #(dissoc % :_created_at_sql_time))))
                      {response :response} (p/request app (utils/path-for :api/get-drafts-for-objective :id (:_id objective)))]
                  (:status response) => 200
                  (:body response) => (helpers/json-contains (map contains (-> stored-drafts :_id reverse)))))
