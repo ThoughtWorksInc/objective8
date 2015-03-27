@@ -48,8 +48,9 @@
                (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started true}
                (drafts/retrieve-latest-draft OBJECTIVE_ID) => :draft)))
 
-(def an-objective-not-in-drafting {:drafting-started false})
-(def an-objective-in-drafting {:drafting-started true})
+(def an-objective-not-in-drafting {:entity "objective" :drafting-started false})
+(def an-objective-in-drafting {:entity "objective" :drafting-started true})
+(def a-draft {:entity "draft"})
 (def comment-data {:comment-on-uri :entity-uri
                    :comment "A comment"
                    :created-by-id USER_ID})
@@ -64,4 +65,15 @@
        (fact "cannot comment on an objective that is in drafting"
              (actions/create-comment! comment-data) => {:status ::actions/objective-drafting-started}
              (provided
-              (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => an-objective-in-drafting)))
+              (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => an-objective-in-drafting))
+
+       (fact "can comment on a draft"
+             (actions/create-comment! comment-data) => {:status ::actions/success :result :the-stored-comment}
+             (provided
+              (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => a-draft
+              (comments/store-comment-for! a-draft comment-data) => :the-stored-comment))
+
+       (fact "reports an error when the entity to comment on cannot be found"
+             (actions/create-comment! comment-data) => {:status ::actions/entity-not-found}
+             (provided
+              (storage/pg-retrieve-entity-by-uri anything anything) => nil)))

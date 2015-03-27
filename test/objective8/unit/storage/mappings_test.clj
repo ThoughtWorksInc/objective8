@@ -73,7 +73,7 @@
        (fact "throws exception if vote type is invalid"
              (map->up-down-vote (assoc vote-data :vote-type :not-up-or-down)) => (throws Exception)))
 
-;;COMMENT
+;;COMMENTS
 (def OBJECTIVE_ID 2345)
 
 (def comment-map {:created-by-id USER_ID

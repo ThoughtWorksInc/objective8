@@ -85,7 +85,6 @@
                            retrieve-result (storage/pg-retrieve {:entity :comment :_id (:_id store-result)})]
                        (first (:result retrieve-result)) => (contains {:created-by-id user-id
                                                                        :username username
-                                                                       :objective-id objective-id
                                                                        :comment-on-id comment-on-id})))
 
                ;;QUESTIONS

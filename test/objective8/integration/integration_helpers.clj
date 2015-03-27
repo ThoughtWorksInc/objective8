@@ -77,10 +77,15 @@
          expected-json-as-map)))
 
 
-(defn json-contains [expected]
+(defn json-contains [expected & options]
   (midje/chatty-checker [actual]
-                        ((midje/contains expected)
-                         (cl-json/read-str actual :key-fn keyword))))
+                        (do
+                          (when (contains? (set options) :debug)
+                            (prn "DEBUG: json-contains")
+                            (prn (str "actual: " actual))
+                            (prn (str "parsed: " (cl-json/read-str actual :key-fn keyword))))
+                          ((midje/contains expected)
+                           (cl-json/read-str actual :key-fn keyword)))))
 
 (defn location-contains [expected]
   (midje/contains {"Location" (midje/contains expected)}))

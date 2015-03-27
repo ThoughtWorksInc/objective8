@@ -55,8 +55,18 @@
                                                             :comment "A comment"
                                                             :created-by-id user-id})
                 (:body response) =not=> (helpers/json-contains {:comment-on-id anything})
-;                (:body response) =not=> (helpers/json-contains {:objective-id anything})
-                (:headers response) => (helpers/location-contains (str "/api/v1/meta/comments/"))))))
+                (:headers response) => (helpers/location-contains (str "/api/v1/meta/comments/"))))
+
+        (fact "returns 404 when entity to be commented on doesn't exist"
+              (let [comment-data {:comment-on-uri "nonexistent/entity"
+                                  :comment "A comment"
+                                  :created-by-id 1}
+                    {response :response} (p/request app (str "/api/v1/meta/comments")
+                                                    :request-method :post
+                                                    :content-type "application/json"
+                                                    :body (json/generate-string comment-data))]
+                (:status response) => 404
+                (:body response) => (helpers/json-contains {:reason "Entity does not exist"})))))
 
 (facts "GET /api/v1/meta/comments?uri=<uri>"
        (against-background

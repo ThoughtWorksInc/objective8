@@ -145,6 +145,10 @@
   (fn [m] (-> (unmap-fn m)
               (assoc :global-id (:global_id m)))))
 
+(defn without-key [unmap-fn key]
+  (fn [m] (-> (unmap-fn m)
+              (dissoc key))))
+
 (declare objective user comment question answer invitation candidate bearer-token up-down-vote)
 
 (korma/defentity global-identifier
@@ -169,7 +173,7 @@
   (korma/table :objective8.comments)
   (korma/belongs-to user {:fk :created_by_id})
   (korma/prepare map->comment)
-  (korma/transform (-> (unmap :comment) with-username)))
+  (korma/transform (-> (unmap :comment) with-username (without-key :objective-id))))
 
 (korma/defentity question
   (korma/pk :_id)

@@ -15,15 +15,22 @@
             [objective8.api-requests :as ar]
             [objective8.actions :as actions]))
 
-(defn invalid-response [message]
-  {:status 400
+(defn error-response [status message]
+  {:status status
    :headers {"Content-Type" "application/json"}
-   :body message})
+   :body {:reason message}})
+
+(defn invalid-response [message]
+  (error-response 400 message))
 
 (defn resource-locked-response [message]
-  {:status 423
-   :headers {"Content-Type" "application/json"}
-   :body message})
+  (error-response 423 message))
+
+(defn internal-server-error [message]
+  (error-response 500 message))
+
+(defn not-found-response [message]
+  (error-response 404 message))
 
 (defn successful-post-response [resource-location stored-object]
   {:status 201
@@ -88,17 +95,24 @@
 ;; COMMENT
 (defn post-comment [{:keys [params] :as request}]
   (try
-    (let [comment-data (ar/request->comment-data request)
-          {status :status comment :result} (actions/create-comment! comment-data)]
-      (cond
-        (= status ::actions/success)
-        (successful-post-response (str utils/host-url "/api/v1/meta/comments/" (:_id comment))
-                                  comment)
+    (if-let [comment-data (ar/request->comment-data request)]
+      (let [{status :status comment :result} (actions/create-comment! comment-data)]
+        (cond
+          (= status ::actions/success)
+          (successful-post-response (str utils/host-url "/api/v1/meta/comments/" (:_id comment))
+                                    comment)
 
-        :else {:status 400}))
+          (= status ::actions/entity-not-found)
+          (not-found-response "Entity does not exist")
+
+          :else
+          (internal-server-error "Error when posting comment")))
+      (do
+        (log/info "Invalid comment post request. Params: " params)
+        (invalid-response "Invalid comment post request")))
     (catch Exception e
       (log/info "Error when posting comment: " e)
-      (invalid-response "Invalid comment post request"))))
+      (internal-server-error "Error when posting comment"))))
 
 (defn get-comments [{:keys [params] :as request}]
   (let [{status :status comments :result} (actions/get-comments (:uri params))]
