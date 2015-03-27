@@ -3,10 +3,13 @@ $guidance_text_top_gutter: 1.45em;
 
 .guidance-text-wrapper {
   background-color: $green1;
-  margin: 0 -1em 2em -1em;
+  margin: -1em -1em 2em -1em;
   padding: 1em;
   @include mq(320) {
     padding: 2em;
+  }
+  @include mq(720) {
+    margin-top: -$gamma_body_top_spacing;
   }
 }
 

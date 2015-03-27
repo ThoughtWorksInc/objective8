@@ -10,9 +10,9 @@
 
 .main-content {
   background: $white;
-  padding: 0 1em $alpha_body_vertical_spacing 1em;
+  padding: $alpha_body_vertical_spacing 1em;
   @include mq(720) {
-    padding-top: 0;
+    padding-top: $gamma_body_top_spacing;
     padding-bottom: $gamma_body_vertical_spacing;
   }
 }
