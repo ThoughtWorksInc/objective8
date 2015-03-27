@@ -34,8 +34,6 @@ draft-guidance,heading,What is a draft?
 draft-guidance,text-line-1,Drafts are versions of the policy as it is being written.
 draft-guidance,text-line-2,Drafts are crafted by the writers that have been nominated for an objective.
 draft-guidance,text-line-3,Everyone can comment and make suggestions.
-invitation-guidance,text-line-1,Your writer's invitation is waiting for them at the link below.
-invitation-guidance,text-line-2,You now need to send the invitation link to your proposed writer.
 notifications,go-to-drafting,here.
 notifications,drafting-has-started,Drafting has started on this objective!
 notifications,drafting-started-helper-text,"This means that you can no longer ask or answer questions, comment, or invite new writers.  However, you can follow and contribute to the drafting progress "
@@ -219,7 +217,9 @@ invitation,submit,Create an invite
 invitation,page-intro,Do you know someone with the enthusiasm and expertise to help draft this policy?
 invitation,page-title,Invite a policy writer
 invitation,writer-name-label,Writer name:
-invitation,mail-to-text,Email the link to your writer
+invitation-guidance,text-line-1,Your writer's invitation
+invitation-guidance,text-line-2,Alternatively send the writer this link:
+invitation,mail-to-text,send email
 invitation,email-subject,You have been invited to help draft some policy!
 invitation,email-body-line-1,I have invited you to help draft some policy on this objective:
 invitation,email-body-line-2,Please follow the link below for more information and to accept the invitation
