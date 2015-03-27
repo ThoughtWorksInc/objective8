@@ -31,6 +31,7 @@
                  [org.pegdown/pegdown "1.2.0"]
                  [clojure-csv/clojure-csv "2.0.1"]]
   :main objective8.core
+  :uberjar-name "objective8.jar"
   :plugins [[ragtime/ragtime.lein "0.3.8"]]
   :profiles {:dev {:source-paths ["dev"]
                    :repl-options {:init-ns user
