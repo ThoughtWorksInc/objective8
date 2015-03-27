@@ -73,6 +73,7 @@
         [(before :contents (do (helpers/db-connection)
                                (helpers/truncate-tables)))
          (after :facts (helpers/truncate-tables))]
+
         (fact "retrieves comments for the entity at <uri>"
               (let [user (sh/store-a-user)
                     {draft-id :_id objective-id :objective-id :as draft} (sh/store-a-draft)
@@ -84,4 +85,9 @@
                                                 (map #(assoc % :comment-on-uri draft-uri))))
                     escaped-draft-uri (str "%2fobjectives%2f" objective-id "%2fdrafts%2f" draft-id)
                     {response :response} (p/request app (str "/api/v1/meta/comments?uri=" escaped-draft-uri))]
-                (:body response) => (helpers/json-contains (map contains stored-comments))))))
+                (:body response) => (helpers/json-contains (map contains stored-comments))))
+
+        (fact "returns 404 if the entity to retrieve comments for does not exist"
+              (let [{response :response} (p/request app (str "/api/v1/meta/comments?uri=" "%2fnonexistent%2furi"))]
+                (:status response) => 404
+                (:body response) => (helpers/json-contains {:reason "Entity does not exist"})))))

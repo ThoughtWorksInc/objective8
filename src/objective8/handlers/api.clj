@@ -115,14 +115,22 @@
       (internal-server-error "Error when posting comment"))))
 
 (defn get-comments [{:keys [params] :as request}]
-  (let [{status :status comments :result} (actions/get-comments (:uri params))]
-    (cond
-      (= status ::actions/success)
-      (-> comments
-          response/response
-          (response/content-type "application/json"))
+  (try
+    (let [{status :status comments :result} (actions/get-comments (:uri params))]
+      (cond
+        (= status ::actions/success)
+        (-> comments
+            response/response
+            (response/content-type "application/json"))
 
-      :else (response/not-found ""))))
+        (= status ::actions/entity-not-found)
+        (not-found-response "Entity does not exist")
+
+        :else
+        (internal-server-error "Error when getting comments")))
+    (catch Exception e
+      (log/info "Error when getting comments: " e)
+      (internal-server-error "Error when getting comments"))))
 
 ;;QUESTIONS
 (defn post-question [{:keys [route-params params] :as request}]

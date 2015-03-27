@@ -55,7 +55,7 @@
                    :comment "A comment"
                    :created-by-id USER_ID})
 
-(facts "about commenting"
+(facts "about creating comments"
        (fact "can comment on an objective that is not in drafting"
              (actions/create-comment! comment-data) => {:status ::actions/success :result :the-stored-comment}
              (provided
@@ -77,3 +77,15 @@
              (actions/create-comment! comment-data) => {:status ::actions/entity-not-found}
              (provided
               (storage/pg-retrieve-entity-by-uri anything anything) => nil)))
+
+(facts "about getting comments"
+       (fact "gets comments for an entity identified by URI"
+             (actions/get-comments :uri) => {:status ::actions/success
+                                             :result :comments}
+             (provided
+              (comments/get-comments :uri) => :comments))
+
+       (fact "reports an error when the entity cannot be found"
+             (actions/get-comments :uri) => {:status ::actions/entity-not-found}
+             (provided
+              (comments/get-comments :uri) => nil)))

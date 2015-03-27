@@ -45,4 +45,6 @@
     {:status ::entity-not-found}))
 
 (defn get-comments [entity-uri]
-  {:status ::success :result (comments/get-comments entity-uri)})
+  (if-let [results (comments/get-comments entity-uri)]
+    {:status ::success :result results}
+    {:status ::entity-not-found}))
