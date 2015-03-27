@@ -24,15 +24,12 @@
   (when (open? (objectives/retrieve-objective objective-id))
     (storage/pg-store! (assoc comment :entity :comment))))
 
-(defn retrieve-comments [comment-on-id]
-  (:result (storage/pg-retrieve {:entity :comment 
-                                 :comment-on-id comment-on-id}
-                                 {:limit 50})))
-
 (defn get-comments [entity-uri]
   (when-let [{:keys [global-id]} (storage/pg-retrieve-entity-by-uri entity-uri :with-global-id)]
     (->> (storage/pg-retrieve {:entity :comment
                                :comment-on-id global-id}
-                              {:limit 50})
+                              {:limit 50
+                               :sort {:field :_created_at
+                                      :ordering :DESC}})
          :result
          (map #(replace-global-id % entity-uri)))))

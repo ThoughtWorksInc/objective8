@@ -21,11 +21,3 @@
       (comments/create-comment-on-objective! comment) => nil
       (provided
         (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started true}))
-
-
-(fact "By default, only the first 50 comments are retrieved"
-      (comments/retrieve-comments GLOBAL_ID) => anything
-      (provided
-       (storage/pg-retrieve {:entity :comment
-                             :comment-on-id GLOBAL_ID}
-                            {:limit 50}) => []))

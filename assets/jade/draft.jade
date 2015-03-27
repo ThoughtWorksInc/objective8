@@ -83,6 +83,8 @@ block content
 
       .draft-comments.clj-draft-comments#comments
         h2.l8n-comments-section-title !Comments
+        .clj-comment-create
+          +addCommentForm()
         ol.comment-list.clj-comment-list
           +commentItem('Chris Cheshire', '3 September 2015 07:41')
             p We definitely need to look into Gran Via and Calle Mayor!
@@ -90,8 +92,6 @@ block content
             p Oooh Paseo del Prado.
           +commentItem('Jen Bloggs', '1 September 2015 07:41')
             p Paseo del Prado.
-        .clj-comment-create
-          +addCommentForm()
 
 
 block footerScripts

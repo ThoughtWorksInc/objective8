@@ -51,4 +51,4 @@
                                                 (map sh/store-a-comment)
                                                 (map #(dissoc % :comment-on-id))
                                                 (map #(assoc % :comment-on-uri draft-uri))))]
-                (comments/get-comments draft-uri) => (contains (map contains stored-comments))))))
+                (comments/get-comments draft-uri) => (contains (map contains (reverse stored-comments)))))))

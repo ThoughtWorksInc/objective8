@@ -85,7 +85,7 @@
                                                 (map #(assoc % :comment-on-uri draft-uri))))
                     escaped-draft-uri (str "%2fobjectives%2f" objective-id "%2fdrafts%2f" draft-id)
                     {response :response} (p/request app (str "/api/v1/meta/comments?uri=" escaped-draft-uri))]
-                (:body response) => (helpers/json-contains (map contains stored-comments))))
+                (:body response) => (helpers/json-contains (map contains (reverse stored-comments)))))
 
         (fact "returns 404 if the entity to retrieve comments for does not exist"
               (let [{response :response} (p/request app (str "/api/v1/meta/comments?uri=" "%2fnonexistent%2furi"))]

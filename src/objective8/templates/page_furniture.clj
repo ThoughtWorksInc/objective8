@@ -192,7 +192,7 @@
   library-html [:.clj-please-sign-in] [{:keys [translations ring-request]}]
   [:.clj-before-link] (html/content (translations :comment-sign-in/please))
   [:.clj-sign-in-link] (html/do->
-                         (html/set-attr "href" (str "/sign-in?refer=" (:uri ring-request)))
+                         (html/set-attr "href" (str "/sign-in?refer=" (:uri ring-request) "%23comments"))
                          (html/content (translations :comment-sign-in/sign-in)))
   [:.clj-after-link] (html/content (translations :comment-sign-in/to)))
 
