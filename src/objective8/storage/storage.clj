@@ -1,7 +1,7 @@
 (ns objective8.storage.storage
   (:require [korma.core :as korma]
             [korma.db :as kdb]
-            [objective8.storage.uri-helpers :as uri-helpers]
+            [objective8.storage.uris :as uris]
             [objective8.storage.mappings :as mappings]))
 
 (defn pg-create-global-identifier []
@@ -78,7 +78,7 @@ Options: :with-global-id -- includes the global-id in the entity."
         optionally-remove-global-id (if (options :with-global-id)
                                       identity
                                       #(dissoc % :global-id))]
-    (when-let [query (uri-helpers/entity-query-for-uri uri)]
+    (when-let [query (uris/uri->query uri)]
       (-> (pg-retrieve query)
           :result
           first
