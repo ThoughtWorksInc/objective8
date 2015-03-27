@@ -33,7 +33,7 @@
       (authorise user)))
 
 (defn finalise-authorisation [user current-session]
-  (if-let [redirect-url (utils/safen-url (:sign-in-referrer current-session))]
+  (if-let [redirect-url (some-> current-session :sign-in-referrer utils/safen-url)]
     (authorised-redirect user redirect-url current-session)
     (auth-map user)))
 

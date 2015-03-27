@@ -23,9 +23,8 @@
    (redirect-to-params-referer request nil))
 
   ([request fragment]
-   (let [location (utils/safen-url (get-in request [:params :refer] "/"))
-         fragment (utils/safen-fragment fragment)
-         redirect-url (str location (when fragment (str "#" fragment)))]
+   (let [location (get-in request [:params :refer] "/")
+         redirect-url (utils/safen-url (str location (when fragment (str "#" fragment))))]
      (response/redirect redirect-url))))
 
 (defn invitation? [session]

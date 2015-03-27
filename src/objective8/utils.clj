@@ -1,6 +1,7 @@
 (ns objective8.utils
   (:require [clj-time.format :as time-format]
             [clj-time.core :as time-core]
+            [clojure.string :as s]
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
             [bidi.bidi :as bidi]
             [cemerick.friend :as friend]
@@ -101,7 +102,7 @@
   [fragment-regex]
     (fn [fragment] (when fragment (re-matches fragment-regex fragment))))
 
-(defn safen-url [target]
+(defn safen-route [target]
   (or ((regex-checker #"/learn-more") target)
       ((regex-checker #"/") target)
       ((regex-checker #"/objectives/\d+") target)
@@ -120,6 +121,12 @@
 
 (defn safen-fragment [fragment]
   (or ((regex-checker #"comments") fragment)))
+
+(defn safen-url [target]
+  (when target
+    (let [[route fragment] (s/split target #"#" 2)]
+      (str (safen-route route) (when fragment
+                                 (str "#" (safen-fragment fragment)))))))
 
 (defn anti-forgery-hook 
   "Hook enables CSRF when config variable set. Can be disabled for tests"
