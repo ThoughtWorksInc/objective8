@@ -1,0 +1,18 @@
+.modal-contents {
+  margin-bottom: 6em;
+  padding: 2em;
+  border: 1px solid $grey-2;
+  @include mq(320) {
+    padding: 3em;
+  }
+}
+
+.modal-title {
+  font-size: 2em;
+  line-height: 1.1;
+}
+.modal-lede {
+  font-weight: normal;
+  font-size: 1.4em;
+  margin: 0;
+}

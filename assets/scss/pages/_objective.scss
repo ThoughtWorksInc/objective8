@@ -92,3 +92,25 @@
     font-size: 2em;
   }
 }
+
+
+// modal invite
+
+.invite-by-email {
+  font-weight: normal;
+  font-size: 1.4em;
+  margin-bottom: 2em;
+}
+
+.alternative-invite {
+  border-top: 1px solid $grey-2;
+  padding-top: 2em;
+}
+
+.invite-input-url {
+  border-color: $grey-3;
+}
+
+.send-invite-label {
+  font-weight: normal;
+}

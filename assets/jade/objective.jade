@@ -6,6 +6,20 @@ block vars
   - pageTitle = "!Objective"
 
 block content
+  .middle-container
+
+    .modal-contents.clj-writer-invitation
+      h2.modal-title.l8n-invitation-guidance-text-line-1.func--invitation-guidance !Your writer's invitation
+
+      p.invite-by-email
+        | To complete your invitation.
+        =" "
+        a.button-link.clj-mail-to(href="mailto:###") Send email
+
+      .alternative-invite
+        label.send-invite-label.l8n-invitation-guidance-text-line-2(for="copy-invite") !Alternatively send the writer this link:
+        input.invite-input-url.clj-invitation-url.func--invitation-url(id="copy-invite", type="text", value="!http://invitation/uuid/really/long/uuid")
+
   .guidance-text-wrapper
     +guidanceText('!What is an objective?')
       ul
@@ -14,19 +28,14 @@ block content
         li.l8n-guidance-text-line-3 !Everyone can comment and make suggestions to contribute towards the draft stage.
 
   .middle-container
-    .clj-writer-invitation
-      p.l8n-invitation-guidance-text-line-1.func--invitation-guidance !Your writer's invitation is waiting
-      p.l8n-invitation-guidance-text-line-2 !You can send the invitation to the writer
-      p.clj-invitation-url.func--invitation-url !http://invitation/uuid
-      a.clj-mail-to !Email your invited writer
 
-    ul.progress-indicator.clj-objective-progress-indicator
-      li.on
-        a(href="/objective") !Objective
-      li
-        a(href="/draft") !Draft
-      li
-        a(href="#") !Policy
+    //ul.progress-indicator.clj-objective-progress-indicator
+    //  li.on
+    //    a(href="/objective") !Objective
+    //  li
+    //    a(href="/draft") !Draft
+    //  li
+    //    a(href="#") !Policy
 
     .objective-navigation
       .objective-navigation-list-wrapper
