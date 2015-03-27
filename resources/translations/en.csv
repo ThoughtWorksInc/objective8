@@ -218,7 +218,8 @@ invitation,page-intro,Do you know someone with the enthusiasm and expertise to h
 invitation,page-title,Invite a policy writer
 invitation,writer-name-label,Writer name:
 invitation,guidance-text-line-1,Your writer's invitation
-invitation,guidance-text-line-2,Alternatively send the writer this link:
+invitation,guidance-text-line-2,To complete your invitation
+invitation,guidance-text-line-3,Alternatively send the writer this link:
 invitation,mail-to-text,send email
 invitation,email-subject,You have been invited to help draft some policy!
 invitation,email-body-line-1,I have invited you to help draft some policy on this objective:

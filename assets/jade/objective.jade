@@ -12,12 +12,12 @@ block content
       h2.modal-title.l8n-invitation-guidance-text-line-1.func--invitation-guidance !Your writer's invitation
 
       p.invite-by-email
-        | To complete your invitation
+        span.l8n-invitation-guidance-text-line-2 !To complete your invitation
         =" "
-        a.button-link.clj-mail-to(href="mailto:###") Send email
+        a.button-link.clj-mail-to(href="mailto:###") !Send email
 
       .alternative-invite
-        label.send-invite-label.l8n-invitation-guidance-text-line-2(for="copy-invite") !Alternatively send the writer this link:
+        label.send-invite-label.l8n-invitation-guidance-text-line-3(for="copy-invite") !Alternatively send the writer this link:
         input.invite-input-url.clj-invitation-url.func--invitation-url(id="copy-invite", type="text", value="!http://invitation/uuid/really/long/uuid")
 
   .guidance-text-wrapper
