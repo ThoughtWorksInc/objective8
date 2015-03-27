@@ -32,7 +32,7 @@
   ([required-entities]
    (let [{created-by-id :_id} (get required-entities :user (store-a-user))
          {:keys [_id objective-id global-id entity]} (get required-entities :entity (store-an-objective))
-         objective-id (if (= entity "objective") _id objective-id)]
+         objective-id (if (= entity :objective) _id objective-id)]
      (storage/pg-store! {:entity :comment
                          :created-by-id created-by-id
                          :objective-id objective-id

@@ -129,9 +129,9 @@
     (throw (Exception. "Could not transform map to bearer-token"))))
 
 (defn unmap [data-key]
-  (fn [m] (assoc (json-type->map (data-key m))
-                 :_id (:_id m)
-                 :_created_at (sql-time->iso-time-string (:_created_at m)))))
+  (fn [m] (-> (json-type->map (data-key m))
+              (assoc :_id (:_id m) :_created_at (sql-time->iso-time-string (:_created_at m)))
+              (update-in [:entity] keyword))))
 
 (defn with-username [unmap-fn]
   (fn [m] (let [m' (unmap-fn m)]

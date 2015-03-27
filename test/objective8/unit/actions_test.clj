@@ -48,9 +48,9 @@
                (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started true}
                (drafts/retrieve-latest-draft OBJECTIVE_ID) => :draft)))
 
-(def an-objective-not-in-drafting {:entity "objective" :drafting-started false})
-(def an-objective-in-drafting {:entity "objective" :drafting-started true})
-(def a-draft {:entity "draft"})
+(def an-objective-not-in-drafting {:entity :objective :drafting-started false})
+(def an-objective-in-drafting {:entity :objective :drafting-started true})
+(def a-draft {:entity :draft})
 (def comment-data {:comment-on-uri :entity-uri
                    :comment "A comment"
                    :created-by-id USER_ID})

@@ -76,6 +76,10 @@
       (= (peridot-response-json-body->map peridot-response)
          expected-json-as-map)))
 
+(defn parse-json-string-with-entity-value-as-keyword [json-string]
+  (cl-json/read-str json-string 
+                    :key-fn keyword 
+                    :value-fn (fn [k v] ((if (= k :entity) keyword identity) v))))
 
 (defn json-contains [expected & options]
   (midje/chatty-checker [actual]
@@ -83,9 +87,8 @@
                           (when (contains? (set options) :debug)
                             (prn "DEBUG: json-contains")
                             (prn (str "actual: " actual))
-                            (prn (str "parsed: " (cl-json/read-str actual :key-fn keyword))))
-                          ((midje/contains expected)
-                           (cl-json/read-str actual :key-fn keyword)))))
+                            (prn (str "parsed: " (parse-json-string-with-entity-value-as-keyword actual))))
+                          ((midje/contains expected) (parse-json-string-with-entity-value-as-keyword actual)))))
 
 (defn location-contains [expected]
   (midje/contains {"Location" (midje/contains expected)}))

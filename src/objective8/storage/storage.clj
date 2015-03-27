@@ -115,7 +115,7 @@ Options: :with-global-id -- includes the global-id in the entity."
          :_created_at (mappings/sql-time->iso-time-string (:_created_at m))
          :username (:username m)
          :votes {:up (or (:up_votes m) 0) :down (or (:down_votes m) 0)}
-         :entity "answer"))
+         :entity :answer))
 
 (defn pg-retrieve-answers-with-votes-for-question [question-id]
   (apply vector (map unmap-answer-with-votes

@@ -42,15 +42,11 @@
 
         (facts "GET /api/v1/objectives returns a list of objectives in reverse chronological order"
                (fact "objectives are returned as a list"
-                     (let [stored-user-id (gen-user-with-id)
-                           objective-1 (objectives/store-objective! (assoc the-objective :created-by-id stored-user-id))
-                           objective-2 (objectives/store-objective! (assoc the-objective :created-by-id stored-user-id))
-                           objective-3 (objectives/store-objective! (assoc the-objective :created-by-id stored-user-id))
-                           parsed-response (helpers/peridot-response-json-body->map (p/request app "/api/v1/objectives"))]
-                       parsed-response => list?
-                       parsed-response => [(assoc objective-3 :username "username")
-                                           (assoc objective-2 :username "username")
-                                           (assoc objective-1 :username "username")]))
+                     (let [stored-objectives (doall (repeatedly 5 sh/store-an-objective))
+                           {response :response} (p/request app "/api/v1/objectives")]
+                       (:body response) => (helpers/json-contains (map contains (->> stored-objectives
+                                                                                     (map #(dissoc % :global-id))
+                                                                                     reverse)))))
 
                (fact "returns an empty list if there are no objectives"
                      (do
