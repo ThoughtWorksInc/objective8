@@ -21,6 +21,7 @@
 
   ([objective-id invited-by-id]
    {:writer-name "Mel"
+    :writer-email "writer@email.com"
     :reason "She's cool"
     :objective-id objective-id
     :invited-by-id invited-by-id }))

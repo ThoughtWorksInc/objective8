@@ -5,24 +5,47 @@
 
 (def objective-template (html/html-resource "templates/jade/objective.html" {:parser jsoup/parser}))
 
+(defn mail-to-string [flash objective translations]
+  (str "mailto:" (:writer-email flash)
+       "?subject=" (translations :invitation/email-subject)
+       "&body=" (translations :invitation/email-body-line-1) " " (:title objective)
+       "%0d%0d" (translations :invitation/email-body-line-2) "%0d" (:invitation-url flash)))
+
+(defn writer-invitation [flash objective translations]
+  (html/transformation
+    [:.l8n-invitation-guidance-text-line-1] (html/content (translations :invitation-guidance/text-line-1))
+    [:.l8n-invitation-guidance-text-line-2] (html/content (translations :invitation-guidance/text-line-2))
+    [:.clj-invitation-url] (html/content (:invitation-url flash))
+    [:.clj-mail-to] (html/do->
+                      (html/set-attr "href" (mail-to-string flash
+                                                            objective
+                                                            translations))
+                      (html/content (translations :invitation/mail-to-text)))))
+
 (defn drafting-begins [objective translations]
   (html/transformation
-    [:.l8n-days-left-head] (html/content (translations :objective-view/drafting-begins)) 
+    [:.l8n-days-left-head] (html/content (translations :objective-view/drafting-begins))
     [:.clj-days-left-day] (html/do->
                             (html/set-attr "drafting-begins-date"
-                                           (:end-date objective)) 
-                            (html/content (str (:days-until-drafting-begins objective)))) 
+                                           (:end-date objective))
+                            (html/content (str (:days-until-drafting-begins objective))))
     [:.l8n-days-left-foot] (html/content (str " " (translations :objective-view/days)))))
 
 (defn objective-page [{:keys [translations data doc] :as context}]
   (let [objective (:objective data)
-        candidates (:candidates data)]
+        candidates (:candidates data)
+        flash (:flash doc)]
     (apply str
            (html/emit*
              (html/at objective-template
                       [:title] (html/content (:title doc))
                       [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
-                      [:.clj-status-bar] (html/substitute (f/status-flash-bar context))
+                      [:.clj-status-bar] (html/substitute (f/status-flash-bar
+                                                            (if (= :invitation (:type flash))
+                                                              (update-in context [:doc] dissoc :flash)
+                                                              context)))
+                      [:.clj-writer-invitation] (when (= :invitation (:type flash))
+                                                  (writer-invitation flash objective translations))
                       [:.clj-objective-progress-indicator] nil
                       [:.clj-guidance-buttons] nil
                       [:.clj-guidance-heading] (html/content (translations :objective-guidance/heading))

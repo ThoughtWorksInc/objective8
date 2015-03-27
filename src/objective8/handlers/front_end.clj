@@ -290,12 +290,14 @@
 (defn invitation-form-post [{:keys [t' locale] :as request}]
   (if-let [invitation (helpers/request->invitation-info request (get (friend/current-authentication) :identity))]
     (let [{status :status stored-invitation :result} (http-api/create-invitation invitation)]
+
       (cond
         (= status ::http-api/success)
         (let [objective-url (str utils/host-url "/objectives/" (:objective-id stored-invitation))
-              invitation-url (str utils/host-url "/invitations/" (:uuid stored-invitation))
-              message (str "Your invited writer can accept their invitation by going to " invitation-url)]
-          (assoc (response/redirect objective-url) :flash message))
+              invitation-url (str utils/host-url "/invitations/" (:uuid stored-invitation))]
+          (assoc (response/redirect objective-url) :flash {:type :invitation
+                                                           :invitation-url invitation-url
+                                                           :writer-email (:writer-email stored-invitation)}))
         (= status ::http-api/invalid-input) {:status 400}
         :else {:status 502}))
     {:status 400}))

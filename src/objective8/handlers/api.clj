@@ -204,7 +204,7 @@
     (let [objective-id (-> (:id route-params)
                            Integer/parseInt)
           invitation (-> params
-                         (select-keys [:writer-name :reason :invited-by-id])
+                         (select-keys [:writer-name :writer-email :reason :invited-by-id])
                          (assoc :objective-id objective-id))]
       (if-let [stored-invitation (invitations/create-invitation! invitation)]
         (successful-post-response (str utils/host-url

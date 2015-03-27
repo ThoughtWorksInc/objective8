@@ -17,6 +17,7 @@
 (def OBJECTIVE_TITLE "some title")
 (def INVITATION_ID 3)
 (def UUID "random-uuid")
+(def WRITER_EMAIL "writer@email.com")
 (def candidates-get-request (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/candidate-writers")))
 
 (def invitation-url (str utils/host-url "/invitations/" UUID))
@@ -44,22 +45,26 @@
                                                      :result {:_id USER_ID}}
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success}
                  (http-api/create-invitation {:writer-name "bob"
-                                              :writer-email "writer@email.com"
+                                              :writer-email WRITER_EMAIL
                                               :reason "he's awesome"
                                               :objective-id OBJECTIVE_ID
                                               :invited-by-id USER_ID}) => {:status ::http-api/success
                                                                            :result {:_id INVITATION_ID
                                                                                     :objective-id OBJECTIVE_ID
-                                                                                    :uuid UUID}})
+                                                                                    :uuid UUID
+                                                                                    :writer-email WRITER_EMAIL}})
                (let [params {:writer-name "bob"
-                             :writer-email "writer@email.com"
+                             :writer-email WRITER_EMAIL
                              :reason "he's awesome"}
                      peridot-response (-> user-session
                                           (helpers/with-sign-in "http://localhost:8080/")
                                           (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID "/writer-invitations")
                                                      :request-method :post
                                                      :params params))]
-                 peridot-response => (helpers/flash-message-contains (str "Your invited writer can accept their invitation by going to http://localhost:8080/invitations/" UUID))
+                 (:flash (:response peridot-response)) => 
+                                       {:type :invitation
+                                        :writer-email WRITER_EMAIL 
+                                        :invitation-url (str "http://localhost:8080/invitations/" UUID)}
                  peridot-response => (helpers/headers-location (str "/objectives/" OBJECTIVE_ID))))
 
          (fact "A user should be able to view the candidate writers page for an objective"

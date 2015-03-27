@@ -187,17 +187,17 @@
                 (wait-for-title "Functional test headline | Objective[8]")
                 (screenshot "objective_with_invitation_flash")
 
-                (->> (wd/text ".func--flash-bar")
+                (->> (wd/text ".func--invitation-url")
                   (re-find #"http://.*$")
                   (swap! journey-state assoc :invitation-url))
                 {:page-title (wd/title)
-                 :flash-message (wd/text ".func--flash-bar")}
+                 :flash-message (wd/text ".func--invitation-guidance")}
 
                 (catch Exception e
                   (screenshot "ERROR-Can-invite-a-writer")
                   (throw e)))
            => (contains {:page-title "Functional test headline | Objective[8]"
-                         :flash-message (contains "Your invited writer can accept their invitation")}))
+                         :flash-message (contains "Your writer's invitation is waiting for them at the link below")}))
 
 
          (fact "Can accept a writer invitation"
