@@ -68,16 +68,21 @@
                       [:.clj-drafting-started-wrapper] (html/substitute (f/drafting-message context))
                       [:.clj-replace-with-objective-detail] (html/substitute (f/text->p-nodes (:description objective)))
                       [:.l8n-writers-section-title] (html/content (translations :objective-view/writers))
-                      [:.clj-writer-item-list] (html/content (f/writer-list context)) 
-                      [:.clj-invite-writer-link] (html/set-attr 
-                                                   "href" (str "/objectives/" (:_id objective) 
-                                                               "/invite-writer"))
-                      [:.l8n-invite-writer-link] (html/content (translations :objective-view/invite-a-writer))
+                      [:.clj-writer-item-list] (html/content (f/writer-list context))
+                      [:.clj-invite-writer-link] (when-not (:drafting-started objective)
+                                                   (html/set-attr
+                                                     "href" (str "/objectives/" (:_id objective) "/invite-writer")))
+                      [:.l8n-invite-writer-link] (when-not (:drafting-started objective)
+                                                   (html/content
+                                                     (translations :objective-view/invite-a-writer)))
                       [:.l8n-questions-section-title] (html/content (translations :objective-view/questions-title))
-                      [:.clj-question-list] (html/content (f/question-list context)) 
-                      [:.clj-ask-question-link] (html/set-attr "href" (str "/objectives/" (:_id objective) 
-                                                                           "/add-question"))
-                      [:.l8n-ask-question-link] (html/content (translations :objective-view/ask-a-question))
+                      [:.clj-question-list] (html/content (f/question-list context))
+                      [:.clj-ask-question-link] (when-not (:drafting-started objective)
+                                                  (html/set-attr
+                                                    "href" (str "/objectives/" (:_id objective) "/add-question")))
+                      [:.l8n-ask-question-link] (when-not (:drafting-started objective)
+                                                  (html/content
+                                                    (translations :objective-view/ask-a-question)))
                       [:.l8n-comments-section-title] (html/content (translations :objective-view/comments))
                       [:.clj-comment-list] (html/content (f/comment-list context))
                       [:.clj-comment-create] (when-not (:drafting-started objective)
