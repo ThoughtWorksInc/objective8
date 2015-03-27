@@ -31,7 +31,7 @@
                  [org.pegdown/pegdown "1.2.0"]
                  [clojure-csv/clojure-csv "2.0.1"]]
   :main objective8.core
-  :uberjar-name "objective8.jar"
+  :uberjar-name "objective8-0.0.1-SNAPSHOT-standalone.jar"
   :plugins [[ragtime/ragtime.lein "0.3.8"]]
   :profiles {:dev {:source-paths ["dev"]
                    :repl-options {:init-ns user
@@ -56,7 +56,8 @@
                    :aliases {"translation-template" ["run" "-m" "dev-helpers.translation/main"]}}
              :uberjar {:aot [objective8.core]}
              :build {:plugins [[org.clojars.strongh/lein-init-script "1.3.1"]]
-                     :lis-opts {:redirect-output-to "/var/log/objective8d-init.log"
+                     :lis-opts {:name "objective8"
+                                :redirect-output-to "/var/log/objective8d-init.log"
                                 :jvm-opts ["-server"
                                            "-Xms256M"
                                            "-Xmx512M"
