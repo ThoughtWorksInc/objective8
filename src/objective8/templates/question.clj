@@ -31,18 +31,15 @@
 
                       [:.clj-jump-to-answer] (if user identity nil)
 
-                      [:.clj-answer-form] (if user
-                                            identity 
-                                            (tl8 :answer-create/sign-in-reminder))
-                      [:.clj-answer-form] (html/set-attr
-                                            "action"
-                                            (str "/objectives/" (:_id objective) "/questions/" (:_id question) "/answers"))
-                      [:.clj-answer-form] (html/prepend
-                                            (html/html-snippet (anti-forgery-field)))
-                      
+                      [:.clj-answer-form] (if user (html/do->
+                                                     (html/set-attr "action"
+                                                                    (str "/objectives/" (:_id objective)
+                                                                         "/questions/" (:_id question) "/answers"))
+                                                     (html/prepend (html/html-snippet (anti-forgery-field))))
+                                            (html/substitute (f/sign-in-to-add-answer context)))
+
                       [:.l8n-guidance-heading] (tl8 :answer-create/guidance-heading)
                       [:.l8n-guidance-text-line-1] (tl8 :answer-create/guidance-text-1)
                       [:.l8n-submit-answer] (tl8 :answer-create/submit-answer-button)
                       [:.l8n-jump-to-answer] (tl8 :answer-create/jump-to-answer-button)
                       [:.l8n-answers-for] (tl8 :answer-create/answers-for))))))
-

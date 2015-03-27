@@ -116,6 +116,15 @@
     (if (empty? candidates)
       (empty-writer-list-item context)
       (writer-list-items candidates))))
+;; ANSWER LIST
+
+(html/defsnippet sign-in-to-add-answer
+  library-html [:.clj-please-sign-in] [{:keys [translations ring-request] :as context}]
+  [:.l8n-before-link] (html/content (translations :answer-sign-in/please))
+  [:.l8n-sign-in-link] (html/do->
+                         (html/set-attr "href" (str "/sign-in?refer=" (:uri ring-request)))
+                         (html/content (translations :answer-sign-in/sign-in)))
+  [:.l8n-after-link] (html/content (translations :answer-sign-in/to)))
 
 ;; QUESTION LIST
 
