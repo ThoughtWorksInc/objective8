@@ -2,12 +2,12 @@ extends layouts/base
 include mixins/_view_helpers
 
 block content
-  .middle-container
-
+  .guidance-text-wrapper
     +guidanceText('!How do questions work?')
       ul
         li.l8n-guidance-text-line-1 !Questions are how Objective[8] gathers community ideas to turn into policy
 
+  .middle-container
     .question-navigation-wrapper
       .question-navigation
         .question-navigation-breadcrumb

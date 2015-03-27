@@ -6,6 +6,13 @@ block vars
   - pageTitle = "!Objective"
 
 block content
+  .guidance-text-wrapper
+    +guidanceText('!What is an objective?')
+      ul
+        li.l8n-guidance-text-line-1 !A policy starts with an idea.
+        li.l8n-guidance-text-line-2 !These are catalysts for change.
+        li.l8n-guidance-text-line-3 !Everyone can comment and make suggestions to contribute towards the draft stage.
+
   .middle-container
     .clj-writer-invitation
       p.l8n-invitation-guidance-text-line-1.func--invitation-guidance !Your writer's invitation is waiting
@@ -20,12 +27,6 @@ block content
         a(href="/draft") !Draft
       li
         a(href="#") !Policy
-
-    +guidanceText('!What is an objective?')
-      ul
-        li.l8n-guidance-text-line-1 !A policy starts with an idea.
-        li.l8n-guidance-text-line-2 !These are catalysts for change.
-        li.l8n-guidance-text-line-3 !Everyone can comment and make suggestions to contribute towards the draft stage.
 
     .objective-navigation
       .objective-navigation-list-wrapper

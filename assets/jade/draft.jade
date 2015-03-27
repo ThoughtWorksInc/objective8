@@ -6,6 +6,13 @@ block vars
   - pageTitle = "Draft"
 
 block content
+  .guidance-text-wrapper
+    +guidanceText('!What is a draft?')
+      ul
+        li.clj-guidance-text-line-1  !Drafts are versions of the policy as it is being written.
+        li.clj-guidance-text-line-2  !Drafts are crafted by the writers that have been nominated for an objective.
+        li.clj-guidance-text-line-3  !Everyone can comment and make suggestions.
+
   .middle-container
 
     //ul.progress-indicator
@@ -21,12 +28,6 @@ block content
     //    a(href="#") Edit
     //  li.on
     //    a(href="#") Preview
-
-    +guidanceText('!What is a draft?')
-      ul
-        li.clj-guidance-text-line-1  !Drafts are versions of the policy as it is being written.
-        li.clj-guidance-text-line-2  !Drafts are crafted by the writers that have been nominated for an objective.
-        li.clj-guidance-text-line-3  !Everyone can comment and make suggestions.
 
     .clj-draft-wrapper
 

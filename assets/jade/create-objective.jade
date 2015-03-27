@@ -7,13 +7,14 @@ block vars
 
 block content
 
-  .middle-container
-
+  .guidance-text-wrapper
     +guidanceText('!Creating an objective')
       ul
         li.l8n-guidance-1 !An objective is a change that could be achieved by introducing new policy. For example: improving access to public housing, or increasing the safety of our roads.
         li.l8n-guidance-2 !Your objective has just 30 days until it's transformed into a working draft.
         li.l8n-guidance-3 !Share your objective to encourage collaboration.
+
+  .middle-container
 
     h1.l8n-create-objective-title !Create objective
     form.clj-create-objective-form(method="POST", action="/objectives")

@@ -22,7 +22,7 @@ body {
 }
 
 .middle-container {
-  max-width: 40em;
+  max-width: $max_content_width;
   margin: 0 auto;
 }
 

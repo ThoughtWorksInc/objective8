@@ -1,39 +1,45 @@
 $guidance_text_side_gutter: 1.5em;
 $guidance_text_top_gutter: 1.45em;
+
+.guidance-text-wrapper {
+  background-color: $green1;
+  margin: 0 -1em 2em -1em;
+  padding: 1em;
+  @include mq(320) {
+    padding: 2em;
+  }
+}
+
 .guidance-text {
   position: relative;
+  max-width: $max_content_width;
+  margin: -2px auto 0 auto;
   padding: $guidance_text_top_gutter $guidance_text_side_gutter 1em $guidance_text_side_gutter;
-  margin-bottom: $default_block_spacing;
   background: $white;
   border: 1px solid $border_color;
-  border-top: 5px solid transparent;
-  &:before {
-    content: '';
-    display: block;
-    position: absolute;
-    top: -5px;
-    left: 0;
-    z-index: 1;
-    width: 100%;
-    height: 5px;
-    border-top: 5px solid $green1;
-  }
+  box-shadow: 0 4px 4px rgba(black,0.1);
 }
 .guidance-text-heading {
   line-height: 1.1;
-  padding: 0 100px 0 0;
   margin-top: 0;
-  margin-bottom: 0.5em;
+  margin-bottom: 0.4em;
   color: $green1;
+  @include mq(320) {
+    padding-right: 100px;
+  }
 }
 
 .guidance-buttons {
   text-align: right;
+  margin-bottom: 1em;
+  @include mq(320) {
+    margin-bottom: 0;
+  }
 }
 
 .button-hide-guidance-text {
   text-decoration: none;
-  display: inline-block;
+  display: block;
   @include mq(400) {
     position: absolute;
     top: 27px;
