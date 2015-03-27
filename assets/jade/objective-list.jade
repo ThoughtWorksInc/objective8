@@ -5,12 +5,15 @@ block vars
   - pageTitle = "!Objectives | Objective[8]"
 
 block content
-  .middle-container
-
+  .guidance-text-wrapper
     +guidanceText('!What are objectives?')
-      ul
-        li.l8n-guidance-text-line-1 !Objective[8] centers its policy drafting process around objectives.
-        li.l8n-guidance-text-line-2 !An objective is a change that could be achieved by introducing new policy.
+      .objective-list-guidance
+        i.objective-list-guidance-icon.fa.fa-lightbulb-o
+        ul.objective-list-guidance-text
+          li.l8n-guidance-text-line-1 !Objective[8] centers its policy drafting process around objectives.
+          li.l8n-guidance-text-line-2 !An objective is a change that could be achieved by introducing new policy.
+
+  .middle-container
 
     h1.l8n-objective-list-title !Objectives
 
@@ -20,5 +23,9 @@ block content
     .recent-objectives
       h2.l8n-objective-list-subtitle !Recently created objectives
       ol.unstyled-list
+        +objectiveListItem('!Build safer cycling networks in the streets of Madrid.', 30)
+          | !London and Pairs are two prime examples of cycle super highway heaven.
+        +objectiveListItem('!Networks in the streets of Madrid.', 30)
+          | We need to show the world that Madrid too can be the pinncale in cycli...
         +objectiveListItem('!Build safer cycling networks in the streets of Madrid.', 30)
           | !London and Pairs are two prime examples of cycle super highway heaven. We need to show the world that Madrid too can be the pinncale in cycli...

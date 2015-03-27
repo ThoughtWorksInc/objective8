@@ -1,24 +1,64 @@
+.objective-list-item {
+  border-bottom: 1px solid $grey-3;
+  margin-bottom: 0;
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
 .objective-list-item-link {
+  position: relative;
   text-decoration: none;
   display: block;
-  padding: 1em;
-  border: 1px solid $grey-3;
-  color: $black;
-  margin-bottom: 1em;
+  padding-top: 1.5em;
+  padding-right: 3em;
+  padding-bottom: 1.5em;
+  border-bottom: 3px solid transparent;
+  color: $default_text_color;
+  &:focus {
+    background-color: transparent;
+    border-bottom-color: $yellow;
+    outline: none;
+  }
   &:hover {
-    background: $offwhite;
     text-decoration: none;
-    .objective-item-title {
-      text-decoration: none;
+    .objective-list-item-title {
+      text-decoration: underline;
+    }
+    .fa {
+      color: $link-colour;
     }
   }
   &:visited {
-    color: $black;
+    color: $default_text_color;
   }
 }
+
 .objective-list-item-title {
   margin: 0 0 0.2em;
+  font-size: 1.3em;
   line-height: 1.2;
-  text-decoration: underline;
   color: $link-colour;
 }
+.objective-list-item-draft-begins {
+  color: $grey-1;
+  font-size: 90%;
+}
+.objective-list-item-date {
+  font-weight: 700;
+}
+
+.objective-list-item-preview-text {
+  margin-bottom: 0;
+  &:empty {
+    display: none;
+  }
+}
+
+.objective-list-item-arrow {
+  font-size: 2em;
+  position: absolute;
+  top: 50%;
+  right: 0.25em;
+}
+

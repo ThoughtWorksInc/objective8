@@ -1,3 +1,18 @@
+.objective-list-guidance {
+  @include cf;
+}
+.objective-list-guidance-text {
+  padding-left: 5.5em;
+  padding-top: 0.25em;
+}
+.objective-list-guidance-icon {
+  float: left;
+  font-size: 6em;
+}
+
 .objectives-list-actions {
   margin-bottom: 2em;
+  @include mq(321) {
+    margin-bottom: 3em;
+  }
 }
