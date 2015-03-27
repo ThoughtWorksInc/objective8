@@ -9,6 +9,9 @@
     padding-top: 1em;
     border-left: 4px solid $grey-4;
   }
+  &:hover {
+    border-left-color: $grey-3;
+  }
 }
 .comment-item {
   @extend %list-item;
