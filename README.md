@@ -26,39 +26,48 @@ lein ragtime migrate
 
 ####Running the tests
 
-To run all tests:
+######To run all tests:
 ```
 test/run_all_tests.sh
 ```
-To run only unit tests:
+######To run only unit tests:
 ```
 lein midje objective8.unit.*
 ```
-To run only integration tests:
+######To run only integration tests:
 ```
 lein midje objective8.integration.*
 ```
-To run only functional tests:
+######To run only functional tests:
 ```
 test/run_functional_tests.sh
 ```
 
-During development, you can get finer grained control over running the
-tests by using the `lein midje` command.  For example: to run just the
-integration and unit tests, and have tests automatically re-run when a
-source file is changed, you can use:
+#####Use `:autotest` to make tests rerun automatically when files are changed:
+
+*Autotest watches directories rather than namespaces*
+
+######Autotest all tests:
 ```
-lein midje objective8.unit.* objective8.integration.* :autotest :filters -functional
+test/run_all_tests.sh :autotest
 ```
 
-(the `:filters -functional` option filters out the functional tests
---- this is required to avoid starting the test server for the
-functional tests)
+######Autotest unit and integration tests:
+```
+test/autotest_unit_and_integration_tests.sh
+```
+
+######Autotest functional tests:
+```
+test/autotest_functional_tests.sh
+```
+
+######Extra configuration options:
 
 You can also pass extra configuration to the tests using the :config
-option.  For example: to run just the unit tests without any logging, use:
+option.  For example: to run just the unit tests with autotest and without any logging, use:
 ```
-lein midje objective8.unit.* :autotest :filters -functional :config config/tests/no-logging.clj
+lein midje :autotest test/objective8/unit/ :config config/tests/no-logging.clj
 ```
 
 
