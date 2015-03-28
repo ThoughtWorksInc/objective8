@@ -59,7 +59,7 @@
 (def FIRST_DRAFT_HTML (utils/hiccup->html (utils/markdown->hiccup FIRST_DRAFT_MARKDOWN)))
 (def THIRD_DRAFT_HTML (utils/hiccup->html (utils/markdown->hiccup THIRD_DRAFT_MARKDOWN)))
 
-(facts "About user journeys" :functional
+(facts "About user journeys"
        (against-background 
          [(before :contents (do (integration-helpers/db-connection)
                                 (integration-helpers/truncate-tables)

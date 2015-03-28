@@ -1,2 +1,2 @@
 #!/usr/bin/env bash 
-lein midje objective8.unit.* objective8.integration.* :autotest :filter -functional
+lein midje :autotest test/objective8/unit/ test/objective8/integration/ src/
