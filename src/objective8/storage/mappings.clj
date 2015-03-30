@@ -184,7 +184,7 @@
   (korma/table :objective8.comments)
   (korma/belongs-to user {:fk :created_by_id})
   (korma/prepare map->comment)
-  (korma/transform (-> (unmap :comment) with-username (without-key :objective-id))))
+  (korma/transform (-> (unmap :comment) with-username with-global-id (without-key :objective-id))))
 
 (korma/defentity question
   (korma/pk :_id)

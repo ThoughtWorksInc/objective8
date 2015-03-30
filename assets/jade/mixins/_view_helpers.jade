@@ -24,16 +24,20 @@ mixin goalItem()
 mixin voteUpDownControls()
   - voteUpCount = Math.floor(Math.random() * 100) + 1
   - voteDownCount = Math.floor(Math.random() * 100) + 1
-  form.actions-up-down-vote-form.clj-up-down-vote-form(method="post")
-    button.actions-vote-up.func-vote-up(type="submit", value="up", title="Vote up")
-      span.actions-vote-count #{voteUpCount}
+  form.clj-up-down-vote-form.actions-up-down-vote-option(action="/meta/up-vote", method="post")
+    input.clj-vote-on-uri(type="hidden", value="!vote-on-uri", name="vote-on-uri")
+    input.clj-refer(type="hidden", value="!current-url", name="refer")
+    button.func--up-vote.actions-vote-up(type="submit")
+      span.clj-up-vote-count.actions-vote-count #{voteUpCount}
       i.fa.fa-fw.fa-angle-up
-      span.vote-direction-text Vote down
-    .actions-vote-spacer |
-    button.actions-vote-down.func-vote-down(type="submit", value="down", title="Vote down")
-      span.actions-vote-count #{voteDownCount}
+      span.vote-direction-text up
+  form.clj-up-down-vote-form.actions-up-down-vote-option(action="/meta/down-vote", method="post")
+    input.clj-vote-on-uri(type="hidden", value="!vote-on-uri", name="vote-on-uri")
+    input.clj-refer(type="hidden", value="!current-url", name="refer")
+    button.func--down-vote.actions-vote-down(type="submit")
+      span.clj-down-vote-count.actions-vote-count #{voteDownCount}
       i.fa.fa-fw.fa-angle-down
-      span.vote-direction-text Vote down
+      span.vote-direction-text down
 
 mixin pleaseSignIn()
   p.clj-please-sign-in

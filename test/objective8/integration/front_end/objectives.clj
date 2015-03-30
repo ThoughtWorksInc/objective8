@@ -85,16 +85,21 @@
                (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}
                (http-api/get-comments anything) => {:status ::http-api/success :result []})
 
-              (fact "Any user can view comments on an objective"
+              (fact "Any user can view comments with votes on an objective"
                     (against-background
                       (http-api/get-comments anything) => {:status ::http-api/success
                                                            :result [{:_id 1
                                                                      :_created_at "2015-02-12T16:46:18.838Z"
                                                                      :objective-id OBJECTIVE_ID
                                                                      :created-by-id USER_ID
-                                                                     :comment "Comment 1"}]})
-                    (let [peridot-response (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))]
-                      peridot-response) => (contains {:response (contains {:body (contains "Comment 1")})}))
+                                                                     :comment "Comment 1"
+                                                                     :uri "/comments/1"
+                                                                     :votes {:up 123456789 :down 987654321}}]})
+                    (let [{response :response} (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))]
+                      (:body response) => (contains "Comment 1")
+                      ;;(:body response) => (contains "123456789")
+                      ;;(:body response) => (contains "987654321")
+                      ))
 
               (fact "An objective that is in drafting cannot be commented on"
                     (against-background

@@ -177,18 +177,23 @@
   [:.clj-empty-comment-list-item] (html/content (translations :comment-view/no-comments)))
 
 (html/defsnippet comment-list-items
-  library-html [:.clj-comment-item] [comments]
-  [:.clj-comment-item] (html/clone-for [comment comments]
+  library-html [:.clj-comment-item] [{:keys [data ring-request] :as context}]
+  [:.clj-comment-item] (html/clone-for [comment (:comments data)]
                                        [:.clj-comment-author] (html/content (:username comment))
                                        [:.clj-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
                                        [:.clj-comment-text] (html/content (:comment comment))
+;;                                       [:.clj-up-down-vote-form] (html/prepend (html/html-snippet (anti-forgery-field)))
+;;                                       [:.clj-vote-on-uri] (html/set-attr "value" (:uri comment))
+;;                                       [:.clj-refer] (html/set-attr "value" (str (:uri ring-request) "#comments"))
+;;                                       [:.clj-up-vote-count] (html/content (str (get-in comment [:votes :up])))
+;;                                       [:.clj-down-vote-count] (html/content (str (get-in comment [:votes :down])))
                                        [:.clj-comment-actions] nil))
 
 (defn comment-list [{translations :translations :as context}]
   (let [comments (get-in context [:data :comments])]
     (if (empty? comments)
       (empty-comment-list-item translations)
-      (comment-list-items comments))))
+      (comment-list-items context))))
 
 ;; COMMENT CREATE
 
