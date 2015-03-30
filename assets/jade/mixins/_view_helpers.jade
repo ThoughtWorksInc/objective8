@@ -43,6 +43,13 @@ mixin pleaseSignIn()
     span.clj-after-link.l8n-after-link
       block
 
+mixin modal(title, l8nTitleClass, funcClass)
+  .modal-contents.clj-modal-contents
+    .modal-header
+      h2.modal-title(class="#{l8nTitleClass} #{funcClass}") !Your modal title
+    .modal-body
+      block
+
 mixin googleAnalytics(trackingID)
   script.clj-google-analytics.
     (function(i,s,o,g,r,a,m) {

@@ -210,5 +210,14 @@ html.no-js(lang="en")
         .list-item-actions
           +voteUpDownControls()
 
+      .example
+        .documentation
+          h2 Modal
+          p Generated with modal(title, l8nTitleClass, funcClass).
+          p The modal contents is passed to the modal-body.
+
+        +modal("!Your modal title", "l8n-modal-title", "func--modal-title")
+          p Modal content here.
+
     +googleAnalytics('${trackingID}')
     +javascriptIncludeTag("scripts.min")
