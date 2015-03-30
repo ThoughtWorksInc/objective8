@@ -242,12 +242,9 @@ question-create,guidance-text,"Your question should be focused and specific, as 
 question-create,question-title,Questions are a maximum length of 500 characters
 question-create,question-label,Question
 question-create,post-button,Add question
+invitation-response,page-title,You've been invited to help draft some policy!
+invitation-response,help-achieve,Can you help us to draft some policy to achieve this objective:
 invitation-response,rsvp-text,"If you're interested, you can sign in and accept the invitation below."
-invitation-response,doc-title,Invitation to draft | Objective[8]
-invitation-response,decline,Decline
-invitation-response,page-intro,You've been invited to help draft some policy!
 invitation-response,sign-in-to-accept,Sign in to accept
-invitation-response,page-title,Can you help us to draft some policy?
-invitation-response,for-objective-text,Help write policy to achieve this objective: 
-invitation-response,doc-description,Invitation to help draft policy
-invitation-response,accept,Accept
+invitation-response,decline,Decline
+invitation-response,accept,Accept 

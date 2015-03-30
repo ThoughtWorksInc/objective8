@@ -8,7 +8,7 @@ block vars
 block content
   .middle-container.clj-invitation-response
     article
-      h1 !You've been invited to help draft a policy
+      h1.l8n-invitation-response-title !You've been invited to help draft a policy
       p.lede
         span.l8n-invitation-response-help-achieve !Can you help write policy to achieve this objective:
         = " "
@@ -17,7 +17,7 @@ block content
 
     .invitation-response-actions
       form.invitation-response-form.clj-invitation-response-decline(method="POST", action="{{/objectives/:o-id/writer-invitations/:i-id/decline}}")
-        button.pink-button(type="submit", value="decline") !Decline
+        button.pink-button.l8n-invitation-decline-text(type="submit", value="decline") !Decline
 
       form.invitation-response-form.clj-invitation-response-accept(method="POST", action="{{/objectives/:o-id/writer-invitations/:i-id/accept}}")
-        button.button(type="submit", value="accept") !Accept
+        button.button.l8n-invitation-accept-text.func--invitation-accept(type="submit", value="accept") !Accept

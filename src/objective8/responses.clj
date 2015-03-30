@@ -146,7 +146,9 @@
   [:#clj-invitation-response-decline] (html/prepend (html/html-snippet (anti-forgery-field)))
   [:#clj-invitation-response-decline] (html/set-attr :action (str "/objectives/" (get-in data [:objective :_id]) "/writer-invitations/" (:invitation-id invitation-rsvp) "/decline"))
   [:#clj-invitation-response-objective-title] (html/content (get-in data [:objective :title]))
-  [:#clj-invitation-response html/any-node] (html/replace-vars translations))
+ ; [:#clj-invitation-response html/any-node] (html/replace-vars translations)
+  
+  )
 
 ;CANDIDATES
 
