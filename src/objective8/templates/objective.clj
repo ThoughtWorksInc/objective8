@@ -28,7 +28,7 @@
 
 (def invitation-response-snippet (html/select (html/html-resource "templates/jade/objective-invitation-response.html") [:.clj-invitation-response]))
 
-(defn invitation-rsvp-modal [{:keys [data invitation-rsvp] :as context}]
+(defn invitation-rsvp-modal [{:keys [data invitation-rsvp user ring-request] :as context}]
   (let [objective (:objective data)
         tl8 (f/translator context)
         objective-id (:objective-id invitation-rsvp)
@@ -47,14 +47,17 @@
                  (html/set-attr :action (utils/local-path-for :fe/decline-invitation :id (:objective-id invitation-rsvp) :i-id (:invitation-id invitation-rsvp)))
                  (html/prepend (html/html-snippet (anti-forgery-field)))) 
 
-               [:.clj-invitation-response-accept] 
-               (html/do->
-                 (html/prepend (html/html-snippet (anti-forgery-field))) 
-                 (html/set-attr :action (utils/local-path-for :fe/accept-invitation :id (:objective-id invitation-rsvp) :i-id (:invitation-id invitation-rsvp)))) 
-
                [:.l8n-invitation-decline-text] (tl8 :invitation-response/decline)
-               [:.l8n-invitation-accept-text] (tl8 :invitation-response/accept)
-               )))))
+               [:.l8n-invitation-accept-text] (tl8 :invitation-response/accept)     
+
+               [:.clj-invitation-response-accept] 
+               (if user
+                 (html/do-> (html/prepend (html/html-snippet (anti-forgery-field))) 
+                            (html/set-attr :action (utils/local-path-for :fe/accept-invitation :id (:objective-id invitation-rsvp) :i-id (:invitation-id invitation-rsvp))))
+                 (html/substitute (html/at f/anchor-button 
+                                           [:.clj-anchor-button] (html/do-> 
+                                                                   (html/set-attr :href (str "/sign-in?refer=" (:uri ring-request)))
+                                                                   (tl8 :invitation-response/sign-in-to-accept))))))))))
 
 (defn drafting-begins [objective translations]
   (html/transformation
@@ -67,6 +70,7 @@
 
 (defn objective-page [{:keys [translations data doc invitation-rsvp] :as context}]
   (let [objective (:objective data)
+        objective-id (:_id objective)
         candidates (:candidates data)
         flash (:flash doc)]
     (apply str
@@ -78,10 +82,11 @@
                                                             (if (= :invitation (:type flash))
                                                               (update-in context [:doc] dissoc :flash)
                                                               context)))
-                      [:.clj-writer-invitation] (if (= :invitation (:type flash))
-                                                  (writer-invitation-modal flash objective translations)
-                                                  (when invitation-rsvp
-                                                    (invitation-rsvp-modal context)))
+                      [:.clj-writer-invitation] 
+                      (if (= :invitation (:type flash))
+                        (writer-invitation-modal flash objective translations)
+                        (when (and objective-id (= (:objective-id invitation-rsvp) objective-id)) 
+                          (invitation-rsvp-modal context)))
 
                       [:.clj-objective-progress-indicator] nil
                       [:.clj-guidance-buttons] nil

@@ -22,6 +22,8 @@
     (map (fn [p] (html/html [:p p])) (clojure.string/split text
                                                            newline-followed-by-optional-whitespace)))))
 
+(def anchor-button (html/select library-html-resource [:.clj-anchor-button]))
+
 ;; MASTHEAD
 
 (def masthead-snippet (html/select library-html-resource [:.clj-masthead-signed-out])) 
