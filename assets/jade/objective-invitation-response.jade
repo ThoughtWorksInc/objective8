@@ -3,7 +3,7 @@ include mixins/_view_helpers
 
 block vars
   - bodyClass = "objective"
-  - pageTitle = "!Objective"
+  - pageTitle = "!Objective writer invitation"
 
 block content
   .middle-container.clj-invitation-response
@@ -13,7 +13,7 @@ block content
         span.l8n-invitation-response-help-achieve !Can you help write policy to achieve this objective:
         = " "
         span.clj-objective-title !More bikes in Soho
-      p.l8n-rsvp-text If you're interested, you can sign in and accept the invitation below.
+      p.l8n-rsvp-text !If you're interested, you can sign in and accept the invitation below.
 
     .invitation-response-actions
       form.invitation-response-form.clj-invitation-response-decline(method="POST", action="{{/objectives/:o-id/writer-invitations/:i-id/decline}}")
