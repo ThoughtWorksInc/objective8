@@ -1,0 +1,23 @@
+extends layouts/base
+include mixins/_view_helpers
+
+block vars
+  - bodyClass = "objective"
+  - pageTitle = "!Objective"
+
+block content
+  .middle-container.clj-invitation-response
+    article
+      h1 !You've been invited to help draft a policy
+      p.lede
+        span.l8n-invitation-response-help-achieve !Can you help write policy to achieve this objective:
+        = " "
+        span.clj-objective-title !More bikes in Soho
+      p.l8n-rsvp-text If you're interested, you can sign in and accept the invitation below.
+
+    .invitation-response-actions
+      form.invitation-response-form.clj-invitation-response-decline(method="POST", action="{{/objectives/:o-id/writer-invitations/:i-id/decline}}")
+        button.pink-button(type="submit", value="decline") !Decline
+
+      form.invitation-response-form.clj-invitation-response-accept(method="POST", action="{{/objectives/:o-id/writer-invitations/:i-id/accept}}")
+        button.button(type="submit", value="accept") !Accept

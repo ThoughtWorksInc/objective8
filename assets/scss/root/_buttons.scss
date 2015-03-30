@@ -1,15 +1,15 @@
-.button {
+@mixin default-button($color: $green1) {
   position: relative;
   display: inline-block;
   max-width: 14em;
   margin-right: 0.5em;
   padding: 0.55em 1.35em 0.65em 1.35em;
-  border: 1px solid $green1;
+  border: 1px solid $color;
   border-radius: 2em;
   transition: background 0.2s ease-in-out, color 0.2s ease-in-out, border 0.2s ease-in-out;
   outline-color: transparent;
 
-  &:after {
+  &:after { // fake the outline
     content: '';
     opacity: 0;
     position: absolute;
@@ -24,11 +24,11 @@
   &:visited, &:focus, & {
     background-color: $white;
     text-decoration: none;
-    color: $green1;
+    color: $color;
     outline-width: 0;
   }
   &:hover {
-    background-color: $green1;
+    background-color: $color;
     text-decoration: none;
     color: $white;
     cursor: pointer;
@@ -46,7 +46,16 @@
     }
   }
 }
+.button {
 
+}
 
+.button {
+  @include default-button();
+}
+
+.pink-button {
+  @include default-button($pink);
+}
 
 
