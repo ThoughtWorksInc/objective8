@@ -139,4 +139,13 @@ block footerScripts
           pageNav.removeClass("sticky");
         }
       });
+
+    /* TODO - factor out */
+      var modalContent = $('.js-modal-content');
+      if (modalContent.length) {
+        var modal = $('.js-modal');
+        modalContent.addClass('js-modal-fix-up');
+        $('.js-modal-container').append(modalContent);
+        modal.removeClass('js-modal-hidden');
+      }
     });

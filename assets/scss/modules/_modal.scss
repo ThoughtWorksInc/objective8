@@ -16,3 +16,37 @@
   font-size: 1.4em;
   margin: 0;
 }
+
+.js-modal-hidden {
+  display: none;
+}
+
+.js-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: $grey-out;
+  z-index: 1000;
+}
+
+.js-modal-fix-up {
+  background-color: $white;
+  border: 0.6em solid $yellow;
+}
+
+.js-modal-container {
+  position: relative;
+  margin: 4em 3em 3em 3em;
+}
+
+.js-modal-dismiss {
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  & a {
+    color: $black;
+    text-decoration: none;
+  }
+}
