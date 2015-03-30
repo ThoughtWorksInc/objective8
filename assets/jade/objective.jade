@@ -140,4 +140,19 @@ block footerScripts
         }
       });
 
+      function closeModal() {
+        $(this).parentsUntil($('.js-close-target').parent()).addClass('js-hidden');
+      }
+
+      var closeWriterInvitation = $('.js-close');
+      closeWriterInvitation.click(closeModal);
+
+      /* TODO - factor out */
+      var modalContent = $('.js-modal-content');
+      if (modalContent.length) { //disabled
+        var modal = $('.js-modal');
+        modalContent.addClass('js-modal-fix-up');
+        $('.js-modal-container').append(modalContent);
+        modal.removeClass('js-hidden');
+      }
     });

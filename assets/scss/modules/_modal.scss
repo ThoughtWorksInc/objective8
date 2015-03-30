@@ -17,7 +17,7 @@
   margin: 0;
 }
 
-.js-modal-hidden {
+.js-hidden {
   display: none;
 }
 
@@ -38,7 +38,9 @@
 
 .js-modal-container {
   position: relative;
-  margin: 4em 3em 3em 3em;
+  max-width: 44em;
+  margin: 3em auto 3em auto;
+  margin-right: auto;
 }
 
 .js-modal-dismiss {
