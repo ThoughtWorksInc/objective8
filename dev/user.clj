@@ -2,6 +2,7 @@
   (:require [clojure.tools.namespace.repl :as tnr]
             [org.httpkit.server :as server]
             [clojure.set :as s]
+            [korma.db :as kdb]
             [objective8.core :as core]
             [objective8.config :as config]
             [objective8.storage.database :as db]
@@ -12,9 +13,17 @@
 ; Don't try to load ./test and ./integration
 (tnr/set-refresh-dirs "./src" "./dev")
 
+(def local-spec (kdb/postgres {:db (config/get-var "DB_NAME" "objective8")
+                              :user (config/get-var "DB_USER" "objective8")
+                              :host (config/get-var "DB_HOST" "127.0.0.1")
+                              :port (config/get-var "DB_PORT" 5432)}))
+
 (def configs 
   {:default core/app-config
-   :stub-twitter (assoc core/app-config :authentication stub-twitter-auth-config)})
+   :stub-twitter (assoc core/app-config :authentication stub-twitter-auth-config)
+   :local-stub-twitter (assoc core/app-config
+                              :authentication stub-twitter-auth-config
+                              :db-spec local-spec)})
 
 (def launchers (make-launcher-map configs))
 

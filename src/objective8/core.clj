@@ -108,7 +108,8 @@
                     :workflows [twitter-workflow,
                                 sign-up-workflow]
                     :login-uri "/sign-in"}
-   :translation (configure-translations)})
+   :translation (configure-translations)
+   :db-spec db/postgres-spec})
 
 (defn get-bearer-token-details []
   (let [bearer-name (config/get-var "API_BEARER_NAME")
@@ -124,11 +125,11 @@
       (bt/store-token! bearer-token-details))))
 
 (defn start-server 
-  ([] 
+  ([]
    (start-server app-config)) 
   ([app-config] 
    (let [port (Integer/parseInt (config/get-var "APP_PORT" "8080"))]
-     (db/connect!) 
+     (db/connect! (:db-spec app-config)) 
      (initialise-api)
      (log/info (str "Starting objective8 on port " port))
      (reset! server (run-server (app app-config) {:port port})))))

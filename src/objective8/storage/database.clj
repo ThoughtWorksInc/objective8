@@ -11,6 +11,9 @@
 
 (defn connect!
   "Connect to the database described by the DB spec"
-  []
-  (log/info (str "Attempting to connect to the database" (dissoc postgres-spec :password)))
-     (db/defdb objective8-db postgres-spec))
+  ([]
+   (connect! postgres-spec))
+
+  ([spec]
+   (log/info (str "Attempting to connect to the database" (dissoc spec :password)))
+   (db/defdb objective8-db spec)))
