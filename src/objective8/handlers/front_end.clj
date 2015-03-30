@@ -108,11 +108,23 @@
             :else {:status 502}))
     {:status 400}))
 
+(defn remove-invitation-from-session [request]
+  (update-in request [:session] dissoc :invitation))
+
+(defn update-session-invitation [{:keys [session] :as request}]
+  (if-let [invitation-rsvp (:invitation session)]
+    (let [invitation-status (:status (http-api/retrieve-invitation-by-uuid (:uuid invitation-rsvp)))]
+      (if (= ::http-api/success invitation-status)
+        request
+        (remove-invitation-from-session request)))
+    request))
+
 (defn objective-detail [{{:keys [id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)
+        updated-request (update-session-invitation request)
         {objective-status :status objective :result} (http-api/get-objective objective-id)
-        {candidate-status :status candidates :result} (http-api/retrieve-candidates objective-id)  
-        {questions-status :status questions :result} (http-api/retrieve-questions objective-id) 
+        {candidate-status :status candidates :result} (http-api/retrieve-candidates objective-id)
+        {questions-status :status questions :result} (http-api/retrieve-questions objective-id)
         {comments-status :status comments :result} (http-api/get-comments (:uri objective))]
     (cond
       (every? #(= ::http-api/success %) [objective-status candidate-status questions-status comments-status])
@@ -121,7 +133,7 @@
          :headers {"Content-Type" "text/html"}
          :body
         (views/objective-detail-page "objective-details"
-                                     request
+                                     updated-request
                                      :objective formatted-objective
                                      :candidates candidates
                                      :questions questions
@@ -129,7 +141,7 @@
                                      :doc (let [details (str (:title objective) " | Objective[8]")]
                                             {:title details
                                              :description details}))})
-      (= objective-status ::http-api/not-found) (error-404-response request)
+      (= objective-status ::http-api/not-found) (error-404-response updated-request)
 
       (= objective-status ::http-api/invalid-input) {:status 400}
 
@@ -302,17 +314,13 @@
     {:status 400}))
 
 (defn writer-invitation [{{uuid :uuid} :route-params :keys [t' locale session] :as request}]
-  (let [{status :status
-         invitation :result} (http-api/retrieve-invitation-by-uuid uuid)
+  (let [{status :status invitation :result} (http-api/retrieve-invitation-by-uuid uuid)
          {:keys [objective-id _id] invitation-status :status} invitation]
-
-
     (cond
-
       (= status ::http-api/success)
       (cond
         (= invitation-status "active")
-        (-> (str utils/host-url "/objectives/" objective-id "/writer-invitations/" _id)
+        (-> (utils/path-for :fe/objective :id objective-id) 
             response/redirect
             (assoc :session session)
             (assoc-in [:session :invitation] {:uuid uuid :objective-id objective-id :invitation-id _id}))

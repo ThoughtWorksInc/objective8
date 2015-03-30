@@ -68,6 +68,11 @@
                             (html/content (str (:days-until-drafting-begins objective))))
     [:.l8n-days-left-foot] (html/content (str " " (translations :objective-view/days)))))
 
+(defn invitation-rsvp-for-objective? [objective invitation-rsvp]
+  (let [objective-id (:_id objective)
+        invitation-objective-id (:objective-id invitation-rsvp)]
+    (and objective-id (= invitation-objective-id objective-id))))
+
 (defn objective-page [{:keys [translations data doc invitation-rsvp] :as context}]
   (let [objective (:objective data)
         objective-id (:_id objective)
@@ -78,14 +83,16 @@
              (html/at objective-template
                       [:title] (html/content (:title doc))
                       [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
-                      [:.clj-status-bar] (html/substitute (f/status-flash-bar
-                                                            (if (= :invitation (:type flash))
-                                                              (update-in context [:doc] dissoc :flash)
-                                                              context)))
+                      [:.clj-status-bar] (html/substitute 
+                                           (f/status-flash-bar
+                                             (cond
+                                               (= :invitation (:type flash)) (update-in context [:doc] dissoc :flash)
+                                               (invitation-rsvp-for-objective? objective invitation-rsvp) (dissoc context :invitation-rsvp)
+                                               :else context)))
                       [:.clj-writer-invitation] 
                       (if (= :invitation (:type flash))
                         (writer-invitation-modal flash objective translations)
-                        (when (and objective-id (= (:objective-id invitation-rsvp) objective-id)) 
+                        (when (invitation-rsvp-for-objective? objective invitation-rsvp) 
                           (invitation-rsvp-modal context)))
 
                       [:.clj-objective-progress-indicator] nil

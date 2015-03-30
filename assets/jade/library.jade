@@ -112,6 +112,7 @@ html.no-js(lang="en")
           h3 Flash message success bar
           p Generated with flashMessageSuccessBar() mixin
         +flashMessageSuccessBar
+          | !Success! It worked.
 
       h2#button-assets Buttons assets
 
@@ -266,6 +267,14 @@ html.no-js(lang="en")
           p Generated with pleaseSignIn()
         +pleaseSignIn()
           | to ...
+
+      .example
+        .documentation
+          h3 Flash message: Respond to invitation
+          p Generated with flashMessageSuccessBar() mixin
+        +flashMessageSuccessBar
+          a.clj-invitation-response-link.l8n-invitation-response-link(href="invitation-url")
+            | !Respond to your invitation to help draft policy
 
       h2#vote-assets Vote assets
 

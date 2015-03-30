@@ -203,12 +203,8 @@
          (fact "Can accept a writer invitation"
            (try
              (wd/to (:invitation-url @journey-state))
-             #_(wait-for-title "Invitation to draft | Objective[8]")
-             (screenshot "invitation_url")
-
-             (wd/to (:objective-url @journey-state))
              (wait-for-title "Functional test headline | Objective[8]")
-             (screenshot "objective_page_with_invitation_rsvp")
+             (screenshot "objective_page_after_hitting_invitation_url")
 
              (wd/click ".func--invitation-accept")
              (wait-for-element ".func--objective-page")

@@ -52,14 +52,22 @@
 
 ;; STATUS BAR
 
+(html/defsnippet invitation-response-banner library-html [:.clj-invitation-response-link]
+  [invitation-rsvp translations]
+  [:.clj-invitation-response-link] 
+  (html/do->
+    (html/set-attr :href (utils/local-path-for :fe/objective :id (:objective-id invitation-rsvp)))
+    (html/content (translations :invitation-response/banner-message))))
+
 (html/defsnippet flash-bar library-html [:.clj-flash-message-bar] [flash]
   [:.clj-flash-message-bar-text] (html/content flash))
 
 (html/defsnippet status-flash-bar
-  library-html [:.clj-status-bar] [{:keys [doc translations] :as context}]
-  [:.clj-status-bar] (if-let [flash (:flash doc)] 
-                       (html/substitute (flash-bar flash))
-                       identity)
+  library-html [:.clj-status-bar] [{:keys [doc translations invitation-rsvp] :as context}]
+  [:.clj-status-bar] (cond
+                       (:flash doc) (html/substitute (flash-bar (:flash doc)))
+                       invitation-rsvp (html/substitute (flash-bar (invitation-response-banner invitation-rsvp translations)))
+                       :else identity)
   [:.clj-status-bar-text] (html/content (translations :status-bar/status-text)))
 
 
