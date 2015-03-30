@@ -43,9 +43,10 @@
 
 (defn map->comment
   "Converts a clojure map into a json-typed comment for the database"
-  [{:keys [created-by-id objective-id comment-on-id] :as comment}]
-  (if (and created-by-id objective-id comment-on-id)
-    {:created_by_id created-by-id
+  [{:keys [global-id created-by-id objective-id comment-on-id] :as comment}]
+  (if (and global-id created-by-id objective-id comment-on-id)
+    {:global_id global-id
+     :created_by_id created-by-id
      :objective_id objective-id
      :comment_on_id comment-on-id
      :comment (map->json-type comment)}

@@ -9,9 +9,6 @@
             [objective8.middleware :as m]
             [objective8.comments :as comments]))
 
-;; Testing from http request -> making correct calls within comments namespace
-;; Mock or stub out 'comments' namespace
-
 (def app (helpers/test-context))
 
 (def OBJECTIVE_ID 234)
@@ -51,10 +48,12 @@
                                                     :body (json/generate-string comment-data))]
                 (:status response) => 201
                 (:body response) => (helpers/json-contains {:_id integer?
+                                                            :uri (contains "/comments/")
                                                             :comment-on-uri uri-for-draft
                                                             :comment "A comment"
                                                             :created-by-id user-id})
                 (:body response) =not=> (helpers/json-contains {:comment-on-id anything})
+                (:body response) =not=> (helpers/json-contains {:global-id anything})
                 (:headers response) => (helpers/location-contains (str "/api/v1/meta/comments/"))))
 
         (fact "returns 404 when entity to be commented on doesn't exist"
@@ -81,8 +80,9 @@
                     stored-comments (doall (->> (repeat {:entity draft :user user})
                                                 (take 5)
                                                 (map sh/store-a-comment)
-                                                (map #(dissoc % :comment-on-id))
-                                                (map #(assoc % :comment-on-uri draft-uri))))
+                                                (map #(dissoc % :global-id :comment-on-id))
+                                                (map #(assoc % :comment-on-uri draft-uri
+                                                             :uri (str "/comments/" (:_id %))))))
                     escaped-draft-uri (str "%2fobjectives%2f" objective-id "%2fdrafts%2f" draft-id)
                     {response :response} (p/request app (str "/api/v1/meta/comments?uri=" escaped-draft-uri))]
                 (:body response) => (helpers/json-contains (map contains (reverse stored-comments)))))

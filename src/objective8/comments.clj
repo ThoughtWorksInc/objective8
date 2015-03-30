@@ -8,6 +8,9 @@
       (assoc :comment-on-uri comment-on-uri)
       (dissoc :comment-on-id)))
 
+(defn uri-for-comment [comment]
+  (str "/comments/" (:_id comment)))
+
 (defn store-comment-for! [entity-to-comment-on
                           {:keys [comment-on-uri] :as comment-data}]
   (when-let [{:keys [objective-id _id global-id]} entity-to-comment-on]
@@ -18,6 +21,8 @@
                    :objective-id (or objective-id _id))
             (dissoc :comment-on-uri)
             storage/pg-store!
+            (dissoc :global-id)
+            (utils/update-in-self [:uri] uri-for-comment)
             (replace-comment-on-id comment-on-uri))))
 
 (defn get-comments [entity-uri]
@@ -28,4 +33,6 @@
                                :sort {:field :_created_at
                                       :ordering :DESC}})
          :result
+         (map #(dissoc % :global-id))
+         (map #(utils/update-in-self % [:uri] uri-for-comment))
          (map #(replace-comment-on-id % entity-uri)))))

@@ -18,10 +18,12 @@
                                   :comment "A comment"
                                   :created-by-id user-id}]
                 (comments/store-comment-for! draft comment-data) => (contains {:_id integer?
+                                                                               :uri (contains "/comments/")
                                                                                :comment-on-uri uri-for-draft
                                                                                :comment "A comment"
                                                                                :created-by-id user-id})
-                (comments/store-comment-for! draft comment-data) =not=> (contains {:comment-on-id anything})))
+                (comments/store-comment-for! draft comment-data) =not=> (contains {:comment-on-id anything})
+                (comments/store-comment-for! draft comment-data) =not=> (contains {:global-id anything})))
 
         (fact "comments can be stored against an objective"
               (let [{user-id :_id :as user} (sh/store-a-user)
@@ -42,13 +44,16 @@
         [(before :contents (do (ih/db-connection)
                                (ih/truncate-tables)))
          (after :facts (ih/truncate-tables))]
-        (fact "gets the comments"
+        (fact "gets the comments in reverse chronological order"
               (let [user (sh/store-a-user)
                     {draft-id :_id objective-id :objective-id :as draft} (sh/store-a-draft)
                     draft-uri (str "/objectives/" objective-id "/drafts/" draft-id)
                     stored-comments (doall (->> (repeat {:entity draft :user user})
                                                 (take 5)
                                                 (map sh/store-a-comment)
-                                                (map #(dissoc % :comment-on-id))
-                                                (map #(assoc % :comment-on-uri draft-uri))))]
-                (comments/get-comments draft-uri) => (contains (map contains (reverse stored-comments)))))))
+                                                (map #(dissoc % :global-id :comment-on-id))
+                                                (map #(assoc % :comment-on-uri draft-uri 
+                                                             :uri (str "/comments/" (:_id %))))))]
+                (comments/get-comments draft-uri) => (contains (map contains (reverse stored-comments)))
+                (first (comments/get-comments draft-uri)) =not=> (contains {:comment-on-id anything})    
+                (first (comments/get-comments draft-uri)) =not=> (contains {:global-id anything})))))
