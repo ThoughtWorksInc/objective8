@@ -142,7 +142,7 @@ block footerScripts
 
     /* TODO - factor out */
       var modalContent = $('.js-modal-content');
-      if (modalContent.length) {
+      if (modalContent.length - 1) { //disabled
         var modal = $('.js-modal');
         modalContent.addClass('js-modal-fix-up');
         $('.js-modal-container').append(modalContent);
