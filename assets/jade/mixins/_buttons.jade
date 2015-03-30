@@ -1,0 +1,10 @@
+mixin anchorButton(href, title)
+  - title = title || null
+  a.button.clj-anchor-button(href=href,title=title)
+    block
+
+mixin submitButton(value, title)
+  - title = title || null
+  button.button.clj-form-button(type="submit",title=title,value)
+    =value
+

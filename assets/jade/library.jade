@@ -36,7 +36,12 @@ html.no-js(lang="en")
       .documentation {
         margin: 0 0 2em 0;
       }
-      .documentation h2 {
+      h2 {
+        font-size: 2.5em;
+        margin-bottom: 0.3em;
+      }
+      .documentation h3 {
+        font-size: 2em;
         margin-bottom: 0.3em;
       }
       .documentation p {
@@ -49,45 +54,109 @@ html.no-js(lang="en")
 
   body
     .middle-container
+
+      ul.style-navigation
+        li
+          a(href="#masthead-assets") Masthead
+        li
+          a(href="#status-bar-assets") Status bars
+        li
+          a(href="#button-assets") Buttons
+        li
+          a(href="#guidance-assets") Guidance assets
+        li
+          a(href="#objective-list-assets") Objective list assets
+        li
+          a(href="#objective-assets") Objective assets
+        li
+          a(href="#question-assets") Question assets
+        li
+          a(href="#comment-assets") Comment assets
+        li
+          a(href="#writer-assets") Writer assets
+        li
+          a(href="#vote-assets") Vote assets
+        li
+          a(href="#modal-assets") Modal assets
+
+      h2#masthead-assets Masthead assets
+
       .example
         .documentation
-          h2 Masthead signed out
+          h3 Masthead signed out
           p Generated with mastheadSignedOut() mixin
         header(role="banner")
           +mastheadSignedOut
 
       .example
         .documentation
-          h2 Masthead signed in
+          h3 Masthead signed in
           p Generated with mastheadSignedIn() mixin
         header(role="banner")
           +mastheadSignedIn
 
+      h2#status-bar-assets Status bar assets
+
       .example
         .documentation
-          h2 Status bar
+          h3 Status bar
           p Generated with statusBar() mixin
         +statusBar
 
       .example
         .documentation
-          h2 Flash message success bar
+          h3 Flash message success bar
           p Generated with flashMessageSuccessBar() mixin
         +flashMessageSuccessBar
 
+      h2#button-assets Buttons assets
+
       .example
         .documentation
-          h2 Objective list page list item
+          h3 Anchor Button
+          p Generated with +anchorButton(href, title)
+          p Title is optional
+        +anchorButton("#","") !Button Text
+
+      .example
+        .documentation
+          h3 Form submit Button
+          p Generated with +submitButton(value, title)
+        +submitButton("!Button Text")
+
+      h2#guidance-assets Guidance assets
+
+      .example
+        .documentation
+          h3 Guidance text
+          p Used to introduce overview of the page
+        +guidanceText('Title goes here')
+          ul
+            li Suggest paragraph or lists
+
+
+      h2#objective-list-assets Objective list assets
+
+      .example
+        .documentation
+          h3 Objective list page list item
           p Generated with objectiveListItem(objectiveTitle, numberOfDays) mixin
         ol.unstyled-list
           +objectiveListItem('!Build safer cycling networks in the streets of Madrid.', 30)
             | !London and Pairs are two prime examples of cycle super highway heaven. We need to show the world that Madrid too can be the pinncale in cycli...
 
 
+      h2#objective-assets Objective assets
 
       .example
         .documentation
-          h2 Objective Draft message
+          h3 No drafts
+        .no-drafts-yet.clj-no-drafts-yet
+          p.no-drafts-yet-text.clj-no-drafts-yet-text !There are no drafts yet.
+
+      .example
+        .documentation
+          h3 Objective Draft message
           p Generated with ...
         .drafting-message.clj-drafting-message
           h2.drafting-message-title.clj-drafting-message-title !Drafting has started on this objective!
@@ -98,15 +167,7 @@ html.no-js(lang="en")
 
       .example
         .documentation
-          h2 Guidance text
-          p Used to introduce overview of the page
-        +guidanceText('Title goes here')
-          ul
-            li Suggest paragraph or lists
-
-      .example
-        .documentation
-          h2 Goals
+          h3 Goals
           p This is a complete list using the goalItem() mixin
         ul.goal-item-list.fa-ul
           +goalItem
@@ -117,9 +178,11 @@ html.no-js(lang="en")
             | Jean shorts biodiesel hoodie keytar mlkshk food truck
 
 
+      h2#question-assets Question assets
+
       .example
         .documentation
-          h2 Question list item
+          h3 Question list item
           p Generated with questionItem(author, date) mixin
         ol.question-list
           +questionItem('!Chris Cheshire', '3 September 2015 07:41')
@@ -127,14 +190,23 @@ html.no-js(lang="en")
 
       .example
         .documentation
-          h2 Blank question list item
+          h3 Blank question list item
           p Generated with questionItemBlank() mixin
         ol.question-list
           +questionItemBlank()
 
       .example
         .documentation
-          h2 Comment list item
+          h3 Add question form
+          p Generated with addQuestionForm(autofocus)
+          p The optional autofocus param decides whether it should gain focus on page visit.
+        +addQuestionForm()
+
+      h2#comment-assets Comment assets
+
+      .example
+        .documentation
+          h3 Comment list item
           p Generated with commentItem(author, date) mixin
         ol.comment-list
           +commentItem('Chris Cheshire', '3 September 2015 07:41')
@@ -142,20 +214,22 @@ html.no-js(lang="en")
 
       .example
         .documentation
-          h2 Blank comment list item
+          h3 Blank comment list item
           p Generated with commentItemBlank mixin
         ol.comment-list
           +commentItemBlank()
 
       .example
         .documentation
-          h2 No drafts
-        .no-drafts-yet.clj-no-drafts-yet
-          p.no-drafts-yet-text.clj-no-drafts-yet-text !There are no drafts yet.
+          h3 Add comment form
+          p Generated with addCommentForm()
+        +addCommentForm()
+
+      h2#writer-assets Writer assets
 
       .example
         .documentation
-          h2 Objective Writer list item with photo
+          h3 Objective Writer list item with photo
           p Generated with writerItem(name, href, photo) mixin
         ul.writer-item-list
           +writerItem('Jenny Bloggs', '#', 'http://placekitten.com/g/80/80')
@@ -163,7 +237,7 @@ html.no-js(lang="en")
 
       .example
         .documentation
-          h2 Objective Writer list item without photo
+          h3 Objective Writer list item without photo
           p Generated with writerItem(name, href, '') mixin
         ul.writer-item-list
           +writerItem('Jenny Bloggs', '#', '')
@@ -171,48 +245,39 @@ html.no-js(lang="en")
 
       .example
         .documentation
-          h2 Blank objective writer list item
+          h3 Blank objective writer list item
           p Generated with writerItemBlank(name, href, photo) mixin
         ul.writer-item-list
           +writerItemBlank()
 
       .example
         .documentation
-          h2 Invite writer form
+          h3 Invite writer form
           p Generated with inviteWriterForm()
         +inviteWriterForm()
 
       .example
         .documentation
-          h2 Add question form
-          p Generated with addQuestionForm(autofocus)
-          p The optional autofocus param decides whether it should gain focus on page visit.
-        +addQuestionForm()
-
-      .example
-        .documentation
-          h2 Add comment form
-          p Generated with addCommentForm()
-        +addCommentForm()
-
-      .example
-        .documentation
-          h2 Please sign in
+          h3 Please sign in
           p Generated with pleaseSignIn()
         +pleaseSignIn()
           | to ...
 
+      h2#vote-assets Vote assets
+
       .example
         .documentation
-          h2 Vote controls
+          h3 Vote controls
           p Generated with voteUpDownControls()
           p Intended for questions and comments
         .list-item-actions
           +voteUpDownControls()
 
+      h2#modal-assets Modal assets
+
       .example
         .documentation
-          h2 Modal
+          h3 Modal
           p Generated with modal(title, l8nTitleClass, funcClass).
           p The modal contents is passed to the modal-body.
 
