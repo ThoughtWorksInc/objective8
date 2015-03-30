@@ -3,7 +3,7 @@
             [objective8.objectives :refer [open?] :as objectives]
             [objective8.utils :as utils]))
 
-(defn replace-global-id [comment comment-on-uri]
+(defn replace-comment-on-id [comment comment-on-uri]
   (-> comment
       (assoc :comment-on-uri comment-on-uri)
       (dissoc :comment-on-id)))
@@ -18,11 +18,10 @@
                    :objective-id (or objective-id _id))
             (dissoc :comment-on-uri)
             storage/pg-store!
-            (replace-global-id comment-on-uri))))
+            (replace-comment-on-id comment-on-uri))))
 
 (defn create-comment-on-objective! [{objective-id :objective-id :as comment}]
-  (when (open? (objectives/retrieve-objective objective-id))
-    (storage/pg-store! (assoc comment :entity :comment))))
+  )
 
 (defn get-comments [entity-uri]
   (when-let [{:keys [global-id]} (storage/pg-retrieve-entity-by-uri entity-uri :with-global-id)]
@@ -32,4 +31,4 @@
                                :sort {:field :_created_at
                                       :ordering :DESC}})
          :result
-         (map #(replace-global-id % entity-uri)))))
+         (map #(replace-comment-on-id % entity-uri)))))
