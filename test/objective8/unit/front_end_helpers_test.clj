@@ -58,11 +58,19 @@
                    :objective-id OBJECTIVE_ID
                    :invited-by-id USER_ID}))
 
-(fact "transforms request to up vote info"
-      (request->up-vote-info {:params {:global-id "100"}} USER_ID) 
-      => {:global-id 100 :created-by-id USER_ID :vote-type "up"})
+(facts "about up voting"
+      (fact "transforms request to up vote info"
+            (request->up-vote-info {:params {:vote-on-uri "/some/uri"}} USER_ID)
+            => {:vote-on-uri "/some/uri" :created-by-id USER_ID :vote-type "up"})
 
-(fact "transforms request to down vote info"
-      (request->down-vote-info {:params {:global-id "100"}} USER_ID)
-      => {:global-id 100 :created-by-id USER_ID :vote-type "down"})
+      (fact "returns nil when required up-vote information not provided"
+            (request->up-vote-info {:params {}} USER_ID) => nil))
 
+(facts "about down voting"
+       (fact "transforms request to down vote info"
+             (request->down-vote-info {:params {:vote-on-uri "/some/uri"}} USER_ID)
+             => {:vote-on-uri "/some/uri" :created-by-id USER_ID :vote-type "down"})
+
+       (fact "returns nil when required down-vote information not provided"
+             (request->down-vote-info {:params {}} USER_ID)
+             => nil))

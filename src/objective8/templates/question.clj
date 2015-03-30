@@ -24,7 +24,7 @@
                       [:.clj-answer] (html/clone-for [answer answers]
                                                      [:.clj-approval-form] (html/prepend (html/html-snippet (anti-forgery-field)))
                                                      [:.clj-answer-text] (html/content (:answer answer))
-                                                     [:.clj-answer-id] (html/set-attr "value" (:global-id answer))
+                                                     [:.clj-vote-on-uri] (html/set-attr "value" (:uri answer))
                                                      [:.clj-refer] (html/set-attr "value" (str "/objectives/" (:_id objective) "/questions/" (:_id question)))
                                                      [:.clj-up-score] (html/content (str (get-in answer [:votes :up])))
                                                      [:.clj-down-score] (html/content (str (get-in answer [:votes :down]))))

@@ -70,7 +70,7 @@
                :api/post-question (m/wrap-bearer-token api-handlers/post-question bt/token-provider)
                :api/get-question api-handlers/get-question
                :api/get-questions-for-objective api-handlers/retrieve-questions
-               :api/get-answers-for-question api-handlers/retrieve-answers
+               :api/get-answers-for-question api-handlers/get-answers
                :api/post-answer (m/wrap-bearer-token api-handlers/post-answer bt/token-provider)
                :api/post-invitation (m/wrap-bearer-token api-handlers/post-invitation bt/token-provider)
                :api/get-invitation api-handlers/get-invitation

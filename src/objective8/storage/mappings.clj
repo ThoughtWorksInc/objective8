@@ -151,6 +151,14 @@
   (fn [m] (-> (unmap-fn m)
               (dissoc key))))
 
+(defn unmap-up-down-vote [{vote :vote :as m}]
+  (-> m
+      (utils/ressoc :global_id :global-id)
+      (utils/ressoc :created_by_id :created-by-id)
+      (dissoc :vote)
+      (assoc :vote-type ({1 :up -1 :down} vote))
+      (assoc :entity :up-down-vote)))
+
 (declare objective user comment question answer invitation candidate bearer-token up-down-vote)
 
 (korma/defentity global-identifier
@@ -202,13 +210,6 @@
   (korma/table :objective8.candidates)
   (korma/prepare map->candidate)
   (korma/transform (unmap :candidate)))
-
-(defn unmap-up-down-vote [{vote :vote :as m}]
-  (-> m
-      (utils/ressoc :global_id :global-id)
-      (utils/ressoc :created_by_id :created-by-id)
-      (dissoc :vote)
-      (assoc :vote-type ({1 :up -1 :down} vote))))
 
 (korma/defentity up-down-vote
   (korma/pk :_id)

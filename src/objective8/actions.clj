@@ -31,9 +31,12 @@
     {:status ::success :result (drafts/retrieve-latest-draft objective-id)}
     {:status ::objective-drafting-not-started}))
 
-(defn cast-up-down-vote! [{:keys [global-id created-by-id vote-type] :as vote-data}]
-  (when-not (up-down-votes/get-vote global-id created-by-id)
-    (up-down-votes/store-vote! vote-data)))
+(defn cast-up-down-vote! [{:keys [vote-on-uri created-by-id vote-type] :as vote-data}]
+  (if-let [{global-id :global-id :as entity-to-vote-on} (storage/pg-retrieve-entity-by-uri vote-on-uri :with-global-id)]
+    (if (up-down-votes/get-vote global-id created-by-id)
+      {:status ::forbidden}
+      (when-let [stored-vote (up-down-votes/store-vote! entity-to-vote-on vote-data)]
+        {:status ::success :result stored-vote}))))
 
 (defn create-comment! [{:keys [comment-on-uri] :as comment-data}]
   (if-let [entity-to-comment-on (storage/pg-retrieve-entity-by-uri comment-on-uri :with-global-id)]

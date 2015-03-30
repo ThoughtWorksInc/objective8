@@ -108,8 +108,11 @@
                      stored-answers (doall (->> (repeat {:question question})
                                                 (take 5)
                                                 (map sh/store-an-answer)))
+                     answer-uri (str "/objectives/" objective-id "/questions/" q-id "/answers/")
                      {response :response} (p/request app (str "/api/v1/objectives/" objective-id "/questions/" q-id "/answers"))]
-                 (:body response) => (helpers/json-contains (map contains stored-answers))))
+                 (:body response) => (helpers/json-contains (map contains (->> stored-answers
+                                                                               (map #(dissoc % :global-id))
+                                                                               (map #(assoc % :uri (contains answer-uri))))))))
 
          (fact "retrieves vote count for each answer"
                (let [{objective-id :objective-id q-id :_id :as question} (sh/store-a-question)

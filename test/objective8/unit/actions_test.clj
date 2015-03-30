@@ -11,17 +11,25 @@
 (def USER_ID 2)
 (def VOTE_ID 5)
 (def OBJECTIVE_ID 1)
+(def an-answer {:global-id GLOBAL_ID})
+(def vote-data {:vote-on-uri :entity-uri
+                :created-by-id USER_ID
+                :vote-type :up})
 
 (facts "about casting up-down votes"
        (fact "stores a vote if user has no active vote on entity"
              (against-background
-              (up-down-votes/get-vote GLOBAL_ID USER_ID) => nil)
-             (actions/cast-up-down-vote! {:global-id GLOBAL_ID :created-by-id USER_ID :vote-type :up}) => :the-stored-vote
+              (up-down-votes/get-vote GLOBAL_ID USER_ID) => nil
+              (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => an-answer)
+             (actions/cast-up-down-vote! vote-data) => {:status ::actions/success 
+                                                        :result :the-stored-vote}
              (provided
-              (up-down-votes/store-vote! {:global-id GLOBAL_ID :created-by-id USER_ID :vote-type :up}) => :the-stored-vote))
+              (up-down-votes/store-vote! an-answer vote-data) => :the-stored-vote))
 
        (fact "fails if the user is trying to cast another vote on the same entity"
-             (actions/cast-up-down-vote! {:global-id GLOBAL_ID :created-by-id USER_ID :vote-type :down}) => nil
+             (against-background
+               (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => an-answer)
+             (actions/cast-up-down-vote! vote-data) => {:status ::actions/forbidden}
              (provided
               (up-down-votes/get-vote GLOBAL_ID USER_ID) => :some-vote)))
 

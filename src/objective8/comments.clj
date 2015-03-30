@@ -20,9 +20,6 @@
             storage/pg-store!
             (replace-comment-on-id comment-on-uri))))
 
-(defn create-comment-on-objective! [{objective-id :objective-id :as comment}]
-  )
-
 (defn get-comments [entity-uri]
   (when-let [{:keys [global-id]} (storage/pg-retrieve-entity-by-uri entity-uri :with-global-id)]
     (->> (storage/pg-retrieve {:entity :comment

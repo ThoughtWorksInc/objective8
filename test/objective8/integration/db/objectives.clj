@@ -41,8 +41,7 @@
                                     :title "title"}
                     {objective-id :_id :as stored-objective} (objectives/store-objective! objective-data)]
                 (objectives/retrieve-objective objective-id) => (assoc stored-objective :username username)
-                (objectives/retrieve-objective objective-id) =not=> (contains {:global-id anything})
-                ))
+                (objectives/retrieve-objective objective-id) =not=> (contains {:global-id anything})))
 
         (fact "can retrieve a list of objectives"
               (let [{user-id :_id username :username} (sh/store-a-user)

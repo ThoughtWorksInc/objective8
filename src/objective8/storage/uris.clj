@@ -3,6 +3,7 @@
 
 (def uri-routes
   ["/" {["objectives/" [#"\d+" :objective-id]] {"" :objective
+                                                ["/questions/" [#"\d+" :question-id] "/answers/" [#"\d+" :answer-id]] :answer
                                                 ["/drafts/" [#"\d+" :draft-id]] :draft}}])
 
 (defn uri->query [uri]
@@ -12,4 +13,7 @@
                              :_id (Integer/parseInt (:objective-id route-params))}
 
       (= entity :draft) {:entity :draft
-                         :_id (Integer/parseInt (:draft-id route-params))})))
+                         :_id (Integer/parseInt (:draft-id route-params))}
+
+      (= entity :answer) {:entity :answer
+                          :_id (Integer/parseInt (:answer-id route-params))})))

@@ -44,13 +44,11 @@
          :invited-by-id user-id))
 
 (defn request->up-vote-info [request user-id]
-  (-> (:params request)
-      (select-keys [:global-id])
-      (update-in [:global-id] #(Integer/parseInt %) )
-      (assoc :created-by-id user-id :vote-type "up")))
+  (some-> (:params request)
+          (utils/select-all-or-nothing [:vote-on-uri])
+          (assoc :created-by-id user-id :vote-type "up")))
 
 (defn request->down-vote-info [request user-id]
-  (-> (:params request)
-      (select-keys [:global-id])
-      (update-in [:global-id] #(Integer/parseInt %) )
-      (assoc :created-by-id user-id :vote-type "down")))
+  (some-> (:params request)
+          (utils/select-all-or-nothing [:vote-on-uri])
+          (assoc :created-by-id user-id :vote-type "down")))

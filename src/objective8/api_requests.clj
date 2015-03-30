@@ -11,7 +11,7 @@
   (select-keys params [:objective-id :submitter-id :content]))
 
 (defn request->up-down-vote-data [{params :params :as request}]
-  (some-> (utils/select-all-or-nothing params [:global-id :created-by-id :vote-type])
+  (some-> (utils/select-all-or-nothing params [:vote-on-uri :created-by-id :vote-type])
           (update-in [:vote-type] keyword)))
 
 (defn request->comment-data [{params :params :as request}]

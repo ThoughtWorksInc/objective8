@@ -204,14 +204,14 @@
       (log/info "Error when posting answer: " e)
       (invalid-response "Invalid answer post request"))))
 
-(defn retrieve-answers [{:keys [route-params] :as request}]
+(defn get-answers [{:keys [route-params] :as request}]
   (try
     (let  [q-id (-> (:q-id route-params)
                     Integer/parseInt)
            objective-id (-> (:id route-params)
                             Integer/parseInt)]
       (check-question-matches-objective q-id objective-id)
-      (if-let [answers (answers/retrieve-answers q-id)]
+      (if-let [answers (answers/get-answers q-id)]
         (-> answers
             response/response
             (response/content-type "application/json"))
@@ -331,8 +331,15 @@
       (response/not-found ""))))
 
 (defn post-up-down-vote [request]
-  (if (some-> request
-              ar/request->up-down-vote-data
-              actions/cast-up-down-vote!)
-    {:status 200}
+  (if-let [vote-data (ar/request->up-down-vote-data request)]
+    (let [{status :status vote :result} (actions/cast-up-down-vote! vote-data)]
+      (cond
+        (= status ::actions/success)
+        {:status 200}
+
+        (= status ::actions/forbidden)
+        {:status 403}
+
+        :else
+        {:status 500}))
     {:status 403}))

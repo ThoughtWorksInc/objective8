@@ -19,32 +19,35 @@
          (after :facts (ih/truncate-tables))]
 
         (fact "A user can upvote an answer" ;; Make this generic
-                     (let [{user-id :_id} (sh/store-a-user)
-                           {global-id :global-id} (sh/store-an-answer)
+                     (let [{voting-user-id :_id} (sh/store-a-user)
+                           {o-id :objective-id q-id :question-id a-id :_id} (sh/store-an-answer)
+                           uri (str "/objectives/" o-id "/questions/" q-id "/answers/" a-id)
                            {response :response} (p/request app (utils/path-for :api/post-up-down-vote)
                                                            :request-method :post
                                                            :content-type "application/json"
-                                                           :body (json/generate-string {:created-by-id user-id
-                                                                                        :global-id global-id
+                                                           :body (json/generate-string {:created-by-id voting-user-id
+                                                                                        :vote-on-uri uri
                                                                                         :vote-type :up}))]
                        (:status response) => 200))
         
         
         (fact "A second vote by the same user on the same entity is not permitted"
-              (let [{global-id :global-id created-by-id :created-by-id} (sh/store-an-answer)
-                           {response :response} (-> app
-                                                    (p/request (utils/path-for :api/post-up-down-vote)
-                                                               :request-method :post
-                                                               :content-type "application/json"
-                                                               :body (json/generate-string {:created-by-id created-by-id
-                                                                                            :global-id global-id
-                                                                                            :vote-type :up}))
-                                                    (p/request (utils/path-for :api/post-up-down-vote)
-                                                               :request-method :post
-                                                               :content-type "application/json"
-                                                               :body (json/generate-string {:created-by-id created-by-id
-                                                                                            :global-id global-id
-                                                                                            :vote-type :down})))]
-                       (:status response) => 403
-                       ;; Should also provide a reason for failure in the response
-                       ))))
+              (let [{voting-user-id :_id} (sh/store-a-user)
+                    {o-id :objective-id q-id :question-id a-id :_id} (sh/store-an-answer)
+                    uri (str "/objectives/" o-id "/questions/" q-id "/answers/" a-id)
+                    {response :response} (-> app
+                                             (p/request (utils/path-for :api/post-up-down-vote)
+                                                        :request-method :post
+                                                        :content-type "application/json"
+                                                        :body (json/generate-string {:created-by-id voting-user-id
+                                                                                     :vote-on-uri uri
+                                                                                     :vote-type :up}))
+                                             (p/request (utils/path-for :api/post-up-down-vote)
+                                                        :request-method :post
+                                                        :content-type "application/json"
+                                                        :body (json/generate-string {:created-by-id voting-user-id
+                                                                                     :vote-on-uri uri
+                                                                                     :vote-type :down})))]
+                (:status response) => 403
+                ;; Should also provide a reason for failure in the response
+                ))))
