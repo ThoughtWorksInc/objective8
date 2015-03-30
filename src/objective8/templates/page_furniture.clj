@@ -59,7 +59,7 @@
     (html/set-attr :href (utils/local-path-for :fe/objective :id (:objective-id invitation-rsvp)))
     (html/content (translations :invitation-response/banner-message))))
 
-(html/defsnippet flash-bar library-html [:.clj-flash-message-bar] [flash]
+(html/defsnippet flash-bar library-html [:.clj-flash-success] [flash]
   [:.clj-flash-message-bar-text] (html/content flash))
 
 (html/defsnippet status-flash-bar
