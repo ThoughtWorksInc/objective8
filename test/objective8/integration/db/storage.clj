@@ -281,14 +281,28 @@
                     votes-for-answer-2 [:up :up]
                     stored-votes-for-answer-1 (doall (map #(sh/store-an-up-down-vote g-id-1 %) votes-for-answer-1))
                     stored-votes-for-answer-2 (doall (map #(sh/store-an-up-down-vote g-id-2 %) votes-for-answer-2))]
+
                 (storage/pg-retrieve-answers-with-votes-for-question (:_id question))
                 => (contains [(contains (assoc answer-1 :votes {:up 2 :down 3}))
                               (contains (assoc answer-2 :votes {:up 2 :down 0}))])))
-         
-         (fact "retrieving a draft returns _created_at_sql_time for accurate time comparison between drafts"
-               (let [draft (sh/store-a-draft)
-                     retrieved-draft (first (:result (storage/pg-retrieve {:entity :draft :_id (:_id draft)})))]
-                 (:_created_at_sql_time retrieved-draft)) =not=> nil)))
+
+        (fact "retrieving comments for an entity also returns aggregate up-down-votes for those comments"
+              (let [objective (sh/store-an-objective)
+                    {g-id-1 :global-id :as comment-1} (sh/store-a-comment {:entity objective})
+                    {g-id-2 :global-id :as comment-2} (sh/store-a-comment {:entity objective})
+                    votes-for-comment-1 [:up :up :down :down :down]
+                    votes-for-comment-2 [:up :up]
+                    stored-votes-for-comment-1 (doall (map #(sh/store-an-up-down-vote g-id-1 %) votes-for-comment-1))
+                    stored-votes-for-comment-2 (doall (map #(sh/store-an-up-down-vote g-id-2 %) votes-for-comment-2))]
+
+                (storage/pg-retrieve-comments-with-votes (:global-id objective))
+                => (contains [(contains (assoc comment-2 :votes {:up 2 :down 0}))
+                              (contains (assoc comment-1 :votes {:up 2 :down 3}))])))
+
+        (fact "retrieving a draft returns _created_at_sql_time for accurate time comparison between drafts"
+              (let [draft (sh/store-a-draft)
+                    retrieved-draft (first (:result (storage/pg-retrieve {:entity :draft :_id (:_id draft)})))]
+                (:_created_at_sql_time retrieved-draft)) =not=> nil)))
 
 (facts "about retrieving entities by uri"
        (against-background
