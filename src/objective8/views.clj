@@ -41,7 +41,7 @@
      :ring-request request
      :user (user-info request auth-map)
      :doc (doc-info request page-name translations data)
-     :invitation (get-in request [:session :invitation])
+     :invitation-rsvp (get-in request [:session :invitation])
      :data data}))
 
 (defn view

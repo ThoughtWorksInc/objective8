@@ -69,7 +69,7 @@
         (fact "pulls out invitation if set"
               (view-fn "test" (assoc-in ring-request 
                                         [:session :invitation]
-                                        "INVITATION")) => (contains {:invitation "INVITATION"}))
+                                        "INVITATION")) => (contains {:invitation-rsvp "INVITATION"}))
 
         (fact "pulls out user information if the user is authenticated with friend")
         (view-fn "test" ring-request) => (contains {:user {:username "Wibble"

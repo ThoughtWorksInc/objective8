@@ -81,7 +81,7 @@
 
 ;BASE TEMPLATE
 (html/deftemplate base
-  "templates/base.html" [{:keys [translations doc user-navigation invitation content data] :as context}]
+  "templates/base.html" [{:keys [translations doc user-navigation invitation-rsvp content data] :as context}]
   ; TODO find a way to select description without an ID
   ; [:head (html/attr= :name "description")] (html/set-attr :content "some text")
   [:title] (html/content (doc :title))
@@ -92,7 +92,7 @@
   [:.header-logo] (html/set-attr :title (translations :base/header-logo-title))
   [:#projectStatus] (html/html-content (translations :base/project-status))
   [:#main-content] (html/before (when-let [flash-message (:flash doc)] (flash-message-view flash-message)))
-  [:#main-content] (html/before (when invitation (invitation-banner invitation translations)))
+  [:#main-content] (html/before (when invitation-rsvp (invitation-banner invitation-rsvp translations)))
   [:#main-content] (html/content content)
   [:#clj-navigation] (if (:objective data) (html/content (objectives-navigation context)) identity)
   [:body] (html/append (if google-analytics-tracking-id (google-analytics google-analytics-tracking-id))))
@@ -137,14 +137,14 @@
 
 (html/defsnippet invitation-response-page
   "templates/writers/invitation-response.html" [:#clj-invitation-response]
-  [{:keys [translations data user ring-request invitation] :as context}]
+  [{:keys [translations data user ring-request invitation-rsvp] :as context}]
   [:#clj-invitation-response-sign-in-link] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" (:uri ring-request)))
   [:#clj-invitation-response-sign-in] (when-not user identity)
-  [:#clj-invitation-response-accept] (html/set-attr :action (str "/objectives/" (get-in data [:objective :_id]) "/writer-invitations/" (:invitation-id invitation) "/accept"))
+  [:#clj-invitation-response-accept] (html/set-attr :action (str "/objectives/" (get-in data [:objective :_id]) "/writer-invitations/" (:invitation-id invitation-rsvp) "/accept"))
   [:#clj-invitation-response-accept] (html/prepend (html/html-snippet (anti-forgery-field)))
   [:#clj-invitation-response-accept] (when user identity)
   [:#clj-invitation-response-decline] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:#clj-invitation-response-decline] (html/set-attr :action (str "/objectives/" (get-in data [:objective :_id]) "/writer-invitations/" (:invitation-id invitation) "/decline"))
+  [:#clj-invitation-response-decline] (html/set-attr :action (str "/objectives/" (get-in data [:objective :_id]) "/writer-invitations/" (:invitation-id invitation-rsvp) "/decline"))
   [:#clj-invitation-response-objective-title] (html/content (get-in data [:objective :title]))
   [:#clj-invitation-response html/any-node] (html/replace-vars translations))
 
