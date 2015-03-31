@@ -183,22 +183,37 @@
 
 ;; COMMENT LIST
 
+(defn voting-actions-when-signed-in [{:keys [data ring-request] :as context} comment]
+  (html/transformation
+   [:.clj-up-down-vote-form] (html/prepend (html/html-snippet (anti-forgery-field)))
+   [:.clj-vote-on-uri] (html/set-attr "value" (:uri comment))
+   [:.clj-refer] (html/set-attr "value" (str (:uri ring-request) "#comments"))
+   [:.clj-up-vote-count] (html/content (str (get-in comment [:votes :up])))
+   [:.clj-down-vote-count] (html/content (str (get-in comment [:votes :down])))))
+
+(defn voting-actions-when-not-signed-in [{:keys [data ring-request] :as context} comment]
+  (html/transformation
+   [:.clj-up-down-vote-form] (html/set-attr "method" "get")
+   [:.clj-up-down-vote-form] (html/set-attr "action" "/sign-in")
+   [:.clj-refer] (html/set-attr "value" (str (:uri ring-request) "#comments"))
+   [:.clj-vote-on-uri] nil
+   [:.clj-up-vote-count] (html/content (str (get-in comment [:votes :up])))
+   [:.clj-down-vote-count] (html/content (str (get-in comment [:votes :down])))))
+
 (html/defsnippet empty-comment-list-item
   library-html [:.clj-empty-comment-list-item] [translations]
   [:.clj-empty-comment-list-item] (html/content (translations :comment-view/no-comments)))
 
 (html/defsnippet comment-list-items
-  library-html [:.clj-comment-item] [{:keys [data ring-request] :as context}]
+  library-html [:.clj-comment-item] [{:keys [data ring-request user] :as context}]
   [:.clj-comment-item] (html/clone-for [comment (:comments data)]
                                        [:.clj-comment-author] (html/content (:username comment))
                                        [:.clj-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
                                        [:.clj-comment-text] (html/content (:comment comment))
-;;                                       [:.clj-up-down-vote-form] (html/prepend (html/html-snippet (anti-forgery-field)))
-;;                                       [:.clj-vote-on-uri] (html/set-attr "value" (:uri comment))
-;;                                       [:.clj-refer] (html/set-attr "value" (str (:uri ring-request) "#comments"))
-;;                                       [:.clj-up-vote-count] (html/content (str (get-in comment [:votes :up])))
-;;                                       [:.clj-down-vote-count] (html/content (str (get-in comment [:votes :down])))
-                                       [:.clj-comment-actions] nil))
+                                       [:.clj-up-down-vote-form] (if user
+                                                                   (voting-actions-when-signed-in context comment)
+                                                                   (voting-actions-when-not-signed-in context comment))
+                                       [:.clj-comment-reply] nil))
 
 (defn comment-list [{translations :translations :as context}]
   (let [comments (get-in context [:data :comments])]
