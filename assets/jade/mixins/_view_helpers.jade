@@ -30,14 +30,14 @@ mixin voteUpDownControls()
     button.func--up-vote.actions-vote-up(type="submit")
       span.clj-up-vote-count.actions-vote-count #{voteUpCount}
       i.fa.fa-fw.fa-angle-up
-      span.vote-direction-text up
+      span.vote-direction-text !Vote up
   form.clj-up-down-vote-form.actions-up-down-vote-form(action="/meta/down-vote", method="post")
     input.clj-vote-on-uri(type="hidden", value="!vote-on-uri", name="vote-on-uri")
     input.clj-refer(type="hidden", value="!current-url", name="refer")
     button.func--down-vote.actions-vote-down(type="submit")
       span.clj-down-vote-count.actions-vote-count #{voteDownCount}
       i.fa.fa-fw.fa-angle-down
-      span.vote-direction-text down
+      span.vote-direction-text !Vote down
 
 mixin pleaseSignIn()
   p.clj-please-sign-in
