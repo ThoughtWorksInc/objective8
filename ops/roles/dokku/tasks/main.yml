@@ -1,0 +1,21 @@
+---
+ - name: checking for dokku
+   shell: "which dokku"
+   register: dokku_check
+   ignore_errors: yes
+
+ - name: install dokku
+   shell: "wget -qO- https://raw.github.com/progrium/dokku/v0.3.16/bootstrap.sh | sudo DOKKU_TAG=v0.3.16 bash"
+   sudo: true
+   async: 1200
+   when: dokku_check.stdout.find('dokku') == -1
+
+ - name: download dokku-postgres plugin
+   command: chdir=/var/lib/dokku/plugins sudo git clone https://github.com/gtrogers/dokku-pg-plugin postgresql
+   args:
+     creates: /var/lib/dokku/plugins/postgresql
+
+ - name: install postgres plugin
+   command: sudo dokku plugins-install
+   async: 1200
+

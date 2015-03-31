@@ -1,0 +1,8 @@
+---
+ - hosts: dokku
+   roles:
+    - common
+    - dokku
+    - objective8_dokku
+
+

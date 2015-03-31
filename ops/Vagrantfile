@@ -2,24 +2,42 @@
 # vi: set ft=ruby :
 
 VAGRANTFILE_API_VERSION = "2"
+digital_ocean_memory = 1024
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.box = "ubuntu/trusty64"
 
-  config.vm.network "private_network", ip: "192.168.50.50"
-  config.vm.network :forwarded_port, guest: 22, host: 2222, id: "ssh", auto_correct: false
+  config.vm.define "development", primary: true do |dev|
+    dev.vm.network "private_network", ip: "192.168.50.50"
+    dev.vm.network :forwarded_port, guest: 22, host: 2222, id: "ssh", auto_correct: false
 
-  config.vm.synced_folder "../", "/var/objective8"
-  
-  config.vm.provider :virtualbox do |vbox|
-    vbox.customize ["modifyvm", :id, "--memory", 2048]
+    dev.vm.synced_folder "../", "/var/objective8"
+    
+    dev.vm.provider :virtualbox do |vbox|
+      vbox.customize ["modifyvm", :id, "--memory", 2048]
+    end
+
+    dev.vm.provision "ansible" do |ansible|
+      ansible.playbook = "development_playbook.yml"
+      ansible.inventory_path = "development.inventory"
+      ansible.sudo = true
+    end
   end
 
-  config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "development_playbook.yml"
-    ansible.inventory_path = "development.inventory"
-    ansible.sudo = true
+  config.vm.define "dokku" do |dokku|
+    dokku.vm.network "private_network", ip: "192.168.50.51"
+    dokku.vm.network :forwarded_port, guest: 22, host: 2223, id: "ssh", auto_correct: false
+
+    dokku.vm.provider :virtualbox do |vbox|
+      vbox.customize ["modifyvm", :id, "--memory", digital_ocean_memory] 
+    end
+
+    dokku.vm.provision "ansible" do |ansible|
+      ansible.playbook = "dokku_playbook.yml"
+      ansible.inventory_path = "dokku.inventory"
+      ansible.sudo = true
+    end
   end
 
 end
