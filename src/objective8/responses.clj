@@ -110,12 +110,6 @@
   [:.clj-objective-drafting-link] (html/set-attr :href (str "/objectives/" (:_id objective) "/drafts/latest"))
   [:#clj-obj-end-date-value] (html/content (:end-date objective)))
 
-;PROJECT STATUS
-(html/defsnippet project-status-page
-  "templates/project-status.html" [[:#clj-project-status]] [{:keys [translations]}]
-  [:#clj-project-status html/any-node] (html/replace-vars translations)
-  [:#clj-project-status-detail] (html/html-content (translations :project-status/page-content)))
-
 (defn render-template [template & args]
   (apply str (apply template args)))
 
