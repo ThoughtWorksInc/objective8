@@ -1,9 +1,16 @@
 .modal-contents {
   margin-bottom: 6em;
   padding: 2em;
-  border: 1px solid $grey-2;
+  border: 1px solid $grey-3;
   @include mq(640) {
     padding: 3em;
+  }
+  .main-content & {
+    max-width: $max_content_width;
+    margin: 0 auto 6em auto;
+    .js & {
+      display: none;
+    }
   }
 }
 
@@ -33,7 +40,7 @@
 
 .js-modal-fix-up {
   background-color: $white;
-  border: 0.6em solid $yellow;
+  border: 0.6em solid $grey-3;
 }
 
 .js-modal-container {
