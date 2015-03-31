@@ -135,21 +135,6 @@
   [:#clj-invitation-container :.response-form] (if user (html/content (invitation-create context)) identity)
   [:#clj-invitation-container html/any-node] (html/replace-vars translations))
 
-(html/defsnippet invitation-response-page
-  "templates/writers/invitation-response.html" [:#clj-invitation-response]
-  [{:keys [translations data user ring-request invitation-rsvp] :as context}]
-  [:#clj-invitation-response-sign-in-link] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" (:uri ring-request)))
-  [:#clj-invitation-response-sign-in] (when-not user identity)
-  [:#clj-invitation-response-accept] (html/set-attr :action (str "/objectives/" (get-in data [:objective :_id]) "/writer-invitations/" (:invitation-id invitation-rsvp) "/accept"))
-  [:#clj-invitation-response-accept] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:#clj-invitation-response-accept] (when user identity)
-  [:#clj-invitation-response-decline] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:#clj-invitation-response-decline] (html/set-attr :action (str "/objectives/" (get-in data [:objective :_id]) "/writer-invitations/" (:invitation-id invitation-rsvp) "/decline"))
-  [:#clj-invitation-response-objective-title] (html/content (get-in data [:objective :title]))
- ; [:#clj-invitation-response html/any-node] (html/replace-vars translations)
-  
-  )
-
 ;CANDIDATES
 
 (html/defsnippet a-candidate
