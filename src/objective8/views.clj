@@ -3,6 +3,7 @@
             [objective8.responses :as responses]
             [objective8.templates.index :as index]
             [objective8.templates.learn-more :as learn-more]
+            [objective8.templates.project-status :as project-status]
             [objective8.templates.create-objective :as create-objective]
             [objective8.templates.objective :as objective]
             [objective8.templates.objective-list :as objective-list]
@@ -55,12 +56,12 @@
 (defn- render-page [page]
   (fn [context] (responses/rendered-response page context)))
 
-(def project-status (view (render-page responses/project-status-page)))
 
 
 (def index (view index/index-page))
 (def objective-list (view objective-list/objective-list-page))
 (def learn-more-page (view learn-more/learn-more-page))
+(def project-status (view project-status/project-status-page))
 (def create-objective (view create-objective/create-objective-page))
 (def objective-detail-page (view objective/objective-page))
 (def question-page (view question/question-page))

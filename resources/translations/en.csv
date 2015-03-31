@@ -185,7 +185,7 @@ comment-sign-in,please,Please
 comment-sign-in,to,to start commenting.
 question-view,added-message,Your question has been added!
 question-view,added-answer-message,Your answer has been added!
-error-404,doc-title,Error 404 | Objective[8]
+error-404,doc-title,Error | Objective[8]
 error-404,doc-description,Sorry the page you requested can't be found.
 error-404,page-title,Sorry the page you requested can't be found.
 error-404,page-intro,The page you were trying to reach at this address doesn't seem to exist. This is usually the result of a bad or outdated link. We apologise for any inconvenience.

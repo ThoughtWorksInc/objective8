@@ -116,12 +116,6 @@
   [:#clj-project-status html/any-node] (html/replace-vars translations)
   [:#clj-project-status-detail] (html/html-content (translations :project-status/page-content)))
 
-;ERROR 404
-(html/defsnippet error-404-page
-  "templates/error-404.html" [:#clj-error-404] [{:keys [translations]}]
-  [:#clj-error-404 html/any-node] (html/replace-vars translations)
-  [:#clj-error-404-content] (html/html-content (translations :error-404/page-content)))
-
 (defn render-template [template & args]
   (apply str (apply template args)))
 
