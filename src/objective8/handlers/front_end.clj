@@ -53,7 +53,9 @@
     :session {}))
 
 (defn project-status [{:keys [t' locale] :as request}]
-  (views/project-status "project-status" request))
+  {:status 200
+   :header {"Content-Type" "text/html"}
+   :body (views/project-status "project-status" request)})
 
 (defn learn-more [request]
   {:status 200
