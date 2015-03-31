@@ -119,7 +119,7 @@
                         [:.clj-days-left] (when-not (:drafting-started objective)
                                             (drafting-begins objective translations))
                         [:.clj-drafting-started-wrapper] (html/substitute (f/drafting-message context))
-                        [:.clj-replace-with-objective-detail] (html/substitute (f/text->p-nodes (:description objective)))
+                        [:.clj-replace-with-objective-detail] (html/substitute (tf/text->p-nodes (:description objective)))
                         [:.l8n-writers-section-title] (html/content (translations :objective-view/writers))
                         [:.clj-writer-item-list] (html/content (f/writer-list context))
                         [:.clj-invite-writer-link] (when-not (:drafting-started objective)

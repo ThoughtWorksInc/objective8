@@ -1,7 +1,7 @@
-(ns objective8.unit.page-furniture-test
+(ns objective8.unit.template-functions-test
   (:require [midje.sweet :refer :all]
             [net.cgrand.enlive-html :as html]
-            [objective8.templates.page-furniture :refer :all] 
+            [objective8.templates.template-functions :refer :all] 
             [objective8.utils :as utils]))
 
 (facts "Splitting text into paragraphs"
