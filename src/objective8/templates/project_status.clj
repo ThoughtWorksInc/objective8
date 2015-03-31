@@ -2,7 +2,7 @@
   (:require [net.cgrand.enlive-html :as html]
             [objective8.templates.page-furniture :as f])) 
 
-(def project-status-template (html/html-resource "templates/jade/learn-more.html"))
+(def project-status-template (html/html-resource "templates/jade/project-status.html"))
 
 (defn project-status-page [{:keys [translations doc] :as context}]
   (apply str
