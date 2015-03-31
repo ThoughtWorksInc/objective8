@@ -167,12 +167,6 @@
   [:.answer-author] (html/content (:username answer))
   [:.answer-date] (html/content (utils/iso-time-string->pretty-time (:_created_at answer))))
 
-(html/defsnippet post-answer-container
-  "templates/answers/post-answer-container.html" [[:#clj-post-answer-container]] [{:keys [translations user ring-request data] :as context}]
-  [:#clj-answer-sign-in-uri] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" (:uri ring-request)))
-  [:#clj-post-answer-container :.response-form] (if user (html/content (answer-create context)) identity)
-  [:#clj-post-answer-container html/any-node] (html/replace-vars translations))
-
 ;QUESTIONS
 (html/defsnippet a-question
   "templates/questions/a-question.html" [:li] [question]
@@ -206,22 +200,9 @@
                                       (post-question-container context)))
   [:#clj-question-list html/any-node] (html/replace-vars translations))
 
-(html/defsnippet question-view-page
-  "templates/questions/question-view.html" [:#clj-question-view] [{:keys [translations data users ring-request] :as context}]
-  [:#objective-crumb] (html/set-attr :title (get-in data [:objective :title]))
-  [:#objective-crumb] (html/content (get-in data [:objective :title]))
-  [:#objective-crumb] (html/set-attr :href (str "/objectives/" (get-in data [:objective :_id])))
-  [:#questions-crumb] (html/set-attr :href (str "/objectives/" (get-in data [:objective :_id]) "/questions"))
-  [:#question-crumb] (html/set-attr :href (str "/objectives/" (get-in data [:objective :_id]) "/questions/" (get-in data [:question :_id])))
-  [:#question-crumb] (html/set-attr :title (get-in data [:question :question]))
-  [:#question-crumb] (html/content (get-in data [:question :question]))
-  [:#clj-question-view :h1] (html/content (get-in data [:question :question]))
-  [:h1] (html/after (article-meta (:objective data) translations))
-  [:#clj-question-view :.answer-list]  (if (empty? (:answers data)) identity (html/content (map an-answer (:answers data))))
-  [:#clj-question-view] (html/after (when-not (get-in data [:objective :drafting-started]) (post-answer-container context)))
-  [:#clj-question-view html/any-node] (html/replace-vars translations))
 
 ;COMMENTS
+
 (html/defsnippet comment-create
   "templates/comments/comment-create.html" [[:#clj-comment-create]] [objective-id]
   [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
