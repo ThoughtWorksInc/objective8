@@ -4,7 +4,6 @@
             [ring.util.response :as response]
             [cheshire.core :as json]
             [org.httpkit.client :as http]
-            [objective8.responses :refer :all]
             [objective8.http-api :as http-api]
             [objective8.front-end-helpers :as helpers]
             [objective8.utils :as utils]
@@ -16,7 +15,9 @@
   (friend/authorized? #{:signed-in} friend/*identity*))
 
 (defn error-404-response [request]
-  (assoc (views/four-o-four "error-404" request) :status 404))
+  {:status 404
+   :headers {"Content-Type" "text/html"}
+   :body (views/error-404 "error-404" request)})
 
 (defn- redirect-to-params-referer
   ([request]
