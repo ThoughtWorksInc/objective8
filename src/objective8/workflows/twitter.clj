@@ -5,7 +5,6 @@
               [ring.util.request :as request]
               [bidi.ring :refer [make-handler]]
               [objective8.utils :as utils]
-              [objective8.responses :refer [simple-response]]
               [objective8.config :as config]))
 
 (def consumer (oauth/make-consumer (config/get-var "TWITTER_CONSUMER_TOKEN")

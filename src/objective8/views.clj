@@ -1,6 +1,5 @@
 (ns objective8.views
   (:require [cemerick.friend :as friend]
-            [objective8.responses :as responses]
             [objective8.templates.index :as index]
             [objective8.templates.learn-more :as learn-more]
             [objective8.templates.project-status :as project-status]
@@ -52,11 +51,6 @@
   [viewfn]
   (fn [page-name ring-request & data] 
     (viewfn (make-view-context page-name ring-request data))))
-
-(defn- render-page [page]
-  (fn [context] (responses/rendered-response page context)))
-
-
 
 (def index (view index/index-page))
 (def objective-list (view objective-list/objective-list-page))
