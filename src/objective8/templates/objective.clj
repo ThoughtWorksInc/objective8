@@ -3,7 +3,8 @@
             [net.cgrand.jsoup :as jsoup]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [objective8.utils :as utils]     
-            [objective8.templates.page-furniture :as f]))   
+            [objective8.templates.page-furniture :as f]
+            [objective8.templates.template-functions :as tf]))   
 
 (def objective-template (html/html-resource "templates/jade/objective.html" {:parser jsoup/parser}))
 
@@ -30,7 +31,7 @@
 
 (defn invitation-rsvp-modal [{:keys [data invitation-rsvp user ring-request] :as context}]
   (let [objective (:objective data)
-        tl8 (f/translator context)
+        tl8 (tf/translator context)
         objective-id (:objective-id invitation-rsvp)
         invitation-id (:invitation-id invitation-rsvp)]
     (html/transformation

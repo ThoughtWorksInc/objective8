@@ -1,7 +1,9 @@
 (ns objective8.templates.question
   (:require [net.cgrand.enlive-html :as html]
+            [ring.util.anti-forgery :refer [anti-forgery-field]]  
             [objective8.templates.page-furniture :as f]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]))
+            [objective8.templates.template-functions :as tf]
+            ))
 
 (def question-template (html/html-resource "templates/jade/question.html"))
 
@@ -32,7 +34,7 @@
   (let [question (:question data)
         answers (:answers data)
         objective (:objective data)
-        tl8 (f/translator context)
+        tl8 (tf/translator context)
         optionally-disable-voting (if (:drafting-started (:objective data))
                                     (disable-voting translations)
                                     identity)]

@@ -3,17 +3,11 @@
             [net.cgrand.jsoup :as jsoup]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [objective8.config :as config]
-            [objective8.utils :as utils]))
+            [objective8.utils :as utils]
+            [objective8.templates.template-functions :as tf]))
 
 (def library-html "templates/jade/library.html")
 (def library-html-resource (html/html-resource library-html {:parser jsoup/parser}))
-
-(defn translator
-  "Returns a translation function which replaces the
-   content of nodes with translations for k"
-  [{:keys [translations] :as context}]
-  (fn [k] 
-    #(assoc % :content (translations k))))
 
 (defn text->p-nodes
   "Turns text into a collection of paragraph nodes based on linebreaks.
@@ -44,7 +38,7 @@
 (def masthead-signed-in-snippet (html/select library-html-resource [:.clj-masthead-signed-in]))
 
 (defn masthead [{{uri :uri} :ring-request :keys [translations  user] :as context}]
-  (let [tl8 (translator context)]
+  (let [tl8 (tf/translator context)]
     (html/at masthead-snippet
              [:.clj-masthead-signed-out] (if user
                                            (html/substitute masthead-signed-in-snippet)

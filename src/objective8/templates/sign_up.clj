@@ -2,13 +2,14 @@
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [ring.util.anti-forgery :refer [anti-forgery-field]]  
-            [objective8.templates.page-furniture :as f]))
+            [objective8.templates.page-furniture :as f]
+            [objective8.templates.template-functions :as tf]))
 
 (def sign-up-template (html/html-resource "templates/jade/sign-up.html" {:parser jsoup/parser}))
 
 (defn sign-up-page [{:keys [translations data doc] :as context}]
   (let [objective (:objective data)
-        tl8 (f/translator context)]
+        tl8 (tf/translator context)]
     (apply str
            (html/emit*
              (f/add-google-analytics
