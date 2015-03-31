@@ -17,4 +17,4 @@
                       [:.l8n-project-status-heading] (html/content (translations :project-status/page-title)) 
 
                       [:.l8n-project-status-lede] (html/content (translations :project-status/page-intro))
-                      [:.l8n-project-status-detail] (html/content (translations :project-status/page-content)))))))
+                      [:.l8n-project-status-detail] (html/html-content (translations :project-status/page-content)))))))
