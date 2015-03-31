@@ -9,17 +9,18 @@
   (let [objective (:objective data)]
     (apply str
            (html/emit*
-             (html/at objective-write-a-question-template
-                      [:title] (html/content (:title doc))
-                      [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
-                      [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
-                      [:.clj-status-bar] (html/substitute (f/status-flash-bar context))
-                      [:.clj-guidance-buttons] nil
-                      [:.l8n-guidance-heading] (html/content (translations :question-create/guidance-heading))
-                      [:.l8n-guidance-text] (html/content (translations :question-create/guidance-text))
-                      [:.clj-objective-navigation-item-objective] (html/set-attr "href" (str "/objectives/" (:_id objective)))
-                      [:.l8n-back-to-objective] (html/content (translations :objective-nav/back-to-objective))
-                      [:.clj-objective-title] (html/content (:title objective))
-                      [:.l8n-add-question-title] (html/content (translations :question-create/add-a-question))
-                      [:.clj-question-create-form] (html/content (f/add-question context))
-                      [:.clj-question-create-form] (html/set-attr "action" (str "/objectives/" (:_id objective) "/questions")))))))
+             (f/add-google-analytics
+               (html/at objective-write-a-question-template
+                        [:title] (html/content (:title doc))
+                        [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
+                        [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
+                        [:.clj-status-bar] (html/substitute (f/status-flash-bar context))
+                        [:.clj-guidance-buttons] nil
+                        [:.l8n-guidance-heading] (html/content (translations :question-create/guidance-heading))
+                        [:.l8n-guidance-text] (html/content (translations :question-create/guidance-text))
+                        [:.clj-objective-navigation-item-objective] (html/set-attr "href" (str "/objectives/" (:_id objective)))
+                        [:.l8n-back-to-objective] (html/content (translations :objective-nav/back-to-objective))
+                        [:.clj-objective-title] (html/content (:title objective))
+                        [:.l8n-add-question-title] (html/content (translations :question-create/add-a-question))
+                        [:.clj-question-create-form] (html/content (f/add-question context))
+                        [:.clj-question-create-form] (html/set-attr "action" (str "/objectives/" (:_id objective) "/questions"))))))))

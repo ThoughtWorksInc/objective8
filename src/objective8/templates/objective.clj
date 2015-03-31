@@ -36,28 +36,28 @@
     (html/transformation
       [:.clj-modal-contents] (html/content
 
-      (html/at invitation-response-snippet
-               [:.l8n-invitation-response-title] (tl8 :invitation-response/page-title)
-               [:.l8n-invitation-response-help-achieve] (tl8 :invitation-response/help-achieve)
-               [:.clj-objective-title] (html/content (:title objective)) 
-               [:.l8n-rsvp-text] (tl8 :invitation-response/rsvp-text)
-               
-               [:.clj-invitation-response-decline] 
-               (html/do-> 
-                 (html/set-attr :action (utils/local-path-for :fe/decline-invitation :id (:objective-id invitation-rsvp) :i-id (:invitation-id invitation-rsvp)))
-                 (html/prepend (html/html-snippet (anti-forgery-field)))) 
+                               (html/at invitation-response-snippet
+                                        [:.l8n-invitation-response-title] (tl8 :invitation-response/page-title)
+                                        [:.l8n-invitation-response-help-achieve] (tl8 :invitation-response/help-achieve)
+                                        [:.clj-objective-title] (html/content (:title objective)) 
+                                        [:.l8n-rsvp-text] (tl8 :invitation-response/rsvp-text)
 
-               [:.l8n-invitation-decline-text] (tl8 :invitation-response/decline)
-               [:.l8n-invitation-accept-text] (tl8 :invitation-response/accept)     
+                                        [:.clj-invitation-response-decline] 
+                                        (html/do-> 
+                                          (html/set-attr :action (utils/local-path-for :fe/decline-invitation :id (:objective-id invitation-rsvp) :i-id (:invitation-id invitation-rsvp)))
+                                          (html/prepend (html/html-snippet (anti-forgery-field)))) 
 
-               [:.clj-invitation-response-accept] 
-               (if user
-                 (html/do-> (html/prepend (html/html-snippet (anti-forgery-field))) 
-                            (html/set-attr :action (utils/local-path-for :fe/accept-invitation :id (:objective-id invitation-rsvp) :i-id (:invitation-id invitation-rsvp))))
-                 (html/substitute (html/at f/anchor-button 
-                                           [:.clj-anchor-button] (html/do-> 
-                                                                   (html/set-attr :href (str "/sign-in?refer=" (:uri ring-request)))
-                                                                   (tl8 :invitation-response/sign-in-to-accept))))))))))
+                                        [:.l8n-invitation-decline-text] (tl8 :invitation-response/decline)
+                                        [:.l8n-invitation-accept-text] (tl8 :invitation-response/accept)     
+
+                                        [:.clj-invitation-response-accept] 
+                                        (if user
+                                          (html/do-> (html/prepend (html/html-snippet (anti-forgery-field))) 
+                                                     (html/set-attr :action (utils/local-path-for :fe/accept-invitation :id (:objective-id invitation-rsvp) :i-id (:invitation-id invitation-rsvp))))
+                                          (html/substitute (html/at f/anchor-button 
+                                                                    [:.clj-anchor-button] (html/do-> 
+                                                                                            (html/set-attr :href (str "/sign-in?refer=" (:uri ring-request)))
+                                                                                            (tl8 :invitation-response/sign-in-to-accept))))))))))
 
 (defn drafting-begins [objective translations]
   (html/transformation
@@ -80,58 +80,59 @@
         flash (:flash doc)]
     (apply str
            (html/emit*
-             (html/at objective-template
-                      [:title] (html/content (:title doc))
-                      [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
-                      [:.clj-status-bar] (html/substitute 
-                                           (f/status-flash-bar
-                                             (cond
-                                               (= :invitation (:type flash)) (update-in context [:doc] dissoc :flash)
-                                               (invitation-rsvp-for-objective? objective invitation-rsvp) (dissoc context :invitation-rsvp)
-                                               :else context)))
-                      [:.clj-writer-invitation] 
-                      (if (= :invitation (:type flash))
-                        (writer-invitation-modal flash objective translations)
-                        (when (invitation-rsvp-for-objective? objective invitation-rsvp) 
-                          (invitation-rsvp-modal context)))
+             (f/add-google-analytics
+               (html/at objective-template
+                        [:title] (html/content (:title doc))
+                        [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
+                        [:.clj-status-bar] (html/substitute 
+                                             (f/status-flash-bar
+                                               (cond
+                                                 (= :invitation (:type flash)) (update-in context [:doc] dissoc :flash)
+                                                 (invitation-rsvp-for-objective? objective invitation-rsvp) (dissoc context :invitation-rsvp)
+                                                 :else context)))
+                        [:.clj-writer-invitation] 
+                        (if (= :invitation (:type flash))
+                          (writer-invitation-modal flash objective translations)
+                          (when (invitation-rsvp-for-objective? objective invitation-rsvp) 
+                            (invitation-rsvp-modal context)))
 
-                      [:.clj-objective-progress-indicator] nil
-                      [:.clj-guidance-buttons] nil
-                      [:.clj-guidance-heading] (html/content (translations :objective-guidance/heading))
-                      [:.l8n-guidance-text-line-1] (html/content (translations :objective-guidance/text-line-1))
-                      [:.l8n-guidance-text-line-2] (html/content (translations :objective-guidance/text-line-2))
-                      [:.l8n-guidance-text-line-3] (html/content (translations :objective-guidance/text-line-3))
+                        [:.clj-objective-progress-indicator] nil
+                        [:.clj-guidance-buttons] nil
+                        [:.clj-guidance-heading] (html/content (translations :objective-guidance/heading))
+                        [:.l8n-guidance-text-line-1] (html/content (translations :objective-guidance/text-line-1))
+                        [:.l8n-guidance-text-line-2] (html/content (translations :objective-guidance/text-line-2))
+                        [:.l8n-guidance-text-line-3] (html/content (translations :objective-guidance/text-line-3))
 
-                      [:.l8n-objective-navigation-item-objective] (html/content (translations :objective-nav/objective))
-                      [:.l8n-objective-navigation-item-writers] (html/content (translations :objective-nav/writers))
-                      [:.l8n-objective-navigation-item-questions] (html/content (translations :objective-nav/questions))
-                      [:.l8n-objective-navigation-item-comments] (html/content (translations :objective-nav/comments))
+                        [:.l8n-objective-navigation-item-objective] (html/content (translations :objective-nav/objective))
+                        [:.l8n-objective-navigation-item-writers] (html/content (translations :objective-nav/writers))
+                        [:.l8n-objective-navigation-item-questions] (html/content (translations :objective-nav/questions))
+                        [:.l8n-objective-navigation-item-comments] (html/content (translations :objective-nav/comments))
 
-                      [:.clj-star-container] nil
+                        [:.clj-star-container] nil
 
-                      [:.clj-objective-title] (html/content (:title objective))
+                        [:.clj-objective-title] (html/content (:title objective))
 
-                      [:.clj-days-left] (when-not (:drafting-started objective)
-                                          (drafting-begins objective translations))
-                      [:.clj-drafting-started-wrapper] (html/substitute (f/drafting-message context))
-                      [:.clj-replace-with-objective-detail] (html/substitute (f/text->p-nodes (:description objective)))
-                      [:.l8n-writers-section-title] (html/content (translations :objective-view/writers))
-                      [:.clj-writer-item-list] (html/content (f/writer-list context))
-                      [:.clj-invite-writer-link] (when-not (:drafting-started objective)
-                                                   (html/set-attr
-                                                     "href" (str "/objectives/" (:_id objective) "/invite-writer")))
-                      [:.l8n-invite-writer-link] (when-not (:drafting-started objective)
-                                                   (html/content
-                                                     (translations :objective-view/invite-a-writer)))
-                      [:.l8n-questions-section-title] (html/content (translations :objective-view/questions-title))
-                      [:.clj-question-list] (html/content (f/question-list context))
-                      [:.clj-ask-question-link] (when-not (:drafting-started objective)
-                                                  (html/set-attr
-                                                    "href" (str "/objectives/" (:_id objective) "/add-question")))
-                      [:.l8n-ask-question-link] (when-not (:drafting-started objective)
-                                                  (html/content
-                                                    (translations :objective-view/ask-a-question)))
-                      [:.l8n-comments-section-title] (html/content (translations :objective-view/comments))
-                      [:.clj-comment-list] (html/content (f/comment-list context))
-                      [:.clj-comment-create] (when-not (:drafting-started objective)
-                                               (html/content (f/comment-create context :objective))))))))
+                        [:.clj-days-left] (when-not (:drafting-started objective)
+                                            (drafting-begins objective translations))
+                        [:.clj-drafting-started-wrapper] (html/substitute (f/drafting-message context))
+                        [:.clj-replace-with-objective-detail] (html/substitute (f/text->p-nodes (:description objective)))
+                        [:.l8n-writers-section-title] (html/content (translations :objective-view/writers))
+                        [:.clj-writer-item-list] (html/content (f/writer-list context))
+                        [:.clj-invite-writer-link] (when-not (:drafting-started objective)
+                                                     (html/set-attr
+                                                       "href" (str "/objectives/" (:_id objective) "/invite-writer")))
+                        [:.l8n-invite-writer-link] (when-not (:drafting-started objective)
+                                                     (html/content
+                                                       (translations :objective-view/invite-a-writer)))
+                        [:.l8n-questions-section-title] (html/content (translations :objective-view/questions-title))
+                        [:.clj-question-list] (html/content (f/question-list context))
+                        [:.clj-ask-question-link] (when-not (:drafting-started objective)
+                                                    (html/set-attr
+                                                      "href" (str "/objectives/" (:_id objective) "/add-question")))
+                        [:.l8n-ask-question-link] (when-not (:drafting-started objective)
+                                                    (html/content
+                                                      (translations :objective-view/ask-a-question)))
+                        [:.l8n-comments-section-title] (html/content (translations :objective-view/comments))
+                        [:.clj-comment-list] (html/content (f/comment-list context))
+                        [:.clj-comment-create] (when-not (:drafting-started objective)
+                                                 (html/content (f/comment-create context :objective)))))))))

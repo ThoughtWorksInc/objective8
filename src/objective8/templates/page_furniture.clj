@@ -1,10 +1,12 @@
 (ns objective8.templates.page-furniture
   (:require [net.cgrand.enlive-html :as html]
+            [net.cgrand.jsoup :as jsoup]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
+            [objective8.config :as config]
             [objective8.utils :as utils]))
 
 (def library-html "templates/jade/library.html")
-(def library-html-resource (html/html-resource library-html))
+(def library-html-resource (html/html-resource library-html {:parser jsoup/parser}))
 
 (defn translator
   "Returns a translation function which replaces the
@@ -23,6 +25,18 @@
                                                            newline-followed-by-optional-whitespace)))))
 
 (def anchor-button (html/select library-html-resource [:.clj-anchor-button]))
+
+;; GOOGLE ANALYTICS
+
+(def google-analytics-script (html/select library-html-resource [:.clj-google-analytics]))
+
+(defn add-google-analytics [nodes] 
+  (if-let [tracking-id (config/get-var "GA_TRACKING_ID")] 
+    (html/at nodes 
+             [:head] (html/append google-analytics-script)
+             [:head html/any-node] (html/replace-vars {:trackingID tracking-id}))
+    nodes))
+
 
 ;; MASTHEAD
 
@@ -214,6 +228,7 @@
                                                                      (voting-actions-when-signed-in context comment)
                                                                      (voting-actions-when-not-signed-in context comment))
                                        [:.clj-comment-reply] nil))
+
 
 (defn comment-list [{translations :translations :as context}]
   (let [comments (get-in context [:data :comments])]

@@ -31,6 +31,12 @@
 
 (facts "front end"
        (binding [config/enable-csrf false]
+         (fact "google analytics is added to responses"
+               (let [{response :response} (p/request (p/session default-app) (utils/path-for :fe/index))]
+                 (:body response)) => (contains "GOOGLE_ANALYTICS_TRACKING_ID")
+               (provided
+                 (config/get-var "GA_TRACKING_ID") => "GOOGLE_ANALYTICS_TRACKING_ID"))
+  
          (facts "authorisation"
                 (facts "signed in users"
                        (against-background

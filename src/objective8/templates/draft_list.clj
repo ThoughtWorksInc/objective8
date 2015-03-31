@@ -58,27 +58,28 @@
   (let [objective (:objective data)]
     (apply str
            (html/emit*
-             (html/at draft-list-template
-                      [:title] (html/content (:title doc))
-                      [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
-                      [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
-                      [:.clj-status-bar] (html/substitute (f/status-flash-bar context))
-                      [:.clj-objective-progress-indicator] nil
-                      [:.clj-guidance-buttons] nil
+             (f/add-google-analytics
+               (html/at draft-list-template
+                        [:title] (html/content (:title doc))
+                        [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
+                        [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
+                        [:.clj-status-bar] (html/substitute (f/status-flash-bar context))
+                        [:.clj-objective-progress-indicator] nil
+                        [:.clj-guidance-buttons] nil
 
-                      [:.clj-guidance-heading] (html/content (translations :draft-guidance/heading))
-                      [:.clj-guidance-text-line-1] (html/content (translations :draft-guidance/text-line-1))
-                      [:.clj-guidance-text-line-2] (html/content (translations :draft-guidance/text-line-2))
-                      [:.clj-guidance-text-line-3] (html/content (translations :draft-guidance/text-line-3))
+                        [:.clj-guidance-heading] (html/content (translations :draft-guidance/heading))
+                        [:.clj-guidance-text-line-1] (html/content (translations :draft-guidance/text-line-1))
+                        [:.clj-guidance-text-line-2] (html/content (translations :draft-guidance/text-line-2))
+                        [:.clj-guidance-text-line-3] (html/content (translations :draft-guidance/text-line-3))
 
-                      [:.clj-draft-list-title] (html/content (str (translations :draft-list/drafts-for) ": "
-                                                                  (:title objective)))
+                        [:.clj-draft-list-title] (html/content (str (translations :draft-list/drafts-for) ": "
+                                                                    (:title objective)))
 
-                      [:.clj-drafts-wrapper] (if (:drafting-started objective)
-                                               (drafts-list context)
-                                               (html/do->
-                                                 (html/set-attr "drafting-begins-date"
-                                                                (:end-date objective))
-                                                 (html/content (str (translations :draft-list/drafting-begins)
-                                                                    " " (:days-until-drafting-begins objective)
-                                                                    " " (translations :draft-list/days)))))))))) 
+                        [:.clj-drafts-wrapper] (if (:drafting-started objective)
+                                                 (drafts-list context)
+                                                 (html/do->
+                                                   (html/set-attr "drafting-begins-date"
+                                                                  (:end-date objective))
+                                                   (html/content (str (translations :draft-list/drafting-begins)
+                                                                      " " (:days-until-drafting-begins objective)
+                                                                      " " (translations :draft-list/days))))))))))) 
