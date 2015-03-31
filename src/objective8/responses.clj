@@ -135,25 +135,6 @@
   [:#clj-invitation-container :.response-form] (if user (html/content (invitation-create context)) identity)
   [:#clj-invitation-container html/any-node] (html/replace-vars translations))
 
-;CANDIDATES
-
-(html/defsnippet a-candidate
-  "templates/writers/a-candidate.html" [:li] [candidate]
-  [:.candidate-name] (html/content (:writer-name candidate))
-  [:.candidate-reason] (html/content (text->p-nodes (:invitation-reason candidate))))
-
-(html/defsnippet candidate-list-page
-  "templates/writers/candidate-list.html" [:#clj-candidate-list-container] [{:keys [translations objective signed-in uri candidates data] :as context}]
-  [:#objective-crumb] (html/set-attr :title (get-in data [:objective :title]))
-  [:#objective-crumb] (html/content (get-in data [:objective :title]))
-  [:#objective-crumb] (html/set-attr :href (str "/objectives/" (get-in data [:objective :_id])))
-  [:#candidates-crumb] (html/set-attr :href (str "/objectives/" (get-in data [:objective :_id]) "/candidate-writers"))
-  [:#clj-candidate-list-container :h1] (html/content (get-in data [:objective :title]))
-  [:h1] (html/after (article-meta (:objective data) translations))
-  [:#clj-candidate-list] (let [candidates (:candidates data)] (if (empty? candidates) identity (html/content (map a-candidate candidates)))) 
-  [:#clj-candidate-list-container] (html/after (when-not (get-in data [:objective :drafting-started]) (post-invitation-container context)))
-  [:#clj-candidate-list-container html/any-node] (html/replace-vars translations))
-
 ;ANSWERS
 (html/defsnippet answer-create
   "templates/answers/answer-create.html" [[:#clj-answer-create]] [{:keys [translations data] :as context}]

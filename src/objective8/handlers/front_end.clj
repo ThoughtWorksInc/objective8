@@ -258,30 +258,9 @@
       (= objective-status ::http-api/not-found) (error-404-response request)
       :else {:status 500})))
 
-(defn candidate-list [{{id :id} :route-params
-                       :keys [uri t' locale] :as request}]
-  (let [objective-id (Integer/parseInt id)
-        {objective-status :status objective :result} (http-api/get-objective objective-id)
-        {candidate-status :status  candidates :result} (http-api/retrieve-candidates objective-id)]
-    (cond
-      (every? #(= ::http-api/success %) [candidate-status objective-status])
-      (views/candidate-list "candidate-list"
-                            request
-                            :objective (format-objective objective)
-                            :candidates candidates)
-      #_(rendered-response candidate-list-page {:translation t'
-                                                :locale (subs (str locale) 1)
-                                                :doc-title (t' :invitation/doc-title)
-                                                :doc-description (t' :invitation/doc-description)
-                                                :objective (format-objective objective)
-                                                :candidates candidates
-                                                :uri uri
-                                                :invitation (invitation? (:session request))
-                                                :signed-in (signed-in?)})
-      (= objective-status ::http-api/not-found) (error-404-response request)
-      (= candidate-status ::http-api/not-found) (error-404-response request)
-      (= candidate-status ::http-api/invalid-input) {:status 400}
-      :else {:status 500})))
+(defn candidate-list [{{id :id} :route-params :as request}]
+  (let [objective-id (Integer/parseInt id)]
+    (response/redirect (utils/path-for :fe/objective :id objective-id))))
 
 (defn invitation-form-post [{:keys [t' locale] :as request}]
   (if-let [invitation (helpers/request->invitation-info request (get (friend/current-authentication) :identity))]

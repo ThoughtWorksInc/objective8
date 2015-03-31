@@ -68,27 +68,11 @@
                   :invitation-url INVITATION_URL}
                  peridot-response => (helpers/headers-location (str "/objectives/" OBJECTIVE_ID))))
 
-         (fact "A user should be able to view the candidate writers page for an objective"
-               (against-background
-                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                           :result {:title "some title"
-                                                                    :_id OBJECTIVE_ID}})
-               (let [response (default-app candidates-get-request)]
-                 response  => (contains {:status 200})
-                 response)  => (contains {:body (contains "martina")})
-               (provided
-                 (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success
-                                                                 :result [{:user-id USER_ID
-                                                                           :objective-id OBJECTIVE_ID
-                                                                           :invitation-id INVITATION_ID
-                                                                           :writer-name "martina"
-                                                                           :invitation-reason "she's expert"}]}))
-
-         (fact "a user should receive a 404 if accessing the candidate writers page for an objective that does not exist"
-               (against-background
-                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/not-found})
-
-               (default-app candidates-get-request) => (contains {:status 404}))))
+         (fact "A user should be redirected to objective page when attempting to view the candidate writers page for an objective"
+               (let [response (default-app candidates-get-request)
+                     objective-url (utils/path-for :fe/objective :id OBJECTIVE_ID)] 
+                 (:status response) => 302 
+                 (get-in response [:headers "Location"]) => objective-url))))
 
 (facts "about responding to invitations"
 
