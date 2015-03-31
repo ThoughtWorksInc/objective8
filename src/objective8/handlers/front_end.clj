@@ -338,18 +338,6 @@
 (defn remove-invitation-credentials [response]
   (update-in response [:session] dissoc :invitation))
 
-(defn accept-or-decline-invitation [{:keys [session t' locale uri] :as request}]
-  (if-let [invitation-details (:invitation session)]
-    (if (= ::http-api/success (:status (http-api/retrieve-invitation-by-uuid (:uuid invitation-details))))
-      (let [{objective :result} (http-api/get-objective (:objective-id invitation-details))]
-        (views/invitation-response "invitation-response"
-                                   request
-                                   :objective (format-objective objective)))
-      (-> (error-404-response request)
-          (assoc :session session)
-          remove-invitation-credentials)) 
-    (error-404-response request)))
-
 (defn accept-invitation [{:keys [session]}]
   (if-let [invitation-credentials (:invitation session)]
     (let [candidate-writer {:invitee-id (get (friend/current-authentication) :identity)

@@ -20,8 +20,7 @@
                          ["/" [#"\d+" :id]] {:get :fe/objective
                                              "/invite-writer" {:get :fe/invite-writer}
                                              "/writer-invitations" {:post :fe/invitation-form-post
-                                                                    ["/" [#"\d+" :i-id]] {:get :fe/accept-or-decline-invitation
-                                                                                          "/accept" {:post :fe/accept-invitation}
+                                                                    ["/" [#"\d+" :i-id]] {"/accept" {:post :fe/accept-invitation}
                                                                                           "/decline" {:post :fe/decline-invitation}
                                                                                           }}
                                              "/candidate-writers" {:get :fe/candidate-list}

@@ -45,7 +45,6 @@
                :fe/invite-writer (utils/anti-forgery-hook front-end-handlers/invite-writer)
                :fe/invitation-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/invitation-form-post) #{:signed-in})
                :fe/writer-invitation front-end-handlers/writer-invitation
-               :fe/accept-or-decline-invitation (utils/anti-forgery-hook front-end-handlers/accept-or-decline-invitation)
                :fe/accept-invitation (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/accept-invitation) #{:signed-in})
                :fe/decline-invitation (utils/anti-forgery-hook front-end-handlers/decline-invitation) 
                :fe/add-draft-get (m/wrap-authorise-writer (utils/anti-forgery-hook front-end-handlers/add-draft-get))
