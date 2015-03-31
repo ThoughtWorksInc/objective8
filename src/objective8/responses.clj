@@ -122,53 +122,6 @@
   [:#clj-error-404 html/any-node] (html/replace-vars translations)
   [:#clj-error-404-content] (html/html-content (translations :error-404/page-content)))
 
-;INVITATIONS
-(html/defsnippet invitation-create
-  "templates/writers/invitation-form.html" [[:#clj-invitation]] [{:keys [translations data] :as context}]
-  [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:form] (html/set-attr :action (str "/objectives/" (get-in data [:objective :_id]) "/writer-invitations"))
-  [:#clj-invitation html/any-node] (html/replace-vars translations))
-
-(html/defsnippet post-invitation-container 
-  "templates/writers/invitation-create.html" [[:#clj-invitation-container]] [{:keys [translations user ring-request data] :as context}] 
-  [:#clj-invitation-sign-in-uri] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" (:uri ring-request)))
-  [:#clj-invitation-container :.response-form] (if user (html/content (invitation-create context)) identity)
-  [:#clj-invitation-container html/any-node] (html/replace-vars translations))
-
-;ANSWERS
-(html/defsnippet answer-create
-  "templates/answers/answer-create.html" [[:#clj-answer-create]] [{:keys [translations data] :as context}]
-  [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:form] (html/set-attr :action (str "/objectives/" (get-in data [:objective :_id]) "/questions/" (get-in data [:question :_id]) "/answers"))
-  [:#clj-answer-create html/any-node] (html/replace-vars translations))
-
-(html/defsnippet an-answer
-  "templates/answers/answer.html" [:li] [answer]
-  [:.answer-text] (html/content (text->p-nodes (:answer answer)))
-  [:.answer-author] (html/content (:username answer))
-  [:.answer-date] (html/content (utils/iso-time-string->pretty-time (:_created_at answer))))
-
-
-;COMMENTS
-
-(html/defsnippet comment-create
-  "templates/comments/comment-create.html" [[:#clj-comment-create]] [objective-id]
-  [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:#objective-id] (html/set-attr :value objective-id))
-
-(html/defsnippet a-comment
-  "templates/comments/comment.html" [:li] [comment]
-  [:.comment-text] (html/content (text->p-nodes (:comment comment)))
-  [:.comment-author] (html/content (:username comment))
-  [:.comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment))))
-
-(html/defsnippet comments-view
-  "templates/comments/comments-view.html" [[:#clj-comments-view]] [{:keys [translations ring-request user data] :as context}]
-  [:#clj-comment-sign-in-uri] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" (:uri ring-request)))
-  [:#clj-comments-view :.response-form] (if user (html/content (comment-create (get-in data [:objective :_id]))) identity )
-  [:#clj-comments-view html/any-node] (html/replace-vars translations)
-  [:#clj-comments-view :.comment-list] (let [comments (:comments data)] (if (empty? comments) identity (html/content (map a-comment comments)))))
-
 (defn render-template [template & args]
   (apply str (apply template args)))
 
