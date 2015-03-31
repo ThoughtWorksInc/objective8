@@ -166,7 +166,7 @@
   [:.clj-question-create-form] (html/prepend (html/html-snippet (anti-forgery-field)))
 
   [:.l8n-label-add-question] (html/content (translations :question-create/question-label))
-  [:.l8n-textarea-add-question] (html/set-attr "title" (translations :question-create/question-title))
+  [:.l8n-textarea-add-question] (html/set-attr :title (translations :question-create/question-title))
   [:.l8n-button-add-question] (html/content (translations :question-create/post-button)))
 
 (html/defsnippet sign-in-to-add-question
