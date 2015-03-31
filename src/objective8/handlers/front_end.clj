@@ -184,24 +184,9 @@
           :else {:status 500})
         ))
 
-(defn question-list [{{id :id} :route-params
-                      :keys [uri t' locale] :as request}]
-  (let [objective-id (Integer/parseInt id)
-        {objective-status :status objective :result} (http-api/get-objective objective-id)
-        {questions-status :status questions :result} (http-api/retrieve-questions objective-id)]
-    (cond
-      (every? #(= ::http-api/success %) [objective-status questions-status])
-      (views/question-list "question-list"
-                           request
-                           :objective (format-objective objective)
-                           :questions questions
-                           :doc {:title (str (:title objective) " | Objective[8]")
-                                 :description (str (t' :question-list/questions-about) " " (:title objective))})
-
-      (= objective-status ::http-api/not-found) (error-404-response request)
-      (= questions-status ::http-api/not-found) (error-404-response request)
-      (= questions-status ::http-api/invalid-input) {:status 400}
-      :else {:status 500})))
+(defn question-list [{{id :id} :route-params :as request}]
+  (let [objective-id (Integer/parseInt id)]
+    (response/redirect (utils/path-for :fe/objective :id objective-id))))
 
 (defn add-question-form-post [{:keys [uri t' locale] :as request}]
   (if-let [question (helpers/request->question request (get (friend/current-authentication) :identity))]

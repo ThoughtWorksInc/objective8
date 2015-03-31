@@ -72,11 +72,8 @@
          OBJECTIVE_ID   INVALID_ID
          INVALID_ID     INVALID_ID)
 
-       (fact "A user should be able to view the questions page for an objective"
-             (against-background
-               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                         :result {:title "some title" 
-                                                                  :_id OBJECTIVE_ID}}
-               (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success
-                                                              :result []})
-             (default-app questions-view-get-request) => (contains {:status 200})))
+       (fact "A user should be redirected to the objective page when they attempt to view the questions page for an objective"
+             (let [response (default-app questions-view-get-request)
+                   objective-url (utils/path-for :fe/objective :id OBJECTIVE_ID)]
+               (:status response) => 302
+               (get-in response [:headers "Location"]) => objective-url)))

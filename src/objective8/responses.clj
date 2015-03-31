@@ -167,39 +167,6 @@
   [:.answer-author] (html/content (:username answer))
   [:.answer-date] (html/content (utils/iso-time-string->pretty-time (:_created_at answer))))
 
-;QUESTIONS
-(html/defsnippet a-question
-  "templates/questions/a-question.html" [:li] [question]
-  [:a] (html/set-attr :href (str "/objectives/" (:objective-id question) "/questions/" (:_id question)))
-  [:a] (html/content (text->p-nodes (:question question)))
-  [:.question-date] (html/content (utils/iso-time-string->pretty-time (:_created_at question)))) 
-
-(html/defsnippet question-create
-  "templates/questions/question-create.html" [:#clj-question-create] [{:keys [data translations] :as context}]
-  [:form] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:form] (html/set-attr :action (str "/objectives/" (get-in data [:objective :_id]) "/questions"))
-  [:#clj-question-create html/any-node] (html/replace-vars translations))
-
-(html/defsnippet post-question-container
-  "templates/questions/post-question-container.html" [:#clj-post-question-container] [{:keys [user ring-request translations] :as context}]
-  [:#clj-question-sign-in-uri] #(assoc-in % [:attrs :href] (str "/sign-in?refer=" (:uri ring-request)))
-  [:#clj-post-question-container :.response-form] (if user (html/content (question-create context)) identity)
-  [:#clj-post-question-container html/any-node] (html/replace-vars translations))
-
-;TODO - why is this breaking?
-(html/defsnippet question-list-page
-  "templates/questions/question-list.html" [:#clj-question-list] [{:keys [translations data users uri] :as context}]
-  [:#objective-crumb] (html/set-attr :title (get-in data [:objective :title]))
-  [:#objective-crumb] (html/content (get-in data [:objective :title]))
-  [:#objective-crumb] (html/set-attr :href (str "/objectives/" (get-in data [:objective :_id])))
-  [:#questions-crumb] (html/set-attr :href (str "/objectives/" (get-in data [:objective :_id]) "/questions"))
-  [:h1] (html/after (article-meta (:objective data) translations))
-  [:#clj-question-list :h1] (html/content (get-in data [:objective :title]))
-  [:#clj-question-list :.question-list] (let [questions (:questions data)] (if (empty? questions) identity (html/content (map a-question questions)))) 
-  [:#clj-question-list] (html/after (when-not (get-in data [:objective :drafting-started])
-                                      (post-question-container context)))
-  [:#clj-question-list html/any-node] (html/replace-vars translations))
-
 
 ;COMMENTS
 

@@ -55,7 +55,6 @@
   (fn [context] (responses/rendered-response page context)))
 
 (def project-status (view (render-page responses/project-status-page)))
-(def question-list (view (render-page responses/question-list-page)))
 (def candidate-list (view (render-page responses/candidate-list-page)))
 
 (def four-o-four (view (render-page responses/error-404-page)))
