@@ -3,8 +3,8 @@ mixin statusBar
     p.clj-status-bar-text
       | !ALPHA, we are still testing
 
-mixin flashMessageSuccessBar(uniqueClass)
-  .flash-message-success.func--flash-bar(class="#{uniqueClass}")
+mixin flashMessageSuccessBar
+  .flash-message-success.clj-flash-message-bar.func--flash-bar
     p.clj-flash-message-bar-text 
       block
 
