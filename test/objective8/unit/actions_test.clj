@@ -49,6 +49,7 @@
 (facts "about allowing or disallowing voting"
        (against-background
         (up-down-votes/get-vote anything anything) => nil
+        (objectives/retrieve-objective anything) => objective-not-in-drafting
         (objectives/retrieve-objective :objective-in-drafting) => objective-in-drafting
         (objectives/retrieve-objective :objective-not-in-drafting) => objective-not-in-drafting
         (storage/pg-retrieve-entity-by-uri :objective-in-drafting-uri) => objective-in-drafting)
@@ -60,6 +61,7 @@
        
        (fact "a comment attached to an objective can not be voted on when the objective is in drafting"
              (actions/allowed-to-vote {:entity :comment
+                                       :objective-id :objective-in-drafting
                                        :comment-on-uri :objective-in-drafting-uri} :vote-data) => falsey)
 
        (fact "a comment attached to a draft can not be voted on when the associated objective is not in drafting"

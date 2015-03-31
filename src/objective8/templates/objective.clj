@@ -77,7 +77,10 @@
   (let [objective (:objective data)
         objective-id (:_id objective)
         candidates (:candidates data)
-        flash (:flash doc)]
+        flash (:flash doc)
+        optionally-disable-voting (if (:drafting-started objective)
+                                    (f/disable-voting-actions translations)
+                                    identity)]
     (apply str
            (html/emit*
              (f/add-google-analytics
@@ -133,6 +136,8 @@
                                                     (html/content
                                                       (translations :objective-view/ask-a-question)))
                         [:.l8n-comments-section-title] (html/content (translations :objective-view/comments))
-                        [:.clj-comment-list] (html/content (f/comment-list context))
+                        [:.clj-comment-list] (html/content
+                                              (optionally-disable-voting
+                                               (f/comment-list context)))
                         [:.clj-comment-create] (when-not (:drafting-started objective)
                                                  (html/content (f/comment-create context :objective)))))))))

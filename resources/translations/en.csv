@@ -196,6 +196,8 @@ answer-view,answer-title,Answers
 comment-view,no-comments,There are no comments yet.
 comment-view,created-message,Your comment has been added!
 comment-view,comment-title,Comments
+comment-votes,drafting-started,Voting has been frozen for this objective as it is now in drafting.
+answer-votes,drafting-started,Voting has been frozen for this objective as it is now in drafting.
 invite-writer,doc-title,"Invite a writer -"
 invite-writer,doc-description,Invite a writer to draft policy
 invite-writer,section-title,Invite a policy writer

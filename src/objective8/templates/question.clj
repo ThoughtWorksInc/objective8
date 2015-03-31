@@ -22,11 +22,20 @@
     [:.clj-up-score] (html/content (str (get-in answer [:votes :up])))
     [:.clj-down-score] (html/content (str (get-in answer [:votes :down])))))
 
+(defn disable-voting [translations]
+  (html/transformation
+   [:.clj-approval-button] (comp
+                            (html/set-attr "disabled" "disabled")
+                            (html/set-attr "title" (translations :answer-votes/drafting-started)))))
+
 (defn question-page [{:keys [translations data user ring-request doc] :as context}]
   (let [question (:question data)
         answers (:answers data)
         objective (:objective data)
-        tl8 (f/translator context)]
+        tl8 (f/translator context)
+        optionally-disable-voting (if (:drafting-started (:objective data))
+                                    (disable-voting translations)
+                                    identity)]
     (apply str
            (html/emit*
              (f/add-google-analytics
@@ -41,9 +50,11 @@
                         [:.clj-question] (html/content (:question question))
                         [:.clj-answer] (html/clone-for [answer answers]
                                                        [:.clj-answer-text] (html/content (:answer answer))
-                                                       [:.clj-approval-form] (if user
-                                                                               (voting-actions-when-signed-in context answer)
-                                                                               (voting-actions-when-signed-out context answer)))
+                                                       [:.clj-approval-form] (comp
+                                                                              optionally-disable-voting
+                                                                              (if user
+                                                                                (voting-actions-when-signed-in context answer)
+                                                                                (voting-actions-when-signed-out context answer))))
                         [:.clj-jump-to-answer] (if user identity nil)
 
                         [:.clj-answer-form] (if user (html/do->

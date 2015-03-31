@@ -35,7 +35,10 @@
 
 (defn draft-wrapper [{:keys [data translations user] :as context}]
   (let [draft (:draft data)
-        {objective-id :_id} (:objective data)]
+        {objective-id :_id drafting-started :drafting-started} (:objective data)
+        optionally-disable-voting (if drafting-started
+                                    identity
+                                    f/disable-voting-actions)]
 
     (html/transformation
       [:.clj-draft-version-navigation] (if draft
@@ -56,7 +59,7 @@
       [:.clj-draft-comments] (when draft
                                (html/transformation
                                 [:.l8n-comments-section-title] (html/content (translations :draft/comments))
-                                [:.clj-comment-list] (html/content (f/comment-list context))
+                                [:.clj-comment-list] (html/content (optionally-disable-voting (f/comment-list context)))
                                 [:.clj-comment-create] (html/content (f/comment-create context :draft)))))))
 
 (defn draft-page [{:keys [translations data doc] :as context}]

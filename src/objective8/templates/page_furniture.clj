@@ -214,6 +214,12 @@
    [:.clj-up-vote-count] (html/content (str (get-in comment [:votes :up])))
    [:.clj-down-vote-count] (html/content (str (get-in comment [:votes :down])))))
 
+(defn disable-voting-actions [translations]
+  (html/transformation
+   [:.clj-actions-vote-button] (comp
+                                (html/set-attr "disabled" "disabled")
+                                (html/set-attr "title" (translations :comment-votes/drafting-started)))))
+
 (html/defsnippet empty-comment-list-item
   library-html [:.clj-empty-comment-list-item] [translations]
   [:.clj-empty-comment-list-item] (html/content (translations :comment-view/no-comments)))
@@ -228,7 +234,6 @@
                                                                      (voting-actions-when-signed-in context comment)
                                                                      (voting-actions-when-not-signed-in context comment))
                                        [:.clj-comment-reply] nil))
-
 
 (defn comment-list [{translations :translations :as context}]
   (let [comments (get-in context [:data :comments])]

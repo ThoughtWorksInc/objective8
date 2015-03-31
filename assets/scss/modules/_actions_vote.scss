@@ -26,6 +26,9 @@ $vote_button_spacing: 0.75em;
   &:focus {
     outline: $yellow solid 2px;
   }
+  &[disabled=disabled] {
+    color: inherit;
+  }
 }
 .actions-vote-down:last-child {
   &:after {

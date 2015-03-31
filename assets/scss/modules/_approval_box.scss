@@ -41,12 +41,18 @@
   &:hover {
     color: $yellow;
     background:none;
-  } 
+  }
+  &[disabled="disabled"] {
+    color: inherit;
+  }
 }
 
 .approval-down {
   &:hover {
     color: $pink;
     background:none;
-  } 
+  }
+  &[disabled="disabled"] {
+    color: inherit;
+  }
 }
