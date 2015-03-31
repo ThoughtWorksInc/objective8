@@ -38,9 +38,20 @@
 
 .js-modal-container {
   position: relative;
-  max-width: 44em;
-  margin: 3em auto 3em auto;
-  margin-right: auto;
+  margin: 1.5em;
+  @include mq(740) {
+    max-width: 44em;
+    margin: 3em auto;
+  }
+}
+
+.js-modal-content {
+  padding: 1.5em;
+  font-size: 90%;
+  @include mq(550) {
+    padding: 2em;
+    font-size: 100%;
+  }
 }
 
 .js-modal-dismiss {
@@ -50,5 +61,11 @@
   & a {
     color: $black;
     text-decoration: none;
+    & span{
+      display: none;
+      @include mq(550) {
+        display: inherit;
+      }
+    }
   }
 }
