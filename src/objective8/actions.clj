@@ -31,12 +31,33 @@
     {:status ::success :result (drafts/retrieve-latest-draft objective-id)}
     {:status ::objective-drafting-not-started}))
 
+(defn allowed-to-vote [{:keys [global-id entity] :as entity-to-vote-on} {:keys [created-by-id] :as vote-data}]
+  (and
+
+   (cond
+     (= entity :comment)
+     (let [{target-type :entity :as comment-target} (storage/pg-retrieve-entity-by-uri (:comment-on-uri entity-to-vote-on))]
+       (cond
+         (= target-type :objective) (objectives/open? comment-target)
+
+         (= target-type :draft) (objectives/in-drafting? (objectives/retrieve-objective (:objective-id comment-target)))
+         
+         :else true))
+     
+     (= entity :answer)
+     (objectives/open? (objectives/retrieve-objective (:objective-id entity-to-vote-on)))
+
+     :else true)
+
+   (not (up-down-votes/get-vote global-id created-by-id))))
+
 (defn cast-up-down-vote! [{:keys [vote-on-uri created-by-id vote-type] :as vote-data}]
   (if-let [{global-id :global-id :as entity-to-vote-on} (storage/pg-retrieve-entity-by-uri vote-on-uri :with-global-id)]
-    (if (up-down-votes/get-vote global-id created-by-id)
-      {:status ::forbidden}
+    (if (allowed-to-vote entity-to-vote-on vote-data)
       (when-let [stored-vote (up-down-votes/store-vote! entity-to-vote-on vote-data)]
-        {:status ::success :result stored-vote}))))
+        {:status ::success :result stored-vote})
+      {:status ::forbidden})
+    {:status ::entity-not-found}))
 
 (defn create-comment! [{:keys [comment-on-uri] :as comment-data}]
   (if-let [entity-to-comment-on (storage/pg-retrieve-entity-by-uri comment-on-uri :with-global-id)]

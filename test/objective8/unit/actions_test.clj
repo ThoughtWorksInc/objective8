@@ -17,6 +17,8 @@
                 :vote-type :up})
 
 (facts "about casting up-down votes"
+       (against-background
+        (actions/allowed-to-vote anything anything) => true)
        (fact "stores a vote if user has no active vote on entity"
              (against-background
               (up-down-votes/get-vote GLOBAL_ID USER_ID) => nil
@@ -26,12 +28,50 @@
              (provided
               (up-down-votes/store-vote! an-answer vote-data) => :the-stored-vote))
 
-       (fact "fails if the user is trying to cast another vote on the same entity"
+       (fact "fails if voting is not allowed on this entity"
              (against-background
                (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => an-answer)
              (actions/cast-up-down-vote! vote-data) => {:status ::actions/forbidden}
              (provided
-              (up-down-votes/get-vote GLOBAL_ID USER_ID) => :some-vote)))
+              (actions/allowed-to-vote an-answer vote-data) => false))
+
+       (fact "reports an error when the entity to vote on cannot be found"
+             (against-background
+              (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => nil)
+             (actions/cast-up-down-vote! vote-data) => {:status ::actions/entity-not-found}))
+
+(def objective-in-drafting {:entity :objective
+                            :drafting-started true})
+
+(def objective-not-in-drafting {:entity :objective
+                                :drafting-started false})
+
+(facts "about allowing or disallowing voting"
+       (against-background
+        (up-down-votes/get-vote anything anything) => nil
+        (objectives/retrieve-objective :objective-in-drafting) => objective-in-drafting
+        (objectives/retrieve-objective :objective-not-in-drafting) => objective-not-in-drafting
+        (storage/pg-retrieve-entity-by-uri :objective-in-drafting-uri) => objective-in-drafting)
+       
+       (fact "the same user cannot vote twice on the same entity"
+             (against-background
+              (up-down-votes/get-vote anything anything) => :a-vote)
+             (actions/allowed-to-vote :entity-to-vote-on :vote-data) => falsey)
+       
+       (fact "a comment attached to an objective can not be voted on when the objective is in drafting"
+             (actions/allowed-to-vote {:entity :comment
+                                       :comment-on-uri :objective-in-drafting-uri} :vote-data) => falsey)
+
+       (fact "a comment attached to a draft can not be voted on when the associated objective is not in drafting"
+             (against-background
+              (storage/pg-retrieve-entity-by-uri :draft-uri) => {:entity :draft
+                                                                 :objective-id :objective-not-in-drafting})
+             (actions/allowed-to-vote {:entity :comment
+                                       :comment-on-uri :draft-uri} :vote-data) => falsey)
+       
+       (fact "an answer can not be voted on when the associated objective is in drafting"
+             (actions/allowed-to-vote {:entity :answer
+                                       :objective-id :objective-in-drafting} :vote-data) => falsey))
 
 (facts "about retrieving drafts"
        (fact "can only retrieve drafts for an objective in drafting"
