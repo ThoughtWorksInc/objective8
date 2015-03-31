@@ -211,8 +211,8 @@
                                        [:.clj-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
                                        [:.clj-comment-text] (html/content (:comment comment))
                                        [:.clj-up-down-vote-form] (if user
-                                                                   (voting-actions-when-signed-in context comment)
-                                                                   (voting-actions-when-not-signed-in context comment))
+                                                                     (voting-actions-when-signed-in context comment)
+                                                                     (voting-actions-when-not-signed-in context comment))
                                        [:.clj-comment-reply] nil))
 
 (defn comment-list [{translations :translations :as context}]

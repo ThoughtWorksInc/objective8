@@ -5,6 +5,23 @@
 
 (def question-template (html/html-resource "templates/jade/question.html"))
 
+(defn voting-actions-when-signed-in [{:keys [data ring-request] :as context} answer]
+  (html/transformation
+   [:.clj-approval-form] (html/prepend (html/html-snippet (anti-forgery-field)))
+   [:.clj-vote-on-uri] (html/set-attr "value" (:uri answer))
+   [:.clj-refer] (html/set-attr "value" (:uri ring-request))
+   [:.clj-up-score] (html/content (str (get-in answer [:votes :up])))
+   [:.clj-down-score] (html/content (str (get-in answer [:votes :down])))))
+
+(defn voting-actions-when-signed-out [{:keys [data ring-request] :as context} answer]
+  (html/transformation
+   [:.clj-approval-form] (html/set-attr "method" "get")
+   [:.clj-approval-form] (html/set-attr "action" "/sign-in")
+   [:.clj-vote-on-uri] nil
+   [:.clj-refer] (html/set-attr "value" (:uri ring-request))
+   [:.clj-up-score] (html/content (str (get-in answer [:votes :up])))
+   [:.clj-down-score] (html/content (str (get-in answer [:votes :down])))))
+
 (defn question-page [{:keys [translations data user ring-request doc] :as context}]
   (let [question (:question data)
         answers (:answers data)
@@ -22,12 +39,10 @@
                       [[html/text-node (html/left :a.clj-objective-link)]] (constantly (str " > " (:question question)))
                       [:.clj-question] (html/content (:question question))
                       [:.clj-answer] (html/clone-for [answer answers]
-                                                     [:.clj-approval-form] (html/prepend (html/html-snippet (anti-forgery-field)))
                                                      [:.clj-answer-text] (html/content (:answer answer))
-                                                     [:.clj-vote-on-uri] (html/set-attr "value" (:uri answer))
-                                                     [:.clj-refer] (html/set-attr "value" (str "/objectives/" (:_id objective) "/questions/" (:_id question)))
-                                                     [:.clj-up-score] (html/content (str (get-in answer [:votes :up])))
-                                                     [:.clj-down-score] (html/content (str (get-in answer [:votes :down]))))
+                                                     [:.clj-approval-form] (if user
+                                                                             (voting-actions-when-signed-in context answer)
+                                                                             (voting-actions-when-signed-out context answer)))
 
                       [:.clj-jump-to-answer] (if user identity nil)
 
