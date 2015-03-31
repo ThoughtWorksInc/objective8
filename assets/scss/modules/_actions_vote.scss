@@ -8,8 +8,7 @@ $vote_button_spacing: 0.75em;
 .actions-vote-down {
   -webkit-appearance: none;
   display: inline-block;
-  padding-left: 0;
-  padding-right: 0;
+  padding: 2px 0 3px 0;
   overflow: hidden;
   cursor: pointer;
   text-align: center;
@@ -23,6 +22,9 @@ $vote_button_spacing: 0.75em;
   }
   &:hover {
     color: rgba($default_text_color,0.5);
+  }
+  &:focus {
+    outline: $yellow solid 2px;
   }
 }
 .actions-vote-down:last-child {
@@ -44,6 +46,8 @@ $vote_button_spacing: 0.75em;
 
 .actions-vote-spacer {
   display: inline-block;
-  padding-left: 0.5em;
-  padding-right: 0.5em;
+  margin-right: 0.5em;
+  &:before {
+    content: '|';
+  }
 }

@@ -21,6 +21,9 @@ textarea {
   margin-bottom: 1em;
   padding: 0.5em;
   border: 1px solid #dcdcdc;
+  &:focus {
+    outline: $yellow solid 2px;
+  }
 }
 
 .user-input-error-message {

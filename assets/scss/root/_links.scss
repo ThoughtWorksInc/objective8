@@ -14,7 +14,6 @@ a {
     text-decoration: underline;
   }
   &:focus {
-    outline: 3px solid $yellow;
-    background-color: $yellow;
+    outline: $yellow solid 2px;
   }
 }

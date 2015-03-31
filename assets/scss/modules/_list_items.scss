@@ -37,6 +37,8 @@
   font-size: 87.5%;
 }
 %list-item-reply-button {
+  display: inline-block;
+  padding: 2px 0 3px 0;
   font-weight: 700;
   &:visited, & {
     color: $grey-15;
