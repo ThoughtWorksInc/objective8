@@ -18,8 +18,8 @@
       (map (fn [p] (html/html [:p p])) (clojure.string/split text
                                                              newline-followed-by-optional-whitespace)))))
 
-(defn- translate-node  [node  {:keys  [translations] :as context}]
-  (let [[translation-type-string translation-key-string] (clojure.string/split (get-in node [:attrs :data-l8n]) #":") 
+(defn- apply-translation [translation-string node translations]
+  (let [[translation-type-string translation-key-string] (clojure.string/split translation-string #":") 
         translation-type (keyword translation-type-string)
         translation-key (keyword translation-key-string)
         translation (translations translation-key)]
@@ -35,6 +35,14 @@
 
       :else node)))
 
+(defn- apply-translations [[translation-string & more] node translations]
+  (if more
+    (apply-translation translation-string (apply-translations more node translations) translations)
+    (apply-translation translation-string node translations)))
+
+(defn- translate-node  [node  {:keys  [translations] :as context}]
+  (let [translation-strings (clojure.string/split (get-in node [:attrs :data-l8n]) #"\s+")]
+    (apply-translations translation-strings node translations)))
 
 (defn translate [context nodes]
   (html/at nodes
