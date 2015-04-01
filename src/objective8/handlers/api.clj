@@ -26,13 +26,19 @@
 (defn resource-locked-response [message]
   (error-response 423 message))
 
+(defn forbidden-response [message]
+  (error-response 403 message))
+
 (defn internal-server-error [message]
   (error-response 500 message))
 
 (defn not-found-response [message]
   (error-response 404 message))
 
-(defn successful-post-response [resource-location stored-object]
+(defn ok-response []
+  {:status 200})
+
+(defn resource-created-response [resource-location stored-object]
   {:status 201
    :headers {"Content-Type" "application/json"
              "Location" resource-location}
@@ -54,7 +60,7 @@
                                    :email-address email-address
                                    :username username})
           resource-location (str utils/host-url "/api/v1/users/" (:_id user))]
-      (successful-post-response resource-location user))
+      (resource-created-response resource-location user))
     (catch Exception e
       (log/info "Error when posting a user profile: " e)
       (invalid-response "Username must be unique"))))
@@ -74,7 +80,7 @@
     (let [objective (ar/request->objective-data request)
           stored-objective (objectives/store-objective! objective)
           resource-location (str utils/host-url "/api/v1/objectives/" (:_id stored-objective))]
-      (successful-post-response resource-location stored-objective))
+      (resource-created-response resource-location stored-objective))
     (catch Exception e
       (log/info "Error when posting objective: " e)
       (invalid-response "Invalid objective post request"))))
@@ -99,7 +105,7 @@
       (let [{status :status comment :result} (actions/create-comment! comment-data)]
         (cond
           (= status ::actions/success)
-          (successful-post-response (str utils/host-url "/api/v1/meta/comments/" (:_id comment))
+          (resource-created-response (str utils/host-url "/api/v1/meta/comments/" (:_id comment))
                                     comment)
 
           (= status ::actions/entity-not-found)
@@ -107,9 +113,7 @@
 
           :else
           (internal-server-error "Error when posting comment")))
-      (do
-        (log/info "Invalid comment post request. Params: " params)
-        (invalid-response "Invalid comment post request")))
+      (invalid-response "Invalid comment post request"))
     (catch Exception e
       (log/info "Error when posting comment: " e)
       (internal-server-error "Error when posting comment"))))
@@ -141,7 +145,7 @@
                                    (select-keys [:question :created-by-id])
                                    (assoc :objective-id id)
                                    questions/create-question)]
-        (successful-post-response (str utils/host-url
+        (resource-created-response (str utils/host-url
                                        "/api/v1/objectives/" (:objective-id stored-question)
                                        "/questions/" (:_id stored-question))
                                   stored-question)
@@ -194,7 +198,7 @@
                        (assoc :objective-id objective-id)
                        (assoc :question-id q-id))]
         (if-let [stored-answer (answers/create-answer! answer)]
-          (successful-post-response (str utils/host-url
+          (resource-created-response (str utils/host-url
                                          "/api/v1/objectives/" (:objective-id stored-answer)
                                          "/questions/" (:question-id stored-answer)
                                          "/answers/" (:_id stored-answer))
@@ -229,7 +233,7 @@
                          (select-keys [:writer-name :writer-email :reason :invited-by-id])
                          (assoc :objective-id objective-id))]
       (if-let [stored-invitation (invitations/create-invitation! invitation)]
-        (successful-post-response (str utils/host-url
+        (resource-created-response (str utils/host-url
                                        "/api/v1/objectives/" (:objective-id stored-invitation)
                                        "/writer-invitations/" (:_id stored-invitation)) stored-invitation)
         (resource-locked-response "New content cannot be posted against this objective as it is now in drafting.")))
@@ -260,7 +264,7 @@
   (try
     (let [candidate-data (ar/request->candidate-data request)]
       (if-let [{candidate-id :_id :as candidate} (writers/create-candidate candidate-data)]
-        (successful-post-response (str utils/host-url
+        (resource-created-response (str utils/host-url
                                        "/api/v1/objectives/" objective-id
                                        "/candidate-writers/" candidate-id) candidate)
         {:status 403}))
@@ -283,13 +287,13 @@
 ;;DRAFTS
 (defn post-start-drafting [{{objective-id :id} :route-params}]
   (let [updated-objective (actions/start-drafting! (Integer/parseInt objective-id))]
-    (successful-post-response (str utils/host-url
+    (resource-created-response (str utils/host-url
                                    "/api/v1/objectives/" objective-id) updated-objective)))
 
 (defn post-draft [{{objective-id :id} :route-params :as request}]
   (let [draft-data (ar/request->draft-data request)] 
     (if-let [draft (actions/submit-draft! draft-data)]
-      (successful-post-response (utils/path-for :api/get-draft :id objective-id :d-id (str (:_id draft)))
+      (resource-created-response (utils/path-for :api/get-draft :id objective-id :d-id (str (:_id draft)))
                               draft)
       (response/not-found (str "No writer found with submitter-id " (:submitter-id draft-data) " for objective " objective-id)))))
 
@@ -331,15 +335,23 @@
       (response/not-found ""))))
 
 (defn post-up-down-vote [request]
-  (if-let [vote-data (ar/request->up-down-vote-data request)]
-    (let [{status :status vote :result} (actions/cast-up-down-vote! vote-data)]
-      (cond
-        (= status ::actions/success)
-        {:status 200}
+  (try
+    (if-let [vote-data (ar/request->up-down-vote-data request)]
+      (let [{status :status vote :result} (actions/cast-up-down-vote! vote-data)]
+        (cond
+          (= status ::actions/success)
+          (ok-response)
 
-        (= status ::actions/forbidden)
-        {:status 403}
+          (= status ::actions/forbidden)
+          (forbidden-response (str "Cannot post a vote against entity at " (:uri vote-data)))
 
-        :else
-        {:status 500}))
-    {:status 403}))
+          (= status ::actions/entity-not-found)
+          (not-found-response (str "Entity with uri " (:uri vote-data) " does not exist"))
+          
+          :else
+          (internal-server-error "Error when posting vote")))
+      
+      (invalid-response "Invalid vote post request"))
+    (catch Exception e
+      (log/info "Error when posting vote: " e)
+      (internal-server-error "Error when posting vote"))))

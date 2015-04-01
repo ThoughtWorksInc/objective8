@@ -48,6 +48,4 @@
                                                         :body (json/generate-string {:created-by-id voting-user-id
                                                                                      :vote-on-uri uri
                                                                                      :vote-type :down})))]
-                (:status response) => 403
-                ;; Should also provide a reason for failure in the response
-                ))))
+                (:status response) => 403))))
