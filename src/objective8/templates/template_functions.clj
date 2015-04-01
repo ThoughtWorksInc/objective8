@@ -18,3 +18,12 @@
       (map (fn [p] (html/html [:p p])) (clojure.string/split text
                                                              newline-followed-by-optional-whitespace)))))
 
+(defn- translate-node  [node  {:keys  [translations] :as context}]
+  (let [translation-key (keyword (get-in node [:attrs :data-l8n]))
+        translation (translations translation-key)]
+    (assoc node :content (list translation))))
+
+
+(defn translate [context nodes]
+  (html/at nodes
+           [(html/attr? :data-l8n)] #(translate-node % context)))

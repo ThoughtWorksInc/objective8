@@ -20,3 +20,14 @@
        (fact "Deals with nil text"
              (text->p-nodes nil) => nil))
 
+(facts "About translating templates"
+       (def translations :mock-translations-function)
+
+       (fact "content is translated"
+             (let [input-html-resource (html/html-resource (java.io.StringReader. "<p data-l8n=\"some-key/some-value\">!UNTRANSLATED_CONTENT</p>"))]
+               (-> (translate {:translations translations} input-html-resource)
+                   (html/select [:p])
+                   first
+                   (html/text)) => "TRANSLATED_CONTENT"
+             (provided
+               (translations :some-key/some-value) => "TRANSLATED_CONTENT"))))
