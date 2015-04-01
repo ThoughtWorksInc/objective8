@@ -144,6 +144,9 @@
               (assoc m' :username (:username m))
               m'))))
 
+(defn with-status [unmap-fn]
+  (fn [m] (-> (unmap-fn m)
+              (assoc :status (:status m)))))
 (defn with-sql-time [unmap-fn]
   (fn [m] (-> (unmap-fn m)
               (assoc :_created_at_sql_time (:_created_at m)))))
@@ -175,7 +178,7 @@
   (korma/table :objective8.objectives)
   (korma/belongs-to user {:fk :created_by_id})
   (korma/prepare map->objective)
-  (korma/transform (-> (unmap :objective) with-username with-global-id)))
+  (korma/transform (-> (unmap :objective) with-username with-global-id with-status)))
 
 (korma/defentity user
   (korma/pk :_id)

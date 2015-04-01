@@ -17,6 +17,7 @@
             [objective8.storage.storage :as storage]
             [objective8.storage.database :as db]
             [objective8.workflows.twitter :refer [twitter-workflow]]
+            [objective8.scheduler :as scheduler]
             [objective8.workflows.sign-up :refer [sign-up-workflow]]
             [objective8.handlers.api :as api-handlers]
             [objective8.handlers.front-end :as front-end-handlers]
@@ -101,6 +102,7 @@
       (wrap-frame-options :sameorigin)))
 
 (defonce server (atom nil))
+(defonce scheduler (atom nil))
 
 (def app-config
   {:authentication {:allow-anon? true
@@ -123,12 +125,23 @@
       (bt/update-token! bearer-token-details)
       (bt/store-token! bearer-token-details))))
 
+(defn start-scheduler []
+  (reset! scheduler 
+          (scheduler/start-chime (Integer/parseInt (config/get-var "SCHEDULER_INTERVAL_MINUTES" "10"))))
+  (prn "Starting scheduler"))
+
+(defn stop-scheduler []
+  (when @scheduler
+    (do (@scheduler)
+        (prn "Stopping scheduler"))))
+
 (defn start-server 
   ([]
    (start-server app-config)) 
   ([app-config] 
    (let [port (Integer/parseInt (config/get-var "APP_PORT" "8080"))]
      (db/connect! (:db-spec app-config)) 
+     (start-scheduler)
      (initialise-api)
      (log/info (str "Starting objective8 on port " port))
      (reset! server (run-server (app app-config) {:port port})))))
@@ -139,6 +152,7 @@
 (defn stop-server []
   (when-not (nil? @server)
     (log/info "Stopping objective8")
+    (stop-scheduler)
     (@server)
     (reset! server nil)))
 

@@ -57,7 +57,7 @@
          
          (fact "objectives due to start drafting can be retrieved"
                (let [{username :username :as user} (sh/store-a-user)
-                     {o-id :_id :as past-objective} (sh/store-an-objective-due-for-drafting user)
+                     {o-id :_id :as past-objective} (sh/store-an-objective-due-for-drafting {:user user})
                      uri (str "/objectives/" o-id)]
                  (sh/store-an-objective-in-draft) 
                  (sh/store-an-open-objective)

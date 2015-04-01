@@ -20,12 +20,15 @@
                         :created-by-id user-id
                         :end-date (str (tc/from-now (tc/days 1)))})))
 
-(defn store-an-objective-due-for-drafting [user]
-  (let [{user-id :_id} user ]
+(defn store-an-objective-due-for-drafting
+([] 
+ (store-an-objective-due-for-drafting {})) 
+ ([required-entities] 
+  (let [{user-id :_id} (get required-entities :user (store-a-user))]
     (storage/pg-store! {:entity :objective
                         :created-by-id user-id
                         :status "open"
-                        :end-date (str (tc/ago (tc/days 1)))})))
+                        :end-date (str (tc/ago (tc/days 1)))}))))
 
 (defn store-an-objective-in-draft []
   (let [{user-id :_id} (store-a-user)]

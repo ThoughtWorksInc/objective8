@@ -14,8 +14,8 @@
     (storage/pg-update-objective-status! objective "drafting")))
 
 (defn update-objectives-due-for-drafting! []
-  (->> (objectives/retrieve-objectives-due-for-drafting)
-       (map #(start-drafting! (:_id %)))))
+  (doall (->> (objectives/retrieve-objectives-due-for-drafting)
+              (map #(start-drafting! (:_id %))))))
 
 (defn submit-draft! [{:keys [submitter-id objective-id] :as draft-data}]
   (when (objectives/in-drafting? (objectives/retrieve-objective objective-id)) 

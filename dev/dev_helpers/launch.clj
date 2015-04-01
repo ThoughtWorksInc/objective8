@@ -26,6 +26,7 @@
    (let [port (Integer/parseInt (config/get-var "APP_PORT" "8080"))
          db-connection (db/connect!)]
      (core/initialise-api)
+     (core/start-scheduler)
      (alter-var-root #'the-system
                      (constantly {:config conf
                                   :port port
@@ -42,6 +43,7 @@
 
 (defn stop []
   (alter-var-root #'the-system stop-server)
+  (core/stop-scheduler)
   (prn "Objective8 server stopped."))
 
 (defn make-launcher-map [configs]

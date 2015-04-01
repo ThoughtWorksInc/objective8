@@ -39,7 +39,7 @@
 (defn retrieve-objectives-due-for-drafting []
   (->> (storage/pg-retrieve {:entity :objective 
                              :end-date ['< (mappings/iso-date-time->sql-time (utils/current-time))]
-                             :status (mappings/string->postgres-type "objective_status" "open") })
+                             :status (mappings/string->postgres-type "objective_status" "open")}) 
        :result
        (map #(dissoc % :global-id))
-       (map #(utils/update-in-self % [:uri] uri-for-objective))))
+       (map #(utils/update-in-self % [:uri] uri-for-objective))) )
