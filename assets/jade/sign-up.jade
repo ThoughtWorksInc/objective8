@@ -8,16 +8,16 @@ block vars
 block content
 
   .sign-up-container
-    h1.sign-in-title.l8n-sign-up-title !Almost there
-    p.lead.l8n-sign-up-description !Adding your email address will let us notify you when you receive responses to comments, objectives and votes.
+    h1.sign-in-title(data-l8n="content:sign-up/page-title") !Almost there
+    p.lead(data-l8n="content:sign-up/welcome") !Adding your email address will let us notify you when you receive responses to comments, objectives and votes.
 
     form.sign-up-form.clj-sign-up-form(action="/sign-up" method="POST")
-      label.l8n-label-username(for="username") !Username
+      label(for="username" data-l8n="content:sign-up/username-label") !Username
       input.clj-input-username(id="username", name="username", type="text", maxlength="16", required="required")
       p.user-input-error-message.clj-username-error.l8n-username-error !username already exists
-      label.l8n-label-email-address(for="email-address") !Email
+      label(for="email-address" data-l8n="content:sign-up/email-label") !Email
       input.clj-input-email-address(id="email-address", name="email-address", type="email", required="required")
-      button.button.l8n-sign-up(type="submit") !Create account
+      button.button(type="submit" data-l8n="content:sign-up/button") !Create account
 
 
 
