@@ -9,11 +9,11 @@ block content
 
   +modal("!Your writer's invitation", "l8n-invitation-guidance-text-line-1", "func--invitation-guidance")
     p.invite-by-email
-      span.l8n-invitation-guidance-text-line-2 !To complete your invitation
+      span(data-l8n="content:invitation-modal/guidance-text-line-2") !To complete your invitation
       =" "
-      a.button-link.clj-mail-to(href="mailto:###") !Send email
+      a.button-link.clj-mail-to(href="mailto:###", data-l8n="content:invitation-modal/mail-to-text") !Send email
     .alternative-invite
-      label.send-invite-label.l8n-invitation-guidance-text-line-3(for="copy-invite") !Alternatively send the writer this link:
+      label.send-invite-label(for="copy-invite", data-l8n="content:invitation-modal/guidance-text-line-3") !Alternatively send the writer this link:
       input.invite-input-url.clj-invitation-url.func--invitation-url(id="copy-invite", type="text", value="!http://invitation/uuid/really/long/uuid")
 
   .guidance-text-wrapper

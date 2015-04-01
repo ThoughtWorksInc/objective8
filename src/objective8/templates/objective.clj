@@ -18,14 +18,10 @@
 (defn writer-invitation-modal [flash objective translations]
   (html/transformation
     [:.l8n-invitation-guidance-text-line-1] (html/content (translations :invitation-modal/guidance-text-line-1))
-    [:.l8n-invitation-guidance-text-line-2] (html/content (translations :invitation-modal/guidance-text-line-2))
-    [:.l8n-invitation-guidance-text-line-3] (html/content (translations :invitation-modal/guidance-text-line-3))
     [:.clj-invitation-url] (html/set-attr "value" (:invitation-url flash))
-    [:.clj-mail-to] (html/do->
-                      (html/set-attr "href" (mail-to-string flash
-                                                            objective
-                                                            translations))
-                      (html/content (translations :invitation-modal/mail-to-text)))))
+    [:.clj-mail-to] (html/set-attr :href (mail-to-string flash
+                                                         objective
+                                                         translations))))
 
 (def invitation-response-snippet (html/select (html/html-resource "templates/jade/objective-invitation-response.html") [:.clj-invitation-response]))
 
