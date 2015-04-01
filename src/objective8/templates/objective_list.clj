@@ -1,9 +1,12 @@
 (ns objective8.templates.objective-list
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
-            [objective8.templates.page-furniture :as f]))   
+            [objective8.templates.page-furniture :as pf]
+            [objective8.templates.template-functions :as tf]))   
 
-(def objective-list-template (html/html-resource "templates/jade/objective-list.html" {:parser jsoup/parser}))
+(def objective-list-resource (html/html-resource "templates/jade/objective-list.html" {:parser jsoup/parser}))
+
+(def objective-list-item-resource (html/select pf/library-html-resource [:.clj-objective-list-item]))
 
 (defn- shorten-content [content]
   (let [content (or content "")
@@ -14,36 +17,40 @@
 (defn brief-description [objective]
   (shorten-content (:description objective)))
 
-(defn objective-list-page [{:keys [translations data doc] :as context}]
+(defn objective-list-items [{:keys [translations data] :as context}]
   (let [objectives (:objectives data)]
-    (apply str
-           (html/emit*
-             (f/add-google-analytics
-               (html/at objective-list-template
-                        [:title] (html/content (:title doc))
-                        [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
-                        [:.clj-status-bar] (html/substitute (f/status-flash-bar context))
+    (html/at objective-list-item-resource [:.clj-objective-list-item] 
+             (html/clone-for [objective objectives]
+                             [:.clj-objective-list-item-link] (html/set-attr :href (str "/objectives/" (:_id objective)))
+                             [:.clj-objective-list-item-title] (html/content (:title objective))
 
-                        [:.clj-guidance-buttons] nil
-                        [:.l8n-guidance-heading] (html/content (translations :objectives-guidance/heading))
-                        [:.l8n-guidance-text-line-1] (html/content (translations :objectives-guidance/text-line-1))
-                        [:.l8n-guidance-text-line-2] (html/content (translations :objectives-guidance/text-line-2))
+                             [:.l8n-drafting-begins] 
+                             (html/content (if (:drafting-started objective)
+                                             (translations :objective-list/drafting-started)
+                                             (translations :objective-list/drafting-begins)))
 
-                        [:.l8n-objective-list-title] (html/content (translations :objective-list/page-title))
-                        [:.l8n-create-objective-link] (html/content (translations :objective-list/create-objective-link))
-                        [:.l8n-objective-list-subtitle] (html/content (translations :objective-list/subtitle))
-                        [:.clj-objective-list-item] (html/clone-for 
-                                                      [objective objectives]
-                                                      [:.clj-objective-list-item-link] (html/set-attr "href" (str "/objectives/" (:_id objective)))
-                                                      [:.clj-objective-list-item-title] (html/content (:title objective))
-                                                      [:.l8n-drafting-begins] (html/content (if (:drafting-started objective)
-                                                                                              (translations :objective-list/drafting-started)
-                                                                                              (translations :objective-list/drafting-begins)))
-                                                      [:.clj-objective-drafting-begins-date] (when-not (:drafting-started objective) 
-                                                                                               (html/do->
-                                                                                                 (html/set-attr "drafting-begins-date"
-                                                                                                                (:end-date objective)) 
-                                                                                                 (html/content (str (:days-until-drafting-begins objective)
-                                                                                                                    " " 
-                                                                                                                    (translations :objective-list/days))))) 
-                                                      [:.clj-objective-brief-description] (html/content (brief-description objective)))))))))
+                             [:.clj-objective-drafting-begins-date] 
+                             (when-not (:drafting-started objective) 
+                               (html/do->
+                                 (html/set-attr :drafting-begins-date (:end-date objective)) 
+                                 (html/content (str (:days-until-drafting-begins objective)
+                                                    " " 
+                                                    (translations :objective-list/days))))) 
+
+                             [:.clj-objective-brief-description] 
+                             (html/content (brief-description objective))))))
+
+(defn objective-list-page [{:keys [translations data doc] :as context}]
+  (apply str
+         (html/emit*
+           (tf/translate context
+                         (pf/add-google-analytics
+                           (html/at objective-list-resource
+                                    [:title] (html/content (:title doc))
+                                    [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+                                    [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
+
+                                    [:.clj-guidance-buttons] nil
+                                    [:.l8n-guidance-heading] (html/content (translations :objectives-guidance/heading))
+
+                                    [:.clj-objective-list] (html/content (objective-list-items context))))))))

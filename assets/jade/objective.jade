@@ -19,9 +19,9 @@ block content
   .guidance-text-wrapper
     +guidanceText('!What is an objective?')
       ul
-        li.l8n-guidance-text-line-1 !A policy starts with an idea.
-        li.l8n-guidance-text-line-2 !These are catalysts for change.
-        li.l8n-guidance-text-line-3 !Everyone can comment and make suggestions to contribute towards the draft stage.
+        li(data-l8n="content:objective-guidance/text-line-1") !A policy starts with an idea.
+        li(data-l8n="content:objective-guidance/text-line-2") !These are catalysts for change.
+        li(data-l8n="content:objective-guidance/text-line-3") !Everyone can comment and make suggestions to contribute towards the draft stage.
 
   .middle-container
 
@@ -37,18 +37,18 @@ block content
       .objective-navigation-list-wrapper
         ul.objective-navigation-list
           li
-            a.l8n-objective-navigation-item-objective(href="#outline") !Objective
+            a(href="#outline", data-l8n="content:objective-nav/objective") !Objective
           li
-            a.l8n-objective-navigation-item-writers(href="#writers") !Writers
+            a(href="#writers", data-l8n="content:objective-nav/writers") !Writers
           li
-            a.l8n-objective-navigation-item-questions(href="#questions") !Questions
+            a(href="#questions", data-l8n="content:objective-nav/questions") !Questions
           li
-            a.l8n-objective-navigation-item-comments(href="#comments") !Comments
+            a(href="#comments", data-l8n="content:objective-nav/comments") !Comments
 
     .objective-outline#outline
 
       p.days-left.clj-days-left
-        span.days-left-head.l8n-days-left-head !Draft begins in
+        span.days-left-head.l8n-days-left-head !Drafting begins in
         =" "
         span.days-left-day.clj-days-left-day !29
         =" "
@@ -70,7 +70,7 @@ block content
         p !Street art bitters pour-over, Portland pork belly master cleanse lumbersexual. Aesthetic 90's Shoreditch PBR. Austin sustainable Carles American Apparel, banh mi High Life selvage XOXO plaid stumptown fashion axe skateboard butcher McSweeney's. Master cleanse polaroid Shoreditch DIY, Godard salvia gastropub heirloom Kickstarter fap before they sold out chia. Disrupt Neutra tofu Godard kitsch. Chambray Helvetica plaid chia salvia. Cronut asymmetrical messenger bag, cornhole listicle selvage yr beard Godard stumptown meh sustainable.
 
     .objective-writers#writers
-      h2.l8n-writers-section-title !Candidate writers
+      h2(data-l8n="content:objective-view/writers") !Candidate writers
       ul.writer-item-list.clj-writer-item-list
         +writerItem('!Jenny Bloggs', '#', 'http://placekitten.com/g/80/80')
           | !A cycling enthusiast, responsible for many safety policies in the UK.
@@ -78,19 +78,19 @@ block content
           | !Quirky but has achieved wonders in the London for the boris bikes.
         +writerItem('!Bob Smith', '#', '')
           | !Interested in anything to do with cycling and Spain.
-      a.button.invite-writer.clj-invite-writer-link.l8n-invite-writer-link.func--invite-writer(href="/objective-invite-writer") !Invite a writer
+      a.button.invite-writer.clj-invite-writer-link.func--invite-writer(href="/objective-invite-writer", data-l8n="content:objective-view/invite-a-writer") !Invite a writer
 
     .objective-questions#questions
-      h2.l8n-questions-section-title !Recently asked questions
+      h2(data-l8n="content:objective-view/questions-title") !Recently asked questions
       ol.question-list.clj-question-list
         +questionItem('!Chris Cheshire', '3 September 2015 07:41')
           | !What road surface should we use?
         +questionItem('!Chris Cheshire', '4 September 2015 07:41')
           | !Do we have a colour in mind for the road?
-      a.button.clj-ask-question-link.l8n-ask-question-link.func--add-question(href="/objective-write-a-question") !Ask a question
+      a.button.clj-ask-question-link.func--add-question(href="/objective-write-a-question", data-l8n="content:objective-view/ask-a-question") !Ask a question
 
     .objective-comments#comments
-      h2.l8n-comments-section-title !Comments
+      h2(data-l8n="content:objective-view/comments") !Comments
       .clj-comment-create
         +addCommentForm()
       ol.comment-list.clj-comment-list
