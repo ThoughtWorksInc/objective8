@@ -1,0 +1,6 @@
+---
+ - name: add key to dokku
+   authorized_key: user=dokku key="{{ item }}"
+   with_file:
+     - insecure_dev_key.pub
+
