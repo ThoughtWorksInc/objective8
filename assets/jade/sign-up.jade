@@ -12,12 +12,12 @@ block content
     p.lead(data-l8n="content:sign-up/welcome") !Adding your email address will let us notify you when you receive responses to comments, objectives and votes.
 
     form.sign-up-form.clj-sign-up-form(action="/sign-up" method="POST")
-      label(for="username" data-l8n="content:sign-up/username-label") !Username
+      label(for="username", data-l8n="content:sign-up/username-label") !Username
       input.clj-input-username(id="username", name="username", type="text", maxlength="16", required="required")
       p.user-input-error-message.clj-username-error.l8n-username-error !username already exists
-      label(for="email-address" data-l8n="content:sign-up/email-label") !Email
+      label(for="email-address", data-l8n="content:sign-up/email-label") !Email
       input.clj-input-email-address(id="email-address", name="email-address", type="email", required="required")
-      button.button(type="submit" data-l8n="content:sign-up/button") !Create account
+      button.button(type="submit", data-l8n="content:sign-up/button") !Create account
 
 
 
