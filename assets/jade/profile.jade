@@ -1,0 +1,27 @@
+extends layouts/base
+include mixins/_view_helpers
+
+block vars
+  - bodyClass = ""
+  - pageTitle = "!Writer profile"
+
+block content
+
+  .middle-container
+    .writer-profile
+      .writer-profile-photo
+        //- var photo = "http://placekitten.com/g/201/200"
+        if photo == undefined
+          i.writer-profile-no-image-icon.fa.fa-user.fa-3x
+        else
+          img(src="#{photo}")
+      .writer-profile-head
+        h1 !Writer profile
+        h2.writer-profile-title !Chris Cheshire
+        small.writer-profile-joined !Joined 24 March 2015
+      .writer-profile-biog
+        p !Before they sold out pop-up listicle typewriter, Brooklyn Austin semiotics locavore chillwave flexitarian sriracha. Hella Truffaut disrupt trust fund four loko, VHS tofu flexitarian blog. Drinking vinegar Williamsburg kogi, gluten-free viral fingerstache Kickstarter disrupt iPhone retro forage hella migas Pinterest cliche.
+      .writer-profile-links
+        a.writer-profile-link(href="http://www.website.com", rel="nofollow")
+          i.writer-profile-link-icon.fa.fa-link
+          span.writer-profile-link-text www.website.com

@@ -1,0 +1,74 @@
+$writer_profile_avatar_size_alpha: 100px;
+$writer_profile_avatar_size_beta: 200px;
+
+.writer-profile {
+  position: relative;
+}
+.writer-profile-head {
+  margin-bottom: 1em;
+  padding-right: $writer_profile_avatar_size_alpha;
+  @include mq(640) {
+    padding-right: $writer_profile_avatar_size_beta;
+  }
+}
+.writer-profile-title {
+  margin-bottom: 0;
+  color: $pink;
+}
+.writer-profile-joined {
+  display: block;
+  font-size: 0.75em;
+  color: $grey-1;
+  margin-bottom: 0;
+}
+
+.writer-profile-photo {
+  @include circle($writer_profile_avatar_size_alpha);
+  margin: 1em 0 1em 1em;
+  background: $grey-4;
+  overflow: hidden;
+  float: right;
+  @include mq(640) {
+    @include circle($writer_profile_avatar_size_beta);
+  }
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+}
+.writer-profile-no-image-icon {
+  display: block;
+  height: $writer_profile_avatar_size_alpha;
+  line-height: ($writer_profile_avatar_size_alpha - 3px);
+  text-align: center;
+  color: rgba($grey-15,0.2);
+  @include mq(640) {
+    height: $writer_profile_avatar_size_beta;
+    line-height: ($writer_profile_avatar_size_beta - 3px);
+    font-size: 6em;
+  }
+}
+
+.writer-profile-biog {
+
+}
+.writer-profile-links {
+
+}
+.writer-profile-link {
+  display: inline-block;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+  &:hover, &:visited {
+    color: $link-hover-colour;
+  }
+}
+.writer-profile-link-icon {
+  margin-right: 0.5em;
+}
+.writer-profile-link-text {
+
+}
