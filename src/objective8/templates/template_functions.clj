@@ -19,9 +19,21 @@
                                                              newline-followed-by-optional-whitespace)))))
 
 (defn- translate-node  [node  {:keys  [translations] :as context}]
-  (let [translation-key (keyword (get-in node [:attrs :data-l8n]))
+  (let [[translation-type-string translation-key-string] (clojure.string/split (get-in node [:attrs :data-l8n]) #":") 
+        translation-type (keyword translation-type-string)
+        translation-key (keyword translation-key-string)
         translation (translations translation-key)]
-    (assoc node :content (list translation))))
+    (cond 
+      (= :content translation-type) 
+      (assoc node :content (list translation))  
+      
+      (= :html translation-type) 
+      (assoc node :content (html/html-snippet translation))
+
+      (= "attr" (namespace translation-type))
+      (assoc-in node [:attrs (keyword (name translation-type))] translation)
+
+      :else node)))
 
 
 (defn translate [context nodes]
