@@ -42,7 +42,7 @@
 
         (facts "GET /api/v1/objectives returns a list of objectives in reverse chronological order"
                (fact "objectives are returned as a list"
-                     (let [stored-objectives (doall (repeatedly 5 sh/store-an-objective))
+                     (let [stored-objectives (doall (repeatedly 5 sh/store-an-open-objective))
                            {response :response} (p/request app "/api/v1/objectives")]
                        (:body response) => (helpers/json-contains (map contains (->> stored-objectives
                                                                                      (map #(dissoc % :global-id))

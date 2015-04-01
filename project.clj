@@ -7,6 +7,7 @@
   :min-lein-version "2.0.0"
   :test-paths ["test"] 
   :dependencies [[org.clojure/clojure "1.6.0"]
+                 [org.clojure/core.cache "0.6.4"]
                  [http-kit "2.1.16"]
                  [org.clojure/tools.logging "0.3.1"]
                  [bidi "1.12.0"]
@@ -23,6 +24,7 @@
                  [clj-oauth "1.5.1"]
                  [cheshire "5.4.0"]
                  [clj-time "0.9.0"]
+                 [jarohen/chime "0.1.6" :exclusions  [org.clojure/core.cache]] 
                  [korma "0.3.0"]
                  [org.clojure/java.jdbc "0.3.6"]
                  [postgresql "9.3-1102.jdbc41"]

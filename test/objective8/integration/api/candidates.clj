@@ -47,7 +47,7 @@
 
        (fact "returns 403 status when no active invitation exists with given uuid"
              (let [{invitee-id :_id} (sh/store-a-user)
-                   {objective-id :_id} (sh/store-an-objective)
+                   {objective-id :_id} (sh/store-an-open-objective)
                    candidate-data {:invitation-uuid "nonexistent uuid"
                                    :invitee-id invitee-id
                                    :objective-id objective-id

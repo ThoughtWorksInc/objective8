@@ -27,7 +27,7 @@
 
         (fact "comments can be stored against an objective"
               (let [{user-id :_id :as user} (sh/store-a-user)
-                    {o-id :_id :as objective} (sh/store-an-objective)
+                    {o-id :_id :as objective} (sh/store-an-open-objective)
                     uri-for-objective (str "/objectives/" o-id)
                     comment-data {:comment-on-uri uri-for-objective
                                   :comment "A comment"

@@ -9,10 +9,13 @@
 
 (defn start-drafting! [objective-id]
   (let [objective (storage/pg-retrieve-entity-by-uri (str "/objectives/" objective-id) :with-global-id)]
-
     (doall (->> (invitations/retrieve-active-invitations objective-id)
                 (map invitations/expire-invitation!)))
-    (storage/pg-update-objective-status! objective true)))
+    (storage/pg-update-objective-status! objective "drafting")))
+
+(defn update-objectives-due-for-drafting! []
+  (->> (objectives/retrieve-objectives-due-for-drafting)
+       (map #(start-drafting! (:_id %)))))
 
 (defn submit-draft! [{:keys [submitter-id objective-id] :as draft-data}]
   (when (objectives/in-drafting? (objectives/retrieve-objective objective-id)) 

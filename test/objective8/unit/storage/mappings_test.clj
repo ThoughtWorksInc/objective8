@@ -26,17 +26,20 @@
 
 (def objective-data {:created-by-id 1
                      :global-id GLOBAL_ID
+                     :status "open"
                      :end-date "2015-01-01T00:01:01Z"})
 (facts "About map->objective"
        (fact "Column values are pulled out and converted, the map gets turned to json"
              (let [objective (map->objective objective-data)]
                objective => (contains {:created_by_id 1
                                        :global_id GLOBAL_ID
+                                       :status (has-postgres-type? "objective_status") 
                                        :end_date  time-type?
                                        :objective json-type?})
                (str (:end_date objective)) => (contains "2015-01-01 00:01")))
-       (fact "throws exception if :created-by-id, :end-date, or :global-id are missing"
+       (fact "throws exception if :created-by-id, :end-date, :status or :global-id are missing"
              (map->objective (dissoc objective-data :created-by-id)) => (throws Exception "Could not transform map to objective")
+             (map->objective (dissoc objective-data :status)) => (throws Exception "Could not transform map to objective")
              (map->objective (dissoc objective-data :end-date)) => (throws Exception "Could not transform map to objective")
              (map->objective (dissoc objective-data :global-id)) => (throws Exception "Could not transform map to objective")))
 

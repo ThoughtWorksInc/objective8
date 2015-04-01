@@ -1,5 +1,6 @@
 (ns objective8.integration.db.objectives
   (:require [midje.sweet :refer :all]
+            [clj-time.core :as tc]
             [objective8.objectives :as objectives]
             [objective8.integration.integration-helpers :as ih]
             [objective8.integration.storage-helpers :as sh]))
@@ -52,4 +53,15 @@
                                     :title "title"}
                     {objective-id :_id :as stored-objective} (objectives/store-objective! objective-data)]
                 (objectives/retrieve-objectives) => [(assoc stored-objective :username username)]
-                (first (objectives/retrieve-objectives)) =not=> (contains {:global-id anything})))))
+                (first (objectives/retrieve-objectives)) =not=> (contains {:global-id anything})))
+         
+         (fact "objectives due to start drafting can be retrieved"
+               (let [{username :username :as user} (sh/store-a-user)
+                     {o-id :_id :as past-objective} (sh/store-an-objective-due-for-drafting user)
+                     uri (str "/objectives/" o-id)]
+                 (sh/store-an-objective-in-draft) 
+                 (sh/store-an-open-objective)
+                 (objectives/retrieve-objectives-due-for-drafting) => [(-> past-objective 
+                                                                           (assoc :username username 
+                                                                                  :uri uri)
+                                                                           (dissoc :global-id))]))))

@@ -30,7 +30,7 @@
          (after :facts (ih/truncate-tables))]
 
         (fact "a draft can be retrieved by id"
-              (let [objective (sh/store-an-objective)
+              (let [objective (sh/store-an-open-objective)
                     
                     first-draft (sh/store-a-draft {:objective objective})
                     {second-draft-id :_id :as second-draft} (sh/store-a-draft {:objective objective})
@@ -64,7 +64,7 @@
                                                                                        :global-id)))))
 
         (fact "the latest draft can be retrieved"
-              (let [{objective-id :_id :as objective} (sh/store-an-objective)
+              (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
                     first-draft (sh/store-a-draft {:objective objective})
                     latest-draft (sh/store-a-draft {:objective objective})
                     latest-draft-uri (uri-for-draft latest-draft)]

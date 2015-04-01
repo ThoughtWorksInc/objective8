@@ -35,7 +35,7 @@
          (after :facts (helpers/truncate-tables))]
 
         (fact "the invitation is stored"
-              (let [{obj-id :_id created-by-id :created-by-id} (sh/store-an-objective)
+              (let [{obj-id :_id created-by-id :created-by-id} (sh/store-an-open-objective)
                     invitation (an-invitation obj-id created-by-id)
                     {response :response} (p/request app (str "/api/v1/objectives/" obj-id "/writer-invitations")
                                                     :request-method :post

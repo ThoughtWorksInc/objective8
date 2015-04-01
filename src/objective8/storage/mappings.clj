@@ -9,6 +9,9 @@
 (defn sql-time->iso-time-string [sql-time]
   (utils/date-time->iso-time-string (tc/from-sql-time sql-time)))
 
+(defn iso-date-time->sql-time [date-time]
+  (tc/to-sql-time date-time))
+
 (defn string->postgres-type
   "Convert a string to a Postgres object with the given type."
   [type value]
@@ -33,10 +36,11 @@
 
 (defn map->objective
   "Converts a clojure map into a json-typed objective for the database"
-  [{:keys [created-by-id end-date global-id] :as objective}]
-  (if (and created-by-id end-date global-id)
+  [{:keys [created-by-id end-date global-id status] :as objective}]
+  (if (and created-by-id end-date global-id status)
     {:created_by_id created-by-id
      :global_id global-id
+     :status (string->postgres-type "objective_status" status)
      :end_date (tc/to-timestamp end-date)
      :objective (map->json-type objective)}
       (throw (Exception. "Could not transform map to objective"))))

@@ -105,7 +105,9 @@ Options: :with-global-id -- includes the global-id in the entity."
 
 (defn pg-update-objective-status! [objective new-status]
   (update (mappings/get-mapping {:entity :objective})
-          (assoc objective :drafting-started true)
+          (assoc objective 
+                 :drafting-started (= new-status "drafting")
+                 :status new-status)
           {:_id (:_id objective)}))
 
 (defn with-aggregate-votes [unmap-fn]

@@ -50,7 +50,7 @@
           (after :facts (helpers/truncate-tables))]
 
          (fact "the posted question is stored, and the resource location is reported"
-               (let [{obj-id :_id user-id :created-by-id} (sh/store-an-objective)
+               (let [{obj-id :_id user-id :created-by-id} (sh/store-an-open-objective)
                      question (a-question obj-id user-id)
                      {response :response} (p/request app (str "/api/v1/objectives/" obj-id "/questions")
                                                      :request-method :post

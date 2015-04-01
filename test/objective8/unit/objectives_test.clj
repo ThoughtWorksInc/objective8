@@ -13,5 +13,5 @@
 (fact "Postgresql exceptions are not caught"
       (objectives/store-objective! {:objective "something"}) => (throws org.postgresql.util.PSQLException)
       (provided
-        (storage/pg-store! {:entity :objective :objective "something"}) =throws=> (org.postgresql.util.PSQLException.
+        (storage/pg-store! {:entity :objective :status "open" :objective "something"}) =throws=> (org.postgresql.util.PSQLException.
                                                                                     (org.postgresql.util.ServerErrorMessage. "" 0))))

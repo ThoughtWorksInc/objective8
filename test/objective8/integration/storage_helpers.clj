@@ -1,5 +1,6 @@
 (ns objective8.integration.storage-helpers
-  (:require [objective8.storage.storage :as storage] 
+  (:require [clj-time.core :as tc] 
+            [objective8.storage.storage :as storage] 
             [objective8.actions :as actions]))
 
 
@@ -12,26 +13,35 @@
                                           :twitter-id "twitter-TWITTER_ID"
                                           :username (generate-unique-username)}))
 
-(defn store-an-objective []
+(defn store-an-open-objective []
   (let [{user-id :_id} (store-a-user)]
     (storage/pg-store! {:entity :objective
+                        :status "open"
                         :created-by-id user-id
-                        :end-date "2015-01-01"})))
+                        :end-date (str (tc/from-now (tc/days 1)))})))
+
+(defn store-an-objective-due-for-drafting [user]
+  (let [{user-id :_id} user ]
+    (storage/pg-store! {:entity :objective
+                        :created-by-id user-id
+                        :status "open"
+                        :end-date (str (tc/ago (tc/days 1)))})))
 
 (defn store-an-objective-in-draft []
   (let [{user-id :_id} (store-a-user)]
     (storage/pg-store! {:entity :objective
                         :created-by-id user-id
-                        :end-date "2015-01-02"
-                        :drafting-started true})))
+                        :drafting-started true
+                        :end-date (str (tc/ago (tc/days 1))) 
+                        :status "drafting"})))
 
 (defn store-a-comment
   ([]
-   (store-a-comment {:user (store-a-user) :entity (store-an-objective)}))
+   (store-a-comment {:user (store-a-user) :entity (store-an-open-objective)}))
 
   ([required-entities]
    (let [{created-by-id :_id} (get required-entities :user (store-a-user))
-         {:keys [_id objective-id global-id entity]} (get required-entities :entity (store-an-objective))
+         {:keys [_id objective-id global-id entity]} (get required-entities :entity (store-an-open-objective))
          objective-id (if (= entity :objective) _id objective-id)]
      (storage/pg-store! {:entity :comment
                          :created-by-id created-by-id
@@ -44,7 +54,7 @@
 
   ([required-entities]
    (let [{invited-by-id :_id} (get required-entities :user (store-a-user))
-         {objective-id :_id} (get required-entities :objective (store-an-objective))
+         {objective-id :_id} (get required-entities :objective (store-an-open-objective))
          status (get required-entities :status "active")]
      (storage/pg-store! {:entity :invitation
                          :uuid (java.util.UUID/randomUUID)
@@ -60,7 +70,7 @@
 
   ([required-entities]
    (let [{created-by-id :_id} (get required-entities :user (store-a-user))
-         {objective-id :_id} (get required-entities :objective (store-an-objective))]
+         {objective-id :_id} (get required-entities :objective (store-an-open-objective))]
      (storage/pg-store! {:entity :question
                          :created-by-id created-by-id
                          :objective-id objective-id

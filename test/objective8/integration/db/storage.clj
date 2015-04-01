@@ -18,6 +18,7 @@
                (fact "pg-store! throws org.postgresql.util.PSQLException when insert fails"
                      (let [NOT-EXISTENT-USER-ID 1
                            objective {:entity :objective
+                                      :status "open"
                                       :created-by-id NOT-EXISTENT-USER-ID
                                       :end-date "2015-01-01T00:00:00Z"
                                       :description "description"
@@ -52,6 +53,7 @@
 
                (defn store-an-objective-by [created-by-id]
                   (let [objective {:entity :objective
+                                   :status "open"
                                    :created-by-id created-by-id
                                    :end-date "2015-01-01T00:00:00Z"
                                    :description "description"
@@ -69,13 +71,13 @@
                                                                        :title "title"})))
 
                (fact "the 'drafting-status' of an objective can be updated"
-                     (let [objective (sh/store-an-objective)]
-                      (:drafting-started (storage/pg-update-objective-status! objective true)) => true)) 
+                     (let [objective (sh/store-an-open-objective)]
+                      (:drafting-started (storage/pg-update-objective-status! objective "drafting")) => true)) 
 
                ;;COMMENTS
                (fact "a comment entity can be stored in the database"
                      (let [{user-id :_id username :username} (sh/store-a-user)
-                           {objective-id :_id comment-on-id :global-id} (sh/store-an-objective)
+                           {objective-id :_id comment-on-id :global-id} (sh/store-an-open-objective)
                            comment {:entity :comment
                                     :created-by-id user-id
                                     :objective-id objective-id
@@ -90,7 +92,7 @@
                ;;QUESTIONS
                (fact "a question entity can be stored in the database"
                      (let [{user-id :_id username :username} (sh/store-a-user)
-                           {objective-id :_id} (sh/store-an-objective)
+                           {objective-id :_id} (sh/store-an-open-objective)
                            question {:entity :question
                                      :created-by-id user-id
                                      :objective-id objective-id
@@ -102,8 +104,8 @@
                                                                        :objective-id objective-id})))
                (fact "questions can be retrieved by objective ID"
                      (let [{user-id :_id username :username} (sh/store-a-user)
-                           {an-objective-id :_id} (sh/store-an-objective)
-                           {another-objective-id :_id} (sh/store-an-objective)
+                           {an-objective-id :_id} (sh/store-an-open-objective)
+                           {another-objective-id :_id} (sh/store-an-open-objective)
                            question-1 {:entity :question :created-by-id user-id :objective-id an-objective-id :question "A question"}
                            question-2 {:entity :question :created-by-id user-id :objective-id an-objective-id :question "A question"}
                            question-3 {:entity :question :created-by-id user-id :objective-id another-objective-id :question "Another question"}
@@ -147,7 +149,7 @@
                ;;INVITATIONS
                (fact "an invitation entity can be stored in the database"
                      (let [{user-id :_id} (sh/store-a-user)
-                           {objective-id :_id} (sh/store-an-objective)
+                           {objective-id :_id} (sh/store-an-open-objective)
                            invitation {:entity :invitation
                                        :invited-by-id user-id
                                        :objective-id objective-id
@@ -165,6 +167,7 @@
                (fact "an invitation can be retrieved by uuid"
                      (let [user-id (:_id (sh/store-a-user))
                            objective-id (:_id (storage/pg-store! {:entity :objective
+                                                                  :status "open"
                                                                   :created-by-id user-id
                                                                   :end-date "2015-01-01"}))
                            invitation (storage/pg-store! {:entity :invitation
@@ -177,7 +180,7 @@
                ;;CANDIDATES
                (fact "a candidate entity can be stored in the database"
                      (let [{user-id :_id} (sh/store-a-user)
-                           {objective-id :_id} (sh/store-an-objective)
+                           {objective-id :_id} (sh/store-an-open-objective)
                            {invitation-id :_id} (sh/store-an-invitation)
                            candidate {:entity :candidate
                                       :user-id user-id
@@ -287,7 +290,7 @@
                               (contains (assoc answer-2 :votes {:up 2 :down 0}))])))
 
         (fact "retrieving comments for an entity also returns aggregate up-down-votes for those comments"
-              (let [objective (sh/store-an-objective)
+              (let [objective (sh/store-an-open-objective)
                     {g-id-1 :global-id :as comment-1} (sh/store-a-comment {:entity objective})
                     {g-id-2 :global-id :as comment-2} (sh/store-a-comment {:entity objective})
                     votes-for-comment-1 [:up :up :down :down :down]
@@ -314,23 +317,23 @@
               (storage/pg-retrieve-entity-by-uri "/some/nonsense") => nil)
 
         (fact "by default, entities are retrieved without global id"
-              (let [{objective-id :_id :as objective} (sh/store-an-objective)
+              (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
                     uri (str "/objectives/" objective-id)]
                 (storage/pg-retrieve-entity-by-uri uri) => (contains (dissoc objective :global-id))
                 (storage/pg-retrieve-entity-by-uri uri) =not=> (contains {:global-id anything})))
 
         (fact "global id can be optionally included"
-              (let [{objective-id :_id global-id :global-id :as objective} (sh/store-an-objective)
+              (let [{objective-id :_id global-id :global-id :as objective} (sh/store-an-open-objective)
                     uri (str "/objectives/" objective-id)]
                 (storage/pg-retrieve-entity-by-uri uri :with-global-id) => (contains {:global-id global-id})))
 
         (fact "uri is included in the retrieved entity"
-              (let [{objective-id :_id global-id :global-id :as objective} (sh/store-an-objective)
+              (let [{objective-id :_id global-id :global-id :as objective} (sh/store-an-open-objective)
                     uri (str "/objectives/" objective-id)]
                 (storage/pg-retrieve-entity-by-uri uri) => (contains {:uri uri})))
 
         (fact "objectives can be retrieved by uri"
-              (let [{o-id :_id :as objective} (sh/store-an-objective)
+              (let [{o-id :_id :as objective} (sh/store-an-open-objective)
                     objective-uri (str "/objectives/" o-id)]
                 (storage/pg-retrieve-entity-by-uri objective-uri :with-global-id) => (contains objective)))
         

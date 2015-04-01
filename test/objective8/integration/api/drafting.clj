@@ -19,14 +19,14 @@
      (after :facts (helpers/truncate-tables))]
     
     (fact "drafting-started flag for objective set to true" 
-      (let [{objective-id :_id} (sh/store-an-objective)
+      (let [{objective-id :_id} (sh/store-an-open-objective)
             {response :response} (p/request app (str "/dev/api/v1/objectives/" objective-id "/start-drafting")
                                    :request-method :post
                                    :content-type "application/json")]
         (:body response) => (helpers/json-contains {:drafting-started true})))
 
     (fact "active invitations status set to expired"
-      (let [{objective-id :_id :as objective} (sh/store-an-objective)
+      (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
             {active-invitation-id :_id} (sh/store-an-invitation {:objective objective})
             {accepted-invitation-id :_id} (sh/store-an-invitation {:objective objective :status "accepted"})
 
@@ -76,7 +76,7 @@
             (:status response) => 404))
 
     (fact "a draft is not created when submitter id is not a writer for the objective"
-          (let [{objective-id :_id :as objective} (sh/store-an-objective)
+          (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
                 {submitter-id :_id} (sh/store-a-user)
                 the-draft {:objective-id objective-id
                            :submitter-id submitter-id 
@@ -118,7 +118,7 @@
                  (:body response) => (helpers/json-contains (map contains (-> stored-drafts :_id reverse)))))
 
          (fact "returns 403 if objective not in drafting"
-               (let [objective (sh/store-an-objective)]
+               (let [objective (sh/store-an-open-objective)]
                  (get-in (p/request app (utils/path-for :api/get-drafts-for-objective :id (:_id objective)))
                          [:response :status]) => 403))))
 
