@@ -54,21 +54,4 @@
                (provided
                  (translations :some-key/some-value) => "TRANSLATED_TITLE_ATTRIBUTE")))
 
-       (fact "can translate content and attributes in same element"
-             (against-background
-               (translations :attr-key/attr-value) => "TRANSLATED_TITLE_ATTRIBUTE"
-               (translations :content-key/content-value) => "TRANSLATED_CONTENT") 
-             (let [data-l8n-string "attr/title:attr-key/attr-value content:content-key/content-value"
-                   input-html-string (str "<p data-l8n=\"" data-l8n-string 
-                                          "\" title=\"UNTRANSLATED_TITLE_ATTRIBUTE\">!UNTRANSLATED_CONTENT</p>")
-                   input-html-resource (html/html-resource (java.io.StringReader. input-html-string))
-                   translated-resource (translate {:translations translations} input-html-resource)]
-               (-> translated-resource
-                   (html/select [:p])
-                   first
-                   :attrs
-                   :title) => "TRANSLATED_TITLE_ATTRIBUTE"
-               (-> translated-resource
-                   (html/select [:p])
-                   first
-                   (html/text)) => "TRANSLATED_CONTENT")))
+       ) 
