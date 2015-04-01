@@ -46,7 +46,7 @@ block content
 
     form.clj-add-draft-form(action="{{/objectives/:id/add-draft}}", method="POST")
       textarea.clj-add-draft-content.func--add-draft-content(id="add-draft-content", name="content", rows="20", cols="50", placeholder="!Enter your draft here", required="required", data-l8n="attr/placeholder:add-draft/placeholder")
-      button.button.l8n-preview-action.func--preview-action(type="submit", name="action", value="preview", data-l8n="content:add-draft/preview") !Preview
-      button.button.l8n-submit-action.func--submit-action(type="submit", name="action", value="submit", data-l8n="content:add-draft/submit") !Add draft
+      button.button.func--preview-action(type="submit", name="action", value="preview", data-l8n="content:add-draft/preview") !Preview
+      button.button.func--submit-action(type="submit", name="action", value="submit", data-l8n="content:add-draft/submit") !Add draft
 
 block footerScripts
