@@ -21,7 +21,7 @@
                 (objectives/store-objective! objective-data) => (contains {:_id integer?
                                                                            :uri (contains "/objectives/")
                                                                            :created-by-id user-id
-                                                                           :end-date "2015-01-01T00:00:00Z"
+                                                                           :end-date "2015-01-01T00:00:00.000Z"
                                                                            :description "description"
                                                                            :goals "goals"
                                                                            :title "title"})
@@ -36,7 +36,7 @@
         (fact "a stored objective can be retrieved"
               (let [{user-id :_id username :username} (sh/store-a-user)
                     objective-data {:created-by-id user-id
-                                    :end-date "2015-01-01T00:00:00Z"
+                                    :end-date "2015-01-01T00:00:00.000Z"
                                     :description "description"
                                     :goals "goals"
                                     :title "title"}
@@ -47,7 +47,7 @@
         (fact "can retrieve a list of objectives"
               (let [{user-id :_id username :username} (sh/store-a-user)
                     objective-data {:created-by-id user-id
-                                    :end-date "2015-01-01T00:00:00Z"
+                                    :end-date "2015-01-01T00:00:00.000Z"
                                     :description "description"
                                     :goals "goals"
                                     :title "title"}

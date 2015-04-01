@@ -49,7 +49,7 @@
                     {draft-id :_id objective-id :objective-id :as draft} (sh/store-a-draft)
                     draft-uri (str "/objectives/" objective-id "/drafts/" draft-id)
                     stored-comments (doall (->> (repeat {:entity draft :user user})
-                                                (take 5)
+                                                (take 1)
                                                 (map sh/store-a-comment)
                                                 (map #(dissoc % :global-id :comment-on-id))
                                                 (map #(assoc % :comment-on-uri draft-uri 

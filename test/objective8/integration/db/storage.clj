@@ -50,7 +50,6 @@
                                                                         :some-key "some-value"}))
 
                ;;OBJECTIVES
-
                (defn store-an-objective-by [created-by-id]
                   (let [objective {:entity :objective
                                    :status "open"
@@ -67,7 +66,7 @@
                            retrieve-result (storage/pg-retrieve {:entity :objective :_id (:_id store-result)})]
                        (first (:result retrieve-result)) => (contains {:created-by-id user-id
                                                                        :username username
-                                                                       :end-date "2015-01-01T00:00:00Z"
+                                                                       :end-date "2015-01-01T00:00:00.000Z"
                                                                        :title "title"})))
 
                (fact "the 'drafting-status' of an objective can be updated"
@@ -156,12 +155,12 @@
                                        :status "active"
                                        :writer-name "barry"
                                        :reason "he's barry"
-                                       :uuid "random-uuid"}
+                                       :uuid "random-uuid-has-36-characters......."}
                            store-result (storage/pg-store! invitation)
                            retrieve-result (storage/pg-retrieve {:entity :invitation :_id (:_id store-result)})]
                        (first (:result retrieve-result)) => (contains {:invited-by-id user-id
                                                                        :objective-id objective-id
-                                                                       :uuid "random-uuid"
+                                                                       :uuid "random-uuid-has-36-characters......."
                                                                        :status "active"})))
 
                (fact "an invitation can be retrieved by uuid"
@@ -297,7 +296,6 @@
                     votes-for-comment-2 [:up :up]
                     stored-votes-for-comment-1 (doall (map #(sh/store-an-up-down-vote g-id-1 %) votes-for-comment-1))
                     stored-votes-for-comment-2 (doall (map #(sh/store-an-up-down-vote g-id-2 %) votes-for-comment-2))]
-
                 (storage/pg-retrieve-comments-with-votes (:global-id objective))
                 => (contains [(contains (assoc comment-2 :votes {:up 2 :down 0}))
                               (contains (assoc comment-1 :votes {:up 2 :down 3}))])))

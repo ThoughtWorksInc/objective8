@@ -34,36 +34,68 @@
   [pgobject]
   (json/parse-string (postgres-type->string pgobject) true))
 
-(defn map->objective
-  "Converts a clojure map into a json-typed objective for the database"
-  [{:keys [created-by-id end-date global-id status] :as objective}]
-  (if (and created-by-id end-date global-id status)
-    {:created_by_id created-by-id
-     :global_id global-id
-     :status (string->postgres-type "objective_status" status)
-     :end_date (tc/to-timestamp end-date)
-     :objective (map->json-type objective)}
-      (throw (Exception. "Could not transform map to objective"))))
+(defn -to_
+  "Replaces hyphens in keys with underscores"
+  [m]
+  (let [ks (keys m) vs (vals m)]
+    (zipmap (map (fn [k] (-> (name k)
+                             (clojure.string/replace #"-" "_")
+                             keyword)) ks)
+            vs)))
 
-(defn map->comment
-  "Converts a clojure map into a json-typed comment for the database"
-  [{:keys [global-id created-by-id objective-id comment-on-id] :as comment}]
-  (if (and global-id created-by-id objective-id comment-on-id)
-    {:global_id global-id
-     :created_by_id created-by-id
-     :objective_id objective-id
-     :comment_on_id comment-on-id
-     :comment (map->json-type comment)}
-    (throw (Exception. "Could not transform map to comment"))))
+(defn- apply-transformation [m [key transform]]
+  (update-in m [key] transform))
 
-(defn map->user
-  "Converts a clojure map into a json-typed user for the database"
-  [{:keys [twitter-id username] :as user}]
-  (if (and twitter-id username) 
-    {:twitter_id twitter-id
-     :username username
-     :user_data (map->json-type user)}
-    (throw (Exception. "Could not transform map to user"))))
+(defn- apply-transformations [m transformations]
+  (reduce apply-transformation m transformations))
+
+(defn db-insertion-mapper
+  "Generates a function that prepares a map for insertion into the database
+
+  entity-label: A string used to identify the entity type
+  json-key: The database column that will contain any unstructured data; set this to nil if not required
+  column-keys: A vector of the keys in the clojure map that correspond to columns in the database
+  transformations: A map indicating any additional transformations that need to be performed on data fields before insertion into the database.
+
+  Example:
+  (def map->some-entity (db-insertion-mapper \"some-entity\" :the-json [:a-key :b-key] {:a-key inc}))
+
+  (some-entity {:a-key 1 :b-key 2 :other \"data\"})
+  => {:a_key 2
+      :b_key 2
+      :the_json <PG Json object {\"other\":\"data\"}>}"
+
+  ([entity-label json-key column-keys]
+   (db-insertion-mapper entity-label json-key column-keys {}))
+
+  ([entity-label json-key column-keys transformations]
+   (fn [m]
+     (if-let [column-map (utils/select-all-or-nothing m column-keys)]
+       (let [insert-json-if-required (if json-key
+                                       #(assoc % json-key (map->json-type (apply dissoc m column-keys)))
+                                       identity)]
+         (-> column-map
+             insert-json-if-required
+             (apply-transformations transformations)
+             -to_))
+       (throw (ex-info (str "Could not transform map to " entity-label) {:data m}))))))
+
+(def map->objective
+  (db-insertion-mapper "objective"
+                       :objective
+                       [:created-by-id :global-id :status :end-date]
+                       {:status (partial string->postgres-type "objective_status")
+                        :end-date tc/to-timestamp}))
+
+(def map->comment
+  (db-insertion-mapper "comment"
+                       :comment
+                       [:global-id :created-by-id :objective-id :comment-on-id]))
+
+(def map->user
+  (db-insertion-mapper "user"
+                       :user-data
+                       [:twitter-id :username]))
 
 (defn map->up-down-vote
   "Prepares a clojure map for storage as an up-down-vote"
@@ -74,71 +106,43 @@
      :vote ({:up 1 :down -1} vote-type)}
     (throw (ex-info "Could not transform map to up-down-vote" {:data up-down-vote}))))
 
-(defn map->question
-  "Converts a clojure map into a json-typed question for the database"
-  [{:keys [created-by-id objective-id] :as question}]
-  (if (and created-by-id objective-id)
-    {:created_by_id created-by-id
-     :objective_id objective-id
-     :question (map->json-type question)}
-    (throw (Exception. "Could not transform map to question"))))
+(def map->question
+  (db-insertion-mapper "question"
+                       :question
+                       [:created-by-id :objective-id]))
 
-(defn map->answer 
-  "Converts a clojure map into a json-typed answer for the database"
-  [{:keys [created-by-id question-id global-id objective-id] :as answer}]
-  (if (and created-by-id question-id global-id objective-id)
-    {:created_by_id created-by-id
-     :question_id question-id
-     :objective_id objective-id
-     :global_id global-id
-     :answer (map->json-type answer)}
-    (throw (ex-info "Could not transform map to answer" {:data answer}))))
+(def map->answer
+  (db-insertion-mapper "answer"
+                       :answer
+                       [:created-by-id :question-id :objective-id :global-id]))
 
-(defn map->invitation
- "Converts a clojure map into a json-typed invitation for the database" 
-  [{:keys [invited-by-id objective-id uuid status] :as invitation}]
-  (if (and invited-by-id objective-id uuid status)
-    {:invited_by_id invited-by-id
-     :objective_id objective-id
-     :uuid uuid
-     :status (string->postgres-type "invitation_status" status)
-     :invitation (map->json-type invitation)}
-    (throw (Exception. "Could not transform map to invitation"))))
+(def map->invitation
+  (db-insertion-mapper "invitation"
+                       :invitation
+                       [:invited-by-id :objective-id :uuid :status]
+                       {:status (partial string->postgres-type "invitation_status")}))
 
-(defn map->candidate
- "Converts a clojure map into a json-typed candidate for the database"
-  [{:keys [user-id objective-id invitation-id] :as candidate}]
-  (if (and user-id objective-id invitation-id)
-    {:user_id user-id
-     :objective_id objective-id
-     :invitation_id invitation-id
-     :candidate (map->json-type candidate)}
-    (throw (Exception. "Could not transform map to candidate"))))
+(def map->candidate
+  (db-insertion-mapper "candidate"
+                       :candidate
+                       [:user-id :objective-id :invitation-id]))
 
-(defn map->draft
-  "Converts a clojure map into a json-typed draft for the database"
-  [{:keys [submitter-id objective-id global-id] :as draft}]
-  (if (and submitter-id objective-id global-id)
-    {:submitter_id submitter-id
-     :objective_id objective-id
-     :global_id global-id
-     :draft (map->json-type draft)}
-    (throw (Exception. "Could not transform map to draft"))))
+(def map->draft
+  (db-insertion-mapper "draft"
+                       :draft
+                       [:submitter-id :objective-id :global-id]))
 
-(defn map->bearer-token
- "Converts a clojure map into a json-typed bearer-token for the database"
- [{:keys [bearer-name] :as bearer-token}]
-  (if bearer-name
-    {:bearer_name bearer-name
-     :token_details (map->json-type bearer-token)}
-    (throw (Exception. "Could not transform map to bearer-token"))))
+(def map->bearer-token
+  (db-insertion-mapper "bearer-token"
+                       :token-details
+                       [:bearer-name]))
 
 (defn unmap [data-key]
   (fn [m] (-> (json-type->map (data-key m))
               (assoc :_id (:_id m) :_created_at (sql-time->iso-time-string (:_created_at m)))
               (update-in [:entity] keyword))))
 
-(defn with-username [unmap-fn]
+(defn with-username-if-present [unmap-fn]
   (fn [m] (let [m' (unmap-fn m)]
             (if (contains? m :username)
               (assoc m' :username (:username m))
@@ -147,6 +151,16 @@
 (defn with-status [unmap-fn]
   (fn [m] (-> (unmap-fn m)
               (assoc :status (:status m)))))
+
+(defn with-column
+  ([unmap-fn new-key old-key] (with-column unmap-fn new-key old-key identity))
+
+  ([unmap-fn new-key old-key transformation]
+   (let [transformation (if transformation transformation identity)])
+   (fn [m]
+     (-> (unmap-fn m)
+         (assoc new-key (transformation (old-key m)))))))
+
 (defn with-sql-time [unmap-fn]
   (fn [m] (-> (unmap-fn m)
               (assoc :_created_at_sql_time (:_created_at m)))))
@@ -178,46 +192,74 @@
   (korma/table :objective8.objectives)
   (korma/belongs-to user {:fk :created_by_id})
   (korma/prepare map->objective)
-  (korma/transform (-> (unmap :objective) with-username with-global-id with-status)))
+  (korma/transform (-> (unmap :objective)
+                       (with-column :global-id :global_id)
+                       (with-column :created-by-id :created_by_id)
+                       (with-column :status :status)
+                       (with-column :end-date :end_date sql-time->iso-time-string)
+                       with-status
+                       with-username-if-present)))
 
 (korma/defentity user
   (korma/pk :_id)
   (korma/table :objective8.users)
   (korma/prepare map->user)
-  (korma/transform (unmap :user_data)))
+  (korma/transform (-> (unmap :user_data)
+                       (with-column :twitter-id :twitter_id)
+                       (with-column :username :username))))
 
 (korma/defentity comment
   (korma/pk :_id)
   (korma/table :objective8.comments)
   (korma/belongs-to user {:fk :created_by_id})
   (korma/prepare map->comment)
-  (korma/transform (-> (unmap :comment) with-username with-global-id (without-key :objective-id))))
+  (korma/transform (-> (unmap :comment)
+                       (with-column :comment-on-id :comment_on_id)
+                       (with-column :created-by-id :created_by_id)
+                       with-username-if-present
+                       with-global-id
+                       (without-key :objective-id))))
 
 (korma/defentity question
   (korma/pk :_id)
   (korma/table :objective8.questions)
   (korma/belongs-to user {:fk :created_by_id})
   (korma/prepare map->question)
-  (korma/transform (-> (unmap :question) with-username)))
+  (korma/transform (-> (unmap :question)
+                       with-username-if-present
+                       (with-column :created-by-id :created_by_id)
+                       (with-column :objective-id :objective_id))))
 
 (korma/defentity answer
   (korma/pk :_id)
   (korma/table :objective8.answers)
   (korma/belongs-to user {:fk :created_by_id})
   (korma/prepare map->answer)
-  (korma/transform (-> (unmap :answer) with-username)))
+  (korma/transform (-> (unmap :answer)
+                       with-username-if-present
+                       (with-column :created-by-id :created_by_id)
+                       (with-column :objective-id :objective_id)
+                       (with-column :question-id :question_id)
+                       (with-column :global-id :global_id))))
 
 (korma/defentity invitation
   (korma/pk :_id)
   (korma/table :objective8.invitations)
   (korma/prepare map->invitation)
-  (korma/transform (unmap :invitation)))
+  (korma/transform (-> (unmap :invitation)
+                       (with-column :objective-id :objective_id)
+                       (with-column :invited-by-id :invited_by_id)
+                       (with-column :uuid :uuid)
+                       (with-column :status :status))))
 
 (korma/defentity candidate
   (korma/pk :_id)
   (korma/table :objective8.candidates)
   (korma/prepare map->candidate)
-  (korma/transform (unmap :candidate)))
+  (korma/transform (-> (unmap :candidate)
+                       (with-column :objective-id :objective_id)
+                       (with-column :user-id :user_id)
+                       (with-column :invitation-id :invitation_id))))
 
 (korma/defentity up-down-vote
   (korma/pk :_id)
@@ -230,13 +272,19 @@
   (korma/table :objective8.drafts)
   (korma/belongs-to user {:fk :submitter_id})
   (korma/prepare map->draft)
-  (korma/transform (-> (unmap :draft) with-username with-sql-time with-global-id)))
+  (korma/transform (-> (unmap :draft)
+                       (with-column :objective-id :objective_id)
+                       (with-column :submitter-id :submitter_id)
+                       with-username-if-present
+                       with-sql-time
+                       with-global-id)))
 
 (korma/defentity bearer-token
   (korma/pk :_id)
   (korma/table :objective8.bearer_tokens)
   (korma/prepare map->bearer-token)
-  (korma/transform (unmap :token_details)))
+  (korma/transform (-> (unmap :token_details)
+                       (with-column :bearer-name :bearer_name))))
 
 (def entities {:objective objective
                :user      user

@@ -84,7 +84,10 @@
                                                            :request-method :post
                                                            :content-type "application/json"
                                                            :body (json/generate-string the-objective))]
-                       (:body response) => (helpers/json-contains (assoc the-objective :uri (contains "/objectives/")))
+                       (:body response) => (helpers/json-contains
+                                            (assoc the-objective
+                                                   :uri (contains "/objectives/")
+                                                   :end-date "2015-01-01T00:00:00.000Z"))
                        (:body response) =not=> (helpers/json-contains {:global-id anything})
                        (:headers response) => (helpers/location-contains (str "/api/v1/objectives/"))
                        (:status response) => 201))

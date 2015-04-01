@@ -27,7 +27,9 @@
 (def objective-data {:created-by-id 1
                      :global-id GLOBAL_ID
                      :status "open"
-                     :end-date "2015-01-01T00:01:01Z"})
+                     :end-date "2015-01-01T00:01:01Z"
+                     :description "Objective description"})
+
 (facts "About map->objective"
        (fact "Column values are pulled out and converted, the map gets turned to json"
              (let [objective (map->objective objective-data)]
@@ -36,12 +38,19 @@
                                        :status (has-postgres-type? "objective_status") 
                                        :end_date  time-type?
                                        :objective json-type?})
-               (str (:end_date objective)) => (contains "2015-01-01 00:01")))
-       (fact "throws exception if :created-by-id, :end-date, :status or :global-id are missing"
-             (map->objective (dissoc objective-data :created-by-id)) => (throws Exception "Could not transform map to objective")
-             (map->objective (dissoc objective-data :status)) => (throws Exception "Could not transform map to objective")
-             (map->objective (dissoc objective-data :end-date)) => (throws Exception "Could not transform map to objective")
-             (map->objective (dissoc objective-data :global-id)) => (throws Exception "Could not transform map to objective")))
+               (str (:end_date objective)) => (contains "2015-01-01 00:01")
+               (json-type->map (:objective objective)) =not=> (contains {:global-id anything})
+               (json-type->map (:objective objective)) =not=> (contains {:end-date anything})
+               (json-type->map (:objective objective)) =not=> (contains {:created-by-id anything})
+               (json-type->map (:objective objective)) =not=> (contains {:status anything})
+               (json-type->map (:objective objective)) => (contains {:description "Objective description"})))
+
+       (fact "throws exception if :created-by-id, :end-date, or :global-id are missing"
+
+             (map->objective (dissoc objective-data :created-by-id)) => (throws Exception)
+             (map->objective (dissoc objective-data :status)) => (throws Exception)
+             (map->objective (dissoc objective-data :end-date)) => (throws Exception)
+             (map->objective (dissoc objective-data :global-id)) => (throws Exception)))
 
 ;;USER
 (facts "About map->user"
@@ -49,11 +58,14 @@
              (let [user (map->user {:twitter-id "twitter-TWITTERID" :username "username"})]
                user => (contains {:twitter_id "twitter-TWITTERID"
                                   :username "username"
-                                  :user_data json-type?})))
+                                  :user_data json-type?})
+               (json-type->map (:user_data user)) =not=> (contains {:twitter-id anything})
+               (json-type->map (:user_data user)) =not=> (contains {:username anything})))
+       
        (fact "throws exception if :twitter-id or :username is missing"
-                    (map->user {:a "B"}) => (throws Exception "Could not transform map to user")
-                    (map->user {:twitter-id "twitter-TWITTERID"}) => (throws Exception "Could not transform map to user")
-                    (map->user {:username "username"}) => (throws Exception "Could not transform map to user")))
+             (map->user {:a "B"}) => (throws Exception)
+             (map->user {:twitter-id "twitter-TWITTERID"}) => (throws Exception)
+             (map->user {:username "username"}) => (throws Exception)))
 
 ;;UP-DOWN-VOTES
 (def vote-data {:global-id GLOBAL_ID :created-by-id USER_ID :vote-type :up})
@@ -91,12 +103,17 @@
                                          :created_by_id USER_ID
                                          :objective_id OBJECTIVE_ID
                                          :comment_on_id GLOBAL_ID
-                                         :comment json-type?})))
+                                         :comment json-type?})
+              (json-type->map (:comment test-comment)) =not=> (contains {:global-id anything})
+              (json-type->map (:comment test-comment)) =not=> (contains {:comment-on-id anything})
+              (json-type->map (:comment test-comment)) =not=> (contains {:objective-id anything})
+              (json-type->map (:comment test-comment)) =not=> (contains {:created-by-id anything})))
+       
        (fact "throws exception if :global-id, :created-by-id, :objective-id or :comment-on-id are missing"
-                    (map->comment (dissoc comment-map :global-id)) => (throws Exception "Could not transform map to comment")
-                    (map->comment (dissoc comment-map :created-by-id)) => (throws Exception "Could not transform map to comment")
-                    (map->comment (dissoc comment-map :objective-id)) => (throws Exception "Could not transform map to comment")
-                    (map->comment (dissoc comment-map :comment-on-id)) => (throws Exception "Could not transform map to comment")))
+             (map->comment (dissoc comment-map :global-id)) => (throws Exception)
+             (map->comment (dissoc comment-map :created-by-id)) => (throws Exception)
+             (map->comment (dissoc comment-map :objective-id)) => (throws Exception)
+             (map->comment (dissoc comment-map :comment-on-id)) => (throws Exception)))
 
 
 ;;QUESTIONS
@@ -108,10 +125,13 @@
              (let [test-question (map->question question-map)]
               test-question => (contains {:created_by_id USER_ID
                                           :objective_id OBJECTIVE_ID
-                                          :question json-type?})))
+                                          :question json-type?})
+              (json-type->map (:question test-question)) =not=> (contains {:created-by-id anything})
+              (json-type->map (:question test-question)) =not=> (contains {:objective-id anything})))
+       
        (fact "throws exception if :created-by-id or :objective-id are missing"
-                    (map->question (dissoc question-map :created-by-id)) => (throws Exception "Could not transform map to question")
-                    (map->question (dissoc question-map :objective-id)) => (throws Exception "Could not transform map to question")))
+             (map->question (dissoc question-map :created-by-id)) => (throws Exception)
+             (map->question (dissoc question-map :objective-id)) => (throws Exception)))
 
 ;;ANSWERS
 (def QUESTION_ID 345)
@@ -128,7 +148,12 @@
                                          :question_id QUESTION_ID
                                          :objective_id OBJECTIVE_ID
                                          :global_id GLOBAL_ID
-                                         :answer json-type?})))
+                                         :answer json-type?})
+               (json-type->map (:answer test-answer)) =not=> (contains {:question-id anything})
+               (json-type->map (:answer test-answer)) =not=> (contains {:created-by-id anything})
+               (json-type->map (:answer test-answer)) =not=> (contains {:global-id anything})
+               (json-type->map (:answer test-answer)) =not=> (contains {:objective-id anything})))
+
        (fact "throws exception if :created-by-id or :question-id are missing"
              (map->answer (dissoc answer-map :created-by-id)) => (throws Exception)
              (map->answer (dissoc answer-map :question-id)) => (throws Exception)
@@ -147,17 +172,22 @@
 
 (facts "About map->invitation"
        (fact "Column values are pulled out and converted, the map gets turned to json"
-             (map->invitation invitation-map) => (contains {:objective_id OBJECTIVE_ID
-                                                            :invited_by_id USER_ID
-                                                            :uuid "something-random"
-                                                            :status (has-postgres-type? "invitation_status")
-                                                            :invitation json-type?}))
+             (let [invitation (map->invitation invitation-map)]
+               invitation => (contains {:objective_id OBJECTIVE_ID
+                                        :invited_by_id USER_ID
+                                        :uuid "something-random"
+                                        :status (has-postgres-type? "invitation_status")
+                                        :invitation json-type?})
+               (json-type->map (:invitation invitation)) =not=> (contains {:uuid anything})
+               (json-type->map (:invitation invitation)) =not=> (contains {:invited-by-id anything})
+               (json-type->map (:invitation invitation)) =not=> (contains {:objective-id anything})
+               (json-type->map (:invitation invitation)) =not=> (contains {:status anything})))
 
        (fact "throws exception if :objective-id, :invited-by-id, :uuid or :status are missing"
-             (map->invitation (dissoc invitation-map :objective-id)) => (throws Exception "Could not transform map to invitation")
-             (map->invitation (dissoc invitation-map :uuid)) => (throws Exception "Could not transform map to invitation")
-             (map->invitation (dissoc invitation-map :invited-by-id)) => (throws Exception "Could not transform map to invitation")
-             (map->invitation (dissoc invitation-map :status)) => (throws Exception "Could not transform map to invitation")))
+             (map->invitation (dissoc invitation-map :objective-id)) => (throws Exception)
+             (map->invitation (dissoc invitation-map :uuid)) => (throws Exception)
+             (map->invitation (dissoc invitation-map :invited-by-id)) => (throws Exception)
+             (map->invitation (dissoc invitation-map :status)) => (throws Exception)))
 
 ;;CANDIDATES
 (def INVITATION_ID 345)
@@ -168,9 +198,14 @@
 
 (facts "About map->candidate"
        (fact "Column values are pulled out and converted, the map gets turned to json"
-             (map->candidate candidate-map) =>  (contains {:user_id USER_ID
-                                                           :objective_id OBJECTIVE_ID
-                                                           :invitation_id INVITATION_ID})))
+             (let [candidate (map->candidate candidate-map)]
+               candidate => (contains {:user_id USER_ID
+                                       :objective_id OBJECTIVE_ID
+                                       :invitation_id INVITATION_ID
+                                       :candidate json-type?})
+               (json-type->map (:candidate candidate)) =not=> (contains {:objective-id anything})
+               (json-type->map (:candidate candidate)) =not=> (contains {:user-id anything})
+               (json-type->map (:candidate candidate)) =not=> (contains {:invitation-id anything}))))
 
 ;;DRAFTS
 (def draft-map {:submitter-id USER_ID
@@ -180,10 +215,14 @@
 
 (facts "About map->draft"
        (fact "Column values are pulled out and converted, the map gets turned to json"
-             (map->draft draft-map) => (contains {:submitter_id USER_ID
-                                                  :objective_id OBJECTIVE_ID
-                                                  :global_id GLOBAL_ID
-                                                  :draft json-type?})))
+             (let [draft (map->draft draft-map)]
+               draft => (contains {:submitter_id USER_ID
+                                   :objective_id OBJECTIVE_ID
+                                   :global_id GLOBAL_ID
+                                   :draft json-type?})
+               (json-type->map (:draft draft)) =not=> (contains {:submitter-id anything})
+               (json-type->map (:draft draft)) =not=> (contains {:global-id anything})
+               (json-type->map (:draft draft)) =not=> (contains {:objective-id anything}))))
 
 ;;BEARER-TOKENS
 (def BEARER_NAME "bearer name")
@@ -196,7 +235,27 @@
        (fact "Column values are pulled out and converted, the map gets turned to json"
              (let [test-bearer-token (map->bearer-token bearer-token-map)]
                test-bearer-token => (contains {:bearer_name BEARER_NAME
-                                               :token_details json-type?})))
+                                               :token_details json-type?})
+               (json-type->map (:token_details test-bearer-token)) =not=> (contains {:bearer-name anything})))
        (fact "throws exception if :bearer-name is missing"
              (map->bearer-token (dissoc bearer-token-map
-                                        :bearer-name)) => (throws Exception "Could not transform map to bearer-token")))
+                                        :bearer-name)) => (throws Exception)))
+
+;; db-insertion-mapper
+(facts "about preparing maps for insertion into the db"
+       (fact "should convert clojure keys to db columns"
+             (let [map->db-object (db-insertion-mapper "test-entity" nil [:a-key])]
+               (map->db-object {:a-key 1}) => {:a_key 1}))
+       
+       (fact "should apply transformations to data"
+             (let [map->db-object (db-insertion-mapper "test-entity" nil [:a :b] {:a inc})]
+               (map->db-object {:a 1 :b 1}) => {:a 2 :b 1}))
+       
+       (fact "should include json if required"
+             (let [map->db-object (db-insertion-mapper "test-entity" :json-key [:a])]
+               (map->db-object {:a 1 :other "data"}) => {:a 1
+                                                         :json_key (map->json-type {:other "data"})}))
+       
+       (fact "should throw an exception if required keys are missing"
+             (let [map->db-object (db-insertion-mapper "test-entity" nil [:a])]
+               (map->db-object {}) => (throws Exception))))

@@ -42,15 +42,6 @@
           (korma/select))
       (korma/select select-query))))
 
-(defn- -to_
-  "Replaces hyphens in keys with underscores"
-  [m]
-  (let [ks (keys m) vs (vals m)]
-    (zipmap (map (fn [k] (-> (clojure.string/replace k #"-" "_")
-                             (subs 1)
-                             keyword)) ks)
-            vs)))
-
 (defn pg-retrieve
   "Retrieves objects from the database based on a query map
 
@@ -62,7 +53,7 @@
 
   ([{:keys [entity] :as query} options]
    (if entity
-     (let [result (select (mappings/get-mapping query) (-to_ (dissoc query :entity)) options)]
+     (let [result (select (mappings/get-mapping query) (mappings/-to_ (dissoc query :entity)) options)]
        {:query query
         :options options
         :result result})
@@ -116,7 +107,11 @@ Options: :with-global-id -- includes the global-id in the entity."
 
 (def unmap-answer-with-votes
   (-> (mappings/unmap :answer)
-      mappings/with-username
+      mappings/with-username-if-present
+      (mappings/with-column :created-by-id :created_by_id)
+      (mappings/with-column :objective-id :objective_id)
+      (mappings/with-column :question-id :question_id)
+      (mappings/with-column :global-id :global_id)
       with-aggregate-votes))
 
 (defn pg-retrieve-answers-with-votes-for-question [question-id]
@@ -137,7 +132,10 @@ LIMIT 50" [question-id]] :results))))
 
 (def unmap-comments-with-votes
   (-> (mappings/unmap :comment)
-      mappings/with-username
+      (mappings/with-column :comment-on-id :comment_on_id)
+      (mappings/with-column :created-by-id :created_by_id)
+      mappings/with-username-if-present
+      mappings/with-global-id
       (mappings/without-key :objective-id)
       with-aggregate-votes))
 
