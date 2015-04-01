@@ -259,3 +259,15 @@
        (fact "should throw an exception if required keys are missing"
              (let [map->db-object (db-insertion-mapper "test-entity" nil [:a])]
                (map->db-object {}) => (throws Exception))))
+
+;; Unmapping
+(def unmap-nothing (constantly {}))
+
+(facts "about unmapping columns"
+       (fact "should extract values from a column key into a clojure key"
+             (let [unmapper (-> unmap-nothing (with-columns [:a-key :b-key]))]
+               (unmapper {:a_key 1 :b_key 2 :c_key 3}) => {:a-key 1 :b-key 2}))
+
+       (fact "should apply any required transformations to the data"
+             (let [unmapper (-> unmap-nothing (with-columns [:a-key :b-key] {:a-key inc :b-key dec}))]
+               (unmapper {:a_key 1 :b_key 2}) => {:a-key 2 :b-key 1})))

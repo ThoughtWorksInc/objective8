@@ -71,9 +71,10 @@
   ([entity-label json-key column-keys transformations]
    (fn [m]
      (if-let [column-map (utils/select-all-or-nothing m column-keys)]
-       (let [insert-json-if-required (if json-key
-                                       #(assoc % json-key (map->json-type (apply dissoc m column-keys)))
-                                       identity)]
+       (let [insert-json-if-required
+             (if json-key
+               #(assoc % json-key (map->json-type (apply dissoc m column-keys)))
+               identity)]
          (-> column-map
              insert-json-if-required
              (apply-transformations transformations)
@@ -137,6 +138,29 @@
                        :token-details
                        [:bearer-name]))
 
+(defn- key->db-column [key]
+  (-> key
+      name
+      (clojure.string/replace #"-" "_")
+      keyword))
+
+(defn- extract-column [m um key]
+  (let [db-column (key->db-column key)]
+    (assoc um key (db-column m))))
+
+(defn- extract-columns [um m column-keys]
+  (reduce #(extract-column m %1 %2) um column-keys))
+
+(defn with-columns
+  ([unmap-fn column-keys]
+   (with-columns unmap-fn column-keys {}))
+  
+  ([unmap-fn column-keys transformations]
+   (fn [m]
+     (-> (unmap-fn m)
+         (extract-columns m column-keys)
+         (apply-transformations transformations)))))
+
 (defn unmap [data-key]
   (fn [m] (-> (json-type->map (data-key m))
               (assoc :_id (:_id m) :_created_at (sql-time->iso-time-string (:_created_at m)))
@@ -148,26 +172,9 @@
               (assoc m' :username (:username m))
               m'))))
 
-(defn with-status [unmap-fn]
-  (fn [m] (-> (unmap-fn m)
-              (assoc :status (:status m)))))
-
-(defn with-column
-  ([unmap-fn new-key old-key] (with-column unmap-fn new-key old-key identity))
-
-  ([unmap-fn new-key old-key transformation]
-   (let [transformation (if transformation transformation identity)])
-   (fn [m]
-     (-> (unmap-fn m)
-         (assoc new-key (transformation (old-key m)))))))
-
 (defn with-sql-time [unmap-fn]
   (fn [m] (-> (unmap-fn m)
               (assoc :_created_at_sql_time (:_created_at m)))))
-
-(defn with-global-id [unmap-fn]
-  (fn [m] (-> (unmap-fn m)
-              (assoc :global-id (:global_id m)))))
 
 (defn without-key [unmap-fn key]
   (fn [m] (-> (unmap-fn m)
@@ -193,11 +200,9 @@
   (korma/belongs-to user {:fk :created_by_id})
   (korma/prepare map->objective)
   (korma/transform (-> (unmap :objective)
-                       (with-column :global-id :global_id)
-                       (with-column :created-by-id :created_by_id)
-                       (with-column :status :status)
-                       (with-column :end-date :end_date sql-time->iso-time-string)
-                       with-status
+                       (with-columns
+                         [:global-id :created-by-id :status :end-date :status]
+                         {:end-date sql-time->iso-time-string})
                        with-username-if-present)))
 
 (korma/defentity user
@@ -205,8 +210,7 @@
   (korma/table :objective8.users)
   (korma/prepare map->user)
   (korma/transform (-> (unmap :user_data)
-                       (with-column :twitter-id :twitter_id)
-                       (with-column :username :username))))
+                       (with-columns [:twitter-id :username]))))
 
 (korma/defentity comment
   (korma/pk :_id)
@@ -214,11 +218,8 @@
   (korma/belongs-to user {:fk :created_by_id})
   (korma/prepare map->comment)
   (korma/transform (-> (unmap :comment)
-                       (with-column :comment-on-id :comment_on_id)
-                       (with-column :created-by-id :created_by_id)
-                       with-username-if-present
-                       with-global-id
-                       (without-key :objective-id))))
+                       (with-columns [:comment-on-id :created-by-id :global-id :objective-id])
+                       with-username-if-present)))
 
 (korma/defentity question
   (korma/pk :_id)
@@ -226,9 +227,8 @@
   (korma/belongs-to user {:fk :created_by_id})
   (korma/prepare map->question)
   (korma/transform (-> (unmap :question)
-                       with-username-if-present
-                       (with-column :created-by-id :created_by_id)
-                       (with-column :objective-id :objective_id))))
+                       (with-columns [:created-by-id :objective-id])
+                       with-username-if-present)))
 
 (korma/defentity answer
   (korma/pk :_id)
@@ -237,29 +237,21 @@
   (korma/prepare map->answer)
   (korma/transform (-> (unmap :answer)
                        with-username-if-present
-                       (with-column :created-by-id :created_by_id)
-                       (with-column :objective-id :objective_id)
-                       (with-column :question-id :question_id)
-                       (with-column :global-id :global_id))))
+                       (with-columns [:created-by-id :objective-id :question-id :global-id]))))
 
 (korma/defentity invitation
   (korma/pk :_id)
   (korma/table :objective8.invitations)
   (korma/prepare map->invitation)
   (korma/transform (-> (unmap :invitation)
-                       (with-column :objective-id :objective_id)
-                       (with-column :invited-by-id :invited_by_id)
-                       (with-column :uuid :uuid)
-                       (with-column :status :status))))
+                       (with-columns [:objective-id :invited-by-id :uuid :status]))))
 
 (korma/defentity candidate
   (korma/pk :_id)
   (korma/table :objective8.candidates)
   (korma/prepare map->candidate)
   (korma/transform (-> (unmap :candidate)
-                       (with-column :objective-id :objective_id)
-                       (with-column :user-id :user_id)
-                       (with-column :invitation-id :invitation_id))))
+                       (with-columns [:objective-id :user-id :invitation-id]))))
 
 (korma/defentity up-down-vote
   (korma/pk :_id)
@@ -273,18 +265,16 @@
   (korma/belongs-to user {:fk :submitter_id})
   (korma/prepare map->draft)
   (korma/transform (-> (unmap :draft)
-                       (with-column :objective-id :objective_id)
-                       (with-column :submitter-id :submitter_id)
+                       (with-columns [:objective-id :submitter-id :global-id])
                        with-username-if-present
-                       with-sql-time
-                       with-global-id)))
+                       with-sql-time)))
 
 (korma/defentity bearer-token
   (korma/pk :_id)
   (korma/table :objective8.bearer_tokens)
   (korma/prepare map->bearer-token)
   (korma/transform (-> (unmap :token_details)
-                       (with-column :bearer-name :bearer_name))))
+                       (with-columns [:bearer-name]))))
 
 (def entities {:objective objective
                :user      user

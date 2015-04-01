@@ -108,10 +108,7 @@ Options: :with-global-id -- includes the global-id in the entity."
 (def unmap-answer-with-votes
   (-> (mappings/unmap :answer)
       mappings/with-username-if-present
-      (mappings/with-column :created-by-id :created_by_id)
-      (mappings/with-column :objective-id :objective_id)
-      (mappings/with-column :question-id :question_id)
-      (mappings/with-column :global-id :global_id)
+      (mappings/with-columns [:created-by-id :objective-id :question-id :global-id])
       with-aggregate-votes))
 
 (defn pg-retrieve-answers-with-votes-for-question [question-id]
@@ -132,11 +129,8 @@ LIMIT 50" [question-id]] :results))))
 
 (def unmap-comments-with-votes
   (-> (mappings/unmap :comment)
-      (mappings/with-column :comment-on-id :comment_on_id)
-      (mappings/with-column :created-by-id :created_by_id)
+      (mappings/with-columns [:comment-on-id :created-by-id :global-id :objective-id])
       mappings/with-username-if-present
-      mappings/with-global-id
-      (mappings/without-key :objective-id)
       with-aggregate-votes))
 
 (defn pg-retrieve-comments-with-votes [global-id]

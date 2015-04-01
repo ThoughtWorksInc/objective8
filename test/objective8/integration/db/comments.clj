@@ -52,7 +52,7 @@
                                                 (take 1)
                                                 (map sh/store-a-comment)
                                                 (map #(dissoc % :global-id :comment-on-id))
-                                                (map #(assoc % :comment-on-uri draft-uri 
+                                                (map #(assoc % :comment-on-uri draft-uri
                                                              :uri (str "/comments/" (:_id %))))))]
                 (comments/get-comments draft-uri) => (contains (map contains (reverse stored-comments)))
                 (first (comments/get-comments draft-uri)) => (contains {:votes {:up 0 :down 0}})
