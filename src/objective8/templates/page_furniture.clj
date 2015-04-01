@@ -21,7 +21,7 @@
   (if-let [tracking-id (config/get-var "GA_TRACKING_ID")]
     (html/at nodes 
              [:head] (html/append google-analytics-script)
-             [:head html/any-node] (html/replace-vars {:trackingID tracking-id}))
+             [:.clj-google-analytics html/text-node] (html/replace-vars {:trackingID tracking-id}))
     nodes))
 
 
