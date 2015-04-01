@@ -24,7 +24,6 @@
              [:head html/any-node] (html/replace-vars {:trackingID tracking-id}))
     nodes))
 
-
 ;; MASTHEAD
 
 (def masthead-snippet (html/select library-html-resource [:.clj-masthead-signed-out])) 
@@ -36,8 +35,6 @@
              [:.clj-masthead-signed-out] (if user
                                            (html/substitute masthead-signed-in-snippet)
                                            identity)
-             [:.clj-masthead-skip-text] (tl8 :masthead/skip-to-navigation)
-             [:.clj-masthead-logo] (html/set-attr "title" (translations :masthead/logo-title-attr))
              [:.clj-masthead-objectives-link] (html/do->
                                                 (html/set-attr "title" (translations :masthead/objectives-link-title-attr))
                                                 (tl8 :masthead/objectives-link))
