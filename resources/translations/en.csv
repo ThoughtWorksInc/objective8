@@ -68,6 +68,8 @@ create-objective,page-title,Create an objective
 create-objective,headline,Headline
 create-objective,headline-prompt,A headline should encourage contribution or discussion
 create-objective,goals,Goals
+create-objective,goal-2,Goal 2
+create-objective,goal-3,Goal 3
 create-objective,goals-prompt,A goal is what you’d like your change to achieve
 create-objective,background,Background
 create-objective,background-prompt,Provide further information on why achieving this objective is important or necessary
