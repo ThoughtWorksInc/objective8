@@ -58,12 +58,9 @@
 
 (defn drafting-begins [objective translations]
   (html/transformation
-    [:.l8n-days-left-head] (html/content (translations :objective-view/drafting-begins))
     [:.clj-days-left-day] (html/do->
-                            (html/set-attr "drafting-begins-date"
-                                           (:end-date objective))
-                            (html/content (str (:days-until-drafting-begins objective))))
-    [:.l8n-days-left-foot] (html/content (str " " (translations :objective-view/days)))))
+                            (html/set-attr :drafting-begins-date (:end-date objective))
+                            (html/content (str (:days-until-drafting-begins objective))))))
 
 (defn invitation-rsvp-for-objective? [objective invitation-rsvp]
   (let [objective-id (:_id objective)
