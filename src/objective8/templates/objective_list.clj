@@ -25,12 +25,12 @@
                              [:.clj-objective-list-item-title] (html/content (:title objective))
 
                              [:.l8n-drafting-begins] 
-                             (html/content (if (:drafting-started objective)
+                             (html/content (if (tf/in-drafting? objective)
                                              (translations :objective-list/drafting-started)
                                              (translations :objective-list/drafting-begins)))
 
                              [:.clj-objective-drafting-begins-date] 
-                             (when-not (:drafting-started objective) 
+                             (when (tf/open? objective) 
                                (html/do->
                                  (html/set-attr :drafting-begins-date (:end-date objective)) 
                                  (html/content (str (:days-until-drafting-begins objective)

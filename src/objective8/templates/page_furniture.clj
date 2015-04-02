@@ -80,7 +80,7 @@
 (html/defsnippet drafting-message library-html [:.clj-drafting-message] [{{objective :objective} :data
                                                                           translations :translations
                                                                           :as context}]
-  [html/any-node] (when (:drafting-started objective) identity)
+  [html/any-node] (when (tf/in-drafting? objective) identity)
   [:.clj-drafting-message-title] (html/content (translations :notifications/drafting-message-title))
   [:.clj-drafting-message-body] (html/content (translations :notifications/drafting-message-body))
   [:.clj-drafting-message-link] (html/do->

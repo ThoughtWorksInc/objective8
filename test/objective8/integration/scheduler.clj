@@ -19,7 +19,6 @@
                  (scheduler/update-objectives ANY_SCHEDULED_TIME) => 
                  (contains (-> objective
                                (assoc :status "drafting"
-                                      :drafting-started true
                                       :uri (str "/objectives/" o-id)
                                       :username username)))))
 

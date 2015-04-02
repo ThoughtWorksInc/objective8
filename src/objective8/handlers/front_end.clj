@@ -344,7 +344,7 @@
    (let [{objective-status :status objective :result} (http-api/get-objective (Integer/parseInt objective-id))]
      (cond
        (= objective-status ::http-api/success)
-       (if (:drafting-started objective)
+       (if (= "drafting" (:status objective))
          {:status 200
           :headers {"Content-Type" "text/html"}      
           :body (views/add-draft "add-draft" request :objective-id objective-id)} 

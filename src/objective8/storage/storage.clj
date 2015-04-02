@@ -113,7 +113,6 @@ SELECT _id, 'draft' AS entity FROM objective8.drafts WHERE global_id=?
 (defn pg-update-objective-status! [objective new-status]
   (update (mappings/get-mapping {:entity :objective})
           (assoc objective 
-                 :drafting-started (= new-status "drafting")
                  :status new-status)
           {:_id (:_id objective)}))
 

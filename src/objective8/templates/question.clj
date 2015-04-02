@@ -36,7 +36,7 @@
         answers (:answers data)
         objective (:objective data)
         tl8 (tf/translator context)
-        optionally-disable-voting (if (:drafting-started (:objective data))
+        optionally-disable-voting (if (tf/in-drafting? (:objective data))
                                     (disable-voting translations)
                                     identity)]
     (apply str

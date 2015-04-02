@@ -1,6 +1,7 @@
 (ns objective8.templates.draft
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
+            [objective8.templates.template-functions :as tf]
             [objective8.templates.page-furniture :as f]
             [objective8.utils :as utils]))
 
@@ -35,8 +36,9 @@
 
 (defn draft-wrapper [{:keys [data translations user] :as context}]
   (let [draft (:draft data)
-        {objective-id :_id drafting-started :drafting-started} (:objective data)
-        optionally-disable-voting (if drafting-started
+        objective (:objective data)
+        {objective-id :_id objective-status :status} objective
+        optionally-disable-voting (if (tf/in-drafting? objective) 
                                     identity
                                     f/disable-voting-actions)]
 
@@ -79,7 +81,7 @@
                         [:.clj-guidance-text-line-2] (html/content (translations :draft-guidance/text-line-2))
                         [:.clj-guidance-text-line-3] (html/content (translations :draft-guidance/text-line-3))
 
-                        [:.clj-draft-wrapper] (if (:drafting-started objective)
+                        [:.clj-draft-wrapper] (if (tf/in-drafting? objective)
                                                 (draft-wrapper context)
                                                 (html/do->
                                                   (html/set-attr "drafting-begins-date"

@@ -104,7 +104,7 @@
               (fact "An objective that is in drafting cannot be commented on"
                     (against-background
                      (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                               :result (assoc basic-objective :drafting-started true)})
+                                                               :result (assoc basic-objective :status "drafting")})
                     (let [{response :response} (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))]
                       (:body response) =not=> (contains "clj-comment-create"))))
 

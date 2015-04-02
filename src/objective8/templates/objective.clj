@@ -72,7 +72,7 @@
         objective-id (:_id objective)
         candidates (:candidates data)
         flash (:flash doc)
-        optionally-disable-voting (if (:drafting-started objective)
+        optionally-disable-voting (if (tf/in-drafting? objective)
                                     (pf/disable-voting-actions translations)
                                     identity)]
     (apply str
@@ -102,23 +102,23 @@
 
                                       [:.clj-objective-title] (html/content (:title objective))
 
-                                      [:.clj-days-left] (when-not (:drafting-started objective)
+                                      [:.clj-days-left] (when (tf/open? objective)
                                                           (drafting-begins objective translations))
                                       [:.clj-drafting-started-wrapper] (html/substitute (pf/drafting-message context))
                                       [:.clj-replace-with-objective-detail] (html/substitute (tf/text->p-nodes (:description objective)))
 
                                       [:.clj-writer-item-list] (html/content (pf/writer-list context))
-                                      [:.clj-invite-writer-link] (when-not (:drafting-started objective)
+                                      [:.clj-invite-writer-link] (when (tf/open? objective)
                                                                    (html/set-attr
                                                                      :href (str "/objectives/" (:_id objective) "/invite-writer")))
 
                                       [:.clj-question-list] (html/content (pf/question-list context))
-                                      [:.clj-ask-question-link] (when-not (:drafting-started objective)
+                                      [:.clj-ask-question-link] (when (tf/open? objective)
                                                                   (html/set-attr
                                                                     "href" (str "/objectives/" (:_id objective) "/add-question")))
 
                                       [:.clj-comment-list] (html/content
                                                              (optionally-disable-voting
                                                                (pf/comment-list context)))
-                                      [:.clj-comment-create] (when-not (:drafting-started objective)
+                                      [:.clj-comment-create] (when (tf/open? objective)
                                                                (html/content (pf/comment-create context :objective))))))))))

@@ -47,3 +47,9 @@
 (defn translate [context nodes]
   (html/at nodes
            [(html/attr? :data-l8n)] #(translate-node % context)))
+
+(defn open? [objective]
+  (= "open" (:status objective)))
+
+(defn in-drafting? [objective]
+  (= "drafting" (:status objective)))

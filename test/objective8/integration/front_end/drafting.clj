@@ -42,7 +42,7 @@
                    (get-in [:response :status])) => 200
                (provided
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                           :result {:_id 6273 :drafting-started true :entity "objective"}})) 
+                                                           :result {:_id 6273 :status "drafting" :entity "objective"}})) 
 
          (fact "add-draft page can not be reached when objective is not in drafting"
                (-> user-session
@@ -100,7 +100,7 @@
       (fact "anyone can view a particular draft"
             (against-background
               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                        :result {:drafting-started true
+                                                        :result {:status "drafting"
                                                                  :_id OBJECTIVE_ID}}
               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success}
               (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
@@ -124,7 +124,7 @@
       (fact "anyone can view latest draft"
             (against-background
               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                        :result {:drafting-started true
+                                                        :result {:status "drafting"
                                                                  :_id OBJECTIVE_ID}}
               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success}
               (http-api/get-draft OBJECTIVE_ID "latest") => {:status ::http-api/success
@@ -142,7 +142,7 @@
              (against-background
                (http-api/get-objective OBJECTIVE_ID) =>
                {:status ::http-api/success
-                :result {:drafting-started false
+                :result {:status "open"
                          :_id OBJECTIVE_ID
                          :end-date (utils/date-time->date-time-plus-30-days (utils/current-time))}}
                (http-api/get-draft OBJECTIVE_ID "latest") => {:status ::http-api/forbidden})
@@ -156,7 +156,7 @@
                (http-api/get-objective OBJECTIVE_ID) => 
                {:status ::http-api/success
                 :result {:end-date (utils/date-time->date-time-plus-30-days (utils/current-time))
-                         :drafting-started false}})
+                         :status "open"}})
 
              (get-in (p/request user-session draft-list-url)
                      [:response :body]) => (contains "29 days"))
@@ -166,7 +166,7 @@
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result {:_id OBJECTIVE_ID
                                                                   :end-date (utils/string->date-time "2012-12-12")
-                                                                  :drafting-started true}}
+                                                                  :status "drafting"}}
                (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success}
                (http-api/get-all-drafts OBJECTIVE_ID) => {:status ::http-api/success
                                                           :result [{:_id DRAFT_ID
@@ -191,7 +191,7 @@
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result {:_id OBJECTIVE_ID
                                                                   :end-date (utils/string->date-time "2012-12-12")
-                                                                  :drafting-started true}}
+                                                                  :status "drafting"}}
                (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success}
                (http-api/get-draft OBJECTIVE_ID "latest") => {:status ::http-api/success
                                                               :result {:_id DRAFT_ID
