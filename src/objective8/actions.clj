@@ -34,20 +34,11 @@
     {:status ::success :result (drafts/retrieve-latest-draft objective-id)}
     {:status ::objective-drafting-not-started}))
 
-(defn open? [entity-to-post-to]
-  (let [entity-type (:entity entity-to-post-to)]
-    (cond
-      (= entity-type :objective)
-      (= "open" (:status entity-to-post-to))
-      (= entity-type :draft)
-      true
-      (:objective-id entity-to-post-to)
-      (some-> (:objective-id entity-to-post-to)
-             objectives/retrieve-objective
-             :status
-             (= "open"))
-      :else
-      true)))
+(defn can-comment-on? [{:keys [entity] :as entity-to-post-to}]
+    (case entity
+      :objective (= "open" (:status entity-to-post-to))
+      :draft true
+      false))
 
 (defn allowed-to-vote [{:keys [global-id entity] :as entity-to-vote-on} {:keys [created-by-id] :as vote-data}]
   (let [objective (objectives/retrieve-objective (:objective-id entity-to-vote-on))
@@ -60,8 +51,7 @@
         :draft (objectives/in-drafting? objective)
         :objective (objectives/open? objective)
         :answer (objectives/open? objective)
-        false
-        )
+        false)
 
       (not (up-down-votes/get-vote global-id created-by-id)))))
 
@@ -75,7 +65,7 @@
 
 (defn create-comment! [{:keys [comment-on-uri] :as comment-data}]
   (if-let [entity-to-comment-on (storage/pg-retrieve-entity-by-uri comment-on-uri :with-global-id)]
-    (if (open? entity-to-comment-on)
+    (if (can-comment-on? entity-to-comment-on)
       (if-let [stored-comment (comments/store-comment-for! entity-to-comment-on comment-data)]
         {:status ::success :result stored-comment}
         {:status ::failure})
