@@ -40,24 +40,21 @@
       :draft true
       false))
 
-(defn allowed-to-vote [{:keys [global-id entity] :as entity-to-vote-on} {:keys [created-by-id] :as vote-data}]
+(defn allowed-to-vote? [{:keys [global-id entity] :as entity-to-vote-on} {:keys [created-by-id] :as vote-data}]
   (let [objective (objectives/retrieve-objective (:objective-id entity-to-vote-on))
         {owner-entity-type :entity} (if (= entity :comment)
                                       (storage/pg-retrieve-entity-by-uri (:comment-on-uri entity-to-vote-on))
                                       entity-to-vote-on)]
-    (and
-
-      (case owner-entity-type
-        :draft (objectives/in-drafting? objective)
-        :objective (objectives/open? objective)
-        :answer (objectives/open? objective)
-        false)
-
-      (not (up-down-votes/get-vote global-id created-by-id)))))
+    (and (case owner-entity-type
+           :draft (objectives/in-drafting? objective)
+           :objective (objectives/open? objective)
+           :answer (objectives/open? objective)
+           false)
+         (not (up-down-votes/get-vote global-id created-by-id)))))
 
 (defn cast-up-down-vote! [{:keys [vote-on-uri created-by-id vote-type] :as vote-data}]
   (if-let [{global-id :global-id :as entity-to-vote-on} (storage/pg-retrieve-entity-by-uri vote-on-uri :with-global-id)]
-    (if (allowed-to-vote entity-to-vote-on vote-data)
+    (if (allowed-to-vote? entity-to-vote-on vote-data)
       (when-let [stored-vote (up-down-votes/store-vote! entity-to-vote-on vote-data)]
         {:status ::success :result stored-vote})
       {:status ::forbidden})
