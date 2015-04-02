@@ -8,8 +8,8 @@ block vars
 block content
   .guidance-text-wrapper
     +guidanceText('!Tips for questions')
-      //p Gather background information such as opinions and experiences by asking a question.
-      p.l8n-guidance-text !Your question should be focussed and specific, as the answers will influence the policy drafting process.
+      //p !Gather background information such as opinions and experiences by asking a question.
+      p(data-l8n="content:question-create/guidance-text") !Your question should be focussed and specific, as the answers will influence the policy drafting process.
 
   .middle-container
 
@@ -27,13 +27,13 @@ block content
             a.clj-objective-navigation-item-objective(href="/objective")
               i.fa.fa-angle-left
               = " "
-              span.l8n-back-to-objective !Back to objective
+              span(data-l8n="content:objective-nav/back-to-objective") !Back to objective
 
     .objective-outline#outline
       h1.objective-title.clj-objective-title !Build safer cycling networks in the streets of Madrid.
 
     .objective-write-a-question
-      h2.clj-add-question-title.l8n-add-question-title !Add a question to this objective
+      h2(data-l8n="content:question-create/add-a-question") !Add a question to this objective
       //- can this be moved inside the mixin? (comment-create / clj ...)
       .question-create.clj-question-create
         +addQuestionForm(true)

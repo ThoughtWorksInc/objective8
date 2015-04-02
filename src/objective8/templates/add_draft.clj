@@ -24,5 +24,4 @@
                                     [:.clj-add-draft-form] (html/do-> 
                                                              (html/set-attr :action (str "/objectives/" (:objective-id data) "/add-draft")) 
                                                              (html/prepend (html/html-snippet (anti-forgery-field)))) 
-                                    [:.clj-add-draft-content] (html/content (:markdown data))
-                                    ))))))
+                                    [:.clj-add-draft-content] (html/content (:markdown data))))))))

@@ -13,6 +13,10 @@
 
 (def anchor-button (html/select library-html-resource [:.clj-anchor-button]))
 
+;; PLEASE SIGN IN
+
+(def please-sign-in-snippet (html/select library-html-resource [:.clj-please-sign-in]))
+
 ;; GOOGLE ANALYTICS
 
 (def google-analytics-script (html/select library-html-resource [:.clj-google-analytics]))
@@ -160,27 +164,6 @@
     (if (empty? questions)
       (empty-question-list-item context)
       (question-list-items questions translations))))
-
-(html/defsnippet add-question-form
-  library-html [:.clj-question-create-form] [{:keys [translations data]}]
-  [:.clj-question-create-form] (html/prepend (html/html-snippet (anti-forgery-field)))
-
-  [:.l8n-label-add-question] (html/content (translations :question-create/question-label))
-  [:.l8n-textarea-add-question] (html/set-attr :title (translations :question-create/question-title))
-  [:.l8n-button-add-question] (html/content (translations :question-create/post-button)))
-
-(html/defsnippet sign-in-to-add-question
-  library-html [:.clj-please-sign-in] [{:keys [translations ring-request]}]
-  [:.l8n-before-link] (html/content (translations :question-sign-in/please))
-  [:.l8n-sign-in-link] (html/do->
-                         (html/set-attr "href" (str "/sign-in?refer=" (:uri ring-request)))
-                         (html/content (translations :question-sign-in/sign-in)))
-  [:.l8n-after-link] (html/content (translations :question-sign-in/to)))
-
-(defn add-question [{user :user :as context}]
-  (if user
-    (add-question-form context)
-    (sign-in-to-add-question context)))
 
 ;; COMMENT LIST
 

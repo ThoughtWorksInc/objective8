@@ -13,6 +13,6 @@ mixin questionItemBlank()
 mixin addQuestionForm(allowFocus)
   - focus = allowFocus ? true : false
     form.clj-question-create-form(method="POST", action="")
-      label.clj-label-add-question.l8n-label-add-question(for="new-question") !Add a question
-      textarea.clj-textarea-add-question.l8n-textarea-add-question.func--question-textarea#new-question(name="question", rows="5", cols="10", pattern=".{50,}", maxlength="500", title="!Textarea title", required="required", autofocus=focus)
-      button.button.clj-button-add-question.l8n-button-add-question.func--add-question(type="submit") !Add question
+      label(for="new-question", data-l8n="content:question-create/question-label") !Add a question
+      textarea.func--question-textarea#new-question(name="question", rows="5", cols="10", pattern=".{50,}", maxlength="500", title="!Textarea title", required="required", autofocus=focus, data-l8n="attr/title:question-create/question-title")
+      button.button.func--add-question(type="submit", data-l8n="content:question-create/post-button") !Add question
