@@ -305,6 +305,20 @@
                     retrieved-draft (first (:result (storage/pg-retrieve {:entity :draft :_id (:_id draft)})))]
                 (:_created_at_sql_time retrieved-draft)) =not=> nil)))
 
+(facts "about retrieving entities by global id"
+       (against-background
+         [(before :contents (do (db-connection)
+                               (truncate-tables)))
+          (after :facts (truncate-tables))]
+
+         (fact "can retrieve objectives by global id"
+               (let [{global-id :global-id :as objective} (sh/store-an-open-objective)]
+                 (storage/pg-retrieve-entity-by-global-id global-id) => (contains objective)))
+
+         (fact "can retrieve drafts by global id"
+               (let [{global-id :global-id :as draft} (sh/store-a-draft)]
+                 (storage/pg-retrieve-entity-by-global-id global-id) => (contains draft)))))
+
 (facts "about retrieving entities by uri"
        (against-background
         [(before :contents (do (db-connection)

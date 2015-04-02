@@ -43,7 +43,7 @@
 (defn allowed-to-vote? [{:keys [global-id entity] :as entity-to-vote-on} {:keys [created-by-id] :as vote-data}]
   (let [objective (objectives/retrieve-objective (:objective-id entity-to-vote-on))
         {owner-entity-type :entity} (if (= entity :comment)
-                                      (storage/pg-retrieve-entity-by-uri (:comment-on-uri entity-to-vote-on))
+                                      (storage/pg-retrieve-entity-by-global-id (:comment-on-id entity-to-vote-on))
                                       entity-to-vote-on)]
     (and (case owner-entity-type
            :draft (objectives/in-drafting? objective)

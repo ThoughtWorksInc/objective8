@@ -52,28 +52,28 @@
         (objectives/retrieve-objective anything) => objective-not-in-drafting
         (objectives/retrieve-objective :objective-in-drafting) => objective-in-drafting
         (objectives/retrieve-objective :objective-not-in-drafting) => objective-not-in-drafting
-        (storage/pg-retrieve-entity-by-uri :objective-in-drafting-uri) => objective-in-drafting)
+        (storage/pg-retrieve-entity-by-global-id :objective-in-drafting-global-id) => objective-in-drafting)
        
        (fact "the same user cannot vote twice on the same entity"
              (actions/allowed-to-vote? objective-not-in-drafting :vote-data) => falsey
              (provided
-               (up-down-votes/get-vote anything anything) => :a-vote))
+              (up-down-votes/get-vote anything anything) => :a-vote))
        
        (fact "a comment attached to an objective can not be voted on when the objective is in drafting"
              (actions/allowed-to-vote? {:entity :comment
                                         :objective-id :objective-in-drafting
-                                        :comment-on-uri :objective-in-drafting-uri} :vote-data) => falsey)
+                                        :comment-on-id :objective-in-drafting-global-id} :vote-data) => falsey)
 
        (fact "a comment attached to a draft can not be voted on when the associated objective is not in drafting"
              (against-background
-              (storage/pg-retrieve-entity-by-uri :draft-uri) => {:entity :draft
-                                                                 :objective-id :objective-not-in-drafting})
+              (storage/pg-retrieve-entity-by-global-id :draft-global-id) => {:entity :draft
+                                                                             :objective-id :objective-not-in-drafting})
              (actions/allowed-to-vote? {:entity :comment
-                                       :comment-on-uri :draft-uri} :vote-data) => falsey)
+                                        :comment-on-id :draft-global-id} :vote-data) => falsey)
        
        (fact "an answer can not be voted on when the associated objective is in drafting"
              (actions/allowed-to-vote? {:entity :answer
-                                       :objective-id :objective-in-drafting} :vote-data) => falsey))
+                                        :objective-id :objective-in-drafting} :vote-data) => falsey))
 
 (facts "about retrieving drafts"
        (fact "can only retrieve drafts for an objective in drafting"

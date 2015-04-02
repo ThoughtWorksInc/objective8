@@ -76,6 +76,20 @@ Options: :with-global-id -- includes the global-id in the entity."
           (assoc :uri uri)
           optionally-remove-global-id))))
 
+(defn pg-retrieve-entity-by-global-id [global-id]
+  (let [entity-query (-> (korma/exec-raw ["
+SELECT _id, 'objective' AS entity FROM objectives WHERE global_id=?
+
+UNION
+
+SELECT _id, 'draft' AS entity FROM drafts WHERE global_id=?
+" [global-id, global-id]] :results)
+                         first
+                         (update-in [:entity] keyword))]
+    (-> (pg-retrieve entity-query)
+        :result
+        first)))
+
 (defn update [entity new-fields where]
   (korma/update entity 
                 (korma/set-fields new-fields) 
