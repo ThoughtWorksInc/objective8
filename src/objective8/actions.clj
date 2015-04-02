@@ -56,12 +56,12 @@
                                       entity-to-vote-on)]
     (and
 
-      (cond
-        (= owner-entity-type :draft) (objectives/in-drafting? objective)
-        (= owner-entity-type :objective) (open? objective)
-        (= owner-entity-type :answer) (open? objective)
-
-        :else true)
+      (case owner-entity-type
+        :draft (objectives/in-drafting? objective)
+        :objective (objectives/open? objective)
+        :answer (objectives/open? objective)
+        false
+        )
 
       (not (up-down-votes/get-vote global-id created-by-id)))))
 

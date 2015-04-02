@@ -1,6 +1,6 @@
 (ns objective8.answers
   (:require [objective8.storage.storage :as storage]
-            [objective8.objectives :refer [open?] :as objectives]
+            [objective8.objectives :as objectives]
             [objective8.utils :as utils]))
 
 (defn uri-for-answer [answer]
@@ -16,7 +16,7 @@
           (utils/update-in-self [:uri] uri-for-answer)))
 
 (defn create-answer! [{obj-id :objective-id :as answer}]
-  (when (open? (objectives/retrieve-objective obj-id))
+  (when (objectives/open? (objectives/retrieve-objective obj-id))
     (store-answer! answer)))
 
 (defn get-answers [question-id]

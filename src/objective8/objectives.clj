@@ -3,7 +3,8 @@
             [objective8.storage.storage :as storage]
             [objective8.utils :as utils]))
 
-(def open? #(= "open" (:status %)))
+(defn open? [objective]
+  (when (= "open" (:status objective)) objective))
 
 (defn in-drafting? [objective]
   (when (= "drafting" (:status objective)) objective))

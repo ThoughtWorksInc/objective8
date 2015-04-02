@@ -55,9 +55,9 @@
         (storage/pg-retrieve-entity-by-uri :objective-in-drafting-uri) => objective-in-drafting)
        
        (fact "the same user cannot vote twice on the same entity"
-             (against-background
-              (up-down-votes/get-vote anything anything) => :a-vote)
-             (actions/allowed-to-vote :entity-to-vote-on :vote-data) => falsey)
+             (actions/allowed-to-vote objective-not-in-drafting :vote-data) => falsey
+             (provided
+               (up-down-votes/get-vote anything anything) => :a-vote))
        
        (fact "a comment attached to an objective can not be voted on when the objective is in drafting"
              (actions/allowed-to-vote {:entity :comment
