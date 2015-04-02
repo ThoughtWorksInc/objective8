@@ -134,14 +134,12 @@
                     (wait-for-element ".func--add-question")
                     (screenshot "objective_page_with_question")
 
-                    (swap! journey-state assoc :question-url (wd/current-url))
-
                     (catch Exception e
                       (screenshot "Error-Can-add-questions")
                       (throw e))))
 
          (fact "Can answer a question"
-               (try (wd/to (:question-url @journey-state))
+               (try (wd/to (:objective-url @journey-state))
                     (wait-for-element ".func--answer-link")
 
                     (wd/click ".func--answer-link")
@@ -152,23 +150,30 @@
                         (wd/submit))
 
                     (wait-for-element ".func--answer-text")
+                    (screenshot "answered_question")
+                    (swap! journey-state assoc :question-url (wd/current-url))
+
                     (wd/text ".func--answer-text")
+
                     (catch Exception e
                       (screenshot "Error-Can-answer-questions")
                       (throw e)))
                => "Functional test answer")
 
-         (future-fact "Can up vote an answer" 
-                      (try (wd/to (:question-url @journey-state))
-                           (wait-for-element "textarea.func--add-answer")
-                           (wd/text ".func--up-score") => "0"
-                           (wd/click "button.func--up-vote")
-                           (wd/to (:question-url @journey-state)) ;TODO - how to handle redirects
-                           (wd/text ".func--up-score") => "1"
+         (fact "Can up vote an answer" 
+               (try (wd/to (:question-url @journey-state))
+                    
+                    (wait-for-element "textarea.func--add-answer")
+                    (wd/text ".func--up-score") => "0"
 
-                           (catch Exception e
-                             (screenshot "Error-Can-vote-on-an-answer")
-                             (throw e))))
+                    (wd/click "button.func--up-vote")
+
+                    (wait-for-element "textarea.func--add-answer")
+                    (wd/text ".func--up-score") => "1"
+                    
+                    (catch Exception e
+                      (screenshot "Error-Can-vote-on-an-answer")
+                      (throw e))))
 
          (fact "Can invite a writer"
            (try (wd/to (:objective-url @journey-state))
@@ -291,6 +296,22 @@
                       (screenshot "ERROR-Can-comment-on-a-draft")
                       (throw e)))
                   => (contains "Functional test comment text"))
+
+            (fact "Can down vote a comment on a draft"
+                  (try
+                    (wd/to (str (:objective-url @journey-state) "/drafts/latest"))
+                    (wait-for-title "Policy draft | Objective[8]")
+
+                    (wd/text ".func--down-score") => "0"
+                    
+                    (wd/click "button.func--down-vote")
+
+                    (wait-for-title "Policy draft | Objective[8]")
+                    (wd/text ".func--down-score") => "1"
+                    
+                    (catch Exception e
+                      (screenshot "ERROR-Can-vote-on-a-comment-on-a-draft")
+                      (throw e))))
 
             (fact "Can navigate between drafts"
                   (try
