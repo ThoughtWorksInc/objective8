@@ -41,10 +41,10 @@
              (actions/cast-up-down-vote! vote-data) => {:status ::actions/entity-not-found}))
 
 (def objective-in-drafting {:entity :objective
-                            :drafting-started true})
+                            :status "drafting"})
 
 (def objective-not-in-drafting {:entity :objective
-                                :drafting-started false})
+                                :status "open"})
 
 (facts "about allowing or disallowing voting"
        (against-background
@@ -79,27 +79,25 @@
        (fact "can only retrieve drafts for an objective in drafting"
             (actions/retrieve-drafts OBJECTIVE_ID) => {:status ::actions/objective-drafting-not-started}
             (provided
-              (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started false}))
+              (objectives/retrieve-objective OBJECTIVE_ID) => {:status "open"}))
        
        (fact "retrieves drafts for an objective that is in drafting"
              (actions/retrieve-drafts OBJECTIVE_ID) => {:status ::actions/success :result :drafts}
              (provided
-               (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started true}
+               (objectives/retrieve-objective OBJECTIVE_ID) => {:status "drafting"}
                (drafts/retrieve-drafts OBJECTIVE_ID) => :drafts))
        
        (fact "can only retrieve latest draft for an objective in drafting"
              (actions/retrieve-latest-draft OBJECTIVE_ID) => {:status ::actions/objective-drafting-not-started}
              (provided
-               (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started false}))
+               (objectives/retrieve-objective OBJECTIVE_ID) => {:status "open"}))
 
        (fact "retrieves latest draft for an objective that is in drafting"
              (actions/retrieve-latest-draft OBJECTIVE_ID) => {:status ::actions/success :result :draft}
              (provided
-               (objectives/retrieve-objective OBJECTIVE_ID) => {:drafting-started true}
+               (objectives/retrieve-objective OBJECTIVE_ID) => {:status "drafting"} 
                (drafts/retrieve-latest-draft OBJECTIVE_ID) => :draft)))
 
-(def an-objective-not-in-drafting {:entity :objective :drafting-started false})
-(def an-objective-in-drafting {:entity :objective :drafting-started true})
 (def a-draft {:entity :draft})
 (def comment-data {:comment-on-uri :entity-uri
                    :comment "A comment"
@@ -109,13 +107,13 @@
        (fact "can comment on an objective that is not in drafting"
              (actions/create-comment! comment-data) => {:status ::actions/success :result :the-stored-comment}
              (provided
-              (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => an-objective-not-in-drafting
-              (comments/store-comment-for! an-objective-not-in-drafting comment-data) => :the-stored-comment))
+              (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => objective-not-in-drafting
+              (comments/store-comment-for! objective-not-in-drafting comment-data) => :the-stored-comment))
 
        (fact "cannot comment on an objective that is in drafting"
              (actions/create-comment! comment-data) => {:status ::actions/objective-drafting-started}
              (provided
-              (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => an-objective-in-drafting))
+              (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => objective-in-drafting))
 
        (fact "can comment on a draft"
              (actions/create-comment! comment-data) => {:status ::actions/success :result :the-stored-comment}

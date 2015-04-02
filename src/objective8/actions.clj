@@ -34,6 +34,21 @@
     {:status ::success :result (drafts/retrieve-latest-draft objective-id)}
     {:status ::objective-drafting-not-started}))
 
+(defn open? [entity-to-post-to]
+  (let [entity-type (:entity entity-to-post-to)]
+    (cond
+      (= entity-type :objective)
+      (= "open" (:status entity-to-post-to))
+      (= entity-type :draft)
+      true
+      (:objective-id entity-to-post-to)
+      (some-> (:objective-id entity-to-post-to)
+             objectives/retrieve-objective
+             :status
+             (= "open"))
+      :else
+      true)))
+
 (defn allowed-to-vote [{:keys [global-id entity] :as entity-to-vote-on} {:keys [created-by-id] :as vote-data}]
   (let [objective (objectives/retrieve-objective (:objective-id entity-to-vote-on))
         {owner-entity-type :entity} (if (= entity :comment)
@@ -41,14 +56,14 @@
                                       entity-to-vote-on)]
     (and
 
-     (cond
-       (= owner-entity-type :draft) (objectives/in-drafting? objective)
-       (= owner-entity-type :objective) (objectives/open? objective)
-       (= owner-entity-type :answer) (objectives/open? objective)
+      (cond
+        (= owner-entity-type :draft) (objectives/in-drafting? objective)
+        (= owner-entity-type :objective) (open? objective)
+        (= owner-entity-type :answer) (open? objective)
 
-       :else true)
+        :else true)
 
-     (not (up-down-votes/get-vote global-id created-by-id)))))
+      (not (up-down-votes/get-vote global-id created-by-id)))))
 
 (defn cast-up-down-vote! [{:keys [vote-on-uri created-by-id vote-type] :as vote-data}]
   (if-let [{global-id :global-id :as entity-to-vote-on} (storage/pg-retrieve-entity-by-uri vote-on-uri :with-global-id)]
@@ -60,7 +75,7 @@
 
 (defn create-comment! [{:keys [comment-on-uri] :as comment-data}]
   (if-let [entity-to-comment-on (storage/pg-retrieve-entity-by-uri comment-on-uri :with-global-id)]
-    (if (objectives/open? entity-to-comment-on)
+    (if (open? entity-to-comment-on)
       (if-let [stored-comment (comments/store-comment-for! entity-to-comment-on comment-data)]
         {:status ::success :result stored-comment}
         {:status ::failure})

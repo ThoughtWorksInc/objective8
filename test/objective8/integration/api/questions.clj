@@ -65,18 +65,20 @@
                (against-background
                  (questions/store-question! anything) =throws=> (org.postgresql.util.PSQLException.
                                                                   (org.postgresql.util.ServerErrorMessage. "" 0)))
-               (:response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions")
-                                     :request-method :post
-                                     :content-type "application/json"
-                                     :body (the-question-as-json))) => (contains {:status 400}))
+               (let [{obj-id :_id} (sh/store-an-open-objective)]
+                 (:response (p/request app (str "/api/v1/objectives/" obj-id "/questions")
+                                       :request-method :post
+                                       :content-type "application/json"
+                                       :body (the-question-as-json)))) => (contains {:status 400}))
 
          (fact "a 400 status is returned if a map->question exception is raised"
-               (:response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions")
-                                     :request-method :post
-                                     :content-type "application/json"
-                                     :body (json/generate-string the-invalid-question))) => (contains {:status 400}))
+               (let [{obj-id :_id} (sh/store-an-open-objective)]
+                 (:response (p/request app (str "/api/v1/objectives/" obj-id "/questions")
+                                       :request-method :post
+                                       :content-type "application/json"
+                                       :body (json/generate-string the-invalid-question)))) => (contains {:status 400}))
 
-         (fact "a 423 (locked) status is returned when trying to post a question to an objective that has drafting-started = true"
+         (fact "a 423 (locked) status is returned when trying to post a question to an objective that has status=drafting"
                (let [{objective-id :_id user-id :created-by-id} (sh/store-an-objective-in-draft)]
                  (:response (p/request app (str "/api/v1/objectives/" objective-id "/questions")
                                        :request-method :post

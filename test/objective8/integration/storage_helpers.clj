@@ -34,7 +34,6 @@
   (let [{user-id :_id} (store-a-user)]
     (storage/pg-store! {:entity :objective
                         :created-by-id user-id
-                        :drafting-started true
                         :end-date (str (tc/ago (tc/days 1))) 
                         :status "drafting"})))
 

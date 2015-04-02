@@ -3,10 +3,10 @@
             [objective8.storage.storage :as storage]
             [objective8.utils :as utils]))
 
-(def open? (complement :drafting-started))
+(def open? #(= "open" (:status %)))
 
 (defn in-drafting? [objective]
-  (when (:drafting-started objective) objective))
+  (when (= "drafting" (:status objective)) objective))
 
 (defn uri-for-objective [{:keys [_id] :as objective}]
   (str "/objectives/" _id))
@@ -14,8 +14,7 @@
 (defn store-objective! [objective-data]
   (some-> objective-data
           (assoc :entity :objective
-                 :status "open"
-                 )
+                 :status "open")
           storage/pg-store!
           (utils/update-in-self [:uri] uri-for-objective)
           (dissoc :global-id)))

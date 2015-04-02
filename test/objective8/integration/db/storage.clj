@@ -69,9 +69,9 @@
                                                                        :end-date "2015-01-01T00:00:00.000Z"
                                                                        :title "title"})))
 
-               (fact "the 'drafting-status' of an objective can be updated"
+               (fact "the status of an objective can be updated"
                      (let [objective (sh/store-an-open-objective)]
-                      (:drafting-started (storage/pg-update-objective-status! objective "drafting")) => true)) 
+                      (:status (storage/pg-update-objective-status! objective "drafting")) => "drafting")) 
 
                ;;COMMENTS
                (fact "a comment entity can be stored in the database"
