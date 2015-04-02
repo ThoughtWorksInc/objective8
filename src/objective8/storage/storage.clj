@@ -80,11 +80,11 @@ Options: :with-global-id -- includes the global-id in the entity."
 
 (defn pg-retrieve-entity-by-global-id [global-id]
   (let [entity-query (-> (korma/exec-raw ["
-SELECT _id, 'objective' AS entity FROM objectives WHERE global_id=?
+SELECT _id, 'objective' AS entity FROM objective8.objectives WHERE global_id=?
 
 UNION
 
-SELECT _id, 'draft' AS entity FROM drafts WHERE global_id=?
+SELECT _id, 'draft' AS entity FROM objective8.drafts WHERE global_id=?
 " [global-id, global-id]] :results)
                          first
                          (update-in [:entity] keyword))]
