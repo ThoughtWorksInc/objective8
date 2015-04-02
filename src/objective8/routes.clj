@@ -59,7 +59,4 @@
                          "/meta" {"/comments" {:post :api/post-comment
                                                :get :api/get-comments}}
                          "/up-down-votes" {:post :api/post-up-down-vote}
-                         "/invitations" {:get :api/get-invitation}}
-
-    ;;DEV-API
-    "dev/api/v1"     {["/objectives/" :id "/start-drafting"] {:post :dev/post-start-drafting}}}])
+                         "/invitations" {:get :api/get-invitation}}}])

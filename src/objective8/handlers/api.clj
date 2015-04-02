@@ -285,11 +285,6 @@
       (invalid-response "Invalid candidates get request for this objective"))))
 
 ;;DRAFTS
-(defn post-start-drafting [{{objective-id :id} :route-params}]
-  (let [updated-objective (actions/start-drafting! (Integer/parseInt objective-id))]
-    (resource-created-response (str utils/host-url
-                                   "/api/v1/objectives/" objective-id) updated-objective)))
-
 (defn post-draft [{{objective-id :id} :route-params :as request}]
   (let [draft-data (ar/request->draft-data request)] 
     (if-let [draft (actions/submit-draft! draft-data)]
