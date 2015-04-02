@@ -31,6 +31,10 @@
 (defn update-in-self [m key-route update-fn]
   (assoc-in m key-route (update-fn m)))
 
+(defn transform-map-keys [m transformation]
+  (let [ks (keys m) vs (vals m)]
+    (zipmap (map transformation ks) vs)))
+
 ;;Bidi currently doesn't currently work with java.lang.Integer
 (extend-protocol bidi/ParameterEncoding
   java.lang.Integer

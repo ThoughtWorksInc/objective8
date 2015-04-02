@@ -34,14 +34,31 @@
   [pgobject]
   (json/parse-string (postgres-type->string pgobject) true))
 
-(defn -to_
-  "Replaces hyphens in keys with underscores"
-  [m]
-  (let [ks (keys m) vs (vals m)]
-    (zipmap (map (fn [k] (-> (name k)
-                             (clojure.string/replace #"-" "_")
-                             keyword)) ks)
-            vs)))
+(defn db-column->key
+  "Given a keyword representing a key in the database (i.e. with
+  underscores, rather than hyphens), converts it to a conventional
+  clojure map keyword.  Keys beginning with an underscore are left
+  unchanged.
+
+  (db-column->key :abc_def) => :abc-def
+  (db-column->key :_abc_def) => :_abc_def"
+  [db-key]
+  (let [key-name (name db-key)]
+    (if (re-matches #"_.*" key-name)
+      db-key
+      (-> key-name
+          (clojure.string/replace #"_" "-")
+          keyword))))
+
+(defn key->db-column
+  "Converts all hyphens in a keyword to underscores.
+
+  (key->db-column :abc-def) => :abc_def
+  (key->db-column :_abc_def) => :_abc_def"
+  [k]
+  (-> (name k)
+      (clojure.string/replace #"-" "_")
+      keyword))
 
 (defn- apply-transformation [m [key transform]]
   (update-in m [key] transform))
@@ -78,7 +95,7 @@
          (-> column-map
              insert-json-if-required
              (apply-transformations transformations)
-             -to_))
+             (utils/transform-map-keys key->db-column)))
        (throw (ex-info (str "Could not transform map to " entity-label) {:data m}))))))
 
 (def map->objective
@@ -137,12 +154,6 @@
   (db-insertion-mapper "bearer-token"
                        :token-details
                        [:bearer-name]))
-
-(defn- key->db-column [key]
-  (-> key
-      name
-      (clojure.string/replace #"-" "_")
-      keyword))
 
 (defn- extract-column [m um key]
   (let [db-column (key->db-column key)]

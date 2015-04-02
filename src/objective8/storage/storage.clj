@@ -2,7 +2,8 @@
   (:require [korma.core :as korma]
             [korma.db :as kdb]
             [objective8.storage.uris :as uris]
-            [objective8.storage.mappings :as mappings]))
+            [objective8.storage.mappings :as mappings]
+            [objective8.utils :as utils]))
 
 (defn pg-create-global-identifier []
   (first (korma/exec-raw
@@ -53,7 +54,8 @@
 
   ([{:keys [entity] :as query} options]
    (if entity
-     (let [result (select (mappings/get-mapping query) (mappings/-to_ (dissoc query :entity)) options)]
+     (let [result (select (mappings/get-mapping query) (-> (dissoc query :entity)
+                                                           (utils/transform-map-keys mappings/key->db-column)) options)]
        {:query query
         :options options
         :result result})
