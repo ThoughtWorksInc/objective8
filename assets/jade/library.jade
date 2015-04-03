@@ -81,7 +81,7 @@ html.no-js(lang="en")
         li
           a(href="#drafting-assets") Drafting assets
         li
-          i(href="#vote-assets") Vote assets
+          a(href="#vote-assets") Vote assets
         li
           a(href="#modal-assets") Modal assets
 
@@ -154,12 +154,6 @@ html.no-js(lang="en")
 
 
       h2#objective-assets Objective assets
-
-      .example
-        .documentation
-          h3 No drafts
-        .no-drafts-yet.clj-no-drafts-yet
-          p.no-drafts-yet-text.clj-no-drafts-yet-text !There are no drafts yet.
 
       .example
         .documentation
@@ -287,6 +281,12 @@ html.no-js(lang="en")
           p Displayed on a draft page when drafting hasn't begun
         +draftingBeginsInText
           
+      .example
+        .documentation
+          h3 No drafts
+        .no-drafts-yet.clj-no-drafts-yet
+          p.no-drafts-yet-text(data-l8n="content:draft/no-drafts") !There are no drafts yet.
+
       h2#vote-assets Vote assets
 
       .example

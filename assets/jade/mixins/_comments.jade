@@ -13,7 +13,7 @@ mixin commentItem(author, date)
     +commentReply
 
 mixin commentItemBlank()
-  li.comment-item.clj-empty-comment-list-item
+  li.comment-item.clj-empty-comment-list-item(data-l8n="content:comment-view/no-comments")
     | !There are no comments yet.
 
 mixin addCommentForm()
@@ -21,4 +21,4 @@ mixin addCommentForm()
     input.clj-refer(name='refer', type='hidden', value='!redirect-after-post-uri')
     input.clj-comment-on-uri(name='comment-on-uri', type='hidden', value='!entity-to-comment-on-uri')
     textarea.func--comment-form-text-area(name='comment', rows='5', cols='10', pattern=".{50,}", maxLength='500', required)
-    button.button.clj-add-comment.func--comment-form-submit(type='submit') !Add a comment
+    button.button.func--comment-form-submit(type='submit', data-l8n="content:comment-create/post-button") !Add a comment

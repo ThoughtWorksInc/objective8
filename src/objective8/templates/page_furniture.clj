@@ -118,22 +118,24 @@
     (invite-writer-form context)
     (sign-in-to-invite-writer context)))
 
-(html/defsnippet empty-writer-list-item
-  library-html [:.clj-empty-writer-list-item] [{translations :translations}]
-  [:.clj-empty-writer-list-item] (html/content (translations :candidate-list/no-candidates)))
+(def empty-writer-list-item-snippet (html/select library-html-resource [:.clj-empty-writer-list-item]))
 
-(html/defsnippet writer-list-items
-  library-html [:.clj-writer-item-without-photo] [candidates]
-  [:.clj-writer-item-without-photo :a] nil
-  [:.clj-writer-item-without-photo] (html/clone-for [candidate candidates]
-                                                    [:.clj-writer-name] (html/content (:writer-name candidate))
-                                                    [:.clj-writer-description] (html/content (:invitation-reason candidate))))
+(def writer-item-snippet (html/select library-html-resource [:.clj-writer-item-without-photo]))
+
+(defn writer-list-items [candidates]
+  (html/at writer-item-snippet
+           [:.clj-writer-item-without-photo :> :a] html/unwrap
+           [:.clj-writer-item-without-photo] 
+           (html/clone-for [candidate candidates]
+                           [:.clj-writer-name] (html/content (:writer-name candidate))
+                           [:.clj-writer-description] (html/content (:invitation-reason candidate)))))
 
 (defn writer-list [context]
   (let [candidates (get-in context [:data :candidates])]
     (if (empty? candidates)
-      (empty-writer-list-item context)
+      empty-writer-list-item-snippet
       (writer-list-items candidates))))
+
 ;; ANSWER LIST
 
 (html/defsnippet sign-in-to-add-answer
@@ -186,47 +188,51 @@
 
 (defn disable-voting-actions [translations]
   (html/transformation
-   [:.clj-actions-vote-button] (comp
-                                (html/set-attr "disabled" "disabled")
-                                (html/set-attr "title" (translations :comment-votes/drafting-started)))))
+    [:.clj-actions-vote-button] 
+    (comp
+      (html/set-attr :disabled "disabled")
+      (html/set-attr :title (translations :comment-votes/drafting-started)))))
 
-(html/defsnippet empty-comment-list-item
-  library-html [:.clj-empty-comment-list-item] [translations]
-  [:.clj-empty-comment-list-item] (html/content (translations :comment-view/no-comments)))
+(def empty-comment-list-item-snippet (html/select library-html-resource [:.clj-empty-comment-list-item]))
 
-(html/defsnippet comment-list-items
-  library-html [:.clj-comment-item] [{:keys [data ring-request user] :as context}]
-  [:.clj-comment-item] (html/clone-for [comment (:comments data)]
-                                       [:.clj-comment-author] (html/content (:username comment))
-                                       [:.clj-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
-                                       [:.clj-comment-text] (html/content (:comment comment))
-                                       [:.clj-up-down-vote-form] (if user
-                                                                     (voting-actions-when-signed-in context comment)
-                                                                     (voting-actions-when-not-signed-in context comment))
-                                       [:.clj-comment-reply] nil))
+(def comment-list-item-snippet (html/select library-html-resource [:.clj-comment-item])) 
 
-(defn comment-list [{translations :translations :as context}]
-  (let [comments (get-in context [:data :comments])]
+(defn comment-list-items [{:keys [data user] :as context}]
+  (let [comments (:comments data)]
+    (html/at comment-list-item-snippet
+             [:.clj-comment-item] 
+             (html/clone-for [comment comments]
+                             [:.clj-comment-author] (html/content (:username comment))
+                             [:.clj-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
+                             [:.clj-comment-text] (html/content (:comment comment))
+                             [:.clj-up-down-vote-form] 
+                             (if user
+                               (voting-actions-when-signed-in context comment)
+                               (voting-actions-when-not-signed-in context comment))
+                             [:.clj-comment-reply] nil)))) 
+
+(defn comment-list [{:keys [data] :as context}]
+  (let [comments (:comments data)]
     (if (empty? comments)
-      (empty-comment-list-item translations)
+      empty-comment-list-item-snippet
       (comment-list-items context))))
 
 ;; COMMENT CREATE
 
 (html/defsnippet comment-create-form
-  library-html [:.clj-add-comment-form] [{:keys [translations data ring-request]} comment-target]
+  library-html [:.clj-add-comment-form] [{:keys [data ring-request]} comment-target]
   [:.clj-add-comment-form] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:.clj-refer] (html/set-attr "value" (:uri ring-request))
-  [:.clj-comment-on-uri] (html/set-attr "value" (get-in data [comment-target :uri]))
-  [:.clj-add-comment] (html/content (translations :comment-create/post-button)))
+  [:.clj-refer] (html/set-attr :value (:uri ring-request))
+  [:.clj-comment-on-uri] (html/set-attr :value (get-in data [comment-target :uri])))
 
-(html/defsnippet sign-in-to-comment
-  library-html [:.clj-please-sign-in] [{:keys [translations ring-request]}]
-  [:.clj-before-link] (html/content (translations :comment-sign-in/please))
-  [:.clj-sign-in-link] (html/do->
-                         (html/set-attr "href" (str "/sign-in?refer=" (:uri ring-request) "%23comments"))
-                         (html/content (translations :comment-sign-in/sign-in)))
-  [:.clj-after-link] (html/content (translations :comment-sign-in/to)))
+(defn sign-in-to-comment [{:keys [translations ring-request]}]
+  (html/at please-sign-in-snippet
+           [:.clj-before-link] (html/content (translations :comment-sign-in/please))
+           [:.clj-sign-in-link] (html/do->
+                                  (html/set-attr :href (str "/sign-in?refer=" (:uri ring-request) "%23comments"))
+                                  (html/content (translations :comment-sign-in/sign-in)))
+           [:.clj-after-link] (html/content (translations :comment-sign-in/to))))
+
 
 (defn comment-create [{user :user :as context} comment-target]
   (if user

@@ -7,32 +7,34 @@
 
 (def draft-template (html/html-resource "templates/jade/draft.html" {:parser jsoup/parser}))
 
-(defn previous-draft-navigation [{:keys [data translations] :as context}]
-  (let [draft (:draft data)]
-    (html/transformation
-      [:.clj-draft-version-previous-link] (html/set-attr "href" 
-                                                         (utils/local-path-for :fe/draft :id (:objective-id draft) 
-                                                                               :d-id (:previous-draft-id draft)))
-      [:.clj-draft-version-navigation-previous-text] (html/content (translations :draft/previous-draft)))))
-
-(defn next-draft-navigation [{:keys [data translations] :as context}]
-  (let [draft (:draft data)]
-    (html/transformation
-      [:.clj-draft-version-next-link] (html/set-attr "href" 
-                                                     (utils/local-path-for :fe/draft :id (:objective-id draft) 
-                                                                           :d-id (:next-draft-id draft)))
-      [:.clj-draft-version-navigation-next-text] (html/content (translations :draft/next-draft)))))
+(def draft-version-navigation-snippet (html/select draft-template [:.clj-draft-version-navigation]))
 
 (defn draft-version-navigation [{:keys [data] :as context}]
-  (let [draft (:draft data)]
-    (html/transformation
-      [:.clj-draft-version-writer-author] (html/content (:username draft))
-      [:.clj-draft-version-time] (html/content (utils/iso-time-string->pretty-time (:_created_at draft)))
-      [:.clj-draft-version-navigation-previous] (when (:previous-draft-id draft)
-                                                  (previous-draft-navigation context))
-      [:.clj-draft-version-navigation-next] (when (:next-draft-id draft)
-                                              (next-draft-navigation context)))))
+  (let [draft (:draft data)
+        objective-id (:objective-id draft)
+        previous-id (:previous-draft-id draft)
+        next-id (:next-draft-id draft)] 
+    (html/at draft-version-navigation-snippet
+             [:.clj-draft-version-writer-author] (html/content (:username draft))
+             [:.clj-draft-version-time] (html/content (utils/iso-time-string->pretty-time (:_created_at draft)))
+             [:.clj-draft-version-navigation-previous] 
+             (when previous-id
+               (html/transformation
+                 [:.clj-draft-version-previous-link] 
+                 (html/set-attr :href
+                                (utils/local-path-for :fe/draft :id objective-id
+                                                      :d-id previous-id))))
+             [:.clj-draft-version-navigation-next] 
+             (when next-id
+               (html/transformation
+                 [:.clj-draft-version-next-link] 
+                 (html/set-attr :href
+                                (utils/local-path-for :fe/draft :id objective-id
+                                                      :d-id next-id)))))))
 
+(def no-drafts-snippet (html/select pf/library-html-resource [:.clj-no-drafts-yet]))
+
+(def draft-wrapper-snippet (html/select draft-template [:.clj-draft-wrapper]))
 
 (defn draft-wrapper [{:keys [data translations user] :as context}]
   (let [draft (:draft data)
@@ -41,28 +43,23 @@
         optionally-disable-voting (if (tf/in-drafting? objective) 
                                     identity
                                     pf/disable-voting-actions)]
+    (html/at draft-wrapper-snippet
+             [:.clj-draft-version-navigation] (if draft
+                                                (html/substitute (draft-version-navigation context))
+                                                (html/content no-drafts-snippet))
+             [:.clj-add-a-draft] (when (utils/writer-for? user objective-id) 
+                                   (html/set-attr :href
+                                                  (utils/local-path-for :fe/add-draft-get
+                                                                        :id objective-id)))
 
-    (html/transformation
-      [:.clj-draft-version-navigation] (if draft
-                                         (draft-version-navigation context)
-                                         (html/content (translations :draft/no-draft)))
-      [:.clj-add-a-draft] (when (utils/writer-for? user objective-id)
-                            (html/do->
-                              (html/set-attr "href"
-                                             (utils/local-path-for :fe/add-draft-get
-                                                                   :id objective-id))
-                              (html/content (translations :draft/add-a-draft))))
+             [:.clj-draft-preview-document] (when-let [draft-content (:draft-content data)] 
+                                              (html/html-content draft-content)) 
 
-      [:.clj-draft-preview-document] (when-let [draft-content (:draft-content data)] 
-                                       (html/html-content draft-content)) 
-
-      [:.clj-writers-section-title] (html/content (translations :draft/writers))
-      [:.clj-writer-item-list] (html/content (pf/writer-list context))
-      [:.clj-draft-comments] (when draft
-                               (html/transformation
-                                [:.l8n-comments-section-title] (html/content (translations :draft/comments))
-                                [:.clj-comment-list] (html/content (optionally-disable-voting (pf/comment-list context)))
-                                [:.clj-comment-create] (html/content (pf/comment-create context :draft)))))))
+             [:.clj-writer-item-list] (html/content (pf/writer-list context))
+             [:.clj-draft-comments] (when draft
+                                      (html/transformation
+                                        [:.clj-comment-list] (html/content (optionally-disable-voting (pf/comment-list context)))
+                                        [:.clj-comment-create] (html/content (pf/comment-create context :draft)))))))
 
 (def drafting-begins-in-snippet (html/select pf/library-html-resource [:.clj-drafting-begins-in]))
 
@@ -77,16 +74,17 @@
   (let [objective (:objective data)]
     (apply str
            (html/emit*
-             (pf/add-google-analytics
-               (html/at draft-template
-                        [:title] (html/content (:title doc))
-                        [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
-                        [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
-                        [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
+             (tf/translate context
+                           (pf/add-google-analytics
+                             (html/at draft-template
+                                      [:title] (html/content (:title doc))
+                                      [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
+                                      [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+                                      [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
 
-                        [:.clj-guidance-buttons] nil
-                        [:.clj-guidance-heading] (html/content (translations :draft-guidance/heading))
+                                      [:.clj-guidance-buttons] nil
+                                      [:.clj-guidance-heading] (html/content (translations :draft-guidance/heading))
 
-                        [:.clj-draft-wrapper] (if (tf/in-drafting? objective)
-                                                (draft-wrapper context)
-                                                (html/content (drafting-begins-in context)))))))))
+                                      [:.clj-draft-wrapper] (if (tf/in-drafting? objective)
+                                                              (html/substitute (draft-wrapper context))
+                                                              (html/content (drafting-begins-in context))))))))))
