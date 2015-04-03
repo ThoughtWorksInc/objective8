@@ -4,3 +4,11 @@ mixin addCommentButton()
       i.fa.fa-plus-square-o.fa-lg
       | Add comment
   block
+
+mixin draftingBeginsInText()
+  .clj-drafting-begins-in
+    span(data-l8n="content:draft/drafting-begins") !Drafting begins in
+    =" "
+    span.clj-drafting-begins-in-days !12
+    =" "
+    span(data-l8n="content:draft/days") !days

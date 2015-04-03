@@ -3,7 +3,7 @@
             [objective8.templates.page-furniture :as f]
             [objective8.templates.template-functions :as tf])) 
 
-(def error-404-template (html/html-resource "templates/jade/404.html"))
+(def error-404-template (html/html-resource "templates/jade/error-404.html"))
 
 (defn error-404-page [{:keys [translations doc] :as context}]
   (apply str

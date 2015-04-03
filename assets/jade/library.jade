@@ -79,7 +79,9 @@ html.no-js(lang="en")
         li
           a(href="#writer-assets") Writer assets
         li
-          a(href="#vote-assets") Vote assets
+          a(href="#drafting-assets") Drafting assets
+        li
+          i(href="#vote-assets") Vote assets
         li
           a(href="#modal-assets") Modal assets
 
@@ -276,6 +278,15 @@ html.no-js(lang="en")
           a.clj-invitation-response-link.l8n-invitation-response-link(href="invitation-url")
             | !Respond to your invitation to help draft policy
 
+      h2#drafting-assets Drafting assets
+
+      .example
+        .documentation
+          h3 Drafting begins in text
+          p Generated with draftingBeginsInText()
+          p Displayed on a draft page when drafting hasn't begun
+        +draftingBeginsInText
+          
       h2#vote-assets Vote assets
 
       .example

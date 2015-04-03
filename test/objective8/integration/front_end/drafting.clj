@@ -147,7 +147,7 @@
                          :end-date (utils/date-time->date-time-plus-30-days (utils/current-time))}}
                (http-api/get-draft OBJECTIVE_ID "latest") => {:status ::http-api/forbidden})
             (get-in (p/request user-session latest-draft-url)
-                    [:response :body]) => (contains "29 days"))
+                    [:response :body]) => (contains "29"))
 
        (fact "viewing draft list when drafting hasn't started displays message"
              (against-background

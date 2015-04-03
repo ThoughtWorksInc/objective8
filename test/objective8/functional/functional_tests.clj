@@ -206,21 +206,20 @@
 
 
          (fact "Can accept a writer invitation"
-           (try
-             (wd/to (:invitation-url @journey-state))
-             (wait-for-title "Functional test headline | Objective[8]")
-             (screenshot "objective_page_after_hitting_invitation_url")
+               (try (wd/to (:invitation-url @journey-state))
+                    (wait-for-title "Functional test headline | Objective[8]")
+                    (screenshot "objective_page_after_hitting_invitation_url")
 
-             (wd/click ".func--invitation-accept")
-             (wait-for-element ".func--objective-page")
-             (screenshot "objective_page_from_recently_added_writer")
+                    (wd/click ".func--invitation-accept")
+                    (wait-for-element ".func--objective-page")
+                    (screenshot "objective_page_from_recently_added_writer")
 
-             (wd/text ".func--writer-name")
+                    (wd/text ".func--writer-name")
 
-             (catch Exception e
-               (screenshot "ERROR-Can-accept-a-writer-invitation")
-               (throw e)))
-           => "Functional Test Writer Name")
+                    (catch Exception e
+                      (screenshot "ERROR-Can-accept-a-writer-invitation")
+                      (throw e)))
+               => "Functional Test Writer Name")
 
           (against-background
             [(before :contents (-> (:objective-url @journey-state)

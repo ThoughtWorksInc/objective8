@@ -8,9 +8,9 @@
 
 (def add-question-template (html/html-resource "templates/jade/add-question.html" {:parser jsoup/parser}))
 
-(def add-question-form-snippet (html/select pf/library-html-resource [:.clj-question-create-form]))
+(def add-question-form-snippet (html/select add-question-template [:.clj-question-create-form]))
 
-(defn add-question-form [{:keys [translations data doc] :as context}]
+(defn add-question-form [{:keys [translations data] :as context}]
   (let [objective-id (get-in data [:objective :_id])]
     (html/at add-question-form-snippet 
              [:.clj-question-create-form] 

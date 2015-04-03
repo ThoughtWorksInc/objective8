@@ -7,7 +7,7 @@
 
 (def create-objective-template (html/html-resource "templates/jade/create-objective.html" {:parser jsoup/parser}))
 
-(defn create-objective-page [{:keys [translations data doc] :as context}]
+(defn create-objective-page [{:keys [data doc] :as context}]
   (let [objective (:objective data)]
     (apply str
            (html/emit*

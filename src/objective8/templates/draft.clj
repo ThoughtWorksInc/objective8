@@ -2,7 +2,7 @@
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [objective8.templates.template-functions :as tf]
-            [objective8.templates.page-furniture :as f]
+            [objective8.templates.page-furniture :as pf]
             [objective8.utils :as utils]))
 
 (def draft-template (html/html-resource "templates/jade/draft.html" {:parser jsoup/parser}))
@@ -40,7 +40,7 @@
         {objective-id :_id objective-status :status} objective
         optionally-disable-voting (if (tf/in-drafting? objective) 
                                     identity
-                                    f/disable-voting-actions)]
+                                    pf/disable-voting-actions)]
 
     (html/transformation
       [:.clj-draft-version-navigation] (if draft
@@ -57,35 +57,36 @@
                                        (html/html-content draft-content)) 
 
       [:.clj-writers-section-title] (html/content (translations :draft/writers))
-      [:.clj-writer-item-list] (html/content (f/writer-list context))
+      [:.clj-writer-item-list] (html/content (pf/writer-list context))
       [:.clj-draft-comments] (when draft
                                (html/transformation
                                 [:.l8n-comments-section-title] (html/content (translations :draft/comments))
-                                [:.clj-comment-list] (html/content (optionally-disable-voting (f/comment-list context)))
-                                [:.clj-comment-create] (html/content (f/comment-create context :draft)))))))
+                                [:.clj-comment-list] (html/content (optionally-disable-voting (pf/comment-list context)))
+                                [:.clj-comment-create] (html/content (pf/comment-create context :draft)))))))
+
+(def drafting-begins-in-snippet (html/select pf/library-html-resource [:.clj-drafting-begins-in]))
+
+(defn drafting-begins-in [{:keys [data] :as context}]
+  (let [end-date (get-in data [:objective :end-date])
+        drafting-begins-in-days (get-in data [:objective :days-until-drafting-begins])]
+    (html/at drafting-begins-in-snippet
+             [:.clj-drafting-begins-in] (html/set-attr :drafting-begins-date end-date)
+             [:.clj-drafting-begins-in-days] (html/content (str drafting-begins-in-days)))))
 
 (defn draft-page [{:keys [translations data doc] :as context}]
   (let [objective (:objective data)]
     (apply str
            (html/emit*
-             (f/add-google-analytics
+             (pf/add-google-analytics
                (html/at draft-template
                         [:title] (html/content (:title doc))
                         [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
-                        [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
-                        [:.clj-status-bar] (html/substitute (f/status-flash-bar context))
+                        [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+                        [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
 
                         [:.clj-guidance-buttons] nil
                         [:.clj-guidance-heading] (html/content (translations :draft-guidance/heading))
-                        [:.clj-guidance-text-line-1] (html/content (translations :draft-guidance/text-line-1))
-                        [:.clj-guidance-text-line-2] (html/content (translations :draft-guidance/text-line-2))
-                        [:.clj-guidance-text-line-3] (html/content (translations :draft-guidance/text-line-3))
 
                         [:.clj-draft-wrapper] (if (tf/in-drafting? objective)
                                                 (draft-wrapper context)
-                                                (html/do->
-                                                  (html/set-attr "drafting-begins-date"
-                                                                 (:end-date objective))
-                                                  (html/content (str (translations :draft/drafting-begins)
-                                                                     " " (:days-until-drafting-begins objective) 
-                                                                     " " (translations :draft/days)))))))))))
+                                                (html/content (drafting-begins-in context)))))))))

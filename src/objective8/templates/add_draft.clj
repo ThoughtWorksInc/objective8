@@ -2,7 +2,7 @@
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [ring.util.anti-forgery :refer [anti-forgery-field]]  
-            [objective8.templates.page-furniture :as f]
+            [objective8.templates.page-furniture :as pf]
             [objective8.templates.template-functions :as tf]))
 
 (def add-draft-template (html/html-resource "templates/jade/add-draft.html" {:parser jsoup/parser}))
@@ -11,12 +11,12 @@
   (apply str
          (html/emit*
            (tf/translate context
-                         (f/add-google-analytics
+                         (pf/add-google-analytics
                            (html/at add-draft-template
                                     [:title] (html/content (:title doc))
-                                    [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
-                                    [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
-                                    [:.clj-status-bar] (html/substitute (f/status-flash-bar context))
+                                    [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr :content (:description doc))
+                                    [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+                                    [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
 
                                     [:.clj-add-draft-preview] (when-let [preview (:preview data)]
                                                                 (html/html-content preview))
