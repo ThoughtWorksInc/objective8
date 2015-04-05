@@ -92,3 +92,8 @@
 
 (defn location-contains [expected]
   (midje/contains {"Location" (midje/contains expected)}))
+
+(def no-untranslated-strings 
+  (let [untranslated-string-regex #"(?!!DOCTYPE|!IEMobile)!\w+"]
+    (midje/chatty-checker [response-body] (empty? (re-seq untranslated-string-regex response-body)))))
+

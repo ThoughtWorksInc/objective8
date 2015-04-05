@@ -9,37 +9,33 @@
 (def OBJECTIVE_ID 1)
 (def QUESTION_ID 2)
 (def USER_ID 3)
-(def untranslated-string-regex #"(?!!DOCTYPE|!IEMobile)!\w+")
 
 (facts "about rendering index page"
        (future-fact "there are no untranslated strings"
              (let [user-session (helpers/test-context)
-                   peridot-response-body (-> user-session
-                                             (p/request (utils/path-for :fe/index))
-                                             :response
-                                             :body)]
-               (prn peridot-response-body)
-               (re-seq untranslated-string-regex peridot-response-body) => empty?)))
+                   {status :status body :body} (-> user-session
+                                                   (p/request (utils/path-for :fe/index))
+                                                   :response)]
+               status => 200
+               body => helpers/no-untranslated-strings)))
 
 (facts "about rendering learn-more page"
        (future-fact "there are no untranslated strings"
              (let [user-session (helpers/test-context)
-                   peridot-response-body (-> user-session
-                                             (p/request (utils/path-for :fe/learn-more))
-                                             :response
-                                             :body)]
-               (prn peridot-response-body)
-               (re-seq untranslated-string-regex peridot-response-body) => empty?)))  
+                   {status :status body :body} (-> user-session
+                                                   (p/request (utils/path-for :fe/learn-more))
+                                                   :response)]
+               status => 200
+               body => helpers/no-untranslated-strings)))
 
 (facts "about rendering project-status page"
        (future-fact "there are no untranslated strings"
              (let [user-session (helpers/test-context)
-                   peridot-response-body (-> user-session
-                                             (p/request (utils/path-for :fe/project-status))
-                                             :response
-                                             :body)]
-               (prn peridot-response-body)
-               (re-seq untranslated-string-regex peridot-response-body) => empty?)))  
+                   {status :status body :body} (-> user-session
+                                                   (p/request (utils/path-for :fe/project-status))
+                                                   :response)]
+               status => 200
+               body => helpers/no-untranslated-strings)))
 
 (def drafting-objective {:title "my objective title"
                          :goal-1 "my objective goal"
@@ -57,12 +53,11 @@
                (http-api/get-all-objectives) => {:status ::http-api/success 
                                                  :result [drafting-objective open-objective]})
              (let [user-session (helpers/test-context)
-                   peridot-response-body (-> user-session
-                                             (p/request (utils/path-for :fe/objective-list))
-                                             :response
-                                             :body)]
-               (prn peridot-response-body)
-               (re-seq untranslated-string-regex peridot-response-body) => empty?)))  
+                   {status :status body :body} (-> user-session
+                                                   (p/request (utils/path-for :fe/objective-list))
+                                                   :response)]
+               status => 200
+               body => helpers/no-untranslated-strings)))
 
 (facts "about rendering create-objective page"
        (future-fact "there are no untranslated strings"
@@ -76,9 +71,8 @@
                             (helpers/sign-in-as-existing-user)
                             (p/request (utils/path-for :fe/create-objective-form))
                             :response)]
-               (prn body)
                status => 200
-               (re-seq untranslated-string-regex body) => empty?)))  
+               body => helpers/no-untranslated-strings)))
 
 (facts "about rendering objective page"
        (future-fact "there are no untranslated strings"
@@ -92,9 +86,8 @@
                    {status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/objective :id OBJECTIVE_ID))
                                                    :response)]
-               (prn body)
                status => 200
-               (re-seq untranslated-string-regex body) => empty?)))
+               body => helpers/no-untranslated-strings)))
 
 (def a-question {:question "The meaning of life?"
                  :created-by-id USER_ID
@@ -116,9 +109,8 @@
                                                                               :id OBJECTIVE_ID
                                                                               :q-id QUESTION_ID))
                                                    :response)]
-               (prn body)
                status => 200
-               (re-seq untranslated-string-regex body) => empty?)))
+               body => helpers/no-untranslated-strings)))
 
 (facts "about rendering add-question page"
        (future-fact "there are no untranslated strings"
@@ -134,9 +126,8 @@
                             (helpers/sign-in-as-existing-user)
                             (p/request (utils/path-for :fe/add-a-question :id OBJECTIVE_ID))
                             :response)]
-               (prn body)
                status => 200
-               (re-seq untranslated-string-regex body) => empty?)))  
+               body => helpers/no-untranslated-strings)))
 
 (facts "about rendering invite-writer page"
        (future-fact "there are no untranslated strings"
@@ -152,6 +143,5 @@
                             (helpers/sign-in-as-existing-user)
                             (p/request (utils/path-for :fe/invite-writer :id OBJECTIVE_ID))
                             :response)]
-               (prn body)
                status => 200
-               (re-seq untranslated-string-regex body) => empty?)))  
+               body => helpers/no-untranslated-strings)))
