@@ -87,7 +87,7 @@ draft,writers,Writers
 draft,comments,Comments
 draft-list,doc-title,Drafts | Objective[8]
 draft-list,doc-description,
-draft-list,drafts-for,Drafts for
+draft-list,drafts-for,Drafts for: 
 draft-list,no-drafts,No drafts have been submitted yet
 draft-list,latest-draft,Latest draft
 draft-list,previous-versions,Previous versions

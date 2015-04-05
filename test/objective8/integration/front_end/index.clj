@@ -2,6 +2,9 @@
   (:require [midje.sweet :refer :all]
             [peridot.core :as p]
             [oauth.client :as oauth]
+            [endophile.core :as ec]
+            [endophile.hiccup :as eh]
+            [hiccup.core :as hc]
             [objective8.utils :as utils]
             [objective8.http-api :as http-api]
             [objective8.integration.integration-helpers :as helpers]))
@@ -9,6 +12,10 @@
 (def OBJECTIVE_ID 1)
 (def QUESTION_ID 2)
 (def USER_ID 3)
+(def DRAFT_ID 4)
+(def SOME_MARKDOWN  "A heading\n===\nSome content")
+(def SOME_HICCUP (eh/to-hiccup (ec/mp SOME_MARKDOWN)))
+(def SOME_HTML (hc/html SOME_HICCUP))
 
 (facts "about rendering index page"
        (future-fact "there are no untranslated strings"
@@ -143,5 +150,26 @@
                             (helpers/sign-in-as-existing-user)
                             (p/request (utils/path-for :fe/invite-writer :id OBJECTIVE_ID))
                             :response)]
+               status => 200
+               body => helpers/no-untranslated-strings)))
+
+(facts "about rendering draft-list page"
+       (future-fact "there are no untranslated strings"
+             (against-background
+               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                        :result drafting-objective} 
+               (http-api/get-all-drafts OBJECTIVE_ID) => {:status ::http-api/success
+                                                          :result [{:_id DRAFT_ID
+                                                                    :content SOME_HICCUP
+                                                                    :objective-id OBJECTIVE_ID
+                                                                    :submitter-id USER_ID
+                                                                    :_created_at "2015-02-12T16:46:18.838Z"
+                                                                    :username "UserName"}]} 
+               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success 
+                                                               :result []}) 
+             (let [user-session (helpers/test-context)
+                   {status :status body :body} (-> user-session
+                                                   (p/request (utils/path-for :fe/draft-list :id OBJECTIVE_ID))
+                                                   :response)]
                status => 200
                body => helpers/no-untranslated-strings)))

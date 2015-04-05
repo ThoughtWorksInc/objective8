@@ -8,9 +8,9 @@ block content
   .guidance-text-wrapper
     +guidanceText('!What is a draft?')
       ul
-        li.clj-guidance-text-line-1  !Drafts are versions of the policy as it is being written.
-        li.clj-guidance-text-line-2  !Drafts are crafted by the writers that have been nominated for an objective.
-        li.clj-guidance-text-line-3  !Everyone can comment and make suggestions.
+        li(data-l8n="content:draft-guidance/text-line-1")  !Drafts are versions of the policy as it is being written.
+        li(data-l8n="content:draft-guidance/text-line-2") !Drafts are crafted by the writers that have been nominated for an objective.
+        li(data-l8n="content:draft-guidance/text-line-3") !Everyone can comment and make suggestions.
 
   .middle-container
 
@@ -22,19 +22,22 @@ block content
       li
         a(href="#") !Policy
 
-    h1.draft-list-title.clj-draft-list-title !Drafts for: Build safer cycling networks in the streets of Madrid.
+    h1.draft-list-title
+      span(data-l8n="content:draft-list/drafts-for") !Drafts for: 
+      =" "
+      span.clj-draft-list-title !Build safer cycling networks in the streets of Madrid.
 
     .clj-drafts-wrapper
       .latest-draft-wrapper.clj-latest-draft-wrapper
-        h2.latest-draft-title.clj-latest-draft-title !Latest draft
+        h2.latest-draft-title(data-l8n="content:draft-list/latest-draft") !Latest draft
         a.latest-draft-link.clj-latest-draft-link.func--latest-draft-link(href="/drafts/latest")
           p.latest-draft-writer.clj-latest-draft-writer !Prof Barry
         p.latest-draft-time.clj-latest-draft-time !2 days ago
 
-      a.button.add-a-draft.clj-add-a-draft.func--add-a-draft(href="/drafts/add-draft") !Add a draft
+      a.button.add-a-draft.clj-add-a-draft.func--add-a-draft(href="/drafts/add-draft", data-l8n="content:draft-list/add-a-draft") !Add a draft
 
       .previous-drafts-wrapper.clj-previous-draft-wrapper
-        h2.previous-drafts-title.clj-previous-drafts-title !Previous versions 
+        h2.previous-drafts-title(data-l8n="content:draft-list/previous-versions") !Previous versions 
         ul.previous-drafts-list.clj-previous-drafts-list
           li.previous-draft-item.clj-previous-draft-item
             a.previous-draft-link.clj-previous-draft-link(href="/drafts/id")
@@ -42,7 +45,7 @@ block content
             p.previous-draft-time.clj-previous-draft-time !3 days ago
 
       .draft-writers.clj-draft-writers
-        h2.clj-writers-section-title !Writers
+        h2(data-l8n="content:draft-list/writers") !Writers
         ul.writer-item-list.clj-writer-item-list
           +writerItem('!Jenny Bloggs', '#', 'http://placekitten.com/g/80/80')
             | !A cycling enthusiast, responsible for many safety policies in the UK.
