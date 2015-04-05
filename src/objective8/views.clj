@@ -53,9 +53,9 @@
     (viewfn (make-view-context page-name ring-request data))))
 
 (def index (view index/index-page))
-(def objective-list (view objective-list/objective-list-page))
 (def learn-more-page (view learn-more/learn-more-page))
 (def project-status (view project-status/project-status-page))
+(def objective-list (view objective-list/objective-list-page))
 (def create-objective (view create-objective/create-objective-page))
 (def objective-detail-page (view objective/objective-page))
 (def question-page (view question/question-page))
