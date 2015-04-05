@@ -15,3 +15,13 @@
                                              :body)]
                (prn peridot-response-body)
                (re-seq untranslated-string-regex peridot-response-body) => empty?)))
+
+(facts "about rendering learn-more page"
+       (future-fact "there are no untranslated strings"
+             (let [user-session (helpers/test-context)
+                   peridot-response-body (-> user-session
+                                             (p/request (utils/path-for :fe/learn-more))
+                                             :response
+                                             :body)]
+               (prn peridot-response-body)
+               (re-seq untranslated-string-regex peridot-response-body) => empty?)))  

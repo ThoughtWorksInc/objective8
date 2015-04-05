@@ -6,11 +6,11 @@ block vars
 block content
 
   .middle-container.clj-learn-more
-    h1.clj-learn-more-heading.l8n-learn-more-heading !Objective[8] 101
-    h2.clj-learn-more-sub-heading.l8n-learn-more-sub-heading !What are the basics?
-    p.lede.clj-learn-more-lede.l8n-learn-more-lede !Objective8 is a platform to enable collaborative policy making for democratic organisations.
+    h1.clj-learn-more-heading(data-l8n="content:learn-more/page-title") !Objective[8] 101
+    h2.clj-learn-more-sub-heading(data-l8n="content:learn-more/sub-title") !What are the basics?
+    p.lede.clj-learn-more-lede(data-l8n="content:learn-more/page-intro") !Objective8 is a platform to enable collaborative policy making for democratic organisations.
 
-    .clj-learn-more-detail
+    div(data-l8n="html:learn-more/page-content")
       p !<b>Policy</b> is used by governments and organisations to make consistent and fair decisions in order to achieve desired outcomes.
       p An <b>objective</b> is a change that could be achieved by introducing new policy.  For example: improving access to public housing, or increasing the safety of our roads.</p>
       p <b>Writers</b> are experts responsible for drafting policy.  They use the crowdsourced questions, answers and comments to produce <b>policy drafts</b><span class="not-yet-implemented-footnote-marker">*</span>.  These are further refined through cycles of feedback and redrafting.
@@ -20,4 +20,4 @@ block content
         =" "
         | As the site is still under development, these features have not yet been implemented. Check back soon!
 
-    a.button.index-get-started.clj-get-started(href="/objectives", title="!Get started") !Get started
+    a.button.index-get-started(href="/objectives", title="!Get started", data-l8n="attr/title:learn-more/get-started-button-title content:learn-more/get-started-button-text") !Get started
