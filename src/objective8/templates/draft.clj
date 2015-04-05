@@ -36,7 +36,7 @@
 
 (def draft-wrapper-snippet (html/select draft-template [:.clj-draft-wrapper]))
 
-(defn draft-wrapper [{:keys [data translations user] :as context}]
+(defn draft-wrapper [{:keys [data user] :as context}]
   (let [draft (:draft data)
         objective (:objective data)
         {objective-id :_id objective-status :status} objective

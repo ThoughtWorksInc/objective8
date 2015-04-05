@@ -173,3 +173,27 @@
                                                    :response)]
                status => 200
                body => helpers/no-untranslated-strings)))
+
+(facts "about rendering draft page"
+       (future-fact "there are no untranslated strings"
+             (against-background
+               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                        :result drafting-objective} 
+               (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
+                                                              :result {:_id DRAFT_ID
+                                                                       :content SOME_HICCUP
+                                                                       :objective-id OBJECTIVE_ID
+                                                                       :submitter-id USER_ID
+                                                                       :_created_at "2015-02-12T16:46:18.838Z"
+                                                                       :uri :draft-uri 
+                                                                       :username "UserName"}}
+               (http-api/get-comments :draft-uri) => {:status ::http-api/success 
+                                                      :result []} 
+               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success 
+                                                               :result []}) 
+             (let [user-session (helpers/test-context)
+                   {status :status body :body} (-> user-session
+                                                   (p/request (utils/path-for :fe/draft :id OBJECTIVE_ID :d-id DRAFT_ID))
+                                                   :response)]
+               status => 200
+               body => helpers/no-untranslated-strings)))
