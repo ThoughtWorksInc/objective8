@@ -121,7 +121,7 @@
                (re-seq untranslated-string-regex body) => empty?)))
 
 (facts "about rendering add-question page"
-       (fact "there are no untranslated strings"
+       (future-fact "there are no untranslated strings"
              (against-background
                (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
                (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
@@ -132,7 +132,25 @@
              (let [user-session (helpers/test-context)
                    {status :status body :body} (-> user-session
                             (helpers/sign-in-as-existing-user)
-                            (p/request (utils/path-for :fe/create-objective-form))
+                            (p/request (utils/path-for :fe/add-a-question :id OBJECTIVE_ID))
+                            :response)]
+               (prn body)
+               status => 200
+               (re-seq untranslated-string-regex body) => empty?)))  
+
+(facts "about rendering invite-writer page"
+       (future-fact "there are no untranslated strings"
+             (against-background
+               (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
+               (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                               :result {:_id USER_ID
+                                                                        :username "username"}}
+               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                        :result open-objective})
+             (let [user-session (helpers/test-context)
+                   {status :status body :body} (-> user-session
+                            (helpers/sign-in-as-existing-user)
+                            (p/request (utils/path-for :fe/invite-writer :id OBJECTIVE_ID))
                             :response)]
                (prn body)
                status => 200

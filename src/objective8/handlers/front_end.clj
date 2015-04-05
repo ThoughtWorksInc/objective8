@@ -256,8 +256,7 @@
       {:status 200
        :body (views/invite-writer-page "invite-writer" request
                :objective (format-objective objective)
-               :doc {:title (str (t' :invite-writer/doc-description) " " (:title objective) " | Objective[8]")
-                     :description (str (t' :invite-writer/doc-description) " " (:title objective))})
+               :doc {:title (str (t' :invite-writer/doc-title) " " (:title objective) " | Objective[8]")})
        :headers {"Content-Type" "text/html"}}
 
       (= objective-status ::http-api/not-found) (error-404-response request)

@@ -8,20 +8,6 @@ block vars
 block content
   .middle-container
 
-    //ul.progress-indicator.clj-objective-progress-indicator
-    //  li.on
-    //    a(href="/objective") !Objective
-    //  li
-    //    a(href="/draft") !Draft
-    //  li
-    //    a(href="#") !Policy
-
-    //+guidanceText('!Why invite a writer?')
-    //  ul
-    //    li.clj-guidance-text-line-1 !...
-    //    li.clj-guidance-text-line-2 !...
-    //    li.clj-guidance-text-line-3 !...
-
     .objective-navigation
       .objective-navigation-list-wrapper
         ul.objective-navigation-list
@@ -29,14 +15,14 @@ block content
             a.clj-objective-navigation-item-objective(href="/objective")
               i.fa.fa-angle-left
               = " "
-              span.l8n-back-to-objective !Back to objective
+              span(data-l8n="content:objective-nav/back-to-objective") !Back to objective
 
     .objective-outline#outline
       h1.objective-title.clj-objective-title !Build safer cycling networks in the streets of Madrid.
 
     .objective-writers#writers
-      h2.clj-invite-writer-section-title.l8n-invite-writer-section-title !Invite a policy writer
-      p.l8n-do-you-know-a-writer !Do you know someone with the enthusiasm and expertise to help draft this policy?
+      h2(data-l8n="content:invite-writer/section-title") !Invite a policy writer
+      p(data-l8n="content:invite-writer/do-you-know-a-writer") !Do you know someone with the enthusiasm and expertise to help draft this policy?
 
       +inviteWriterForm()
 

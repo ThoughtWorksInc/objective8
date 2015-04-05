@@ -94,29 +94,6 @@
 ;; WRITER LIST
 
 
-(html/defsnippet invite-writer-form
-  library-html [:.clj-invite-a-writer-form] [{:keys [translations data]}]
-  [:.clj-invite-a-writer-form] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:.l8n-label-writer-name] (html/content (translations :invite-writer/writer-name-label))
-  [:.l8n-input-writer-name] (html/set-attr "title" (translations :invite-writer/writer-name-attr-title))
-  [:.l8n-label-writer-email] (html/content (translations :invite-writer/writer-email-label))
-  [:.l8n-input-writer-email] (html/set-attr "title" (translations :invite-writer/writer-email-attr-title))
-  [:.l8n-label-writer-reason] (html/content (translations :invite-writer/writer-reason-label))
-  [:.l8n-input-writer-reason] (html/set-attr "title" (translations :invite-writer/writer-reason-attr-title))
-  [:.l8n-button-invite-writer] (html/content (translations :invite-writer/invite-button)))
-
-(html/defsnippet sign-in-to-invite-writer
-  library-html [:.clj-please-sign-in] [{:keys [translations ring-request]}]
-  [:.l8n-before-link] (html/content (translations :invite-writer/sign-in-please))
-  [:.l8n-sign-in-link] (html/do->
-                         (html/set-attr "href" (str "/sign-in?refer=" (:uri ring-request)))
-                         (html/content (translations :invite-writer/sign-in)))
-  [:.l8n-after-link] (html/content (translations :invite-writer/sign-in-to)))
-
-(defn invite-writer [{user :user :as context}]
-  (if user
-    (invite-writer-form context)
-    (sign-in-to-invite-writer context)))
 
 (def empty-writer-list-item-snippet (html/select library-html-resource [:.clj-empty-writer-list-item]))
 
