@@ -6,6 +6,9 @@
             [objective8.http-api :as http-api]
             [objective8.integration.integration-helpers :as helpers]))
 
+(def OBJECTIVE_ID 1)
+(def QUESTION_ID 2)
+(def USER_ID 3)
 (def untranslated-string-regex #"(?!!DOCTYPE|!IEMobile)!\w+")
 
 (facts "about rendering index page"
@@ -42,7 +45,7 @@
                          :goal-1 "my objective goal"
                          :description "my objective description"
                          :end-date (utils/string->date-time "2012-12-12")
-                         :uri (str "/objectives/" 5)
+                         :uri (str "/objectives/" OBJECTIVE_ID)
                          :status "drafting"})
 
 (def open-objective {assoc drafting-objective :status "open" 
@@ -66,7 +69,7 @@
              (against-background
                (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
                (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                               :result {:_id 10
+                                                               :result {:_id USER_ID
                                                                         :username "username"}})
              (let [user-session (helpers/test-context)
                    {status :status body :body} (-> user-session
@@ -76,3 +79,43 @@
                (prn body)
                status => 200
                (re-seq untranslated-string-regex body) => empty?)))  
+
+(facts "about rendering objective page"
+       (future-fact "there are no untranslated strings"
+             (against-background 
+               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                         :result open-objective}
+               (http-api/get-comments anything)=> {:status ::http-api/success :result []}
+               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success :result []}
+               (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}) 
+             (let [user-session (helpers/test-context)
+                   {status :status body :body} (-> user-session
+                                                   (p/request (utils/path-for :fe/objective :id OBJECTIVE_ID))
+                                                   :response)]
+               (prn body)
+               status => 200
+               (re-seq untranslated-string-regex body) => empty?)))
+
+(def a-question {:question "The meaning of life?"
+                 :created-by-id USER_ID
+                 :objective-id OBJECTIVE_ID
+                 :_id QUESTION_ID})
+
+(facts "about rendering question page"
+       (future-fact "there are no untranslated strings"
+             (against-background 
+               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                         :result open-objective}
+               (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success 
+                                                                    :result a-question}
+               (http-api/retrieve-answers OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success 
+                                                            :result []})
+             (let [user-session (helpers/test-context)
+                   {status :status body :body} (-> user-session
+                                                   (p/request (utils/path-for :fe/question 
+                                                                              :id OBJECTIVE_ID
+                                                                              :q-id QUESTION_ID))
+                                                   :response)]
+               (prn body)
+               status => 200
+               (re-seq untranslated-string-regex body) => empty?)))

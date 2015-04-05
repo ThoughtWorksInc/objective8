@@ -216,10 +216,12 @@
       (every? #(= ::http-api/success %) [question-status answer-status objective-status])
       {:status 200
        :headers {"Content-Type" "text/html"}      
-       :body (views/question-page "answer-create" request
+       :body (views/question-page "question-page" request
                                   :objective (format-objective objective)
                                   :question question
-                                  :answers answers)}
+                                  :answers answers
+                                  :doc {:title (:question question)
+                                        :description (:question question)})}
       (= question-status ::http-api/not-found) (error-404-response request)
       (= question-status ::http-api/invalid-input) {:status 400}
       :else {:status 500})))

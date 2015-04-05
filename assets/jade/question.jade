@@ -5,21 +5,24 @@ block content
   .guidance-text-wrapper
     +guidanceText('!How do questions work?')
       ul
-        li.l8n-guidance-text-line-1 !Questions are how Objective[8] gathers community ideas to turn into policy
+        li(data-l8n="content:question-page/guidance-text-1") !Questions are how Objective[8] gathers community ideas to turn into policy
 
   .middle-container
     .question-navigation-wrapper
       .question-navigation
         .question-navigation-breadcrumb
           a(href="/objective").clj-objective-link !Write policy based on folk music.
-          | > !How many roads must a man walk...
+          =" "
+          | > 
+          =" "
+          span.clj-question-breadcrumb !How many roads must a man walk...
 
     .question-outline#outline
-      h1.question-title.clj-question-lead-in
-        span.l8n-answers-for !Answers for 
+      h1.question-title
+        span(data-l8n="content:question-page/answers-for") !Answers for 
       p.question-leader.clj-question !How many roads must a man walk down before you can call him a man?
-      label(for="add-an-answer").button.answer-reply.answer-jump-to-answer.l8n-jump-to-answer.clj-jump-to-answer
-        |!Add a new answer
+      label(for="add-an-answer", data-l8n="content:question-page/jump-to-answer-button").button.answer-reply.answer-jump-to-answer.clj-jump-to-answer
+        | !Add a new answer
 
     .clj-drafting-started-wrapper
 
@@ -46,4 +49,4 @@ block content
         h3.clj-question !How many roads must a man walk down before you can call him a man?
         form(action="!add-answer-action", method="POST").clj-answer-form
           textarea(rows=4, name="answer", required="required")#add-an-answer.answer-reply-box.func--add-answer
-          button(type="submit").button.answer-reply.l8n-submit-answer !Add my answer
+          button(type="submit", data-l8n="content:question-page/submit-answer-button").button.answer-reply !Add my answer
