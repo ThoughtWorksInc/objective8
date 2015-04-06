@@ -36,9 +36,10 @@
       :else node)))
 
 (defn- apply-translations [[translation-string & more] node translations]
-  (if more
-    (apply-translation translation-string (apply-translations more node translations) translations)
-    (apply-translation translation-string node translations)))
+  (let [translated-node (apply-translation translation-string node translations)]
+    (if more
+      (recur more translated-node translations)
+      translated-node)))
 
 (defn- translate-node  [node  {:keys  [translations] :as context}]
   (let [translation-strings (clojure.string/split (get-in node [:attrs :data-l8n]) #"\s+")]
