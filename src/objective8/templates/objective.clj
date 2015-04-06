@@ -56,6 +56,16 @@
                                                                                             (html/set-attr :href (str "/sign-in?refer=" (:uri ring-request)))
                                                                                             (tl8 :invitation-response/sign-in-to-accept))))))))))
 
+;; DRAFTING HAS STARTED MESSAGE
+
+(def drafting-message-snippet (html/select pf/library-html-resource [:.clj-drafting-message]))
+
+(defn drafting-message [{:keys [data] :as context}]
+  (let [objective (:objective data)]
+    (html/at drafting-message-snippet
+      [:.clj-drafting-message-link] (html/set-attr :href (str "/objectives/" (:_id objective) 
+                                                              "/drafts")))))
+
 (defn drafting-begins [objective translations]
   (html/transformation
     [:.clj-days-left-day] (html/do->
@@ -104,7 +114,8 @@
 
                                       [:.clj-days-left] (when (tf/open? objective)
                                                           (drafting-begins objective translations))
-                                      [:.clj-drafting-started-wrapper] (html/substitute (pf/drafting-message context))
+                                      [:.clj-drafting-started-wrapper] (when (tf/in-drafting? objective)
+                                                                         (html/substitute (drafting-message context)))
                                       [:.clj-replace-with-objective-detail] (html/substitute (tf/text->p-nodes (:description objective)))
 
                                       [:.clj-writer-item-list] (html/content (pf/writer-list context))

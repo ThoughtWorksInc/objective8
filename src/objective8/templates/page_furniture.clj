@@ -70,21 +70,7 @@
     invitation-rsvp (flash-bar (invitation-response-banner invitation-rsvp))
     :else status-bar-snippet))
 
-;; DRAFTING HAS STARTED MESSAGE
-
-(html/defsnippet drafting-message library-html [:.clj-drafting-message] [{{objective :objective} :data
-                                                                          translations :translations
-                                                                          :as context}]
-  [html/any-node] (when (tf/in-drafting? objective) identity)
-  [:.clj-drafting-message-title] (html/content (translations :notifications/drafting-message-title))
-  [:.clj-drafting-message-body] (html/content (translations :notifications/drafting-message-body))
-  [:.clj-drafting-message-link] (html/do->
-                                  (html/set-attr "href" (str "/objectives/" (:_id objective) "/drafts"))
-                                  (html/content (translations :notifications/drafting-message-link))))
-
 ;; WRITER LIST
-
-
 
 (def empty-writer-list-item-snippet (html/select library-html-resource [:.clj-empty-writer-list-item]))
 
