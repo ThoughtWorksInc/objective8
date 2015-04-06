@@ -4,10 +4,10 @@ mixin questionItem(author, date)
       p.clj-question-text
         block
     .question-actions
-      a.question-reply.clj-answer-link.func--answer-link(href="#") !Answer
+      a.question-reply.clj-answer-link.func--answer-link(href="#", data-l8n="content:objective-view/answer-link") !Answer
 
 mixin questionItemBlank()
-  li.question-item.clj-empty-question-list-item
+  li.question-item(data-l8n="content:question-list/no-questions")
     | !No one has answered this question yet.
 
 mixin addQuestionForm(allowFocus)

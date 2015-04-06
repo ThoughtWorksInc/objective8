@@ -77,6 +77,27 @@
         invitation-objective-id (:objective-id invitation-rsvp)]
     (and objective-id (= invitation-objective-id objective-id))))
 
+;; QUESTION LIST
+
+(def empty-question-list-item-snippet (html/select pf/library-html-resource [:.clj-empty-question-list-item]))
+
+(def question-list-item-snippet (html/select pf/library-html-resource [:.clj-question-item]))
+
+(defn question-list-items [questions]
+  (html/at question-list-item-snippet
+           [:.clj-question-item] 
+           (html/clone-for [question questions]
+                           [:.clj-question-text] (html/content (:question question))
+                           [:.clj-answer-link] (html/set-attr :href (str "/objectives/" (:objective-id question)
+                                                                         "/questions/" (:_id question))))))
+
+
+(defn question-list [{:keys [data] :as context}]
+  (let [questions (:questions data)]
+    (if (empty? questions)
+      empty-question-list-item-snippet
+      (question-list-items questions))))
+
 (defn objective-page [{:keys [translations data doc invitation-rsvp] :as context}]
   (let [objective (:objective data)
         objective-id (:_id objective)

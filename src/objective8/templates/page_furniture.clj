@@ -100,27 +100,6 @@
                          (html/content (translations :answer-sign-in/sign-in)))
   [:.l8n-after-link] (html/content (translations :answer-sign-in/to)))
 
-;; QUESTION LIST
-
-(html/defsnippet empty-question-list-item
-  library-html [:.clj-empty-question-list-item] [{translations :translations}]
-  [:.clj-empty-question-list-item] (html/content (translations :question-list/no-questions)))
-
-(html/defsnippet question-list-items
-  library-html [:.clj-question-item] [questions translations]
-  [:.clj-question-item] (html/clone-for [question questions]
-                                        [:.clj-question-text] (html/content (:question question))
-                                        [:.clj-answer-link] (html/do->
-                                                              (html/content (translations :objective-view/answer-link))
-                                                              (html/set-attr "href" (str "/objectives/" (:objective-id question)
-                                                                                         "/questions/" (:_id question))))))
-
-(defn question-list [{translations :translations :as context}]
-  (let [questions (get-in context [:data :questions])]
-    (if (empty? questions)
-      (empty-question-list-item context)
-      (question-list-items questions translations))))
-
 ;; COMMENT LIST
 
 (defn voting-actions-when-signed-in [{:keys [data ring-request] :as context} comment]
