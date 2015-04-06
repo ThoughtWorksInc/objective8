@@ -259,10 +259,27 @@ html.no-js(lang="en")
 
       .example
         .documentation
-          h3 Please sign in
-          p Generated with pleaseSignIn()
-        +pleaseSignIn()
-          | to ...
+          h3 Please sign in to comment
+          p Generated with pleaseSignIn("to-comment")
+        +pleaseSignIn("to-comment")
+
+      .example
+        .documentation
+          h3 Please sign in to add a question
+          p Generated with pleaseSignIn("to-add-question")
+        +pleaseSignIn("to-add-question")
+
+      .example
+        .documentation
+          h3 Please sign in to invite a writer
+          p Generated with pleaseSignIn("to-invite-writer")
+        +pleaseSignIn("to-invite-writer")
+
+      .example
+        .documentation
+          h3 Please sign in to add an answer
+          p Generated with pleaseSignIn("to-add-answer")
+        +pleaseSignIn("to-add-answer")
 
       .example
         .documentation

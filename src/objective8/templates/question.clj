@@ -30,6 +30,13 @@
                             (html/set-attr :disabled "disabled")
                             (html/set-attr :title (translations :answer-votes/drafting-started)))))
 
+(def sign-in-to-add-answer-snippet (html/select pf/library-html-resource [:.clj-to-add-answer-please-sign-in]))
+
+(defn sign-in-to-add-answer [{:keys [ring-request] :as context}]
+  (html/at sign-in-to-add-answer-snippet  
+           [:.clj-to-add-answer-sign-in-link] 
+           (html/set-attr :href (str "/sign-in?refer=" (:uri ring-request)))))
+
 (defn question-page [{:keys [translations data user doc] :as context}]
   (let [question (:question data)
         answers (:answers data)
@@ -66,6 +73,6 @@
                                                                                     (str "/objectives/" (:_id objective)
                                                                                          "/questions/" (:_id question) "/answers"))
                                                                      (html/prepend (html/html-snippet (anti-forgery-field))))
-                                                            (html/substitute (pf/sign-in-to-add-answer context)))
+                                                            (html/substitute (sign-in-to-add-answer context)))
 
                                       [:.l8n-guidance-heading] (tl8 :question-page/guidance-heading))))))))

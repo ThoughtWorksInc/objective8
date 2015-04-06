@@ -18,13 +18,12 @@
                (html/prepend (html/html-snippet (anti-forgery-field)))  
                (html/set-attr :action (utils/local-path-for :fe/add-question-form-post :id objective-id))))))
 
-(defn sign-in-to-add-question [{:keys [translations ring-request] :as context}]
-  (html/at pf/please-sign-in-snippet
-           [:.l8n-before-link] (html/content (translations :question-sign-in/please))
-           [:.l8n-sign-in-link] (html/do->
-                                  (html/set-attr :href (str "/sign-in?refer=" (:uri ring-request)))
-                                  (html/content (translations :question-sign-in/sign-in)))
-           [:.l8n-after-link] (html/content (translations :question-sign-in/to))))
+(def sign-in-to-add-question-snippet (html/select pf/library-html-resource [:.clj-to-add-question-please-sign-in]))
+
+(defn sign-in-to-add-question [{:keys [ring-request] :as context}]
+  (html/at sign-in-to-add-question-snippet  
+           [:.clj-to-add-question-sign-in-link] 
+           (html/set-attr :href (str "/sign-in?refer=" (:uri ring-request)))))
 
 (defn add-question [{user :user :as context}]
   (if user

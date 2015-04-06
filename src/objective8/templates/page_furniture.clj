@@ -13,10 +13,6 @@
 
 (def anchor-button (html/select library-html-resource [:.clj-anchor-button]))
 
-;; PLEASE SIGN IN
-
-(def please-sign-in-snippet (html/select library-html-resource [:.clj-please-sign-in]))
-
 ;; GOOGLE ANALYTICS
 
 (def google-analytics-script (html/select library-html-resource [:.clj-google-analytics]))
@@ -90,16 +86,6 @@
       empty-writer-list-item-snippet
       (writer-list-items candidates))))
 
-;; ANSWER LIST
-
-(html/defsnippet sign-in-to-add-answer
-  library-html [:.clj-please-sign-in] [{:keys [translations ring-request] :as context}]
-  [:.l8n-before-link] (html/content (translations :answer-sign-in/please))
-  [:.l8n-sign-in-link] (html/do->
-                         (html/set-attr "href" (str "/sign-in?refer=" (:uri ring-request)))
-                         (html/content (translations :answer-sign-in/sign-in)))
-  [:.l8n-after-link] (html/content (translations :answer-sign-in/to)))
-
 ;; COMMENT LIST
 
 (defn voting-actions-when-signed-in [{:keys [data ring-request] :as context} comment]
@@ -158,13 +144,12 @@
   [:.clj-refer] (html/set-attr :value (:uri ring-request))
   [:.clj-comment-on-uri] (html/set-attr :value (get-in data [comment-target :uri])))
 
-(defn sign-in-to-comment [{:keys [translations ring-request]}]
-  (html/at please-sign-in-snippet
-           [:.clj-before-link] (html/content (translations :comment-sign-in/please))
-           [:.clj-sign-in-link] (html/do->
-                                  (html/set-attr :href (str "/sign-in?refer=" (:uri ring-request) "%23comments"))
-                                  (html/content (translations :comment-sign-in/sign-in)))
-           [:.clj-after-link] (html/content (translations :comment-sign-in/to))))
+(def sign-in-to-comment-snippet (html/select library-html-resource [:.clj-to-comment-please-sign-in]))
+
+(defn sign-in-to-comment [{:keys [ring-request] :as context}]
+  (html/at sign-in-to-comment-snippet 
+           [:.clj-to-comment-sign-in-link] 
+           (html/set-attr :href (str "/sign-in?refer=" (:uri ring-request) "%23comments"))))
 
 
 (defn comment-create [{user :user :as context} comment-target]

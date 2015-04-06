@@ -104,9 +104,6 @@ add-draft,preview,Preview
 comment-create,comment-title,Comments are a maximum length of 500 characters
 comment-create,post-button,Add a comment
 comment-create,comment-label,Your comment
-question-sign-in,sign-in,sign in
-question-sign-in,please,Please
-question-sign-in,to,to add a question.
 candidate-list,doc-title,Candidate policy writers | Objective[8]
 candidate-list,page-intro,Writers work with each other and the community to draft policy.
 candidate-list,candidate-list-heading,Recently added candidate writers
@@ -181,9 +178,18 @@ share-widget,twitter-title,Share this page on Twitter
 share-widget,facebook-text,Share on Facebook
 share-widget,facebook-title,Share on Facebook...
 share-widget,reddit-title,Submit this page to Reddit
-comment-sign-in,sign-in,sign in
-comment-sign-in,please,Please
-comment-sign-in,to,to start commenting.
+to-comment,before-sign-in-link,Please
+to-comment,sign-in-link,sign-in
+to-comment,after-sign-in-link,to start commenting.
+to-add-question,before-sign-in-link,Please
+to-add-question,sign-in-link,sign-in
+to-add-question,after-sign-in-link,to add a question.
+to-add-answer,before-sign-in-link,Please
+to-add-answer,sign-in-link,sign-in
+to-add-answer,after-sign-in-link,to answer this question.
+to-invite-writer,before-sign-in,Please
+to-invite-writer,sign-in-link,sign-in
+to-invite-writer,after-sign-in-link,to invite a policy writer.
 question-view,added-message,Your question has been added!
 question-view,added-answer-message,Your answer has been added!
 error-404,doc-title,Error | Objective[8]
@@ -203,9 +209,6 @@ invite-writer,doc-title,"Invite a writer -"
 invite-writer,doc-description,Invite a writer to draft policy
 invite-writer,section-title,Invite a policy writer
 invite-writer,do-you-know-a-writer,Do you know someone with the enthusiasm and expertise to help draft this policy?
-invite-writer,sign-in,sign in
-invite-writer,sign-in-please,Please
-invite-writer,sign-in-to,to invite a policy writer.
 invite-writer,writer-name-label,Writer name
 invite-writer,writer-email-label,Writer email
 invite-writer,writer-reason-label,"They should help draft this policy, because:"
@@ -229,9 +232,6 @@ invitation-modal,mail-to-text,send email
 invitation-modal,email-subject,You have been invited to help draft some policy!
 invitation-modal,email-body-line-1,I have invited you to help draft some policy on this objective:
 invitation-modal,email-body-line-2,Please follow the link below for more information and to accept the invitation
-answer-sign-in,sign-in,sign in
-answer-sign-in,please,Please
-answer-sign-in,to,to answer this question.
 base,project-status!,"ALPHA: We are still testing, <a href=""/project-status"" title=""Find out more about our project status"">find out more</a>"
 base,header-logo-title,Go to home page
 base,header-logo-text,Objective[8]

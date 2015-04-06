@@ -13,13 +13,12 @@
   (html/at invite-writer-form-snippet
            [:.clj-invite-a-writer-form] (html/prepend (html/html-snippet (anti-forgery-field)))))
 
-(defn sign-in-to-invite-writer [{:keys [translations ring-request]}]
-  (html/at pf/please-sign-in-snippet
-           [:.l8n-before-link] (html/content (translations :invite-writer/sign-in-please)) 
-           [:.l8n-sign-in-link] (html/do->
-                                  (html/set-attr :href (str "/sign-in?refer=" (:uri ring-request)))
-                                  (html/content (translations :invite-writer/sign-in))) 
-           [:.l8n-after-link] (html/content (translations :invite-writer/sign-in-to))))
+(def sign-in-to-invite-writer-snippet (html/select pf/library-html-resource [:.clj-to-invite-writer-please-sign-in]))
+
+(defn sign-in-to-invite-writer [{:keys [ring-request] :as context}]
+  (html/at sign-in-to-invite-writer-snippet 
+           [:.clj-to-invite-writer-sign-in-link] 
+           (html/set-attr :href (str "/sign-in?refer=" (:uri ring-request)))))
 
 (defn invite-writer [{user :user :as context}]
   (if user

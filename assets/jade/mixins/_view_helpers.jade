@@ -39,14 +39,13 @@ mixin voteUpDownControls()
       i.fa.fa-fw.fa-angle-down
       span.vote-direction-text !Vote down
 
-mixin pleaseSignIn()
-  p.clj-please-sign-in
-    span.clj-before-link.l8n-before-link !Please
+mixin pleaseSignIn(reason)
+  p(class="clj-#{reason}-please-sign-in")
+    span(data-l8n="content:#{reason}/before-sign-in-link") !Please
     =" "
-    a.clj-sign-in-link.l8n-sign-in-link(href='/sign-in') !sign in
+    a(class="clj-#{reason}-sign-in-link", href='/sign-in', data-l8n="content:#{reason}/sign-in-link") !sign in
     =" "
-    span.clj-after-link.l8n-after-link
-      block
+    span(data-l8n="content:#{reason}/after-sign-in-link") !to ...
 
 mixin modal(title, l8nTitleClass, funcClass)
   .modal-contents.clj-modal-contents.clj-writer-invitation.js-modal-content
