@@ -144,7 +144,7 @@
                                                                    (html/set-attr
                                                                      :href (str "/objectives/" (:_id objective) "/invite-writer")))
 
-                                      [:.clj-question-list] (html/content (pf/question-list context))
+                                      [:.clj-question-list] (html/content (question-list context))
                                       [:.clj-ask-question-link] (when (tf/open? objective)
                                                                   (html/set-attr
                                                                     "href" (str "/objectives/" (:_id objective) "/add-question")))
