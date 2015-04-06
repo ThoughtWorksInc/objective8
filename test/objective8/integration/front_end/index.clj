@@ -147,9 +147,9 @@
                                                         :result open-objective})
              (let [user-session (helpers/test-context)
                    {status :status body :body} (-> user-session
-                            (helpers/sign-in-as-existing-user)
-                            (p/request (utils/path-for :fe/invite-writer :id OBJECTIVE_ID))
-                            :response)]
+                                                   (helpers/sign-in-as-existing-user)
+                                                   (p/request (utils/path-for :fe/invite-writer :id OBJECTIVE_ID))
+                                                   :response)]
                status => 200
                body => helpers/no-untranslated-strings)))
 
@@ -194,6 +194,25 @@
              (let [user-session (helpers/test-context)
                    {status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/draft :id OBJECTIVE_ID :d-id DRAFT_ID))
+                                                   :response)]
+               status => 200
+               body => helpers/no-untranslated-strings)))
+
+(facts "about rendering add-draft page"
+       (future-fact "there are no untranslated strings"
+             (against-background
+               (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
+               (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                               :result {:_id USER_ID
+                                                                        :username "username"}}
+               (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}} 
+               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                         :result drafting-objective})
+             (let [user-session (helpers/test-context)
+                   {status :status body :body} (-> user-session
+                                                   (helpers/sign-in-as-existing-user)
+                                                   (p/request (utils/path-for :fe/add-draft-get
+                                                                              :id OBJECTIVE_ID))
                                                    :response)]
                status => 200
                body => helpers/no-untranslated-strings)))
