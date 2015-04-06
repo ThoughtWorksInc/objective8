@@ -225,3 +225,18 @@
                                                    :response)]
                status => 200
                body => helpers/no-untranslated-strings)))
+
+(def twitter-callback-url (str utils/host-url "/twitter-callback?oauth_verifier=VERIFICATION_TOKEN"))
+
+(facts "about rendering sign-up page"
+       (future-fact "there are no untranslated strings"
+             (against-background
+               (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
+               (http-api/find-user-by-twitter-id "twitter-TWITTER_ID") => {:status ::http-api/not-found})
+             (let [user-session (helpers/test-context)
+                   {status :status body :body} (-> user-session
+                                                   (p/request twitter-callback-url)
+                                                   p/follow-redirect
+                                                   :response)]
+               status => 200
+               body => helpers/no-untranslated-strings)))
