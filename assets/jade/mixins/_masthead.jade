@@ -12,25 +12,25 @@ mixin mastheadContents()
   .clj-masthead-navigation
     a.masthead-nav-link(href="#navigation")
       i.fa.fa-bars
-      span.visuallyhidden.clj-masthead-skip-text !Skip to navigation
-    a.masthead-logo.clj-masthead-logo(href="/", title="!Go to home page", rel="home") Objective[8]
+      span.visuallyhidden(data-l8n="content:masthead/skip-to-navigation") !Skip to navigation
+    a.masthead-logo(href="/", title="!Go to home page", rel="home", data-l8n="attr/title:masthead/logo-title-attr") Objective[8]
     .masthead-large-screen-nav
-      a.clj-masthead-objectives-link(href="/objectives", title="!Go to the Objectives list") !Objectives
-      a.clj-masthead-about-link(href="/learn-more", title="!Learn more about Objective[8]") !About
+      a(href="/objectives", title="!Go to the Objectives list", data-l8n="attr/title:masthead/objectives-link-title-attr content:masthead/objectives-link") !Objectives
+      a(href="/learn-more", title="!Learn more about Objective[8]", data-l8n="attr/title:masthead/about-link-title-attr content:masthead/about-link") !About
 
 mixin mastheadSignedOut()
   .masthead.clj-masthead-signed-out
     +mastheadContents()
     .masthead-user-nav.clj-user-navigation-signed-out
-      a.masthead-sign-in.clj-masthead-sign-in(href="/sign-in", title="!Sign in")
+      a.masthead-sign-in.clj-masthead-sign-in(href="/sign-in", title="!Sign in", data-l8n="attr/title:navigation-global/sign-in-title")
         i.fa.fa-sign-in
-        span.clj-masthead-sign-in-text !Sign in
+        span(data-l8n="content:navigation-global/sign-in-text") !Sign in
 
 mixin mastheadSignedIn()
   .masthead.clj-masthead-signed-in
     +mastheadContents()
     .masthead-user-nav.clj-user-navigation-signed-in
       span.masthead-username.clj-username JoeBloggs
-      a.masthead-sign-out.clj-masthead-sign-out(href="/sign-out", title="!Sign out")
+      a.masthead-sign-out.clj-masthead-sign-out(href="/sign-out", title="!Sign out", data-l8n="attr/title:navigation-global/sign-out-title")
         i.fa.fa-sign-out
-        span.clj-masthead-sign-out-text !Sign out
+        span(data-l8n="content:navigation-global/sign-out-text") !Sign out

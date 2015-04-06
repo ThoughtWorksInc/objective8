@@ -18,7 +18,7 @@
 (def SOME_HTML (hc/html SOME_HICCUP))
 
 (facts "about rendering index page"
-       (future-fact "there are no untranslated strings"
+       (fact "there are no untranslated strings"
              (let [user-session (helpers/test-context)
                    {status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/index))
@@ -27,7 +27,7 @@
                body => helpers/no-untranslated-strings)))
 
 (facts "about rendering learn-more page"
-       (future-fact "there are no untranslated strings"
+       (fact "there are no untranslated strings"
              (let [user-session (helpers/test-context)
                    {status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/learn-more))
@@ -36,7 +36,7 @@
                body => helpers/no-untranslated-strings)))
 
 (facts "about rendering project-status page"
-       (future-fact "there are no untranslated strings"
+       (fact "there are no untranslated strings"
              (let [user-session (helpers/test-context)
                    {status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/project-status))
@@ -44,18 +44,21 @@
                status => 200
                body => helpers/no-untranslated-strings)))
 
-(def drafting-objective {:title "my objective title"
+(def drafting-objective {:_id OBJECTIVE_ID
+                         :title "my objective title"
                          :goal-1 "my objective goal"
                          :description "my objective description"
                          :end-date (utils/string->date-time "2012-12-12")
+                         :username "Barry"
                          :uri (str "/objectives/" OBJECTIVE_ID)
                          :status "drafting"})
 
-(def open-objective {assoc drafting-objective :status "open" 
-                     :end-date (utils/date-time->date-time-plus-30-days (utils/current-time))})
+(def open-objective (assoc drafting-objective :status "open" 
+                           :end-date (utils/date-time->date-time-plus-30-days (utils/current-time))))
+
 
 (facts "about rendering objective-list page"
-       (future-fact "there are no untranslated strings"
+       (fact "there are no untranslated strings"
              (against-background
                (http-api/get-all-objectives) => {:status ::http-api/success 
                                                  :result [drafting-objective open-objective]})
@@ -67,7 +70,7 @@
                body => helpers/no-untranslated-strings)))
 
 (facts "about rendering create-objective page"
-       (future-fact "there are no untranslated strings"
+       (fact "there are no untranslated strings"
              (against-background
                (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
                (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
@@ -82,7 +85,7 @@
                body => helpers/no-untranslated-strings)))
 
 (facts "about rendering objective page"
-       (future-fact "there are no untranslated strings"
+       (fact "there are no untranslated strings"
              (against-background 
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result open-objective}
@@ -102,7 +105,7 @@
                  :_id QUESTION_ID})
 
 (facts "about rendering question page"
-       (future-fact "there are no untranslated strings"
+       (fact "there are no untranslated strings"
              (against-background 
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result open-objective}
@@ -120,7 +123,7 @@
                body => helpers/no-untranslated-strings)))
 
 (facts "about rendering add-question page"
-       (future-fact "there are no untranslated strings"
+       (fact "there are no untranslated strings"
              (against-background
                (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
                (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
@@ -130,14 +133,14 @@
                                                         :result open-objective})
              (let [user-session (helpers/test-context)
                    {status :status body :body} (-> user-session
-                            (helpers/sign-in-as-existing-user)
-                            (p/request (utils/path-for :fe/add-a-question :id OBJECTIVE_ID))
-                            :response)]
+                                                   (helpers/sign-in-as-existing-user)
+                                                   (p/request (utils/path-for :fe/add-a-question :id OBJECTIVE_ID))
+                                                   :response)]
                status => 200
                body => helpers/no-untranslated-strings)))
 
 (facts "about rendering invite-writer page"
-       (future-fact "there are no untranslated strings"
+       (fact "there are no untranslated strings"
              (against-background
                (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
                (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
@@ -154,7 +157,7 @@
                body => helpers/no-untranslated-strings)))
 
 (facts "about rendering draft-list page"
-       (future-fact "there are no untranslated strings"
+       (fact "there are no untranslated strings"
              (against-background
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                         :result drafting-objective} 
@@ -175,7 +178,7 @@
                body => helpers/no-untranslated-strings)))
 
 (facts "about rendering draft page"
-       (future-fact "there are no untranslated strings"
+       (fact "there are no untranslated strings"
              (against-background
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                         :result drafting-objective} 
@@ -199,7 +202,7 @@
                body => helpers/no-untranslated-strings)))
 
 (facts "about rendering add-draft page"
-       (future-fact "there are no untranslated strings"
+       (fact "there are no untranslated strings"
              (against-background
                (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
                (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
@@ -218,7 +221,7 @@
                body => helpers/no-untranslated-strings)))
 
 (facts "about rendering sign-in page"
-       (future-fact "there are no untranslated strings"
+       (fact "there are no untranslated strings"
              (let [user-session (helpers/test-context)
                    {status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/sign-in))
@@ -229,7 +232,7 @@
 (def twitter-callback-url (str utils/host-url "/twitter-callback?oauth_verifier=VERIFICATION_TOKEN"))
 
 (facts "about rendering sign-up page"
-       (future-fact "there are no untranslated strings"
+       (fact "there are no untranslated strings"
              (against-background
                (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
                (http-api/find-user-by-twitter-id "twitter-TWITTER_ID") => {:status ::http-api/not-found})
@@ -242,7 +245,7 @@
                body => helpers/no-untranslated-strings)))
 
 (facts "about rendering error-404 page"
-       (future-fact "there are no untranslated strings"
+       (fact "there are no untranslated strings"
              (let [user-session (helpers/test-context)
                    {status :status body :body} (-> user-session
                                                    (p/request (str utils/host-url "/INVALID_ROUTE"))

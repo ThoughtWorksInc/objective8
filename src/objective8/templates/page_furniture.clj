@@ -31,29 +31,22 @@
 
 ;; MASTHEAD
 
-(def masthead-snippet (html/select library-html-resource [:.clj-masthead-signed-out])) 
+(def masthead-signed-out-snippet (html/select library-html-resource [:.clj-masthead-signed-out])) 
 (def masthead-signed-in-snippet (html/select library-html-resource [:.clj-masthead-signed-in]))
 
-(defn masthead [{{uri :uri} :ring-request :keys [translations  user] :as context}]
-  (let [tl8 (tf/translator context)]
-    (html/at masthead-snippet
-             [:.clj-masthead-signed-out] (if user
-                                           (html/substitute masthead-signed-in-snippet)
-                                           identity)
-             [:.clj-masthead-skip-text] (tl8 :masthead/skip-to-navigation)
-             [:.clj-masthead-logo] (html/set-attr "title" (translations :masthead/logo-title-attr))
-             [:.clj-masthead-objectives-link] (html/do->
-                                                (html/set-attr "title" (translations :masthead/objectives-link-title-attr))
-                                                (tl8 :masthead/objectives-link))
-             [:.clj-masthead-about-link] (html/do->
-                                           (html/set-attr "title" (translations :masthead/about-link-title-attr))
-                                           (tl8 :masthead/about-link))
-             [:.clj-masthead-sign-in] (html/set-attr "title" (translations :navigation-global/sign-in-title))
-             [:.clj-masthead-sign-in] (html/set-attr "href" (str "/sign-in?refer=" uri))
-             [:.clj-masthead-sign-in-text] (tl8 :navigation-global/sign-in-text)
-             [:.clj-masthead-sign-out] (html/set-attr "title" (translations :navigation-global/sign-out-title))
-             [:.clj-masthead-sign-out-text] (tl8 :navigation-global/sign-out-text)
-             [:.clj-username] (html/content (:username user)))))
+(defn masthead-signed-out [{:keys [ring-request] :as context}]
+  (let [uri (:uri ring-request)]
+    (html/at masthead-signed-out-snippet
+             [:.clj-masthead-sign-in] (html/set-attr :href (str "/sign-in?refer=" uri)))))
+
+(defn masthead-signed-in [{:keys [user] :as context}]
+  (html/at masthead-signed-in-snippet
+           [:.clj-username] (html/content (:username user))))
+
+(defn masthead [{:keys [user] :as context}]
+  (if user
+    (masthead-signed-in context)
+    (masthead-signed-out context)))
 
 ;; STATUS BAR
 
