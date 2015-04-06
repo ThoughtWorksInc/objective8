@@ -138,11 +138,13 @@
 
 ;; COMMENT CREATE
 
-(html/defsnippet comment-create-form
-  library-html [:.clj-add-comment-form] [{:keys [data ring-request]} comment-target]
-  [:.clj-add-comment-form] (html/prepend (html/html-snippet (anti-forgery-field)))
-  [:.clj-refer] (html/set-attr :value (:uri ring-request))
-  [:.clj-comment-on-uri] (html/set-attr :value (get-in data [comment-target :uri])))
+(def comment-create-form-snippet (html/select library-html-resource [:.clj-add-comment-form])) 
+
+(defn comment-create-form [{:keys [data ring-request]} comment-target]
+  (html/at comment-create-form-snippet
+           [:.clj-add-comment-form] (html/prepend (html/html-snippet (anti-forgery-field))) 
+           [:.clj-refer] (html/set-attr :value (:uri ring-request)) 
+           [:.clj-comment-on-uri] (html/set-attr :value (get-in data [comment-target :uri]))))
 
 (def sign-in-to-comment-snippet (html/select library-html-resource [:.clj-to-comment-please-sign-in]))
 

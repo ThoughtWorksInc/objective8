@@ -187,7 +187,7 @@ to-add-question,after-sign-in-link,to add a question.
 to-add-answer,before-sign-in-link,Please
 to-add-answer,sign-in-link,sign-in
 to-add-answer,after-sign-in-link,to answer this question.
-to-invite-writer,before-sign-in,Please
+to-invite-writer,before-sign-in-link,Please
 to-invite-writer,sign-in-link,sign-in
 to-invite-writer,after-sign-in-link,to invite a policy writer.
 question-view,added-message,Your question has been added!
