@@ -51,26 +51,24 @@
 ;; STATUS BAR
 
 (def flash-bar-snippet (first (html/select library-html-resource [:.clj-flash-message-bar]))) 
+(def invitation-response-banner-snippet (html/select library-html-resource [:.clj-invitation-response-link]))
+(def status-bar-snippet (html/select library-html-resource [:.clj-status-bar])) 
 
-(html/defsnippet invitation-response-banner library-html [:.clj-invitation-response-link]
-  [invitation-rsvp translations]
-  [:.clj-invitation-response-link] 
-  (html/do->
-    (html/set-attr :href (utils/local-path-for :fe/objective :id (:objective-id invitation-rsvp)))
-    (html/content (translations :invitation-response/banner-message))))
+(defn invitation-response-banner [invitation-rsvp]
+  (html/at invitation-response-banner-snippet
+           [:.clj-invitation-response-link] 
+           (html/set-attr :href (utils/local-path-for :fe/objective 
+                                                      :id (:objective-id invitation-rsvp)))))
 
 (defn flash-bar [flash] 
   (html/at flash-bar-snippet
            [:.clj-flash-message-bar-text] (html/content flash)))
 
-(html/defsnippet status-flash-bar
-  library-html [:.clj-status-bar] [{:keys [doc translations invitation-rsvp] :as context}]
-  [:.clj-status-bar] (cond
-                       (:flash doc) (html/substitute (flash-bar (:flash doc)))
-                       invitation-rsvp (html/substitute (flash-bar (invitation-response-banner invitation-rsvp translations)))
-                       :else identity)
-  [:.clj-status-bar-text] (html/content (translations :status-bar/status-text)))
-
+(defn status-flash-bar [{:keys [doc invitation-rsvp] :as context}]
+  (cond 
+    (:flash doc) (flash-bar (:flash doc))
+    invitation-rsvp (flash-bar (invitation-response-banner invitation-rsvp))
+    :else status-bar-snippet))
 
 ;; DRAFTING HAS STARTED MESSAGE
 
