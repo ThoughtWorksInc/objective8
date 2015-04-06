@@ -66,5 +66,4 @@
 (def add-draft (view add-draft/add-draft-page))
 (def sign-in (view sign-in/sign-in-page))
 (def sign-up (view sign-up/sign-up-page))
-
 (def error-404 (view error-404/error-404-page))

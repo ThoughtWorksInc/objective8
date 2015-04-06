@@ -240,3 +240,12 @@
                                                    :response)]
                status => 200
                body => helpers/no-untranslated-strings)))
+
+(facts "about rendering error-404 page"
+       (future-fact "there are no untranslated strings"
+             (let [user-session (helpers/test-context)
+                   {status :status body :body} (-> user-session
+                                                   (p/request (str utils/host-url "/INVALID_ROUTE"))
+                                                   :response)]
+               status => 404
+               body => helpers/no-untranslated-strings)))
