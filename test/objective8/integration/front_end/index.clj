@@ -216,3 +216,12 @@
                                                    :response)]
                status => 200
                body => helpers/no-untranslated-strings)))
+
+(facts "about rendering sign-in page"
+       (future-fact "there are no untranslated strings"
+             (let [user-session (helpers/test-context)
+                   {status :status body :body} (-> user-session
+                                                   (p/request (utils/path-for :fe/sign-in))
+                                                   :response)]
+               status => 200
+               body => helpers/no-untranslated-strings)))
