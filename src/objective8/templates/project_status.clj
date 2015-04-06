@@ -5,7 +5,7 @@
 
 (def project-status-template (html/html-resource "templates/jade/project-status.html"))
 
-(defn project-status-page [{:keys [translations doc] :as context}]
+(defn project-status-page [{:keys [doc] :as context}]
   (apply str
          (html/emit*
            (tf/translate context

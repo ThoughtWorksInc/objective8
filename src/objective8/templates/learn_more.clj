@@ -5,7 +5,7 @@
 
 (def learn-more (html/html-resource "templates/jade/learn-more.html"))
 
-(defn learn-more-page [{:keys [translations doc] :as context}]
+(defn learn-more-page [{:keys [doc] :as context}]
   (apply str
          (html/emit*
            (tf/translate context

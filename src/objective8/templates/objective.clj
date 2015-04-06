@@ -66,7 +66,7 @@
       [:.clj-drafting-message-link] (html/set-attr :href (str "/objectives/" (:_id objective) 
                                                               "/drafts")))))
 
-(defn drafting-begins [objective translations]
+(defn drafting-begins [objective]
   (html/transformation
     [:.clj-days-left-day] (html/do->
                             (html/set-attr :drafting-begins-date (:end-date objective))
@@ -134,7 +134,7 @@
                                       [:.clj-objective-title] (html/content (:title objective))
 
                                       [:.clj-days-left] (when (tf/open? objective)
-                                                          (drafting-begins objective translations))
+                                                          (drafting-begins objective))
                                       [:.clj-drafting-started-wrapper] (when (tf/in-drafting? objective)
                                                                          (html/substitute (drafting-message context)))
                                       [:.clj-replace-with-objective-detail] (html/substitute (tf/text->p-nodes (:description objective)))

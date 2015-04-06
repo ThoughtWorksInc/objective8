@@ -10,7 +10,7 @@
 
 (def add-question-form-snippet (html/select add-question-template [:.clj-question-create-form]))
 
-(defn add-question-form [{:keys [translations data] :as context}]
+(defn add-question-form [{:keys [data] :as context}]
   (let [objective-id (get-in data [:objective :_id])]
     (html/at add-question-form-snippet 
              [:.clj-question-create-form] 

@@ -9,7 +9,7 @@
 
 (def invite-writer-form-snippet (html/select pf/library-html-resource [:.clj-invite-a-writer-form]))
 
-(defn invite-writer-form [{:keys [translations data]}]
+(def invite-writer-form 
   (html/at invite-writer-form-snippet
            [:.clj-invite-a-writer-form] (html/prepend (html/html-snippet (anti-forgery-field)))))
 
@@ -22,10 +22,10 @@
 
 (defn invite-writer [{user :user :as context}]
   (if user
-    (invite-writer-form context)
+    invite-writer-form
     (sign-in-to-invite-writer context)))
 
-(defn invite-writer-page [{:keys [translations data doc] :as context}]
+(defn invite-writer-page [{:keys [data doc] :as context}]
   (let [objective (:objective data)]
     (apply str
            (html/emit*

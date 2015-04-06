@@ -5,7 +5,7 @@
 
 (def error-404-template (html/html-resource "templates/jade/error-404.html"))
 
-(defn error-404-page [{:keys [translations doc] :as context}]
+(defn error-404-page [{:keys [doc] :as context}]
   (apply str
          (html/emit*
            (tf/translate context
