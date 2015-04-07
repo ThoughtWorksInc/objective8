@@ -3,13 +3,13 @@ include mixins/_view_helpers
 
 block vars
   - bodyClass = ""
-  - pageTitle = "! Add draft"
+  - pageTitle = "!Import draft"
 
 block content
 
   .middle-container
 
-    article.draft-preview-document.clj-add-draft-preview
+    article.draft-preview-document.clj-import-draft-preview
       h1 Echo Park jean shorts viral forage
       p Craft beer biodiesel fixie cray heirloom you probably haven't heard of them. Marfa swag chillwave flannel. Distillery seitan next level, post-ironic retro banjo 90's craft beer master cleanse gluten-free YOLO. Tattooed Portland wolf retro scenester Odd Future. Shabby chic PBR Odd Future gluten-free banjo Blue Bottle. Pickled listicle fanny pack bitters.
       ul
@@ -44,9 +44,11 @@ block content
             tD etst
 
 
-    form.clj-add-draft-form(action="/objectives/:id/add-draft", method="POST")
-      textarea.clj-add-draft-content.func--add-draft-content(id="add-draft-content", name="content", rows="20", cols="50", placeholder="!Enter your draft here", required="required", data-l8n="attr/placeholder:add-draft/placeholder")
-      button.button.func--preview-action(type="submit", name="action", value="preview", data-l8n="content:add-draft/preview") !Preview
-      button.button.func--submit-action(type="submit", name="action", value="submit", data-l8n="content:add-draft/submit") !Add draft
+    form.clj-import-draft-form(action="/objectives/:id/import-draft", method="POST")
+      input(type="hidden").clj-google-doc-download-url
+      a.button.add-draft-link.clj-add-draft-link(href="/objectives/:id/add-draft", data-l8n="content:import-draft/cancel") !Cancel
+      button.button.func--submit-action(disabled="disabled", type="submit", data-l8n="content:import-draft/submit") !Submit
 
 block footerScripts
+    +javascriptIncludeTag("google_docs_import")
+    +javascriptIncludeTag("gapi")

@@ -32,7 +32,9 @@
                                              "/drafts" {:get :fe/draft-list
                                                         ["/" [#"\d+|latest" :d-id]] {:get :fe/draft}}
                                              "/add-draft" {:get :fe/add-draft-get
-                                                           :post :fe/add-draft-post}}}
+                                                           :post :fe/add-draft-post}
+                                             "/import-draft" {:get :fe/import-draft-get
+                                                              :post :fe/import-draft-post}}}
     "invitations"       {["/" :uuid] {:get :fe/writer-invitation}}
 
     ;; API

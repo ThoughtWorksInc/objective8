@@ -353,6 +353,18 @@
        (= objective-status ::http-api/not-found) (error-404-response request)
        :else {:status 500}))) 
 
+(defn import-draft-get [{{objective-id :id} :route-params :as request}]
+   (let [{objective-status :status objective :result} (http-api/get-objective (Integer/parseInt objective-id))]
+     (cond
+       (= objective-status ::http-api/success)
+       (if (= "drafting" (:status objective))
+         {:status 200
+          :headers {"Content-Type" "text/html"}      
+          :body (views/import-draft "import-draft" request :objective-id objective-id)} 
+         {:status 401}) 
+       (= objective-status ::http-api/not-found) (error-404-response request)
+       :else {:status 500})))
+
 (defn add-draft-post [{{o-id :id} :route-params
                         {content :content action :action} :params
                         :as request}]

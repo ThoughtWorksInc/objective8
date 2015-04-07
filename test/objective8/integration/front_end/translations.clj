@@ -220,6 +220,29 @@
                status => 200
                body => helpers/no-untranslated-strings)))
 
+(facts "about rendering import-draft page"
+       (against-background
+         (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
+         (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                         :result {:_id USER_ID
+                                                                  :username "username"}}
+         (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}} 
+         (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                   :result drafting-objective})
+       (let [user-session (helpers/test-context)
+             {status :status body :body} (-> user-session
+                                             (helpers/sign-in-as-existing-user)
+                                             (p/request (utils/path-for :fe/import-draft-get
+                                                                        :id OBJECTIVE_ID))
+                                             :response)]
+         (fact "there are no untranslated strings" 
+               status => 200
+               body => helpers/no-untranslated-strings)
+         (fact "the cancel link is set correctly" 
+               body => (contains (str "href=\"/objectives/" OBJECTIVE_ID "/add-draft\"")))
+         (fact "the form action is set correctly"
+               body => (contains (str "action=\"/objectives/" OBJECTIVE_ID "/import-draft\"")))))
+
 (facts "about rendering sign-in page"
        (fact "there are no untranslated strings"
              (let [user-session (helpers/test-context)

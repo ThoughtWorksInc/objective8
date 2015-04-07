@@ -101,6 +101,10 @@ add-draft,doc-description,Draft policy
 add-draft,placeholder,Enter your draft here
 add-draft,submit,Add draft
 add-draft,preview,Preview
+import-draft,doc-title,Import draft | Objective[8]
+import-draft,doc-description,Import a draft from Google Drive
+import-draft,cancel,Cancel
+import-draft,submit,Submit
 comment-create,comment-title,Comments are a maximum length of 500 characters
 comment-create,post-button,Add a comment
 comment-create,comment-label,Your comment
