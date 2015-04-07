@@ -316,7 +316,7 @@
                   (try
                     (wd/to (str (:objective-url @journey-state) "/drafts"))
                     (wait-for-title "Drafts | Objective[8]")
-                    (screenshot "list_of_drafts")
+                    (screenshot "list_of_drafts_with_one_draft")
 
                     (wd/click ".func--add-a-draft")
                     (wait-for-title "Add draft | Objective[8]")
@@ -332,6 +332,10 @@
 
                     (wd/click ".func--submit-action")
                     (wait-for-title "Policy draft | Objective[8]")
+
+                    (wd/to (str (:objective-url @journey-state) "/drafts"))
+                    (wait-for-title "Drafts | Objective[8]")
+                    (screenshot "list_of_drafts_with_three_drafts")
 
                     (wd/to (str (:objective-url @journey-state) "/drafts/latest"))
                     (wait-for-title "Policy draft | Objective[8]")

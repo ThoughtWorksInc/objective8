@@ -34,7 +34,6 @@
 
 (defn drafts-wrapper [{:keys [translations data user] :as context}]
   (let [drafts (:drafts data)
-        _ (prn "DRAFTS" drafts) 
         objective (:objective data)]
     (html/at drafts-wrapper-snippet
              [:.clj-latest-draft-wrapper] (if (empty? drafts)
@@ -48,13 +47,12 @@
 
              [:.clj-previous-drafts-list] (if (empty? (rest drafts))
                                             (html/substitute (translations :draft-list/no-previous-versions))
-                                            (previous-drafts (rest drafts)))
+                                            (html/content (previous-drafts (rest drafts))))
 
              [:.clj-writer-item-list] (html/content (pf/writer-list context)))))
 
 (defn draft-list-page [{:keys [translations data doc] :as context}]
-  (let [objective (:objective data)
-        _ (prn "OBJECTIVE" objective)]
+  (let [objective (:objective data)]
     (apply str
            (html/emit*
              (tf/translate context
