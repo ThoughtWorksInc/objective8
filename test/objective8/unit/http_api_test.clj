@@ -240,3 +240,12 @@
       (http-api/get-all-drafts OBJECTIVE_ID) => :api-call-result
       (provided
         (http-api/default-get-call (contains (utils/path-for :api/get-drafts-for-objective :id OBJECTIVE_ID))) => :api-call-result))
+
+;;STARS
+
+(def star-data {:objective-id OBJECTIVE_ID :created-by-id USER_ID})
+
+(fact "posting a star hits the correct API endpoint"
+      (http-api/post-star star-data) => :api-call-result
+      (provided
+        (http-api/default-post-call (contains "/api/v1/meta/stars") star-data) => :api-call-result))

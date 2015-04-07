@@ -74,3 +74,8 @@
        (fact "returns nil when required down-vote information not provided"
              (request->down-vote-info {:params {}} USER_ID)
              => nil))
+
+(facts "about starring objectives"
+       (fact "transform request to star info"
+             (request->star-info {:params {:objective-id "3"}} USER_ID)
+             => {:objective-id 3 :created-by-id USER_ID}))

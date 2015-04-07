@@ -180,3 +180,7 @@
 (defn create-up-down-vote [vote]
   (default-post-call (utils/path-for :api/post-up-down-vote) vote))
 
+;; STARS
+
+(defn post-star [star-data]
+  (default-post-call (utils/path-for :api/post-star) star-data))

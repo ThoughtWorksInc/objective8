@@ -13,7 +13,8 @@
     "static/"           (->Resources {:prefix "public/"})
     "meta"              {"/up-vote"      {:post :fe/post-up-vote}
                          "/down-vote"    {:post :fe/post-down-vote}
-                         "/comments"     {:post :fe/post-comment}}
+                         "/comments"     {:post :fe/post-comment}
+                         "/stars" {:post :fe/post-star}}
     "objectives"        {:get :fe/objective-list
                          :post :fe/create-objective-form-post
                          "/create" {:get :fe/create-objective-form} 
@@ -59,6 +60,7 @@
                                                                        ["/" [#"\d+|latest" :d-id]] {:get :api/get-draft}}}}
 
                          "/meta" {"/comments" {:post :api/post-comment
-                                               :get :api/get-comments}}
+                                               :get :api/get-comments}
+                                  "/stars" {:post :api/post-star}}
                          "/up-down-votes" {:post :api/post-up-down-vote}
                          "/invitations" {:get :api/get-invitation}}}])

@@ -457,3 +457,15 @@
       http-api/create-up-down-vote)
   (redirect-to-params-referer request))
 
+(defn post-star [{:keys [t'] :as request}]
+ (let [star-data (helpers/request->star-info request (get (friend/current-authentication) :identity))
+       {status :status stored-star :result} (http-api/post-star star-data)]
+   (cond
+     (= status ::http-api/success)
+     (let [message (t' :objective-view/starred-message)]
+       (-> (redirect-to-params-referer request)
+           (assoc :flash message)))
+
+     (= status ::http-api/invalid-input) {:status 400}
+
+     :else {:status 502}))) 

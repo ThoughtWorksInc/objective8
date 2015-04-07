@@ -52,3 +52,7 @@
   (some-> (:params request)
           (utils/select-all-or-nothing [:vote-on-uri])
           (assoc :created-by-id user-id :vote-type "down")))
+
+(defn request->star-info [{:keys [params] :as request} user-id]
+  (when-let [objective-id (:objective-id params)]
+    {:objective-id (Integer/parseInt objective-id) :created-by-id user-id}))

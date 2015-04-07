@@ -350,3 +350,12 @@
     (catch Exception e
       (log/info "Error when posting vote: " e)
       (internal-server-error "Error when posting vote"))))
+
+;;STARS
+(defn post-star [request]
+ (if-let [star-data (ar/request->star-data request)]
+   (let [{status :status star :result} (actions/toggle-star! star-data)]
+     (cond
+       (= status ::actions/success)
+       (resource-created-response (str utils/host-url "/api/v1/meta/stars/" (:_id star))
+                                  star)))))

@@ -5,6 +5,7 @@
             [objective8.drafts :as drafts]
             [objective8.objectives :as objectives]
             [objective8.comments :as comments]
+            [objective8.stars :as stars]
             [objective8.storage.storage :as storage]))
 
 (def GLOBAL_ID 6)
@@ -137,3 +138,14 @@
              (actions/get-comments :uri) => {:status ::actions/entity-not-found}
              (provided
               (comments/get-comments :uri) => nil)))
+
+(def star-data {:objective-id OBJECTIVE_ID
+                :created-by-id USER_ID})
+
+(facts "about toggling stars"
+       (fact "star is created for an objective"
+             (actions/toggle-star! star-data) => {:status ::actions/success
+                                                  :result :the-stored-star}
+             (provided
+               (stars/retrieve-star OBJECTIVE_ID USER_ID) => nil
+               (stars/store-star! star-data) => :the-stored-star)))

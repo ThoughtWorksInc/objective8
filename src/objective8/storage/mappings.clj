@@ -207,7 +207,7 @@
 (defn unmap-star [m]
   (-> m
       (utils/ressoc :objective_id :objective-id)
-      (utils/ressoc :created_by_id :created_by_id)
+      (utils/ressoc :created_by_id :created-by-id)
       (assoc :_created_at (sql-time->iso-time-string (:_created_at m))) 
       (assoc :entity :star)))
 

@@ -5,6 +5,7 @@
             [objective8.drafts :as drafts]
             [objective8.up-down-votes :as up-down-votes]
             [objective8.comments :as comments]
+            [objective8.stars :as stars]
             [objective8.storage.storage :as storage]))
 
 (defn start-drafting! [objective-id]
@@ -73,3 +74,10 @@
   (if-let [results (comments/get-comments entity-uri)]
     {:status ::success :result results}
     {:status ::entity-not-found}))
+
+(defn toggle-star! [{:keys [objective-id created-by-id] :as star-data}]
+  (if-let [retrieved-star (stars/retrieve-star objective-id created-by-id)]
+    {:status ::star-already-exists} ;; TODO - IMPLEMENT UPDATE/TOGGLE
+    (if-let [stored-star (stars/store-star! star-data)]
+      {:status ::success :result stored-star}
+      {:status ::failure})))
