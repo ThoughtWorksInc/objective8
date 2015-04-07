@@ -241,21 +241,37 @@
              (map->bearer-token (dissoc bearer-token-map
                                         :bearer-name)) => (throws Exception)))
 
+(def star-map {:objective-id OBJECTIVE_ID
+               :created-by-id USER_ID
+               :active true})
+
+(facts "About map->star"
+       (fact "Column values are pulled out and converted, the map gets turned to json"
+             (let [star (map->star star-map)]
+               star => (contains {:objective_id OBJECTIVE_ID
+                                  :created_by_id USER_ID
+                                  :active true})))
+       
+       (fact "throws exception if :objective-id, :created-by-id or :active are missing"
+             (map->star (dissoc star-map :objective-id)) => (throws Exception)
+             (map->star (dissoc star-map :created-by-id)) => (throws Exception)
+             (map->star (dissoc star-map :active)) => (throws Exception)))
+
 ;; db-insertion-mapper
 (facts "about preparing maps for insertion into the db"
        (fact "should convert clojure keys to db columns"
              (let [map->db-object (db-insertion-mapper "test-entity" nil [:a-key])]
                (map->db-object {:a-key 1}) => {:a_key 1}))
-       
+
        (fact "should apply transformations to data"
              (let [map->db-object (db-insertion-mapper "test-entity" nil [:a :b] {:a inc})]
                (map->db-object {:a 1 :b 1}) => {:a 2 :b 1}))
-       
+
        (fact "should include json if required"
              (let [map->db-object (db-insertion-mapper "test-entity" :json-key [:a])]
                (map->db-object {:a 1 :other "data"}) => {:a 1
                                                          :json_key (map->json-type {:other "data"})}))
-       
+
        (fact "should throw an exception if required keys are missing"
              (let [map->db-object (db-insertion-mapper "test-entity" nil [:a])]
                (map->db-object {}) => (throws Exception))))

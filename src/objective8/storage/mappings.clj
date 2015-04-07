@@ -155,6 +155,11 @@
                        :token-details
                        [:bearer-name]))
 
+(def map->star
+  (db-insertion-mapper "star"
+                       nil 
+                       [:objective-id :created-by-id :active]))
+
 (defn- extract-column [m um key]
   (let [db-column (key->db-column key)]
     (assoc um key (db-column m))))
@@ -198,6 +203,13 @@
       (dissoc :vote)
       (assoc :vote-type ({1 :up -1 :down} vote))
       (assoc :entity :up-down-vote)))
+
+(defn unmap-star [m]
+  (-> m
+      (utils/ressoc :objective_id :objective-id)
+      (utils/ressoc :created_by_id :created_by_id)
+      (assoc :_created_at (sql-time->iso-time-string (:_created_at m))) 
+      (assoc :entity :star)))
 
 (declare objective user comment question answer invitation candidate bearer-token up-down-vote)
 
@@ -287,6 +299,12 @@
   (korma/transform (-> (unmap :token_details)
                        (with-columns [:bearer-name]))))
 
+(korma/defentity star
+  (korma/pk :_id)
+  (korma/table :objective8.stars)
+  (korma/prepare map->star)
+  (korma/transform unmap-star))
+
 (def entities {:objective objective
                :user      user
                :comment   comment
@@ -297,6 +315,7 @@
                :up-down-vote up-down-vote
                :draft draft
                :bearer-token bearer-token
+               :star star
                :global-identifier global-identifier})
 
 (defn get-mapping

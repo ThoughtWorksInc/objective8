@@ -231,6 +231,19 @@
                               (let [retrieve-result (storage/pg-retrieve {:entity :bearer-token :bearer-name "bearer name"})]
                                 (first (:result retrieve-result)) => (contains {:bearer-token "new-token"})))))
 
+              ;;STARS
+              (facts "about stars"
+                     (fact "a star can be stored in the database"
+                           (let [{objective-id :_id user-id :created-by-id} (sh/store-an-open-objective)
+                                 star {:entity :star
+                                       :objective-id objective-id
+                                       :created-by-id user-id
+                                       :active true}
+                                 stored-star (storage/pg-store! star)
+                                 retrieve-result (storage/pg-retrieve {:entity :star :_id (:_id stored-star)})]
+                             (first (:result retrieve-result)) => (contains stored-star))))
+
+
                ;;RETRIEVING MANY RESULTS
                (facts "about retrieving"
                       (fact "all results are retrieved when no limit is supplied"
