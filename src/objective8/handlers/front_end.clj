@@ -389,8 +389,12 @@
           :else {:status 502})))))
 
 (defn import-draft-post [{:keys [params] :as request}]
-  (if-let [draft-data (helpers/request->draft-info request (get (friend/current-authentication) :identity))]
-     (prn draft-data)))
+  (let [draft-data (helpers/request->draft-info request (get (friend/current-authentication) :identity))]
+     (let [{status :status draft :result} (http-api/post-draft draft-data)]
+        (cond
+          (= status ::http-api/success) (response/redirect (str "/objectives/" (:objective-id draft-data) "/drafts/" (:_id draft)))
+          (= status ::http-api/not-found) {:status 404}
+          :else {:status 502}))))
 
 (defn draft [{{:keys [d-id id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)

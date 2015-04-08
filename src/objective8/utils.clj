@@ -7,6 +7,7 @@
             [cemerick.friend :as friend]
             [endophile.hiccup :as eh]
             [hiccup.core :as hiccup]
+            [hickory.core :as hickory]
             [objective8.routes :as routes]
             [objective8.config :as config])
   (:import  [org.pegdown PegDownProcessor Extensions]))
@@ -158,3 +159,6 @@
 
 (defn hiccup->html [hcp]
   (hiccup/html hcp))
+
+(defn html->hiccup [html]
+  (hickory/as-hiccup (hickory/parse html)))
