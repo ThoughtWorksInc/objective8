@@ -78,6 +78,8 @@
 (defn toggle-star! [{:keys [objective-id created-by-id] :as star-data}]
   (if-let [retrieved-star (stars/retrieve-star objective-id created-by-id)]
     {:status ::star-already-exists} ;; TODO - IMPLEMENT UPDATE/TOGGLE
-    (if-let [stored-star (stars/store-star! star-data)]
-      {:status ::success :result stored-star}
-      {:status ::failure})))
+    (if (objectives/retrieve-objective objective-id)
+      (if-let [stored-star (stars/store-star! star-data)]
+        {:status ::success :result stored-star}
+        {:status ::failure})
+      {:status ::entity-not-found})))

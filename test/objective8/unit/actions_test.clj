@@ -148,4 +148,5 @@
                                                   :result :the-stored-star}
              (provided
                (stars/retrieve-star OBJECTIVE_ID USER_ID) => nil
+               (objectives/retrieve-objective OBJECTIVE_ID) => :the-stored-objective
                (stars/store-star! star-data) => :the-stored-star)))

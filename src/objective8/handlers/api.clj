@@ -353,9 +353,20 @@
 
 ;;STARS
 (defn post-star [request]
- (if-let [star-data (ar/request->star-data request)]
-   (let [{status :status star :result} (actions/toggle-star! star-data)]
-     (cond
-       (= status ::actions/success)
-       (resource-created-response (str utils/host-url "/api/v1/meta/stars/" (:_id star))
-                                  star)))))
+  (try
+    (if-let [star-data (ar/request->star-data request)]
+      (let [{status :status star :result} (actions/toggle-star! star-data)]
+        (cond
+          (= status ::actions/success)
+          (resource-created-response (str utils/host-url "/api/v1/meta/stars/" (:_id star))
+                                     star)
+
+          (= status ::actions/entity-not-found)  
+          (not-found-response "Objective does not exist")
+
+          :else
+          (internal-server-error "Error when posting star")))
+      (invalid-response "Invalid star post request"))
+    (catch Exception e
+      (log/info "Error when posting star: " e)
+      (internal-server-error "Error when posting star"))))
