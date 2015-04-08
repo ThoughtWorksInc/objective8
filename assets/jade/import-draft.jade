@@ -47,7 +47,7 @@ block content
     form.clj-import-draft-form(action="/objectives/:id/import-draft", method="POST")
       input(type="hidden").clj-google-doc-download-url
       a.button.add-draft-link.clj-add-draft-link(href="/objectives/:id/add-draft", data-l8n="content:import-draft/cancel") !Cancel
-      button.button.func--submit-action(disabled="disabled", type="submit", data-l8n="content:import-draft/submit") !Submit
+      button.button.clj-submit-draft-button.func--submit-action(disabled="disabled", type="submit", data-l8n="content:import-draft/submit") !Submit
 
 block footerScripts
     +javascriptIncludeTag("gapi/google_docs_import")
