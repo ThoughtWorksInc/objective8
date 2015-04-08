@@ -21,15 +21,6 @@
     }
 }());
 
-
-//Google webfont
-WebFont.load({
-  google: {
-    families: [ 'Source+Sans+Pro:400,700:latin' ]
-  }
-});
-
-
 //Share icons
 function windowPopup(url, width, height) {
   // Calculate the position of the popup so
@@ -58,4 +49,4 @@ $('#share-page-link').on('click', function(){
 function helpObjective8 () {
   window.location = "https://github.com/ThoughtWorksInc/objective8";
 }
-console.log("Greetings fellow developers, we need your help -- helpObjective8()")
+console.log("Greetings fellow developers, we need your help -- helpObjective8()");

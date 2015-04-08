@@ -3,6 +3,7 @@ include ../mixins/_view_helpers
 
 - var pageTitle = "!Page Title"
 - var bodyClass = ""
+- var googleFontsUrl = "http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700.css"
 block vars
 
 doctype
@@ -27,11 +28,12 @@ html.no-js(lang="en")
     <![endif]-->
 
     <!--[if IE 8]>
+    link(type="text/css", rel="stylesheet", href="#{googleFontsUrl}")/
     +stylesheetLinkTag("ie8","screen")
-    +stylesheetLinkTag("application","screen")
     <![endif]-->
 
-    //[if gte IE 8]><!
+    //[if gt IE 8]><!
+    link(type="text/css", rel="stylesheet", href="#{googleFontsUrl}")/
     +stylesheetLinkTag("modern","screen")
     //<![endif]
 

@@ -126,7 +126,6 @@ module.exports = function(grunt) {
       dist: {
         src: [
           '<%= folders.src %>/js/vendor/jquery-1.11.2.js',
-          '<%= folders.src %>/js/vendor/webfont.js',
           '<%= folders.src %>/js/custom/**/*.js'
         ],
         dest: '<%= folders.output %>/public/scripts.js'
