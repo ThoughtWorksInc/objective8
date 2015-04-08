@@ -28,21 +28,32 @@ block content
       span.clj-draft-list-title !Build safer cycling networks in the streets of Madrid.
 
     .clj-drafts-wrapper
-      .latest-draft-wrapper.clj-latest-draft-wrapper
-        h2.latest-draft-title(data-l8n="content:draft-list/latest-draft") !Latest draft
-        a.latest-draft-link.clj-latest-draft-link.func--latest-draft-link(href="/drafts/latest")
-          p.latest-draft-writer.clj-latest-draft-writer !Prof Barry
-        p.latest-draft-time.clj-latest-draft-time !2 days ago
+      .latest-draft-wrapper
+        .latest-draft.clj-latest-draft
+          h2.latest-draft-title(data-l8n="content:draft-list/latest-draft") !Latest draft
+          .draft-item-list
+            .draft-item
+              a.draft-item-link.clj-latest-draft-link.func--latest-draft-link(href="/drafts/latest")
+                .draft-item-icon
+                  i.fa.fa-file-text-o.draft-item-icon-fa
+                .draft-item-text
+                  span.draft-item-writer.clj-latest-draft-writer !Prof Barry
+                  = ", "
+                  span.draft-item-time.clj-latest-draft-time !2 days ago
 
-      a.button.add-a-draft.clj-add-a-draft.func--add-a-draft(href="/drafts/add-draft", data-l8n="content:draft-list/add-a-draft") !Add a draft
+        a.button.add-a-draft.clj-add-a-draft.func--add-a-draft(href="/drafts/add-draft", data-l8n="content:draft-list/add-a-draft") !Add a draft
 
-      .previous-drafts-wrapper.clj-previous-draft-wrapper
+      .previous-drafts.clj-previous-drafts
         h2.previous-drafts-title(data-l8n="content:draft-list/previous-versions") !Previous versions 
-        ul.previous-drafts-list.clj-previous-drafts-list
-          li.previous-draft-item.clj-previous-draft-item
-            a.previous-draft-link.clj-previous-draft-link(href="/drafts/id")
-              p.previous-draft-writer.clj-previous-draft-writer !Prof Barry
-            p.previous-draft-time.clj-previous-draft-time !3 days ago
+        ul.draft-item-list.clj-previous-drafts-list
+          li.draft-item.clj-previous-draft-item
+            a.draft-item-link.clj-previous-draft-link(href="/drafts/id")
+              .draft-item-icon
+                i.fa.fa-file-text-o.draft-item-icon-fa
+              .draft-item-text
+                span.draft-item-writer.clj-previous-draft-writer !Prof Barry
+                = ", "
+                span.draft-item-time.clj-previous-draft-time !3 days ago
 
       .draft-writers.clj-draft-writers
         h2(data-l8n="content:draft-list/writers") !Writers

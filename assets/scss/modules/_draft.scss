@@ -11,6 +11,12 @@
   }
 }
 
+.latest-draft-wrapper {
+  @extend %draft-section;
+}
+.previous-drafts {
+  @extend %draft-section;
+}
 .draft-writers {
   @extend %draft-section;
 }
