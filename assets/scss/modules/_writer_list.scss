@@ -35,9 +35,11 @@ $writer_avatar_size_beta: 60px;
   line-height: ($writer_avatar_size_alpha - 3px);
   text-align: center;
   color: rgba($grey-15,0.2);
+  font-size: 1em;
   @include mq(400) {
     height: $writer_avatar_size_beta;
     line-height: ($writer_avatar_size_beta - 3px);
+    font-size: 2em;
   }
 }
 
