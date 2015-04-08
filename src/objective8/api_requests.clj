@@ -18,4 +18,4 @@
   (utils/select-all-or-nothing params [:comment :created-by-id :comment-on-uri]))
 
 (defn request->star-data [{params :params :as request}]
-  (utils/select-all-or-nothing params [:objective-id :created-by-id]))
+  (utils/select-all-or-nothing params [:objective-uri :created-by-id]))

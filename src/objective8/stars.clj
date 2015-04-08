@@ -10,3 +10,7 @@
           storage/pg-store!))
 
 (defn retrieve-star [objective-id created-by-id])
+
+(defn retrieve-starred-objectives [created-by-id]
+  (-> (storage/pg-retrieve {:entity :star :created-by-id created-by-id :active true})
+      :result))

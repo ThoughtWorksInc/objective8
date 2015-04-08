@@ -11,6 +11,7 @@
 
 (def USER_ID 1)
 (def OBJECTIVE_ID 234)
+(def OBJECTIVE_URI (str "/objectives/" OBJECTIVE_ID))
 (def STAR_ID 2)
 
 (facts "about stars"
@@ -19,7 +20,7 @@
                (against-background
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success})
                (against-background
-                 (http-api/post-star {:objective-id OBJECTIVE_ID
+                 (http-api/post-star {:objective-uri OBJECTIVE_URI
                                       :created-by-id USER_ID}) => {:status ::http-api/success
                                                                    :result {:_id STAR_ID
                                                                             :objective-id OBJECTIVE_ID
@@ -30,13 +31,13 @@
                  (http-api/create-user anything) => {:status ::http-api/success
                                                      :result {:_id USER_ID}})
                (let [user-session (helpers/test-context)
-                     params {:objective-id OBJECTIVE_ID
-                             :refer (str "/objectives/" OBJECTIVE_ID)}
+                     params {:objective-uri OBJECTIVE_URI
+                             :refer OBJECTIVE_URI}
                      {response :response} (-> user-session
                                               (helpers/with-sign-in (str "http://localhost:8080/objectives/" OBJECTIVE_ID))
                                               (p/request (utils/path-for :fe/post-star)
                                                          :request-method :post
                                                          :params params))]
                  (:flash response) => (contains "This objective has been starred!")
-                 (:headers response) => (helpers/location-contains (str "/objectives/" OBJECTIVE_ID))
+                 (:headers response) => (helpers/location-contains OBJECTIVE_URI)
                  (:status response) => 302))))

@@ -17,6 +17,9 @@
   (let [{user-id :_id} (store-a-user)]
     (storage/pg-store! {:entity :objective
                         :status "open"
+                        :title "test title"
+                        :description "test description"
+                        :goals "test goal"
                         :created-by-id user-id
                         :end-date (str (tc/from-now (tc/days 1)))})))
 
@@ -134,3 +137,10 @@
   (-> (storage/pg-retrieve {:entity :invitation :_id invitation-id}) 
       :result
       first))
+
+(defn store-a-star [user-id]
+  (let [{objective-id :_id} (store-an-open-objective)]
+    (storage/pg-store! {:entity :star
+                        :created-by-id user-id
+                        :objective-id objective-id
+                        :active true})))

@@ -75,11 +75,11 @@
     {:status ::success :result results}
     {:status ::entity-not-found}))
 
-(defn toggle-star! [{:keys [objective-id created-by-id] :as star-data}]
-  (if-let [retrieved-star (stars/retrieve-star objective-id created-by-id)]
-    {:status ::star-already-exists} ;; TODO - IMPLEMENT UPDATE/TOGGLE
-    (if (objectives/retrieve-objective objective-id)
-      (if-let [stored-star (stars/store-star! star-data)]
+(defn toggle-star! [{:keys [objective-uri created-by-id] :as star-data}]
+  (if-let [{objective-id :_id} (storage/pg-retrieve-entity-by-uri objective-uri)]
+    (if-let [retrieved-star (stars/retrieve-star objective-id created-by-id)]
+      {:status ::star-already-exists} ;; TODO - IMPLEMENT UPDATE/TOGGLE
+      (if-let [stored-star (stars/store-star! (assoc star-data :objective-id objective-id))]
         {:status ::success :result stored-star}
-        {:status ::failure})
-      {:status ::entity-not-found})))
+        {:status ::failure}))
+    {:status ::entity-not-found}))

@@ -13,6 +13,7 @@
             [objective8.drafts :as drafts]
             [objective8.utils :as utils]
             [objective8.api-requests :as ar]
+            [objective8.stars :as stars]
             [objective8.actions :as actions]))
 
 (defn error-response [status message]
@@ -370,3 +371,10 @@
     (catch Exception e
       (log/info "Error when posting star: " e)
       (internal-server-error "Error when posting star"))))
+
+(defn get-stars [{:keys [params] :as request}]
+  (-> (:user-id params)
+      Integer/parseInt
+      stars/retrieve-starred-objectives
+      response/response 
+      (response/content-type "application/json")))

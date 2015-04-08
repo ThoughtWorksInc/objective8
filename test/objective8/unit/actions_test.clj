@@ -139,14 +139,16 @@
              (provided
               (comments/get-comments :uri) => nil)))
 
-(def star-data {:objective-id OBJECTIVE_ID
+(def star-data {:objective-uri :some-uri
                 :created-by-id USER_ID})
+
+(def star-data-with-id (assoc star-data :objective-id OBJECTIVE_ID))
 
 (facts "about toggling stars"
        (fact "star is created for an objective"
              (actions/toggle-star! star-data) => {:status ::actions/success
                                                   :result :the-stored-star}
              (provided
+               (storage/pg-retrieve-entity-by-uri :some-uri) => {:_id OBJECTIVE_ID}
                (stars/retrieve-star OBJECTIVE_ID USER_ID) => nil
-               (objectives/retrieve-objective OBJECTIVE_ID) => :the-stored-objective
-               (stars/store-star! star-data) => :the-stored-star)))
+               (stars/store-star! star-data-with-id) => :the-stored-star)))

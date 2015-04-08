@@ -19,7 +19,8 @@
 
         (fact "the posted star is stored"
               (let [{user-id :created-by-id objective-id :_id} (sh/store-an-open-objective)
-                    data {:objective-id objective-id
+                    objective-uri (str "/objectives/" objective-id)
+                    data {:objective-uri objective-uri
                           :created-by-id user-id }
                     {response :response} (p/request app "/api/v1/meta/stars"
                                                     :request-method :post
@@ -34,7 +35,7 @@
  
          (fact "returns 404 if the objective to be starred doesn't exist"
                (let [{user-id :_id} (sh/store-a-user)
-                     star-data {:objective-id 1
+                     star-data {:objective-uri "any" 
                                 :created-by-id user-id}
                      {response :response} (p/request app "/api/v1/meta/stars"
                                                      :request-method :post
@@ -43,4 +44,19 @@
 
                  (:status response) => 404
                  (:body response) => (helpers/json-contains {:reason "Objective does not exist"})))))
+
+(future-facts "GET /api/v1/meta/stars?user-id=<user-id>"
+       (against-background
+         [(before :contents (do (helpers/db-connection)
+                                (helpers/truncate-tables)))
+          (after :facts (helpers/truncate-tables))]
+
+         (fact "retrieves starred objectives for the user with user-id"
+               (let [{user-id :_id :as user} (sh/store-a-user)
+                     stored-stars (doall (->> (repeat user-id)
+                                              (take 5)
+                                              (map sh/store-a-star)))
+                     retrieved-objectives (map #(assoc % :description "test description" :title "test title" :goals "test goals") stored-stars)] 
+                 (get-in (p/request app (str "/api/v1/meta/stars?user-id=" user-id)) [:response :body])
+                 => (helpers/json-contains (map contains retrieved-objectives) :debug)))))
 
