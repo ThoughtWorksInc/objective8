@@ -388,6 +388,10 @@
           (= status ::http-api/not-found) {:status 404}
           :else {:status 502})))))
 
+(defn import-draft-post [{:keys [params] :as request}]
+  (if-let [draft-data (helpers/request->draft-info request (get (friend/current-authentication) :identity))]
+     (prn draft-data)))
+
 (defn draft [{{:keys [d-id id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)
         draft-id (if (= d-id "latest")

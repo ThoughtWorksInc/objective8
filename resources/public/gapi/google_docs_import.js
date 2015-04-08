@@ -90,7 +90,7 @@ function downloadFile(html_download_url) {
   xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
   xhr.onload = function() {
     document.getElementsByClassName('clj-import-draft-preview')[0].innerHTML = xhr.responseText;
-    document.getElementsByClassName('clj-google-doc-download-url')[0].value = html_download_url;
+    document.getElementsByClassName('clj-google-doc-html-content')[0].value = xhr.responseText;
     document.getElementsByClassName('clj-submit-draft-button')[0].removeAttribute("disabled");
   };
   xhr.onerror = function() {

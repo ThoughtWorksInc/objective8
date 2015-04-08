@@ -21,5 +21,7 @@
                                       [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
                                       [:.clj-import-draft-preview] (html/content nil)
                                       [:.clj-add-draft-link] (html/set-attr :href (utils/local-path-for :fe/add-draft-get :id objective-id))       
-                                      [:.clj-import-draft-form] (html/set-attr :action (utils/local-path-for :fe/import-draft-post :id objective-id)))))))))
+                                      [:.clj-import-draft-form] (html/do-> 
+                                                                  (html/prepend (html/html-snippet (anti-forgery-field)))
+                                                                  (html/set-attr :action (utils/local-path-for :fe/import-draft-post :id objective-id))))))))))
 

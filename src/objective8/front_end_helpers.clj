@@ -1,6 +1,7 @@
 (ns objective8.front-end-helpers
   (:require [cemerick.friend :as friend]
-            [objective8.utils :as utils]))
+            [objective8.utils :as utils]
+            [objective8.sanitiser :as sanitiser]))
 
 (defn request->question
   "Returns a map of a question if all parts are in the request. Otherwise returns nil"
@@ -56,3 +57,11 @@
 (defn request->star-info [{:keys [params] :as request} user-id]
   (when-let [objective-id (:objective-id params)]
     {:objective-id (Integer/parseInt objective-id) :created-by-id user-id}))
+
+(defn request->draft-info [{:keys [params] :as request} user-id]
+  (let [objective-id (:id params)
+        unsanitised-draft-content (:google-doc-html-content params)]
+    (when (and objective-id unsanitised-draft-content user-id)
+      {:objective-id (Integer/parseInt objective-id)
+       :submitter-id user-id
+       :content (sanitiser/sanitise-html unsanitised-draft-content)})))

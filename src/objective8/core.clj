@@ -53,6 +53,7 @@
                :fe/draft (utils/anti-forgery-hook front-end-handlers/draft)
                :fe/draft-list front-end-handlers/draft-list
                :fe/import-draft-get (m/wrap-authorise-writer (utils/anti-forgery-hook front-end-handlers/import-draft-get)) 
+               :fe/import-draft-post (m/wrap-authorise-writer (utils/anti-forgery-hook front-end-handlers/import-draft-post))
                
                :fe/post-up-vote (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-up-vote) #{:signed-in}) 
                :fe/post-down-vote (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-down-vote) #{:signed-in}) 
