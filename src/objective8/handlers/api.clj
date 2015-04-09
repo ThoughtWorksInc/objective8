@@ -116,11 +116,10 @@
           (response/content-type "application/json"))
       (response/not-found ""))))
 
-(defn get-objectives [{:keys [params] :as request}]
-  (let [objectives (if (:starred params)
-                     (objectives/retrieve-starred-objectives (Integer/parseInt (:user-id params)))
-                     (objectives/retrieve-objectives))]
-    (response/content-type (response/response objectives) "application/json")))
+(defn get-objectives [request]
+  (if-let [query (ar/request->objectives-query request)]
+    (response/content-type (response/response (objectives/get-objectives query)) "application/json")
+    (invalid-response "Invalid objectives query")))
 
 ;; COMMENT
 (defn post-comment [{:keys [params] :as request}]

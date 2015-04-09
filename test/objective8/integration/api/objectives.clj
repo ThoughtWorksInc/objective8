@@ -56,7 +56,17 @@
                        (helpers/peridot-response-json-body->map (p/request app "/api/v1/objectives")))
                      => empty?))
 
-        (facts "GET /api/v1/objectives/:id returns an objective"
+         (facts "GET /api/v1/objectives?user-id=<user-id>"
+                (fact "returns a list of objectives with meta information for signed-in user"
+                      (let [unstarred-objective (sh/store-an-open-objective)
+                            {user-id :_id :as user} (sh/store-a-user)
+                            starred-objective (sh/store-an-open-objective)
+                            stored-star (sh/store-a-star {:user user :objective starred-objective})
+                            {response :response} (p/request app (str "/api/v1/objectives?user-id=" user-id))] 
+                        (:body response) => (helpers/json-contains [(contains {:meta {:starred true}})
+                                                                    (contains {:meta {:starred false}})] :in-any-order))))
+
+         (facts "GET /api/v1/objectives/:id returns an objective"
                (fact "can retrieve an objective using its id"
                      (let [{user-id :_id username :username} (sh/store-a-user) 
                            stored-objective (objectives/store-objective! (assoc the-objective :created-by-id user-id))

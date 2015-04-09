@@ -69,6 +69,25 @@
                                                                           (assoc :username username
                                                                                  :uri starred-objective-uri) 
                                                                           (dissoc :global-id))]))
+
+         (fact "can retrieve objectives with the meta information relevant for a signed in user"
+               (let [non-starred-objective (sh/store-an-open-objective)
+
+                     starred-objective-for-a-different-user (sh/store-an-open-objective)
+                     _ (sh/store-a-star {:objective starred-objective-for-a-different-user})
+
+                     {username :username :as objective-creator} (sh/store-a-user)
+                     starred-objective (sh/store-an-open-objective {:user objective-creator})
+
+                     {user-id :created-by-id} (sh/store-a-star {:objective starred-objective})]
+                 (objectives/get-objectives-as-signed-in-user user-id)
+                 => (contains [(contains {:_id (:_id non-starred-objective)
+                                          :meta {:starred false}}) 
+                               (contains {:_id (:_id starred-objective-for-a-different-user)
+                                          :meta {:starred false}}) 
+                               (contains {:_id (:_id starred-objective)
+                                          :meta {:starred true}})]
+                              :in-any-order)))
          
          (fact "objectives due to start drafting can be retrieved"
                (let [{username :username :as user} (sh/store-a-user)

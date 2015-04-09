@@ -166,11 +166,23 @@ LIMIT 50" [global-id]] :results))))
 
 (defn pg-retrieve-starred-objectives [user-id]
   (let [unmap-objective (first (get mappings/objective :transforms))]
-  (apply vector (map unmap-objective 
-                     (korma/exec-raw ["
+    (apply vector (map unmap-objective 
+                       (korma/exec-raw ["
 SELECT objectives.*, users.username FROM objective8.objectives AS objectives
 JOIN objective8.stars AS stars
 ON stars.objective_id = objectives._id
 JOIN objective8.users AS users
 ON objectives.created_by_id = users._id
 WHERE stars.active=true AND stars.created_by_id=?" [user-id]] :results)))))
+
+(defn pg-get-objectives-as-signed-in-user [user-id]
+  (let [unmap-objective (first (get mappings/objective :transforms))]
+    (apply vector (map unmap-objective
+                       (korma/exec-raw ["
+SELECT objectives.*, users.username, stars.active FROM objective8.objectives AS objectives
+lEFT JOIN (SELECT active, objective_id 
+           FROM objective8.stars
+           WHERE created_by_id=?) AS stars
+ON stars.objective_id = objectives._id
+JOIN objective8.users AS users
+ON objectives.created_by_id = users._id" [user-id]] :results)))))

@@ -36,10 +36,22 @@
        (map #(dissoc % :global-id))
        (map #(utils/update-in-self % [:uri] uri-for-objective))))
 
+(defn get-objectives-as-signed-in-user [user-id]
+  (->> (storage/pg-get-objectives-as-signed-in-user user-id) 
+       (map #(dissoc % :global-id))
+       (map #(utils/update-in-self % [:uri] uri-for-objective))))
+
 (defn retrieve-starred-objectives [user-id]
   (->> (storage/pg-retrieve-starred-objectives user-id)
        (map #(dissoc % :global-id))
        (map #(utils/update-in-self % [:uri] uri-for-objective))))
+
+(defn get-objectives [{:keys [signed-in-id filters] :as query}]
+  (if-let [signed-in-id (:signed-in-id query)]
+    (if (:starred filters)
+      (retrieve-starred-objectives signed-in-id)
+      (get-objectives-as-signed-in-user signed-in-id))
+    (retrieve-objectives)))
 
 (defn retrieve-objectives-due-for-drafting []
   (->> (storage/pg-retrieve {:entity :objective 

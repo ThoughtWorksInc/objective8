@@ -84,12 +84,8 @@
 
 (defn json-contains [expected & options]
   (midje/chatty-checker [actual]
-                        (do
-                          (when (contains? (set options) :debug)
-                            (prn "DEBUG: json-contains")
-                            (prn (str "actual: " actual))
-                            (prn (str "parsed: " (parse-json-string-with-entity-value-as-keyword actual))))
-                          ((midje/contains expected) (parse-json-string-with-entity-value-as-keyword actual)))))
+                         ((apply midje/contains expected options) 
+                          (parse-json-string-with-entity-value-as-keyword actual))))
 
 (defn location-contains [expected]
   (midje/contains {"Location" (midje/contains expected)}))

@@ -196,6 +196,10 @@
   (fn [m] (-> (unmap-fn m)
               (dissoc key))))
 
+(defn with-objective-meta [unmap-fn]
+  (fn [m] (-> (unmap-fn m)
+              (assoc :meta {:starred (if (:active m) true false)}))))
+
 (defn unmap-up-down-vote [{vote :vote :as m}]
   (-> m
       (utils/ressoc :global_id :global-id)
@@ -226,7 +230,8 @@
                        (with-columns
                          [:global-id :created-by-id :status :end-date :status]
                          {:end-date sql-time->iso-time-string})
-                       with-username-if-present)))
+                       with-username-if-present
+                       with-objective-meta)))
 
 (korma/defentity user
   (korma/pk :_id)

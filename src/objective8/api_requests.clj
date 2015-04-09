@@ -19,3 +19,10 @@
 
 (defn request->star-data [{params :params :as request}]
   (utils/select-all-or-nothing params [:objective-uri :created-by-id]))
+
+(defn request->objectives-query [{:keys [params] :as request}]
+  (let [user-id (:user-id params)
+        starred (:starred params)] 
+  (cond-> {}
+    user-id (assoc :signed-in-id (Integer/parseInt user-id))
+    starred (assoc :filters {:starred starred}))))

@@ -4,6 +4,11 @@
             [objective8.actions :as actions]))
 
 
+(defmacro l-get [m k default]
+  `(if (get ~m ~k)
+     (get ~m ~k)
+     ~default))
+
 (def username-index (atom 0))
 
 (defn generate-unique-username []
@@ -19,7 +24,7 @@
    (store-an-open-objective {}))
 
   ([entities]
-   (let [{user-id :_id} (get entities :user (store-a-user))]
+   (let [{user-id :_id} (l-get entities :user (store-a-user))]
      (storage/pg-store! {:entity :objective
                          :status "open"
                          :title "test title"
@@ -32,7 +37,7 @@
 ([] 
  (store-an-objective-due-for-drafting {})) 
  ([required-entities] 
-  (let [{user-id :_id} (get required-entities :user (store-a-user))]
+  (let [{user-id :_id} (l-get required-entities :user (store-a-user))]
     (storage/pg-store! {:entity :objective
                         :created-by-id user-id
                         :status "open"
@@ -50,8 +55,8 @@
    (store-a-comment {:user (store-a-user) :entity (store-an-open-objective)}))
 
   ([required-entities]
-   (let [{created-by-id :_id} (get required-entities :user (store-a-user))
-         {:keys [_id objective-id global-id entity]} (get required-entities :entity (store-an-open-objective))
+   (let [{created-by-id :_id} (l-get required-entities :user (store-a-user))
+         {:keys [_id objective-id global-id entity]} (l-get required-entities :entity (store-an-open-objective))
          objective-id (if (= entity :objective) _id objective-id)]
      (storage/pg-store! {:entity :comment
                          :created-by-id created-by-id
@@ -63,8 +68,8 @@
   ([] (store-an-invitation {}))
 
   ([required-entities]
-   (let [{invited-by-id :_id} (get required-entities :user (store-a-user))
-         {objective-id :_id} (get required-entities :objective (store-an-open-objective))
+   (let [{invited-by-id :_id} (l-get required-entities :user (store-a-user))
+         {objective-id :_id} (l-get required-entities :objective (store-an-open-objective))
          status (get required-entities :status "active")]
      (storage/pg-store! {:entity :invitation
                          :uuid (java.util.UUID/randomUUID)
@@ -79,8 +84,8 @@
    (store-a-question {}))
 
   ([required-entities]
-   (let [{created-by-id :_id} (get required-entities :user (store-a-user))
-         {objective-id :_id} (get required-entities :objective (store-an-open-objective))]
+   (let [{created-by-id :_id} (l-get required-entities :user (store-a-user))
+         {objective-id :_id} (l-get required-entities :objective (store-an-open-objective))]
      (storage/pg-store! {:entity :question
                          :created-by-id created-by-id
                          :objective-id objective-id
@@ -91,8 +96,8 @@
    (store-an-answer {}))
 
   ([required-entities]
-   (let [{created-by-id :_id} (get required-entities :user (store-a-user))
-         {objective-id :objective-id q-id :_id} (get required-entities :question (store-a-question))]
+   (let [{created-by-id :_id} (l-get required-entities :user (store-a-user))
+         {objective-id :objective-id q-id :_id} (l-get required-entities :question (store-a-question))]
      (storage/pg-store! {:entity :answer
                          :created-by-id created-by-id
                          :objective-id objective-id
@@ -104,7 +109,7 @@
    (store-an-up-down-vote global-id vote-type {}))
 
   ([global-id vote-type required-entities]
-   (let [user (get required-entities :user (store-a-user))]
+   (let [user (l-get required-entities :user (store-a-user))]
      (storage/pg-store! {:entity :up-down-vote
                          :global-id global-id
                          :vote-type vote-type
@@ -115,8 +120,8 @@
    (store-a-candidate {}))
 
   ([required-entities]
-   (let [{user-id :_id} (get required-entities :user (store-a-user))
-         {i-id :_id o-id :objective-id} (get required-entities :invitation (store-an-invitation))]
+   (let [{user-id :_id} (l-get required-entities :user (store-a-user))
+         {i-id :_id o-id :objective-id} (l-get required-entities :invitation (store-an-invitation))]
      (storage/pg-store! {:entity :candidate
                          :user-id user-id
                          :objective-id o-id
@@ -127,9 +132,9 @@
    (store-a-draft {}))
 
   ([required-entities]
-   (let [{objective-id :_id} (get required-entities :objective (store-an-objective-in-draft))
+   (let [{objective-id :_id} (l-get required-entities :objective (store-an-objective-in-draft))
          ;; NB: Candidate id not required, but for consistency, the submitter should be authorised to draft documents for this objective
-         {submitter-id :user-id} (get required-entities :submitter (store-a-candidate))]
+         {submitter-id :user-id} (l-get required-entities :submitter (store-a-candidate))]
      (storage/pg-store! {:entity :draft
                          :submitter-id submitter-id
                          :objective-id objective-id
@@ -148,8 +153,8 @@
    (store-a-star {})) 
 
   ([entities]
-   (let [{objective-id :_id} (get entities :objective (store-an-open-objective))
-         {created-by-id :_id} (get entities :user (store-a-user))]
+   (let [{objective-id :_id} (l-get entities :objective (store-an-open-objective))
+         {created-by-id :_id} (l-get entities :user (store-a-user))]
      (storage/pg-store! {:entity :star
                          :created-by-id created-by-id
                          :objective-id objective-id
