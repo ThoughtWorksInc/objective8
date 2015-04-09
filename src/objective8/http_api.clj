@@ -96,13 +96,13 @@
   (update-in raw-objective [:end-date] utils/time-string->date-time))
 
 (defn get-objective [id]
-   (let [api-result (default-get-call (str utils/host-url "/api/v1/objectives/" id))]
+   (let [api-result (default-get-call (str utils/host-url "/api/v1/objectives/" id) {:headers (get-api-credentials)})]
      (if (= ::success (:status api-result))
        (update-in api-result [:result] parse-objective)
        api-result)))
 
 (defn get-all-objectives []
-  (let [api-result (default-get-call (str utils/host-url "/api/v1/objectives"))]
+  (let [api-result (default-get-call (str utils/host-url "/api/v1/objectives") {:headers (get-api-credentials)})]
     (if (= ::success (:status api-result))
       (update-in api-result [:result] #(map parse-objective %))
       api-result)))

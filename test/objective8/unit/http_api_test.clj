@@ -107,9 +107,11 @@
                                                 :result the-objective}
       (provided
         (http-api/default-get-call
-          (contains (str "/api/v1/objectives/" OBJECTIVE_ID))) => {:status ::http-api/success
-                                                                   :result {:some :data
-                                                                            :end-date "2015-01-31T00:00:00.000Z" }}))
+          (contains (str "/api/v1/objectives/" OBJECTIVE_ID))
+          (contains {:headers (contains {"api-bearer-name" anything
+                                         "api-bearer-token" anything})})) => {:status ::http-api/success
+                                                                              :result {:some :data
+                                                                                       :end-date "2015-01-31T00:00:00.000Z" }}))
 
 ;; COMMENTS
 (def some-uri "/some/uri")
