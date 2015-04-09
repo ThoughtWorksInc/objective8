@@ -8,12 +8,8 @@
                         PolicyFactory
                         Sanitizers]
                            ))
-;(-> Sanitizers/BLOCKS (.and Sanitizers/FORMATTING) (.and Sanitizers/IMAGES) (.and Sanitizers/LINKS) (.and Sanitizers/STYLES))
 (defn sanitise-html [html]
-  (let [policy (-> (HtmlPolicyBuilder.)
-                   (.allowElements  (into-array String ["html" "body"]))
-                   (.allowCommonBlockElements )
-                   (.allowCommonInlineFormattingElements)
-                   (.allowStyling)
-                   (.toFactory))]
+  (let [policy 
+        ;(-> (HtmlPolicyBuilder.) (.allowCommonBlockElements) (.allowCommonInlineFormattingElements) (.allowStyling) (.toFactory))
+        (-> Sanitizers/BLOCKS (.and Sanitizers/FORMATTING) (.and Sanitizers/LINKS) (.and Sanitizers/STYLES))]
     (.sanitize policy html)))

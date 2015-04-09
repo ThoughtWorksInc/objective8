@@ -161,4 +161,4 @@
   (hiccup/html hcp))
 
 (defn html->hiccup [html]
-  (hickory/as-hiccup (hickory/parse html)))
+  (map hickory/as-hiccup (hickory/parse-fragment html)))

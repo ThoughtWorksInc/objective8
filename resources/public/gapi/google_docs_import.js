@@ -55,6 +55,14 @@ function getFile(fileId) {
     var html_download_url = resp['exportLinks']['text/html'];
     console.log(html_download_url);
     downloadFile(html_download_url);
+
+    var docTitle = $('<h3>');
+    docTitle.text(resp['title']);
+    var docThumbnail = $('<img>');
+    docThumbnail.attr('src', resp['thumbnailLink']);
+
+    docTitle.appendTo('.clj-import-draft-preview');
+    docThumbnail.appendTo('.clj-import-draft-preview');
   });
 }
 
@@ -89,9 +97,9 @@ function downloadFile(html_download_url) {
   xhr.open('GET', html_download_url);
   xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
   xhr.onload = function() {
-    document.getElementsByClassName('clj-import-draft-preview')[0].innerHTML = xhr.responseText;
+//    document.getElementsByClassName('clj-import-draft-preview')[0].innerHTML = xhr.responseText;
     document.getElementsByClassName('clj-google-doc-html-content')[0].value = xhr.responseText;
-    document.getElementsByClassName('clj-submit-draft-button')[0].removeAttribute("disabled");
+    document.getElementsByClassName('clj-preview-draft-button')[0].removeAttribute("disabled");
   };
   xhr.onerror = function() {
     alert('error');

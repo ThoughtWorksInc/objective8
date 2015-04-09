@@ -61,10 +61,11 @@
            [:.clj-flash-message-bar-text] (html/content flash)))
 
 (defn status-flash-bar [{:keys [doc invitation-rsvp] :as context}]
-  (cond 
-    (:flash doc) (flash-bar (:flash doc))
-    invitation-rsvp (flash-bar (invitation-response-banner invitation-rsvp))
-    :else status-bar-snippet))
+  (let [flash (:flash doc)]
+    (cond 
+      (and flash (not (= (:type flash) :import-draft-preview))) (flash-bar flash) 
+      invitation-rsvp (flash-bar (invitation-response-banner invitation-rsvp))
+      :else status-bar-snippet)))
 
 ;; WRITER LIST
 
