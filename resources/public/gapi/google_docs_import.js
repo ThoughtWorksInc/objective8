@@ -3,10 +3,10 @@
 // var developerKey = API-KEY in developer console
 
 // The Client ID obtained from the Google Developers Console. Replace with your own Client ID.
-var clientId = "464714390966-pa0jmj4vupam0eqfiap76tq70586lpk6.apps.googleusercontent.com";
+var clientId = "508780744011-9fp3bi7ttoeu54qfejbv11o08hjd07b2.apps.googleusercontent.com";
 
 // Replace with your own App ID. (Its the first number in your Client ID)
-var appId = "464714390966";
+var appId = "508780744011";
 
 // Scope to use to access user's photos.
 var scope = ['https://www.googleapis.com/auth/drive.readonly'];
