@@ -95,17 +95,6 @@
       (log/info "Error when posting star: " e)
       (internal-server-error "Error when posting star"))))
 
-(defn get-stars [{:keys [params] :as request}]
-  (try 
-    (-> (:user-id params)
-        Integer/parseInt
-        stars/retrieve-starred-objectives
-        response/response 
-        (response/content-type "application/json"))
-    (catch Exception e
-      (log/info "Error when getting starred objectives")
-      (invalid-response "Invalid starred objective get request"))))
-
 ;; OBJECTIVES
 (defn post-objective [request]
   (try
