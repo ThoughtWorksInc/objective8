@@ -66,8 +66,8 @@
                :api/get-user-by-query (m/wrap-bearer-token api-handlers/find-user-by-query bt/token-provider)
                :api/get-user (m/wrap-bearer-token api-handlers/get-user bt/token-provider)
                :api/post-objective (m/wrap-bearer-token api-handlers/post-objective bt/token-provider)
-               :api/get-objective api-handlers/get-objective
-               :api/get-objectives api-handlers/get-objectives
+               :api/get-objective (m/wrap-bearer-token api-handlers/get-objective bt/token-provider) 
+               :api/get-objectives (m/wrap-bearer-token api-handlers/get-objectives bt/token-provider) 
                :api/post-comment (m/wrap-bearer-token api-handlers/post-comment bt/token-provider)
                :api/get-comments api-handlers/get-comments
                :api/post-question (m/wrap-bearer-token api-handlers/post-question bt/token-provider)

@@ -36,6 +36,8 @@
 
 (facts "objectives"
        (against-background
+        (m/valid-credentials? anything anything anything) => true)
+       (against-background
         [(before :contents (do (helpers/db-connection)
                                (helpers/truncate-tables)))
          (after :facts (helpers/truncate-tables))]

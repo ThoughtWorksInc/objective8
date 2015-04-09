@@ -47,6 +47,8 @@
 
 (facts "GET /api/v1/objectives?starred=true&user-id=<user-id>"
        (against-background
+        (m/valid-credentials? anything anything anything) => true)
+       (against-background
          [(before :contents (do (helpers/db-connection)
                                 (helpers/truncate-tables)))
           (after :facts (helpers/truncate-tables))]
