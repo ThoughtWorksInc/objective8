@@ -8,6 +8,8 @@ block vars
 block content
 
   .middle-container
+    
+    h1(data-l8n="content:import-draft/page-title") !Import a draft from Google Drive
 
     article.draft-preview-document.clj-import-draft-preview
       h1 Echo Park jean shorts viral forage
@@ -51,4 +53,4 @@ block content
 
 block footerScripts
     +javascriptIncludeTag("gapi/google_docs_import")
-    +javascriptIncludeTag("gapi/gapi")
+    script.clj-gapi-js(type="text/javascript", src="https://apis.google.com/js/api.js?onload=onApiLoad")

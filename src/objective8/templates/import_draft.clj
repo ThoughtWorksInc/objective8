@@ -43,6 +43,6 @@
 
                                       [(html/attr= :src "/static/gapi/google_docs_import.js")] (when-not import-draft-preview-html
                                                                                                  identity)
-                                      [(html/attr= :src "/static/gapi/gapi.js")] (when-not import-draft-preview-html
-                                                                                   identity))))))))
+                                      [:.clj-gapi-js] (when-not import-draft-preview-html
+                                                        identity))))))))
 

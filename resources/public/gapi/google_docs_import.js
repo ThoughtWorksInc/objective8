@@ -12,39 +12,23 @@ var appId = "464714390966";
 var scope = ['https://www.googleapis.com/auth/drive.readonly'];
 
 var pickerApiLoaded = false;
+var clientLoaded = false;
+var driveLoaded = false;
 var oauthToken;
 
-// Use the Google API Loader script to load the google.picker script.
-function loadPicker() {
-  gapi.load('picker', {'callback': loadAuth});
-}
-
-function loadAuth() {
-  gapi.load('auth', {'callback': authLoaded});
-}
-function authLoaded() {
-  window.gapi.auth.authorize(
-      {
-        'client_id': clientId,
-    'scope': scope,
-    'immediate': false
-      },
-      handleAuthResult);
-}
-
-function handleAuthResult(authResult) {
-  if (authResult && !authResult.error) {
-    oauthToken = authResult.access_token;
-  }
-  loadClient();
-}
-
-function loadClient() {
-  gapi.load('client', {'callback': loadDrive});
-}
-
-function loadDrive() {
-  gapi.client.load('drive', 'v2').then(createPicker);
+function downloadFile(html_download_url) {
+  var accessToken = gapi.auth.getToken().access_token;
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', html_download_url);
+  xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+  xhr.onload = function() {
+    $('.clj-google-doc-html-content').val(xhr.responseText);
+    $('.clj-preview-draft-button').removeAttr("disabled");
+  };
+  xhr.onerror = function() {
+    alert('error');
+  };
+  xhr.send();
 }
 
 function getFile(fileId) {
@@ -66,7 +50,6 @@ function getFile(fileId) {
   });
 }
 
-
 function pickerCallback(data) {
   if (data.action == google.picker.Action.PICKED) {
     var fileId = data.docs[0].id;
@@ -75,7 +58,7 @@ function pickerCallback(data) {
 }
 
 function createPicker() {
-  if (oauthToken) {
+  if (oauthToken && pickerApiLoaded && clientLoaded && driveLoaded) {
     var view = new google.picker.DocsView(google.picker.ViewId.DOCUMENTS);
     view.setMode(google.picker.DocsViewMode.LIST);
     var picker = new google.picker.PickerBuilder()
@@ -91,18 +74,37 @@ function createPicker() {
   }
 }
 
-function downloadFile(html_download_url) {
-  var accessToken = gapi.auth.getToken().access_token;
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', html_download_url);
-  xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-  xhr.onload = function() {
-//    document.getElementsByClassName('clj-import-draft-preview')[0].innerHTML = xhr.responseText;
-    document.getElementsByClassName('clj-google-doc-html-content')[0].value = xhr.responseText;
-    document.getElementsByClassName('clj-preview-draft-button')[0].removeAttribute("disabled");
-  };
-  xhr.onerror = function() {
-    alert('error');
-  };
-  xhr.send();
+
+function handleAuthResult(authResult) {
+  if (authResult && !authResult.error) {
+    oauthToken = authResult.access_token;
+    createPicker();
+  }
+}
+
+function onAuthApiLoad() {
+  window.gapi.auth.authorize(
+      { 'client_id': clientId, 'scope': scope, 'immediate': false },
+      handleAuthResult);
+}
+
+function onPickerApiLoad() {
+  pickerApiLoaded = true;
+  createPicker();
+}
+
+function onDriveApiLoad() {
+  driveLoaded = true;
+  createPicker();
+}
+
+function onClientApiLoad() {
+  clientLoaded = true;
+  gapi.client.load('drive', 'v2').then(onDriveApiLoad);
+}
+
+function onApiLoad() {
+  gapi.load('auth', {'callback': onAuthApiLoad});
+  gapi.load('picker', {'callback': onPickerApiLoad});
+  gapi.load('client', {'callback': onClientApiLoad});
 }
