@@ -18,14 +18,3 @@
                                                              :created-by-id user-id
                                                              :entity :star
                                                              :active true})))))
-(facts "about retrieving stars"
-       (against-background
-         [(before :contents (do (ih/db-connection)
-                                (ih/truncate-tables)))
-          (after :facts (ih/truncate-tables))]
-
-         (fact "gets starred objectives for a user"
-               (let [{user-id :_id :as user} (sh/store-a-user)
-                     stored-star (sh/store-a-star user-id)]
-                 (first (stars/retrieve-starred-objectives user-id)) => (contains {:active true})
-                 (first (stars/retrieve-starred-objectives user-id)) => (contains {:title "test title"})))))

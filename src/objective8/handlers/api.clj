@@ -75,6 +75,37 @@
           (response/content-type "application/json"))
       (response/not-found ""))))
 
+;;STARS
+(defn post-star [request]
+  (try
+    (if-let [star-data (ar/request->star-data request)]
+      (let [{status :status star :result} (actions/toggle-star! star-data)]
+        (cond
+          (= status ::actions/success)
+          (resource-created-response (str utils/host-url "/api/v1/meta/stars/" (:_id star))
+                                     star)
+
+          (= status ::actions/entity-not-found)  
+          (not-found-response "Objective does not exist")
+
+          :else
+          (internal-server-error "Error when posting star")))
+      (invalid-response "Invalid star post request"))
+    (catch Exception e
+      (log/info "Error when posting star: " e)
+      (internal-server-error "Error when posting star"))))
+
+(defn get-stars [{:keys [params] :as request}]
+  (try 
+    (-> (:user-id params)
+        Integer/parseInt
+        stars/retrieve-starred-objectives
+        response/response 
+        (response/content-type "application/json"))
+    (catch Exception e
+      (log/info "Error when getting starred objectives")
+      (invalid-response "Invalid starred objective get request"))))
+
 ;; OBJECTIVES
 (defn post-objective [request]
   (try
@@ -96,8 +127,11 @@
           (response/content-type "application/json"))
       (response/not-found ""))))
 
-(defn get-objectives [_]
-  (response/content-type (response/response (objectives/retrieve-objectives)) "application/json"))
+(defn get-objectives [{:keys [params] :as request}]
+  (let [objectives (if (:starred params)
+                     (objectives/retrieve-starred-objectives (Integer/parseInt (:user-id params)))
+                     (objectives/retrieve-objectives))]
+    (response/content-type (response/response objectives) "application/json")))
 
 ;; COMMENT
 (defn post-comment [{:keys [params] :as request}]
@@ -352,29 +386,3 @@
       (log/info "Error when posting vote: " e)
       (internal-server-error "Error when posting vote"))))
 
-;;STARS
-(defn post-star [request]
-  (try
-    (if-let [star-data (ar/request->star-data request)]
-      (let [{status :status star :result} (actions/toggle-star! star-data)]
-        (cond
-          (= status ::actions/success)
-          (resource-created-response (str utils/host-url "/api/v1/meta/stars/" (:_id star))
-                                     star)
-
-          (= status ::actions/entity-not-found)  
-          (not-found-response "Objective does not exist")
-
-          :else
-          (internal-server-error "Error when posting star")))
-      (invalid-response "Invalid star post request"))
-    (catch Exception e
-      (log/info "Error when posting star: " e)
-      (internal-server-error "Error when posting star"))))
-
-(defn get-stars [{:keys [params] :as request}]
-  (-> (:user-id params)
-      Integer/parseInt
-      stars/retrieve-starred-objectives
-      response/response 
-      (response/content-type "application/json")))

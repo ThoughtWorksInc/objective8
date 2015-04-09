@@ -13,15 +13,20 @@
                                           :twitter-id "twitter-TWITTER_ID"
                                           :username (generate-unique-username)}))
 
-(defn store-an-open-objective []
-  (let [{user-id :_id} (store-a-user)]
-    (storage/pg-store! {:entity :objective
-                        :status "open"
-                        :title "test title"
-                        :description "test description"
-                        :goals "test goal"
-                        :created-by-id user-id
-                        :end-date (str (tc/from-now (tc/days 1)))})))
+(defn store-an-open-objective 
+  
+  ([]
+   (store-an-open-objective {}))
+
+  ([entities]
+   (let [{user-id :_id} (get entities :user (store-a-user))]
+     (storage/pg-store! {:entity :objective
+                         :status "open"
+                         :title "test title"
+                         :description "test description"
+                         :goals "test goal"
+                         :created-by-id user-id
+                         :end-date (str (tc/from-now (tc/days 1)))}))))
 
 (defn store-an-objective-due-for-drafting
 ([] 
@@ -138,9 +143,14 @@
       :result
       first))
 
-(defn store-a-star [user-id]
-  (let [{objective-id :_id} (store-an-open-objective)]
-    (storage/pg-store! {:entity :star
-                        :created-by-id user-id
-                        :objective-id objective-id
-                        :active true})))
+(defn store-a-star 
+  ([]
+   (store-a-star {})) 
+
+  ([entities]
+   (let [{objective-id :_id} (get entities :objective (store-an-open-objective))
+         {created-by-id :_id} (get entities :user (store-a-user))]
+     (storage/pg-store! {:entity :star
+                         :created-by-id created-by-id
+                         :objective-id objective-id
+                         :active true}))))

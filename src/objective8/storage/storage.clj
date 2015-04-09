@@ -163,3 +163,14 @@ ON agg2.global_id = comments.global_id
 WHERE comments.comment_on_id = ?
 ORDER BY comments._created_at DESC
 LIMIT 50" [global-id]] :results))))
+
+(defn pg-retrieve-starred-objectives [user-id]
+  (let [unmap-objective (first (get mappings/objective :transforms))]
+  (apply vector (map unmap-objective 
+                     (korma/exec-raw ["
+SELECT objectives.*, users.username FROM objective8.objectives AS objectives
+JOIN objective8.stars AS stars
+ON stars.objective_id = objectives._id
+JOIN objective8.users AS users
+ON objectives.created_by_id = users._id
+WHERE stars.active=true AND stars.created_by_id=?" [user-id]] :results)))))

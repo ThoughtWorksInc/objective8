@@ -304,8 +304,7 @@
   (korma/table :objective8.stars)
   (korma/belongs-to objective {:fk :objective_id})
   (korma/prepare map->star)
-  (korma/transform (-> unmap-star
-                       (without-key [:_created_at]))))
+  (korma/transform (-> unmap-star)))
 
 (def entities {:objective objective
                :user      user

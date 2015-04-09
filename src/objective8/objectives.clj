@@ -36,6 +36,11 @@
        (map #(dissoc % :global-id))
        (map #(utils/update-in-self % [:uri] uri-for-objective))))
 
+(defn retrieve-starred-objectives [user-id]
+  (->> (storage/pg-retrieve-starred-objectives user-id)
+       (map #(dissoc % :global-id))
+       (map #(utils/update-in-self % [:uri] uri-for-objective))))
+
 (defn retrieve-objectives-due-for-drafting []
   (->> (storage/pg-retrieve {:entity :objective 
                              :end-date ['< (mappings/iso-date-time->sql-time (utils/current-time))]

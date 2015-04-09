@@ -54,6 +54,21 @@
                     {objective-id :_id :as stored-objective} (objectives/store-objective! objective-data)]
                 (objectives/retrieve-objectives) => [(assoc stored-objective :username username)]
                 (first (objectives/retrieve-objectives)) =not=> (contains {:global-id anything})))
+
+         (fact "can retrieve a list of starred objectives for a given user"
+               (let [non-starred-objective (sh/store-an-open-objective)
+
+                     starred-objective-for-a-different-user (sh/store-an-open-objective)
+                     _ (sh/store-a-star {:objective starred-objective-for-a-different-user})
+
+                     {username :username :as objective-creator} (sh/store-a-user)
+                     {starred-objective-id :_id :as starred-objective} (sh/store-an-open-objective {:user objective-creator})
+                     starred-objective-uri (str "/objectives/" starred-objective-id)
+                     {user-id :created-by-id} (sh/store-a-star {:objective starred-objective})] 
+                 (objectives/retrieve-starred-objectives user-id) => [(-> starred-objective
+                                                                          (assoc :username username
+                                                                                 :uri starred-objective-uri) 
+                                                                          (dissoc :global-id))]))
          
          (fact "objectives due to start drafting can be retrieved"
                (let [{username :username :as user} (sh/store-a-user)

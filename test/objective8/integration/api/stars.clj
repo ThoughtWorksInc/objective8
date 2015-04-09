@@ -45,7 +45,7 @@
                  (:status response) => 404
                  (:body response) => (helpers/json-contains {:reason "Objective does not exist"})))))
 
-(future-facts "GET /api/v1/meta/stars?user-id=<user-id>"
+(facts "GET /api/v1/objectives?starred=true&user-id=<user-id>"
        (against-background
          [(before :contents (do (helpers/db-connection)
                                 (helpers/truncate-tables)))
@@ -53,10 +53,13 @@
 
          (fact "retrieves starred objectives for the user with user-id"
                (let [{user-id :_id :as user} (sh/store-a-user)
-                     stored-stars (doall (->> (repeat user-id)
-                                              (take 5)
-                                              (map sh/store-a-star)))
-                     retrieved-objectives (map #(assoc % :description "test description" :title "test title" :goals "test goals") stored-stars)] 
-                 (get-in (p/request app (str "/api/v1/meta/stars?user-id=" user-id)) [:response :body])
-                 => (helpers/json-contains (map contains retrieved-objectives) :debug)))))
+                     stored-objectives [(sh/store-an-open-objective)
+                                        (sh/store-an-objective-in-draft)]
+
+                     stored-stars (doall (map sh/store-a-star
+                                              [{:user user :objective (first stored-objectives)}
+                                               {:user user :objective (second stored-objectives)}])) ]
+                 (get-in (p/request app (str "/api/v1/objectives?starred=true&user-id=" user-id)) [:response :body])
+                 => (helpers/json-contains (map contains (->> stored-objectives
+                                                              (map #(select-keys % [:_id])))))))))
 
