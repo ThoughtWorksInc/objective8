@@ -124,6 +124,16 @@
                                                                               :result [{:some :data
                                                                                         :end-date "2015-01-31T00:00:00.000Z"}]}))
 
+(fact "getting objectives as a signed-in user provides correct query parameters"
+      (http-api/get-objectives {:signed-in-id USER_ID}) => {:status ::http-api/success
+                                                            :result [the-objective]}
+      (provided
+        (http-api/default-get-call
+          (contains (utils/path-for :api/get-objectives))
+          (contains {:query-params {:user-id USER_ID}})) => {:status ::http-api/success
+                                                             :result [{:some :data
+                                                                       :end-date "2015-01-31T00:00:00.000Z"}]}))
+
 ;; COMMENTS
 (def some-uri "/some/uri")
 (def comment-data {:comment-on-uri some-uri :created-by-id USER_ID :comment "A comment"})

@@ -83,7 +83,6 @@
 
 (defn objective-list [request]
   (let [signed-in-id (get (friend/current-authentication) :identity)
-        _ (prn (str "signed in id: " signed-in-id))
         {status :status objectives :result} (if signed-in-id
                                               (http-api/get-objectives {:signed-in-id signed-in-id})
                                               (http-api/get-objectives))]

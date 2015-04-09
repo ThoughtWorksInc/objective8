@@ -101,11 +101,22 @@
        (update-in api-result [:result] parse-objective)
        api-result)))
 
-(defn get-objectives []
-  (let [api-result (default-get-call (str utils/host-url "/api/v1/objectives") {:headers (get-api-credentials)})]
-    (if (= ::success (:status api-result))
-      (update-in api-result [:result] #(map parse-objective %))
-      api-result)))
+(defn objective-options-map [query]
+  (let [user-id (:signed-in-id query)]
+    (cond-> {:headers (get-api-credentials)}
+      user-id (assoc :query-params {:user-id user-id}))))
+
+(defn get-objectives
+  ([]
+   (get-objectives {}))
+
+  ([query]
+   (let [api-result (default-get-call
+                      (str utils/host-url "/api/v1/objectives")
+                      (objective-options-map query))]
+     (if (= ::success (:status api-result))
+       (update-in api-result [:result] #(map parse-objective %))
+       api-result))))
 
 ;; COMMENTS
 (defn post-comment [comment-data]
