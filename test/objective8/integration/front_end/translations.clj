@@ -60,8 +60,8 @@
 (facts "about rendering objective-list page"
        (fact "there are no untranslated strings"
              (against-background
-               (http-api/get-all-objectives) => {:status ::http-api/success 
-                                                 :result [drafting-objective open-objective]})
+               (http-api/get-objectives) => {:status ::http-api/success 
+                                             :result [drafting-objective open-objective]})
              (let [user-session (helpers/test-context)
                    {status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/objective-list))

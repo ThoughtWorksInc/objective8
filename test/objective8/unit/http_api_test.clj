@@ -113,6 +113,17 @@
                                                                               :result {:some :data
                                                                                        :end-date "2015-01-31T00:00:00.000Z" }}))
 
+(fact "getting objectives hits the correct API endpoint"
+      (http-api/get-objectives) => {:status ::http-api/success
+                                    :result [the-objective]} 
+      (provided
+        (http-api/default-get-call
+          (contains (utils/path-for :api/get-objectives))
+          (contains {:headers (contains {"api-bearer-name" anything
+                                         "api-bearer-token" anything})})) => {:status ::http-api/success
+                                                                              :result [{:some :data
+                                                                                        :end-date "2015-01-31T00:00:00.000Z"}]}))
+
 ;; COMMENTS
 (def some-uri "/some/uri")
 (def comment-data {:comment-on-uri some-uri :created-by-id USER_ID :comment "A comment"})

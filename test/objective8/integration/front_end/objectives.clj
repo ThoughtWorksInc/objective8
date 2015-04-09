@@ -110,3 +110,26 @@
 
        (fact "A user should see an error page when they attempt to access an objective with a non-integer ID"
              (default-app invalid-objective-view-get-request) => (contains {:status 404})))
+
+
+(facts "About viewing the list of objectives"
+       (against-background
+        ;; Twitter authentication background
+        (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
+         (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                                 :result {:_id USER_ID
+                                                                          :username "username"}})
+       
+       (fact "when the viewing user is not signed in, the get-objectives query is made with no user information"
+             (p/request user-session "http://localhost:8080/objectives") => anything
+             (provided 
+               (http-api/get-objectives) => {:status ::http-api/success
+                                             :result []}))
+
+       (fact "when the viewing user is signed in, the get-objectives query is made for that user"
+             (-> user-session
+                 helpers/sign-in-as-existing-user
+                 (p/request "http://localhost:8080/objectives")) => anything 
+             (provided
+               (http-api/get-objectives {:signed-in-id USER_ID}) => {:status ::http-api/success
+                                                                       :result []})))
