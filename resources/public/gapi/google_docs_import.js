@@ -44,6 +44,9 @@ function getFile(fileId) {
     docTitle.text(resp['title']);
     var docThumbnail = $('<img>');
     docThumbnail.attr('src', resp['thumbnailLink']);
+    docThumbnail.error(function() {
+      $( this ).hide();
+    });
 
     docTitle.appendTo('.clj-import-draft-preview');
     docThumbnail.appendTo('.clj-import-draft-preview');
