@@ -15,7 +15,9 @@
 (def date-time (utils/string->date-time "2015-01-03"))
 
 (def test-objective {:title "My Objective"
-                     :goals "To rock out, All day"
+                     :goal-1 "To rock out, All day"
+                     :goal-2 "In a serious way"
+                     :goal-3 "Like Adam"
                      :description "I like cake"
                      :end-date date-time})
 
@@ -52,9 +54,12 @@
 
 (fact "creates invited-writer-info map from a request"
       (let [writer (request->invitation-info {:route-params {:id (str OBJECTIVE_ID)} 
-                                              :params {:writer-name "Jenny" :reason "Just because"}} USER_ID)]
+                                              :params {:writer-name "Jenny" 
+                                                       :reason "Just because"
+                                                       :writer-email "e@mail.com"}} USER_ID)]
         writer => {:writer-name "Jenny"
                    :reason "Just because"
+                   :writer-email "e@mail.com"
                    :objective-id OBJECTIVE_ID
                    :invited-by-id USER_ID}))
 

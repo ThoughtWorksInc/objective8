@@ -5,15 +5,16 @@
 
 (defn request->question
   "Returns a map of a question if all parts are in the request. Otherwise returns nil"
-  [{{id :id} :route-params :keys [params]} 
-   user-id]
-  (assoc (select-keys params [:question])
-          :created-by-id user-id
-          :objective-id (Integer/parseInt id)))
+  [{:keys [params route-params] :as request} user-id]
+  (when-let [objective-id (some-> (:id route-params) 
+                                  Integer/parseInt)]
+    (some-> params
+            (utils/select-all-or-nothing [:question])
+            (assoc :created-by-id user-id :objective-id objective-id))))
 
 (defn request->comment-data
   "Returns a map of a comment if all the parts are in the request params."
-  [{:keys [params]} user-id]
+  [{:keys [params] :as request} user-id]
   (some-> params
           (utils/select-all-or-nothing [:comment-on-uri :comment])
           (assoc :created-by-id user-id)))
@@ -21,36 +22,42 @@
 (defn request->objective
   "Returns a map of an objective if all the parts are in the
   request params. Otherwise returns nil"
-  [{:keys [params]} user-id]
+  [{:keys [params] :as request} user-id]
     (let [iso-time (utils/date-time->date-time-plus-30-days (utils/current-time))]
-      (assoc (select-keys params [:title :goal-1 :goal-2 :goal-3 :description ])
-                                  :end-date iso-time
-                                  :created-by-id user-id)))
+      (some-> params
+              (utils/select-all-or-nothing [:title :goal-1 :goal-2 :goal-3 :description])
+              (assoc :end-date iso-time :created-by-id user-id))))
 
 (defn request->answer-info
   "Returns a map of an answer if all the parts are in the request. Otherwise returns nil"
-  [{{id :id q-id :q-id} :route-params :keys [params]} 
-   user-id]
-  (assoc (select-keys params [:answer])
-         :question-id (Integer/parseInt q-id) 
-         :objective-id (Integer/parseInt id) 
-         :created-by-id user-id))
+  [{:keys [params route-params] :as request} user-id]
+  (when-let [id-map (some-> route-params
+                            (utils/select-all-or-nothing [:id :q-id])
+                            (update-in [:id] #(Integer/parseInt %))
+                            (update-in [:q-id] #(Integer/parseInt %))
+                            (utils/ressoc :id :objective-id)
+                            (utils/ressoc :q-id :question-id))] 
+    (some-> params
+            (utils/select-all-or-nothing [:answer])
+            (assoc :created-by-id user-id)
+            (merge id-map))))
 
 (defn request->invitation-info
   "Returns a map with the invitation details if all the parts are in the request. Otherwise return nil"
-  [{{id :id} :route-params :keys [params]} 
-   user-id]
-  (assoc (select-keys params [:writer-name :writer-email :reason])
-         :objective-id (Integer/parseInt id)
-         :invited-by-id user-id))
+  [{:keys [params route-params] :as request} user-id]
+  (when-let [objective-id (some-> (:id route-params)
+                                  Integer/parseInt)]
+    (some-> params
+            (utils/select-all-or-nothing [:writer-name :writer-email :reason])
+            (assoc :objective-id objective-id :invited-by-id user-id))))
 
-(defn request->up-vote-info [request user-id]
-  (some-> (:params request)
+(defn request->up-vote-info [{:keys [params] :as request} user-id]
+  (some-> params
           (utils/select-all-or-nothing [:vote-on-uri])
           (assoc :created-by-id user-id :vote-type "up")))
 
-(defn request->down-vote-info [request user-id]
-  (some-> (:params request)
+(defn request->down-vote-info [{:keys [params] :as request} user-id]
+  (some-> params
           (utils/select-all-or-nothing [:vote-on-uri])
           (assoc :created-by-id user-id :vote-type "down"))) 
 
@@ -60,9 +67,9 @@
     {:objective-uri objective-uri  :created-by-id user-id})) 
 
 (defn request->draft-info [{:keys [params] :as request} user-id]
-  (let [objective-id (:id params)
-        unsanitised-draft-content (:google-doc-html-content params)]
-    (when (and objective-id unsanitised-draft-content user-id)
-      {:objective-id (Integer/parseInt objective-id)
-       :submitter-id user-id
-       :content (utils/html->hiccup (sanitiser/sanitise-html unsanitised-draft-content))})))
+  (some-> params
+          (utils/select-all-or-nothing [:id :google-doc-html-content])
+          (utils/ressoc :id :objective-id)
+          (update-in [:objective-id] #(Integer/parseInt %))
+          (utils/ressoc :google-doc-html-content :content)
+          (update-in [:content #(utils/html->hiccup (sanitiser/sanitise-html %))])))

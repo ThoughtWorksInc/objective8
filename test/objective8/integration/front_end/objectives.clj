@@ -43,12 +43,16 @@
                (against-background (http-api/create-objective 
                                      (contains {:title "my objective title"
                                                 :goal-1 "my objective goal"
+                                                :goal-2 "second goal"
+                                                :goal-3 "third goal"
                                                 :description "my objective description"
                                                 :end-date anything
                                                 :created-by-id USER_ID})) => {:status ::http-api/success
                                                                               :result {:_id OBJECTIVE_ID}})
                (let [params {:title "my objective title"
                              :goal-1 "my objective goal"
+                             :goal-2 "second goal"
+                             :goal-3 "third goal"
                              :description "my objective description"}
                      response (:response
                                 (-> user-session
