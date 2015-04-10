@@ -101,6 +101,7 @@ add-draft,doc-description,Draft policy
 add-draft,placeholder,Enter your draft here
 add-draft,submit,Add draft
 add-draft,preview,Preview
+add-draft,import,Import draft from Google Drive
 import-draft,doc-title,Import draft | Objective[8]
 import-draft,doc-description,Import a draft from Google Drive
 import-draft,page-title,Import a draft from Google Drive

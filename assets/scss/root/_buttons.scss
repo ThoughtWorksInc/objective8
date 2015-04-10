@@ -1,8 +1,9 @@
 @mixin default-button($color: $green1) {
   position: relative;
   display: inline-block;
-  max-width: 14em;
+  max-width: 18em;
   margin-right: 0.5em;
+  margin-bottom: 0.8em;
   padding: 0.55em 1.35em 0.65em 1.35em;
   border: 1px solid $color;
   border-radius: 2em;
