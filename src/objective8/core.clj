@@ -104,7 +104,7 @@
       (wrap-frame-options :sameorigin)
 
       (#(if (config/get-var "ENABLE_HTTPS_ONLY")
-          (-> % wrap-ssl-redirect wrap-hsts)    
+          (-> % wrap-ssl-redirect)    
           %))))
 
 (defonce server (atom nil))
