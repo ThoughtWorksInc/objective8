@@ -9,7 +9,7 @@ block content
 
   .middle-container
     
-    h1.clj-import-draft-title(data-l8n="content:import-draft/page-title") !Import a draft from Google Drive
+    h1.clj-import-draft-title.js-import-draft-title(data-l8n="content:import-draft/page-title") !Import a draft from Google Drive
 
     article.draft-preview-document.clj-import-draft-preview
       h1 Echo Park jean shorts viral forage
@@ -46,11 +46,11 @@ block content
             tD etst
 
 
-    form.clj-import-draft-form(action="/objectives/:id/import-draft", method="POST")
-      input(type="hidden", name="google-doc-html-content").clj-google-doc-html-content
+    form.clj-import-draft-form.js-import-draft-form(action="/objectives/:id/import-draft", method="POST")
+      input(type="hidden", name="google-doc-html-content").clj-google-doc-html-content.js-google-doc-html-content
       a.button.add-draft-link.clj-add-draft-link(href="/objectives/:id/add-draft", data-l8n="content:import-draft/cancel") !Cancel
       a.button.clj-select-file-link(disabled="disabled", data-l8n="content:import-draft/select-file", onClick="authoriseApp()") !Select file
-      button.button.clj-preview-draft-button(style="display: none;", disabled="disabled", name="action", value="preview", type="submit", data-l8n="content:import-draft/preview") !Preview
+      button.button.clj-preview-draft-button.js-preview-draft-button(style="display: none;", disabled="disabled", name="action", value="preview", type="submit", data-l8n="content:import-draft/preview") !Preview
 
 block footerScripts
     +javascriptIncludeTag("gapi/google_docs_import")
