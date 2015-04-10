@@ -37,7 +37,6 @@
   (error-404-response request))
 
 (defn index [request]
-  (prn "SCHEME: " (:scheme request))
   {:status 200
    :headers {"Content-Type" "text/html"}
    :body (views/index "index" request)})
