@@ -45,3 +45,6 @@
              (hiccup->html (markdown->hiccup "<a href='evil-url'>evil-link</a>")) 
              =not=> (contains "href")))
 
+(facts "about sanitising referrals"
+       (fact "when a referral route is not safe, safen-url returns nil"
+             (safen-url "/unsafe-route") => nil))

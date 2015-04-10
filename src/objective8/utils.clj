@@ -110,6 +110,7 @@
 (defn safen-route [target]
   (or ((regex-checker #"/learn-more") target)
       ((regex-checker #"/") target)
+      ((regex-checker #"/objectives") target)
       ((regex-checker #"/objectives/\d+") target)
       ((regex-checker #"/objectives/\d+/add-question") target)
       ((regex-checker #"/objectives/\d+/questions") target)
@@ -130,8 +131,10 @@
 (defn safen-url [target]
   (when target
     (let [[route fragment] (s/split target #"#" 2)]
-      (str (safen-route route) (when fragment
-                                 (str "#" (safen-fragment fragment)))))))
+      (when-let [safe-route (safen-route route)]
+        (str safe-route (when fragment
+                          (str "#" (safen-fragment fragment))))))))
+
 
 (defn anti-forgery-hook 
   "Hook enables CSRF when config variable set. Can be disabled for tests"
