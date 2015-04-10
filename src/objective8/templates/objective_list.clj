@@ -37,8 +37,13 @@
                                                     " " 
                                                     (translations :objective-list/days))))) 
 
-                             [:.clj-objective-brief-description] 
-                             (html/content (brief-description objective))))))
+                             [:.clj-objective-brief-description]
+                             (html/content (brief-description objective))
+
+                             [:.clj-objective-list-item-star]
+                             (if (get-in objective [:meta :starred])
+                               (html/add-class "starred")
+                               identity)))))
 
 (defn objective-list-page [{:keys [translations data doc] :as context}]
   (apply str

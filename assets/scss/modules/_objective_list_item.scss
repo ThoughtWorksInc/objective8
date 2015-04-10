@@ -40,6 +40,34 @@
   line-height: 1.2;
   color: $link-colour;
 }
+
+@mixin list-star {
+  width: 25px;
+  font-size: 1.5em;
+  color: $default_text_color;
+  &.starred {
+    color: $yellow;
+    .fa-star-o {
+      display: none;
+    }
+    .fa-star {
+      display: inline-block;
+    }
+  }
+  .fa-star {
+    display: none;
+  }
+}
+
+.objective-list-item-star-container {
+  float: right;
+}
+.objective-list-item-star {
+  @include list-star;
+  height: 28px;
+  line-height: 28px;
+}
+
 .objective-list-item-draft-begins {
   color: $grey-1;
   font-size: 90%;

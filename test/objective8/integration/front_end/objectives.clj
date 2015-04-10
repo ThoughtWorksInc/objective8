@@ -129,7 +129,7 @@
        (fact "when the viewing user is signed in, the get-objectives query is made for that user"
              (-> user-session
                  helpers/sign-in-as-existing-user
-                 (p/request "http://localhost:8080/objectives")) => anything 
+                 (p/request "http://localhost:8080/objectives")) => anything
              (provided
                (http-api/get-objectives {:signed-in-id USER_ID}) => {:status ::http-api/success
-                                                                       :result []})))
+                                                                     :result []})))
