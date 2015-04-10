@@ -29,9 +29,8 @@
                                       [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr :content (:description doc))
                                       [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
                                       [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
-                                      [:.clj-import-draft-preview] (if import-draft-preview-html
-                                                                     (html/html-content import-draft-preview-html)
-                                                                     (html/content nil))
+                                      [:.clj-import-draft-preview] (when import-draft-preview-html
+                                                                     (html/html-content import-draft-preview-html))
                                       [:.clj-add-draft-link] (html/set-attr :href (utils/local-path-for :fe/add-draft-get :id objective-id))       
                                       [:.clj-select-file-link] (when-not import-draft-preview-html
                                                                  identity)

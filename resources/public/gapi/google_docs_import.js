@@ -25,7 +25,7 @@ function downloadFile(html_download_url) {
     $('.clj-select-file-link').hide();
     $('.clj-google-doc-html-content').val(xhr.responseText);
     $('.clj-preview-draft-button').removeAttr('disabled');
-    $('.clj-preview-draft-button').show();
+    $('.clj-preview-draft-button').click();
   };
   xhr.onerror = function() {
     alert('error');
@@ -40,18 +40,7 @@ function getFile(fileId) {
   request.execute(function(resp) {
     var html_download_url = resp['exportLinks']['text/html'];
     console.log(html_download_url);
-    downloadFile(html_download_url);
-
-    var docTitle = $('<h3>');
-    docTitle.text(resp['title']);
-    var docThumbnail = $('<img>');
-    docThumbnail.attr('src', resp['thumbnailLink']);
-    docThumbnail.error(function() {
-      $( this ).hide();
-    });
-
-    docTitle.appendTo('.clj-import-draft-preview');
-    docThumbnail.appendTo('.clj-import-draft-preview');
+    downloadFile(html_download_url); 
   });
 }
 
@@ -67,12 +56,9 @@ function createPicker() {
     var view = new google.picker.DocsView(google.picker.ViewId.DOCUMENTS);
     view.setMode(google.picker.DocsViewMode.LIST);
     var picker = new google.picker.PickerBuilder()
-      //.enableFeature(google.picker.Feature.NAV_HIDDEN)
-      //.enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
       .setAppId(appId)
       .setOAuthToken(oauthToken)
       .addView(view)
-      //      .setDeveloperKey(developerKey)
       .setCallback(pickerCallback)
       .build();
     picker.setVisible(true);
@@ -87,6 +73,7 @@ function handleAuthResult(authResult) {
 }
 
 function authoriseApp() {
+  $('.clj-import-draft-form').hide();
   window.gapi.auth.authorize(
       { 'client_id': clientId, 'scope': scope, 'immediate': false },
       handleAuthResult);
@@ -110,6 +97,4 @@ function onClientApiLoad() {
 function onApiLoad() {
   gapi.load('picker', {'callback': onPickerApiLoad});
   gapi.load('client', {'callback': onClientApiLoad});
-}
-
-
+} 
