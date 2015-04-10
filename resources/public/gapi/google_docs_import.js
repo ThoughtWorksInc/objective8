@@ -22,8 +22,10 @@ function downloadFile(html_download_url) {
   xhr.open('GET', html_download_url);
   xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
   xhr.onload = function() {
+    $('.clj-select-file-link').hide();
     $('.clj-google-doc-html-content').val(xhr.responseText);
-    $('.clj-preview-draft-button').removeAttr("disabled");
+    $('.clj-preview-draft-button').removeAttr('disabled');
+    $('.clj-preview-draft-button').show();
   };
   xhr.onerror = function() {
     alert('error');
@@ -77,7 +79,6 @@ function createPicker() {
   }
 }
 
-
 function handleAuthResult(authResult) {
   if (authResult && !authResult.error) {
     oauthToken = authResult.access_token;
@@ -85,7 +86,7 @@ function handleAuthResult(authResult) {
   }
 }
 
-function onAuthApiLoad() {
+function authoriseApp() {
   window.gapi.auth.authorize(
       { 'client_id': clientId, 'scope': scope, 'immediate': false },
       handleAuthResult);
@@ -107,7 +108,8 @@ function onClientApiLoad() {
 }
 
 function onApiLoad() {
-  gapi.load('auth', {'callback': onAuthApiLoad});
   gapi.load('picker', {'callback': onPickerApiLoad});
   gapi.load('client', {'callback': onClientApiLoad});
 }
+
+

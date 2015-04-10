@@ -49,7 +49,8 @@ block content
     form.clj-import-draft-form(action="/objectives/:id/import-draft", method="POST")
       input(type="hidden", name="google-doc-html-content").clj-google-doc-html-content
       a.button.add-draft-link.clj-add-draft-link(href="/objectives/:id/add-draft", data-l8n="content:import-draft/cancel") !Cancel
-      button.button.clj-preview-draft-button(disabled="disabled", name="action", value="preview", type="submit", data-l8n="content:import-draft/preview") !Preview
+      a.button.clj-select-file-link(disabled="disabled", data-l8n="content:import-draft/select-file", onClick="authoriseApp()") !Select file
+      button.button.clj-preview-draft-button(style="display: none;", disabled="disabled", name="action", value="preview", type="submit", data-l8n="content:import-draft/preview") !Preview
 
 block footerScripts
     +javascriptIncludeTag("gapi/google_docs_import")

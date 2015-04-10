@@ -33,6 +33,8 @@
                                                                      (html/html-content import-draft-preview-html)
                                                                      (html/content nil))
                                       [:.clj-add-draft-link] (html/set-attr :href (utils/local-path-for :fe/add-draft-get :id objective-id))       
+                                      [:.clj-select-file-link] (when-not import-draft-preview-html
+                                                                 identity)
                                       [:.clj-preview-draft-button] (if import-draft-preview-html
                                                                      (html/substitute (submit-button context))
                                                                      identity)
@@ -44,5 +46,4 @@
                                       [(html/attr= :src "/static/gapi/google_docs_import.js")] (when-not import-draft-preview-html
                                                                                                  identity)
                                       [:.clj-gapi-js] (when-not import-draft-preview-html
-                                                        identity))))))))
-
+                                                        identity)))))))) 
