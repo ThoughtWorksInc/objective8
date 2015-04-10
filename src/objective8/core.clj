@@ -102,8 +102,9 @@
       (wrap-session {:cookie-attrs {:http-only true}})
       (wrap-xss-protection true {:mode :block})
       (wrap-frame-options :sameorigin)
+      wrap-ssl-redirect
 
-      (#(if (config/get-var "ENABLE_HTTPS_ONLY")
+      #_(#(if (config/get-var "ENABLE_HTTPS_ONLY")
           (-> % wrap-ssl-redirect)    
           %))))
 
