@@ -128,7 +128,10 @@
 (defn objective-detail [{{:keys [id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)
         updated-request (update-session-invitation request)
-        {objective-status :status objective :result} (http-api/get-objective objective-id)
+        signed-in-id (get (friend/current-authentication) :identity)
+        {objective-status :status objective :result} (if signed-in-id
+                                                       (http-api/get-objective objective-id {:signed-in-id signed-in-id})
+                                                       (http-api/get-objective objective-id))
         {candidate-status :status candidates :result} (http-api/retrieve-candidates objective-id)
         {questions-status :status questions :result} (http-api/retrieve-questions objective-id)
         {comments-status :status comments :result} (http-api/get-comments (:uri objective))]
@@ -481,14 +484,14 @@
   (redirect-to-params-referer request))
 
 (defn post-star [{:keys [t'] :as request}]
- (let [star-data (helpers/request->star-info request (get (friend/current-authentication) :identity))
-       {status :status stored-star :result} (http-api/post-star star-data)]
-   (cond
-     (= status ::http-api/success)
-     (let [message (t' :objective-view/starred-message)]
-       (-> (redirect-to-params-referer request)
-           (assoc :flash message)))
+  (let [star-data (helpers/request->star-info request (get (friend/current-authentication) :identity))
+        {status :status stored-star :result} (http-api/post-star star-data)]
+    (cond
+      (= status ::http-api/success)
+      (let [message (t' :objective-view/starred-message)]
+        (-> (redirect-to-params-referer request)
+            (assoc :flash message)))
 
-     (= status ::http-api/invalid-input) {:status 400}
+      (= status ::http-api/invalid-input) {:status 400}
 
-     :else {:status 502}))) 
+      :else {:status 502}))) 

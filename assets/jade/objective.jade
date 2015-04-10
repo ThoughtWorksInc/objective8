@@ -56,8 +56,10 @@ block content
 
       .objective-outline-header
         h1.objective-title.clj-objective-title.func--objective-page !Build safer cycling networks in the streets of Madrid.
-        .objective-star-container.clj-star-container
-          .objective-star
+        form.objective-star-container.clj-star-form(action="/meta/stars", method="post")
+          input.clj-refer(type="hidden", value="!current-url", name="refer")
+          input.clj-star-on-uri(type="hidden", value="!current-url", name="objective-uri")
+          button.objective-star.clj-objective-star.func--objective-star(type="submit")
             i.fa.fa-star-o
             i.fa.fa-star
 

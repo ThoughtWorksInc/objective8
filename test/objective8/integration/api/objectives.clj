@@ -80,7 +80,7 @@
                                                                      reverse
                                                                      (map #(select-keys % [:_id]))))))))
 
-         (facts "GET /api/v1/objectives/:id returns an objective"
+         (facts "GET /api/v1/objectives/:id"
                (fact "can retrieve an objective using its id"
                      (let [{user-id :_id username :username} (sh/store-a-user) 
                            stored-objective (objectives/store-objective! (assoc the-objective :created-by-id user-id))
@@ -96,7 +96,23 @@
                      (p/request app "/api/v1/objectives/NOT-AN-INTEGER")
                      => (contains {:response (contains {:status 404})}))) 
 
-        (facts "about posting objectives"
+         (facts "GET /api/v1/objectives/:id?signed-in-id=<user-id>"
+                (fact "retrieves the objective by its id, along with meta-information relevant for the signed in user"
+                      (let [objective-creator (sh/store-a-user)
+                            {o-id :_id :as starred-objective} (sh/store-an-open-objective {:user objective-creator})
+                            {user-id :_id :as user} (sh/store-a-user)
+                            _ (sh/store-a-star {:user user :objective starred-objective})
+
+                            {response :response} (p/request app (str "/api/v1/objectives/" o-id "?signed-in-id=" user-id))
+                            retrieved-objective (-> starred-objective
+                                                    (select-keys [:_id :description :_created_at :created-by-id
+                                                                  :end-date :entity :goals :status :title])
+                                                    (assoc :username (:username objective-creator))
+                                                    (assoc :meta {:starred true})
+                                                    (assoc :uri (str "/objectives/" o-id)))]
+                        (:body response) => (helpers/json-contains retrieved-objective))))
+
+         (facts "about posting objectives"
                (against-background
                 (m/valid-credentials? anything anything anything) => true)
 

@@ -106,10 +106,13 @@
       (log/info "Error when posting objective: " e)
       (invalid-response "Invalid objective post request"))))
 
-(defn get-objective [{:keys [route-params] :as request}]
+(defn get-objective [{:keys [route-params params] :as request}]
   (let [id (-> (:id route-params)
-               Integer/parseInt)]
-    (if-let [objective (objectives/retrieve-objective id)]
+               Integer/parseInt)
+        signed-in-id (:signed-in-id params)]
+    (if-let [objective (if signed-in-id
+                         (objectives/get-objective-as-signed-in-user id (Integer/parseInt signed-in-id))
+                         (objectives/retrieve-objective id))]
       (-> objective
           (update-in [:end-date] utils/date-time->iso-time-string)
           response/response

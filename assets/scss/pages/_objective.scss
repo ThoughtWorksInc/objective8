@@ -49,6 +49,8 @@
   @include star(31px,1.5em);
   height: 34px;
   line-height: 34px;
+  border: none;
+  background: transparent;
   @include mq(760) {
     font-size: 2em;
   }

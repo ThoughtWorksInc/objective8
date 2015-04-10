@@ -1,15 +1,15 @@
 
 
 @mixin star($width, $font-size) {
-  transition: transform 1s;
-  transform-style: preserve-3d;
+  //transition: transform 1s;
+  //transform-style: preserve-3d;
   width: $width;
   font-size: $font-size;
   color: $default_text_color;
-  &:hover {
-    color: $yellow;
-    transform: translateZ(200px) rotate3d(0,1,0,180deg);
-  }
+  //&:hover {
+   // color: $yellow;
+    //transform: translateZ(200px) rotate3d(0,1,0,180deg);
+  //}
   &.starred {
     color: $yellow;
     .fa-star-o {

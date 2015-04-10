@@ -114,6 +114,26 @@
                       (throw e)))
                =>  "Functional test headline | Objective[8]") 
 
+         (future-fact "Can star an objective"
+               (try (wd/to (:objective-url @journey-state))
+                    (wait-for-title "Functional test headline | Objective[8]")
+
+                    (wd/click ".func--objective-star")
+
+                    (wd/to "/")
+
+                    (wd/to (:objective-url @journey-state))
+                    (wait-for-title "Functional test headline | Objective[8]")
+
+                    (screenshot "objective_page_with_starred_objective")
+
+                    (wd/attribute ".func--objective-star" :class)
+
+                    (catch Exception e
+                      (screenshot "ERROR-Can-star-an-objective")
+                      (throw e)))
+               => (contains "starred"))
+
          (fact "Can add a question"
                (try (wd/to "localhost:8080/objectives")
                     (wait-for-title "Objectives | Objective[8]")

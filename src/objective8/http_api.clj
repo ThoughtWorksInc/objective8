@@ -95,13 +95,18 @@
 (defn parse-objective [raw-objective]
   (update-in raw-objective [:end-date] utils/time-string->date-time))
 
-(defn get-objective [id]
-   (let [api-result (default-get-call (str utils/host-url "/api/v1/objectives/" id) {:headers (get-api-credentials)})]
+(defn get-objective
+  ([id] (get-objective id {}))
+
+  ([id query]
+   (let [api-result (default-get-call (str utils/host-url "/api/v1/objectives/" id)
+                      (assoc {:headers (get-api-credentials)}
+                             :query-params query))]
      (if (= ::success (:status api-result))
        (update-in api-result [:result] parse-objective)
-       api-result)))
+       api-result))))
 
-(defn objective-options-map [query]
+(defn query->objectives-query-params [query]
   (let [user-id (:signed-in-id query)]
     (cond-> {:headers (get-api-credentials)}
       user-id (assoc :query-params {:user-id user-id}))))
@@ -113,7 +118,7 @@
   ([query]
    (let [api-result (default-get-call
                       (str utils/host-url "/api/v1/objectives")
-                      (objective-options-map query))]
+                      (query->objectives-query-params query))]
      (if (= ::success (:status api-result))
        (update-in api-result [:result] #(map parse-objective %))
        api-result))))

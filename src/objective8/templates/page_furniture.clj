@@ -143,7 +143,7 @@
 
 (defn comment-create-form [{:keys [data ring-request]} comment-target]
   (html/at comment-create-form-snippet
-           [:.clj-add-comment-form] (html/prepend (html/html-snippet (anti-forgery-field))) 
+           [:.clj-add-comment-form] (html/prepend (html/html-snippet (anti-forgery-field)))
            [:.clj-refer] (html/set-attr :value (:uri ring-request)) 
            [:.clj-comment-on-uri] (html/set-attr :value (get-in data [comment-target :uri]))))
 

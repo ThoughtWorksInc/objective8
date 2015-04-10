@@ -167,7 +167,7 @@
                (against-background
                  (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success
                                                                  :result ACTIVE_INVITATION}
-                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                 (http-api/get-objective OBJECTIVE_ID anything) => {:status ::http-api/success
                                                            :result {:title OBJECTIVE_TITLE}})
                (let [{request :request} (-> user-session
                                             (helpers/with-sign-in "http://localhost:8080/")

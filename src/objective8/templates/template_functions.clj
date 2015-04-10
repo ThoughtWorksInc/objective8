@@ -54,3 +54,6 @@
 
 (defn in-drafting? [objective]
   (= "drafting" (:status objective)))
+
+(defn starred? [objective]
+  (get-in objective [:meta :starred]))

@@ -113,6 +113,18 @@
                                                                               :result {:some :data
                                                                                        :end-date "2015-01-31T00:00:00.000Z" }}))
 
+(fact "getting an objective as a signed in user hits the correct API endpoint"
+      (http-api/get-objective OBJECTIVE_ID {:signed-in-id USER_ID}) => {:status ::http-api/success
+                                                                        :result the-objective}
+      (provided
+        (http-api/default-get-call
+          (contains (str "/api/v1/objectives/" OBJECTIVE_ID))
+          (contains {:headers (contains {"api-bearer-name" anything
+                                         "api-bearer-token" anything})
+                     :query-params (contains {:signed-in-id USER_ID})})) => {:status ::http-api/success
+                                                                             :result {:some :data
+                                                                                      :end-date "2015-01-31T00:00:00.000Z" }}))
+
 (fact "getting objectives hits the correct API endpoint"
       (http-api/get-objectives) => {:status ::http-api/success
                                     :result [the-objective]} 

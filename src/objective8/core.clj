@@ -87,7 +87,6 @@
                :api/post-up-down-vote (m/wrap-bearer-token api-handlers/post-up-down-vote bt/token-provider)
                :api/post-star (m/wrap-bearer-token api-handlers/post-star bt/token-provider)})
   
-
 (defn app [app-config]
   (-> (make-handler routes/routes (some-fn handlers #(when (fn? %) %)))
       (m/wrap-not-found front-end-handlers/error-404)

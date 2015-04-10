@@ -37,7 +37,10 @@
         ;; Twitter authentication background
         (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
         (http-api/create-user anything) => {:status ::http-api/success
-                                            :result {:_id USER_ID}})
+                                            :result {:_id USER_ID}}
+        (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                        :result {:_id USER_ID
+                                                                 :username "username"}})
        (binding [config/enable-csrf false]
          (fact "authorised user can post and retrieve objective"
                (against-background (http-api/create-objective 
@@ -75,6 +78,18 @@
              (default-app objective-view-get-request) => (contains {:status 200})
              (default-app objective-view-get-request) => (contains {:body (contains "my objective title")})
              (default-app objective-view-get-request) => (contains {:body (contains "my objective description")}))
+
+       (fact "When a signed in user views an objective, the objective contains user specific information"
+             (against-background
+               (http-api/get-comments anything)=> {:status ::http-api/success :result []}
+               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success :result []}
+               (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []})
+             (-> user-session
+                 helpers/sign-in-as-existing-user
+                 (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID))) => anything
+             (provided
+              (http-api/get-objective OBJECTIVE_ID {:signed-in-id USER_ID}) => {:status ::http-api/success
+                                                                                :result basic-objective}))
 
        (fact "A user should receive a 404 if an objective doesn't exist"
              (against-background
@@ -120,9 +135,9 @@
        (against-background
         ;; Twitter authentication background
         (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
-         (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                                 :result {:_id USER_ID
-                                                                          :username "username"}})
+        (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                        :result {:_id USER_ID
+                                                                 :username "username"}})
        
        (fact "when the viewing user is not signed in, the get-objectives query is made with no user information"
              (p/request user-session "http://localhost:8080/objectives") => anything

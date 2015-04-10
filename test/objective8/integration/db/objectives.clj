@@ -44,6 +44,20 @@
                 (objectives/retrieve-objective objective-id) => (assoc stored-objective :username username)
                 (objectives/retrieve-objective objective-id) =not=> (contains {:global-id anything})))
 
+        (fact "can retrieve a stored objective with meta information relevant to a signed in user"
+              (let [objective-creator (sh/store-a-user)
+                    {o-id :_id :as starred-objective} (sh/store-an-open-objective {:user objective-creator})
+
+                    {signed-in-user-id :_id :as user} (sh/store-a-user)
+                    _ (sh/store-a-star {:objective starred-objective :user user})
+
+                    objective-uri (str "/objectives/" o-id)]
+                (objectives/get-objective-as-signed-in-user o-id signed-in-user-id) => (-> starred-objective
+                                                                                           (assoc :username (:username objective-creator))
+                                                                                           (assoc :meta {:starred true})
+                                                                                           (dissoc :global-id)
+                                                                                           (assoc :uri objective-uri))))
+
         (fact "can retrieve a list of objectives"
               (let [{user-id :_id username :username} (sh/store-a-user)
                     objective-data {:created-by-id user-id

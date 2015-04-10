@@ -20,6 +20,11 @@
           (utils/update-in-self [:uri] uri-for-objective)
           (dissoc :global-id)))
 
+(defn get-objective-as-signed-in-user [objective-id user-id]
+  (some-> (storage/pg-get-objective-as-signed-in-user objective-id user-id)
+          (dissoc :global-id)
+          (utils/update-in-self [:uri] uri-for-objective)))
+
 (defn retrieve-objective [objective-id]
   (some-> (storage/pg-retrieve {:entity :objective :_id objective-id})
           :result
@@ -59,4 +64,4 @@
                              :status (mappings/string->postgres-type "objective_status" "open")}) 
        :result
        (map #(dissoc % :global-id))
-       (map #(utils/update-in-self % [:uri] uri-for-objective))) )
+       (map #(utils/update-in-self % [:uri] uri-for-objective))))

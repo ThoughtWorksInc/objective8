@@ -182,7 +182,7 @@ LIMIT 50" [user-id]] :results)))))
     (apply vector (map unmap-objective
                        (korma/exec-raw ["
 SELECT objectives.*, users.username, stars.active FROM objective8.objectives AS objectives
-lEFT JOIN (SELECT active, objective_id 
+LEFT JOIN (SELECT active, objective_id
            FROM objective8.stars
            WHERE created_by_id=?) AS stars
 ON stars.objective_id = objectives._id
@@ -190,3 +190,16 @@ JOIN objective8.users AS users
 ON objectives.created_by_id = users._id
 ORDER BY objectives._created_at DESC
 LIMIT 50" [user-id]] :results)))))
+
+(defn pg-get-objective-as-signed-in-user [objective-id user-id]
+  (let [unmap-objective (first (get mappings/objective :transforms))]
+    (first (map unmap-objective
+                (korma/exec-raw ["
+SELECT objectives.*, users.username, stars.active FROM objective8.objectives AS objectives
+LEFT JOIN (SELECT active, objective_id
+           FROM objective8.stars
+           WHERE created_by_id=?) AS stars
+ON stars.objective_id = objectives._id
+JOIN objective8.users AS users
+ON objectives.created_by_id = users._id
+WHERE objectives._id=?" [user-id objective-id]] :results)))))

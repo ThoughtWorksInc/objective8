@@ -98,7 +98,19 @@
       empty-question-list-item-snippet
       (question-list-items questions))))
 
-(defn objective-page [{:keys [translations data doc invitation-rsvp] :as context}]
+;; STAR FORM
+(def star-form-snippet (html/select objective-template [:.clj-star-form]))
+
+(defn star-form [objective ring-request]
+  (html/at star-form-snippet
+           [:.clj-star-form] (html/prepend (html/html-snippet (anti-forgery-field)))
+           [:.clj-refer] (html/set-attr :value (:uri ring-request))
+           [:.clj-star-on-uri] (html/set-attr :value (:uri ring-request))
+           [:.clj-objective-star] (if (tf/starred? objective)
+                                    (html/add-class "starred")
+                                    identity)))
+
+(defn objective-page [{:keys [translations data doc invitation-rsvp ring-request] :as context}]
   (let [objective (:objective data)
         objective-id (:_id objective)
         candidates (:candidates data)
@@ -129,7 +141,7 @@
                                       [:.clj-guidance-buttons] nil
                                       [:.clj-guidance-heading] (html/content (translations :objective-guidance/heading))
 
-                                      [:.clj-star-container] nil
+                                      [:.clj-star-form] nil ;(html/content (star-form objective ring-request))
 
                                       [:.clj-objective-title] (html/content (:title objective))
 
