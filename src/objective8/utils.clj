@@ -91,9 +91,6 @@
 
 (def pretty-date-time (time-format/formatter "dd-MM-yyyy HH:mm"))
 
-(defn time-string->pretty-date [time-string]
-  (time-format/unparse pretty-date (time-string->date-time time-string)))
-
 (defn date-time->pretty-date [date-time]
   (time-format/unparse pretty-date date-time))
 

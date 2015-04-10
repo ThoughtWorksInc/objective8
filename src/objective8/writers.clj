@@ -4,22 +4,17 @@
             [objective8.invitations :as i]
             [objective8.storage.storage :as storage]))  
 
+
 (defn create-candidate [{:keys [invitation-uuid invitee-id] :as candidate-data}]
-  ;; TODO: Refactor to use a single -> macro and utils/ressoc
   (try
-    (when-let [{:keys [writer-name
-                       reason
-                       objective-id
-                       invited-by-id]
-                invitation-id :_id} (some-> (i/get-active-invitation invitation-uuid)
-                                            (i/accept-invitation!))]
-      (storage/pg-store! {:entity :candidate
-                          :objective-id objective-id
-                          :invitation-id invitation-id
-                          :invited-by-id invited-by-id
-                          :writer-name writer-name
-                          :invitation-reason reason
-                          :user-id invitee-id}))
+    (some-> (i/get-active-invitation invitation-uuid)
+            i/accept-invitation!
+            (utils/select-all-or-nothing [:writer-name :reason :objective-id :invited-by-id :_id]) 
+            (utils/ressoc :_id :invitation-id)
+            (utils/ressoc :reason :invitation-reason)
+            (assoc :entity :candidate :user-id invitee-id)
+            storage/pg-store!)
+   
     (catch org.postgresql.util.PSQLException e
       (throw (Exception. "Failed to create candidate writer")))))
 
