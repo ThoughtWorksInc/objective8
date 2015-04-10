@@ -22,7 +22,6 @@ function downloadFile(html_download_url) {
   xhr.open('GET', html_download_url);
   xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
   xhr.onload = function() {
-    $('.clj-select-file-link').hide();
     $('.clj-google-doc-html-content').val(xhr.responseText);
     $('.clj-preview-draft-button').removeAttr('disabled');
     $('.clj-preview-draft-button').click();
@@ -46,6 +45,7 @@ function getFile(fileId) {
 
 function pickerCallback(data) {
   if (data.action == google.picker.Action.PICKED) {
+    $('.clj-import-draft-form').hide();
     $('.clj-import-draft-title').after('<div style="text-align: center;"><i class="fa fa-spinner fa-spin fa-3x"></i></div>');
     var fileId = data.docs[0].id;
     getFile(fileId);
@@ -74,7 +74,6 @@ function handleAuthResult(authResult) {
 }
 
 function authoriseApp() {
-  $('.clj-import-draft-form').hide();
   window.gapi.auth.authorize(
       { 'client_id': clientId, 'scope': scope, 'immediate': false },
       handleAuthResult);
