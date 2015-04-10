@@ -66,6 +66,20 @@
                         (:body response) => (helpers/json-contains [(contains {:meta {:starred true}})
                                                                     (contains {:meta {:starred false}})] :in-any-order))))
 
+         (facts "GET /api/v1/objectives?starred=true&user-id=<user-id>"
+                (fact "retrieves objectives in reverse chronological order that have been starred by user with given user-id"
+                      (let [{user-id :_id :as user} (sh/store-a-user)
+                            stored-objectives [(sh/store-an-open-objective)
+                                               (sh/store-an-objective-in-draft)]
+
+                            stored-stars (doall (map sh/store-a-star
+                                                     [{:user user :objective (first stored-objectives)}
+                                                      {:user user :objective (second stored-objectives)}])) ]
+                        (get-in (p/request app (str "/api/v1/objectives?starred=true&user-id=" user-id)) [:response :body])
+                        => (helpers/json-contains (map contains (->> stored-objectives
+                                                                     reverse
+                                                                     (map #(select-keys % [:_id]))))))))
+
          (facts "GET /api/v1/objectives/:id returns an objective"
                (fact "can retrieve an objective using its id"
                      (let [{user-id :_id username :username} (sh/store-a-user) 

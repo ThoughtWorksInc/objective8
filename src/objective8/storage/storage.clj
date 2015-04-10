@@ -173,7 +173,9 @@ JOIN objective8.stars AS stars
 ON stars.objective_id = objectives._id
 JOIN objective8.users AS users
 ON objectives.created_by_id = users._id
-WHERE stars.active=true AND stars.created_by_id=?" [user-id]] :results)))))
+WHERE stars.active=true AND stars.created_by_id=?
+ORDER BY objectives._created_at DESC
+LIMIT 50" [user-id]] :results)))))
 
 (defn pg-get-objectives-as-signed-in-user [user-id]
   (let [unmap-objective (first (get mappings/objective :transforms))]
@@ -185,4 +187,6 @@ lEFT JOIN (SELECT active, objective_id
            WHERE created_by_id=?) AS stars
 ON stars.objective_id = objectives._id
 JOIN objective8.users AS users
-ON objectives.created_by_id = users._id" [user-id]] :results)))))
+ON objectives.created_by_id = users._id
+ORDER BY objectives._created_at DESC
+LIMIT 50" [user-id]] :results)))))

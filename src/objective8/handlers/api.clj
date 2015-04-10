@@ -118,7 +118,8 @@
 
 (defn get-objectives [request]
   (if-let [query (ar/request->objectives-query request)]
-    (response/content-type (response/response (objectives/get-objectives query)) "application/json")
+    (let [objectives (objectives/get-objectives query)]
+      (response/content-type (response/response objectives) "application/json"))
     (invalid-response "Invalid objectives query")))
 
 ;; COMMENT
