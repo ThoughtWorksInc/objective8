@@ -208,25 +208,29 @@
         :else {:status 502}))
     {:status 400}))
 
-(defn question-detail [{{q-id :q-id id :id} :route-params
-                        message :flash
-                        :keys [uri t' locale]
-                        :as request}]
-  (let [{question-status :status question :result} (http-api/get-question (Integer/parseInt id) (Integer/parseInt q-id))
-        {answer-status :status answers :result} (http-api/retrieve-answers (:objective-id question) (:_id question))
-        {objective-status :status objective :result} (http-api/get-objective (:objective-id question))]
+(defn question-detail [{:keys [route-params uri t' locale] :as request}]
+  (let [q-id (-> (:q-id route-params) Integer/parseInt)
+        o-id (-> (:id route-params) Integer/parseInt)
+        {question-status :status question :result} (http-api/get-question o-id q-id)]
     (cond
-      (every? #(= ::http-api/success %) [question-status answer-status objective-status])
-      {:status 200
-       :headers {"Content-Type" "text/html"}      
-       :body (views/question-page "question-page" request
-                                  :objective (format-objective objective)
-                                  :question question
-                                  :answers answers
-                                  :doc {:title (:question question)
-                                        :description (:question question)})}
+      (= ::http-api/success question-status)
+      (let [{answer-status :status answers :result} (http-api/retrieve-answers (:objective-id question) (:_id question))
+          {objective-status :status objective :result} (http-api/get-objective (:objective-id question))]
+      (if (every? #(= ::http-api/success %) [answer-status objective-status])
+        {:status 200
+         :headers {"Content-Type" "text/html"}
+         :body (views/question-page "question-page" request
+                                    :objective (format-objective objective)
+                                    :question question
+                                    :answers answers
+                                    :doc {:title (:question question)
+                                          :description (:question question)})}
+        {:status 500}))
+
       (= question-status ::http-api/not-found) (error-404-response request)
+
       (= question-status ::http-api/invalid-input) {:status 400}
+
       :else {:status 500})))
 
 
@@ -252,9 +256,9 @@
 (defn invite-writer [{{id :id} :route-params
                       :keys [uri t' locale] :as request}]
   (let [objective-id (Integer/parseInt id)
-        {objective-status :status objective :result} (http-api/get-objective objective-id)]
+        {status :status objective :result} (http-api/get-objective objective-id)]
     (cond
-      (every? #(= ::http-api/success %) [objective-status])
+      (= status ::http-api/success)
 
       {:status 200
        :body (views/invite-writer-page "invite-writer" request
@@ -262,7 +266,7 @@
                :doc {:title (str (t' :invite-writer/doc-title) " " (:title objective) " | Objective[8]")})
        :headers {"Content-Type" "text/html"}}
 
-      (= objective-status ::http-api/not-found) (error-404-response request)
+      (= status ::http-api/not-found) (error-404-response request)
       :else {:status 500})))
 
 (defn candidate-list [{{id :id} :route-params :as request}]
@@ -402,7 +406,8 @@
       (= action "submit")
       (let [{status :status draft :result} (http-api/post-draft draft-data)]
         (cond
-          (= status ::http-api/success) (response/redirect (utils/path-for :fe/draft :id (:objective-id draft-data) :d-id (:_id draft)))
+          (= status ::http-api/success) 
+          (response/redirect (utils/path-for :fe/draft :id (:objective-id draft-data) :d-id (:_id draft)))
           (= status ::http-api/not-found) {:status 404}
           :else {:status 502})))))
 

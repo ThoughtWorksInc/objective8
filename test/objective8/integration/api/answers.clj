@@ -124,8 +124,8 @@
                                                                          :q-id q-id))]
                  (:body response) => (helpers/json-contains [(contains {:votes {:up 5 :down 3}})])))
 
-         (fact "returns a 400 status if the question does not belong to the objective"
+         (fact "returns a 404 status if the question does not belong to the objective"
                (let [{q-id :_id o-id :objective-id} (sh/store-a-question)
                      {response :response} (p/request app (str "/api/v1/objectives/" (inc o-id)
                                                               "/questions/" q-id "/answers"))]
-                 (:status response) => 400))))
+                 (:status response) => 404))))

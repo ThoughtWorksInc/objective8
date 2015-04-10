@@ -178,27 +178,23 @@
       (log/info "Error when posting question: " e)
       (invalid-response "Invalid question post request"))))
 
-(defn check-question-matches-objective [question-id objective-id]
-  (let [question (questions/retrieve-question question-id)]
-    (when-not (= (:objective-id question) objective-id)
-      ;TODO return a 404 here, rather than throwing an exception?
-      (throw (Exception. "Question does not belong to this objective")))))
-
 (defn get-question [{:keys [route-params] :as request}]
   (try
     (let [q-id (-> (:q-id route-params)
                    Integer/parseInt)
           objective-id (-> (:id route-params)
                            Integer/parseInt)]
-      (check-question-matches-objective q-id objective-id) 
       (if-let [question (questions/retrieve-question q-id)]
-        (-> question
-            response/response
-            (response/content-type "application/json"))
-        (response/not-found "")))
+        (if (-> (:objective-id question)
+                (= objective-id))
+          (-> question
+              response/response
+              (response/content-type "application/json"))
+          (not-found-response "Question does not belong to this objective"))
+        (not-found-response "Question does not exist")))
     (catch Exception e
       (log/info "Invalid route: " e)
-      (invalid-response "Invalid question request for this objective")))) 
+      (invalid-response "Invalid question request for this objective"))))
 
 (defn retrieve-questions [{:keys [route-params] :as request}]
   (let [objective-id (-> (:id route-params)
@@ -216,18 +212,21 @@
                    Integer/parseInt)
           objective-id (-> (:id route-params)
                            Integer/parseInt)] 
-      (check-question-matches-objective q-id objective-id) 
-      (let [answer (-> params
-                       (select-keys [:answer :created-by-id])
-                       (assoc :objective-id objective-id)
-                       (assoc :question-id q-id))]
-        (if-let [stored-answer (answers/create-answer! answer)]
-          (resource-created-response (str utils/host-url
-                                         "/api/v1/objectives/" (:objective-id stored-answer)
-                                         "/questions/" (:question-id stored-answer)
-                                         "/answers/" (:_id stored-answer))
-                                    stored-answer)
-          (resource-locked-response "New content cannot be posted against this objective as it is now in drafting."))))
+      (if (-> (questions/retrieve-question q-id)
+              :objective-id
+              (= objective-id))
+        (let [answer (-> params
+                         (select-keys [:answer :created-by-id])
+                         (assoc :objective-id objective-id)
+                         (assoc :question-id q-id))]
+          (if-let [stored-answer (answers/create-answer! answer)]
+            (resource-created-response (str utils/host-url
+                                            "/api/v1/objectives/" (:objective-id stored-answer)
+                                            "/questions/" (:question-id stored-answer)
+                                            "/answers/" (:_id stored-answer))
+                                       stored-answer)
+            (resource-locked-response "New content cannot be posted against this objective as it is now in drafting.")))
+        (invalid-response "Invalid answer post request")))
     (catch Exception e
       (log/info "Error when posting answer: " e)
       (invalid-response "Invalid answer post request"))))
@@ -238,12 +237,13 @@
                     Integer/parseInt)
            objective-id (-> (:id route-params)
                             Integer/parseInt)]
-      (check-question-matches-objective q-id objective-id)
-      (if-let [answers (answers/get-answers q-id)]
-        (-> answers
+      (if (-> (questions/retrieve-question q-id)
+              :objective-id
+              (= objective-id))
+        (-> (answers/get-answers q-id)
             response/response
-            (response/content-type "application/json"))
-        (response/not-found "")))
+            (response/content-type "application/json")) 
+        (not-found-response "Question does not exist")))
     (catch Exception e
       (log/info "Invalid route: " e)
       (invalid-response "Invalid answer request for this objective"))))

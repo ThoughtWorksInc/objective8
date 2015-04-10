@@ -93,10 +93,10 @@
              (provided
                (questions/retrieve-question QUESTION_ID) => stored-question))
 
-       (fact "a 400 status is returned if the question does not belong to the objective"
+       (fact "a 404 status is returned if the question does not belong to the objective"
              (:response  (p/request app (str "/api/v1/objectives/" WRONG_OBJECTIVE_ID 
                                              "/questions/" QUESTION_ID))) 
-             => (contains {:status 400}) 
+             => (contains {:status 404}) 
              (provided (questions/retrieve-question QUESTION_ID) => {:objective-id OBJECTIVE_ID
                                                                      :question "The question?"}))
 
