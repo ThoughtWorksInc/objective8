@@ -100,7 +100,11 @@
       wrap-flash
       (wrap-session {:cookie-attrs {:http-only true}})
       (wrap-xss-protection true {:mode :block})
-      (wrap-frame-options :sameorigin)))
+      (wrap-frame-options :sameorigin)
+      ((if (config/get-var "HTTPS_ONLY")
+         wrap-ssl-redirect
+         identity))
+      ))
 
 (defonce server (atom nil))
 (defonce scheduler (atom nil))
