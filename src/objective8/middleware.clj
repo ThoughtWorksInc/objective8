@@ -2,8 +2,6 @@
   (:require [clojure.string :as s]
             [clojure.tools.logging :as log]
             [cemerick.friend :as friend]
-            [ring.middleware.ssl :refer  [wrap-ssl-redirect wrap-hsts]]
-            [objective8.config :as config]
             [objective8.utils :as utils]))
 
 (defn- keywordize [m]
@@ -36,12 +34,6 @@
 (defn strip-trailing-slashes [handler]
   (fn [request]
     (handler (update-in request [:uri] s/replace #"(.)/$" "$1"))))
-
-(defn wrap-ssl-redirect-and-hsts [handler]
-  (fn [request]
-    (if (config/get-var "ENABLE_HTTPS_ONLY")
-      (wrap-ssl-redirect request) 
-      request)))
 
 (defn wrap-authorise-writer [handler]
   (fn [{{objective-id :id} :route-params :as request}]
