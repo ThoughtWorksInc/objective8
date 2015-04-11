@@ -102,9 +102,9 @@
       (wrap-xss-protection true {:mode :block})
       (wrap-frame-options :sameorigin)
 
-      (#(if (config/get-var "ENABLE_HTTPS_ONLY")
+      ((if (config/get-var "ENABLE_HTTPS_ONLY")
          wrap-ssl-redirect
-         %))))
+         identity))))
 
 (defonce server (atom nil))
 (defonce scheduler (atom nil))
