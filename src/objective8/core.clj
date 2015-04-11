@@ -103,8 +103,8 @@
       (wrap-frame-options :sameorigin)
 
       (#(if (config/get-var "ENABLE_HTTPS_ONLY")
-         wrap-ssl-redirect
-         %))))
+          (wrap-ssl-redirect %) 
+          %))))
 
 (defonce server (atom nil))
 (defonce scheduler (atom nil))
