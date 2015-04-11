@@ -8,7 +8,6 @@
             [ring.middleware.flash :refer [wrap-flash]]
             [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
             [ring.middleware.x-headers :refer [wrap-xss-protection wrap-frame-options wrap-content-type-options]]
-            [ring.middleware.ssl :refer  [wrap-ssl-redirect wrap-hsts]]
             [bidi.ring :refer [make-handler]]
             [taoensso.tower.ring :refer [wrap-tower]]
             [objective8.routes :as routes]
@@ -101,10 +100,7 @@
       (wrap-session {:cookie-attrs {:http-only true}})
       (wrap-xss-protection true {:mode :block})
       (wrap-frame-options :sameorigin)
-
-      (#(if (config/get-var "ENABLE_HTTPS_ONLY")
-          (wrap-ssl-redirect %) 
-          %))))
+      m/wrap-ssl-redirect-and-hsts))
 
 (defonce server (atom nil))
 (defonce scheduler (atom nil))

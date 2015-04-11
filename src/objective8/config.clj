@@ -14,6 +14,9 @@
    (get-var var-name nil))
   ([var-name default] 
   (if-let [variable (get (System/getenv) var-name)]
-    variable
+    (case variable
+      "true" true
+      "false" false
+      variable)
     (do (log/warn (str "Failed to look up environment variable \"" var-name "\""))
         default))))
