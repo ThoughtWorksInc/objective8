@@ -102,7 +102,7 @@
       (wrap-xss-protection true {:mode :block})
       (wrap-frame-options :sameorigin)
       ((if (config/get-var "HTTPS_ONLY")
-         (comp  wrap-ssl-redirect wrap-forwarded-scheme) 
+         (comp wrap-forwarded-scheme wrap-ssl-redirect)
          identity))
       ))
 
