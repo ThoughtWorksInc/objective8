@@ -8,7 +8,7 @@
             [ring.middleware.flash :refer [wrap-flash]]
             [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
             [ring.middleware.x-headers :refer [wrap-xss-protection wrap-frame-options wrap-content-type-options]]
-            [ring.middleware.ssl :refer  [wrap-ssl-redirect wrap-hsts]]
+            [ring.middleware.ssl :refer [wrap-ssl-redirect wrap-hsts wrap-forwarded-scheme]]
             [bidi.ring :refer [make-handler]]
             [taoensso.tower.ring :refer [wrap-tower]]
             [objective8.routes :as routes]
@@ -102,7 +102,7 @@
       (wrap-xss-protection true {:mode :block})
       (wrap-frame-options :sameorigin)
       ((if (config/get-var "HTTPS_ONLY")
-         wrap-ssl-redirect
+         (comp  wrap-ssl-redirect wrap-forwarded-scheme) 
          identity))
       ))
 
