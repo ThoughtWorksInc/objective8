@@ -239,7 +239,7 @@
                status => 200
                body => helpers/no-untranslated-strings)
          (fact "the cancel link is set correctly" 
-               body => (contains (str "href=\"/objectives/" OBJECTIVE_ID "/add-draft\"")))
+               body => (contains (str "href=\"/objectives/" OBJECTIVE_ID "/drafts\"")))
          (fact "the form action is set correctly"
                body => (contains (str "action=\"/objectives/" OBJECTIVE_ID "/import-draft\"")))))
 
