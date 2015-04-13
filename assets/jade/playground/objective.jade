@@ -1,0 +1,158 @@
+extends ../layouts/base
+include ../mixins/_view_helpers
+
+block vars
+  - bodyClass = "objective"
+  - pageTitle = "!Objective"
+
+block content
+
+  +modal("!Your writer's invitation", "l8n-invitation-guidance-text-line-1", "func--invitation-guidance")
+    p.invite-by-email
+      span(data-l8n="content:invitation-modal/guidance-text-line-2") !To complete your invitation
+      =" "
+      a.button-link.clj-mail-to(href="mailto:###", data-l8n="content:invitation-modal/mail-to-text") !Send email
+    .alternative-invite
+      label.send-invite-label(for="copy-invite", data-l8n="content:invitation-modal/guidance-text-line-3") !Alternatively send the writer this link:
+      input.invite-input-url.clj-invitation-url.func--invitation-url(id="copy-invite", type="text", value="!http://invitation/uuid/really/long/uuid")
+
+  .guidance-text-wrapper
+    +guidanceText('!What is an objective?')
+      ul
+        li(data-l8n="content:objective-guidance/text-line-1") !A policy starts with an idea.
+        li(data-l8n="content:objective-guidance/text-line-2") !These are catalysts for change.
+        li(data-l8n="content:objective-guidance/text-line-3") !Everyone can comment and make suggestions to contribute towards the draft stage.
+
+  .middle-container
+
+    ul.progress-indicator.clj-objective-progress-indicator
+      li.on
+        a(href="/objective") !Objective
+      li
+        a(href="/draft") !Draft
+      li
+        a(href="#") !Policy
+
+    .objective-navigation
+      .objective-navigation-list-wrapper
+        ul.objective-navigation-list
+          li
+            a(href="#outline", data-l8n="content:objective-nav/objective") !Objective
+          li
+            a(href="#writers", data-l8n="content:objective-nav/writers") !Writers
+          li
+            a(href="#questions", data-l8n="content:objective-nav/questions") !Questions
+          li
+            a(href="#comments", data-l8n="content:objective-nav/comments") !Comments
+
+    .objective-outline#outline
+
+      p.days-left.clj-days-left
+        span.days-left-head(data-l8n="content:objective-view/drafting-begins") !Drafting begins in
+        =" "
+        span.days-left-day.clj-days-left-day !29
+        =" "
+        span.days-left-foot(data-l8n="content:objective-view/days") !days
+
+      .objective-outline-header
+        h1.objective-title.clj-objective-title.func--objective-page !Build safer cycling networks in the streets of Madrid.
+        .objective-star-container.clj-star-container
+          .objective-star
+            i.fa.fa-star-o
+            i.fa.fa-star
+
+
+      .clj-drafting-started-wrapper
+
+      //-h2 Background
+      .clj-replace-with-objective-detail
+        p !London and Paris are two prime examples of cycle super highway heaven.  We need to show the world that madrid too can be the pinnacle in cycling and safety.
+        p !Street art bitters pour-over, Portland pork belly master cleanse lumbersexual. Aesthetic 90's Shoreditch PBR. Austin sustainable Carles American Apparel, banh mi High Life selvage XOXO plaid stumptown fashion axe skateboard butcher McSweeney's. Master cleanse polaroid Shoreditch DIY, Godard salvia gastropub heirloom Kickstarter fap before they sold out chia. Disrupt Neutra tofu Godard kitsch. Chambray Helvetica plaid chia salvia. Cronut asymmetrical messenger bag, cornhole listicle selvage yr beard Godard stumptown meh sustainable.
+
+    .objective-writers#writers
+      h2(data-l8n="content:objective-view/writers") !Candidate writers
+      ul.writer-item-list.clj-writer-item-list
+        +writerItem('!Jenny Bloggs', '#', 'http://placekitten.com/g/80/80')
+          | !A cycling enthusiast, responsible for many safety policies in the UK.
+        +writerItem('!Boris Johnson', '#', 'http://placekitten.com/g/81/81')
+          | !Quirky but has achieved wonders in the London for the boris bikes.
+        +writerItem('!Bob Smith', '#', '')
+          | !Interested in anything to do with cycling and Spain.
+      a.button.invite-writer.clj-invite-writer-link.func--invite-writer(href="/objective-invite-writer", data-l8n="content:objective-view/invite-a-writer") !Invite a writer
+
+    .objective-questions#questions
+      h2(data-l8n="content:objective-view/questions-title") !Objective questions
+      p By helping answer these questions you are supporting the objective.
+      ol.question-list.clj-question-list
+        +questionItem('!Chris Cheshire', '3 September 2015 07:41')
+          | !What road surface should we use?
+        +questionItem('!Chris Cheshire', '4 September 2015 07:41')
+          | !How often do you use roads?
+        +questionItem('!Chris Cheshire', '4 September 2015 07:41')
+          | !Do we have a colour in mind for the road?
+
+    .objective-questions#community-questions
+      h2(data-l8n="content:objective-view/questions-title") !Ask the community
+      ol.question-list.clj-community-question-list
+        +questionItem('!Chris Cheshire', '3 September 2015 07:41')
+          | !Where will it be?
+      a.button(href="#", data-l8n="content:objective-view/ask-a-community-question") !Ask a question
+
+    .objective-comments#comments
+      h2(data-l8n="content:objective-view/comments") !Comments
+      .clj-comment-create
+        +addCommentForm()
+      ol.comment-list.clj-comment-list
+        li.comment-item
+          .comment-meta
+            span.comment-author Joe Blogs
+            span.comment-date 4 September 2015 15:41
+          .comment-text
+            p !We definitely need to look into Gran Via and Calle Mayor!
+          +commentReply
+
+          ol.comment-list
+            li.comment-item
+              .comment-meta
+                span.comment-author Matt Smith
+                span.comment-date 4 September 2015 16:21
+              .comment-text
+                p !Agreed.  This would be a good location.
+              +commentReply
+
+              ol.comment-list
+                +commentItem('George Maison', '4 September 2015 16:25')
+                  p I was thinking this too!
+                +commentItem('Mike Cruise', '4 September 2015 16:55')
+                  p Sounds goood!
+                li.more-comments-item
+                  a.more-comments-item-link(href="#") More comments
+
+        +commentItem('Phil Smith', '2 September 2015 07:41')
+          p !Oooh Paseo del Prado.
+        +commentItem('Jen Bloggs', '1 September 2015 07:41')
+          p !Paseo del Prado.
+
+block footerScripts
+  script.
+    // temp
+    $(document).ready(function () {
+      var pageNav = $('.objective-navigation-list-wrapper');
+      var pageNavStickHeight = pageNav.offset().top;
+      $(window).scroll(function () {
+        if ($(this).scrollTop() > pageNavStickHeight) {
+          pageNav.addClass("sticky");
+        }
+        else {
+          pageNav.removeClass("sticky");
+        }
+      });
+
+    // playground
+    function cleanExclams() {
+      var masthead = document.body.getElementsByClassName('masthead')[0];
+      masthead.innerHTML = masthead.innerHTML.replace( /!/g, "");
+      var mainContent = document.body.getElementsByClassName('main-content')[0];
+      mainContent.innerHTML = mainContent.innerHTML.replace( /!/g, "");
+    }
+    cleanExclams();
