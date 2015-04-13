@@ -21,7 +21,7 @@
   line-height: 1.2em;
 }
 .answer-reply {
-  @extend %list-item-reply-button;
+  @include default-button;
 }
 
 .answer-new {
