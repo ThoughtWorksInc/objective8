@@ -21,7 +21,7 @@
               (let [{user-id :created-by-id objective-id :_id} (sh/store-an-open-objective)
                     objective-uri (str "/objectives/" objective-id)
                     data {:objective-uri objective-uri
-                          :created-by-id user-id }
+                          :created-by-id user-id}
                     {response :response} (p/request app "/api/v1/meta/stars"
                                                     :request-method :post
                                                     :content-type "application/json"
@@ -32,15 +32,37 @@
                                                             :created-by-id user-id
                                                             :active true })
                 (:headers response) => (helpers/location-contains "/api/v1/meta/stars/")))
- 
-         (fact "returns 404 if the objective to be starred doesn't exist"
-               (let [{user-id :_id} (sh/store-a-user)
-                     star-data {:objective-uri "any" 
-                                :created-by-id user-id}
+
+        (tabular
+         (fact "posting a star to an objective that has been starred by the posting user toggles the star state"
+               (let [{user-id :_id :as user} (sh/store-a-user)
+                     {objective-id :_id :as starred-objective} (sh/store-an-open-objective)
+                     _ (sh/store-a-star {:user user :objective starred-objective :active ?active})
+
+                     objective-uri (str "/objectives/" objective-id)
+                     data {:objective-uri objective-uri
+                           :created-by-id user-id}
                      {response :response} (p/request app "/api/v1/meta/stars"
                                                      :request-method :post
                                                      :content-type "application/json"
-                                                     :body (json/generate-string star-data))]
+                                                     :body (json/generate-string data))]
+                 (:status response) => 201
+                 (:body response) => (helpers/json-contains {:_id integer?
+                                                             :objective-id objective-id
+                                                             :created-by-id user-id
+                                                             :active (not ?active)})
+                 (:headers response) => (helpers/location-contains "/api/v1/meta/stars/")))
 
-                 (:status response) => 404
-                 (:body response) => (helpers/json-contains {:reason "Objective does not exist"})))))
+         ?active true false)
+
+        (fact "returns 404 if the objective to be starred doesn't exist"
+              (let [{user-id :_id} (sh/store-a-user)
+                    star-data {:objective-uri "any" 
+                               :created-by-id user-id}
+                    {response :response} (p/request app "/api/v1/meta/stars"
+                                                    :request-method :post
+                                                    :content-type "application/json"
+                                                    :body (json/generate-string star-data))]
+
+                (:status response) => 404
+                (:body response) => (helpers/json-contains {:reason "Objective does not exist"})))))

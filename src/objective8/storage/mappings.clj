@@ -307,7 +307,6 @@
 (korma/defentity star
   (korma/pk :_id)
   (korma/table :objective8.stars)
-  (korma/belongs-to objective {:fk :objective_id})
   (korma/prepare map->star)
   (korma/transform (-> unmap-star)))
 

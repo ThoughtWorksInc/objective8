@@ -139,16 +139,29 @@
              (provided
               (comments/get-comments :uri) => nil)))
 
-(def star-data {:objective-uri :some-uri
+(def STAR_ID 47)
+
+(def objective-uri (str "/objectives/" OBJECTIVE_ID))
+(def user-uri (str "/users/" USER_ID))
+
+(def star-data {:objective-uri objective-uri
                 :created-by-id USER_ID})
 
 (def star-data-with-id (assoc star-data :objective-id OBJECTIVE_ID))
 
 (facts "about toggling stars"
-       (fact "star is created for an objective"
+       (fact "star is created for an objective if none already exists"
              (actions/toggle-star! star-data) => {:status ::actions/success
                                                   :result :the-stored-star}
              (provided
-               (storage/pg-retrieve-entity-by-uri :some-uri) => {:_id OBJECTIVE_ID}
-               (stars/retrieve-star OBJECTIVE_ID USER_ID) => nil
-               (stars/store-star! star-data-with-id) => :the-stored-star)))
+              (storage/pg-retrieve-entity-by-uri objective-uri) => {:_id OBJECTIVE_ID}
+              (stars/get-star objective-uri user-uri) => nil
+              (stars/store-star! star-data-with-id) => :the-stored-star))
+
+       (fact "the state of the star is toggled if the user has already starred the objective"
+             (actions/toggle-star! star-data) => {:status ::actions/success
+                                                  :result :the-toggled-star}
+             (provided
+              (storage/pg-retrieve-entity-by-uri objective-uri) => {:_id OBJECTIVE_ID}
+              (stars/get-star objective-uri user-uri) => :star
+              (stars/toggle-star! :star) => :the-toggled-star)))

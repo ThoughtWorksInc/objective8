@@ -116,6 +116,11 @@ SELECT _id, 'draft' AS entity FROM objective8.drafts WHERE global_id=?
                  :status new-status)
           {:_id (:_id objective)}))
 
+(defn pg-toggle-star! [star]
+  (update (mappings/get-mapping {:entity :star})
+          (update-in star [:active] not)
+          {:_id (:_id star)}))
+
 (defn with-aggregate-votes [unmap-fn]
   (fn [m] (-> (unmap-fn m)
               (assoc :votes {:up (or (:up_votes m) 0) :down (or (:down_votes m) 0)}))))

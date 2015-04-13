@@ -154,8 +154,9 @@
 
   ([entities]
    (let [{objective-id :_id} (l-get entities :objective (store-an-open-objective))
-         {created-by-id :_id} (l-get entities :user (store-a-user))]
+         {created-by-id :_id} (l-get entities :user (store-a-user))
+         active (get entities :active true)]
      (storage/pg-store! {:entity :star
                          :created-by-id created-by-id
                          :objective-id objective-id
-                         :active true}))))
+                         :active active}))))

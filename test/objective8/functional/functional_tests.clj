@@ -114,7 +114,7 @@
                       (throw e)))
                =>  "Functional test headline | Objective[8]") 
 
-         (future-fact "Can star an objective"
+         (fact "Can star an objective"
                (try (wd/to (:objective-url @journey-state))
                     (wait-for-title "Functional test headline | Objective[8]")
 

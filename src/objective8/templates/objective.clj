@@ -99,18 +99,24 @@
       (question-list-items questions))))
 
 ;; STAR FORM
-(def star-form-snippet (html/select objective-template [:.clj-star-form]))
+(defn star-form-when-signed-in [{:keys [data ring-request] :as context}]
+      (html/transformation
+             [:.clj-star-form] (html/prepend (html/html-snippet (anti-forgery-field)))
+             [:.clj-refer] (html/set-attr :value (:uri ring-request))
+             [:.clj-star-on-uri] (html/set-attr :value (:uri ring-request))
+             [:.clj-objective-star] (if (tf/starred? (:objective data))
+                                      (html/add-class "starred")
+                                      identity)))
 
-(defn star-form [objective ring-request]
-  (html/at star-form-snippet
-           [:.clj-star-form] (html/prepend (html/html-snippet (anti-forgery-field)))
-           [:.clj-refer] (html/set-attr :value (:uri ring-request))
-           [:.clj-star-on-uri] (html/set-attr :value (:uri ring-request))
-           [:.clj-objective-star] (if (tf/starred? objective)
-                                    (html/add-class "starred")
-                                    identity)))
+(defn star-form-when-not-signed-in [{:keys [ring-request] :as context}]
+  (html/transformation
+             [:.clj-star-form] (html/set-attr :method "get")
+             [:.clj-star-form] (html/set-attr :action "/sign-in")
+             [:.clj-refer] (html/set-attr :value (:uri ring-request))
+             [:.clj-star-on-uri] nil))
 
-(defn objective-page [{:keys [translations data doc invitation-rsvp ring-request] :as context}]
+;; OBJECTIVE PAGE
+(defn objective-page [{:keys [translations data doc invitation-rsvp ring-request user] :as context}]
   (let [objective (:objective data)
         objective-id (:_id objective)
         candidates (:candidates data)
@@ -141,7 +147,9 @@
                                       [:.clj-guidance-buttons] nil
                                       [:.clj-guidance-heading] (html/content (translations :objective-guidance/heading))
 
-                                      [:.clj-star-form] nil ;(html/content (star-form objective ring-request))
+                                      [:.clj-star-form] (if user
+                                                          (star-form-when-signed-in context)
+                                                          (star-form-when-not-signed-in context))
 
                                       [:.clj-objective-title] (html/content (:title objective))
 
