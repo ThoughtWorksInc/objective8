@@ -1,11 +1,10 @@
 mixin objectiveListItem(objectiveTitle, numberOfDays)
   li.objective-list-item.clj-objective-list-item
+    .objective-list-item-star-container.clj-star-container
+      .objective-list-item-star.clj-objective-list-item-star
+        i.fa.fa-star
     a.objective-list-item-link.clj-objective-list-item-link.func--objective-list-item-link(href="/objectives/[id]")
       h3.objective-list-item-title.clj-objective-list-item-title #{objectiveTitle}
-      .objective-list-item-star-container.clj-star-container
-        .objective-list-item-star.clj-objective-list-item-star
-          i.fa.fa-star-o
-          i.fa.fa-star
       p.objective-list-item-draft-begins
         span.l8n-drafting-begins !Drafting begins in
         =" "
