@@ -357,10 +357,6 @@
                     (wait-for-title "Drafts | Objective[8]")
                     (screenshot "list_of_drafts_with_three_drafts")
 
-                    (wd/to (str (:objective-url @journey-state) "/import-draft"))
-                    (wait-for-title "Import draft | Objective[8]")
-                    (screenshot "import_draft")
-
                     (wd/to (str (:objective-url @journey-state) "/drafts/latest"))
                     (wait-for-title "Policy draft | Objective[8]")
                     (screenshot "latest_draft_with_previous_button")
@@ -377,4 +373,21 @@
                     (catch Exception e
                       (screenshot "ERROR-Can-navigate-between-drafts")
                       (throw e)))
-                  => (contains THIRD_DRAFT_HTML)))))
+                  => (contains THIRD_DRAFT_HTML))
+
+            (fact "Can navigate to import from Google Drive"
+                  (try
+                    (wd/to (str (:objective-url @journey-state) "/drafts"))
+                    (wait-for-title "Drafts | Objective[8]")
+                    
+                    (wd/click ".func--import-draft-link")
+                    (wait-for-title "Import draft | Objective[8]")
+                    (screenshot "import_draft")
+                    
+                    (wd/click ".func--cancel-link")
+                    (wait-for-title "Drafts | Objective[8]")
+                    (screenshot "draft_list")
+                    
+                    (catch Exception e
+                      (screenshot "ERROR-Can-navigate-to-import-from-Google-Drive")
+                      (throw e)))))))
