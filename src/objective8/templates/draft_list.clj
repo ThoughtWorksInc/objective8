@@ -45,6 +45,11 @@
                                                   (utils/local-path-for :fe/add-draft-get
                                                                         :id (:_id objective))))
 
+             [:.clj-import-draft-link] (when (utils/writer-for? user (:_id objective))
+                                   (html/set-attr :href
+                                                  (utils/local-path-for :fe/import-draft-get
+                                                                        :id (:_id objective))))
+             
              [:.clj-previous-drafts-list] (if (empty? (rest drafts))
                                             (html/substitute (translations :draft-list/no-previous-versions))
                                             (html/content (previous-drafts (rest drafts))))

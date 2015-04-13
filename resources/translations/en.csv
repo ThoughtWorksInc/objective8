@@ -77,6 +77,7 @@ create-objective,submit-text,Create
 draft,doc-title,Policy draft | Objective[8]
 draft,doc-description,Draft policy for objective ... 
 draft,add-a-draft,Add a draft
+draft,import-draft,Import a draft from Google Drive
 draft,no-drafts,No drafts have been submitted yet
 draft,next-draft,Next
 draft,previous-draft,Previous
@@ -93,15 +94,16 @@ draft-list,latest-draft,Latest draft
 draft-list,previous-versions,Previous versions
 draft-list,no-previous-versions,There are no previous versions
 draft-list,add-a-draft,Add a draft
+draft-list,import,Import draft from Google Drive
 draft-list,drafting-begins,Drafting begins in
 draft-list,days,days
 draft-list,writers,Writers
 add-draft,doc-title,Add draft | Objective[8]
 add-draft,doc-description,Draft policy
 add-draft,placeholder,Enter your draft here
+add-draft,cancel,Cancel
 add-draft,submit,Add draft
 add-draft,preview,Preview
-add-draft,import,Import draft from Google Drive
 import-draft,doc-title,Import draft | Objective[8]
 import-draft,doc-description,Import a draft from Google Drive
 import-draft,page-title,Import a draft from Google Drive

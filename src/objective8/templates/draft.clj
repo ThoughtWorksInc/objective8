@@ -51,6 +51,10 @@
                                    (html/set-attr :href
                                                   (utils/local-path-for :fe/add-draft-get
                                                                         :id objective-id)))
+             [:.clj-import-draft] (when (utils/writer-for? user objective-id) 
+                                   (html/set-attr :href
+                                                  (utils/local-path-for :fe/import-draft-get
+                                                                        :id objective-id)))
 
              [:.clj-draft-preview-document] (when-let [draft-content (:draft-content data)] 
                                               (html/html-content draft-content)) 

@@ -51,7 +51,8 @@ block content
 
 
       .add-a-draft-wrapper
-        a.button.add-a-draft.clj-add-a-draft.func--add-a-draft(href="/drafts/add-draft", data-l8n="content:draft/add-a-draft") !Add a draft
+        a.button.add-a-draft.clj-add-a-draft.func--add-a-draft(href="/objective/:id/add-draft", data-l8n="content:draft/add-a-draft") !Add a draft
+        a.button.js-import-draft-link.js-hidden.clj-import-draft(href="/objective/:id/import-draft", data-l8n="content:draft/import-draft") !Import a draft from Google Drive
       
       .draft-preview-document.clj-draft-preview-document
         h1.draft-title !Build safer cycling networks in the streets of Madrid.
@@ -96,6 +97,7 @@ block content
 
 block footerScripts
   script.
+    $('.js-import-draft-link').css('display', 'inline-block');
     // temp
     $(document).ready(function () {
       var pageNav = $('.draft-version-navigation-content-wrapper');

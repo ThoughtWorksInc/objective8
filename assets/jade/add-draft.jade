@@ -46,11 +46,6 @@ block content
 
     form.clj-add-draft-form(action="/objectives/:id/add-draft", method="POST")
       textarea.clj-add-draft-content.func--add-draft-content(id="add-draft-content", name="content", rows="20", cols="50", placeholder="!Enter your draft here", required="required", data-l8n="attr/placeholder:add-draft/placeholder")
+      a.button.cancel-link.clj-cancel-link(href="/objectives/:id/drafts", data-l8n="content:add-draft/cancel") !Cancel
       button.button.func--preview-action(type="submit", name="action", value="preview", data-l8n="content:add-draft/preview") !Preview
       button.button.func--submit-action(type="submit", name="action", value="submit", data-l8n="content:add-draft/submit") !Add draft
-      a.button.js-import-draft-link.js-hidden.clj-import-draft-link(href="/objectives/:id/import-draft", data-l8n="content:add-draft/import") !Import draft from Google Drive
-
-block footerScripts
-  script.
-    $('.js-import-draft-link').css('display', 'inline-block');
-

@@ -31,7 +31,7 @@
                                       [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
                                       [:.clj-import-draft-preview] (when import-draft-preview-html
                                                                      (html/html-content import-draft-preview-html))
-                                      [:.clj-add-draft-link] (html/set-attr :href (utils/local-path-for :fe/add-draft-get :id objective-id))       
+                                      [:.clj-cancel-link] (html/set-attr :href (utils/local-path-for :fe/draft-list :id objective-id))       
                                       [:.clj-select-file-link] (when-not import-draft-preview-html
                                                                  identity)
                                       [:.clj-preview-draft-button] (if import-draft-preview-html
