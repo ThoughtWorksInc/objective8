@@ -171,7 +171,8 @@ module.exports = function(grunt) {
         options: {
           watchTask: true,
           proxy: "localhost:1234",
-          port: 2345
+          port: 2345,
+          startPath: '/_routes'
         }
       }
     }

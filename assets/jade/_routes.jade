@@ -1,0 +1,61 @@
+extends layouts/base
+
+block vars
+  - pageTitle = "Site pages"
+
+block content
+  h2 Objective
+  ul
+    li
+      a(href="/create-objective") create-objective
+    li
+      a(href="/objective-list") objective-list
+    li
+      a(href="/objective") objective
+    li
+      a(href="/invite-writer") invite-writer
+    li
+      a(href="/objective-invitation-response") objective-invitation-response
+
+  h2 Questions
+  ul
+    li
+      a(href="/question") question
+    li
+      a(href="/add-question") add-question
+
+  h2 Draft
+  ul
+    li
+      a(href="/import-draft") import-draft
+    li
+      a(href="/draft-blank") draft-blank
+    li
+      a(href="/draft-list") draft-list
+    li
+      a(href="/draft") draft
+
+  h2 Sign in
+  ul
+    li
+      a(href="/sign-in") sign-in
+    li
+      a(href="/sign-up") sign-up
+
+  h2 Misc
+  ul
+    li
+      a(href="/index") index
+    li
+      a(href="/error-404") error-404
+    li
+      a(href="/learn-more") learn-more
+    li
+      a(href="/profile") profile
+    li
+      a(href="/project-status") /project-status
+
+  h2 Page furniture
+  ul
+    li
+      a(href="/library") library
