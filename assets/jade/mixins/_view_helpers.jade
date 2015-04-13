@@ -6,14 +6,15 @@ include _objectives
 include _draft
 include _buttons
 
-mixin guidanceText(heading)
+mixin guidanceText(heading,l8n)
+  - l8n = l8n || 'content:create-objective-guidance/heading'
   .guidance-text
     .guidance-buttons.clj-guidance-buttons
       a.button-hide-guidance-text(href="#")
         span Hide
         =" "
         i.fa.fa-times
-    h2.guidance-text-heading.clj-guidance-heading.l8n-guidance-heading(data-l8n="content:create-objective-guidance/heading") #{heading}
+    h2.guidance-text-heading.clj-guidance-heading.l8n-guidance-heading(data-l8n=l8n) #{heading}
     block
 
 mixin goalItem()
