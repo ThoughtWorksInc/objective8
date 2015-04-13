@@ -26,7 +26,7 @@ module.exports = function(grunt) {
         tasks: ['jade:compile']
       },
       express: {
-        files:  [ '**/*.js' ],
+        files:  [ '<%= folders.src %>/js/**/*.js' ],
         tasks:  [ 'express:dev' ],
         options: {
           spawn: false // for grunt-contrib-watch v0.5.0+, "nospawn: true" for lower versions. Without this option specified express won't be reloaded
