@@ -38,6 +38,5 @@
                                               (p/request (utils/path-for :fe/post-star)
                                                          :request-method :post
                                                          :params params))]
-                 (:flash response) => (contains "This objective has been starred!")
                  (:headers response) => (helpers/location-contains OBJECTIVE_URI)
                  (:status response) => 302))))

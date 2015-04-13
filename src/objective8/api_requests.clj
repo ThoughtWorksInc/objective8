@@ -23,6 +23,6 @@
 (defn request->objectives-query [{:keys [params] :as request}]
   (let [user-id (:user-id params)
         starred (:starred params)] 
-  (cond-> {}
-    user-id (assoc :signed-in-id (Integer/parseInt user-id))
-    starred (assoc :filters {:starred starred}))))
+    (cond-> {}
+      user-id (assoc :signed-in-id (Integer/parseInt user-id))
+      starred (assoc :filters {:starred starred}))))

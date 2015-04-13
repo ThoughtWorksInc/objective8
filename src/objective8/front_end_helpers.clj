@@ -62,9 +62,8 @@
           (assoc :created-by-id user-id :vote-type "down"))) 
 
 (defn request->star-info [{:keys [params] :as request} user-id]
-  
   (when-let [objective-uri (:objective-uri params)]
-    {:objective-uri objective-uri  :created-by-id user-id})) 
+    {:objective-uri objective-uri :created-by-id user-id}))
 
 (defn request->draft-info [{:keys [params] :as request} user-id]
   (some-> params
