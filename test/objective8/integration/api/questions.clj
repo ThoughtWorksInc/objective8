@@ -105,3 +105,30 @@
              => (helpers/check-json-body stored-questions)
              (provided
                (questions/retrieve-questions OBJECTIVE_ID) => stored-questions))) 
+
+(future-facts "POST /api/v1/meta/pins"
+       (against-background
+         (m/valid-credentials? anything anything anything) => true)
+       (against-background
+         [(before :contents (do (helpers/db-connection)
+                                (helpers/truncate-tables)))
+          (after :facts (helpers/truncate-tables))]
+       (fact "the posted pin is stored"
+             (let [objective (sh/store-an-open-objective)
+                   invitation (sh/store-an-invitation {:objective objective})
+                   {question-id :_id} (sh/store-a-question {:objective objective})
+                   {user-id :user-id} (sh/store-a-candidate {:invitation invitation})
+                   question-uri (str "/questions/" question-id)
+                   created-by-uri (str "/users/" user-id) 
+                   data {:question-uri question-uri
+                         :created-by-uri created-by-uri}
+                   {response :response} (p/request app "api/v1/meta/pins"
+                                                   :request-method :post
+                                                   :content-type "application/json"
+                                                   :body (json/generate-string data))]
+               (:status response) => 201
+               (:body response) => (helpers/json-contains {:uri (contains "/meta/pins/")
+                                                           :question-uri question-uri
+                                                           :created-by-uri created-by-uri
+                                                           :active true })
+               (:headers response) => (helpers/location-contains "/api/v1/meta/pins/")))))

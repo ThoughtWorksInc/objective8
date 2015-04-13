@@ -61,6 +61,7 @@
 
                          "/meta" {"/comments" {:post :api/post-comment
                                                :get :api/get-comments}
-                                  "/stars" {:post :api/post-star}}
+                                  "/stars" {:post :api/post-star}
+                                  "/pins" {:post :api/post-pin}}
                          "/up-down-votes" {:post :api/post-up-down-vote}
                          "/invitations" {:get :api/get-invitation}}}])

@@ -85,7 +85,8 @@
                :api/get-draft api-handlers/get-draft
                :api/get-drafts-for-objective api-handlers/retrieve-drafts
                :api/post-up-down-vote (m/wrap-bearer-token api-handlers/post-up-down-vote bt/token-provider)
-               :api/post-star (m/wrap-bearer-token api-handlers/post-star bt/token-provider)})
+               :api/post-star (m/wrap-bearer-token api-handlers/post-star bt/token-provider)
+               :api/post-pin (m/wrap-bearer-token api-handlers/post-pin bt/token-provider)})
   
 (defn app [app-config]
   (-> (make-handler routes/routes (some-fn handlers #(when (fn? %) %)))

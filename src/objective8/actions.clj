@@ -6,6 +6,7 @@
             [objective8.up-down-votes :as up-down-votes]
             [objective8.comments :as comments]
             [objective8.stars :as stars]
+            [objective8.pins :as pins]
             [objective8.storage.storage :as storage]))
 
 (defn start-drafting! [objective-id]
@@ -85,3 +86,6 @@
         {:status ::success :result stored-star}
         {:status ::failure}))
     {:status ::entity-not-found}))
+
+(defn pin-question! [pin-data]
+  {:status ::success :result (pins/store-pin! pin-data)})

@@ -6,6 +6,7 @@
             [objective8.objectives :as objectives]
             [objective8.comments :as comments]
             [objective8.stars :as stars]
+            [objective8.pins :as pins]
             [objective8.storage.storage :as storage]))
 
 (def GLOBAL_ID 6)
@@ -165,3 +166,17 @@
               (storage/pg-retrieve-entity-by-uri objective-uri) => {:_id OBJECTIVE_ID}
               (stars/get-star objective-uri user-uri) => :star
               (stars/toggle-star! :star) => :the-toggled-star)))
+
+(def QUESTION_ID 3)
+
+(def question-uri (str "/questions/" QUESTION_ID))
+
+(def pin-data {:question-uri question-uri
+               :created-by-uri user-uri })
+
+(facts "about pinning questions"
+       (fact "a pin is created"
+             (actions/pin-question! pin-data) => {:status ::actions/success
+                                                  :result :the-new-pin}
+             (provided
+               (pins/store-pin! pin-data) => :the-new-pin)))

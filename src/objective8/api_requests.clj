@@ -26,3 +26,6 @@
     (cond-> {}
       user-id (assoc :signed-in-id (Integer/parseInt user-id))
       starred (assoc :filters {:starred starred}))))
+
+(defn request->pin-data [{:keys [params] :as request}]
+  (utils/select-all-or-nothing params [:question-uri :created-by-uri]))
