@@ -69,7 +69,8 @@
 (defn request->draft-info [{:keys [params] :as request} user-id]
   (some-> params
           (utils/select-all-or-nothing [:id :google-doc-html-content])
+          (assoc :submitter-id user-id)
           (utils/ressoc :id :objective-id)
           (update-in [:objective-id] #(Integer/parseInt %))
           (utils/ressoc :google-doc-html-content :content)
-          (update-in [:content #(utils/html->hiccup (sanitiser/sanitise-html %))])))
+          (update-in [:content] #(utils/html->hiccup (sanitiser/sanitise-html %)))))

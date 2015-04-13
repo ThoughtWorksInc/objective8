@@ -63,6 +63,14 @@
                    :objective-id OBJECTIVE_ID
                    :invited-by-id USER_ID}))
 
+(fact "creates draft-info map from a request"
+      (let [html-string "<p>Hello!</p>"
+            draft-info (request->draft-info {:params {:id (str OBJECTIVE_ID)
+                                                       :google-doc-html-content html-string}} USER_ID)]
+        draft-info => {:objective-id OBJECTIVE_ID 
+                   :submitter-id USER_ID 
+                   :content  (utils/html->hiccup html-string)}))
+
 (facts "about up voting"
        (fact "transforms request to up vote info"
              (request->up-vote-info {:params {:vote-on-uri "/some/uri"}} USER_ID)
