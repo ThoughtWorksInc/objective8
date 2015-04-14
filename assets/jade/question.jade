@@ -11,16 +11,15 @@ block content
     .question-navigation-wrapper
       .question-navigation
         .question-navigation-breadcrumb
-          a(href="/objective").clj-objective-link !Write policy based on folk music.
-          =" "
-          | > 
-          =" "
-          span.clj-question-breadcrumb !How many roads must a man walk...
+          span.breadcrumb-ellipsis
+            a(href="/objective").clj-objective-link !Write policy based on folk music.
+            =" "
+            | >
+            =" "
+            span.clj-question-breadcrumb !How many roads must a man walk...
 
     .question-outline#outline
       h1.question-leader.clj-question !How many roads must a man walk down before you can call him a man?
-      label(for="add-an-answer", data-l8n="content:question-page/jump-to-answer-button").button.answer-reply.answer-jump-to-answer.clj-jump-to-answer
-        | !Add a new answer
 
     .clj-drafting-started-wrapper
 
@@ -45,7 +44,7 @@ block content
               span.clj-down-score.func--down-score !10
 
       .answer-new
-        h3.clj-question !How many roads must a man walk down before you can call him a man?
         form(action="!add-answer-action", method="POST").clj-answer-form
-          textarea(rows=4, name="answer", required="required")#add-an-answer.answer-reply-box.func--add-answer
+          label.answer-new-title.clj-question(for="add-an-answer") !How many roads must a man walk down before you can call him a man?
+          textarea#add-an-answer.answer-reply-box.func--add-answer(rows=4, name="answer", required="required")
           button(type="submit", data-l8n="content:question-page/submit-answer-button").button.answer-reply !Add my answer
