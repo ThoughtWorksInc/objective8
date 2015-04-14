@@ -6,8 +6,8 @@
             [objective8.up-down-votes :as up-down-votes]
             [objective8.comments :as comments]
             [objective8.stars :as stars]
-            [objective8.pins :as pins]
             [objective8.users :as users]
+            [objective8.marks :as marks]
             [objective8.storage.storage :as storage]))
 
 (defn start-drafting! [objective-id]
@@ -88,8 +88,8 @@
         {:status ::failure}))
     {:status ::entity-not-found}))
 
-(defn pin-question! [pin-data]
-  {:status ::success :result (pins/store-pin! pin-data)})
+(defn mark-question! [mark-data]
+  {:status ::success :result (marks/store-mark! mark-data)})
 
 (defn get-user-with-roles [user-uri]
   (if-let [user (users/retrieve-user user-uri)]

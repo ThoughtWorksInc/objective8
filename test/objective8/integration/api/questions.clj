@@ -106,14 +106,14 @@
              (provided
                (questions/retrieve-questions OBJECTIVE_ID) => stored-questions))) 
 
-(future-facts "POST /api/v1/meta/pins"
+(future-facts "POST /api/v1/meta/marks"
        (against-background
          (m/valid-credentials? anything anything anything) => true)
        (against-background
          [(before :contents (do (helpers/db-connection)
                                 (helpers/truncate-tables)))
           (after :facts (helpers/truncate-tables))]
-       (fact "the posted pin is stored"
+       (fact "the posted mark is stored"
              (let [objective (sh/store-an-open-objective)
                    invitation (sh/store-an-invitation {:objective objective})
                    {question-id :_id} (sh/store-a-question {:objective objective})
@@ -122,13 +122,13 @@
                    created-by-uri (str "/users/" user-id) 
                    data {:question-uri question-uri
                          :created-by-uri created-by-uri}
-                   {response :response} (p/request app "api/v1/meta/pins"
+                   {response :response} (p/request app "api/v1/meta/marks"
                                                    :request-method :post
                                                    :content-type "application/json"
                                                    :body (json/generate-string data))]
                (:status response) => 201
-               (:body response) => (helpers/json-contains {:uri (contains "/meta/pins/")
+               (:body response) => (helpers/json-contains {:uri (contains "/meta/marks/")
                                                            :question-uri question-uri
                                                            :created-by-uri created-by-uri
                                                            :active true })
-               (:headers response) => (helpers/location-contains "/api/v1/meta/pins/")))))
+               (:headers response) => (helpers/location-contains "/api/v1/meta/marks/")))))

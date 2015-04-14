@@ -388,25 +388,25 @@
       (log/info "Error when posting vote: " e)
       (internal-server-error "Error when posting vote"))))
 
-(defn post-pin [request]
+(defn post-mark [request]
  (try
-   (if-let [pin-data (ar/request->pin-data request)]
-     (let [{status :status pin :result} (actions/pin-question! pin-data)]
+   (if-let [mark-data (ar/request->mark-data request)]
+     (let [{status :status mark :result} (actions/mark-question! mark-data)]
        (cond
           (= status ::actions/success)
           (resource-created-response (str utils/host-url
-                                       "/api/v1" (:uri pin) 
-                                       ) pin)
+                                       "/api/v1" (:uri mark) 
+                                       ) mark)
 
           (= status ::actions/forbidden)
-          (forbidden-response (str "Cannot pin question " (:question-uri pin-data)))
+          (forbidden-response (str "Cannot mark question " (:question-uri mark-data)))
 
           (= status ::actions/entity-not-found)
-          (not-found-response (str "Entity with uri " (:question-uri pin-data) " does not exist"))
+          (not-found-response (str "Entity with uri " (:question-uri mark-data) " does not exist"))
           
           :else
-          (internal-server-error "Error when pinning question")))
-    (invalid-response "Invalid pin request"))
+          (internal-server-error "Error when marking question")))
+    (invalid-response "Invalid mark request"))
    (catch Exception e
-     (log/info "Error when pinning question: " e)
-     (internal-server-error "Error when pinning question"))))
+     (log/info "Error when marking question: " e)
+     (internal-server-error "Error when marking question"))))

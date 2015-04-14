@@ -9,7 +9,7 @@
             [objective8.writers :as writers]
             [objective8.invitations :as invitations]
             [objective8.stars :as stars]
-            [objective8.pins :as pins]
+            [objective8.marks :as marks]
             [objective8.storage.storage :as storage]))
 
 (def GLOBAL_ID 6)
@@ -174,15 +174,16 @@
 
 (def question-uri (str "/questions/" QUESTION_ID))
 
-(def pin-data {:question-uri question-uri
+(def mark-data {:question-uri question-uri
                :created-by-uri user-uri })
 
-(facts "about pinning questions"
-       (fact "a pin is created"
-             (actions/pin-question! pin-data) => {:status ::actions/success
-                                                  :result :the-new-pin}
+(facts "about markning questions"
+       (fact "a mark is created"
+             (actions/mark-question! mark-data) => {:status ::actions/success
+                                                    :result :the-new-mark}
              (provided
-               (pins/store-pin! pin-data) => :the-new-pin)))
+              (marks/store-mark! mark-data) => :the-new-mark)))
+
 
 (facts "about getting users"
        (fact "gets user with candidate records and owned objectives if they exist"
