@@ -26,6 +26,15 @@
 
 (def user-session (ih/test-context))
 
+(def drafting-objective {:_id OBJECTIVE_ID
+                         :title "my objective title"
+                         :goal-1 "my objective goal"
+                         :description "my objective description"
+                         :end-date (utils/string->date-time "2012-12-12")
+                         :username "Barry"
+                         :uri (str "/objectives/" OBJECTIVE_ID)
+                         :status "drafting"})
+
 (facts "about writing drafts"
        (against-background
                  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
@@ -181,27 +190,114 @@
                (:body response) => (contains "12-02-2015 16:46")
                (:body response) => (contains "UserName")))
 
-       (fact "writer can reach add-draft page from a draft page"
+       (facts "about rendering draft-list page"
+              (fact "there are no untranslated strings"
+                    (against-background
+                      (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                                :result drafting-objective} 
+                      (http-api/get-all-drafts OBJECTIVE_ID) => {:status ::http-api/success
+                                                                 :result [{:_id DRAFT_ID
+                                                                           :content SOME_HICCUP
+                                                                           :objective-id OBJECTIVE_ID
+                                                                           :submitter-id USER_ID
+                                                                           :_created_at "2015-02-12T16:46:18.838Z"
+                                                                           :username "UserName"}]} 
+                      (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success 
+                                                                      :result []}) 
+                    (let [user-session (ih/test-context)
+                          {status :status body :body} (-> user-session
+                                                          (p/request (utils/path-for :fe/draft-list :id OBJECTIVE_ID))
+                                                          :response)]
+                      status => 200
+                      body => ih/no-untranslated-strings)))
+
+(facts "about rendering draft page"
+       (fact "there are no untranslated strings"
              (against-background
-               (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
+               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                         :result drafting-objective} 
+               (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
+                                                              :result {:_id DRAFT_ID
+                                                                       :content SOME_HICCUP
+                                                                       :objective-id OBJECTIVE_ID
+                                                                       :submitter-id USER_ID
+                                                                       :_created_at "2015-02-12T16:46:18.838Z"
+                                                                       :uri :draft-uri 
+                                                                       :username "UserName"}}
+               (http-api/get-comments :draft-uri) => {:status ::http-api/success 
+                                                      :result []} 
+               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success 
+                                                               :result []}) 
+             (let [user-session (ih/test-context)
+                   {status :status body :body} (-> user-session
+                                                   (p/request (utils/path-for :fe/draft :id OBJECTIVE_ID :d-id DRAFT_ID))
+                                                   :response)]
+               status => 200
+               body => ih/no-untranslated-strings)))
+
+(facts "about rendering add-draft page"
+       (fact "there are no untranslated strings"
+             (against-background
+               (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
                (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
                                                                :result {:_id USER_ID
                                                                         :username "username"}}
                (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}} 
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                         :result {:_id OBJECTIVE_ID
-                                                                  :end-date (utils/string->date-time "2012-12-12")
-                                                                  :status "drafting"}}
-               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success}
-               (http-api/get-draft OBJECTIVE_ID "latest") => {:status ::http-api/success
-                                                              :result {:_id DRAFT_ID
-                                                                       :_created_at "2015-03-24T17:06:37.714Z"
-                                                                       :content SOME_HICCUP
-                                                                       :objective-id OBJECTIVE_ID
-                                                                       :submitter-id USER_ID}}
-               (http-api/get-comments anything) => {:status ::http-api/success :result []})
-             (-> user-session
-                 ih/sign-in-as-existing-user 
-                 (p/request latest-draft-url)
-                 (get-in [:response :body])) => (contains (str "/objectives/" OBJECTIVE_ID "/add-draft")))) 
+                                                         :result drafting-objective})
+             (let [user-session (ih/test-context)
+                   {status :status body :body} (-> user-session
+                                                   (ih/sign-in-as-existing-user)
+                                                   (p/request (utils/path-for :fe/add-draft-get
+                                                                              :id OBJECTIVE_ID))
+                                                   :response)]
+               status => 200
+               body => ih/no-untranslated-strings)))
+
+(fact "writer can reach add-draft page from a draft page"
+      (against-background
+        (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
+        (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                        :result {:_id USER_ID
+                                                                 :username "username"}}
+        (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}} 
+        (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                  :result {:_id OBJECTIVE_ID
+                                                           :end-date (utils/string->date-time "2012-12-12")
+                                                           :status "drafting"}}
+        (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success}
+        (http-api/get-draft OBJECTIVE_ID "latest") => {:status ::http-api/success
+                                                       :result {:_id DRAFT_ID
+                                                                :_created_at "2015-03-24T17:06:37.714Z"
+                                                                :content SOME_HICCUP
+                                                                :objective-id OBJECTIVE_ID
+                                                                :submitter-id USER_ID}}
+        (http-api/get-comments anything) => {:status ::http-api/success :result []})
+      (-> user-session
+          ih/sign-in-as-existing-user 
+          (p/request latest-draft-url)
+          (get-in [:response :body])) => (contains (str "/objectives/" OBJECTIVE_ID "/add-draft")))) 
+
+(facts "about importing drafts"
+       (facts "about rendering import-draft page"
+              (against-background
+                (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
+                (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                                :result {:_id USER_ID
+                                                                         :username "username"}}
+                (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}} 
+                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                          :result drafting-objective})
+              (let [{status :status body :body} (-> user-session
+                                                    (ih/sign-in-as-existing-user)
+                                                    (p/request (utils/path-for :fe/import-draft-get
+                                                                               :id OBJECTIVE_ID))
+                                                    :response)]
+                (fact "there are no untranslated strings" 
+                      status => 200
+                      body => ih/no-untranslated-strings)
+                (fact "the cancel link is set correctly" 
+                      body => (contains (str "href=\"/objectives/" OBJECTIVE_ID "/drafts\"")))
+                (fact "the form action is set correctly"
+                      body => (contains (str "action=\"/objectives/" OBJECTIVE_ID "/import-draft\""))))))
 
