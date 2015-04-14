@@ -31,6 +31,12 @@
              (http-api/get-user USER_ID) => {:status ::http-api/success
                                              :result {:writer-records [{:objective-id 1} {:objective-id 2}]}})
             (roles-for-user the-user) => (contains #{:writer-for-1 :writer-for-2}))
+
+      (fact "Users are owners of the objectives they created"
+            (against-background
+             (http-api/get-user USER_ID) => {:status ::http-api/success
+                                             :result {:owned-objectives [{:_id 1} {:_id 2}]}})
+            (roles-for-user the-user) => (contains #{:owner-of-1 :owner-of-2}))
       
       (fact "Users that are writer-inviters for objectives are assigned the relevant roles for those objectives"
             (against-background

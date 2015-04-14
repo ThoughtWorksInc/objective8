@@ -64,6 +64,14 @@
 (defn writer-for? [user objective-id]
   (contains? (:roles user) (writer-for objective-id)))
 
+(defn owner-of [objective-id]
+  (keyword (str "owner-of-" objective-id)))
+
+(defn can-mark-question? [{:keys [params] :as request}]
+  (let [objective-id (second (re-matches #"/objectives/(\d+)/questions/\d+" (:question-uri params)))]
+   #{(writer-for objective-id)
+      (owner-of objective-id)}))
+
 (defn add-authorisation-role
   "If the session in the request-or-response is already authenticated,
   then adds a new-role to the list of authorised roles, otherwise

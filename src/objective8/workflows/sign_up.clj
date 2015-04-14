@@ -15,14 +15,15 @@
                    :post :sign-up-form-post}}])
 
 (defn roles-for-user [user]
-  (let [{{writer-records :writer-records owned-objectives :owned-objectives} :result} (http-api/get-user (:_id user))
+  (let [{{:keys [writer-records owned-objectives]} :result :as g-user} (http-api/get-user (:_id user))
         writer-objective-ids (map :objective-id writer-records)
         owned-objective-ids (map :_id owned-objectives)
         writer-roles (map utils/writer-for writer-objective-ids)
         writer-inviter-roles (->> writer-objective-ids
                                   (concat owned-objective-ids)
-                                  (map utils/writer-inviter-for))]
-    (-> (concat writer-roles writer-inviter-roles)
+                                  (map utils/writer-inviter-for))
+        objective-owner-roles (map utils/owner-of owned-objective-ids)]
+    (-> (concat writer-roles writer-inviter-roles objective-owner-roles)
         (conj :signed-in)
         set)))
 

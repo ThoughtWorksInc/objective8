@@ -52,3 +52,12 @@
         (friend/throw-unauthorized (friend/identity request)
                                    {::friend/wrapped-handler handler
                                     ::friend/required-roles roles})))))
+
+(defn authorize-based-on-request [handler request->roles]
+  (fn [request]
+    (let [roles (request->roles request)]
+      (if (friend/authorized? roles (friend/identity request))
+        (handler request)
+        (friend/throw-unauthorized (friend/identity request)
+                                   {::friend/wrapped-handler handler
+                                    ::friend/required-roles roles})))))

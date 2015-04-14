@@ -89,3 +89,14 @@
                    handler identity
                    wrapped-handler (wrap-authorise-writer-inviter handler)]
                (wrapped-handler request) => (throws clojure.lang.ExceptionInfo))))
+
+(facts "about authorisation based on request details"
+       (fact "authorises the user against roles specific for the request"
+             (let [auth-map (workflows/make-auth {:username USER_ID :roles #{:the-required-role}})
+                   request (friend/merge-authentication {:stubbed :request} auth-map)
+
+                   request->roles (fn [request] #{:the-required-role})
+
+                   handler identity
+                   wrapped-handler (authorize-based-on-request handler request->roles)]
+               (wrapped-handler request) => (handler request))))
