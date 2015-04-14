@@ -8,18 +8,6 @@
 (def OBJECTIVE_ID 1)
 (def invitation {:objective-id OBJECTIVE_ID})
 
-(facts "about creating an invitation"
-       (fact "succeeds when the associated objective is not in drafting"
-             (invitations/create-invitation! invitation) => :stored-invitation
-             (provided
-              (objectives/retrieve-objective OBJECTIVE_ID) => {:status "open"}
-              (invitations/store-invitation! invitation) => :stored-invitation))
-
-       (fact "returns nil when the associated objective is in drafting"
-             (invitations/create-invitation! invitation) => nil
-             (provided
-              (objectives/retrieve-objective OBJECTIVE_ID) => {:status "drafting"})))
-
 (facts "about accepting an invitation"
        (fact "returns the accepted invitation when the associated objective is not in drafting"
              (invitations/accept-invitation! invitation) => :accepted-invitation

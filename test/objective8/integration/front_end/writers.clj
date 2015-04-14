@@ -14,6 +14,7 @@
 (def USER_ID 1)
 (def OBJECTIVE_ID 2)
 (def WRITER_ROLE_FOR_OBJECTIVE (keyword (str "writer-for-" OBJECTIVE_ID)))
+(def WRITER_INVITER_ROLE_FOR_OBJECTIVE (keyword (str "writer-inviter-for-" OBJECTIVE_ID)))
 (def OBJECTIVE_TITLE "some title")
 (def OBJECTIVE_URL (utils/local-path-for :fe/objective :id OBJECTIVE_ID)) 
 (def INVITATION_ID 3)
@@ -38,11 +39,12 @@
 
 (facts "about writers"
        (binding [config/enable-csrf false]
-         (fact "authorised user can invite a policy writer on an objective"
+         (fact "the objective owner can invite a policy writer on an objective"
                (against-background
                  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
                  (http-api/create-user anything) => {:status ::http-api/success
                                                      :result {:_id USER_ID}}
+                 (http-api/get-user anything) => {:result {:owned-objectives [{:_id OBJECTIVE_ID}]}}
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success}
                  (http-api/create-invitation 
                    {:writer-name "bob"
@@ -67,6 +69,66 @@
                   :writer-email WRITER_EMAIL 
                   :invitation-url INVITATION_URL}
                  peridot-response => (helpers/headers-location (str "/objectives/" OBJECTIVE_ID))))
+
+         (fact "an existing writer can invite a policy writer on an objective"
+               (against-background
+                 (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
+                 (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                                 :result {:_id USER_ID
+                                                                          :username "username"}}
+                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success}
+                 (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}}
+
+                 (http-api/create-invitation 
+                   {:writer-name "bob"
+                    :writer-email WRITER_EMAIL
+                    :reason "he's awesome"
+                    :objective-id OBJECTIVE_ID
+                    :invited-by-id USER_ID}) => {:status ::http-api/success
+                                                 :result {:_id INVITATION_ID
+                                                          :objective-id OBJECTIVE_ID
+                                                          :uuid UUID
+                                                          :writer-email WRITER_EMAIL}})
+               (let [params {:writer-name "bob"
+                             :writer-email WRITER_EMAIL
+                             :reason "he's awesome"}
+                     peridot-response (-> user-session
+                                          helpers/sign-in-as-existing-user 
+                                          (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID "/writer-invitations")
+                                                     :request-method :post
+                                                     :params params))]
+                 (:flash (:response peridot-response)) => 
+                 {:type :invitation
+                  :writer-email WRITER_EMAIL 
+                  :invitation-url INVITATION_URL}
+                 peridot-response => (helpers/headers-location (str "/objectives/" OBJECTIVE_ID))))
+
+         (fact "an unauthorised user can not invite a policy writer on an objective"
+               (against-background
+                 (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
+                 (http-api/create-user anything) => {:status ::http-api/success
+                                                     :result {:_id USER_ID}}
+                 (http-api/get-user anything) => {:result {:writer-records [{:objective-id (inc OBJECTIVE_ID)}]}}
+                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success}
+                 (http-api/create-invitation 
+                   {:writer-name "bob"
+                    :writer-email WRITER_EMAIL
+                    :reason "he's awesome"
+                    :objective-id OBJECTIVE_ID
+                    :invited-by-id USER_ID}) => {:status ::http-api/success
+                                                 :result {:_id INVITATION_ID
+                                                          :objective-id OBJECTIVE_ID
+                                                          :uuid UUID
+                                                          :writer-email WRITER_EMAIL}})
+               (let [params {:writer-name "bob"
+                             :writer-email WRITER_EMAIL
+                             :reason "he's awesome"}] 
+                 (-> user-session
+                     (helpers/with-sign-in "http://localhost:8080/")
+                     (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID "/writer-invitations")
+                                :request-method :post
+                                :params params)
+                 (get-in [:response :status])) => 403))
 
          (fact "A user should be redirected to objective page when attempting to view the candidate writers page for an objective"
                (let [response (default-app candidates-get-request)
@@ -182,7 +244,7 @@
                                                   :objective-id OBJECTIVE_ID}) => {:status ::http-api/success
                                                                                    :result {}}))
 
-         (fact "a user is granted writer-for-OBJECTIVE_ID role when accepting an invitation"
+         (fact "a user is granted writer-for-OBJECTIVE_ID and writer-inviter-for-OBJECTIVE_ID roles when accepting an invitation"
                (against-background
                  (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success
                                                                  :result ACTIVE_INVITATION}
@@ -200,7 +262,8 @@
                                                   :objective-id OBJECTIVE_ID})
                  => {:status ::http-api/success
                      :result {}}
-                 (utils/add-authorisation-role anything WRITER_ROLE_FOR_OBJECTIVE) => {}))
+                 (utils/add-authorisation-role anything WRITER_ROLE_FOR_OBJECTIVE) => {}
+                 (utils/add-authorisation-role anything WRITER_INVITER_ROLE_FOR_OBJECTIVE) => {}))
 
 
          (fact "a user cannot accept an invitation without invitation credentials"

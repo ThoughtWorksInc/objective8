@@ -24,7 +24,7 @@
     :writer-email "writer@email.com"
     :reason "She's cool"
     :objective-id objective-id
-    :invited-by-id invited-by-id }))
+    :invited-by-id invited-by-id}))
 
 (facts "POST /api/v1/objectives/:id/writer-invitations"
        (against-background
@@ -34,7 +34,7 @@
                                (helpers/truncate-tables)))
          (after :facts (helpers/truncate-tables))]
 
-        (fact "the invitation is stored"
+        (fact "the invitation is stored when the inviter is authorised"
               (let [{obj-id :_id created-by-id :created-by-id} (sh/store-an-open-objective)
                     invitation (an-invitation obj-id created-by-id)
                     {response :response} (p/request app (str "/api/v1/objectives/" obj-id "/writer-invitations")
@@ -58,11 +58,11 @@
               (against-background
                (invitations/store-invitation! anything) =throws=> (org.postgresql.util.PSQLException.
                                                                     (org.postgresql.util.ServerErrorMessage. "" 0)))
-              (let [{:obj-id :_id} (sh/store-an-open-objective)]
+              (let [{obj-id :_id user-id :created-by-id} (sh/store-an-open-objective)]
                 (get-in (p/request app (str "/api/v1/objectives/" obj-id "/writer-invitations")
                                    :request-method :post
                                    :content-type "application/json"
-                                   :body (json/generate-string (an-invitation)))
+                                   :body (json/generate-string (an-invitation obj-id user-id)))
                         [:response :status])) => 400)))
 
 (facts "GET /api/v1/invitations?uuid=<UUID>"

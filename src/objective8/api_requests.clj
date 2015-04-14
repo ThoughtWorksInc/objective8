@@ -4,6 +4,13 @@
 (defn request->objective-data [{params :params :as request}]
   (select-keys params [:title :goal-1 :goal-2 :goal-3 :description :end-date :created-by-id]))
 
+(defn request->invitation-data [{:keys [params route-params] :as request}]
+  (when-let [objective-id (some-> (:id route-params)
+                                  Integer/parseInt)]
+    (some-> params
+            (utils/select-all-or-nothing [:writer-name :writer-email :reason :invited-by-id])
+            (assoc :objective-id objective-id))))
+
 (defn request->candidate-data [{params :params :as request}]
   params)
 

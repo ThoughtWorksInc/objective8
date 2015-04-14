@@ -7,6 +7,7 @@
             [objective8.comments :as comments]
             [objective8.stars :as stars]
             [objective8.pins :as pins]
+            [objective8.users :as users]
             [objective8.storage.storage :as storage]))
 
 (defn start-drafting! [objective-id]
@@ -89,3 +90,24 @@
 
 (defn pin-question! [pin-data]
   {:status ::success :result (pins/store-pin! pin-data)})
+
+(defn get-user-with-roles [user-uri]
+  (if-let [user (users/retrieve-user user-uri)]
+    (let [candidates (writers/retrieve-candidates-by-user-id (:_id user))
+          objectives (objectives/get-objectives-owned-by-user-id (:_id user))]
+      {:status ::success :result (assoc user :writer-records candidates :owned-objectives objectives)})
+    {:status ::entity-not-found}))
+
+(defn authorised-objectives-for-inviter [user-id]
+  (let [writer-objective-ids (map :objective-id (writers/retrieve-candidates-by-user-id user-id))
+        owned-objective-ids (map :_id (objectives/get-objectives-owned-by-user-id user-id))]
+    (concat writer-objective-ids owned-objective-ids)))
+
+(defn create-invitation! [{:keys [invited-by-id objective-id] :as invitation-data}]
+  (if-let [objective (objectives/retrieve-objective objective-id)]
+    (if (objectives/open? objective) 
+      (if (some #{objective-id} (authorised-objectives-for-inviter invited-by-id)) 
+        {:status ::success :result (invitations/store-invitation! invitation-data)}
+        {:status ::failure})
+      {:status ::objective-drafting-started}) 
+    {:status ::entity-not-found}))

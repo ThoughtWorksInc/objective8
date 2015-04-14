@@ -65,3 +65,9 @@
        :result
        (map #(dissoc % :global-id))
        (map #(utils/update-in-self % [:uri] uri-for-objective))))
+
+(defn get-objectives-owned-by-user-id [user-id]
+ (->> (storage/pg-retrieve {:entity :objective
+                            :created-by-id user-id})
+      :result
+      (map #(dissoc % :global-id))))

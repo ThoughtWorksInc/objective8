@@ -146,6 +146,7 @@
                (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
                                                                :result {:_id USER_ID
                                                                         :username "username"}}
+                 (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}}
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                         :result open-objective})
              (let [user-session (helpers/test-context)

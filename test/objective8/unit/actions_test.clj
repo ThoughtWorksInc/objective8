@@ -5,6 +5,9 @@
             [objective8.drafts :as drafts]
             [objective8.objectives :as objectives]
             [objective8.comments :as comments]
+            [objective8.users :as users]
+            [objective8.writers :as writers]
+            [objective8.invitations :as invitations]
             [objective8.stars :as stars]
             [objective8.pins :as pins]
             [objective8.storage.storage :as storage]))
@@ -180,3 +183,58 @@
                                                   :result :the-new-pin}
              (provided
                (pins/store-pin! pin-data) => :the-new-pin)))
+
+(facts "about getting users"
+       (fact "gets user with candidate records and owned objectives if they exist"
+             (actions/get-user-with-roles user-uri) 
+             => {:status ::actions/success
+                 :result {:entity :user
+                          :_id USER_ID
+                          :owned-objectives :stubbed-owned-objectives
+                          :writer-records :stubbed-candidate-records}}
+             (provided
+               (users/retrieve-user user-uri) => {:entity :user :_id USER_ID}
+               (writers/retrieve-candidates-by-user-id USER_ID) => :stubbed-candidate-records 
+               (objectives/get-objectives-owned-by-user-id USER_ID) => :stubbed-owned-objectives)))
+
+(def invitation {:objective-id OBJECTIVE_ID
+                 :invited-by-id USER_ID})
+
+(facts "about creating an invitation"
+       (fact "succeeds when the associated objective is not in drafting and the inviter is an existing writer"
+             (against-background
+               (objectives/get-objectives-owned-by-user-id USER_ID) => [])
+             (actions/create-invitation! invitation) => {:status ::actions/success
+                                                         :result :stored-invitation} 
+             (provided
+               (objectives/retrieve-objective OBJECTIVE_ID) => {:status "open"}
+               (writers/retrieve-candidates-by-user-id USER_ID) => [{:objective-id OBJECTIVE_ID}]
+               (invitations/store-invitation! invitation) => :stored-invitation))
+
+       (fact "succeeds when the associated objective is not in drafting and the inviter is the objective owner"
+             (against-background
+               (writers/retrieve-candidates-by-user-id USER_ID) => [])
+             (actions/create-invitation! invitation) => {:status ::actions/success
+                                                         :result :stored-invitation} 
+             (provided
+               (objectives/retrieve-objective OBJECTIVE_ID) => {:status "open"}
+               (objectives/get-objectives-owned-by-user-id USER_ID) => [{:_id OBJECTIVE_ID}]
+               (invitations/store-invitation! invitation) => :stored-invitation))
+
+       (fact "returns objective-drafting-started status when the associated objective is in drafting"
+             (actions/create-invitation! invitation) => {:status ::actions/objective-drafting-started} 
+             (provided
+               (objectives/retrieve-objective OBJECTIVE_ID) => {:status "drafting"}))
+
+       (fact "returns failure status when the inviter is not authorised"
+             (actions/create-invitation! invitation) => {:status ::actions/failure}
+             (provided
+               (objectives/retrieve-objective OBJECTIVE_ID) => {:status "open"}
+               (objectives/get-objectives-owned-by-user-id USER_ID) => []
+               (writers/retrieve-candidates-by-user-id USER_ID) => []))
+
+       (fact "returns a list of objective-ids a user is writer-inviter for"
+             (actions/authorised-objectives-for-inviter USER_ID) => '(1 2 3 4)
+             (provided
+               (writers/retrieve-candidates-by-user-id USER_ID) => [{:objective-id 1} {:objective-id 2}]
+               (objectives/get-objectives-owned-by-user-id USER_ID) => [{:_id 3} {:_id 4}])))

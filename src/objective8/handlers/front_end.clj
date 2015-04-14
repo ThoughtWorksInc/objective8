@@ -101,13 +101,15 @@
    :header {"Content-Type" "text/html"}  
    :body (views/create-objective "create-objective" request)})
 
-(defn create-objective-form-post [{:keys [t' locale] :as request}]
+(defn create-objective-form-post [{:keys [t' locale session] :as request}]
   (if-let [objective (helpers/request->objective request (get (friend/current-authentication) :identity))]
     (let [{status :status stored-objective :result} (http-api/create-objective objective)]
       (cond (= status ::http-api/success)
             (let [objective-url (str utils/host-url "/objectives/" (:_id stored-objective))
                   message (t' :objective-view/created-message)]
-              (assoc (response/redirect objective-url) :flash message)) 
+              (-> (response/redirect objective-url)
+                  (assoc :flash message :session session)
+                  (utils/add-authorisation-role (utils/writer-inviter-for (:_id stored-objective))))) 
 
             (= status ::http-api/invalid-input) {:status 400}
 
@@ -316,11 +318,13 @@
 (defn remove-invitation-credentials [response]
   (update-in response [:session] dissoc :invitation))
 
+
 (defn accept-invitation [{:keys [session]}]
   (if-let [invitation-credentials (:invitation session)]
-    (let [candidate-writer {:invitee-id (get (friend/current-authentication) :identity)
+    (let [objective-id (:objective-id invitation-credentials) 
+          candidate-writer {:invitee-id (get (friend/current-authentication) :identity)
                             :invitation-uuid (:uuid invitation-credentials)
-                            :objective-id (:objective-id invitation-credentials)}
+                            :objective-id objective-id}
           {status :status} (http-api/post-candidate-writer candidate-writer)]
       (cond
         (= status ::http-api/success)
@@ -328,7 +332,8 @@
             response/redirect
             (assoc :session session)
             remove-invitation-credentials
-            (utils/add-authorisation-role (utils/writer-for (:objective-id invitation-credentials))))
+            (utils/add-authorisation-role (utils/writer-inviter-for objective-id)) 
+            (utils/add-authorisation-role (utils/writer-for objective-id)))
         
         :else {:status 500}))
     {:status 401}))

@@ -116,6 +116,17 @@
              [:.clj-star-on-uri] nil))
 
 ;; OBJECTIVE PAGE
+(def star-form-snippet (html/select objective-template [:.clj-star-form]))
+
+(defn star-form [objective ring-request]
+  (html/at star-form-snippet
+           [:.clj-star-form] (html/prepend (html/html-snippet (anti-forgery-field)))
+           [:.clj-refer] (html/set-attr :value (:uri ring-request))
+           [:.clj-star-on-uri] (html/set-attr :value (:uri ring-request))
+           [:.clj-objective-star] (if (tf/starred? objective)
+                                    (html/add-class "starred")
+                                    identity)))
+
 (defn objective-page [{:keys [translations data doc invitation-rsvp ring-request user] :as context}]
   (let [objective (:objective data)
         objective-id (:_id objective)
@@ -160,7 +171,9 @@
                                       [:.clj-replace-with-objective-detail] (html/substitute (tf/text->p-nodes (:description objective)))
 
                                       [:.clj-writer-item-list] (html/content (pf/writer-list context))
-                                      [:.clj-invite-writer-link] (when (tf/open? objective)
+                                      [:.clj-invite-writer-link] (when (and 
+                                                                         (utils/writer-inviter-for? user objective-id) 
+                                                                         (tf/open? objective)) 
                                                                    (html/set-attr
                                                                      :href (str "/objectives/" (:_id objective) "/invite-writer")))
 

@@ -67,13 +67,16 @@
       (invalid-response "Username must be unique"))))
 
 (defn get-user [{:keys [route-params] :as request}]
-  (let [id (-> (:id route-params)
-               Integer/parseInt)]
-    (if-let [user (users/retrieve-user id)]
+  (let [{status :status user :result} (actions/get-user-with-roles (str "/users/" (:id route-params)))]
+    (cond
+      (= status ::actions/success)
       (-> user
           response/response
           (response/content-type "application/json"))
-      (response/not-found ""))))
+      (= status ::actions/entity-not-found)
+      (response/not-found "")
+      :else
+      (internal-server-error "Error when getting user"))))
 
 ;;STARS
 (defn post-star [request]
@@ -252,18 +255,25 @@
       (invalid-response "Invalid answer request for this objective"))))
 
 ;;WRITERS
-(defn post-invitation [{:keys [route-params params]}]
+(defn post-invitation [request]
   (try
-    (let [objective-id (-> (:id route-params)
-                           Integer/parseInt)
-          invitation (-> params
-                         (select-keys [:writer-name :writer-email :reason :invited-by-id])
-                         (assoc :objective-id objective-id))]
-      (if-let [stored-invitation (invitations/create-invitation! invitation)]
+    (let [invitation-data (ar/request->invitation-data request)
+          {status :status stored-invitation :result} (actions/create-invitation! invitation-data)]
+      (cond
+        (= status ::actions/success)
+
         (resource-created-response (str utils/host-url
-                                       "/api/v1/objectives/" (:objective-id stored-invitation)
-                                       "/writer-invitations/" (:_id stored-invitation)) stored-invitation)
-        (resource-locked-response "New content cannot be posted against this objective as it is now in drafting.")))
+                                        "/api/v1/objectives/" (:objective-id stored-invitation)
+                                        "/writer-invitations/" (:_id stored-invitation)) stored-invitation)
+
+        (= status ::actions/objective-drafting-started)
+        (resource-locked-response "New content cannot be posted against this objective as it is now in drafting.")
+
+        (= status ::actions/entity-not-found)
+        (not-found-response "Entity does not exist")
+
+        :else
+        (internal-server-error "Error when posting invitation")))
     (catch Exception e
       (log/info "Error when posting an invitation: " e)
       (invalid-response "Invalid invitation post request for this objective"))))

@@ -10,10 +10,6 @@
                             :status "active"
                             :uuid (utils/generate-random-uuid))))
 
-(defn create-invitation! [{objective-id :objective-id :as invitation}]
-  (when (open? (objectives/retrieve-objective objective-id))
-    (store-invitation! invitation)))
-
 (defn get-active-invitation
   "Returns the invitation with the given uuid if it is active, otherwise returns nil"
   [uuid]

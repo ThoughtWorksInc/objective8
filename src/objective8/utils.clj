@@ -52,6 +52,12 @@
 
 ;;AUTHORISATION HELPERS
 
+(defn writer-inviter-for [objective-id]
+  (keyword (str "writer-inviter-for-" objective-id)))
+
+(defn writer-inviter-for? [user objective-id]
+  (contains? (:roles user) (writer-inviter-for objective-id)))
+
 (defn writer-for [objective-id]
   (keyword (str "writer-for-" objective-id)))
 

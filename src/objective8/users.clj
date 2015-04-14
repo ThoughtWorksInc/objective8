@@ -1,13 +1,9 @@
 (ns objective8.users
-  (:require [objective8.storage.storage :as storage]
-            [objective8.writers :as writers]))
+  (:require [objective8.storage.storage :as storage]))
 
-(defn retrieve-user [user-id]
-  (let [candidates (writers/retrieve-candidates-by-user-id user-id)]
-    (some-> (storage/pg-retrieve {:entity :user :_id user-id})
-            :result
-            first
-            (assoc :writer-records candidates))))
+(defn retrieve-user [user-uri]
+  (let [result (storage/pg-retrieve-entity-by-uri user-uri)]
+    (when (get result :_id) result)))
 
 (defn find-user-by-twitter-id [twitter-id]
   (-> (storage/pg-retrieve {:entity :user :twitter-id twitter-id})

@@ -2,6 +2,7 @@
   (:require [midje.sweet :refer :all]
             [objective8.users :as users]
             [objective8.writers :as writers]
+            [objective8.objectives :as objectives]
             [objective8.storage.storage :as storage]))
 
 (def email-address "test@email.com")
@@ -9,6 +10,7 @@
 (def username "testname1")
 
 (def USER_ID 1)
+(def user-uri (str "/users/" USER_ID))
 
 (def the-user {:twitter-id twitter-id
                :email-address email-address
@@ -26,30 +28,16 @@
                 => :stub-stored-user-profile))
 
 (facts "Retrieving users"
-       (fact "can retrieve user from store by user-id"
-             (against-background
-               (writers/retrieve-candidates-by-user-id USER_ID) => [])
-             (users/retrieve-user USER_ID) => (contains stored-user)
-             (provided (storage/pg-retrieve {:entity :user :_id USER_ID})
-                       => {:query {:entity :user
-                                   :_id USER_ID}
-                           :result [(assoc stored-user :entity :user)]}))
+       (fact "can retrieve user from store by user-uri"
+             (users/retrieve-user user-uri) => stored-user
+             (provided (storage/pg-retrieve-entity-by-uri user-uri)
+                       => stored-user))
 
-       (fact "finding user by user-id returns candidate records if they exist"
-             (against-background
-               (storage/pg-retrieve anything) => {:result [stored-user]})
-             (users/retrieve-user USER_ID) => (contains {:writer-records :stubbed-candidate-records})
-             (provided
-              (writers/retrieve-candidates-by-user-id USER_ID) => :stubbed-candidate-records))
-
-       (fact "returns nil if no user exists matching user-id"
-             (against-background
-               (writers/retrieve-candidates-by-user-id 0) => [])
-             (users/retrieve-user 0) => nil
-             (provided (storage/pg-retrieve {:entity :user :_id 0})
-                       => {:query {:entity :user
-                                   :_id 0}
-                           :result []})))
+       
+       (fact "returns nil if no user exists matching user-uri"
+             (users/retrieve-user "/users/0") => nil
+             (provided (storage/pg-retrieve-entity-by-uri "/users/0")
+                       => {:uri "/users/0"})))
 
 (facts "Finding users by twitter-id"
        (fact "can find user by twitter-id"

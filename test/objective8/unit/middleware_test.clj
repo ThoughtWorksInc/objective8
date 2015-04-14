@@ -56,6 +56,7 @@
 (def USER_ID 1)
 (def OBJECTIVE_ID 3)
 (def writer-role (keyword (str "writer-for-" OBJECTIVE_ID)))
+(def writer-inviter-role (keyword (str "writer-inviter-for-" OBJECTIVE_ID)))
 
 (facts "about writer authorisation"
        (fact "a user can access writer-only resources for an objective they are a writer for"
@@ -71,4 +72,20 @@
                    request (friend/merge-authentication {:route-params {:id (str a-different-objective)}} auth-map)
                    handler identity
                    wrapped-handler (wrap-authorise-writer handler)]
+               (wrapped-handler request) => (throws clojure.lang.ExceptionInfo))))
+
+(facts "about writer-inviter authorisation"
+       (fact "a user can access writer-inviter-only resources for an objective they own or are a writer for"
+             (let [auth-map (workflows/make-auth {:username USER_ID :roles #{:signed-in writer-inviter-role}})
+                   request (friend/merge-authentication {:route-params {:id (str OBJECTIVE_ID)}} auth-map)
+                   handler identity
+                   wrapped-handler (wrap-authorise-writer-inviter handler)]
+               (wrapped-handler request) => (handler request)))
+       
+       (fact "a user cannot access writer-inviter-only resources for an objective they are not a writer-inviter for"
+             (let [auth-map (workflows/make-auth {:username USER_ID :roles #{:signed-in writer-inviter-role}})
+                   a-different-objective (inc OBJECTIVE_ID)
+                   request (friend/merge-authentication {:route-params {:id (str a-different-objective)}} auth-map)
+                   handler identity
+                   wrapped-handler (wrap-authorise-writer-inviter handler)]
                (wrapped-handler request) => (throws clojure.lang.ExceptionInfo))))

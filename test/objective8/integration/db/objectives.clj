@@ -69,6 +69,16 @@
                 (objectives/retrieve-objectives) => [(assoc stored-objective :username username)]
                 (first (objectives/retrieve-objectives)) =not=> (contains {:global-id anything})))
 
+         (fact "can retrieve a list of objectives created by a given user"
+               (let [{user-id :_id :as user} (sh/store-a-user)
+                     {first-objective-id :_id} (sh/store-an-open-objective {:user user})
+                     {second-objective-id :_id} (sh/store-an-open-objective {:user user})
+                     non-owned-objective (sh/store-an-open-objective)]
+                 (objectives/get-objectives-owned-by-user-id user-id) 
+                 => (contains [(contains {:_id first-objective-id})
+                               (contains {:_id second-objective-id})] 
+                              :in-any-order)))
+
          (fact "can retrieve a list of starred objectives for a given user"
                (let [non-starred-objective (sh/store-an-open-objective)
 
