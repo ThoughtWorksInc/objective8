@@ -1,3 +1,19 @@
+.drafting-message {
+  border-bottom: 1px solid $default_text_color;
+  margin-bottom: 2em;
+  padding-top: 2em;
+  padding-bottom: 2em;
+  @include mq(321) {
+    margin-bottom: 4em;
+    padding-top: 4em;
+    padding-bottom: 4em;
+  }
+}
+.drafting-message-title {
+  padding-top: 2em;
+  border-top: 1px solid $default_text_color;
+}
 .drafting-message-link {
   @include default-button;
+  margin-bottom: 0;
 }
