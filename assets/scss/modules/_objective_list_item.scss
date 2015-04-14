@@ -65,6 +65,7 @@
 
 .objective-list-item-preview-text {
   margin-bottom: 0;
+  word-wrap: break-word;
   &:empty {
     display: none;
   }
