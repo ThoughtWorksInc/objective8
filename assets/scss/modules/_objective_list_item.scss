@@ -1,19 +1,16 @@
 .objective-list-item {
   position: relative;
   border-bottom: 1px solid $grey-3;
-  margin-bottom: 0;
+  margin-bottom: 24px;
   &:last-child {
     border-bottom: none;
   }
 }
 
-$objective_list_item_top_padding: 24px;
-
 .objective-list-item-link {
   position: relative;
   text-decoration: none;
   display: block;
-  padding-top: $objective_list_item_top_padding;
   padding-right: 3em;
   padding-bottom: 1.5em;
   border-bottom: 3px solid transparent;
@@ -37,40 +34,25 @@ $objective_list_item_top_padding: 24px;
   }
 }
 
+
+.objective-list-item-star-container {
+  margin-bottom: 2px;
+  @include mq(760) {
+    position: absolute;
+    top: -2px;
+    left: -38px;
+  }
+}
+.objective-list-item-star {
+  $hover: false;
+  @include star(22px, 1.3em, $hover);
+}
+
 .objective-list-item-title {
   margin: 0 0 0.2em;
   font-size: 1.3em;
   line-height: 1.2;
   color: $link-colour;
-}
-
-@mixin list-star {
-  width: 25px;
-  font-size: 1.5em;
-  color: $default_text_color;
-  &.starred {
-    color: $yellow;
-    .fa-star {
-      display: inline-block;
-    }
-  }
-  .fa-star {
-    display: none;
-  }
-}
-
-.objective-list-item-star-container {
-  @include mq(760) {
-    position: absolute;
-    top: $objective_list_item_top_padding - 2;
-    left: -38px;
-  }
-}
-
-.objective-list-item-star {
-  @include list-star;
-  height: 28px;
-  line-height: 28px;
 }
 
 .objective-list-item-draft-begins {

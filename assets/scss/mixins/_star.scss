@@ -1,14 +1,20 @@
 
 
-@mixin star($width, $font-size) {
+@mixin star($width, $font-size, $allow_hover: true) {
   transition: transform 1s;
   transform-style: preserve-3d;
   width: $width;
   font-size: $font-size;
   color: $default_text_color;
-  &:hover {
-   color: $yellow;
-    transform: translateZ(200px) rotate3d(0,1,0,180deg);
+  outline: none;
+  &:focus {
+    color: $yellow;
+  }
+  @if($allow_hover) {
+    &:hover {
+      color: $yellow;
+      transform: translateZ(200px) rotate3d(0,1,0,180deg);
+    }
   }
   &.starred {
     color: $yellow;
