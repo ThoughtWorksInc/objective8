@@ -129,6 +129,11 @@
                        :question
                        [:created-by-id :objective-id]))
 
+(def map->mark
+  (db-insertion-mapper "mark"
+                       nil
+                       [:created-by-id :question-id :active]))
+
 (def map->answer
   (db-insertion-mapper "answer"
                        :answer
@@ -179,7 +184,8 @@
 
 (defn unmap [data-key]
   (fn [m] (-> (json-type->map (data-key m))
-              (assoc :_id (:_id m) :_created_at (sql-time->iso-time-string (:_created_at m)))
+              (assoc :_id (:_id m)
+                     :_created_at (sql-time->iso-time-string (:_created_at m)))
               (update-in [:entity] keyword))))
 
 (defn with-username-if-present [unmap-fn]
@@ -258,6 +264,15 @@
                        (with-columns [:created-by-id :objective-id])
                        with-username-if-present)))
 
+(korma/defentity mark
+  (korma/pk :_id)
+  (korma/table :objective8.marks)
+  (korma/prepare map->mark)
+  (korma/transform (-> (constantly {:entity :mark})
+                       (with-columns
+                         [:created-by-id :question-id :active :_created_at]
+                         {:_created_at sql-time->iso-time-string}))))
+
 (korma/defentity answer
   (korma/pk :_id)
   (korma/table :objective8.answers)
@@ -308,12 +323,13 @@
   (korma/pk :_id)
   (korma/table :objective8.stars)
   (korma/prepare map->star)
-  (korma/transform (-> unmap-star)))
+  (korma/transform unmap-star))
 
 (def entities {:objective objective
                :user      user
                :comment   comment
                :question  question
+               :mark      mark
                :answer    answer
                :invitation invitation
                :candidate candidate

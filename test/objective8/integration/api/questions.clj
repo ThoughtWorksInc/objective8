@@ -106,23 +106,24 @@
              (provided
                (questions/retrieve-questions OBJECTIVE_ID) => stored-questions))) 
 
-(future-facts "POST /api/v1/meta/marks"
+(facts "POST /api/v1/meta/marks"
        (against-background
          (m/valid-credentials? anything anything anything) => true)
        (against-background
          [(before :contents (do (helpers/db-connection)
                                 (helpers/truncate-tables)))
           (after :facts (helpers/truncate-tables))]
-       (fact "the posted mark is stored"
-             (let [objective (sh/store-an-open-objective)
+
+         (fact "the posted mark is stored"
+             (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
                    invitation (sh/store-an-invitation {:objective objective})
                    {question-id :_id} (sh/store-a-question {:objective objective})
                    {user-id :user-id} (sh/store-a-candidate {:invitation invitation})
-                   question-uri (str "/questions/" question-id)
+                   question-uri (str "/objectives/" objective-id "/questions/" question-id)
                    created-by-uri (str "/users/" user-id) 
                    data {:question-uri question-uri
                          :created-by-uri created-by-uri}
-                   {response :response} (p/request app "api/v1/meta/marks"
+                   {response :response} (p/request app "/api/v1/meta/marks"
                                                    :request-method :post
                                                    :content-type "application/json"
                                                    :body (json/generate-string data))]

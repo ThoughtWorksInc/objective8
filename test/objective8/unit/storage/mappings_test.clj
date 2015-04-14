@@ -133,6 +133,25 @@
              (map->question (dissoc question-map :created-by-id)) => (throws Exception)
              (map->question (dissoc question-map :objective-id)) => (throws Exception)))
 
+;;MARKS
+(def QUESTION_ID 324)
+
+(def mark-map {:created-by-id USER_ID
+               :question-id QUESTION_ID
+               :active true})
+
+(facts "About map->mark"
+       (fact "Column values are pulled out and converted, the map gets turned to json"
+             (let [test-mark (map->mark mark-map)]
+               test-mark => {:created_by_id USER_ID
+                             :question_id QUESTION_ID
+                             :active true}))
+
+       (fact "throws exception if :created-by-id, :question-id or :active are missing"
+             (map->mark (dissoc mark-map :created-by-id)) => (throws Exception)
+             (map->mark (dissoc mark-map :question-id)) => (throws Exception)
+             (map->mark (dissoc mark-map :active)) => (throws Exception)))
+
 ;;ANSWERS
 (def QUESTION_ID 345)
 

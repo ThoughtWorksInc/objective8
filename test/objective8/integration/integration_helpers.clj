@@ -18,6 +18,7 @@
   (korma/delete m/candidate)
   (korma/delete m/invitation)
   (korma/delete m/answer)
+  (korma/delete m/mark)
   (korma/delete m/question)
   (korma/delete m/comment)
   (korma/delete m/draft)

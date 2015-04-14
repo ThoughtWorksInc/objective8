@@ -3,7 +3,8 @@
 
 (def uri-routes
   ["/" {["objectives/" [#"\d+" :objective-id]] {"" :objective
-                                                ["/questions/" [#"\d+" :question-id] "/answers/" [#"\d+" :answer-id]] :answer
+                                                ["/questions/" [#"\d+" :question-id]] {"" :question
+                                                                                       ["/answers/" [#"\d+" :answer-id]] :answer}
                                                 ["/drafts/" [#"\d+" :draft-id]] :draft}
         ["users/" [#"\d+" :user-id]] :user
         ["comments/" [#"\d+" :comment-id]] :comment
@@ -17,6 +18,9 @@
 
       :draft {:entity :draft
               :_id (Integer/parseInt (:draft-id route-params))}
+
+      :question {:entity :question
+                 :_id (Integer/parseInt (:question-id route-params))}
 
       :answer {:entity :answer
                :_id (Integer/parseInt (:answer-id route-params))}
