@@ -1,11 +1,17 @@
 mixin inviteWriterForm()
   form.invitation-posts.clj-invite-a-writer-form(method="POST", action="/")
-    label(for="writer-name", data-l8n="content:invite-writer/writer-name-label") !Writer name
-    input.func--writer-name(id="writer-name", name="writer-name", type="text", pattern=".{3,}", title="", maxlength="50", required="required", data-l8n="attr/title:invite-writer/writer-name-attr-title")
-    label(for="writer-email", data-l8n="content:invite-writer/writer-email-label") !Writer email
-    input.func--writer-email(id="writer-email", name="writer-email", type="email", required="required", data-l8n="attr/title:invite-writer/writer-email-attr-title")
-    label(for="reason", data-l8n="content:invite-writer/writer-reason-label") !They should help draft this policy, because:
-    textarea.func--writer-reason(id="reason", name="reason", rows="3", cols="10", maxlength="1000", title="Reasons are a maximum length of 1000 characters", required="required", data-l8n="attr/title:invite-writer/writer-reason-attr-title")
+    p.form-field
+      label.form-field-label(for="writer-name")
+        span.form-field-label-title(data-l8n="content:invite-writer/writer-name-label") !Writer name
+        input.func--writer-name(id="writer-name", name="writer-name", type="text", pattern=".{3,}", title="", maxlength="50", required="required", data-l8n="attr/title:invite-writer/writer-name-attr-title")
+    p.form-field
+      label.form-field-label(for="writer-email")
+        span.form-field-label-title(data-l8n="content:invite-writer/writer-email-label") !Writer email
+        input.func--writer-email(id="writer-email", name="writer-email", type="email", required="required", data-l8n="attr/title:invite-writer/writer-email-attr-title")
+    p.form-field
+      label(for="reason")
+        span.form-field-label-title(data-l8n="content:invite-writer/writer-reason-label") !They should help draft this policy, because:
+        textarea.func--writer-reason(id="reason", name="reason", rows="3", cols="10", maxlength="1000", title="Reasons are a maximum length of 1000 characters", required="required", data-l8n="attr/title:invite-writer/writer-reason-attr-title")
     button.button.func--invite-writer(type="submit", data-l8n="content:invite-writer/invite-button") !Create an invite
 
 mixin writerItem(name, href, photo)
