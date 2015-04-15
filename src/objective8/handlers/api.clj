@@ -39,6 +39,12 @@
 (defn ok-response []
   {:status 200})
 
+(defn resource-updated-response [resource-location updated-object]
+  {:status 200
+   :headers {"Content-Type" "application/json"
+             "Location" resource-location}
+   :body updated-object})
+
 (defn resource-created-response [resource-location stored-object]
   {:status 201
    :headers {"Content-Type" "application/json"
@@ -82,8 +88,15 @@
   (try
     (if-let [profile-data (ar/request->profile-data request)]
       (let [{status :status user :result} (actions/update-user-with-profile! profile-data)]
-        
-        )
+       (cond
+         (= status ::actions/success)
+         (resource-updated-response (utils/path-for :api/get-user :id (:_id user)) user)
+
+          (= status ::actions/entity-not-found)  
+          (not-found-response "User does not exist with that user-uri") 
+
+          :else
+          (internal-server-error "Error when posting profile")))
       (invalid-response "Invalid profile post request"))
     )
   
