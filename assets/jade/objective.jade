@@ -167,7 +167,6 @@ block footerScripts
           $('html,body').scrollTo(xPos, yPosWithoutHeader);
       });
 
-
       var pageNavChildren = $(".js-objective-nav li").children();
       var pageNavList = [];
       var pageNavActiveClass = "on"
@@ -194,10 +193,9 @@ block footerScripts
         }
 
         if(windowPos + windowHeight == docHeight) {
-          if (!$("nav li:last-child a").hasClass(pageNavActiveClass)) {
-            var navActiveCurrent = $("." + pageNavActiveClass).attr("href");
-            $("a[href='" + navActiveCurrent + "']").removeClass(pageNavActiveClass);
-            $("nav li:last-child a").addClass(pageNavActiveClass);
+          if (!$(".js-objective-nav li:last-child a").hasClass(pageNavActiveClass)) {
+            $(".js-objective-nav li a").removeClass(pageNavActiveClass);
+            $(".js-objective-nav li:last-child a").addClass(pageNavActiveClass);
           }
         }
       });
