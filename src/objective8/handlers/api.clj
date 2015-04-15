@@ -102,9 +102,11 @@
 (defn post-objective [request]
   (try
     (let [objective (ar/request->objective-data request)
-          stored-objective (objectives/store-objective! objective)
-          resource-location (str utils/host-url "/api/v1/objectives/" (:_id stored-objective))]
-      (resource-created-response resource-location stored-objective))
+          {status :status stored-objective :result} (actions/create-objective! objective)]
+      (if (= status ::actions/success)
+        (resource-created-response (str utils/host-url "/api/v1/objectives/" (:_id stored-objective))
+                                   stored-objective)
+        (internal-server-error "Error when posting objective")))
     (catch Exception e
       (log/info "Error when posting objective: " e)
       (invalid-response "Invalid objective post request"))))

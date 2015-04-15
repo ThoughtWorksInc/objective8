@@ -16,6 +16,8 @@
 (def USER_ID 2)
 (def VOTE_ID 5)
 (def OBJECTIVE_ID 1)
+(def INVITATION_ID 7)
+(def UU_ID "875678950430596859403-uuid")
 (def an-answer {:global-id GLOBAL_ID})
 (def vote-data {:vote-on-uri :entity-uri
                 :created-by-id USER_ID
@@ -239,3 +241,24 @@
              (provided
                (writers/retrieve-candidates-by-user-id USER_ID) => [{:objective-id 1} {:objective-id 2}]
                (objectives/get-objectives-owned-by-user-id USER_ID) => [{:_id 3} {:_id 4}])))
+
+(def objective {:created-by-id USER_ID})
+(def stored-objective (assoc objective :_id OBJECTIVE_ID))
+(def invitation {:invited-by-id USER_ID
+                 :objective-id OBJECTIVE_ID
+                 :reason (str "Default writer as creator of this objective")
+                 :writer-name "UserName"})
+(def candidate-data {:invitation-uuid UU_ID
+                     :invitee-id USER_ID})
+(def user-uri (str "/users/" USER_ID))
+
+
+(facts "about creating an objective"
+       (fact "when an objective is stored the creator becomes a writer for the objective"
+             (actions/create-objective! objective) => {:status ::actions/success
+                                                       :result stored-objective}
+             (provided
+               (objectives/store-objective! objective) => stored-objective
+               (users/retrieve-user user-uri) => {:username "UserName"}
+               (invitations/store-invitation! invitation) => {:uuid UU_ID}
+               (writers/create-candidate candidate-data) => :candidate)))

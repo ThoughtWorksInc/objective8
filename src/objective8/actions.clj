@@ -10,6 +10,25 @@
             [objective8.marks :as marks]
             [objective8.storage.storage :as storage]))
 
+(defn create-writer-for-objective! [{:keys [created-by-id] :as objective}]
+  (let
+    [objective-id (:_id objective)
+     {username :username} (users/retrieve-user (str "/users/" created-by-id))
+     invitation {:invited-by-id (:created-by-id objective)
+                 :objective-id objective-id
+                 :reason "Default writer as creator of this objective"
+                 :writer-name username}
+     {uuid :uuid} (invitations/store-invitation! invitation)
+     candidate {:invitation-uuid uuid
+                :invitee-id created-by-id}]
+    (writers/create-candidate candidate)))
+
+(defn create-objective! [{:keys [created-by-id] :as objective}]
+  (let [stored-objective (objectives/store-objective! objective)]
+    (create-writer-for-objective! stored-objective)
+    {:result stored-objective
+     :status ::success}))
+
 (defn start-drafting! [objective-id]
   (let [objective (storage/pg-retrieve-entity-by-uri (str "/objectives/" objective-id) :with-global-id)]
     (doall (->> (invitations/retrieve-active-invitations objective-id)
@@ -38,10 +57,10 @@
     {:status ::objective-drafting-not-started}))
 
 (defn can-comment-on? [{:keys [entity] :as entity-to-post-to}]
-    (case entity
-      :objective (= "open" (:status entity-to-post-to))
-      :draft true
-      false))
+  (case entity
+    :objective (= "open" (:status entity-to-post-to))
+    :draft true
+    false))
 
 (defn allowed-to-vote? [{:keys [global-id entity] :as entity-to-vote-on} {:keys [created-by-id] :as vote-data}]
   (let [objective (objectives/retrieve-objective (:objective-id entity-to-vote-on))

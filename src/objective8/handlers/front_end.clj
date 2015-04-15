@@ -109,6 +109,7 @@
                   message (t' :objective-view/created-message)]
               (-> (response/redirect objective-url)
                   (assoc :flash message :session session)
+                  (utils/add-authorisation-role (utils/writer-for (:_id stored-objective)))
                   (utils/add-authorisation-role (utils/writer-inviter-for (:_id stored-objective))))) 
 
             (= status ::http-api/invalid-input) {:status 400}
