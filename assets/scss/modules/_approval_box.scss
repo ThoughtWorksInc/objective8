@@ -28,12 +28,14 @@
   background: none;
   padding: 0;
   margin: 0;
-  display: inline;
+  display: block;
+  width: 100%;
+  text-align: left;
   font-size: 1em;
   color: $default_text_color;
   & i {
     width: 27px;
-    margin-right: 0.2em;
+    margin-right: 0.1em;
   }
 }
 
