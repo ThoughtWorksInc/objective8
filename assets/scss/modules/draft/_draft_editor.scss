@@ -1,11 +1,20 @@
+$editor_min_device_width: 321;
+
 .draft-editor {
-  @include mq(640) {
+  @include mq($editor_min_device_width) {
     display: flex;
+    flex-direction: row;
     height: 100%;
+  }
+  .draft-preview-document {
+    font-size: 50%;
+    @include mq(640) {
+      font-size: 100%;
+    }
   }
 }
 .draft-editor-console {
-  @include mq(640) {
+  @include mq($editor_min_device_width) {
     flex: 1;
     height: 100%;
     padding: 2em;
@@ -13,9 +22,10 @@
   }
 }
 .draft-editor-document {
-  @include mq(640) {
+  @include mq($editor_min_device_width) {
     flex: 1;
     height: 100%;
+    max-width: 50%;
     padding: 2em;
     overflow: scroll;
   }
