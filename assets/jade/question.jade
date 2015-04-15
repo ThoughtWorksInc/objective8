@@ -32,14 +32,14 @@ block content
             input(type="hidden", value="!question-path", name="refer").clj-refer
             .approval-score 
               button(type="submit").approval-button.approval-up.func--up-vote.clj-approval-button
-                i.fa.fa-check
+                i.fa.fa-thumbs-o-up
               span.clj-up-score.func--up-score !27
           form(action="/meta/down-vote", method="post").approval-vote-option.clj-approval-form
             input(type="hidden", value="!vote-on-uri", name="vote-on-uri").clj-vote-on-uri
             input(type="hidden", value="!question-path", name="refer").clj-refer
             .approval-score 
               button(type="submit").approval-button.approval-down.clj-approval-button
-                i.fa.fa-times
+                i.fa.fa-thumbs-o-down
               span.clj-down-score.func--down-score !10
 
       .answer-new
