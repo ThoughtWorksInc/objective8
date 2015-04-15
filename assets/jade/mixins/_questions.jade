@@ -1,3 +1,17 @@
+mixin questionMarkForm()
+  form.mark-question-form.clj-mark-question-form(action="/meta/marks", method="post")
+    input.clj-question-uri(type="hidden", value="!question-uri", name="question-uri")
+    input.clj-refer(type="hidden", value="!current-url", name="refer")
+    button.mark-question-button.func--mark-question.clj-mark-question-button(type="submit", data-l8n="content:question-actions/mark-question")
+      | !mark
+
+mixin questionUnmarkForm()
+  form.unmark-question-form.clj-unmark-question-form(action="/meta/marks", method="put")
+    input.clj-question-uri(type="hidden", value="!question-uri", name="question-uri")
+    input.clj-refer(type="hidden", value="!current-url", name="refer")
+    button.unmark-question-button.func--unmark-question.clj-unmark-question-button(type="submit", data-l8n="content:question-actions/unmark-question")
+      | !unmark
+
 mixin questionItem(author, date)
   li.question-item.clj-question-item
     .question-text
@@ -5,6 +19,28 @@ mixin questionItem(author, date)
         block
     .question-actions
       a.question-reply.clj-answer-link.func--answer-link(href="#", data-l8n="content:objective-view/answer-link") !Answer
+
+mixin questionItemWithMarkForm(author, date)
+  li.question-item.clj-question-item
+    .question-text
+      p.clj-question-text
+        block
+    .question-actions
+      a.question-reply.clj-answer-link.func--answer-link(href="#", data-l8n="content:objective-view/answer-link") !Answer
+      +questionMarkForm()
+
+mixin questionItemWithUnmarkForm(author, date)
+  li.question-item.clj-question-item
+    .question-text
+      p.clj-question-text
+        block
+    .question-actions
+      a.question-reply.clj-answer-link.func--answer-link(href="#", data-l8n="content:objective-view/answer-link") !Answer
+      +questionUnmarkForm()
+
+mixin objectiveQuestionsEmptyItem()
+  li.question-item.clj-empty-objective-questions(data-l8n="content:objective-view/no-objective-questions")
+    | !The writers for this objective have not asked any questions yet.
 
 mixin questionItemBlank()
   li.question-item(data-l8n="content:question-list/no-questions")

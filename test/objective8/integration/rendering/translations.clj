@@ -1,4 +1,4 @@
-(ns objective8.integration.front-end.translations 
+(ns objective8.integration.rendering.translations
   (:require [midje.sweet :refer :all]
             [peridot.core :as p]
             [oauth.client :as oauth]

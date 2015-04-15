@@ -81,14 +81,24 @@ block content
           | !Interested in anything to do with cycling and Spain.
       a.button.invite-writer.clj-invite-writer-link.func--invite-writer(href="/objective-invite-writer", data-l8n="content:objective-view/invite-a-writer") !Invite a writer
 
-    .objective-questions#questions
-      h2(data-l8n="content:objective-view/questions-title") !Recently asked questions
-      ol.question-list.clj-question-list
-        +questionItem('!Chris Cheshire', '3 September 2015 07:41')
-          | !What road surface should we use?
-        +questionItem('!Chris Cheshire', '4 September 2015 07:41')
-          | !Do we have a colour in mind for the road?
-      a.button.clj-ask-question-link.func--add-question(href="/objective-write-a-question", data-l8n="content:objective-view/ask-a-question") !Ask a question
+    #questions
+      .objective-questions
+        h2(data-l8n="content:objective-view/objective-questions-title") !Objective questions
+        p(data-l8n="content:objective-view/objective-questions-helper-text") !By helping answer these questions you are supporting the objective.
+        ol.question-list.clj-objective-question-list
+          +questionItem('!Chris Cheshire', '3 September 2015 07:41')
+            | !What road surface should we use?
+          +questionItem('!Chris Cheshire', '4 September 2015 07:41')
+            | !Do we have a colour in mind for the road?
+
+      .objective-questions
+        h2(data-l8n="content:objective-view/community-questions-title") !Ask the community
+        ol.question-list.clj-community-question-list
+          +questionItem('!Chris Cheshire', '3 September 2015 07:41')
+            | !What road surface should we use?
+          +questionItem('!Chris Cheshire', '4 September 2015 07:41')
+            | !Do we have a colour in mind for the road?
+        a.button.clj-ask-question-link.func--add-question(href="/objective-write-a-question", data-l8n="content:objective-view/ask-a-question") !Ask a question
 
     .objective-comments#comments
       h2(data-l8n="content:objective-view/comments") !Comments

@@ -134,6 +134,8 @@ objective-nav,back-to-objective,Back to objective
 answer-sign-in,please,Please
 answer-sign-in,sign-in,sign-in
 answer-sign-in,to,to add an answer
+question-actions,mark-question,mark
+question-actions,unmark-question,unmark
 question-page,guidance-heading,What is a question?
 question-page,guidance-text-1,Questions are how Objective[8] gathers community ideas for use in drafting policy
 question-page,answers-for,Answers for
@@ -167,7 +169,10 @@ objective-view,background-label,Background
 objective-view,doc-description,Objective  ...
 objective-view,writers,Writers
 objective-view,invite-a-writer,Invite a writer
-objective-view,questions-title,Recently asked questions
+objective-view,objective-questions-title,Objective questions
+objective-view,objective-questions-helper-text,By helping answer these questions you are supporting the objective.
+objective-view,no-objective-questions,The writers for this objective have not asked any questions yet.
+objective-view,community-questions-title,Ask the community
 objective-view,answer-link,Answer
 objective-view,ask-a-question,Ask a question
 objective-view,comments,Comments

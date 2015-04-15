@@ -185,9 +185,26 @@ html.no-js(lang="en")
         .documentation
           h3 Question list item
           p Generated with questionItem(author, date) mixin
-        ol.question-list
-          +questionItem('!Chris Cheshire', '3 September 2015 07:41')
-            | !What road surface should we use?
+        .clj-library-key--question-list-item
+          ol.question-list
+            +questionItem('!Chris Cheshire', '3 September 2015 07:41')
+              | !What road surface should we use?
+
+        .documentation
+          h3 Question list item with mark form
+          p Generated with questionItemWithMarkForm(author, date) mixin
+        .clj-library-key--question-list-item-with-mark-form
+          ol.question-list
+            +questionItemWithMarkForm('!Chris Cheshire', '3 September 2015 07:41')
+              | !What road surface should we use?
+
+        .documentation
+          h3 Question list item with unmark form
+          p Generated with questionItemWithUnmarkForm(author, date) mixin
+        .clj-library-key--question-list-item-with-unmark-form
+          ol.question-list
+            +questionItemWithUnmarkForm('!Chris Cheshire', '3 September 2015 07:41')
+              | !What road surface should we use?
 
       .example
         .documentation
