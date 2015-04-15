@@ -97,6 +97,9 @@ SELECT _id, 'draft' AS entity FROM objective8.drafts WHERE global_id=?
                 (korma/set-fields new-fields) 
                 (korma/where where)))
 
+(defn pg-update-user! [user]
+  (update (mappings/get-mapping {:entity :user}) user {:_id (:_id user)}))
+
 (defn pg-update-bearer-token!
   "Wrapper around Korma's update call"
   [{:keys [entity] :as m}]

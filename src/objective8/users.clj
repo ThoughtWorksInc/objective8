@@ -19,4 +19,5 @@
   (let [user (assoc user :entity :user)]
     (storage/pg-store! user)))
 
-(defn update-user! [user])
+(defn update-user! [user]
+  (storage/pg-update-user! user))

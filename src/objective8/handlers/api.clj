@@ -84,8 +84,7 @@
       (let [{status :status user :result} (actions/update-user-with-profile! profile-data)]
         
         )
-      (prn "no")
-      )
+      (invalid-response "Invalid profile post request"))
     )
   
   )
