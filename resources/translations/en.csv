@@ -142,6 +142,8 @@ question-page,answer-title,Answers are a maximum length of 500 characters
 question-page,jump-to-answer-button,Add a new answer
 question-page,submit-answer-button,Add my answer
 question-page,answer-label,Your answer
+question-page,vote-up,Vote up.
+question-page,vote-down,Vote down.
 question-page,sign-in-reminder,You must sign in to add an answer
 learn-more,doc-title,Learn more | Objective[8]
 learn-more,doc-description,
