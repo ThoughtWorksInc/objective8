@@ -44,6 +44,12 @@ $('#share-page-link').on('click', function(){
   $(this).select();
 });
 
+$('.js-hide-button').on('click', function(e) {
+  e.preventDefault();
+  var hideContent = $(this).parents('.js-hide-me');
+  hideContent.hide();
+});
+
 
 //Developer Easter egg
 function helpObjective8 () {

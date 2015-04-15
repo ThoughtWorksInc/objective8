@@ -8,14 +8,15 @@ include _buttons
 
 mixin guidanceText(heading,l8n)
   - l8n = l8n || 'content:create-objective-guidance/heading'
-  .guidance-text
-    .guidance-buttons.clj-guidance-buttons
-      a.button-hide-guidance-text(href="#")
-        span Hide
-        =" "
-        i.fa.fa-times
-    h2.guidance-text-heading.clj-guidance-heading.l8n-guidance-heading(data-l8n=l8n) #{heading}
-    block
+  .guidance-text-wrapper.js-hide-me
+    .guidance-text
+      .guidance-buttons.clj-guidance-buttons
+        a.button-hide-guidance-text.js-hide-button(href="#")
+          span Hide
+          =" "
+          i.fa.fa-times
+      h2.guidance-text-heading.clj-guidance-heading.l8n-guidance-heading(data-l8n=l8n) #{heading}
+      block
 
 mixin goalItem()
   li.goal-item
