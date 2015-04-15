@@ -62,9 +62,11 @@ $objective_navigation_height: 80px;
       color: $green2;
       border-bottom-color: rgba($green2, 0.1);
     }
-  }
-  .on {
-    a {
+    &:focus {
+      outline: none;
+      border-bottom-color: rgba($green2, 0.1);
+    }
+    &.on {
       color: $green2;
       border-bottom-color: $green1;
     }

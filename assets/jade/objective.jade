@@ -167,4 +167,42 @@ block footerScripts
           $('html,body').scrollTo(xPos, yPosWithoutHeader);
       });
 
+
+      var pageNavChildren = $(".js-objective-nav li").children();
+      var pageNavList = [];
+      var pageNavActiveClass = "on"
+      for (var i=0; i < pageNavChildren.length; i++) {
+        var aChild = pageNavChildren[i];
+        var ahref = $(aChild).attr('href');
+        pageNavList.push(ahref);
+      }
+
+      $(window).scroll(function(){
+        var windowPos = $(window).scrollTop();
+        var windowHeight = $(window).height();
+        var docHeight = $(document).height();
+
+        for (var i=0; i < pageNavList.length; i++) {
+          var theID = pageNavList[i];
+          var divPos = $(theID).offset().top - (yNavSpacer + pageNavHeight + 1);
+          var divHeight = $(theID).height();
+          if (windowPos >= divPos && windowPos < (divPos + divHeight)) {
+            $("a[href='" + theID + "']").addClass(pageNavActiveClass);
+          } else {
+            $("a[href='" + theID + "']").removeClass(pageNavActiveClass);
+          }
+        }
+
+        if(windowPos + windowHeight == docHeight) {
+          if (!$("nav li:last-child a").hasClass(pageNavActiveClass)) {
+            var navActiveCurrent = $("." + pageNavActiveClass).attr("href");
+            $("a[href='" + navActiveCurrent + "']").removeClass(pageNavActiveClass);
+            $("nav li:last-child a").addClass(pageNavActiveClass);
+          }
+        }
+      });
+
     });
+
+
+
