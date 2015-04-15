@@ -277,7 +277,7 @@
   (korma/prepare map->mark)
   (korma/transform (-> (constantly {:entity :mark})
                        (with-columns
-                         [:created-by-id :question-id :active :_created_at]
+                         [:created-by-id :question-id :active :_created_at :_id]
                          {:_created_at sql-time->iso-time-string}))))
 
 (korma/defentity answer

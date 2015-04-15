@@ -31,6 +31,11 @@
                 (questions/retrieve-question (:question-id mark)) => (contains {:meta (contains {:marked true
                                                                                                  :marked-by string?})})))
 
+        (fact "only the most recent mark information is included"
+              (let [question (sh/store-a-question)
+                    old-mark (sh/store-a-mark {:question question})
+                    new-mark (sh/store-a-mark {:question question :active false})]
+                (questions/retrieve-question (:_id question)) => (contains {:meta {:marked false}})))
 
         (fact "can get questions for an objective along with marking information"
               (let [{objective-id :_id :as objective} (sh/store-an-open-objective)

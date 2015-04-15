@@ -224,7 +224,9 @@ FROM objective8.questions AS questions
 LEFT JOIN (SELECT active, question_id, marking_users.username
            FROM objective8.marks
            JOIN objective8.users AS marking_users
-           ON marks.created_by_id = marking_users._id) AS marks
+           ON marks.created_by_id = marking_users._id
+           ORDER BY marks._created_at DESC
+           LIMIT 1) AS marks
 ON marks.question_id = questions._id
 JOIN objective8.users AS users
 ON users._id = questions.created_by_id
@@ -234,13 +236,15 @@ WHERE questions._id = ?" [question-id]] :results)))))
   (let [unmap-question (first (get mappings/question :transforms))]
     (map unmap-question
          (korma/exec-raw ["
-SELECT questions.*, users.username, marks.active AS marked, marks.username AS marked_by
+SELECT questions.*, users.username, latest_marks.active AS marked, latest_marks.username AS marked_by
 FROM objective8.questions AS questions
-LEFT JOIN (SELECT active, question_id, marking_users.username
-           FROM objective8.marks
+LEFT JOIN (SELECT DISTINCT ON (question_id)
+                  active, created_by_id, question_id, username
+           FROM objective8.marks AS marks
            JOIN objective8.users AS marking_users
-           ON marks.created_by_id = marking_users._id) AS marks
-ON marks.question_id = questions._id
+           ON marking_users._id = created_by_id
+           ORDER BY question_id, marks._created_at DESC) AS latest_marks
+ON latest_marks.question_id = questions._id
 JOIN objective8.users AS users
 ON users._id = questions.created_by_id
 WHERE questions.objective_id = ?" [objective-id]] :results))))

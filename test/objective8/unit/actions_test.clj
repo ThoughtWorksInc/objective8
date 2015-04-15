@@ -179,13 +179,20 @@
 (def mark-data {:question-uri question-uri
                :created-by-uri user-uri })
 
-(facts "about markning questions"
-       (fact "a mark is created"
+(facts "about marking questions"
+       (fact "a mark is created if none already exists"
              (actions/mark-question! mark-data) => {:status ::actions/success
                                                     :result :the-new-mark}
              (provided
-              (marks/store-mark! mark-data) => :the-new-mark)))
+              (marks/get-mark-for-question question-uri) => nil
+              (marks/store-mark! (contains (assoc mark-data :active true))) => :the-new-mark))
 
+       (fact "the state of the mark is toggled if a mark already exists for the question"
+             (actions/mark-question! mark-data) => {:status ::actions/success
+                                                    :result :the-new-mark}
+             (provided
+              (marks/get-mark-for-question question-uri) => {:active true}
+              (marks/store-mark! (contains (assoc mark-data :active false))) => :the-new-mark)))
 
 (facts "about getting users"
        (fact "gets user with candidate records and owned objectives if they exist"

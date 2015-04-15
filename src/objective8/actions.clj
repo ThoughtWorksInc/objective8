@@ -109,7 +109,11 @@
     {:status ::entity-not-found}))
 
 (defn mark-question! [mark-data]
-  {:status ::success :result (marks/store-mark! mark-data)})
+  (if-let [{active :active} (marks/get-mark-for-question (:question-uri mark-data))]
+    {:status ::success
+     :result (marks/store-mark! (assoc mark-data :active (not active)))}
+    {:status ::success
+     :result (marks/store-mark! (assoc mark-data :active true))}))
 
 (defn get-user-with-roles [user-uri]
   (if-let [user (users/retrieve-user user-uri)]

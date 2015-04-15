@@ -93,6 +93,7 @@
                            [:.clj-answer-link] (html/set-attr :href (str "/objectives/" (:objective-id question)
                                                                          "/questions/" (:_id question)))
                            [:.clj-mark-question-form] (html/prepend (html/html-snippet (anti-forgery-field)))
+                           [:.clj-unmark-question-form] (html/prepend (html/html-snippet (anti-forgery-field)))
                            [:.clj-refer] (html/set-attr :value (str "/objectives/" (:objective-id question) "#questions"))
                            [:.clj-question-uri] (html/set-attr :value (str "/objectives/" (:objective-id question)
                                                                            "/questions/" (:_id question))))))
@@ -101,7 +102,8 @@
   (let [roles (:roles user)
         objective-id (:_id objective)]
     (or (contains? roles (utils/writer-for objective-id))
-        (contains? roles (utils/owner-of objective-id)))))
+        (contains? roles (utils/owner-of objective-id))))
+  false)
 
 (defn objective-question-list [{:keys [data user] :as context}]
   (let [objective-questions (filter #(get-in % [:meta :marked]) (:questions data))
@@ -201,7 +203,7 @@
                                                                    (html/set-attr
                                                                      :href (str "/objectives/" (:_id objective) "/invite-writer")))
 
-                                      [:.clj-objective-question-list] (html/content (objective-question-list context))
+                                      [:.clj-objective-question-list] nil ;(html/content (objective-question-list context))
                                       [:.clj-community-question-list] (html/content (community-question-list context))
                                       [:.clj-ask-question-link] (when (tf/open? objective)
                                                                   (html/set-attr

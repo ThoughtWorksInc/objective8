@@ -171,9 +171,10 @@
      (let [{created-by-id :user-id :as candidate} (l-get entities :candidate
                                                          (store-a-candidate
                                                           {:invitation (store-an-invitation
-                                                                        {:objective {:_id objective-id}})}))]
+                                                                        {:objective {:_id objective-id}})}))
+           active (get entities :active true)]
        (storage/pg-store! {:entity :mark
                            :created-by-id created-by-id
                            :question-id question-id
-                           :active true})))))
+                           :active active})))))
 
