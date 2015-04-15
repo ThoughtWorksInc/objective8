@@ -134,7 +134,8 @@ SELECT _id, 'draft' AS entity FROM objective8.drafts WHERE global_id=?
 (defn pg-retrieve-answers-with-votes-for-question [question-id]
   (apply vector (map unmap-answer-with-votes
                      (korma/exec-raw ["
-SELECT answers.*, up_votes, down_votes FROM objective8.answers AS answers
+SELECT answers.*, up_votes, down_votes, users.username FROM objective8.answers AS answers
+JOIN objective8.users AS users ON users._id = answers.created_by_id
 LEFT JOIN (SELECT global_id, count(vote) as down_votes
            FROM objective8.up_down_votes
            WHERE vote < 0 GROUP BY global_id) AS agg
@@ -156,7 +157,9 @@ LIMIT 50" [question-id]] :results))))
 (defn pg-retrieve-comments-with-votes [global-id]
   (apply vector (map unmap-comments-with-votes
                      (korma/exec-raw["
-SELECT comments.*, up_votes, down_votes FROM objective8.comments AS comments
+SELECT comments.*, up_votes, down_votes, users.username
+FROM objective8.comments AS comments
+JOIN objective8.users AS users ON users._id = comments.created_by_id
 LEFT JOIN (SELECT global_id, count(vote) as down_votes
            FROM objective8.up_down_votes
            WHERE vote < 0 GROUP BY global_id) AS agg

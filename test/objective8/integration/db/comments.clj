@@ -44,7 +44,7 @@
         [(before :contents (do (ih/db-connection)
                                (ih/truncate-tables)))
          (after :facts (ih/truncate-tables))]
-        (fact "gets the comments in reverse chronological order with aggregate votes"
+        (fact "gets the comments in reverse chronological order with aggregate votes and name of creator"
               (let [user (sh/store-a-user)
                     {draft-id :_id objective-id :objective-id :as draft} (sh/store-a-draft)
                     draft-uri (str "/objectives/" objective-id "/drafts/" draft-id)
@@ -56,5 +56,6 @@
                                                              :uri (str "/comments/" (:_id %))))))]
                 (comments/get-comments draft-uri) => (contains (map contains (reverse stored-comments)))
                 (first (comments/get-comments draft-uri)) => (contains {:votes {:up 0 :down 0}})
+                (first (comments/get-comments draft-uri)) => (contains {:username (:username user)})
                 (first (comments/get-comments draft-uri)) =not=> (contains {:comment-on-id anything})    
                 (first (comments/get-comments draft-uri)) =not=> (contains {:global-id anything})))))
