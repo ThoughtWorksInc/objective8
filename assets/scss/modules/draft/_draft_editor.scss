@@ -1,0 +1,22 @@
+.draft-editor {
+  @include mq(640) {
+    display: flex;
+    height: 100%;
+  }
+}
+.draft-editor-console {
+  @include mq(640) {
+    flex: 1;
+    height: 100%;
+    padding: 2em;
+    overflow: scroll;
+  }
+}
+.draft-editor-document {
+  @include mq(640) {
+    flex: 1;
+    height: 100%;
+    padding: 2em;
+    overflow: scroll;
+  }
+}
