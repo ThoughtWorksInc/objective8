@@ -24,10 +24,11 @@
     (writers/create-candidate candidate)))
 
 (defn create-objective! [{:keys [created-by-id] :as objective}]
-  (let [stored-objective (objectives/store-objective! objective)]
-    (create-writer-for-objective! stored-objective)
-    {:result stored-objective
-     :status ::success}))
+  (if-let [stored-objective (objectives/store-objective! objective)]
+    (do (create-writer-for-objective! stored-objective) 
+        {:result stored-objective
+         :status ::success})
+    {:status ::failure}))
 
 (defn start-drafting! [objective-id]
   (let [objective (storage/pg-retrieve-entity-by-uri (str "/objectives/" objective-id) :with-global-id)]
