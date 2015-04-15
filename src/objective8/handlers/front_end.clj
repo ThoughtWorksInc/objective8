@@ -322,16 +322,6 @@
 (defn create-profile-get [_]
   )
 
-(defn create-profile-post [{:keys [session] :as request}]
-  (if (:invitation session) 
-    (let [profile-data (helpers/request->profile-info request (get (friend/current-authentication) :identity))
-          {status :status} (http-api/post-profile profile-data)]
-      (cond
-        (= status ::http-api/success)
-        (accept-invitation request) 
-        :else {:status 500}))
-    {:status 401}))
-
 (defn accept-invitation [{:keys [session]}]
   (if-let [invitation-credentials (:invitation session)]
     (let [objective-id (:objective-id invitation-credentials) 
@@ -348,6 +338,16 @@
             (utils/add-authorisation-role (utils/writer-inviter-for objective-id)) 
             (utils/add-authorisation-role (utils/writer-for objective-id)))
         
+        :else {:status 500}))
+    {:status 401}))
+
+(defn create-profile-post [{:keys [session] :as request}]
+  (if (:invitation session) 
+    (let [profile-data (helpers/request->profile-info request (get (friend/current-authentication) :identity))
+          {status :status} (http-api/post-profile profile-data)]
+      (cond
+        (= status ::http-api/success)
+        (accept-invitation request) 
         :else {:status 500}))
     {:status 401}))
 

@@ -111,7 +111,7 @@
                    {response :response} (p/request app (str "/api/v1/objectives/" objective-id "/questions"))
 
                    expected-result [question-1 question-2]]
-               (:body response) => (helpers/json-contains (map contains expected-result))))
+               (:body response) => (helpers/json-contains (map contains expected-result) :in-any-order)))
 
        (fact "marks on questions are included when questions are retrieved for an objective"
              (let [objective (sh/store-an-open-objective)
