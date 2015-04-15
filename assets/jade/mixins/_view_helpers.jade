@@ -6,6 +6,12 @@ include _objectives
 include _draft
 include _buttons
 
+// initialization
+- var blocks = {};
+
+mixin set(key)
+  - blocks[key] = this.block
+
 mixin guidanceText(heading,l8n)
   - l8n = l8n || 'content:create-objective-guidance/heading'
   .guidance-text-wrapper.js-hide-me
