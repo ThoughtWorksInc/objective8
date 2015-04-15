@@ -200,6 +200,18 @@
                (writers/retrieve-candidates-by-user-id USER_ID) => :stubbed-candidate-records 
                (objectives/get-objectives-owned-by-user-id USER_ID) => :stubbed-owned-objectives)))
 
+(def user-uri (str "/users/" USER_ID))
+(def profile-data {:name "name" :biog "biography" :user-uri user-uri})
+(def updated-user (merge {:entity :user :_id USER_ID} (dissoc profile-data :user-uri)))
+
+(facts "about updating a user with a writer profile"
+       (fact "updates a user's profile"
+             (actions/update-user-with-profile! profile-data) => {:status ::actions/success
+                                                                  :result :the-updated-user}
+             (provided
+               (users/retrieve-user user-uri) => {:entity :user :_id USER_ID}
+               (users/update-user! updated-user) => :the-updated-user)))
+
 (def invitation {:objective-id OBJECTIVE_ID
                  :invited-by-id USER_ID})
 

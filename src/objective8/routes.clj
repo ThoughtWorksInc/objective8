@@ -38,10 +38,13 @@
                                              "/import-draft" {:get :fe/import-draft-get
                                                               :post :fe/import-draft-post}}}
     "invitations"       {["/" :uuid] {:get :fe/writer-invitation}}
+    "create-profile"    {:get :fe/create-profile-get
+                         :post :fe/create-profile-post}
 
     ;; API
     "api/v1"            {"/users" {:post :api/post-user-profile
                                    :get :api/get-user-by-query
+                                   "/writer-profiles" {:post :api/post-writer-profile}
                                    ["/" [#"\d+" :id]] :api/get-user}
 
                          "/objectives" {:get :api/get-objectives

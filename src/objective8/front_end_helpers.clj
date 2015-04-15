@@ -51,6 +51,11 @@
             (utils/select-all-or-nothing [:writer-name :writer-email :reason])
             (assoc :objective-id objective-id :invited-by-id user-id))))
 
+(defn request->profile-info [{:keys [params] :as request} user-id]
+  (some-> params
+          (utils/select-all-or-nothing [:name :biog])
+          (assoc :user-uri (str "/users/" user-id))))
+
 (defn request->up-vote-info [{:keys [params] :as request} user-id]
   (some-> params
           (utils/select-all-or-nothing [:vote-on-uri])

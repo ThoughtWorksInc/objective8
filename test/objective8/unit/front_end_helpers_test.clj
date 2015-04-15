@@ -101,3 +101,8 @@
        (fact "Validates the request and returns the data required for marking a question"
              (request->mark-info {:params {:question-uri "/some/uri"}} USER_ID) => {:question-uri "/some/uri"
                                                                                     :created-by-uri (str "/users/" USER_ID)}))
+
+(facts "about creating profiles"
+       (fact "transforms request to profile info"
+             (request->profile-info {:params {:name "Name" :biog "Biog"}} USER_ID)
+             => {:name "Name" :biog "Biog" :user-uri (str "/users/" USER_ID)}))

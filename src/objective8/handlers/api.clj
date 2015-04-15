@@ -78,6 +78,18 @@
       :else
       (internal-server-error "Error when getting user"))))
 
+(defn post-writer-profile [request]
+  (try
+    (if-let [profile-data (ar/request->profile-data request)]
+      (let [{status :status user :result} (actions/update-user-with-profile! profile-data)]
+        
+        )
+      (prn "no")
+      )
+    )
+  
+  )
+
 ;;STARS
 (defn post-star [request]
   (try

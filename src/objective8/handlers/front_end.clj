@@ -319,6 +319,18 @@
 (defn remove-invitation-credentials [response]
   (update-in response [:session] dissoc :invitation))
 
+(defn create-profile-get [_]
+  )
+
+(defn create-profile-post [{:keys [session] :as request}]
+  (if (:invitation session) 
+    (let [profile-data (helpers/request->profile-info request (get (friend/current-authentication) :identity))
+          {status :status} (http-api/post-profile profile-data)]
+      (cond
+        (= status ::http-api/success)
+        (accept-invitation request) 
+        :else {:status 500}))
+    {:status 401}))
 
 (defn accept-invitation [{:keys [session]}]
   (if-let [invitation-credentials (:invitation session)]
@@ -326,7 +338,7 @@
           candidate-writer {:invitee-id (get (friend/current-authentication) :identity)
                             :invitation-uuid (:uuid invitation-credentials)
                             :objective-id objective-id}
-          {status :status} (http-api/post-candidate-writer candidate-writer)]
+          {status :status} (http-api/post-candidate-writer candidate-writer) ]
       (cond
         (= status ::http-api/success)
         (-> (str utils/host-url "/objectives/" (:objective-id invitation-credentials) "#writers")

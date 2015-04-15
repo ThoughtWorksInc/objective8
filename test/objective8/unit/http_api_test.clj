@@ -224,7 +224,14 @@
         (http-api/default-post-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID 
                                                      "/writer-invitations")) the-invitation) => :api-call-result))
 
-;; INVITATIONS
+(def profile-data {:name "NAME"
+                   :biog "Biography"
+                   :user-uri (str "/users/" USER_ID)})
+
+(fact "posting a profile hits the correct API endpoint"
+      (http-api/post-profile profile-data) => :api-call-result
+      (provided
+        (http-api/default-post-call (contains (str host-url "/api/v1/users/writer-profiles")) profile-data) => :api-call-result))
 
 (def UUID "some-long-random-string")
 
@@ -252,8 +259,6 @@
       (provided
         (http-api/default-put-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID
                                                   "/writer-invitations/" INVITATION_ID)) declined-invitation) => :api-call-result))
-
-;;CANDIDATES
 
 (fact "getting candidates for an objective hits the correct API endpoint"
       (http-api/retrieve-candidates OBJECTIVE_ID) => :api-call-result

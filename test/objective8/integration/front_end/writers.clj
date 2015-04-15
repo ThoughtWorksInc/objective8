@@ -25,6 +25,7 @@
 (def INVITATION_URL (utils/path-for :fe/writer-invitation :uuid UUID))
 (def ACCEPT_INVITATION_URL (utils/path-for :fe/accept-invitation :id OBJECTIVE_ID :i-id INVITATION_ID))
 (def DECLINE_INVITATION_URL (utils/path-for :fe/decline-invitation :id OBJECTIVE_ID :i-id INVITATION_ID))
+(def CREATE_PROFILE_URL (utils/path-for :fe/create-profile-get))
 
 (def ACTIVE_INVITATION {:_id INVITATION_ID
                         :invited-by-id USER_ID
@@ -225,6 +226,61 @@
            (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
            (http-api/create-user anything) => {:status ::http-api/success
                                                :result {:_id USER_ID}})
+
+
+         (fact "an invited writer can create a profile which, in turn, accepts their invitation"
+               (against-background
+                 (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success
+                                                                 :result ACTIVE_INVITATION}
+                 (http-api/get-objective OBJECTIVE_ID anything) => {:status ::http-api/success
+                                                           :result {:title OBJECTIVE_TITLE}})
+               (let [{request :request} (-> user-session
+                                            (helpers/with-sign-in "http://localhost:8080/")
+                                            (p/request INVITATION_URL)
+                                            (p/request CREATE_PROFILE_URL)
+                                            (p/request CREATE_PROFILE_URL
+                                                       :request-method :post
+                                                       :params {:name "John Doe" :biog "My biog"})
+                                            p/follow-redirect)]
+                 (:uri request))  => (contains OBJECTIVE_URL) 
+                 (provided
+                   (http-api/post-profile {:name "John Doe"
+                                           :biog "My biog"
+                                           :user-uri (str "/users/" USER_ID)}) => {:status ::http-api/success
+                                                                                   :result {}}
+
+                   (http-api/post-candidate-writer {:invitee-id USER_ID
+                                                    :invitation-uuid UUID
+                                                    :objective-id OBJECTIVE_ID}) => {:status ::http-api/success
+                                                                                     :result {}}))
+
+         (fact "a user gets a 401 error response if they post to create profile without an invitation in their session"
+               (let [{response :response} (-> user-session
+                                              (helpers/with-sign-in "http://localhost:8080/")
+                                              (p/request CREATE_PROFILE_URL
+                                                         :request-method :post
+                                                         :params {:name "John Doe" :biog "My biog"}))]
+                 (:status response) => 401))
+
+         (fact "a user gets a 500 error response if posting the profile to the API fails" 
+               (against-background
+                 (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success
+                                                                 :result ACTIVE_INVITATION}
+                 (http-api/get-objective OBJECTIVE_ID anything) => {:status ::http-api/success
+                                                                    :result {:title OBJECTIVE_TITLE}})
+               (let [{response :response} (-> user-session
+                                              (helpers/with-sign-in "http://localhost:8080/")
+                                              (p/request INVITATION_URL)
+                                              (p/request CREATE_PROFILE_URL
+                                                         :request-method :post
+                                                         :params {:name "John Doe" :biog "My biog"}))]
+                 (:status response)) => 500
+               (provided
+                 (http-api/post-profile {:name "John Doe"
+                                         :biog "My biog"
+                                         :user-uri (str "/users/" USER_ID)}) => {:status ::http-api/error
+                                                                                 :result {}}))
+
          (fact "a user can accept an invitation when they have invitation credentials and they're signed in"
                (against-background
                  (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success

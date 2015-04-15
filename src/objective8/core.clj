@@ -47,6 +47,8 @@
                :fe/invite-writer (m/wrap-authorise-writer-inviter (utils/anti-forgery-hook front-end-handlers/invite-writer)) 
                :fe/invitation-form-post (m/wrap-authorise-writer-inviter (utils/anti-forgery-hook front-end-handlers/invitation-form-post))
                :fe/writer-invitation front-end-handlers/writer-invitation
+               :fe/create-profile-get (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-profile-get) #{:signed-in})
+               :fe/create-profile-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-profile-post) #{:signed-in})
                :fe/accept-invitation (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/accept-invitation) #{:signed-in})
                :fe/decline-invitation (utils/anti-forgery-hook front-end-handlers/decline-invitation) 
                :fe/add-draft-get (m/wrap-authorise-writer (utils/anti-forgery-hook front-end-handlers/add-draft-get))
@@ -67,6 +69,7 @@
                :api/post-user-profile (m/wrap-bearer-token api-handlers/post-user-profile bt/token-provider)
                :api/get-user-by-query (m/wrap-bearer-token api-handlers/find-user-by-query bt/token-provider)
                :api/get-user (m/wrap-bearer-token api-handlers/get-user bt/token-provider)
+               :api/post-writer-profile (m/wrap-bearer-token api-handlers/post-writer-profile bt/token-provider)
                :api/post-objective (m/wrap-bearer-token api-handlers/post-objective bt/token-provider)
                :api/get-objective (m/wrap-bearer-token api-handlers/get-objective bt/token-provider) 
                :api/get-objectives (m/wrap-bearer-token api-handlers/get-objectives bt/token-provider) 

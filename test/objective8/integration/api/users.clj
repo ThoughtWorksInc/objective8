@@ -22,6 +22,7 @@
            :email-address email-address
            :username username })
 
+(def writer-profile {:name "Name" :biog "Biography" :user-uri (str "/users/" USER_ID)})
 
 (def stored-user (assoc user :_id USER_ID))
 
@@ -100,4 +101,13 @@
                     (:response (p/request app "/api/v1/users"
                                           :request-method :post
                                           :content-type "application/json"
-                                          :body (json/generate-string user))) => (contains {:status 400}))))
+                                          :body (json/generate-string user))) => (contains {:status 400})))
+       
+       (facts "about posting writer profiles"
+              (future-fact "the writer profile info is updated in a user"
+                    (let [{response :response} (p/request app "/api/v1/users/writer-profiles" 
+                                                          :request-method :post
+                                                          :content-type "application/json"
+                                                          :body (json/generate-string writer-profile))]
+                      (:status response) => 200
+                      (:headers response) => (helpers/location-contains (str "/api/v1/users/" USER_ID))))))

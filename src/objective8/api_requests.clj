@@ -27,6 +27,9 @@
 (defn request->star-data [{params :params :as request}]
   (utils/select-all-or-nothing params [:objective-uri :created-by-id]))
 
+(defn request->profile-data [{params :params :as request}]
+  (utils/select-all-or-nothing params [:name :biog :user-uri]))
+
 (defn request->objectives-query [{:keys [params] :as request}]
   (let [user-id (:user-id params)
         starred (:starred params)] 

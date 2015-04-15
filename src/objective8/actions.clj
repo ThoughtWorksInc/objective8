@@ -118,6 +118,12 @@
       {:status ::success :result (assoc user :writer-records candidates :owned-objectives objectives)})
     {:status ::entity-not-found}))
 
+(defn update-user-with-profile! [profile-data]
+  (if-let [user (users/retrieve-user (:user-uri profile-data))]
+    {:status ::success 
+     :result (users/update-user! (merge user (dissoc profile-data :user-uri)))} 
+    {:status ::entity-not-found}))
+
 (defn authorised-objectives-for-inviter [user-id]
   (let [writer-objective-ids (map :objective-id (writers/retrieve-candidates-by-user-id user-id))
         owned-objective-ids (map :_id (objectives/get-objectives-owned-by-user-id user-id))]

@@ -183,6 +183,9 @@
                             "/api/v1/objectives/" (:objective-id candidate-writer)
                             "/candidate-writers") candidate-writer))
 
+(defn post-profile [profile-data]
+  (default-post-call (utils/path-for :api/post-writer-profile) profile-data))
+
 ;; DRAFTS
 
 (defn get-draft [objective-id draft-id]
