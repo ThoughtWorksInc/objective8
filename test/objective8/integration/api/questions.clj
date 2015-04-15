@@ -87,24 +87,50 @@
 
 
 (facts "about retrieving questions"
+       (against-background
+         [(before :contents (do
+                              (helpers/db-connection)
+                              (helpers/truncate-tables)))
+          (after :facts (helpers/truncate-tables))]
+
        (fact "can retrieve a question using its id"
-             (let [peridot-response (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))]
-               peridot-response) => (helpers/check-json-body stored-question)
-             (provided
-               (questions/retrieve-question QUESTION_ID) => stored-question))
+             (let [{question-id :_id objective-id :objective-id :as question} (sh/store-a-question)
+                   {response :response} (p/request app (str "/api/v1/objectives/" objective-id "/questions/" question-id))]
+               (:body response) => (helpers/json-contains question)))
 
        (fact "a 404 status is returned if the question does not belong to the objective"
-             (:response  (p/request app (str "/api/v1/objectives/" WRONG_OBJECTIVE_ID 
-                                             "/questions/" QUESTION_ID))) 
-             => (contains {:status 404}) 
-             (provided (questions/retrieve-question QUESTION_ID) => {:objective-id OBJECTIVE_ID
-                                                                     :question "The question?"}))
+             (let [{question-id :_id objective-id :objective-id :as question} (sh/store-a-question)
+                   wrong-objective-id (inc objective-id)
+                   {response :response} (p/request app (str "/api/v1/objectives/" wrong-objective-id "/questions/" question-id))]
+               (:status response) => 404))
 
        (fact "questions can be retrieved for an objective"
-             (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions"))
-             => (helpers/check-json-body stored-questions)
-             (provided
-               (questions/retrieve-questions OBJECTIVE_ID) => stored-questions))) 
+             (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+                   question-1 (sh/store-a-question {:objective objective})
+                   question-2 (sh/store-a-question {:objective objective})
+                   {response :response} (p/request app (str "/api/v1/objectives/" objective-id "/questions"))
+
+                   expected-result [question-1 question-2]]
+               (:body response) => (helpers/json-contains (map contains expected-result))))
+
+       (fact "marks on questions are included when questions are retrieved for an objective"
+             (let [objective (sh/store-an-open-objective)
+                   {marked-by :username :as marking-user} (sh/store-a-user)
+                   marking-writer (sh/store-a-candidate {:invitation (sh/store-an-invitation {:objective objective})
+                                                         :user marking-user})
+
+                   marked-question (sh/store-a-question {:objective objective})
+                   _ (sh/store-a-mark {:question marked-question :candidate marking-writer})
+
+                   unmarked-question (sh/store-a-question {:objective objective})
+
+                   {response :response} (p/request app (utils/path-for :api/get-questions-for-objective :id (:_id objective)))]
+               (:body response) => (helpers/json-contains [(contains {:_id (:_id marked-question)
+                                                                      :meta {:marked true
+                                                                             :marked-by marked-by}})
+                                                           (contains {:_id (:_id unmarked-question)
+                                                                      :meta {:marked false}})]
+                                                          :in-any-order)))))
 
 (facts "POST /api/v1/meta/marks"
        (against-background

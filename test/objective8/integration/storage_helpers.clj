@@ -160,3 +160,20 @@
                          :created-by-id created-by-id
                          :objective-id objective-id
                          :active active}))))
+
+(defn store-a-mark
+  ([]
+   (store-a-mark {}))
+
+  ([entities]
+   "Can provide :question or :question and :candidate"
+   (let [{question-id :_id objective-id :objective-id :as question} (l-get entities :question (store-a-question))]
+     (let [{created-by-id :user-id :as candidate} (l-get entities :candidate
+                                                         (store-a-candidate
+                                                          {:invitation (store-an-invitation
+                                                                        {:objective {:_id objective-id}})}))]
+       (storage/pg-store! {:entity :mark
+                           :created-by-id created-by-id
+                           :question-id question-id
+                           :active true})))))
+

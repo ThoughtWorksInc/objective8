@@ -206,6 +206,12 @@
   (fn [m] (-> (unmap-fn m)
               (assoc :meta {:starred (if (:active m) true false)}))))
 
+(defn with-question-meta [unmap-fn]
+  (fn [m] (-> (unmap-fn m)
+              (assoc :meta (if (:marked m)
+                             {:marked true :marked-by (:marked_by m)}
+                             {:marked false})))))
+
 (defn unmap-up-down-vote [{vote :vote :as m}]
   (-> m
       (utils/ressoc :global_id :global-id)
@@ -262,7 +268,8 @@
   (korma/prepare map->question)
   (korma/transform (-> (unmap :question)
                        (with-columns [:created-by-id :objective-id])
-                       with-username-if-present)))
+                       with-username-if-present
+                       with-question-meta)))
 
 (korma/defentity mark
   (korma/pk :_id)

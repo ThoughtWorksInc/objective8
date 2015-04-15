@@ -10,12 +10,8 @@
     (store-question! question)))
 
 (defn retrieve-question [question-id]
-  (-> (storage/pg-retrieve {:entity :question :_id question-id}) 
-      :result
-      first))
+  (storage/pg-retrieve-question question-id))
 
 (defn retrieve-questions [objective-id]
-  (:result (storage/pg-retrieve {:entity :question 
-                                 :objective-id objective-id}
-                                {:limit 50})))
+  (storage/pg-retrieve-questions-for-objective objective-id))
 
