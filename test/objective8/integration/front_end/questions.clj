@@ -21,6 +21,8 @@
 
 (def default-app (core/app core/app-config))
 
+(def user-session (helpers/test-context))
+
 (facts "about questions"
        (binding [config/enable-csrf false]
          (fact "authorised user can post and retrieve a question against an objective"
@@ -35,8 +37,7 @@
                  (oauth/access-token anything anything anything) => {:user_id USER_ID} 
                  (http-api/create-user anything) => {:status ::http-api/success
                                                      :result {:_id USER_ID}}) 
-               (let [user-session (helpers/test-context)
-                     params {:question "The meaning of life?"}
+               (let [params {:question "The meaning of life?"}
                      peridot-response (-> user-session
                                           (helpers/with-sign-in "http://localhost:8080/") 
                                           (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID "/questions")
@@ -77,3 +78,37 @@
                    objective-url (utils/path-for :fe/objective :id OBJECTIVE_ID)]
                (:status response) => 302
                (get-in response [:headers "Location"]) => objective-url)))
+
+(def MARK_ID 56)
+(def USER_URI (str "/users/" USER_ID))
+(def QUESTION_URI (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))
+(def OBJECTIVE_URL (str "/objectives/" OBJECTIVE_ID))
+(def MARK_URI (str "/meta/marks/" MARK_ID))
+
+(def user-owning-objective {:_id USER_ID :owned-objectives [{:_id OBJECTIVE_ID}]})
+
+(facts "about marking questions"
+       (binding [config/enable-csrf false]
+         (fact "objective owners and writers can mark questions to enhance visibility"
+               (against-background
+                (oauth/access-token anything anything anything) => {:user_id USER_ID}
+                (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                                :result user-owning-objective}
+                (http-api/get-user anything) => {:result user-owning-objective})
+               (against-background
+                (http-api/post-mark {:created-by-uri USER_URI
+                                     :question-uri QUESTION_URI}) => {:status ::http-api/success
+                                                                      :result {:created-by-uri USER_URI
+                                                                               :question-uri QUESTION_URI
+                                                                               :uri MARK_URI
+                                                                               :active true}})
+
+               (let [params {:refer OBJECTIVE_URL
+                             :question-uri QUESTION_URI}
+                     {response :response} (-> user-session
+                                              helpers/sign-in-as-existing-user
+                                              (p/request (str "http://localhost:8080/meta/marks")
+                                                         :request-method :post
+                                                         :params params))]
+                 (:status response) => 302
+                 (:headers response) => (helpers/location-contains OBJECTIVE_URL)))))

@@ -186,6 +186,15 @@
       (provided
         (http-api/default-get-call (contains (str "/api/v1/objectives/" OBJECTIVE_ID
                                                   "/questions"))) => :api-call-result))
+
+(def mark-data {:question-uri "/objectives/1/questions/2" :created-by-uri "/users/2"})
+
+(fact "marking a question hits the correct API endpoint"
+      (http-api/post-mark mark-data) => :api-call-result
+      (provided
+       (http-api/default-post-call (contains "/api/v1/meta/marks") 
+         mark-data) => :api-call-result))
+
 ;; ANSWERS
 
 (def the-answer {:some :data

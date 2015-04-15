@@ -143,6 +143,9 @@
   (default-get-call
     (str utils/host-url "/api/v1/objectives/" objective-id "/questions")))
 
+(defn post-mark [mark-data]
+  (default-post-call (utils/path-for :api/post-mark) mark-data))
+
 ;; ANSWERS
 
 (defn create-answer [answer]

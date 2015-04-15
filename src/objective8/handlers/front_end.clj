@@ -497,3 +497,13 @@
       (= status ::http-api/invalid-input) {:status 400}
 
       :else {:status 502}))) 
+
+(defn post-mark [request]
+  (if-let [mark-data (helpers/request->mark-info request (get (friend/current-authentication) :identity))]
+    (let [{status :status mark :result} (http-api/post-mark mark-data)]
+      (case status
+        ::http-api/success (redirect-to-params-referer request)
+        ::http-api/invalid-input {:status 400}
+
+        {:status 502}))
+    {:status 400}))

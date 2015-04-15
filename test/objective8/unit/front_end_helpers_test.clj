@@ -96,3 +96,8 @@
        (fact "returns nil when required star info is not provided"
              (request->star-info {:params {}} USER_ID)
              => nil)) 
+
+(facts "about marking questions"
+       (fact "Validates the request and returns the data required for marking a question"
+             (request->mark-info {:params {:question-uri "/some/uri"}} USER_ID) => {:question-uri "/some/uri"
+                                                                                    :created-by-uri (str "/users/" USER_ID)}))

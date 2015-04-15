@@ -73,3 +73,8 @@
           (update-in [:objective-id] #(Integer/parseInt %))
           (utils/ressoc :google-doc-html-content :content)
           (update-in [:content] #(utils/html->hiccup (sanitiser/sanitise-html %)))))
+
+(defn request->mark-info [{:keys [params] :as request} user-id]
+  (some-> params
+          (utils/select-all-or-nothing [:question-uri])
+          (assoc :created-by-uri (str "/users/" user-id))))
