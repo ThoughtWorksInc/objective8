@@ -4,12 +4,12 @@
             [clojure.string :as s]
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
             [bidi.bidi :as bidi]
-            [cemerick.friend :as friend]
             [endophile.hiccup :as eh]
             [hiccup.core :as hiccup]
             [hickory.core :as hickory]
             [objective8.routes :as routes]
-            [objective8.config :as config])
+            [objective8.config :as config]
+            [objective8.permissions :as permissions])
   (:import  [org.pegdown PegDownProcessor Extensions]))
 
 (def host-url
@@ -49,38 +49,6 @@
 
 (defn generate-random-uuid []
   (str (java.util.UUID/randomUUID)))
-
-;;AUTHORISATION HELPERS
-
-(defn writer-inviter-for [objective-id]
-  (keyword (str "writer-inviter-for-" objective-id)))
-
-(defn writer-inviter-for? [user objective-id]
-  (contains? (:roles user) (writer-inviter-for objective-id)))
-
-(defn writer-for [objective-id]
-  (keyword (str "writer-for-" objective-id)))
-
-(defn writer-for? [user objective-id]
-  (contains? (:roles user) (writer-for objective-id)))
-
-(defn owner-of [objective-id]
-  (keyword (str "owner-of-" objective-id)))
-
-(defn can-mark-question? [{:keys [params] :as request}]
-  (let [objective-id (second (re-matches #"/objectives/(\d+)/questions/\d+" (:question-uri params)))]
-   #{(writer-for objective-id)
-      (owner-of objective-id)}))
-
-(defn add-authorisation-role
-  "If the session in the request-or-response is already authenticated,
-  then adds a new-role to the list of authorised roles, otherwise
-  returns the request-or-response."
-  [request-or-response new-role]
-  (if-let [new-authentication (some-> (friend/current-authentication request-or-response)
-                                      (update-in [:roles] conj new-role))]
-    (friend/merge-authentication request-or-response new-authentication)
-    request-or-response))
 
 ;;TIME FORMATTING
 

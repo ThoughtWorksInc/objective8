@@ -2,7 +2,8 @@
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
-            [objective8.utils :as utils]     
+            [objective8.utils :as utils]
+            [objective8.permissions :as permissions]
             [objective8.templates.page-furniture :as pf]
             [objective8.templates.template-functions :as tf]))   
 
@@ -99,15 +100,9 @@
                            [:.clj-question-uri] (html/set-attr :value (str "/objectives/" (:objective-id question)
                                                                            "/questions/" (:_id question))))))
 
-(defn can-mark-questions? [objective user]
-  (let [roles (:roles user)
-        objective-id (:_id objective)]
-    (or (contains? roles (utils/writer-for objective-id))
-        (contains? roles (utils/owner-of objective-id)))))
-
 (defn objective-question-list [{:keys [data user] :as context}]
   (let [objective-questions (filter #(get-in % [:meta :marked]) (:questions data))
-        list-item-snippet (if (can-mark-questions? (:objective data) user)
+        list-item-snippet (if (permissions/can-mark-questions? (:objective data) user)
                             question-list-item-with-demote-form-snippet
                             question-list-item-snippet)]
     (if (empty? objective-questions)
@@ -116,7 +111,7 @@
 
 (defn community-question-list [{:keys [data user] :as context}]
   (let [community-questions (filter #(not (get-in % [:meta :marked])) (:questions data))
-        list-item-snippet (if (can-mark-questions? (:objective data) user)
+        list-item-snippet (if (permissions/can-mark-questions? (:objective data) user)
                             question-list-item-with-promote-form-snippet
                             question-list-item-snippet)]
     (if (empty? community-questions)
@@ -198,8 +193,8 @@
 
                                       [:.clj-writer-item-list] (html/content (pf/writer-list context))
                                       [:.clj-invite-writer-link] (when (and 
-                                                                         (utils/writer-inviter-for? user objective-id) 
-                                                                         (tf/open? objective)) 
+                                                                        (permissions/writer-inviter-for? user objective-id)
+                                                                        (tf/open? objective))
                                                                    (html/set-attr
                                                                      :href (str "/objectives/" (:_id objective) "/invite-writer")))
 

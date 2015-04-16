@@ -2,7 +2,7 @@
   (:require [clojure.string :as s]
             [clojure.tools.logging :as log]
             [cemerick.friend :as friend]
-            [objective8.utils :as utils]))
+            [objective8.permissions :as permissions]))
 
 (defn- keywordize [m]
   (into {} (for [[k v] m] [(keyword k) v])))
@@ -37,7 +37,7 @@
 
 (defn wrap-authorise-writer [handler]
   (fn [{{objective-id :id} :route-params :as request}]
-    (let [roles #{(utils/writer-for objective-id)}]
+    (let [roles #{(permissions/writer-for objective-id)}]
       (if (friend/authorized? roles (friend/identity request))
         (handler request)
         (friend/throw-unauthorized (friend/identity request)
@@ -46,7 +46,7 @@
 
 (defn wrap-authorise-writer-inviter [handler]
   (fn [{:keys [route-params] :as request}]
-    (let [roles #{(utils/writer-inviter-for (:id route-params))}]
+    (let [roles #{(permissions/writer-inviter-for (:id route-params))}]
       (if (friend/authorized? roles (friend/identity request))
         (handler request)
         (friend/throw-unauthorized (friend/identity request)

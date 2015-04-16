@@ -14,6 +14,7 @@
             [objective8.routes :as routes]
             [objective8.config :as config]
             [objective8.utils :as utils]
+            [objective8.permissions :as permissions]
             [objective8.translation :refer [configure-translations]]
             [objective8.storage.storage :as storage]
             [objective8.storage.database :as db]
@@ -62,7 +63,7 @@
                :fe/post-down-vote (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-down-vote) #{:signed-in}) 
                :fe/post-comment (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-comment) #{:signed-in})
                :fe/post-star (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-star) #{:signed-in})
-               :fe/post-mark (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/post-mark) utils/can-mark-question?)
+               :fe/post-mark (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/post-mark) permissions/can-mark-question-roles)
 
                
                ;; API Handlers

@@ -3,7 +3,8 @@
             [net.cgrand.jsoup :as jsoup]
             [objective8.templates.template-functions :as tf]
             [objective8.templates.page-furniture :as pf]
-            [objective8.utils :as utils]))
+            [objective8.utils :as utils]
+            [objective8.permissions :as permissions]))
 
 (def draft-template (html/html-resource "templates/jade/draft.html" {:parser jsoup/parser}))
 
@@ -47,11 +48,11 @@
              [:.clj-draft-version-navigation] (if draft
                                                 (html/substitute (draft-version-navigation context))
                                                 (html/content no-drafts-snippet))
-             [:.clj-add-a-draft] (when (utils/writer-for? user objective-id) 
+             [:.clj-add-a-draft] (when (permissions/writer-for? user objective-id)
                                    (html/set-attr :href
                                                   (utils/local-path-for :fe/add-draft-get
                                                                         :id objective-id)))
-             [:.clj-import-draft] (when (utils/writer-for? user objective-id) 
+             [:.clj-import-draft] (when (permissions/writer-for? user objective-id)
                                    (html/set-attr :href
                                                   (utils/local-path-for :fe/import-draft-get
                                                                         :id objective-id)))

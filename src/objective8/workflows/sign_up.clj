@@ -8,6 +8,7 @@
             [objective8.config :as config]
             [objective8.http-api :as http-api]
             [objective8.utils :as utils]
+            [objective8.permissions :as permissions]
             [objective8.handlers.front-end :as front-end]))
 
 (def sign-up-routes
@@ -18,11 +19,11 @@
   (let [{{:keys [writer-records owned-objectives]} :result :as g-user} (http-api/get-user (:_id user))
         writer-objective-ids (map :objective-id writer-records)
         owned-objective-ids (map :_id owned-objectives)
-        writer-roles (map utils/writer-for writer-objective-ids)
+        writer-roles (map permissions/writer-for writer-objective-ids)
         writer-inviter-roles (->> writer-objective-ids
                                   (concat owned-objective-ids)
-                                  (map utils/writer-inviter-for))
-        objective-owner-roles (map utils/owner-of owned-objective-ids)]
+                                  (map permissions/writer-inviter-for))
+        objective-owner-roles (map permissions/owner-of owned-objective-ids)]
     (-> (concat writer-roles writer-inviter-roles objective-owner-roles)
         (conj :signed-in)
         set)))

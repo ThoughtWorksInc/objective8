@@ -7,6 +7,7 @@
             [objective8.http-api :as http-api]
             [objective8.front-end-helpers :as helpers]
             [objective8.utils :as utils]
+            [objective8.permissions :as permissions]
             [objective8.views :as views]))
 
 ;; HELPERS
@@ -109,8 +110,8 @@
                   message (t' :objective-view/created-message)]
               (-> (response/redirect objective-url)
                   (assoc :flash message :session session)
-                  (utils/add-authorisation-role (utils/writer-for (:_id stored-objective)))
-                  (utils/add-authorisation-role (utils/writer-inviter-for (:_id stored-objective))))) 
+                  (permissions/add-authorisation-role (permissions/writer-for (:_id stored-objective)))
+                  (permissions/add-authorisation-role (permissions/writer-inviter-for (:_id stored-objective)))))
 
             (= status ::http-api/invalid-input) {:status 400}
 
@@ -335,8 +336,8 @@
             response/redirect
             (assoc :session session)
             remove-invitation-credentials
-            (utils/add-authorisation-role (utils/writer-inviter-for objective-id)) 
-            (utils/add-authorisation-role (utils/writer-for objective-id)))
+            (permissions/add-authorisation-role (permissions/writer-inviter-for objective-id))
+            (permissions/add-authorisation-role (permissions/writer-for objective-id)))
         
         :else {:status 500}))
     {:status 401}))

@@ -3,7 +3,8 @@
             [net.cgrand.jsoup :as jsoup]
             [objective8.templates.template-functions :as tf]
             [objective8.templates.page-furniture :as pf]
-            [objective8.utils :as utils]))
+            [objective8.utils :as utils]
+            [objective8.permissions :as permissions]))
 
 (def library-html "templates/jade/library.html")
 (def draft-list-template (html/html-resource "templates/jade/draft-list.html" {:parser jsoup/parser}))
@@ -40,12 +41,12 @@
                                             (html/substitute no-drafts-snippet)
                                             (html/substitute (latest-draft (first drafts))))
 
-             [:.clj-add-a-draft] (when (utils/writer-for? user (:_id objective))
+             [:.clj-add-a-draft] (when (permissions/writer-for? user (:_id objective))
                                    (html/set-attr :href
                                                   (utils/local-path-for :fe/add-draft-get
                                                                         :id (:_id objective))))
 
-             [:.clj-import-draft-link] (when (utils/writer-for? user (:_id objective))
+             [:.clj-import-draft-link] (when (permissions/writer-for? user (:_id objective))
                                    (html/set-attr :href
                                                   (utils/local-path-for :fe/import-draft-get
                                                                         :id (:_id objective))))

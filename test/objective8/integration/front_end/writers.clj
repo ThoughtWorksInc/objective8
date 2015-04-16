@@ -6,6 +6,7 @@
             [objective8.config :as config]
             [objective8.integration.integration-helpers :as helpers]
             [objective8.utils :as utils]
+            [objective8.permissions :as permissions]
             [objective8.core :as core]
             [objective8.handlers.front-end :as front-end]
             [objective8.http-api :as http-api]))
@@ -318,8 +319,8 @@
                                                   :objective-id OBJECTIVE_ID})
                  => {:status ::http-api/success
                      :result {}}
-                 (utils/add-authorisation-role anything WRITER_ROLE_FOR_OBJECTIVE) => {}
-                 (utils/add-authorisation-role anything WRITER_INVITER_ROLE_FOR_OBJECTIVE) => {}))
+                 (permissions/add-authorisation-role anything WRITER_ROLE_FOR_OBJECTIVE) => {}
+                 (permissions/add-authorisation-role anything WRITER_INVITER_ROLE_FOR_OBJECTIVE) => {}))
 
 
          (fact "a user cannot accept an invitation without invitation credentials"
