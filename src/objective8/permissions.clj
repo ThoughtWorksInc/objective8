@@ -25,10 +25,13 @@
     (or (writer-for? user objective-id)
         (owner-of? objective-id user))))
 
-(defn can-mark-question-roles [{:keys [params] :as request}]
+(defn mark-request->mark-question-roles [{:keys [params] :as request}]
   (let [objective-id (second (re-matches #"/objectives/(\d+)/questions/\d+" (:question-uri params)))]
    #{(writer-for objective-id)
-      (owner-of objective-id)}))
+     (owner-of objective-id)}))
+
+(defn request->writer-roles [{:keys [route-params] :as request}]
+  #{(writer-for (:id route-params))})
 
 (defn add-authorisation-role
   "If the session in the request-or-response is already authenticated,

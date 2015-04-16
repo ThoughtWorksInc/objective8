@@ -17,4 +17,4 @@
 (facts "about roles for marking questions"
        (fact "writers and owners are authorized to mark questions"
              (let [request {:params {:question-uri "/objectives/1/questions/2"}}]
-               (can-mark-question-roles request) => #{:writer-for-1 :owner-of-1})))
+               (mark-request->mark-question-roles request) => #{:writer-for-1 :owner-of-1})))

@@ -35,15 +35,6 @@
   (fn [request]
     (handler (update-in request [:uri] s/replace #"(.)/$" "$1"))))
 
-(defn wrap-authorise-writer [handler]
-  (fn [{{objective-id :id} :route-params :as request}]
-    (let [roles #{(permissions/writer-for objective-id)}]
-      (if (friend/authorized? roles (friend/identity request))
-        (handler request)
-        (friend/throw-unauthorized (friend/identity request)
-                                   {::friend/wrapped-handler handler
-                                    ::friend/required-roles roles})))))
-
 (defn wrap-authorise-writer-inviter [handler]
   (fn [{:keys [route-params] :as request}]
     (let [roles #{(permissions/writer-inviter-for (:id route-params))}]

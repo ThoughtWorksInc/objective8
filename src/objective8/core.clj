@@ -52,18 +52,22 @@
                :fe/create-profile-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-profile-post) #{:signed-in})
                :fe/accept-invitation (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/accept-invitation) #{:signed-in})
                :fe/decline-invitation (utils/anti-forgery-hook front-end-handlers/decline-invitation) 
-               :fe/add-draft-get (m/wrap-authorise-writer (utils/anti-forgery-hook front-end-handlers/add-draft-get))
-               :fe/add-draft-post (m/wrap-authorise-writer (utils/anti-forgery-hook front-end-handlers/add-draft-post))
+               :fe/add-draft-get (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/add-draft-get)
+                                                               permissions/request->writer-roles)
+               :fe/add-draft-post (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/add-draft-post)
+                                                                permissions/request->writer-roles)
                :fe/draft (utils/anti-forgery-hook front-end-handlers/draft)
                :fe/draft-list front-end-handlers/draft-list
-               :fe/import-draft-get (m/wrap-authorise-writer (utils/anti-forgery-hook front-end-handlers/import-draft-get)) 
-               :fe/import-draft-post (m/wrap-authorise-writer (utils/anti-forgery-hook front-end-handlers/import-draft-post))
+               :fe/import-draft-get (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/import-draft-get)
+                                                                  permissions/request->writer-roles)
+               :fe/import-draft-post (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/import-draft-post)
+                                                                   permissions/request->writer-roles)
                
                :fe/post-up-vote (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-up-vote) #{:signed-in}) 
                :fe/post-down-vote (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-down-vote) #{:signed-in}) 
                :fe/post-comment (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-comment) #{:signed-in})
                :fe/post-star (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-star) #{:signed-in})
-               :fe/post-mark (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/post-mark) permissions/can-mark-question-roles)
+               :fe/post-mark (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/post-mark) permissions/mark-request->mark-question-roles)
 
                
                ;; API Handlers
