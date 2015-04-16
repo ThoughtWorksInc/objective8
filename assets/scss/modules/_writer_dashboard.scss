@@ -142,10 +142,10 @@
 }
 
 .writer-dashboard-content-container {
-  padding-left: 1em;
   @include mq(640) {
     float: right;
     width: 70%;
+    padding-left: 1em;
   }
 }
 .writer-dashboard-content-filter-list {
