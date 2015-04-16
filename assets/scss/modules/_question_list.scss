@@ -3,6 +3,7 @@
 }
 .question-item {
   @extend %list-item;
+  position: relative;
 }
 .question-meta {
   @extend %list-item-meta;
@@ -15,6 +16,10 @@
 }
 .question-text {
   @extend %list-item-text;
+  padding-right: 2em;
+  @include mq(760) {
+    padding-right: 7em;
+  }
 }
 .question-actions {
   @extend .list-item-actions;
@@ -22,10 +27,22 @@
 .question-reply {
   @extend %list-item-reply-button;
 }
-.promote-question-form {
 
+.promote-question-button,
+.demote-question-button {
+  @extend .normalise-button;
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  &:hover {
+    color: $green2;
+  }
 }
-.demote-question-form {
 
+.promote-text, .demote-text {
+  display: none;
+  @include mq(760) {
+    display: inline;
+    margin-right: 0.6em;
+  }
 }
-

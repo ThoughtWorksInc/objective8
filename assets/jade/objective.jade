@@ -86,18 +86,22 @@ block content
         h2(data-l8n="content:objective-view/objective-questions-title") !Objective questions
         p(data-l8n="content:objective-view/objective-questions-helper-text") !By helping answer these questions you are supporting the objective.
         ol.question-list.clj-objective-question-list
-          +questionItem('!Chris Cheshire', '3 September 2015 07:41')
+          +questionItemWithDemoteForm('!Chris Cheshire', '3 September 2015 07:41')
             | !What road surface should we use?
-          +questionItem('!Chris Cheshire', '4 September 2015 07:41')
+          +questionItemWithDemoteForm('!Chris Cheshire', '4 September 2015 07:41')
             | !Do we have a colour in mind for the road?
+          +questionItemWithDemoteForm('!Chris Cheshire', '4 September 2015 08:41')
+            | !What do we do if we have a really long question which will wrap across multiple lines?
 
       .objective-questions
         h2(data-l8n="content:objective-view/community-questions-title") !Ask the community
         ol.question-list.clj-community-question-list
-          +questionItem('!Chris Cheshire', '3 September 2015 07:41')
+          +questionItemWithPromoteForm('!Chris Cheshire', '3 September 2015 07:41')
             | !What road surface should we use?
-          +questionItem('!Chris Cheshire', '4 September 2015 07:41')
+          +questionItemWithPromoteForm('!Chris Cheshire', '4 September 2015 07:41')
             | !Do we have a colour in mind for the road?
+          +questionItemWithPromoteForm('!Chris Cheshire', '4 September 2015 07:41')
+            | !What do we do if we have a really long question which will wrap across multiple lines?
         a.button.clj-ask-question-link.func--add-question(href="/objective-write-a-question", data-l8n="content:objective-view/ask-a-question") !Ask a question
 
     .objective-comments#comments

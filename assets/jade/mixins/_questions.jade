@@ -2,15 +2,17 @@ mixin questionPromoteForm()
   form.promote-question-form.clj-promote-question-form(action="/meta/marks", method="post")
     input.clj-question-uri(type="hidden", value="!question-uri", name="question-uri")
     input.clj-refer(type="hidden", value="!current-url", name="refer")
-    button.promote-question-button.func--promote-question.clj-promote-question-button(type="submit", data-l8n="content:question-actions/promote-question")
-      | !promote
+    button.promote-question-button.func--promote-question.clj-promote-question-button(type="submit", data-l8n="attr/alt:question-actions/promote-question attr/value:question-actions/promote-question")
+      span.promote-text(data-l8n="content:question-actions/promote-question") !Promote
+      i.fa.fa-angle-double-up
 
 mixin questionDemoteForm()
   form.promote-question-form.clj-demote-question-form(action="/meta/marks", method="post")
     input.clj-question-uri(type="hidden", value="!question-uri", name="question-uri")
     input.clj-refer(type="hidden", value="!current-url", name="refer")
-    button.demote-question-button.func--demote-question.clj-demote-question-button(type="submit", data-l8n="content:question-actions/demote-question")
-      | !demote
+    button.demote-question-button.func--demote-question.clj-demote-question-button(type="submit", data-l8n="attr/alt:question-actions/demote-question attr/value:question-actions/demote-question")
+      span.demote-text(data-l8n="content:question-actions/demote-question") !Demote
+      i.fa.fa-angle-double-down
 
 mixin questionItem()
   li.question-item.clj-question-item
@@ -26,13 +28,13 @@ mixin questionItemWithPromoteForm()
   +questionItem()
     block
     +set('buttonList')
-      +questionPromoteForm()
+    +questionPromoteForm()
 
 mixin questionItemWithDemoteForm()
   +questionItem()
     block
     +set('buttonList')
-      +questionDemoteForm()
+    +questionDemoteForm()
 
 mixin objectiveQuestionsEmptyItem()
   li.question-item.clj-empty-objective-questions(data-l8n="content:objective-view/no-objective-questions")

@@ -60,4 +60,9 @@ button {
   @include default-button($pink);
 }
 
-
+.normalise-button {
+  padding: 0;
+  margin: 0;
+  border: none;
+  background-color: transparent;
+}
