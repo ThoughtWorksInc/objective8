@@ -55,10 +55,10 @@ mixin pleaseSignIn(reason)
     =" "
     span(data-l8n="content:#{reason}/after-sign-in-link") !to ...
 
-mixin modal(title, l8nTitleClass, funcClass)
-  .modal-contents.clj-modal-contents.clj-writer-invitation.js-modal-content
+mixin modal(title, titleTranslationKey, funcClass)
+  .modal-contents.clj-modal-contents.js-modal-content
     .modal-header
-      h2.modal-title(class="#{l8nTitleClass} #{funcClass}") !Your modal title
+      h2.modal-title(class="#{funcClass}", data-l8n="content:#{titleTranslationKey}") !Your modal title
     .modal-body
       block
 

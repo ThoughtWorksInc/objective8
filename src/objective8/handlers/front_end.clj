@@ -29,9 +29,6 @@
          redirect-url (utils/safen-url (str location (when fragment (str "#" fragment))))]
      (response/redirect redirect-url))))
 
-(defn invitation? [session]
-  (:invitation session))
-
 ;; HANDLERS
 
 (defn error-404 [request]

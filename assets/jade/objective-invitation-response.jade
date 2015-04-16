@@ -8,16 +8,16 @@ block vars
 block content
   .middle-container.clj-invitation-response
     article
-      h1.l8n-invitation-response-title !You've been invited to help draft a policy
+      h1(data-l8n="content:invitation-response/page-title") !You've been invited to help draft a policy
       p.lede
-        span.l8n-invitation-response-help-achieve !Can you help write policy to achieve this objective:
+        span(data-l8n="content:invitation-response/help-achieve") !Can you help write policy to achieve this objective:
         = " "
         span.clj-objective-title !More bikes in Soho
-      p.l8n-rsvp-text !If you're interested, you can sign in and accept the invitation below.
+      p(data-l8n="content:invitation-response/rsvp-text") !If you're interested, you can sign in and accept the invitation below.
 
     .invitation-response-actions
       form.invitation-response-form.clj-invitation-response-decline(method="POST", action="{{/objectives/:o-id/writer-invitations/:i-id/decline}}")
-        button.pink-button.l8n-invitation-decline-text(type="submit", value="decline") !Decline
+        button.pink-button(data-l8n="content:invitation-response/decline", type="submit", value="decline") !Decline
 
       form.invitation-response-form.clj-invitation-response-accept(method="POST", action="{{/objectives/:o-id/writer-invitations/:i-id/accept}}")
-        button.button.l8n-invitation-accept-text.func--invitation-accept(type="submit", value="accept") !Accept
+        button.button.func--invitation-accept(type="submit", value="accept", data-l8n="content:invitation-response/accept") !Accept

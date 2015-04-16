@@ -18,7 +18,6 @@
 
 (defn writer-invitation-modal [flash objective translations]
   (html/transformation
-    [:.l8n-invitation-guidance-text-line-1] (html/content (translations :invitation-modal/guidance-text-line-1))
     [:.clj-invitation-url] (html/set-attr "value" (:invitation-url flash))
     [:.clj-mail-to] (html/set-attr :href (mail-to-string flash
                                                          objective
@@ -35,20 +34,12 @@
       [:.clj-modal-contents] (html/content
 
                                (html/at invitation-response-snippet
-                                        [:.l8n-invitation-response-title] (tl8 :invitation-response/page-title)
-                                        [:.l8n-invitation-response-help-achieve] (tl8 :invitation-response/help-achieve)
                                         [:.clj-objective-title] (html/content (:title objective)) 
-                                        [:.l8n-rsvp-text] (tl8 :invitation-response/rsvp-text)
-
                                         [:.clj-invitation-response-decline] 
                                         (html/do-> 
                                           (html/set-attr :action (utils/local-path-for :fe/decline-invitation :id (:objective-id invitation-rsvp) :i-id (:invitation-id invitation-rsvp)))
                                           (html/prepend (html/html-snippet (anti-forgery-field)))) 
-
-                                        [:.l8n-invitation-decline-text] (tl8 :invitation-response/decline)
-                                        [:.l8n-invitation-accept-text] (tl8 :invitation-response/accept)     
-
-                                        [:.clj-invitation-response-accept] 
+                                        [:.clj-invitation-response-accept]
                                         (if user
                                           (html/do-> (html/prepend (html/html-snippet (anti-forgery-field))) 
                                                      (html/set-attr :action (utils/local-path-for :fe/accept-invitation :id (:objective-id invitation-rsvp) :i-id (:invitation-id invitation-rsvp))))
@@ -169,7 +160,7 @@
                                                                (= :invitation (:type flash)) (update-in context [:doc] dissoc :flash)
                                                                (invitation-rsvp-for-objective? objective invitation-rsvp) (dissoc context :invitation-rsvp)
                                                                :else context)))
-                                      [:.clj-writer-invitation] 
+                                      [:.clj-modal-contents]
                                       (if (= :invitation (:type flash))
                                         (writer-invitation-modal flash objective translations)
                                         (when (invitation-rsvp-for-objective? objective invitation-rsvp) 
