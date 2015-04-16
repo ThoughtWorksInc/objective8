@@ -9,7 +9,7 @@ block vars
 
 mixin dashboardNavigationItem(count, cssClass)
   li.dashboard-navigation-item(class=cssClass)
-    a.dashboard-navigation-item-link(href="#")
+    a.dashboard-navigation-item-link(href="#dashboard-content")
       block
       span.dashboard-navigation-item-link-count (#{count})
       i.fa.fa-angle-right
@@ -18,8 +18,13 @@ block content
   .dashboard-title-container
     //p.dashboard-subtitle Objective:
     h1.dashboard-title We need more bike lines in soho
-    p Objective participants: 5432
-    p Starred: 3210
+  .dashboard-overall-stats
+    p.dashboard-stat
+      span.dashboard-stat-amount 5432
+      span.dashboard-stat-title Participants
+    p.dashboard-stat
+      span.dashboard-stat-amount 3210
+      span.dashboard-stat-title Starred
   .writer-dashboard
     .writer-dashboard-navigation
       h2.writer-dashboard-navigation-title Questions
@@ -38,17 +43,20 @@ block content
           | What colour is the sky?
 
     .writer-dashboard-content-container
-      .writer-dashboard-content-filters
-        a.writer-dashboard-content-filter-button.on(href="#")
-          i.fa.fa-thumbs-o-up
-        a.writer-dashboard-content-filter-button(href="#")
-          i.fa.fa-thumbs-o-down
-        a.writer-dashboard-content-filter-button(href="#")
-          i.fa.fa-paperclip
+      ul.writer-dashboard-content-filter-list
+        li.writer-dashboard-content-filter-list-item
+          a.writer-dashboard-content-filter-list-item-button.on(href="#")
+            i.fa.fa-thumbs-o-up
+        li.writer-dashboard-content-filter-list-item
+          a.writer-dashboard-content-filter-list-item-button(href="#")
+            i.fa.fa-thumbs-o-down
+        li.writer-dashboard-content-filter-list-item
+          a.writer-dashboard-content-filter-list-item-button(href="#")
+            i.fa.fa-paperclip
 
 
 
-      .writer-dashboard-content
+      .writer-dashboard-content#dashboard-content
         .writer-dashboard-content-stats
           p 1827 answers, 987 unique:
         ul.answer-list
