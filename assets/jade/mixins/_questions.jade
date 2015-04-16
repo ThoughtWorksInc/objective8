@@ -52,3 +52,28 @@ mixin addQuestionForm(allowFocus)
           span.form-field-label-title(data-l8n="content:question-create/question-label") !Add a question
           textarea.func--question-textarea#new-question(name="question", rows="5", cols="10", pattern=".{50,}", maxlength="500", title="!Textarea title", required="required", autofocus=focus, data-l8n="attr/title:question-create/question-title")
       button.button.func--add-question(type="submit", data-l8n="content:question-create/post-button") !Add question
+
+mixin answerItem()
+  li.answer-item.approval-item.clj-answer
+    .approval-content.answer-text.clj-answer-text.func--answer-text !This is the answer to the question it has a lot of text in it becasue we want to see what happens if the answer is really long. Well not really really long but at least a reasonable length in relation to everything else on the page.
+    .approval-options
+      form(action="/meta/up-vote", method="post").approval-vote-option.clj-approval-form
+        input(type="hidden", value="!vote-on-uri", name="vote-on-uri").clj-vote-on-uri
+        input(type="hidden", value="!question-path", name="refer").clj-refer
+        .approval-score
+          button(type="submit").approval-button.approval-up.func--up-vote.clj-approval-button
+            i.fa.fa-thumbs-o-up
+            span.visuallyhidden(data-l8n="content:question-page/vote-up") !Vote up.
+            span.visuallyhidden (
+            span.clj-up-score.func--up-score !27
+            span.visuallyhidden )
+      form(action="/meta/down-vote", method="post").approval-vote-option.clj-approval-form
+        input(type="hidden", value="!vote-on-uri", name="vote-on-uri").clj-vote-on-uri
+        input(type="hidden", value="!question-path", name="refer").clj-refer
+        .approval-score
+          button(type="submit").approval-button.approval-down.clj-approval-button
+            i.fa.fa-thumbs-o-down
+            span.visuallyhidden(data-l8n="content:question-page/vote-down") !Vote down.
+            span.visuallyhidden (
+            span.clj-down-score.func--down-score !10
+            span.visuallyhidden )
