@@ -205,7 +205,7 @@
                                        "/api/v1/objectives/" (:objective-id stored-question)
                                        "/questions/" (:_id stored-question))
                                   stored-question)
-        (resource-locked-response "New content cannot be posted against this objective as it is now in drafting.")))
+        (forbidden-response "New content cannot be posted against this objective as it is now in drafting.")))
     (catch Exception e
       (log/info "Error when posting question: " e)
       (invalid-response "Invalid question post request"))))

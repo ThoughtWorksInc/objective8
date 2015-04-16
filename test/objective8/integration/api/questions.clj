@@ -75,12 +75,12 @@
                                        :content-type "application/json"
                                        :body (json/generate-string the-invalid-question)))) => (contains {:status 400}))
 
-         (fact "a 423 (locked) status is returned when trying to post a question to an objective that has status=drafting"
+         (fact "a 403 (forbidden) status is returned when trying to post a question to an objective that has status=drafting"
                (let [{objective-id :_id user-id :created-by-id} (sh/store-an-objective-in-draft)]
                  (:response (p/request app (str "/api/v1/objectives/" objective-id "/questions")
                                        :request-method :post
                                        :content-type "application/json"
-                                       :body (the-question-as-json objective-id user-id))) => (contains {:status 423})))))
+                                       :body (the-question-as-json objective-id user-id))) => (contains {:status 403})))))
 
 
 (facts "GET /api/v1/objectives/:id/questions/:q-id"
