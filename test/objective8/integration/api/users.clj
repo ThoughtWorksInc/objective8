@@ -115,4 +115,14 @@
                                                                                        :user-uri (str "/users/" user-id)}))]
                       (:status response) => 200
                       (:headers response) => (helpers/location-contains (str "/api/v1/users/" user-id))
-                      (:body response) => (helpers/json-contains {:profile {:name "name" :biog "biography"}})))))
+                      (:body response) => (helpers/json-contains {:profile {:name "name" :biog "biography"}})))
+
+              (fact "returns a 404 if the user does not exist"
+                    (let [invalid-user-id 2323
+                          {response :response} (p/request app "/api/v1/users/writer-profiles"
+                                                          :request-method :post
+                                                          :content-type "application/json"
+                                                          :body (json/generate-string {:name "name"
+                                                                                       :biog "biography"
+                                                                                       :user-uri (str "/users/" invalid-user-id)}))]
+                      (:status response) => 404))))
