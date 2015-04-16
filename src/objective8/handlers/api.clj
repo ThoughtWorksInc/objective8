@@ -260,7 +260,7 @@
                                             "/questions/" (:question-id stored-answer)
                                             "/answers/" (:_id stored-answer))
                                        stored-answer)
-            (resource-locked-response "New content cannot be posted against this objective as it is now in drafting.")))
+            (forbidden-response "New content cannot be posted against this objective as it is now in drafting.")))
         (invalid-response "Invalid answer post request")))
     (catch Exception e
       (log/info "Error when posting answer: " e)

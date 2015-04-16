@@ -48,7 +48,7 @@
                 (:headers response) => (helpers/location-contains (str "api/v1/objectives/" obj-id "/questions/" q-id "/answers/"))
                 (:status response) => 201)) 
 
-        (fact "returns a 423 (resource locked) status when drafting has started on the objective"
+        (fact "returns a 403 (forbidden) status when drafting has started on the objective"
               (let [{obj-id :_id :as objective} (sh/store-an-objective-in-draft)
                     {q-id :_id created-by-id :created-by-id} (sh/store-a-question {:objective objective})
                     answer (an-answer obj-id q-id created-by-id)
@@ -56,7 +56,7 @@
                                                     :request-method :post
                                                     :content-type "application/json"
                                                     :body (json/generate-string answer))]
-                (:status response) => 423))
+                (:status response) => 403))
 
         (fact "returns a 400 status if a PSQLException is raised"
               (against-background
