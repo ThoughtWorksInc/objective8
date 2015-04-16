@@ -36,13 +36,13 @@ mixin questionItemWithDemoteForm()
     +set('buttonList')
     +questionDemoteForm()
 
-mixin objectiveQuestionsEmptyItem()
+mixin objectiveQuestionsBlank()
   li.question-item.clj-empty-objective-questions(data-l8n="content:objective-view/no-objective-questions")
     | !The writers for this objective have not asked any questions yet.
 
-mixin questionItemBlank()
-  li.question-item(data-l8n="content:question-list/no-questions")
-    | !No one has answered this question yet.
+mixin communityQuestionsBlank()
+  li.question-item.clj-empty-community-questions(data-l8n="content:question-list/no-questions")
+    | !There are no questions yet.
 
 mixin addQuestionForm(allowFocus)
   - focus = allowFocus ? true : false

@@ -208,10 +208,17 @@ html.no-js(lang="en")
 
       .example
         .documentation
-          h3 Blank question list item
-          p Generated with questionItemBlank() mixin
+          h3 Blank community question list item
+          p Generated with communityQuestionsBlank() mixin
         ol.question-list
-          +questionItemBlank()
+          +communityQuestionsBlank()
+
+      .example
+        .documentation
+          h3 Blank objective question list item
+          p Generated with objectiveQuestionsBlank() mixin
+        ol.question-list
+          +objectiveQuestionsBlank()
 
       .example
         .documentation

@@ -79,7 +79,8 @@
 
 ;; QUESTION LIST
 
-(def empty-question-list-item-snippet (html/select pf/library-html-resource [:.clj-empty-question-list-item]))
+(def empty-community-question-list-item-snippet (html/select pf/library-html-resource [:.clj-empty-community-questions]))
+(def empty-objective-question-list-item-snippet (html/select pf/library-html-resource [:.clj-empty-objective-questions]))
 
 (def question-list-item-snippet (html/select pf/library-html-resource [:.clj-library-key--question-list-item]))
 (def question-list-item-with-promote-form-snippet (html/select pf/library-html-resource [:.clj-library-key--question-list-item-with-promote-form]))
@@ -102,8 +103,7 @@
   (let [roles (:roles user)
         objective-id (:_id objective)]
     (or (contains? roles (utils/writer-for objective-id))
-        (contains? roles (utils/owner-of objective-id))))
-  false)
+        (contains? roles (utils/owner-of objective-id)))))
 
 (defn objective-question-list [{:keys [data user] :as context}]
   (let [objective-questions (filter #(get-in % [:meta :marked]) (:questions data))
@@ -111,7 +111,7 @@
                             question-list-item-with-demote-form-snippet
                             question-list-item-snippet)]
     (if (empty? objective-questions)
-      empty-question-list-item-snippet
+      empty-objective-question-list-item-snippet
       (question-list-items list-item-snippet objective-questions))))
 
 (defn community-question-list [{:keys [data user] :as context}]
@@ -120,7 +120,7 @@
                             question-list-item-with-promote-form-snippet
                             question-list-item-snippet)]
     (if (empty? community-questions)
-      empty-question-list-item-snippet
+      empty-community-question-list-item-snippet
       (question-list-items list-item-snippet community-questions))))
 
 

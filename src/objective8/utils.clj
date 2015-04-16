@@ -137,7 +137,8 @@
       ((regex-checker #"/objectives/\d+/writer-invitations/\d+") target)))
 
 (defn safen-fragment [fragment]
-  (or ((regex-checker #"comments") fragment)))
+  (or ((regex-checker #"comments") fragment)
+      ((regex-checker #"questions") fragment)))
 
 (defn safen-url [target]
   (when target
