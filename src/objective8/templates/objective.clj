@@ -16,12 +16,14 @@
        "&body=" (translations :invitation-modal/email-body-line-1) " " (:title objective)
        "%0d%0d" (translations :invitation-modal/email-body-line-2) "%0d" (:invitation-url flash)))
 
-(defn writer-invitation-modal [flash objective translations]
-  (html/transformation
-    [:.clj-invitation-url] (html/set-attr "value" (:invitation-url flash))
-    [:.clj-mail-to] (html/set-attr :href (mail-to-string flash
-                                                         objective
-                                                         translations))))
+(defn writer-invitation-modal [{:keys [data doc translations] :as context}]
+  (let [objective (:objective data)
+        flash (:flash doc)]
+    (html/transformation
+     [:.clj-invitation-url] (html/set-attr "value" (:invitation-url flash))
+     [:.clj-mail-to] (html/set-attr :href (mail-to-string flash
+                                                          objective
+                                                          translations)))))
 
 (def invitation-response-snippet (html/select (html/html-resource "templates/jade/objective-invitation-response.html") [:.clj-invitation-response]))
 
@@ -47,6 +49,18 @@
                                                                     [:.clj-anchor-button] (html/do-> 
                                                                                             (html/set-attr :href (str "/sign-in?refer=" (:uri ring-request)))
                                                                                             (tl8 :invitation-response/sign-in-to-accept))))))))))
+
+
+(def share-question-modal-snippet (html/select (html/html-resource "templates/jade/modals/share-question-modal.html")
+                                               [:.clj-share-question-modal]))
+
+(defn share-question-modal [{:keys [data] :as context}]
+  (when-let [question (:created-question data)]
+    (html/transformation [:clj-modal-contents]
+                         (html/content
+                          (html/at share-question-modal-snippet
+                                   [:.clj-modal-contents] identity)))))
+
 
 ;; DRAFTING HAS STARTED MESSAGE
 
@@ -144,6 +158,7 @@
         objective-id (:_id objective)
         candidates (:candidates data)
         flash (:flash doc)
+        modal (:flash doc)
         optionally-disable-voting (if (tf/in-drafting? objective)
                                     (pf/disable-voting-actions translations)
                                     identity)]
@@ -161,8 +176,9 @@
                                                                (invitation-rsvp-for-objective? objective invitation-rsvp) (dissoc context :invitation-rsvp)
                                                                :else context)))
                                       [:.clj-modal-contents]
-                                      (if (= :invitation (:type flash))
-                                        (writer-invitation-modal flash objective translations)
+                                      (case (:type modal)
+                                        :invitation (writer-invitation-modal context)
+                                        :share-question (share-question-modal context)
                                         (when (invitation-rsvp-for-objective? objective invitation-rsvp) 
                                           (invitation-rsvp-modal context)))
 
