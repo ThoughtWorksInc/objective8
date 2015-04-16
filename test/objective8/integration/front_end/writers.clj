@@ -228,6 +228,18 @@
            (http-api/create-user anything) => {:status ::http-api/success
                                                :result {:_id USER_ID}})
 
+         (fact "an invited writer can reach the create profile page"
+               (against-background
+                 (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success
+                                                                 :result ACTIVE_INVITATION}
+                 (http-api/get-objective OBJECTIVE_ID anything) => {:status ::http-api/success
+                                                           :result {:title OBJECTIVE_TITLE}})
+               (let [{response :response} (-> user-session
+                                              (helpers/with-sign-in "http://localhost:8080/")
+                                              (p/request INVITATION_URL)
+                                              (p/request CREATE_PROFILE_URL))]
+                 (:status response)  => 200 
+                 (:body response) => (contains "Create profile | Objective[8]")))
 
          (fact "an invited writer can create a profile which, in turn, accepts their invitation"
                (against-background

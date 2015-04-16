@@ -320,8 +320,10 @@
 (defn remove-invitation-credentials [response]
   (update-in response [:session] dissoc :invitation))
 
-(defn create-profile-get [_]
-  )
+(defn create-profile-get [request]
+  {:status 200
+   :headers {"Content-Type" "text/html"}      
+   :body (views/create-profile "create-profile" request)})
 
 (defn accept-invitation [{:keys [session]}]
   (if-let [invitation-credentials (:invitation session)]

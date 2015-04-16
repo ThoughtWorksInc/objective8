@@ -1,0 +1,22 @@
+extends layouts/base
+include mixins/_view_helpers
+
+block vars
+  - bodyClass = ""
+  - pageTitle = "!Create profile | Objective[8]"
+
+block content
+
+  .middle-container
+    h1.create-profile-title(data-l8n="content:create-profile/page-title") !Create your writer profile
+    form.create-profile-form.clj-create-profile-form(action="/create-profile" method="POST")
+      fieldset.create-profile-fields
+        p.form-field
+          label.form-field-label(for="name")
+            span.form-field-label-title(data-l8n="content:create-profile/name-label") !Name
+            input.clj-input-name(id="name", name="name", type="text", maxlength="50", required="required")
+        p.form-field
+          label.form-field-label(for="biography")
+            span.form-field-label-title(data-l8n="content:create-profile/biography") !Biography
+            textarea.clj-textarea-biog(id="biog", name="biog", type="text", required="required")
+      button.button(type="submit", data-l8n="content:create-profile/button") !Create profile

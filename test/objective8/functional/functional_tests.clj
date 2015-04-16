@@ -222,6 +222,7 @@
                    (wait-for-element ".func--invite-writer")
                    (screenshot "invite_writer_page")
 
+
                    (wd/input-text ".func--writer-name" "Functional Test Writer Name")
                    (wd/input-text ".func--writer-email" "func_test_candidate@domain.com")
                    (-> ".func--writer-reason"
@@ -242,24 +243,25 @@
               => (contains {:page-title "Functional test headline | Objective[8]"
                             :flash-message (contains "Your writer's invitation")}))
 
+(fact "Can accept a writer invitation"
+      (try (wd/to (:invitation-url @journey-state))
+           (wait-for-title "Functional test headline | Objective[8]")
+           (screenshot "objective_page_after_hitting_invitation_url")
 
-        (fact "Can accept a writer invitation"
-              (try (wd/to (:invitation-url @journey-state))
-                   (wait-for-title "Functional test headline | Objective[8]")
-                   (screenshot "objective_page_after_hitting_invitation_url")
+           ;         (wd/to "localhost:8080/create-profile" )
+           ;         (wait-for-title "Create profile | Objective[8]")
+           ;         (screenshot "create_profile_page")
 
-                   (wd/click ".func--invitation-accept")
-                   (wait-for-element ".func--objective-page")
-                   (screenshot "objective_page_from_recently_added_writer")
+           (wd/click ".func--invitation-accept")
+           (wait-for-element ".func--objective-page")
+           (screenshot "objective_page_from_recently_added_writer")
 
-                   (wd/text (second (wd/elements ".func--writer-name")))
+           (wd/text (second (wd/elements ".func--writer-name")))
 
-                   (catch Exception e
-                     (screenshot "ERROR-Can-accept-a-writer-invitation")
-                     (throw e)))
-              => "Functional Test Writer Name")
-
-        
+           (catch Exception e
+             (screenshot "ERROR-Can-accept-a-writer-invitation")
+             (throw e)))
+      => "Functional Test Writer Name")
 
         (against-background
          [(before :contents (-> (:objective-url @journey-state)

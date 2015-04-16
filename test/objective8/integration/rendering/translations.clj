@@ -13,6 +13,15 @@
 (def QUESTION_ID 2)
 (def USER_ID 3)
 (def DRAFT_ID 4)
+(def UUID "random-uuid")
+(def INVITATION_ID 3)
+(def OBJECTIVE_TITLE "some title")
+(def ACTIVE_INVITATION {:_id INVITATION_ID
+                        :invited-by-id USER_ID
+                        :objective-id OBJECTIVE_ID
+                        :uuid UUID
+                        :status "active"})
+(def INVITATION_URL (utils/path-for :fe/writer-invitation :uuid UUID))
 (def SOME_MARKDOWN  "A heading\n===\nSome content")
 (def SOME_HICCUP (eh/to-hiccup (ec/mp SOME_MARKDOWN)))
 (def SOME_HTML (hc/html SOME_HICCUP))
@@ -153,6 +162,26 @@
                    {status :status body :body} (-> user-session
                                                    (helpers/sign-in-as-existing-user)
                                                    (p/request (utils/path-for :fe/invite-writer :id OBJECTIVE_ID))
+                                                   :response)]
+               status => 200
+               body => helpers/no-untranslated-strings)))
+
+(facts "about rendering create-profile page"
+       (fact "there are no untranslated strings"
+             (against-background
+               (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
+               (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                               :result {:_id USER_ID
+                                                                        :username "username"}}
+               (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success
+                                                               :result ACTIVE_INVITATION}
+               (http-api/get-objective OBJECTIVE_ID anything) => {:status ::http-api/success
+                                                                  :result {:title OBJECTIVE_TITLE}})
+             (let [user-session (helpers/test-context)
+                   {status :status body :body} (-> user-session
+                                                   (helpers/sign-in-as-existing-user)
+                                                   (p/request INVITATION_URL)
+                                                   (p/request (utils/path-for :fe/create-profile-get))
                                                    :response)]
                status => 200
                body => helpers/no-untranslated-strings)))
