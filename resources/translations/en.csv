@@ -134,8 +134,8 @@ objective-nav,back-to-objective,Back to objective
 answer-sign-in,please,Please
 answer-sign-in,sign-in,sign-in
 answer-sign-in,to,to add an answer
-question-actions,mark-question,mark
-question-actions,unmark-question,unmark
+question-actions,promote-question,promote
+question-actions,demote-question,demote
 question-page,guidance-heading,What is a question?
 question-page,guidance-text-1,Questions are how Objective[8] gathers community ideas for use in drafting policy
 question-page,answers-for,Answers for

@@ -82,8 +82,8 @@
 (def empty-question-list-item-snippet (html/select pf/library-html-resource [:.clj-empty-question-list-item]))
 
 (def question-list-item-snippet (html/select pf/library-html-resource [:.clj-library-key--question-list-item]))
-(def question-list-item-with-mark-form-snippet (html/select pf/library-html-resource [:.clj-library-key--question-list-item-with-mark-form]))
-(def question-list-item-with-unmark-form-snippet (html/select pf/library-html-resource [:.clj-library-key--question-list-item-with-unmark-form]))
+(def question-list-item-with-promote-form-snippet (html/select pf/library-html-resource [:.clj-library-key--question-list-item-with-promote-form]))
+(def question-list-item-with-demote-form-snippet (html/select pf/library-html-resource [:.clj-library-key--question-list-item-with-demote-form]))
 
 (defn question-list-items [list-item-snippet questions]
   (html/at list-item-snippet
@@ -92,8 +92,8 @@
                            [:.clj-question-text] (html/content (:question question))
                            [:.clj-answer-link] (html/set-attr :href (str "/objectives/" (:objective-id question)
                                                                          "/questions/" (:_id question)))
-                           [:.clj-mark-question-form] (html/prepend (html/html-snippet (anti-forgery-field)))
-                           [:.clj-unmark-question-form] (html/prepend (html/html-snippet (anti-forgery-field)))
+                           [:.clj-promote-question-form] (html/prepend (html/html-snippet (anti-forgery-field)))
+                           [:.clj-demote-question-form] (html/prepend (html/html-snippet (anti-forgery-field)))
                            [:.clj-refer] (html/set-attr :value (str "/objectives/" (:objective-id question) "#questions"))
                            [:.clj-question-uri] (html/set-attr :value (str "/objectives/" (:objective-id question)
                                                                            "/questions/" (:_id question))))))
@@ -108,7 +108,7 @@
 (defn objective-question-list [{:keys [data user] :as context}]
   (let [objective-questions (filter #(get-in % [:meta :marked]) (:questions data))
         list-item-snippet (if (can-mark-questions? (:objective data) user)
-                            question-list-item-with-unmark-form-snippet
+                            question-list-item-with-demote-form-snippet
                             question-list-item-snippet)]
     (if (empty? objective-questions)
       empty-question-list-item-snippet
@@ -117,7 +117,7 @@
 (defn community-question-list [{:keys [data user] :as context}]
   (let [community-questions (filter #(not (get-in % [:meta :marked])) (:questions data))
         list-item-snippet (if (can-mark-questions? (:objective data) user)
-                            question-list-item-with-mark-form-snippet
+                            question-list-item-with-promote-form-snippet
                             question-list-item-snippet)]
     (if (empty? community-questions)
       empty-question-list-item-snippet
@@ -203,7 +203,7 @@
                                                                    (html/set-attr
                                                                      :href (str "/objectives/" (:_id objective) "/invite-writer")))
 
-                                      [:.clj-objective-question-list] nil ;(html/content (objective-question-list context))
+                                      [:.clj-objective-question-list] (html/content (objective-question-list context))
                                       [:.clj-community-question-list] (html/content (community-question-list context))
                                       [:.clj-ask-question-link] (when (tf/open? objective)
                                                                   (html/set-attr
