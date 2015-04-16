@@ -2,12 +2,13 @@ include ../mixins/_helpers
 include ../mixins/_view_helpers
 
 - var pageTitle = "!Page Title"
+- var htmlClass = ""
 - var bodyClass = ""
 - var googleFontsUrl = "https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700"
 block vars
 
 doctype
-html.no-js(lang="en")
+html.no-js(lang="en", class="#{htmlClass}")
   head
     meta(charset='utf-8')
     meta(http-equiv='X-UA-Compatible', content='IE=edge')
