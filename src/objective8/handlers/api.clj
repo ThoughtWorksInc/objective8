@@ -88,19 +88,19 @@
   (try
     (if-let [profile-data (ar/request->profile-data request)]
       (let [{status :status user :result} (actions/update-user-with-profile! profile-data)]
-       (cond
-         (= status ::actions/success)
-         (resource-updated-response (utils/path-for :api/get-user :id (:_id user)) user)
+        (cond
+          (= status ::actions/success)
+          (resource-updated-response (utils/path-for :api/get-user :id (:_id user)) user)
 
           (= status ::actions/entity-not-found)  
           (not-found-response "User does not exist with that user-uri") 
 
           :else
-          (internal-server-error "Error when posting profile")))
+          (internal-server-error "Error when posting profile")))  
       (invalid-response "Invalid profile post request"))
-    )
-  
-  )
+    (catch Exception e
+      (log/info "Error when posting profile: " e)
+      (internal-server-error "Error when posting profile"))))
 
 ;;STARS
 (defn post-star [request]

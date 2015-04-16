@@ -125,4 +125,13 @@
                                                           :body (json/generate-string {:name "name"
                                                                                        :biog "biography"
                                                                                        :user-uri (str "/users/" invalid-user-id)}))]
-                      (:status response) => 404))))
+                      (:status response) => 404))
+
+              (fact "returns a 400 when posting invalid profile data"
+                    (let [profile-data-without-biog {:name "name"
+                                                   :user-uri (str "/users/" USER_ID)}
+                          {response :response} (p/request app "/api/v1/users/writer-profiles"
+                                                          :request-method :post
+                                                          :content-type "application/json"
+                                                          :body (json/generate-string profile-data-without-biog))]
+                      (:status response) => 400)))) 
