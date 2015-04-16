@@ -297,7 +297,7 @@
                                         "/writer-invitations/" (:_id stored-invitation)) stored-invitation)
 
         (= status ::actions/objective-drafting-started)
-        (resource-locked-response "New content cannot be posted against this objective as it is now in drafting.")
+        (forbidden-response "New content cannot be posted against this objective as it is now in drafting.")
 
         (= status ::actions/entity-not-found)
         (not-found-response "Entity does not exist")

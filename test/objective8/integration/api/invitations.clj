@@ -45,14 +45,14 @@
                 (:body response) => (helpers/json-contains (assoc invitation :_id integer?))
                 (:headers response) => (helpers/location-contains (str "/api/v1/objectives/" obj-id "/writer-invitations/"))))
 
-        (fact "a 423 (resource locked) status is returned when drafting has started on the objective"
+        (fact "a 403 (forbidden) status is returned when drafting has started on the objective"
               (let [{obj-id :_id created-by-id :created-by-id} (sh/store-an-objective-in-draft)
                     invitation (an-invitation obj-id created-by-id)
                     {response :response} (p/request app (str "/api/v1/objectives/" obj-id "/writer-invitations")
                                                     :request-method :post
                                                     :content-type "application/json"
                                                     :body (json/generate-string invitation))]
-                (:status response) => 423))
+                (:status response) => 403))
         
         (fact "a 400 status is returned if a PSQLException is raised"
               (against-background
