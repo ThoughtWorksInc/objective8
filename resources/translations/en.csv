@@ -173,6 +173,7 @@ objective-view,objective-questions-title,Objective questions
 objective-view,objective-questions-helper-text,These questions have been chosen by the writers. By helping answer these questions you are providing information that is important for drafting policy.
 objective-view,no-objective-questions,The writers for this objective have not asked any questions yet.
 objective-view,community-questions-title,Ask the community
+objective-view,community-questions-helper-text,These questions have been added by the community to provide data for the policy drafting.
 objective-view,answer-link,Answer
 objective-view,ask-a-question,Ask a question
 objective-view,comments,Comments

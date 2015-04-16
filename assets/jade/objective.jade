@@ -82,7 +82,7 @@ block content
       a.button.invite-writer.clj-invite-writer-link.func--invite-writer(href="/objective-invite-writer", data-l8n="content:objective-view/invite-a-writer") !Invite a writer
 
     #questions
-      .objective-questions
+      .objective-questions.promoted-questions-container
         h2(data-l8n="content:objective-view/objective-questions-title") !Objective questions
         p(data-l8n="content:objective-view/objective-questions-helper-text") !By helping answer these questions you are supporting the objective.
         ol.question-list.clj-objective-question-list
@@ -95,6 +95,7 @@ block content
 
       .objective-questions
         h2(data-l8n="content:objective-view/community-questions-title") !Ask the community
+        p(data-l8n="content:objective-view/community-questions-helper-text") !These questions have been suggested by the community to provide data for the objective.
         ol.question-list.clj-community-question-list
           +questionItemWithPromoteForm('!Chris Cheshire', '3 September 2015 07:41')
             | !What road surface should we use?
