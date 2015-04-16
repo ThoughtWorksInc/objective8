@@ -171,15 +171,15 @@ objective-view,writers,Writers
 objective-view,invite-a-writer,Invite a writer
 objective-view,objective-questions-title,Objective questions
 objective-view,objective-questions-helper-text,These questions have been chosen by the writers. By helping answer these questions you are providing information that is important for drafting policy.
-objective-view,no-objective-questions,The writers for this objective have not asked any questions yet.
+objective-view,no-objective-questions,The writers for this objective have not promoted any questions yet.
 objective-view,community-questions-title,Ask the community
 objective-view,community-questions-helper-text,These questions have been added by the community to provide data for the policy drafting.
 objective-view,answer-link,Answer
-objective-view,ask-a-question,Ask a question
+objective-view,ask-a-question,Suggest a question
 objective-view,comments,Comments
 question-list,question-list-heading,Recently asked questions
-question-list,page-intro,"Gather background information such as opinions and experiences by asking a question.  Your question should be focussed and specific, as the answers will influence the policy drafting process."
-question-list,no-questions,There are no questions yet.
+question-list,page-intro,"Gather background information such as opinions and experiences by suggesting a question for the community to answer.  Your question should be focussed and specific, as the answers will influence the policy drafting process."
+question-list,no-questions,There are no community questions yet.
 question-list,questions-about,Questions about
 navigation-global,sign-out-title,Sign out
 navigation-global,sign-out-text,Sign out
