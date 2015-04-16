@@ -12,30 +12,26 @@ mixin questionUnmarkForm()
     button.unmark-question-button.func--unmark-question.clj-unmark-question-button(type="submit", data-l8n="content:question-actions/unmark-question")
       | !unmark
 
-mixin questionItem(author, date)
+mixin questionItem()
   li.question-item.clj-question-item
     .question-text
       p.clj-question-text
         block
     .question-actions
       a.question-reply.clj-answer-link.func--answer-link(href="#", data-l8n="content:objective-view/answer-link") !Answer
+      if blocks.buttonList
+        - blocks.buttonList()
 
-mixin questionItemWithMarkForm(author, date)
-  li.question-item.clj-question-item
-    .question-text
-      p.clj-question-text
-        block
-    .question-actions
-      a.question-reply.clj-answer-link.func--answer-link(href="#", data-l8n="content:objective-view/answer-link") !Answer
+mixin questionItemWithMarkForm()
+  +questionItem()
+    block
+    +set('buttonList')
       +questionMarkForm()
 
-mixin questionItemWithUnmarkForm(author, date)
-  li.question-item.clj-question-item
-    .question-text
-      p.clj-question-text
-        block
-    .question-actions
-      a.question-reply.clj-answer-link.func--answer-link(href="#", data-l8n="content:objective-view/answer-link") !Answer
+mixin questionItemWithUnmarkForm()
+  +questionItem()
+    block
+    +set('buttonList')
       +questionUnmarkForm()
 
 mixin objectiveQuestionsEmptyItem()
