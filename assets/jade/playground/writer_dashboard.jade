@@ -1,0 +1,73 @@
+extends ../layouts/base
+include ../mixins/_view_helpers
+
+block vars
+  - htmlClass = "html-writer-dashboard"
+  - bodyClass = ""
+  - pageTitle = "! Writer dashboard"
+
+mixin dashboardNavigationItem(cssClass)
+  li.dashboard-navigation-item(class=cssClass)
+    a.dashboard-navigation-item-link(href="#")
+      block
+      i.fa.fa-angle-right
+
+block content
+
+  .writer-dashboard
+    .writer-dashboard-navigation
+      h2.writer-dashboard-navigation-title Questions
+      ul.dashboard-navigation
+        +dashboardNavigationItem()
+          | hello world
+        +dashboardNavigationItem('on')
+          | How much wood can a woodchuck chuck?
+        +dashboardNavigationItem()
+          | What colour is the sky?
+        +dashboardNavigationItem()
+          | hello world
+        +dashboardNavigationItem()
+          | How much wood can a woodchuck chuck?
+        +dashboardNavigationItem()
+          | What colour is the sky?
+        +dashboardNavigationItem()
+          | hello world
+        +dashboardNavigationItem()
+          | How much wood can a woodchuck chuck?
+        +dashboardNavigationItem()
+          | What colour is the sky?
+        +dashboardNavigationItem()
+          | hello world
+        +dashboardNavigationItem()
+          | How much wood can a woodchuck chuck?
+        +dashboardNavigationItem()
+          | What colour is the sky?
+        +dashboardNavigationItem()
+          | hello world
+        +dashboardNavigationItem()
+          | How much wood can a woodchuck chuck?
+        +dashboardNavigationItem()
+          | What colour is the sky?
+        +dashboardNavigationItem()
+          | hello world
+        +dashboardNavigationItem()
+          | How much wood can a woodchuck chuck?
+        +dashboardNavigationItem()
+          | What colour is the sky?
+    .writer-dashboard-content-container
+      .writer-dashboard-content-filters
+        a.writer-dashboard-content-filter-button.on(href="#")
+          i.fa.fa-thumbs-o-up
+        a.writer-dashboard-content-filter-button(href="#")
+          i.fa.fa-thumbs-o-down
+
+
+
+      .writer-dashboard-content
+        ul.answer-list
+          +answerItem()
+          +answerItem()
+          +answerItem()
+          +answerItem()
+
+block footerScripts
