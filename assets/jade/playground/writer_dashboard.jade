@@ -6,68 +6,55 @@ block vars
   - bodyClass = ""
   - pageTitle = "! Writer dashboard"
 
-mixin dashboardNavigationItem(cssClass)
+
+mixin dashboardNavigationItem(count, cssClass)
   li.dashboard-navigation-item(class=cssClass)
     a.dashboard-navigation-item-link(href="#")
       block
+      span.dashboard-navigation-item-link-count (#{count})
       i.fa.fa-angle-right
 
 block content
-
+  .dashboard-title-container
+    //p.dashboard-subtitle Objective:
+    h1.dashboard-title We need more bike lines in soho
+    p Objective participants: 5432
+    p Starred: 3210
   .writer-dashboard
     .writer-dashboard-navigation
       h2.writer-dashboard-navigation-title Questions
       ul.dashboard-navigation
-        +dashboardNavigationItem()
+        +dashboardNavigationItem(2000)
           | hello world
-        +dashboardNavigationItem('on')
+        +dashboardNavigationItem(1827, 'on')
           | How much wood can a woodchuck chuck?
-        +dashboardNavigationItem()
+        +dashboardNavigationItem(999)
           | What colour is the sky?
-        +dashboardNavigationItem()
+        +dashboardNavigationItem(210)
           | hello world
-        +dashboardNavigationItem()
+        +dashboardNavigationItem(40)
           | How much wood can a woodchuck chuck?
-        +dashboardNavigationItem()
+        +dashboardNavigationItem(20)
           | What colour is the sky?
-        +dashboardNavigationItem()
-          | hello world
-        +dashboardNavigationItem()
-          | How much wood can a woodchuck chuck?
-        +dashboardNavigationItem()
-          | What colour is the sky?
-        +dashboardNavigationItem()
-          | hello world
-        +dashboardNavigationItem()
-          | How much wood can a woodchuck chuck?
-        +dashboardNavigationItem()
-          | What colour is the sky?
-        +dashboardNavigationItem()
-          | hello world
-        +dashboardNavigationItem()
-          | How much wood can a woodchuck chuck?
-        +dashboardNavigationItem()
-          | What colour is the sky?
-        +dashboardNavigationItem()
-          | hello world
-        +dashboardNavigationItem()
-          | How much wood can a woodchuck chuck?
-        +dashboardNavigationItem()
-          | What colour is the sky?
+
     .writer-dashboard-content-container
       .writer-dashboard-content-filters
         a.writer-dashboard-content-filter-button.on(href="#")
           i.fa.fa-thumbs-o-up
         a.writer-dashboard-content-filter-button(href="#")
           i.fa.fa-thumbs-o-down
+        a.writer-dashboard-content-filter-button(href="#")
+          i.fa.fa-paperclip
 
 
 
       .writer-dashboard-content
+        .writer-dashboard-content-stats
+          p 1827 answers, 987 unique:
         ul.answer-list
-          +answerItem()
-          +answerItem()
-          +answerItem()
-          +answerItem()
+          +dashboardAnswerItem()
+          +dashboardAnswerItem()
+          +dashboardAnswerItem()
+          +dashboardAnswerItem()
 
 block footerScripts
