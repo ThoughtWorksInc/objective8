@@ -215,23 +215,6 @@ JOIN objective8.users AS users
 ON objectives.created_by_id = users._id
 WHERE objectives._id=?" [user-id objective-id]] :results)))))
 
-(defn pg-retrieve-question [question-id]
-  (let [unmap-question (first (get mappings/question :transforms))]
-    (first (map unmap-question
-                (korma/exec-raw ["
-SELECT questions.*, users.username, marks.active AS marked, marks.username AS marked_by
-FROM objective8.questions AS questions
-LEFT JOIN (SELECT active, question_id, marking_users.username
-           FROM objective8.marks
-           JOIN objective8.users AS marking_users
-           ON marks.created_by_id = marking_users._id
-           ORDER BY marks._created_at DESC
-           LIMIT 1) AS marks
-ON marks.question_id = questions._id
-JOIN objective8.users AS users
-ON users._id = questions.created_by_id
-WHERE questions._id = ?" [question-id]] :results)))))
-
 (defn pg-retrieve-question-by-query-map [query-map]
   (when-let [sanitised-query (utils/select-all-or-nothing query-map [:_id :objective-id :entity])]
     (let [unmap-question (first (get mappings/question :transforms))

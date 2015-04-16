@@ -231,8 +231,9 @@
 
 (defn retrieve-questions [{:keys [route-params] :as request}]
   (let [objective-id (-> (:id route-params)
-                         Integer/parseInt)]
-    (if-let [questions (questions/retrieve-questions objective-id)]
+                         Integer/parseInt)
+        objective-uri (str "/objectives/" objective-id)]
+    (if-let [questions (questions/get-questions-for-objective objective-uri)]
       (-> questions
           response/response
           (response/content-type "application/json"))

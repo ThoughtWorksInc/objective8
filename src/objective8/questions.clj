@@ -10,8 +10,10 @@
   (when (open? (objectives/retrieve-objective objective-id))
     (store-question! question)))
 
-(defn retrieve-questions [objective-id]
-  (storage/pg-retrieve-questions-for-objective objective-id))
+(defn get-questions-for-objective [objective-uri]
+  (let [{entity :entity objective-id :_id :as query} (uris/uri->query objective-uri)]
+    (when (= :objective entity)
+      (storage/pg-retrieve-questions-for-objective objective-id))))
 
 (defn get-question [question-uri]
   (let [query (uris/uri->query question-uri)]

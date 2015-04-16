@@ -37,7 +37,7 @@
                     bad-question-uri (str "/objectives/" (inc objective-id) "/questions/" (:_id stored-question))]
                 (questions/get-question bad-question-uri) => nil))
 
-        (fact "can retrieve mark information for a marked question"
+        (fact "mark information is included when getting a question"
               (let [{objective-id :objective-id question-id :_id :as question} (sh/store-a-question)
                     mark (sh/store-a-mark {:question question})
                     question-uri (str "/objectives/" objective-id "/questions/" question-id)]
@@ -53,14 +53,16 @@
 
         (fact "can get questions for an objective along with marking information"
               (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
-
+                    
                     marked-question (sh/store-a-question {:objective objective})
                     _ (sh/store-a-mark {:question marked-question})
+                    
+                    unmarked-question (sh/store-a-question {:objective objective})
 
-                    unmarked-question (sh/store-a-question {:objective objective})]
-                (questions/retrieve-questions objective-id) => (contains [(contains {:_id (:_id marked-question)
-                                                                                     :meta (contains {:marked true
-                                                                                                      :marked-by string?})})
-                                                                          (contains {:_id (:_id unmarked-question)
-                                                                                     :meta (contains {:marked false})})]
-                                                                         :in-any-order)))))
+                    objective-uri (str "/objectives/" objective-id)]
+                (questions/get-questions-for-objective objective-uri) => (contains [(contains {:_id (:_id marked-question)
+                                                                                               :meta (contains {:marked true
+                                                                                                                :marked-by string?})})
+                                                                                    (contains {:_id (:_id unmarked-question)
+                                                                                               :meta (contains {:marked false})})]
+                                                                                   :in-any-order)))))
