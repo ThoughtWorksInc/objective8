@@ -14,5 +14,5 @@
 
          (fact "a user can be updated with a writer profile" 
                (let [user (sh/store-a-user)
-                     user-with-profile (merge user profile-data)]
+                     user-with-profile (assoc user :profile profile-data)]
                  (users/update-user! user-with-profile) => user-with-profile))))

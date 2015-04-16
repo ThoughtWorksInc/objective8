@@ -125,7 +125,7 @@
 (defn update-user-with-profile! [profile-data]
   (if-let [user (users/retrieve-user (:user-uri profile-data))]
     {:status ::success 
-     :result (users/update-user! (merge user (dissoc profile-data :user-uri)))} 
+     :result (users/update-user! (assoc user :profile (dissoc profile-data :user-uri)))} 
     {:status ::entity-not-found}))
 
 (defn authorised-objectives-for-inviter [user-id]

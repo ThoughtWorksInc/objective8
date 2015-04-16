@@ -209,7 +209,7 @@
 
 (def user-uri (str "/users/" USER_ID))
 (def profile-data {:name "name" :biog "biography" :user-uri user-uri})
-(def updated-user (merge {:entity :user :_id USER_ID} (dissoc profile-data :user-uri)))
+(def updated-user (assoc {:entity :user :_id USER_ID} :profile (dissoc profile-data :user-uri)))
 
 (facts "about updating a user with a writer profile"
        (fact "updates a user's profile"

@@ -115,4 +115,4 @@
                                                                                        :user-uri (str "/users/" user-id)}))]
                       (:status response) => 200
                       (:headers response) => (helpers/location-contains (str "/api/v1/users/" user-id))
-                      (:body response) => (helpers/json-contains {:name "name" :biog "biography"})))))
+                      (:body response) => (helpers/json-contains {:profile {:name "name" :biog "biography"}})))))
