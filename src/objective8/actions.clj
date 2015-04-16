@@ -7,6 +7,7 @@
             [objective8.comments :as comments]
             [objective8.stars :as stars]
             [objective8.users :as users]
+            [objective8.questions :as questions]
             [objective8.marks :as marks]
             [objective8.storage.storage :as storage]))
 
@@ -109,11 +110,13 @@
     {:status ::entity-not-found}))
 
 (defn mark-question! [mark-data]
-  (if-let [{active :active} (marks/get-mark-for-question (:question-uri mark-data))]
-    {:status ::success
-     :result (marks/store-mark! (assoc mark-data :active (not active)))}
-    {:status ::success
-     :result (marks/store-mark! (assoc mark-data :active true))}))
+  (if-let [question (questions/get-question (:question-uri mark-data))]
+    (if-let [{active :active} (marks/get-mark-for-question (:question-uri mark-data))]
+      {:status ::success
+       :result (marks/store-mark! (assoc mark-data :active (not active)))}
+      {:status ::success
+       :result (marks/store-mark! (assoc mark-data :active true))})
+    {:status ::entity-not-found}))
 
 (defn get-user-with-roles [user-uri]
   (if-let [user (users/retrieve-user user-uri)]

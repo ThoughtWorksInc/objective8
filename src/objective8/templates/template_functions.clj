@@ -57,3 +57,6 @@
 
 (defn starred? [objective]
   (get-in objective [:meta :starred]))
+
+(defn marked? [question]
+  (get-in question [:meta :marked]))

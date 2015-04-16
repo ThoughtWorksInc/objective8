@@ -20,6 +20,7 @@
               :_id (Integer/parseInt (:draft-id route-params))}
 
       :question {:entity :question
+                 :objective-id (Integer/parseInt (:objective-id route-params))
                  :_id (Integer/parseInt (:question-id route-params))}
 
       :answer {:entity :answer

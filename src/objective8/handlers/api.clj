@@ -215,8 +215,9 @@
     (let [q-id (-> (:q-id route-params)
                    Integer/parseInt)
           objective-id (-> (:id route-params)
-                           Integer/parseInt)]
-      (if-let [question (questions/retrieve-question q-id)]
+                           Integer/parseInt)
+          question-uri (str "/objectives/" objective-id "/questions/" q-id)]
+      (if-let [question (questions/get-question question-uri)]
         (if (-> (:objective-id question)
                 (= objective-id))
           (-> question
@@ -243,8 +244,9 @@
     (let [q-id (-> (:q-id route-params)
                    Integer/parseInt)
           objective-id (-> (:id route-params)
-                           Integer/parseInt)] 
-      (if (-> (questions/retrieve-question q-id)
+                           Integer/parseInt)
+          question-uri (str "/objectives/" objective-id "/questions/" q-id)] 
+      (if (-> (questions/get-question question-uri)
               :objective-id
               (= objective-id))
         (let [answer (-> params
@@ -268,8 +270,9 @@
     (let  [q-id (-> (:q-id route-params)
                     Integer/parseInt)
            objective-id (-> (:id route-params)
-                            Integer/parseInt)]
-      (if (-> (questions/retrieve-question q-id)
+                            Integer/parseInt)
+           question-uri (str "/objectives/" objective-id "/questions/" q-id)]
+      (if (-> (questions/get-question question-uri)
               :objective-id
               (= objective-id))
         (-> (answers/get-answers q-id)

@@ -9,6 +9,7 @@
             [objective8.writers :as writers]
             [objective8.invitations :as invitations]
             [objective8.stars :as stars]
+            [objective8.questions :as questions]
             [objective8.marks :as marks]
             [objective8.storage.storage :as storage]))
 
@@ -184,6 +185,7 @@
              (actions/mark-question! mark-data) => {:status ::actions/success
                                                     :result :the-new-mark}
              (provided
+              (questions/get-question question-uri) => :a-question
               (marks/get-mark-for-question question-uri) => nil
               (marks/store-mark! (contains (assoc mark-data :active true))) => :the-new-mark))
 
@@ -191,8 +193,14 @@
              (actions/mark-question! mark-data) => {:status ::actions/success
                                                     :result :the-new-mark}
              (provided
+              (questions/get-question question-uri) => :a-question
               (marks/get-mark-for-question question-uri) => {:active true}
-              (marks/store-mark! (contains (assoc mark-data :active false))) => :the-new-mark)))
+              (marks/store-mark! (contains (assoc mark-data :active false))) => :the-new-mark))
+
+       (fact "a question with the given uri must exist in order to be marked"
+             (actions/mark-question! mark-data) => {:status ::actions/entity-not-found}
+             (provided
+              (questions/get-question question-uri) => nil)))
 
 (facts "about getting users"
        (fact "gets user with candidate records and owned objectives if they exist"

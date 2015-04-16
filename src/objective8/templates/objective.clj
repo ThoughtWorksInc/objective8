@@ -101,7 +101,7 @@
                                                                            "/questions/" (:_id question))))))
 
 (defn objective-question-list [{:keys [data user] :as context}]
-  (let [objective-questions (filter #(get-in % [:meta :marked]) (:questions data))
+  (let [objective-questions (filter tf/marked? (:questions data))
         list-item-snippet (if (permissions/can-mark-questions? (:objective data) user)
                             question-list-item-with-demote-form-snippet
                             question-list-item-snippet)]
@@ -110,7 +110,7 @@
       (question-list-items list-item-snippet objective-questions))))
 
 (defn community-question-list [{:keys [data user] :as context}]
-  (let [community-questions (filter #(not (get-in % [:meta :marked])) (:questions data))
+  (let [community-questions (filter (complement tf/marked?) (:questions data))
         list-item-snippet (if (permissions/can-mark-questions? (:objective data) user)
                             question-list-item-with-promote-form-snippet
                             question-list-item-snippet)]
