@@ -1,0 +1,32 @@
+.dashboard-stat {
+  padding-left: 1em;
+  padding-right: 1em;
+  display: inline-block;
+  text-align: center;
+  @include mq(640) {
+    padding-left: 0;
+    padding-right: 2em;
+    margin-right: 2em;
+    text-align: left;
+  }
+  border-right: 1px solid $grey-3;
+  &:last-of-type {
+    margin-right: 0;
+    border-right: none;
+  }
+}
+.dashboard-stat-title {
+  display: block;
+  font-size: 1em;
+  line-height: 1;
+}
+.dashboard-stat-amount {
+  display: block;
+  line-height: 1.2;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: $pink;
+  @include mq(640) {
+    font-size: 2em;
+  }
+}

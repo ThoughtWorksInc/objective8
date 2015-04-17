@@ -8,61 +8,76 @@ block vars
 
 
 mixin dashboardNavigationItem(count, cssClass)
-  li.dashboard-navigation-item(class=cssClass)
-    a.dashboard-navigation-item-link(href="#dashboard-content")
+  li.writer-dashboard-navigation-item(class=cssClass)
+    a.writer-dashboard-navigation-item-link(href="#dashboard-content")
       block
-      span.dashboard-navigation-item-link-count (#{count})
+      span.writer-dashboard-navigation-item-link-count (#{count})
       i.fa.fa-angle-right
 
 block content
-  .dashboard-title-container
-    //p.dashboard-subtitle Objective:
-    h1.dashboard-title We need more bike lines in soho
-  .dashboard-overall-stats
-    p.dashboard-stat
-      span.dashboard-stat-amount 5432
-      span.dashboard-stat-title Participants
-    p.dashboard-stat
-      span.dashboard-stat-amount 3210
-      span.dashboard-stat-title Starred
   .writer-dashboard
-    .writer-dashboard-navigation
-      h2.writer-dashboard-navigation-title Questions
-      ul.dashboard-navigation
-        +dashboardNavigationItem(2000)
-          | hello world
-        +dashboardNavigationItem(1827, 'on')
-          | How much wood can a woodchuck chuck?
-        +dashboardNavigationItem(999)
-          | What colour is the sky?
-        +dashboardNavigationItem(210)
-          | hello world
-        +dashboardNavigationItem(40)
-          | How much wood can a woodchuck chuck?
-        +dashboardNavigationItem(20)
-          | What colour is the sky?
+    .writer-dashboard-header
+      h1.writer-dashboard-title We need more bike lines in soho
+      .writer-dashboard-stats
+        p.dashboard-stat
+          span.dashboard-stat-amount 5432
+          span.dashboard-stat-title Participants
+        p.dashboard-stat
+          span.dashboard-stat-amount 3210
+          span.dashboard-stat-title Starred
 
-    .writer-dashboard-content-container
-      ul.writer-dashboard-content-filter-list
-        li.writer-dashboard-content-filter-list-item
-          a.writer-dashboard-content-filter-list-item-button.on(href="#")
-            i.fa.fa-thumbs-o-up
-        li.writer-dashboard-content-filter-list-item
-          a.writer-dashboard-content-filter-list-item-button(href="#")
-            i.fa.fa-thumbs-o-down
-        li.writer-dashboard-content-filter-list-item
-          a.writer-dashboard-content-filter-list-item-button(href="#")
-            i.fa.fa-paperclip
+    .writer-dashboard-body
+      .writer-dashboard-navigation
+        h2.writer-dashboard-navigation-title Questions
+        ul.writer-dashboard-navigation-list
+          +dashboardNavigationItem(2000)
+            | hello world
+          +dashboardNavigationItem(1827, 'on')
+            | How much wood can a woodchuck chuck?
+          +dashboardNavigationItem(999)
+            | What colour is the sky?
+          +dashboardNavigationItem(210)
+            | hello world
+          +dashboardNavigationItem(40)
+            | How much wood can a woodchuck chuck?
+          +dashboardNavigationItem(20)
+            | What colour is the sky?
+          +dashboardNavigationItem(20)
+            | What colour is the sky?
+          +dashboardNavigationItem(20)
+            | What colour is the sky?
+          +dashboardNavigationItem(20)
+            | What colour is the sky?
+          +dashboardNavigationItem(20)
+            | What colour is the sky?
+          +dashboardNavigationItem(20)
+            | What colour is the sky?
+          +dashboardNavigationItem(20)
+            | What colour is the sky?
+          +dashboardNavigationItem(20)
+            | What colour is the sky?
+          +dashboardNavigationItem(20)
+            | What colour is the sky?
 
+      .writer-dashboard-content-container
+        ul.writer-dashboard-filter-list
+          li.writer-dashboard-filter-list-item
+            a.writer-dashboard-filter-list-item-button.on(href="#")
+              i.fa.fa-thumbs-o-up
+          li.writer-dashboard-filter-list-item
+            a.writer-dashboard-filter-list-item-button(href="#")
+              i.fa.fa-thumbs-o-down
+          li.writer-dashboard-filter-list-item
+            a.writer-dashboard-filter-list-item-button(href="#")
+              i.fa.fa-paperclip
 
-
-      .writer-dashboard-content#dashboard-content
-        .writer-dashboard-content-stats
-          p 1827 answers from 970 people:
-        ul.answer-list
-          +dashboardAnswerItem()
-          +dashboardAnswerItem()
-          +dashboardAnswerItem()
-          +dashboardAnswerItem()
+        .writer-dashboard-content#dashboard-content
+          .writer-dashboard-content-stats
+            p 1827 answers from 970 people:
+          ul.answer-list
+            +dashboardAnswerItem()
+            +dashboardAnswerItem()
+            +dashboardAnswerItem()
+            +dashboardAnswerItem()
 
 block footerScripts

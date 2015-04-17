@@ -36,3 +36,7 @@ $gamma_body_top_spacing: 3em;
 $default_block_spacing: 2em;
 $alpha_block_spacing: 1em;
 $gamma_block_spacing: 2em;
+
+$masthead_height: 52px;
+$status_bar_height: 35px;
+$header_height: $masthead_height + $status_bar_height;
