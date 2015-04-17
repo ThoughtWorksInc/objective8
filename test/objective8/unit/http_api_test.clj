@@ -231,7 +231,7 @@
 (fact "posting a profile hits the correct API endpoint"
       (http-api/post-profile profile-data) => :api-call-result
       (provided
-        (http-api/default-put-call (contains (str host-url "/api/v1/users/writer-profiles")) profile-data) => :api-call-result))
+        (http-api/default-post-call (contains (str host-url "/api/v1/users/writer-profiles")) profile-data) => :api-call-result))
 
 (def UUID "some-long-random-string")
 

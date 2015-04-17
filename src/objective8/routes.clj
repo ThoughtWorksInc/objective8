@@ -44,7 +44,7 @@
     ;; API
     "api/v1"            {"/users" {:post :api/post-user-profile
                                    :get :api/get-user-by-query
-                                   "/writer-profiles" {:put :api/put-writer-profile}
+                                   "/writer-profiles" {:post :api/post-writer-profile}
                                    ["/" [#"\d+" :id]] :api/get-user}
 
                          "/objectives" {:get :api/get-objectives

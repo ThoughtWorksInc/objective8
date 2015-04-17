@@ -74,7 +74,7 @@
                :api/post-user-profile (m/wrap-bearer-token api-handlers/post-user-profile bt/token-provider)
                :api/get-user-by-query (m/wrap-bearer-token api-handlers/find-user-by-query bt/token-provider)
                :api/get-user (m/wrap-bearer-token api-handlers/get-user bt/token-provider)
-               :api/put-writer-profile (m/wrap-bearer-token api-handlers/put-writer-profile bt/token-provider)
+               :api/post-writer-profile (m/wrap-bearer-token api-handlers/post-writer-profile bt/token-provider)
                :api/post-objective (m/wrap-bearer-token api-handlers/post-objective bt/token-provider)
                :api/get-objective (m/wrap-bearer-token api-handlers/get-objective bt/token-provider) 
                :api/get-objectives (m/wrap-bearer-token api-handlers/get-objectives bt/token-provider) 
