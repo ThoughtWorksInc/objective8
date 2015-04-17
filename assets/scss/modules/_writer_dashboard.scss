@@ -11,7 +11,12 @@
 //    }
 //  }
   .main-content {
-    padding-top: 1em;
+    padding: 1em 0 0 0;
+    @include mq(640) {
+      padding-left: 1em;
+      padding-right: 1em;
+      padding-bottom: 1em;
+    }
   }
 }
 
@@ -96,10 +101,12 @@
 // content area
 
 .writer-dashboard-content {
-  padding: 1em 2em;
+  padding: 1em;
   @include mq(640) {
     height: 480px;
     overflow-y: scroll;
+    padding-left: 2em;
+    padding-right: 2em;
   }
 }
 .writer-dashboard-content-stats {
