@@ -108,7 +108,7 @@
               (fact "the writer profile info is updated in a user"
                     (let [{user-id :_id :as user} (sh/store-a-user)
                           {response :response} (p/request app "/api/v1/users/writer-profiles" 
-                                                          :request-method :post
+                                                          :request-method :put
                                                           :content-type "application/json"
                                                           :body (json/generate-string {:name "name" 
                                                                                        :biog "biography" 
@@ -120,7 +120,7 @@
               (fact "returns a 404 if the user does not exist"
                     (let [invalid-user-id 2323
                           {response :response} (p/request app "/api/v1/users/writer-profiles"
-                                                          :request-method :post
+                                                          :request-method :put
                                                           :content-type "application/json"
                                                           :body (json/generate-string {:name "name"
                                                                                        :biog "biography"
@@ -131,7 +131,7 @@
                     (let [profile-data-without-biog {:name "name"
                                                    :user-uri (str "/users/" USER_ID)}
                           {response :response} (p/request app "/api/v1/users/writer-profiles"
-                                                          :request-method :post
+                                                          :request-method :put
                                                           :content-type "application/json"
                                                           :body (json/generate-string profile-data-without-biog))]
                       (:status response) => 400)))) 

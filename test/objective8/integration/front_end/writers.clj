@@ -313,6 +313,30 @@
                                                   :objective-id OBJECTIVE_ID}) => {:status ::http-api/success
                                                                                    :result {}}))
 
+         (def user-with-writer-credentials {:_id USER_ID :writer-records [{:objective-id OBJECTIVE_ID}]})
+
+         (fact "a user cannot accept an invitation when they are already a writer for the same objective" 
+               (against-background
+                 (oauth/access-token anything anything anything) => {:user_id USER_ID}
+                 (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                                 :result user-with-writer-credentials} 
+                 (http-api/get-user anything) => {:result user-with-writer-credentials}  
+                 (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success
+                                                                 :result ACTIVE_INVITATION}
+                 (http-api/get-objective OBJECTIVE_ID anything) => {:status ::http-api/success
+                                                                    :result {:title OBJECTIVE_TITLE}})
+               (let [{response :response}  (-> user-session
+                                              helpers/sign-in-as-existing-user
+                                              (p/request INVITATION_URL)
+                                              (p/request ACCEPT_INVITATION_URL :request-method :post)
+                                              p/follow-redirect)]
+                 (:status response)) => 200 
+               (provided
+                 (http-api/decline-invitation {:invitation-uuid UUID
+                                               :objective-id OBJECTIVE_ID
+                                               :invitation-id INVITATION_ID}) => {:status ::http-api/success}
+                 (http-api/post-candidate-writer anything) => :not-called :times 0))
+
          (fact "a user is granted writer-for-OBJECTIVE_ID and writer-inviter-for-OBJECTIVE_ID roles when accepting an invitation"
                (against-background
                  (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success
@@ -341,6 +365,7 @@
                                           (p/request ACCEPT_INVITATION_URL 
                                                      :request-method :post))]
                  peridot-response => (contains {:response (contains {:status 401})})))))
+
 
 (binding [config/enable-csrf false]
   (facts "declining an invitation"
