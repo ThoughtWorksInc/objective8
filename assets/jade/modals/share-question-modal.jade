@@ -1,0 +1,22 @@
+extends ../layouts/base
+include ../mixins/_view_helpers
+
+block vars
+  - bodyClass = "objective"
+  - pageTitle = "!Share question modal"
+
+block content
+  .middle-container.clj-share-question-modal
+    article
+      h1 !Question created
+      p.lede
+        span !Share your question to increase the number of answers.
+      p.clj-question-text.modal-share-question-text
+        em !How can we increase the number of people cycling in Soho?
+      p.share-box
+        ul.modal-share-list
+          +shareIcon("fa-reddit-square", "test")
+          +shareIcon("fa-facebook-square", "test")
+          +shareIcon("fa-google-plus-square", "test")
+          +shareIcon("fa-twitter-square", "test")
+

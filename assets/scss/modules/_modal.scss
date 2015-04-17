@@ -76,3 +76,20 @@
     }
   }
 }
+
+.modal-share-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.modal-share-icon {
+  font-size: 2.6em;
+  color: $black;
+  display: inline;
+  margin-right: 0.2em;
+}
+
+.modal-share-question-text {
+  font-size: 1.6em;
+}

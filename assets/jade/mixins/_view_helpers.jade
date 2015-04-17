@@ -13,6 +13,11 @@ include _dashboard
 mixin set(key)
   - blocks[key] = this.block
 
+mixin shareIcon(icon, url)
+  li.modal-share-icon
+    a(href="#{url}")
+      i(class="fa #{icon}")
+
 mixin guidanceText(heading,l8n)
   - l8n = l8n || 'content:create-objective-guidance/heading'
   .guidance-text-wrapper.js-hide-me
@@ -77,3 +82,4 @@ mixin googleAnalytics(trackingID)
 
     ga('create', '#{trackingID}', 'auto');
     ga('send', 'pageview');
+
