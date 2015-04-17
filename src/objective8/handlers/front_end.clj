@@ -191,8 +191,7 @@
            :headers {"Content-Type" "text/html"}}
 
           (= objective-status ::http-api/not-found) (error-404-response request)
-          :else {:status 500})
-        ))
+          :else {:status 500})))
 
 (defn question-list [{{id :id} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)]
@@ -315,30 +314,48 @@
       :else {:status 500})))
 
 (defn remove-invitation-credentials [response]
-  (update-in response [:session] dissoc :invitation))
+  )
 
 (defn create-profile-get [request]
   {:status 200
    :headers {"Content-Type" "text/html"}      
    :body (views/create-profile "create-profile" request)})
 
-(defn accept-invitation [{:keys [session]}]
+(defn decline-invitation [{session :session :as request}]
   (if-let [invitation-credentials (:invitation session)]
-    (let [objective-id (:objective-id invitation-credentials) 
-          candidate-writer {:invitee-id (get (friend/current-authentication) :identity)
-                            :invitation-uuid (:uuid invitation-credentials)
-                            :objective-id objective-id}
-          {status :status} (http-api/post-candidate-writer candidate-writer) ]
+    (let [{status :status result :result} (http-api/decline-invitation {:invitation-id (:invitation-id invitation-credentials)
+                                                         :objective-id (:objective-id invitation-credentials)
+                                                         :invitation-uuid (:uuid invitation-credentials)})] 
       (cond
-        (= status ::http-api/success)
-        (-> (str utils/host-url "/objectives/" (:objective-id invitation-credentials) "#writers")
+       (#{::http-api/success ::http-api/invalid-input ::http-api/not-found} status)
+        (-> (str utils/host-url)
             response/redirect
+            (assoc :flash "Invitation declined")
             (assoc :session session)
-            remove-invitation-credentials
-            (permissions/add-authorisation-role (permissions/writer-inviter-for objective-id))
-            (permissions/add-authorisation-role (permissions/writer-for objective-id)))
-        
-        :else {:status 500}))
+            remove-invitation-from-session)
+       
+       :else {:status 500}))
+    {:status 401}))
+
+(defn accept-invitation [{:keys [session] :as request}]
+  (if-let [invitation-credentials (:invitation session)]
+    (if (permissions/writer-for? (friend/current-authentication) (:objective-id invitation-credentials))
+      (decline-invitation request)
+      (let [objective-id (:objective-id invitation-credentials) 
+            candidate-writer {:invitee-id (get (friend/current-authentication) :identity)
+                              :invitation-uuid (:uuid invitation-credentials)
+                              :objective-id objective-id}
+            {status :status} (http-api/post-candidate-writer candidate-writer) ]
+        (cond
+          (= status ::http-api/success)
+          (-> (str utils/host-url "/objectives/" (:objective-id invitation-credentials) "#writers")
+              response/redirect
+              (assoc :session session)
+              remove-invitation-from-session
+              (permissions/add-authorisation-role (permissions/writer-inviter-for objective-id))
+              (permissions/add-authorisation-role (permissions/writer-for objective-id)))
+
+          :else {:status 500}))) 
     {:status 401}))
 
 (defn create-profile-post [{:keys [session] :as request}]
@@ -349,22 +366,6 @@
         (= status ::http-api/success)
         (accept-invitation request) 
         :else {:status 500}))
-    {:status 401}))
-
-(defn decline-invitation [{session :session :as request}]
-  (if-let [invitation-credentials (:invitation session)]
-    (let [{status :status} (http-api/decline-invitation {:invitation-id (:invitation-id invitation-credentials)
-                                                         :objective-id (:objective-id invitation-credentials)
-                                                         :invitation-uuid (:uuid invitation-credentials)})] 
-      (cond
-       (#{::http-api/success ::http-api/invalid-input ::http-api/not-found} status)
-       (-> (str utils/host-url)
-                  response/redirect
-                  (assoc :flash "Invitation declined")
-                  (assoc :session session)
-                  remove-invitation-credentials)
-       
-       :else {:status 500}))
     {:status 401}))
 
 ;;DRAFTS

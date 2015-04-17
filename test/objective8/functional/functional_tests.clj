@@ -248,12 +248,20 @@
            (wait-for-title "Functional test headline | Objective[8]")
            (screenshot "objective_page_after_hitting_invitation_url")
 
-           ;         (wd/to "localhost:8080/create-profile" )
-           ;         (wait-for-title "Create profile | Objective[8]")
-           ;         (screenshot "create_profile_page")
+           (wd/to "localhost:8080/create-profile" )
+           (wait-for-title "Create profile | Objective[8]")
+           (screenshot "create_profile_page")
 
-           (wd/click ".func--invitation-accept")
-           (wait-for-element ".func--objective-page")
+           (prn (wd/page-source))
+           (wd/input-text ".func--name" "Functional Test Writer Profile Name")
+           (screenshot "test name input")
+           (-> ".func--biog"
+               (wd/input-text  "Biography with lots of text...")
+               wd/submit)
+          
+          ; (wd/click ".func--invitation-accept")
+          (wait-for-element ".func--objective-page")
+
            (screenshot "objective_page_from_recently_added_writer")
 
            (wd/text (second (wd/elements ".func--writer-name")))

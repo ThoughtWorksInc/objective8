@@ -184,7 +184,7 @@
                             "/candidate-writers") candidate-writer))
 
 (defn post-profile [profile-data]
-  (default-post-call (utils/path-for :api/post-writer-profile) profile-data))
+  (default-put-call (utils/path-for :api/put-writer-profile) profile-data))
 
 ;; DRAFTS
 
