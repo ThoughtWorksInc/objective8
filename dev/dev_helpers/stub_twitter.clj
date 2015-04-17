@@ -6,11 +6,14 @@
 
 ;; Stub out twitter authentication workflow
 
+(def twitter-id (atom "twitter-FAKE_ID"))
+
 (defn stub-twitter-handler [request]
   (let [session (:session request)]
+    (prn "Stubbing twitter with fake twitter id: " @twitter-id)
     (-> (response/redirect (str utils/host-url "/sign-up"))
         (assoc :session (assoc session 
-                               :twitter-id "twitter-FAKE_ID"
+                               :twitter-id @twitter-id
                                :twitter-screen-name "I'm a teapot")))))
 
 (def stub-twitter-workflow

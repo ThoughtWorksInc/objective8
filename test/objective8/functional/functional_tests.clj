@@ -9,7 +9,7 @@
             [objective8.utils :as utils]
             [objective8.actions :as actions]
             [objective8.integration.integration-helpers :as integration-helpers]
-            [dev-helpers.stub-twitter :refer [stub-twitter-auth-config]]))
+            [dev-helpers.stub-twitter :refer [stub-twitter-auth-config twitter-id]]))
 
 (def config-without-twitter (assoc core/app-config :authentication stub-twitter-auth-config))
 
@@ -71,7 +71,8 @@
                               (integration-helpers/truncate-tables)
                               (core/stop-server)))]
         (fact "can add an objective"
-              (try (wd/to "localhost:8080")
+              (try (reset! twitter-id "twitter-OBJECTIVE_OWNER")
+                (wd/to "localhost:8080")
                    (wait-for-title "Objective[8]")
                    (screenshot "home_page")
 
@@ -244,22 +245,33 @@
                             :flash-message (contains "Your writer's invitation")}))
 
 (fact "Can accept a writer invitation"
-      (try (wd/to (:invitation-url @journey-state))
+      (try (reset! twitter-id "FAKE_WRITER_ID")
+           (wd/click ".func--masthead-sign-out") 
+           (screenshot "after_sign_out")
+           
+           (wd/to (:invitation-url @journey-state))
            (wait-for-title "Functional test headline | Objective[8]")
            (screenshot "objective_page_after_hitting_invitation_url")
 
            (wd/to "localhost:8080/create-profile" )
+           
+           (wait-for-title "Sign in or Sign up | Objective[8]")
+           (wd/click ".func--sign-in-with-twitter") 
+           (wait-for-title "Sign up | Objective[8]")
+           (wd/input-text "#username" "funcTestInvitedWriterUser123")
+           (-> "#email-address" 
+               (wd/input-text "func_test_invited_writer_user@domain.com")
+               wd/submit) 
+
            (wait-for-title "Create profile | Objective[8]")
            (screenshot "create_profile_page")
 
-           (prn (wd/page-source))
            (wd/input-text ".func--name" "Functional Test Writer Profile Name")
            (screenshot "test name input")
            (-> ".func--biog"
                (wd/input-text  "Biography with lots of text...")
                wd/submit)
           
-          ; (wd/click ".func--invitation-accept")
           (wait-for-element ".func--objective-page")
 
            (screenshot "objective_page_from_recently_added_writer")
