@@ -1,3 +1,8 @@
+@function em($pxval, $base: 16) {
+  @return ($pxval / $base) * 1em;
+}
+
+
 // Box-sizing
 @mixin box-sizing($boxsize: border-box) {
   -moz-box-sizing: $boxsize;
