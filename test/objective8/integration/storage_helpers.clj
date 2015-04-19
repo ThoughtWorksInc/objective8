@@ -16,7 +16,9 @@
 
 (defn store-a-user [] (storage/pg-store! {:entity :user
                                           :twitter-id "twitter-TWITTER_ID"
-                                          :username (generate-unique-username)}))
+                                          :username (generate-unique-username)
+                                          :profile {:name "Barry"
+                                                    :biog "I'm Barry..."}}))
 
 (defn store-an-open-objective 
   

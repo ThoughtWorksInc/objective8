@@ -22,7 +22,6 @@
            :email-address email-address
            :username username })
 
-
 (def stored-user (assoc user :_id USER_ID))
 
 (facts "GET /api/v1/users/:id"
@@ -58,14 +57,20 @@
               (against-background
                 (m/valid-credentials? anything anything anything) => true)
               (fact "a user can be retrieved by twitter id"
-                    (let [peridot-response (p/request app (str "/api/v1/users?twitter=" twitter-id))]
-                      peridot-response) => (helpers/check-json-body stored-user)
-                    (provided (users/find-user-by-twitter-id twitter-id) => stored-user))
+                    (let [{twitter-id :twitter-id :as the-user} (sh/store-a-user)
+                          peridot-response (p/request app (str "/api/v1/users?twitter=" twitter-id))
+                          body (get-in peridot-response [:response :body])]
+                      body => (helpers/json-contains the-user)))
 
               (fact "returns a 404 if the user does not exist"
                     (let [user-request (p/request app (str "/api/v1/users?twitter=twitter-IDONTEXIST"))]
-                      (-> user-request :response :status)) => 404
-                    (provided (users/find-user-by-twitter-id "twitter-IDONTEXIST") => nil)))
+                      (-> user-request :response :status)) => 404)
+
+              (fact "a user can be retrieved by username"
+                    (let [{username :username :as the-user} (sh/store-a-user)
+                          peridot-response (p/request app (str "/api/v1/users?username=" username)) 
+                          body (get-in peridot-response [:response :body])]
+                      body => (helpers/json-contains the-user))))
 
        (facts "about posting users"
               (against-background

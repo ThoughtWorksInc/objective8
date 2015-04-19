@@ -66,7 +66,8 @@
 ;;USERS
 (def USER_ID 3)
 (def the-user {:some :data
-               :twitter-id "twitter-TWITTER_ID"})
+               :twitter-id "twitter-TWITTER_ID"
+               :username "someUsername"})
 
 (fact "creating a user record hits the correct API endpoint"
        (http-api/create-user the-user) => :api-call-result
@@ -77,6 +78,14 @@
       (provided
         (http-api/default-get-call
           (contains (str "/api/v1/users?twitter=" (:twitter-id the-user)))
+          (contains {:headers (contains {"api-bearer-name" anything
+                                         "api-bearer-token" anything})})) => :api-call-result))
+
+(fact "finding a user record by username hits the correct API endpoint with credentials"
+      (http-api/find-user-by-username (:username the-user)) => :api-call-result
+      (provided
+        (http-api/default-get-call
+          (contains (str "/api/v1/users?username=" (:username the-user)))
           (contains {:headers (contains {"api-bearer-name" anything
                                          "api-bearer-token" anything})})) => :api-call-result))
 

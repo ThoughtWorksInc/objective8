@@ -51,13 +51,24 @@
              "Location" resource-location}
    :body stored-object})
 
-(defn find-user-by-query [request]
-  (let [twitter-id (get-in request [:params :twitter])]
-    (if-let [user (users/find-user-by-twitter-id twitter-id)]
-      (response/content-type (response/response user) "application/json")
-      (response/not-found ""))))
-
 ;; USERS
+
+(defn find-user-by-twitter-id [twitter-id]
+  (if-let [user (users/find-user-by-twitter-id twitter-id)]
+    (response/content-type (response/response user) "application/json")
+    (response/not-found "")))
+
+(defn find-user-by-username [username]
+  (if-let [user (users/find-user-by-username username)]
+    (response/content-type (response/response user) "application/json")
+    (response/not-found "")))
+
+(defn find-user-by-query [{:keys [params] :as request}]
+  (if-let [twitter-id (params :twitter)]
+    (find-user-by-twitter-id twitter-id)
+    (if-let [username (params :username)]
+      (find-user-by-username username)))) 
+
 (defn post-user-profile [request]
   (try
     (let [twitter-id (get-in request [:params :twitter-id])
