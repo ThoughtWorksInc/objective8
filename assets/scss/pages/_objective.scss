@@ -19,6 +19,11 @@
   @extend %objective-section;
 }
 
+.objective-questions-guidance {
+  margin-top: 2em;
+  margin-bottom: 3em;
+}
+
 .objective-comments {
   @extend %objective-section;
 }
