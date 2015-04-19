@@ -21,6 +21,11 @@
     padding-right: 7em;
   }
 }
+
+.question-text-inner {
+  color: $green1;
+}
+
 .question-actions {
   @extend .list-item-actions;
 }

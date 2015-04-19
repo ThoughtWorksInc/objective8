@@ -169,14 +169,21 @@ objective-view,background-label,Background
 objective-view,doc-description,Objective  ...
 objective-view,writers,Writers
 objective-view,invite-a-writer,Invite a writer
-objective-view,objective-questions-title,Objective questions
-objective-view,objective-questions-helper-text,These questions have been chosen by the writers. By helping answer these questions you are providing information that is important for drafting policy.
+objective-view,question-section-title,Help to draft the policy by answering questions
+objective-view,question-how-it-works,How it works
+objective-view,question-how-it-works-1,Help to draft the policy by answering and suggesting questions
+objective-view,question-how-it-works-2,Anyone can answer a question
+objective-view,question-how-it-works-3,Anyone can agree or disagree with an answer
+objective-view,question-how-it-works-4,The writers will use the answers when drafting the policy
+objective-view,objective-questions-title,Promoted questions
+objective-view,objective-questions-helper-text,These questions have been chosen by the writers. The answers will be used when drafting the policy.
 objective-view,no-objective-questions,The writers for this objective have not promoted any questions yet.
 objective-view,community-questions-title,Ask the community
-objective-view,community-questions-helper-text,These questions have been added by the community to provide data for the policy drafting.
-objective-view,answer-link,Answer
+objective-view,community-questions-helper-text,These questions have been suggested by the community. The answers may be useful for drafting the policy.
+objective-view,answer-link,Choose an answer
 objective-view,ask-a-question,Suggest a question
-objective-view,comments,Comments
+objective-view,comments,Comments for this objective
+objective-view,comment-box-text,Want to discuss the objective? You can leave a comment here.
 question-list,question-list-heading,Recently asked questions
 question-list,page-intro,"Gather background information such as opinions and experiences by suggesting a question for the community to answer.  Your question should be focussed and specific, as the answers will influence the policy drafting process."
 question-list,no-questions,There are no community questions yet.
