@@ -186,6 +186,20 @@
                status => 200
                body => helpers/no-untranslated-strings)))
 
+(facts "about rendering profile page"
+       (fact "there are no untranslated strings"
+             (against-background
+               (http-api/find-user-by-username "username") => {:status ::http-api/success
+                                                               :result {:username "username"
+                                                                        :profile {:name "Barry"
+                                                                                  :biog "I'm Barry..."}}})
+             (let [user-session (helpers/test-context)
+                   {status :status body :body} (-> user-session 
+                                                   (p/request (utils/path-for :fe/profile :username "username"))
+                                                   :response)]
+               status => 200
+               body => helpers/no-untranslated-strings)))
+
 
 (facts "about rendering sign-in page"
        (fact "there are no untranslated strings"

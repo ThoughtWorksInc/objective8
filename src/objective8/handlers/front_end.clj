@@ -67,6 +67,17 @@
    :header {"Content-Type" "text/html"}  
    :body (views/sign-up "sign-up" request :errors errors)})
 
+(defn profile [{:keys [route-params] :as request}]
+  (let [username (:username route-params)
+        {user-status :status user :result} (http-api/find-user-by-username username)]
+    (cond
+      (= user-status ::http-api/success) {:status 200
+                                          :header {"Content-Type" "text/html"}  
+                                          :body "test"} 
+      (= user-status ::http-api/not-found) (error-404-response request)
+      :else {:status 500})))
+
+
 ;; OBJECTIVES
 (defn format-objective [objective]
   (let [goals (if (:goals objective)
@@ -115,8 +126,8 @@
             :else {:status 502}))
     {:status 400}))
 
-(defn remove-invitation-from-session [request]
-  (update-in request [:session] dissoc :invitation))
+(defn remove-invitation-from-session [response]
+  (update-in response [:session] dissoc :invitation))
 
 (defn update-session-invitation [{:keys [session] :as request}]
   (if-let [invitation-rsvp (:invitation session)]
@@ -312,9 +323,6 @@
 
       (= status ::http-api/not-found) (error-404-response request)
       :else {:status 500})))
-
-(defn remove-invitation-credentials [response]
-  )
 
 (defn create-profile-get [request]
   {:status 200

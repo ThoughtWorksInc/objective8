@@ -40,6 +40,7 @@
     "invitations"       {["/" :uuid] {:get :fe/writer-invitation}}
     "create-profile"    {:get :fe/create-profile-get
                          :post :fe/create-profile-post}
+    "users"             {["/" :username] {:get :fe/profile}}
 
     ;; API
     "api/v1"            {"/users" {:post :api/post-user-profile

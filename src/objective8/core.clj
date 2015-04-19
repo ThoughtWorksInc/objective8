@@ -33,6 +33,7 @@
                :fe/index front-end-handlers/index
                :fe/sign-in front-end-handlers/sign-in
                :fe/sign-out front-end-handlers/sign-out
+               :fe/profile front-end-handlers/profile
                :fe/project-status front-end-handlers/project-status
                :fe/learn-more front-end-handlers/learn-more
                :fe/create-objective-form (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form) #{:signed-in})

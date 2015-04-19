@@ -80,6 +80,11 @@
     (str utils/host-url "/api/v1/users?twitter=" twitter-id)
     {:headers (get-api-credentials)}))
 
+(defn find-user-by-username [username]
+  (default-get-call
+    (str utils/host-url "/api/v1/users?username=" username)
+    {:headers (get-api-credentials)}))
+
 (defn get-user [user-id]
   (default-get-call
     (str utils/host-url "/api/v1/users/" user-id)
