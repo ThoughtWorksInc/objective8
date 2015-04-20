@@ -1,5 +1,27 @@
 #Objective8 Refactoring and Style Guide
 
+##Keep the left hand side of let statements simple
+
+###Prefer
+
+```Clojure
+
+(let [username (:username (get-user-info 123))
+      last-log-in (:last-online (get-user-stats 123))]
+  (welcome-message username last-log-in))
+
+```
+
+###To
+
+```Clojure
+
+(let [{username :username} (get-user-info 123)
+      {last-log-in :last-online} (get-user-stats 123)]
+  (welcome-message username last-log-in))
+
+```
+
 ##Replace state building in let statements with threading
 
 Use the `->` or `some->` macros when the desired effect is transformation.
