@@ -90,22 +90,22 @@ module.exports = function(grunt) {
     //Add vendor prefixed styles
     autoprefixer: {
       options: {
-        browsers: ['last 2 version', 'ie 8', 'ie 9']
+        browsers: ['last 2 versions', 'ie 9']
       },
       dev: {
         options: {
           map: true
         },
-        no_dest: {
-          src: '<%= folders.output %>/public/modern.css'
+        files: {
+          '<%= folders.output %>/public/modern.css': '<%= folders.output %>/public/modern.css'
         }
       },
       dist: {
         options: {
           map: false
         },
-        no_dest: {
-          src: '<%= folders.output %>/public/modern.css'
+        files: {
+          '<%= folders.output %>/public/modern.css': '<%= folders.output %>/public/modern.css'
         }
       }
     },
