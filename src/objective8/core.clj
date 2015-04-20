@@ -19,6 +19,7 @@
             [objective8.storage.storage :as storage]
             [objective8.storage.database :as db]
             [objective8.workflows.twitter :refer [twitter-workflow]]
+            [objective8.workflows.stub-twitter :refer [stub-twitter-workflow]]
             [objective8.scheduler :as scheduler]
             [objective8.workflows.sign-up :refer [sign-up-workflow]]
             [objective8.handlers.api :as api-handlers]
@@ -122,7 +123,9 @@
 
 (def app-config
   {:authentication {:allow-anon? true
-                    :workflows [twitter-workflow,
+                    :workflows [(if (= (config/get-var "FAKE_TWITTER_MODE") "TRUE")
+                                  stub-twitter-workflow
+                                  twitter-workflow),
                                 sign-up-workflow]
                     :login-uri "/sign-in"}
    :translation (configure-translations)
