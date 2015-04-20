@@ -194,6 +194,12 @@
               (assoc m' :username (:username m))
               m'))))
 
+(defn with-profile-if-present [unmap-fn]
+  (fn [m] (let [m' (unmap-fn m)]
+            (if (contains? m :profile)
+              (assoc m' :profile (:profile m))
+              m'))))
+
 (defn with-sql-time [unmap-fn]
   (fn [m] (-> (unmap-fn m)
               (assoc :_created_at_sql_time (:_created_at m)))))
@@ -301,9 +307,12 @@
 (korma/defentity candidate
   (korma/pk :_id)
   (korma/table :objective8.candidates)
+  (korma/belongs-to user {:fk :user_id})
   (korma/prepare map->candidate)
   (korma/transform (-> (unmap :candidate)
-                       (with-columns [:objective-id :user-id :invitation-id]))))
+                       (with-columns [:objective-id :user-id :invitation-id])
+                       with-username-if-present
+                       with-profile-if-present)))
 
 (korma/defentity up-down-vote
   (korma/pk :_id)

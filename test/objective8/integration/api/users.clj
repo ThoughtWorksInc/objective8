@@ -40,7 +40,7 @@
                     candidate-record-2 (sh/store-a-candidate {:user the-user})
                     {response :response} (p/request app (str "/api/v1/users/" user-id))]
                 (:body response) =>
-                (helpers/json-contains {:writer-records (contains [candidate-record-1 candidate-record-2])})
+                (helpers/json-contains {:writer-records (contains [(contains candidate-record-1) (contains candidate-record-2)])})
                 (:body response) =>
                 (helpers/json-contains {:owned-objectives (contains [(contains {:_id owned-objective-id})])})))
  
