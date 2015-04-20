@@ -18,12 +18,12 @@
     {:status 500 
      :body "Resetting stubbed twitter id failed"}))
 
-(defn stub-twitter-handler [request]
-  (let [session (:session request)]
-    (prn "Stubbing twitter with fake twitter id: " @twitter-id)
+(defn stub-twitter-handler [{:keys [params session] :as request}]
+  (let [twitter-id (get params :twitter-id @twitter-id)]
+    (prn "Stubbing twitter with fake twitter id: " twitter-id)
     (-> (response/redirect (str utils/host-url "/sign-up"))
         (assoc :session (assoc session 
-                               :twitter-id @twitter-id
+                               :twitter-id twitter-id
                                :twitter-screen-name "I'm a teapot")))))
 
 (def stub-twitter-routes
