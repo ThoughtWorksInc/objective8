@@ -20,8 +20,22 @@
 }
 
 .objective-questions-guidance {
-  margin-top: 2em;
-  margin-bottom: 3em;
+  margin-bottom: 4em;
+  background-color: $green1;
+  color: $white;
+}
+.objective-questions-guidance-title {
+  background-color: $green2;
+  margin-bottom: 0;
+  padding: 0.75em 1em;
+}
+.objective-questions-guidance-list {
+  @include unstyledList();
+  padding: 1em;
+  font-size: 1.2em;
+}
+.objective-questions-guidance-list-item {
+  margin-bottom: 0.25em;
 }
 
 .objective-comments {
