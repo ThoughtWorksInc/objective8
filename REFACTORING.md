@@ -1,8 +1,29 @@
 #Objective8 Refactoring and Style Guide
 
-##Keep the left hand side of let statements simple
+##Style
 
-###Prefer
+###Use `->` in function names to show transformation
+
+####Prefer
+
+```Clojure
+
+(defn km->miles [km] (* 0.621371192 km))
+
+```
+
+####To
+
+```Clojure
+
+(defn km-to-miles [km] (* 0.621371192 km))
+(defn convert-km-to-miles [km] (* 0.621371192 km))
+
+```
+
+###Keep the left hand side of let statements simple
+
+####Prefer
 
 ```Clojure
 
@@ -12,7 +33,7 @@
 
 ```
 
-###To
+####To
 
 ```Clojure
 
@@ -22,11 +43,13 @@
 
 ```
 
-##Replace state building in let statements with threading
+##Refactoring
+
+###Replace state building in let statements with threading
 
 Use the `->` or `some->` macros when the desired effect is transformation.
 
-###Replace
+####Replace
 
 ```Clojure
 
@@ -38,7 +61,7 @@ Use the `->` or `some->` macros when the desired effect is transformation.
 
 ```
 
-###With
+####With
 
 ```Clojure
 
