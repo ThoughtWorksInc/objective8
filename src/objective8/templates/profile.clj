@@ -20,7 +20,7 @@
                                     [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
                                     [:.clj-writer-profile] (if user-profile 
                                                              identity
-                                                             (html/html-content (translations :profile/no-profile-message)))
+                                                             (html/content (translations :profile/no-profile-message)))
                                     [:.clj-writer-name] (html/content (:name user-profile))
                                     [:.clj-writer-joined-date] (html/content (:joined-date user-profile))
                                     [:.clj-writer-biog] (html/content (:biog user-profile))

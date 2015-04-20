@@ -283,4 +283,4 @@ create-profile,button,Create profile
 profile,doc-description,
 profile,page-title,Writer profile
 profile,joined,Joined
-profile,no-profile-message!,"<h3>This user has not created a writer profile yet</h3>"
+profile,no-profile-message,This user has not created a writer profile yet
