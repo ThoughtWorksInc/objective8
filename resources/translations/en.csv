@@ -274,6 +274,8 @@ invitation-response,sign-in-to-accept,Sign in to accept
 invitation-response,decline,Decline
 invitation-response,accept,Accept 
 invitation-response,banner-message,Respond to your invitation to help draft policy
+invitation-response,expired-banner-message,This invitation has expired
+invitation-response,invitation-declined-banner-message,Invitation declined
 create-profile,doc-title,Create profile | Objective[8]
 create-profile,doc-description,
 create-profile,page-title,Create a writer profile

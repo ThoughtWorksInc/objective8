@@ -119,10 +119,11 @@
   (if-let [objective (helpers/request->objective request (get (friend/current-authentication) :identity))]
     (let [{status :status stored-objective :result} (http-api/create-objective objective)]
       (cond (= status ::http-api/success)
-            (let [objective-url (str utils/host-url "/objectives/" (:_id stored-objective))
-                  message (t' :objective-view/created-message)]
+            (let [objective-url (str utils/host-url "/objectives/" (:_id stored-objective))]
               (-> (response/redirect objective-url)
-                  (assoc :flash message :session session)
+                  (assoc :flash {:type :flash-message
+                                 :message :objective-view/created-message}
+                         :session session)
                   (permissions/add-authorisation-role (permissions/writer-for (:_id stored-objective)))
                   (permissions/add-authorisation-role (permissions/writer-inviter-for (:_id stored-objective)))))
 
@@ -180,9 +181,9 @@
     (let [{status :status stored-comment :result} (http-api/post-comment comment-data)]
       (cond
         (= status ::http-api/success)
-        (let [message (t' :comment-view/created-message)]
-          (-> (redirect-to-params-referer request "comments")
-              (assoc :flash message)))
+        (-> (redirect-to-params-referer request "comments")
+            (assoc :flash {:type :flash-message
+                           :message :comment-view/created-message}))
 
         (= status ::http-api/invalid-input) {:status 400}
 
@@ -218,8 +219,7 @@
     (let [{status :status question :result} (http-api/create-question question-data)]
       (cond 
         (= status ::http-api/success)
-        (let [objective-url (str utils/host-url "/objectives/" (:objective-id question) "#questions")
-              message (t' :question-view/added-message)]
+        (let [objective-url (str utils/host-url "/objectives/" (:objective-id question) "#questions")]
           (assoc (response/redirect objective-url) :flash {:type :share-question
                                                            :created-question question}))
 
@@ -262,9 +262,9 @@
       (cond
         (= status ::http-api/success)
         (let [answer-url (str utils/host-url "/objectives/" (:objective-id stored-answer)
-                              "/questions/" (:question-id stored-answer))
-              message (t' :question-view/added-answer-message)]
-          (assoc (response/redirect answer-url) :flash message))
+                              "/questions/" (:question-id stored-answer))]
+          (assoc (response/redirect answer-url) :flash {:type :flash-message
+                                                        :message :question-view/added-answer-message}))
 
         (= status ::http-api/invalid-input) {:status 400}
 
@@ -323,7 +323,8 @@
         (= invitation-status "expired")
         (-> (str utils/host-url "/objectives/" objective-id)
             response/redirect
-            (assoc :flash "This invitation has expired"))
+            (assoc :flash {:type :flash-message
+                           :message :invitation-response/expired-banner-message}))
 
         :else (error-404-response request))
 
@@ -344,7 +345,8 @@
        (#{::http-api/success ::http-api/invalid-input ::http-api/not-found} status)
         (-> (str utils/host-url)
             response/redirect
-            (assoc :flash "Invitation declined")
+            (assoc :flash {:type :flash-message
+                           :message :invitation-response/invitation-declined-banner-message})
             (assoc :session session)
             remove-invitation-from-session)
        

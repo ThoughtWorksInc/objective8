@@ -42,6 +42,6 @@
                                               (p/request (utils/path-for :fe/post-comment)
                                                          :request-method :post
                                                          :params params))]
-                 (:flash response) => (contains "Your comment has been added!")
+                 (:flash response) => (contains {:type :flash-message :message :comment-view/created-message})
                  (:headers response) => (helpers/location-contains (str "/objectives/" OBJECTIVE_ID))
                  (:status response) => 302))))

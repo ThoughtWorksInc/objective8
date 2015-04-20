@@ -23,8 +23,8 @@
                                     [:.clj-add-draft-preview] (when-let [preview (:preview data)]
                                                                 (html/html-content preview))
 
-                                    [:.clj-add-draft-form] (html/do-> 
+                                    [:.clj-add-draft-form] (html/do->
                                                              (html/set-attr :action (utils/local-path-for :fe/add-draft-get :id objective-id))
                                                              (html/prepend (html/html-snippet (anti-forgery-field)))) 
-                                    [:.clj-add-draft-content] (html/content (:markdown data))       
+                                    [:.clj-add-draft-content] (html/content (:markdown data))
                                     [:.clj-cancel-link] (html/set-attr :href (utils/local-path-for :fe/draft-list :id objective-id)))))))))

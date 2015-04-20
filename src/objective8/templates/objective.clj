@@ -181,7 +181,6 @@
         objective-id (:_id objective)
         candidates (:candidates data)
         flash (:flash doc)
-        modal (:flash doc)
         optionally-disable-voting (if (tf/in-drafting? objective)
                                     (pf/disable-voting-actions translations)
                                     identity)]
@@ -192,14 +191,9 @@
                              (html/at objective-template
                                       [:title] (html/content (:title doc))
                                       [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
-                                      [:.clj-status-bar] (html/substitute 
-                                                           (pf/status-flash-bar
-                                                             (cond
-                                                               (:type flash) (update-in context [:doc] dissoc :flash)
-                                                               (invitation-rsvp-for-objective? objective invitation-rsvp) (dissoc context :invitation-rsvp)
-                                                               :else context)))
+                                      [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
                                       [:.clj-modal-contents]
-                                      (case (:type modal)
+                                      (case (:type flash)
                                         :invitation (writer-invitation-modal context)
                                         :share-question (share-question-modal context)
                                         (when (invitation-rsvp-for-objective? objective invitation-rsvp)

@@ -50,21 +50,21 @@
 (def invitation-response-banner-snippet (html/select library-html-resource [:.clj-invitation-response-link]))
 (def status-bar-snippet (html/select library-html-resource [:.clj-status-bar])) 
 
-(defn invitation-response-banner [invitation-rsvp]
+(defn invitation-response-banner [{:keys [invitation-rsvp] :as context}]
   (html/at invitation-response-banner-snippet
            [:.clj-invitation-response-link] 
-           (html/set-attr :href (utils/local-path-for :fe/objective 
+           (html/set-attr :href (utils/local-path-for :fe/objective
                                                       :id (:objective-id invitation-rsvp)))))
 
-(defn flash-bar [flash] 
+(defn flash-bar [flash-message]
   (html/at flash-bar-snippet
-           [:.clj-flash-message-bar-text] (html/content flash)))
+           [:.clj-flash-message-bar-text] (html/content flash-message)))
 
-(defn status-flash-bar [{:keys [doc invitation-rsvp] :as context}]
-  (let [flash (:flash doc)]
-    (cond 
-      (and flash (not (= (:type flash) :import-draft-preview))) (flash-bar flash) 
-      invitation-rsvp (flash-bar (invitation-response-banner invitation-rsvp))
+(defn status-flash-bar [{:keys [doc invitation-rsvp translations] :as context}]
+  (let [{type :type message :message} (:flash doc)]
+    (cond
+      (= type :flash-message) (flash-bar (translations message)) 
+      invitation-rsvp (flash-bar (invitation-response-banner context))
       :else status-bar-snippet)))
 
 ;; WRITER LIST

@@ -63,7 +63,7 @@
                                     (p/request "http://localhost:8080/objectives"
                                                :request-method :post
                                                :params params)))]
-                 (:flash response) => (contains "Your objective has been created!")
+                 (:flash response) => (contains {:type :flash-message :message :objective-view/created-message})
                  (-> response
                      :headers
                      (get "Location")) => (contains (str "/objectives/" OBJECTIVE_ID)))))

@@ -38,5 +38,6 @@
                                                           "/questions/" QUESTION_ID "/answers")
                                                      :request-method :post
                                                      :params params))]
-                 peridot-response => (helpers/flash-message-contains "Your answer has been added!")
+                 peridot-response => (helpers/flash-message-contains {:type :flash-message
+                                                                      :message :question-view/added-answer-message})
                  peridot-response => (helpers/headers-location (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))))))
