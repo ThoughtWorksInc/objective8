@@ -192,19 +192,6 @@ navigation-global,sign-out-title,Sign out
 navigation-global,sign-out-text,Sign out
 navigation-global,sign-in-title,Sign in
 navigation-global,sign-in-text,Sign in
-share-widget,google-plus-text,Google +1
-share-widget,url-label,URL to share
-share-widget,reddit-text,Submit to Reddit
-share-widget,twitter-text,Tweet
-share-widget,url-title,The link to this page
-share-widget,linkedin-title,Share this page on LinkedIn
-share-widget,title,Share this page:
-share-widget,linkedin-text,Share on LinkedIn
-share-widget,google-plus-title,Plus one this page on Google
-share-widget,twitter-title,Share this page on Twitter
-share-widget,facebook-text,Share on Facebook
-share-widget,facebook-title,Share on Facebook...
-share-widget,reddit-title,Submit this page to Reddit
 to-comment,before-sign-in-link,Please
 to-comment,sign-in-link,sign-in
 to-comment,after-sign-in-link,to start commenting.
@@ -252,6 +239,13 @@ invitation,submit,Create an invite
 invitation,page-intro,Do you know someone with the enthusiasm and expertise to help draft this policy?
 invitation,page-title,Invite a policy writer
 invitation,writer-name-label,Writer name:
+sharing,reddit-link-title,Submit this page to Reddit
+sharing,facebook-link-title,Share this page on Facebook
+sharing,google-plus-link-title,Plus one this page on Google
+sharing,twitter-link-title,Share this page on Twitter
+sharing,linked-in-link-title,Share this page on LinkedIn
+share-question-modal,heading,Question created
+share-question-modal,helper-text,Share your question to increase the number of answers.
 invitation-modal,guidance-text-line-1,Your writer's invitation
 invitation-modal,guidance-text-line-2,To complete your invitation
 invitation-modal,guidance-text-line-3,Alternatively send the writer this link:

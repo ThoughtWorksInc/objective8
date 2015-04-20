@@ -13,9 +13,9 @@ include _dashboard
 mixin set(key)
   - blocks[key] = this.block
 
-mixin shareIcon(icon, url)
+mixin shareIcon(icon, platform)
   li.modal-share-icon
-    a(href="#{url}")
+    a(class="clj-share-on-#{platform}", href="!sharing url", target="_blank", data-l8n="attr/title:sharing/#{platform}-link-title", title="!share on platform")
       i(class="fa #{icon}")
 
 mixin guidanceText(heading,l8n)

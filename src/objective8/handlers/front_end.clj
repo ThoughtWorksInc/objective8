@@ -209,13 +209,14 @@
     (response/redirect (utils/path-for :fe/objective :id objective-id))))
 
 (defn add-question-form-post [{:keys [uri t' locale] :as request}]
-  (if-let [question (helpers/request->question request (get (friend/current-authentication) :identity))]
-    (let [{status :status stored-question :result} (http-api/create-question question)]
+  (if-let [question-data (helpers/request->question request (get (friend/current-authentication) :identity))]
+    (let [{status :status question :result} (http-api/create-question question-data)]
       (cond 
         (= status ::http-api/success)
-        (let [objective-url (str utils/host-url "/objectives/" (:objective-id stored-question) "#questions")
+        (let [objective-url (str utils/host-url "/objectives/" (:objective-id question) "#questions")
               message (t' :question-view/added-message)]
-          (assoc (response/redirect objective-url) :flash message))
+          (assoc (response/redirect objective-url) :flash {:type :share-question
+                                                           :created-question question}))
 
         (= status ::http-api/invalid-input) {:status 400}
 

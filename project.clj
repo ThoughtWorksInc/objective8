@@ -16,6 +16,7 @@
                  [ring/ring-anti-forgery "1.0.0"]
                  [ring/ring-headers "0.1.2"]
                  [ring/ring-ssl "0.2.1"]
+                 [com.cemerick/url "0.1.1"]
                  [org.apache.httpcomponents/httpclient "4.3.5"]
                  [xml-apis "1.4.01"]
                  [com.cemerick/friend "0.2.1" :exclusions [robert/hooke xml-apis]]

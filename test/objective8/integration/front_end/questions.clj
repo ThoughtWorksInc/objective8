@@ -38,13 +38,13 @@
                  (http-api/create-user anything) => {:status ::http-api/success
                                                      :result {:_id USER_ID}}) 
                (let [params {:question "The meaning of life?"}
-                     peridot-response (-> user-session
-                                          (helpers/with-sign-in "http://localhost:8080/") 
-                                          (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID "/questions")
-                                                     :request-method :post
-                                                     :params params))]
-                 peridot-response => (helpers/flash-message-contains "Your question has been added!")
-                 peridot-response => (helpers/headers-location (str "/objectives/" OBJECTIVE_ID "#questions")))))
+                     {response :response} (-> user-session
+                                              (helpers/with-sign-in "http://localhost:8080/")
+                                              (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID "/questions")
+                                                         :request-method :post
+                                                         :params params))]
+                 (:flash response) => (contains {:type :share-question})
+                 (:headers response) => (helpers/location-contains (str "/objectives/" OBJECTIVE_ID "#questions")))))
 
        (fact "Any user can view a question against an objective"
              (against-background

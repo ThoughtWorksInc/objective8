@@ -8,15 +8,15 @@ block vars
 block content
   .middle-container.clj-share-question-modal
     article
-      h1 !Question created
+      h1(data-l8n="content:share-question-modal/heading") !Question created
       p.lede
-        span !Share your question to increase the number of answers.
-      p.clj-question-text.modal-share-question-text
-        em !How can we increase the number of people cycling in Soho?
+        span(data-l8n="content:share-question-modal/helper-text") !Share your question to increase the number of answers.
+      p.modal-share-question-text
+        em.clj-question-text !How can we increase the number of people cycling in Soho?
       p.share-box
         ul.modal-share-list
-          +shareIcon("fa-reddit-square", "test")
-          +shareIcon("fa-facebook-square", "test")
-          +shareIcon("fa-google-plus-square", "test")
-          +shareIcon("fa-twitter-square", "test")
-
+          +shareIcon("fa-reddit-square", "reddit")
+          +shareIcon("fa-facebook-square", "facebook")
+          +shareIcon("fa-google-plus-square", "google-plus")
+          +shareIcon("fa-twitter-square", "twitter")
+          +shareIcon("fa-linkedin", "linked-in")

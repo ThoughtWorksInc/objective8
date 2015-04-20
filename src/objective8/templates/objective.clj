@@ -2,6 +2,7 @@
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
+            [cemerick.url :as url]
             [objective8.utils :as utils]
             [objective8.permissions :as permissions]
             [objective8.templates.page-furniture :as pf]
@@ -54,13 +55,33 @@
 (def share-question-modal-snippet (html/select (html/html-resource "templates/jade/modals/share-question-modal.html")
                                                [:.clj-share-question-modal]))
 
-(defn share-question-modal [{:keys [data] :as context}]
-  (when-let [question (:created-question data)]
-    (html/transformation [:clj-modal-contents]
-                         (html/content
-                          (html/at share-question-modal-snippet
-                                   [:.clj-modal-contents] identity)))))
+(def share-endpoints
+  {:reddit (url/url "http://reddit.com/submit")
+   :facebook (url/url "http://www.facebook.com/sharer.php")
+   :linked-in (url/url "http://www.linkedin.com/shareArticle")
+   :twitter (url/url "https://twitter.com/share")
+   :google-plus (url/url "https://plusone.google.com/_/+1/confirm")})
 
+(defn share-question-modal [{:keys [doc] :as context}]
+  (when-let [question (get-in doc [:flash :created-question])]
+    (let [question-url (utils/path-for :fe/question
+                                       :id (:objective-id question)
+                                       :q-id (:_id question))
+          question-text (:question question)
+          sharing-text question-text
+          reddit-url (str (assoc (:reddit share-endpoints) :query {:url question-url :title sharing-text}))
+          facebook-url (str (assoc (:facebook share-endpoints) :query {:u question-url :t sharing-text}))
+          twitter-url (str (assoc (:twitter share-endpoints) :query {:url question-url :text sharing-text}))
+          linked-in-url (str (assoc (:linked-in share-endpoints) :query {:mini "true" :url question-url}))
+          google-plus-url (str (assoc (:google-plus share-endpoints) :query {:hl "en" :url question-url}))]
+
+      (html/content (html/at share-question-modal-snippet
+                           [:.clj-question-text] (html/content question-text)
+                           [:.clj-share-on-reddit] (html/set-attr :href reddit-url)
+                           [:.clj-share-on-facebook] (html/set-attr :href facebook-url)
+                           [:.clj-share-on-linked-in] (html/set-attr :href linked-in-url)
+                           [:.clj-share-on-twitter] (html/set-attr :href twitter-url)
+                           [:.clj-share-on-google-plus] (html/set-attr :href google-plus-url))))))
 
 ;; DRAFTING HAS STARTED MESSAGE
 
@@ -172,7 +193,7 @@
                                       [:.clj-status-bar] (html/substitute 
                                                            (pf/status-flash-bar
                                                              (cond
-                                                               (= :invitation (:type flash)) (update-in context [:doc] dissoc :flash)
+                                                               (:type flash) (update-in context [:doc] dissoc :flash)
                                                                (invitation-rsvp-for-objective? objective invitation-rsvp) (dissoc context :invitation-rsvp)
                                                                :else context)))
                                       [:.clj-modal-contents]
