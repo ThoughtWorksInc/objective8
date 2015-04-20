@@ -351,25 +351,34 @@
        :else {:status 500}))
     {:status 401}))
 
+(defn create-writer [{:keys [session] :as request}]
+  (let [invitation-credentials (:invitation session)
+        objective-id (:objective-id invitation-credentials) 
+        candidate-writer {:invitee-id (get (friend/current-authentication) :identity)
+                          :invitation-uuid (:uuid invitation-credentials)
+                          :objective-id objective-id}
+        {status :status} (http-api/post-candidate-writer candidate-writer) ]
+    (cond
+      (= status ::http-api/success)
+      (-> (str utils/host-url "/objectives/" (:objective-id invitation-credentials) "#writers")
+          response/redirect
+          (assoc :session session)
+          remove-invitation-from-session
+          (permissions/add-authorisation-role (permissions/writer-inviter-for objective-id))
+          (permissions/add-authorisation-role (permissions/writer-for objective-id)))
+
+      :else {:status 500})))
+
 (defn accept-invitation [{:keys [session] :as request}]
   (if-let [invitation-credentials (:invitation session)]
     (if (permissions/writer-for? (friend/current-authentication) (:objective-id invitation-credentials))
       (decline-invitation request)
-      (let [objective-id (:objective-id invitation-credentials) 
-            candidate-writer {:invitee-id (get (friend/current-authentication) :identity)
-                              :invitation-uuid (:uuid invitation-credentials)
-                              :objective-id objective-id}
-            {status :status} (http-api/post-candidate-writer candidate-writer) ]
-        (cond
-          (= status ::http-api/success)
-          (-> (str utils/host-url "/objectives/" (:objective-id invitation-credentials) "#writers")
+      (let [{user-status :status user :result} (http-api/get-user (get (friend/current-authentication) :identity))]
+        (if-let [profile (:profile user)]
+          (create-writer request)
+          (-> (utils/path-for :fe/create-profile-get)
               response/redirect
-              (assoc :session session)
-              remove-invitation-from-session
-              (permissions/add-authorisation-role (permissions/writer-inviter-for objective-id))
-              (permissions/add-authorisation-role (permissions/writer-for objective-id)))
-
-          :else {:status 500}))) 
+              (assoc :session session)))))
     {:status 401}))
 
 (defn create-profile-post [{:keys [session] :as request}]

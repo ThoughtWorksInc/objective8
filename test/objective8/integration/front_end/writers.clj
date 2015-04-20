@@ -261,6 +261,9 @@
                                            :biog "My biog"
                                            :user-uri (str "/users/" USER_ID)}) => {:status ::http-api/success
                                                                                    :result {}}
+                   (http-api/get-user USER_ID) => {:status ::http-api/success
+                                                   :result {:profile {:name "John Doe"
+                                                                      :biog "My biog"}}}
 
                    (http-api/post-candidate-writer {:invitee-id USER_ID
                                                     :invitation-uuid UUID
@@ -308,6 +311,9 @@
                                             p/follow-redirect)]
                  (:uri request)) => (contains OBJECTIVE_URL)
                (provided
+                 (http-api/get-user USER_ID) => {:status ::http-api/success
+                                                 :result {:profile {:name "John Doe"
+                                                                    :biog "My biog"}}}
                  (http-api/post-candidate-writer {:invitee-id USER_ID
                                                   :invitation-uuid UUID
                                                   :objective-id OBJECTIVE_ID}) => {:status ::http-api/success
@@ -350,6 +356,9 @@
                    (p/request ACCEPT_INVITATION_URL :request-method :post)) => anything
 
                (provided
+                 (http-api/get-user USER_ID) => {:status ::http-api/success
+                                                 :result {:profile {:name "John Doe"
+                                                                    :biog "My biog"}}}
                  (http-api/post-candidate-writer {:invitee-id USER_ID
                                                   :invitation-uuid UUID
                                                   :objective-id OBJECTIVE_ID})

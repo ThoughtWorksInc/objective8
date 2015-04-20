@@ -253,8 +253,8 @@
            (wait-for-title "Functional test headline | Objective[8]")
            (screenshot "objective_page_after_hitting_invitation_url")
 
-           (wd/to "localhost:8080/create-profile" )
-           
+           (wd/click ".func--sign-in-to-accept")
+
            (wait-for-title "Sign in or Sign up | Objective[8]")
            (wd/click ".func--sign-in-with-twitter") 
            (wait-for-title "Sign up | Objective[8]")
@@ -262,6 +262,11 @@
            (-> "#email-address" 
                (wd/input-text "func_test_invited_writer_user@domain.com")
                wd/submit) 
+
+           (wait-for-title "Functional test headline | Objective[8]")
+           (screenshot "objective_page_after_signing_up")
+
+           (wd/click ".func--invitation-accept")
 
            (wait-for-title "Create profile | Objective[8]")
            (screenshot "create_profile_page")
@@ -271,7 +276,7 @@
                (wd/input-text  "Biography with lots of text...")
                wd/submit)
           
-          (wait-for-element ".func--objective-page")
+           (wait-for-title "Functional test headline | Objective[8]")
 
            (screenshot "objective_page_from_recently_added_writer")
 

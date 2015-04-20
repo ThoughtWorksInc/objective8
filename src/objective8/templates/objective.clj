@@ -47,7 +47,8 @@
                                           (html/do-> (html/prepend (html/html-snippet (anti-forgery-field))) 
                                                      (html/set-attr :action (utils/local-path-for :fe/accept-invitation :id (:objective-id invitation-rsvp) :i-id (:invitation-id invitation-rsvp))))
                                           (html/substitute (html/at pf/anchor-button 
-                                                                    [:.clj-anchor-button] (html/do-> 
+                                                                    [:.clj-anchor-button] (html/do->
+                                                                                            (html/add-class "func--sign-in-to-accept") 
                                                                                             (html/set-attr :href (str "/sign-in?refer=" (:uri ring-request)))
                                                                                             (tl8 :invitation-response/sign-in-to-accept))))))))))
 
