@@ -13,6 +13,7 @@
 (def OBJECTIVE_ID 234)
 (def OBJECTIVE_URI (str "/objectives/" OBJECTIVE_ID))
 (def STAR_ID 2)
+(def CREATED_AT "2015-04-20T10:31:17.343Z")
 
 (facts "about viewing profile page"
        (fact "profile is shown of the user matching the provided username"
@@ -25,4 +26,5 @@
                (http-api/find-user-by-username "username") => {:status ::http-api/success
                                                                :result {:username "username"
                                                                         :profile {:name "Barry"
-                                                                                  :biog "I'm Barry..."}}}))) 
+                                                                                  :biog "I'm Barry..."}
+                                                                        :_created_at CREATED_AT}}))) 

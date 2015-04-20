@@ -56,21 +56,27 @@
        (facts "about querying for users"
               (against-background
                 (m/valid-credentials? anything anything anything) => true)
-              (fact "a user can be retrieved by twitter id"
-                    (let [{twitter-id :twitter-id :as the-user} (sh/store-a-user)
-                          peridot-response (p/request app (str "/api/v1/users?twitter=" twitter-id))
-                          body (get-in peridot-response [:response :body])]
-                      body => (helpers/json-contains the-user)))
+              (against-background 
+                [(before :contents (do
+                                     (helpers/db-connection)
+                                     (helpers/truncate-tables)))
+                 (after :facts (helpers/truncate-tables))] 
 
-              (fact "returns a 404 if the user does not exist"
-                    (let [user-request (p/request app (str "/api/v1/users?twitter=twitter-IDONTEXIST"))]
-                      (-> user-request :response :status)) => 404)
+                (fact "a user can be retrieved by twitter id"
+                      (let [{twitter-id :twitter-id :as the-user} (sh/store-a-user)
+                            peridot-response (p/request app (str "/api/v1/users?twitter=" twitter-id))
+                            body (get-in peridot-response [:response :body])]
+                        body => (helpers/json-contains the-user))) 
 
-              (fact "a user can be retrieved by username"
-                    (let [{username :username :as the-user} (sh/store-a-user)
-                          peridot-response (p/request app (str "/api/v1/users?username=" username)) 
-                          body (get-in peridot-response [:response :body])]
-                      body => (helpers/json-contains the-user))))
+                (fact "returns a 404 if the user does not exist"
+                      (let [user-request (p/request app (str "/api/v1/users?twitter=twitter-IDONTEXIST"))]
+                        (-> user-request :response :status)) => 404) 
+
+                (fact "a user can be retrieved by username"
+                      (let [{username :username :as the-user} (sh/store-a-user)
+                            peridot-response (p/request app (str "/api/v1/users?username=" username)) 
+                            body (get-in peridot-response [:response :body])]
+                        body => (helpers/json-contains the-user)))))
 
        (facts "about posting users"
               (against-background

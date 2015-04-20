@@ -69,11 +69,14 @@
 
 (defn profile [{:keys [route-params] :as request}]
   (let [username (:username route-params)
-        {user-status :status user :result} (http-api/find-user-by-username username)]
+        {user-status :status user :result} (http-api/find-user-by-username username)
+        joined-date (utils/iso-time-string->pretty-date (:_created_at user))]
     (cond
       (= user-status ::http-api/success) {:status 200
                                           :header {"Content-Type" "text/html"}  
-                                          :body "test"} 
+                                          :body (views/profile "profile" request 
+                                                               :user-profile (assoc (:profile user) :joined-date joined-date) 
+                                                               :doc {:title (str (:name (:profile user)) " | Objective[8]")})}
       (= user-status ::http-api/not-found) (error-404-response request)
       :else {:status 500})))
 

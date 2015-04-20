@@ -76,6 +76,9 @@
 (defn date-time->pretty-date [date-time]
   (time-format/unparse pretty-date date-time))
 
+(defn iso-time-string->pretty-date [iso-time-string]
+  (time-format/unparse pretty-date (time-string->date-time iso-time-string)))
+
 (defn iso-time-string->pretty-time [iso-time-string]
   (time-format/unparse pretty-date-time (time-string->date-time iso-time-string)))
 

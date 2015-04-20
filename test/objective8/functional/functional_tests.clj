@@ -258,7 +258,7 @@
            (wait-for-title "Sign in or Sign up | Objective[8]")
            (wd/click ".func--sign-in-with-twitter") 
            (wait-for-title "Sign up | Objective[8]")
-           (wd/input-text "#username" "funcTestInvitedWriterUser123")
+           (wd/input-text "#username" "funcTestWriter") 
            (-> "#email-address" 
                (wd/input-text "func_test_invited_writer_user@domain.com")
                wd/submit) 
@@ -267,7 +267,6 @@
            (screenshot "create_profile_page")
 
            (wd/input-text ".func--name" "Functional Test Writer Profile Name")
-           (screenshot "test name input")
            (-> ".func--biog"
                (wd/input-text  "Biography with lots of text...")
                wd/submit)
@@ -282,6 +281,17 @@
              (screenshot "ERROR-Can-accept-a-writer-invitation")
              (throw e)))
       => "Functional Test Writer Name")
+
+(fact "Can view writer profile page"
+     (try (wd/to "localhost:8080/users/funcTestWriter") 
+          (wait-for-title "Functional Test Writer Profile Name | Objective[8]")
+          (screenshot "writer_profile_page")
+          
+          (wd/text (first (wd/elements ".func--writer-biog")))
+          (catch Exception e
+            (screenshot "ERROR-can-view-writer-profile")
+            (throw e))) 
+      => "Biography with lots of text...")
 
         (against-background
          [(before :contents (-> (:objective-url @journey-state)

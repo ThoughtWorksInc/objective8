@@ -280,3 +280,6 @@ create-profile,page-title,Create a writer profile
 create-profile,name-label,Name: 
 create-profile,biography,Biography: 
 create-profile,button,Create profile
+profile,doc-description,
+profile,page-title,Writer profile
+profile,joined,Joined

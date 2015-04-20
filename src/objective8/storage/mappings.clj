@@ -250,7 +250,9 @@
   (korma/table :objective8.users)
   (korma/prepare map->user)
   (korma/transform (-> (unmap :user_data)
-                       (with-columns [:twitter-id :username]))))
+                       (with-columns 
+                         [:twitter-id :username :_created_at]
+                         {:_created_at sql-time->iso-time-string}))))
 
 (korma/defentity comment
   (korma/pk :_id)

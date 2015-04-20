@@ -186,11 +186,14 @@
                status => 200
                body => helpers/no-untranslated-strings)))
 
+(def CREATED_AT "2015-04-20T10:31:17.343Z")
+
 (facts "about rendering profile page"
        (fact "there are no untranslated strings"
              (against-background
                (http-api/find-user-by-username "username") => {:status ::http-api/success
                                                                :result {:username "username"
+                                                                        :_created_at CREATED_AT
                                                                         :profile {:name "Barry"
                                                                                   :biog "I'm Barry..."}}})
              (let [user-session (helpers/test-context)
