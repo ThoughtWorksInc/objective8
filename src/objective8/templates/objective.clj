@@ -201,7 +201,7 @@
                                       (case (:type modal)
                                         :invitation (writer-invitation-modal context)
                                         :share-question (share-question-modal context)
-                                        (when (invitation-rsvp-for-objective? objective invitation-rsvp) 
+                                        (when (invitation-rsvp-for-objective? objective invitation-rsvp)
                                           (invitation-rsvp-modal context)))
 
                                       [:.clj-objective-progress-indicator] nil
