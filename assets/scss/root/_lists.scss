@@ -1,8 +1,13 @@
+@mixin unstyledList() {
+  list-style: none;
+  margin: 0 0 1em 0;
+  padding: 0;
+}
+
 .list-large {
   font-size: 1.2em;
 }
 .unstyled-list {
-  list-style: none;
-  margin: 0em 0 2em;
-  padding: 0;
+  @include unstyledList();
+  margin-bottom: 2em;
 }
