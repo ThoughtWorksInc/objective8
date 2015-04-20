@@ -1,11 +1,20 @@
 (ns objective8.templates.question
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]  
+            [ring.util.anti-forgery :refer [anti-forgery-field]]
+            [objective8.utils :as utils]
             [objective8.templates.page-furniture :as pf]
             [objective8.templates.template-functions :as tf]))
 
 (def question-template (html/html-resource "templates/jade/question.html" {:parser jsoup/parser}))
+
+(defn facebook-meta-tags [{:keys [data ring-request translations] :as context}]
+  (let [question (:question data)]
+    (html/transformation
+     [:.clj-meta-sharing-facebook-title] (html/set-attr :content (:question question))
+     [:.clj-meta-sharing-facebook-url] (html/set-attr :content (str utils/host-url (:uri ring-request)))
+     [:.clj-meta-sharing-facebook-description] (html/set-attr :content (translations :question-page/facebook-description))
+     [:.clj-meta-sharing-facebook-image] nil)))
 
 (defn voting-actions-when-signed-in [{:keys [ring-request] :as context} answer]
   (html/transformation
@@ -52,6 +61,7 @@
                              (html/at question-template
                                       [:title] (html/content (:title doc))
                                       [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
+                                      [:head] (facebook-meta-tags context)
                                       [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
                                       [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
                                       [:.clj-objective-link] (html/set-attr :href (str "/objectives/" (:_id objective)))
