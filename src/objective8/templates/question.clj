@@ -33,7 +33,7 @@
     [:.clj-up-score] (html/content (str (get-in answer [:votes :up])))
     [:.clj-down-score] (html/content (str (get-in answer [:votes :down])))))
 
-(defn disable-voting [translations]
+(defn disable-voting [{:keys [translations] :as context}]
   (html/transformation
    [:.clj-approval-button] (comp
                             (html/set-attr :disabled "disabled")
@@ -52,7 +52,7 @@
         objective (:objective data)
         tl8 (tf/translator context)
         optionally-disable-voting (if (tf/in-drafting? (:objective data))
-                                    (disable-voting translations)
+                                    (disable-voting context)
                                     identity)]
     (apply str
            (html/emit*
@@ -76,13 +76,17 @@
                                                                                              (if user
                                                                                                (voting-actions-when-signed-in context answer)
                                                                                                (voting-actions-when-signed-out context answer))))
-                                      [:.clj-jump-to-answer] (if user identity nil)
+                                      [:.clj-jump-to-answer] (when (and (tf/open? objective) user) identity)
 
-                                      [:.clj-answer-form] (if user (html/do->
-                                                                     (html/set-attr :action
-                                                                                    (str "/objectives/" (:_id objective)
-                                                                                         "/questions/" (:_id question) "/answers"))
-                                                                     (html/prepend (html/html-snippet (anti-forgery-field))))
-                                                            (html/substitute (sign-in-to-add-answer context)))
+                                      [:.clj-answer-new] (when (tf/open? objective) identity)
+                                      
+                                      [:.clj-answer-form]
+                                      (if user
+                                        (html/do->
+                                         (html/set-attr :action
+                                                        (str "/objectives/" (:_id objective)
+                                                             "/questions/" (:_id question) "/answers"))
+                                         (html/prepend (html/html-snippet (anti-forgery-field))))
+                                        (html/substitute (sign-in-to-add-answer context)))
 
                                       [:.l8n-guidance-heading] (tl8 :question-page/guidance-heading))))))))

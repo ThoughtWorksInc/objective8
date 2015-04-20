@@ -24,10 +24,10 @@
                (:status response)) => 200
              (provided
                (http-api/find-user-by-username "someUsername") => {:status ::http-api/success
-                                                               :result {:username "someUsername"
-                                                                        :profile {:name "Barry"
-                                                                                  :biog "I'm Barry..."}
-                                                                        :_created_at CREATED_AT}})) 
+                                                                   :result {:username "someUsername"
+                                                                            :profile {:name "Barry"
+                                                                                      :biog "I'm Barry..."}
+                                                                            :_created_at CREATED_AT}})) 
 
        (fact "message is shown when user has no profile" 
              (let [user-session (helpers/test-context)
@@ -37,5 +37,5 @@
                (:body response)) => (contains "This user has not created a writer profile yet") 
              (provided
                (http-api/find-user-by-username "someUsername") => {:status ::http-api/success
-                                                               :result {:username "someUsername"
-                                                                        :_created_at CREATED_AT}})))  
+                                                                   :result {:username "someUsername"
+                                                                            :_created_at CREATED_AT}})))  
