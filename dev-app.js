@@ -10,7 +10,6 @@ var pageData = {
 };
 
 app.use('/public', express.static(__dirname + '/resources/public'));
-app.use('/static/images', express.static(__dirname + '/resources/public/images'));
 
 app.use(favicon('./resources/public/favicon.ico'));
 

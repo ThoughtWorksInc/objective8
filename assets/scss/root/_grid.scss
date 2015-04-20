@@ -1,6 +1,5 @@
 .grid-container {
-  @include cf;
-  padding: 1em 0;
+  width: auto;
   margin-bottom: 2em;
 }
 
@@ -13,10 +12,8 @@
 }
 
 .grid-column {
-  @include mq(500) {
-    min-height: 240px;
-    float: left;
-  }
   @include mq(720) {
+    width: 33%;
+    float: left;
   }
 }
