@@ -6,8 +6,9 @@
 
 (def profile-template (html/html-resource "templates/jade/profile.html" {:parser jsoup/parser}))
 
-(defn profile-page [{:keys [doc data] :as context}]
-  (let [user-profile (:user-profile data)]
+(defn profile-page [{:keys [doc data translations] :as context}]
+  (let [user-profile (:user-profile data)
+        joined-date (:joined-date data)]
   (apply str
          (html/emit*
            (tf/translate context
@@ -17,6 +18,9 @@
                                     [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
                                     [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
                                     [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
+                                    [:.clj-writer-profile] (if user-profile 
+                                                             identity
+                                                             (html/html-content (translations :profile/no-profile-message)))
                                     [:.clj-writer-name] (html/content (:name user-profile))
                                     [:.clj-writer-joined-date] (html/content (:joined-date user-profile))
                                     [:.clj-writer-biog] (html/content (:biog user-profile))
