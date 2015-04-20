@@ -75,10 +75,12 @@
 
 (defn writer-list-items [candidates]
   (html/at writer-item-snippet
-           [:.clj-writer-item-without-photo :> :a] html/unwrap
            [:.clj-writer-item-without-photo] 
            (html/clone-for [candidate candidates]
-                           [:.clj-writer-name] (html/content (:writer-name candidate))
+                           [:.clj-writer-profile-link] (html/set-attr :href 
+                                                                      (utils/path-for :fe/profile 
+                                                                                      :username (:username candidate)))
+                           [:.clj-writer-name] (html/content (:name (:profile candidate)))
                            [:.clj-writer-description] (html/content (:invitation-reason candidate)))))
 
 (defn writer-list [context]

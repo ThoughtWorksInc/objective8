@@ -269,7 +269,7 @@
                (writers/retrieve-candidates-by-user-id USER_ID) => [{:objective-id 1} {:objective-id 2}]
                (objectives/get-objectives-owned-by-user-id USER_ID) => [{:_id 3} {:_id 4}])))
 
-(def objective {:created-by-id USER_ID})
+(def objective {:created-by-id USER_ID :title "SOME TITLE"})
 (def stored-objective (assoc objective :_id OBJECTIVE_ID))
 (def invitation {:invited-by-id USER_ID
                  :objective-id OBJECTIVE_ID
@@ -288,4 +288,5 @@
                (objectives/store-objective! objective) => stored-objective
                (users/retrieve-user user-uri) => {:username "UserName"}
                (invitations/store-invitation! invitation) => {:uuid UU_ID}
+               (users/update-user! (contains {:profile {:name "UserName" :biog "This profile was automatically generated for the creator of objective: SOME TITLE"}})) => {}
                (writers/create-candidate candidate-data) => :candidate)))

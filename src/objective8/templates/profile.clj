@@ -22,7 +22,7 @@
                                                              identity
                                                              (html/content (translations :profile/no-profile-message)))
                                     [:.clj-writer-name] (html/content (:name user-profile))
-                                    [:.clj-writer-joined-date] (html/content (:joined-date user-profile))
+                                    [:.clj-writer-joined-date] (html/content joined-date)
                                     [:.clj-writer-biog] (html/content (:biog user-profile))
                                     [:.clj-writer-links] nil)))))))
 

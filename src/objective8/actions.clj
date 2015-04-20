@@ -14,7 +14,7 @@
 (defn create-writer-for-objective! [{:keys [created-by-id] :as objective}]
   (let
     [objective-id (:_id objective)
-     {username :username} (users/retrieve-user (str "/users/" created-by-id))
+     {:keys [username profile] :as user} (users/retrieve-user (str "/users/" created-by-id))
      invitation {:invited-by-id (:created-by-id objective)
                  :objective-id objective-id
                  :reason "Default writer as creator of this objective"
@@ -22,6 +22,8 @@
      {uuid :uuid} (invitations/store-invitation! invitation)
      candidate {:invitation-uuid uuid
                 :invitee-id created-by-id}]
+    (when-not profile
+      (users/update-user! (assoc user :profile {:name username :biog (str "This profile was automatically generated for the creator of objective: " (:title objective))})))
     (writers/create-candidate candidate)))
 
 (defn create-objective! [{:keys [created-by-id] :as objective}]

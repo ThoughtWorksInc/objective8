@@ -20,7 +20,7 @@ mixin writerItem(name, href, photo)
   - liClojureClass = photo == "" ? "clj-writer-item-without-photo" : "clj-writer-item-with-photo"
 
   li.writer-item(class=liClojureClass)
-    a(href="#{href}")
+    a.writer-item-link.clj-writer-profile-link(href="#{href}")
       .writer-item-photo
         if photo == ""
           i.writer-item-no-image-icon.fa.fa-user

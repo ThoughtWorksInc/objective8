@@ -9,8 +9,15 @@ $writer_avatar_size_beta: 60px;
   @include cf;
   margin: 0 1em 1em 0;
   padding: 0;
-  a {
-    display: block;
+}
+
+.writer-item-link {
+  display: block;
+  text-decoration: none;
+  &:visited {
+    color: inherit;
+  }
+  &:hover {
     text-decoration: none;
   }
 }

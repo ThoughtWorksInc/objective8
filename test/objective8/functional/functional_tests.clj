@@ -109,7 +109,7 @@
                    (screenshot "objective_page")
 
                    {:page-title (wd/title)
-                    :writer-name (wd/text".func--writer-name")}
+                    :writer-name (wd/text ".func--writer-name")}
 
                    (catch Exception e
                      (screenshot "ERROR-Can-add-an-objective")
@@ -224,7 +224,7 @@
                    (screenshot "invite_writer_page")
 
 
-                   (wd/input-text ".func--writer-name" "Functional Test Writer Name")
+                   (wd/input-text ".func--writer-name" "Invitee name")
                    (wd/input-text ".func--writer-email" "func_test_candidate@domain.com")
                    (-> ".func--writer-reason"
                        (wd/input-text "Functional test invitation reason")
@@ -266,7 +266,7 @@
            (wait-for-title "Create profile | Objective[8]")
            (screenshot "create_profile_page")
 
-           (wd/input-text ".func--name" "Functional Test Writer Profile Name")
+           (wd/input-text ".func--name" "Invited writer real name") 
            (-> ".func--biog"
                (wd/input-text  "Biography with lots of text...")
                wd/submit)
@@ -280,17 +280,20 @@
            (catch Exception e
              (screenshot "ERROR-Can-accept-a-writer-invitation")
              (throw e)))
-      => "Functional Test Writer Name")
+      => "Invited writer real name")
 
 (fact "Can view writer profile page"
-     (try (wd/to "localhost:8080/users/funcTestWriter") 
-          (wait-for-title "Functional Test Writer Profile Name | Objective[8]")
+     (try (wd/to (:objective-url @journey-state))
+          (wait-for-title "Functional test headline | Objective[8]")
+
+          (wd/click (second (wd/elements ".func--writer-name")))
+          (wait-for-title "Invited writer real name | Objective[8]")
           (screenshot "writer_profile_page")
           
           (wd/text (first (wd/elements ".func--writer-biog")))
           (catch Exception e
             (screenshot "ERROR-can-view-writer-profile")
-            (throw e))) 
+            (throw e)))
       => "Biography with lots of text...")
 
         (against-background
