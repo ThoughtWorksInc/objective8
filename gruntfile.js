@@ -25,6 +25,10 @@ module.exports = function(grunt) {
         files: ['<%= folders.src %>/jade/**/*.jade'],
         tasks: ['jade:compile']
       },
+      imagemin: {
+        files: ['<%= folders.src %>/images/**/*.*'],
+        tasks: ['imagemin:dist']
+      },
       express: {
         files:  [ '<%= folders.src %>/js/**/*.js' ],
         tasks:  [ 'express:dev' ],
@@ -110,6 +114,17 @@ module.exports = function(grunt) {
       }
     },
 
+    imagemin: {
+      dist: {
+        files: [{
+          expand: true,
+          cwd: '<%= folders.src %>/images',
+          src: ['**/*.{png,jpg,gif,svg}'],
+          dest: '<%= folders.output %>/public/images'
+        }]
+      }
+    },
+
     //JAVASCRIPT
     jshint: {
       options: {
@@ -183,6 +198,7 @@ module.exports = function(grunt) {
     'clean:build',
     'sass:dev',
     'autoprefixer:dev',
+    'imagemin:dist',
     'jade',
     'jshint',
     'concat',
@@ -193,6 +209,7 @@ module.exports = function(grunt) {
   grunt.registerTask('design',[
     'sass:dev',
     'autoprefixer:dev',
+    'imagemin:dist',
     'jshint',
     'concat',
     'uglify',
@@ -205,6 +222,7 @@ module.exports = function(grunt) {
     'clean:build',
     'sass:dist',
     'autoprefixer:dist',
+    'imagemin:dist',
     'jade',
     'jshint',
     'concat',
