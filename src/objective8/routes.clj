@@ -32,7 +32,8 @@
                                                            ["/" [#"\d+" :q-id]] {:get :fe/question
                                                                                  "/answers" {:post :fe/add-answer-form-post}}}
                                              "/drafts" {:get :fe/draft-list
-                                                        ["/" [#"\d+|latest" :d-id]] {:get :fe/draft}}
+                                                        ["/" [#"\d+|latest" :d-id]] {:get :fe/draft
+                                                                                     "/diff" {:get :fe/draft-diff}}}
                                              "/add-draft" {:get :fe/add-draft-get
                                                            :post :fe/add-draft-post}
                                              "/import-draft" {:get :fe/import-draft-get

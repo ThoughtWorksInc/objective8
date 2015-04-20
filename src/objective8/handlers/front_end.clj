@@ -541,6 +541,14 @@
 
       :else {:status 500})))
 
+(defn draft-diff [{{:keys [d-id id]} :route-params :as request}]
+  ( let [objective-id (Integer/parseInt id)
+         draft-id (Integer/parseInt d-id)
+         {objective-status :status objective :result} (http-api/get-objective objective-id)
+         {draft-status :status draft :result} (http-api/get-draft objective-id draft-id)
+         {previous-draft-status :status previous-draft :result} (http-api/get-draft objective-id (:previous-draft-id draft))]
+    {:status 200}))
+
 (defn draft-list [{{:keys [id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)
         {objective-status :status objective :result} (http-api/get-objective objective-id)
@@ -580,7 +588,7 @@
         {status :status stored-star :result} (http-api/post-star star-data)]
     (cond
       (= status ::http-api/success) (redirect-to-params-referer request)
-      
+
       (= status ::http-api/invalid-input) {:status 400}
 
       :else {:status 502}))) 
