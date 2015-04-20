@@ -16,12 +16,6 @@ block content
       label.send-invite-label(for="copy-invite", data-l8n="content:invitation-modal/guidance-text-line-3") !Alternatively send the writer this link:
       input.invite-input-url.clj-invitation-url.func--invitation-url(id="copy-invite", type="text", value="!http://invitation/uuid/really/long/uuid")
 
-  +guidanceText('!What is an objective?','content:create-objective-guidance/heading')
-    ul
-      li(data-l8n="content:objective-guidance/text-line-1") !A policy starts with an idea.
-      li(data-l8n="content:objective-guidance/text-line-2") !These are catalysts for change.
-      li(data-l8n="content:objective-guidance/text-line-3") !Everyone can comment and make suggestions to contribute towards the draft stage.
-
   .middle-container
 
     ul.progress-indicator.clj-objective-progress-indicator
@@ -62,7 +56,6 @@ block content
             i.fa.fa-star-o
             i.fa.fa-star
 
-
       .clj-drafting-started-wrapper
 
       h2(data-l8n="content:objective-view/details") !Details
@@ -81,18 +74,24 @@ block content
           | !Interested in anything to do with cycling and Spain.
       a.button.invite-writer.clj-invite-writer-link.func--invite-writer(href="/objective-invite-writer", data-l8n="content:objective-view/invite-a-writer") !Invite a writer
 
+
+    //+guidanceText('!What is an objective?','content:create-objective-guidance/heading')
+    //  ul
+    //    li(data-l8n="content:objective-guidance/text-line-1") !A policy starts with an idea.
+    //    li(data-l8n="content:objective-guidance/text-line-2") !These are catalysts for change.
+    //    li(data-l8n="content:objective-guidance/text-line-3") !Everyone can comment and make suggestions to contribute towards the draft stage.
+
     #questions
       .objective-questions-guidance
-        h2(data-l8n="content:objective-view/question-section-title") !Help to draft policy by answering questions
-        h3(data-l8n="content:objective-view/question-how-it-works-title") !How it works
+        h2(data-l8n="content:objective-view/question-section-title") !Help to turn this objective into a policy
         ul
-          li(data-l8n="content:objective-view/question-how-it-works-1") !Help to draft the policy by answering and suggesting questions
-          li(data-l8n="content:objective-view/question-how-it-works-2") !Anyone can answer a question
-          li(data-l8n="content:objective-view/question-how-it-works-3") !Anyone can agree or disagree with an answer
-          li(data-l8n="content:objective-view/question-how-it-works-4") !The writers will use the answers when drafting the policy
-      .objective-questions.promoted-questions-container
-        h2(data-l8n="content:objective-view/objective-questions-title") !Promoted Questions
-        p(data-l8n="content:objective-view/objective-questions-helper-text") !These questions have been chosen by the writers. The answers will be used when drafting the policy.
+          li(data-l8n="content:objective-view/question-how-it-works-1") !A policy starts with an objective
+          li(data-l8n="content:objective-view/question-how-it-works-2") !Questions provide evidence for the policy
+          li(data-l8n="content:objective-view/question-how-it-works-3") !Anyone can answer a question and agree or disagree with an answer
+          li(data-l8n="content:objective-view/question-how-it-works-4") !The answers will be used by the when drafting the policy
+      .objective-questions
+        h2(data-l8n="content:objective-view/objective-questions-title") !Questions
+        p(data-l8n="content:objective-view/objective-questions-helper-text") !These questions have been chosen by the writers because the results are important to the objective.
         ol.question-list.clj-objective-question-list
           +questionItemWithDemoteForm('!Chris Cheshire', '3 September 2015 07:41')
             | !What road surface should we use?
@@ -102,7 +101,7 @@ block content
             | !What do we do if we have a really long question which will wrap across multiple lines?
 
       .objective-questions
-        h2(data-l8n="content:objective-view/community-questions-title") !Ask the community
+        h2(data-l8n="content:objective-view/community-questions-title") !Questions from the community
         p(data-l8n="content:objective-view/community-questions-helper-text") !These questions have been suggested by the community. The answers may be useful for drafting the policy.
         ol.question-list.clj-community-question-list
           +questionItemWithPromoteForm('!Chris Cheshire', '3 September 2015 07:41')

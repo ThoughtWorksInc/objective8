@@ -170,16 +170,16 @@ objective-view,background-label,Background
 objective-view,doc-description,Objective  ...
 objective-view,writers,Writers
 objective-view,invite-a-writer,Invite a writer
-objective-view,question-section-title,Help to draft the policy by answering questions
+objective-view,question-section-title,Help to turn this objective into a policy
 objective-view,question-how-it-works-title,How it works
-objective-view,question-how-it-works-1,Help to draft the policy by answering and suggesting questions
-objective-view,question-how-it-works-2,Anyone can answer a question
-objective-view,question-how-it-works-3,Anyone can agree or disagree with an answer
-objective-view,question-how-it-works-4,The writers will use the answers when drafting the policy
-objective-view,objective-questions-title,Promoted questions
-objective-view,objective-questions-helper-text,These questions have been chosen by the writers. The answers will be used when drafting the policy.
+objective-view,question-how-it-works-1,A policy starts with an objective
+objective-view,question-how-it-works-2,Questions provide evidence for the policy
+objective-view,question-how-it-works-3,Anyone can answer a question and agree or disagree with an answer
+objective-view,question-how-it-works-4,The answers will be used by the when drafting the policy
+objective-view,objective-questions-title,Questions
+objective-view,objective-questions-helper-text,These questions have been chosen by the writers because the results are important to the objective.
 objective-view,no-objective-questions,The writers for this objective have not promoted any questions yet.
-objective-view,community-questions-title,Ask the community
+objective-view,community-questions-title,Questions from the community
 objective-view,community-questions-helper-text,These questions have been suggested by the community. The answers may be useful for drafting the policy.
 objective-view,answer-link,Choose an answer
 objective-view,ask-a-question,Suggest a question
