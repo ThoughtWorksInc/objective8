@@ -1,5 +1,21 @@
 $editor_min_device_width: 321;
 
+.html-draft-editor {
+  @include mq($editor_min_device_width) {
+    height: 100%;
+  }
+  body {
+    @include mq($editor_min_device_width) {
+      height: 100%;
+    }
+  }
+  .main-content {
+    position: relative;
+    height: 100%;
+    padding: 0;
+  }
+}
+
 .draft-editor {
   @include mq($editor_min_device_width) {
     display: flex;
@@ -14,19 +30,34 @@ $editor_min_device_width: 321;
   }
 }
 .draft-editor-console {
+  padding: 1em;
   @include mq($editor_min_device_width) {
     flex: 1;
     height: 100%;
-    padding: 2em;
     overflow: scroll;
+  }
+  @include mq(640) {
+    padding: 2em;
   }
 }
 .draft-editor-document {
+  padding: 1em;
   @include mq($editor_min_device_width) {
     flex: 1;
     height: 100%;
     max-width: 50%;
-    padding: 2em;
     overflow: scroll;
   }
+  @include mq(640) {
+    padding: 2em;
+  }
+}
+
+
+.removed-from-version {
+  background-color: rgba($pink,0.1);
+}
+.added-to-version {
+  position: relative;
+  background-color: rgba($green2,0.1);
 }
