@@ -247,6 +247,7 @@ sharing,twitter-link-title,Share this page on Twitter
 sharing,linked-in-link-title,Share this page on LinkedIn
 share-question-modal,heading,Question created
 share-question-modal,helper-text,Share your question to increase the number of answers.
+share-question-modal,share-by-url-label,Share this link:
 invitation-modal,guidance-text-line-1,Your writer's invitation
 invitation-modal,guidance-text-line-2,To complete your invitation
 invitation-modal,guidance-text-line-3,Alternatively send the writer this link:

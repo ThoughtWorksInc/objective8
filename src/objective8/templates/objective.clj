@@ -81,7 +81,8 @@
                            [:.clj-share-on-facebook] (html/set-attr :href facebook-url)
                            [:.clj-share-on-linked-in] (html/set-attr :href linked-in-url)
                            [:.clj-share-on-twitter] (html/set-attr :href twitter-url)
-                           [:.clj-share-on-google-plus] (html/set-attr :href google-plus-url))))))
+                           [:.clj-share-on-google-plus] (html/set-attr :href google-plus-url)
+                           [:.clj-share-by-url-text-input] (html/set-attr :value question-url))))))
 
 ;; DRAFTING HAS STARTED MESSAGE
 
