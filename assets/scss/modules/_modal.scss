@@ -90,6 +90,15 @@
   margin-right: 0.2em;
 }
 
+.modal-share-icon-link {
+  &:visited, & {
+    color: $green1;
+  }
+  &:hover {
+    color: $green2;
+  }
+}
+
 .modal-share-question-text {
   font-size: 1.6em;
 }
