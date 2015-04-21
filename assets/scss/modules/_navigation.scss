@@ -1,6 +1,8 @@
 .navigation-wrapper {
   background: $grey-5;
   padding: 1em;
+  position: relative;
+  z-index: 2;
   @include mq(720) {
     display: none;
   }

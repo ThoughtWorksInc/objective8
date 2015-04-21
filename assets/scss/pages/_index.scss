@@ -6,6 +6,7 @@
   z-index: 1;
   body {
     min-height: 100%;
+    position: relative;
     &:after {
       content: '';
       position: absolute;
