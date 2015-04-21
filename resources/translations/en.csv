@@ -279,6 +279,7 @@ invitation-response,invitation-declined-banner-message,Invitation declined
 create-profile,doc-title,Create profile | Objective[8]
 create-profile,doc-description,
 create-profile,page-title,Create a writer profile
+create-profile,profile-intro,"Your profile is open for everyone to read.  You should talk about your writing experience. Include your areas of policy expertise."
 create-profile,name-label,Name: 
 create-profile,biography,Biography: 
 create-profile,button,Create profile
