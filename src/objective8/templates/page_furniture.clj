@@ -37,9 +37,7 @@
 
 (defn masthead-signed-in [{:keys [user] :as context}]
   (html/at masthead-signed-in-snippet
-           [:.clj-username-link] (html/content (:username user))
-           [:.clj-username-link] (html/set-attr :href (utils/path-for :fe/profile
-                                                                      :username (:username user)))))
+           [:.clj-username] (html/content (:username user))))
 
 (defn masthead [{:keys [user] :as context}]
   (if user
