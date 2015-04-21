@@ -33,7 +33,17 @@
 
 .annotate-draft-preview-document {
   @extend .draft-preview-document;
+  padding-bottom: 0;
+  border-bottom: none;
   @include mq(321) {
     margin-bottom: 2em;
+  }
+}
+
+.annotate-text {
+  border-left: 5px solid $green1;
+  padding-left: 1em;
+  @include mq(720) {
+    padding-left: 2.5em;
   }
 }
