@@ -83,7 +83,9 @@
                            [:.clj-writer-profile-link] (html/set-attr :href 
                                                                       (utils/path-for :fe/profile 
                                                                                       :username (:username candidate)))
-                           [:.clj-writer-name] (html/content (:name (:profile candidate)))
+                           [:.clj-writer-name] (html/content (if-let [real-name (:name (:profile candidate))]
+                                                               real-name
+                                                               (:username candidate)))
                            [:.clj-writer-description] (html/content (:invitation-reason candidate)))))
 
 (defn writer-list [context]
