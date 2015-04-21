@@ -45,9 +45,9 @@
                (against-background
                  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
                  (http-api/create-user anything) => {:status ::http-api/success
-                                                     :result {:_id USER_ID}}
-                 (http-api/get-user anything) => {:result {:username "username"
-                                                           :owned-objectives [{:_id OBJECTIVE_ID}]}}
+                                                     :result {:_id USER_ID
+                                                              :username "username"}}
+                 (http-api/get-user anything) => {:result {:owned-objectives [{:_id OBJECTIVE_ID}]}}
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success}
                  (http-api/create-invitation 
                    {:writer-name "bob"
@@ -80,8 +80,7 @@
                                                                  :result {:_id USER_ID
                                                                           :username "username"}}
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success}
-                 (http-api/get-user anything) => {:result {:username "username"
-                                                           :writer-records [{:objective-id OBJECTIVE_ID}]}}
+                 (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}}
 
                  (http-api/create-invitation 
                    {:writer-name "bob"
@@ -111,9 +110,9 @@
                (against-background
                  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
                  (http-api/create-user anything) => {:status ::http-api/success
-                                                     :result {:_id USER_ID}}
-                 (http-api/get-user anything) => {:result {:username "username"
-                                                           :writer-records [{:objective-id (inc OBJECTIVE_ID)}]}}
+                                                     :result {:_id USER_ID
+                                                              :username "username"}}
+                 (http-api/get-user anything) => {:result {:writer-records [{:objective-id (inc OBJECTIVE_ID)}]}}
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success}
                  (http-api/create-invitation 
                    {:writer-name "bob"
@@ -265,8 +264,7 @@
                                            :user-uri (str "/users/" USER_ID)}) => {:status ::http-api/success
                                                                                    :result {}}
                    (http-api/get-user USER_ID) => {:status ::http-api/success
-                                                   :result {:username "username"
-                                                            :profile {:name "John Doe"
+                                                   :result {:profile {:name "John Doe"
                                                                       :biog "My biog"}}}
 
                    (http-api/post-candidate-writer {:invitee-id USER_ID
@@ -316,8 +314,7 @@
                  (:uri request)) => (contains OBJECTIVE_URL)
                (provided
                  (http-api/get-user USER_ID) => {:status ::http-api/success
-                                                 :result {:username "username"
-                                                          :profile {:name "John Doe"
+                                                 :result {:profile {:name "John Doe"
                                                                     :biog "My biog"}}}
                  (http-api/post-candidate-writer {:invitee-id USER_ID
                                                   :invitation-uuid UUID
@@ -362,8 +359,7 @@
 
                (provided
                  (http-api/get-user USER_ID) => {:status ::http-api/success
-                                                 :result {:username "username"
-                                                          :profile {:name "John Doe"
+                                                 :result {:profile {:name "John Doe"
                                                                     :biog "My biog"}}}
                  (http-api/post-candidate-writer {:invitee-id USER_ID
                                                   :invitation-uuid UUID
@@ -411,8 +407,7 @@
                  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID} 
                  (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success :result user-with-writer-credentials} 
                  (http-api/get-user anything) => {:status ::http-api/success
-                                                  :result {:username "username"
-                                                           :profile {:name "real name"
+                                                  :result {:profile {:name "real name"
                                                                      :biog "my existing biography"}
                                                            :writer-records [{:objective-id OBJECTIVE_ID}]}})
                (let [{response :response} (-> user-session
@@ -437,8 +432,7 @@
                  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID} 
                  (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success :result user-with-writer-credentials}
                  (http-api/get-user anything) => {:status ::http-api/success
-                                                  :result {:username "username"
-                                                           :profile {:name "real name"
+                                                  :result {:profile {:name "real name"
                                                                      :biog "my existing biography"}
                                                            :writer-records [{:objective-id OBJECTIVE_ID}]}}) 
                (let [{response :response} (-> user-session

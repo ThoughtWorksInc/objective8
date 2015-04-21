@@ -17,7 +17,7 @@
 (def NO_ANSWER_MESSAGE "No answers were provided for this question.")
 (def NO_QUESTION_MESSAGE "No questions were asked for this objective.")
 
-(def writer-for-objective {:_id USER_ID :writer-records [{:objective-id OBJECTIVE_ID}]})
+(def writer-for-objective {:_id USER_ID :username "username" :writer-records [{:objective-id OBJECTIVE_ID}]})
 
 (background
  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
