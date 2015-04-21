@@ -123,11 +123,11 @@ dashboard-questions,doc-description,A summary of engagement with questions and a
 comment-create,comment-title,Comments are a maximum length of 500 characters
 comment-create,post-button,Add a comment
 comment-create,comment-label,Your comment
-candidate-list,doc-title,Candidate policy writers | Objective[8]
-candidate-list,page-intro,Writers work with each other and the community to draft policy.
-candidate-list,candidate-list-heading,Recently added candidate writers
-candidate-list,no-candidates,No candidate writers have been invited yet.
-candidate-list,doc-description,Candidate policy writers...
+writer-list,doc-title,Policy writers | Objective[8]
+writer-list,page-intro,Writers work with each other and the community to draft policy.
+writer-list,writer-list-heading,Recently added writers
+writer-list,no-writers,No writers have been invited yet.
+writer-list,doc-description,Policy writers...
 project-status,doc-title,Project status | Objective[8]
 project-status,doc-description,
 project-status,page-title,Alpha phase
@@ -243,8 +243,8 @@ invite-writer,invite-button,Create an invite
 invitation,writer-name-title,Writer names are a maximum length of 50 characters
 invitation,reason-title,Reasons are a maximum length of 1000 characters
 invitation,reason-label,"They should help draft this policy, because: "
-invitation,doc-title,Candidate policy writers
-invitation,doc-description,Candidate policy writers...
+invitation,doc-title,Policy writers
+invitation,doc-description,Policy writers...
 invitation,submit,Create an invite
 invitation,page-intro,Do you know someone with the enthusiasm and expertise to help draft this policy?
 invitation,page-title,Invite a policy writer

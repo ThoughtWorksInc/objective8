@@ -59,8 +59,8 @@
                                                                           ["/" [#"\d+" :q-id]] {:get :api/get-question
                                                                                                 "/answers" {:get :api/get-answers-for-question
                                                                                                             :post :api/post-answer}}}
-                                                            "/candidate-writers" {:get :api/get-candidates-for-objective
-                                                                                  :post :api/post-candidate-writer}
+                                                            "/writers" {:get :api/get-writers-for-objective
+                                                                        :post :api/post-writer}
                                                             "/writer-invitations" {:post :api/post-invitation
                                                                                    ["/" [#"\d+" :i-id]] {:put :api/put-invitation-declination}}
                                                             "/drafts" {:post :api/post-draft

@@ -15,19 +15,19 @@
   (org.postgresql.util.PSQLException.
    (org.postgresql.util.ServerErrorMessage. "" 0)))
 
-(fact "creating a candidate accepts the invitation and returns the created candidate"
+(fact "creating a writer accepts the invitation and returns the created writer"
       (against-background
         (utils/select-all-or-nothing anything anything) => {}
         (utils/ressoc anything anything anything) => {})
 
-      (writers/create-candidate {:invitation-uuid UUID}) => :new-candidate
+      (writers/create-writer {:invitation-uuid UUID}) => :new-writer
       (provided
         (i/get-active-invitation UUID) => :active-invitation
         (i/accept-invitation! :active-invitation) => :accepted-invitation
-        (storage/pg-store! anything) => :new-candidate))
+        (storage/pg-store! anything) => :new-writer))
 
-(fact "creating a candidate fails when an active invitation is not provided"
-      (writers/create-candidate {:invitation-uuid UUID}) => nil
+(fact "creating a writer fails when an active invitation is not provided"
+      (writers/create-writer {:invitation-uuid UUID}) => nil
       (provided
        (i/get-active-invitation UUID) => nil))
 
@@ -39,23 +39,23 @@
          (utils/ressoc anything anything anything) => {}) 
 
        (fact "while checking the invitation"
-             (writers/create-candidate {}) => (throws Exception "Failed to create candidate writer")
+             (writers/create-writer {}) => (throws Exception "Failed to create writer")
              (provided
               (i/get-active-invitation anything) =throws=> (database-exception)))
 
        (fact "while accepting the invitation"
-             (writers/create-candidate {}) => (throws Exception "Failed to create candidate writer")
+             (writers/create-writer {}) => (throws Exception "Failed to create writer")
              (provided
               (i/accept-invitation! anything) =throws=> (database-exception)))
 
-       (fact "while creating the candidate"
-             (writers/create-candidate {}) => (throws Exception "Failed to create candidate writer")
+       (fact "while creating the writer"
+             (writers/create-writer {}) => (throws Exception "Failed to create writer")
              (provided
               (storage/pg-store! anything) =throws=> (database-exception))))
 
-(fact "By default, only the first 50 candidates are retrieved"
-      (writers/retrieve-candidates OBJECTIVE_ID) => anything
+(fact "By default, only the first 50 writers are retrieved"
+      (writers/retrieve-writers OBJECTIVE_ID) => anything
       (provided
-        (storage/pg-retrieve {:entity :candidate
+        (storage/pg-retrieve {:entity :writer
                               :objective-id OBJECTIVE_ID}
                              {:limit 50}) => []))

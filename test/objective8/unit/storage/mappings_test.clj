@@ -208,23 +208,23 @@
              (map->invitation (dissoc invitation-map :invited-by-id)) => (throws Exception)
              (map->invitation (dissoc invitation-map :status)) => (throws Exception)))
 
-;;CANDIDATES
+;;WRITERS
 (def INVITATION_ID 345)
 
-(def candidate-map {:user-id USER_ID
-                    :objective-id OBJECTIVE_ID
-                    :invitation-id INVITATION_ID})
+(def writer-map {:user-id USER_ID
+                 :objective-id OBJECTIVE_ID
+                 :invitation-id INVITATION_ID})
 
-(facts "About map->candidate"
+(facts "About map->writer"
        (fact "Column values are pulled out and converted, the map gets turned to json"
-             (let [candidate (map->candidate candidate-map)]
-               candidate => (contains {:user_id USER_ID
-                                       :objective_id OBJECTIVE_ID
-                                       :invitation_id INVITATION_ID
-                                       :candidate json-type?})
-               (json-type->map (:candidate candidate)) =not=> (contains {:objective-id anything})
-               (json-type->map (:candidate candidate)) =not=> (contains {:user-id anything})
-               (json-type->map (:candidate candidate)) =not=> (contains {:invitation-id anything}))))
+             (let [writer (map->writer writer-map)]
+               writer => (contains {:user_id USER_ID
+                                    :objective_id OBJECTIVE_ID
+                                    :invitation_id INVITATION_ID
+                                    :writer json-type?})
+               (json-type->map (:writer writer)) =not=> (contains {:objective-id anything})
+               (json-type->map (:writer writer)) =not=> (contains {:user-id anything})
+               (json-type->map (:writer writer)) =not=> (contains {:invitation-id anything}))))
 
 ;;DRAFTS
 (def draft-map {:submitter-id USER_ID

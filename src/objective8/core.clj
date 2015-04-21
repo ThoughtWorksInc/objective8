@@ -93,9 +93,9 @@
                :api/post-answer (m/wrap-bearer-token api-handlers/post-answer bt/token-provider)
                :api/post-invitation (m/wrap-bearer-token api-handlers/post-invitation bt/token-provider)
                :api/get-invitation api-handlers/get-invitation
-               :api/post-candidate-writer (m/wrap-bearer-token api-handlers/post-candidate-writer bt/token-provider)
+               :api/post-writer (m/wrap-bearer-token api-handlers/post-writer bt/token-provider)
                :api/put-invitation-declination (m/wrap-bearer-token api-handlers/put-invitation-declination bt/token-provider)
-               :api/get-candidates-for-objective api-handlers/retrieve-candidates
+               :api/get-writers-for-objective api-handlers/retrieve-writers
                :api/post-draft (m/wrap-bearer-token api-handlers/post-draft bt/token-provider)
                :api/get-draft api-handlers/get-draft
                :api/get-drafts-for-objective api-handlers/retrieve-drafts

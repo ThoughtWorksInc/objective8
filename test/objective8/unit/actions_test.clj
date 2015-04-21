@@ -203,16 +203,16 @@
               (questions/get-question question-uri) => nil)))
 
 (facts "about getting users"
-       (fact "gets user with candidate records and owned objectives if they exist"
+       (fact "gets user with writer records and owned objectives if they exist"
              (actions/get-user-with-roles user-uri) 
              => {:status ::actions/success
                  :result {:entity :user
                           :_id USER_ID
                           :owned-objectives :stubbed-owned-objectives
-                          :writer-records :stubbed-candidate-records}}
+                          :writer-records :stubbed-writer-records}}
              (provided
                (users/retrieve-user user-uri) => {:entity :user :_id USER_ID}
-               (writers/retrieve-candidates-by-user-id USER_ID) => :stubbed-candidate-records 
+               (writers/retrieve-writers-by-user-id USER_ID) => :stubbed-writer-records 
                (objectives/get-objectives-owned-by-user-id USER_ID) => :stubbed-owned-objectives)))
 
 (def user-uri (str "/users/" USER_ID))
@@ -238,12 +238,12 @@
                                                          :result :stored-invitation} 
              (provided
                (objectives/retrieve-objective OBJECTIVE_ID) => {:status "open"}
-               (writers/retrieve-candidates-by-user-id USER_ID) => [{:objective-id OBJECTIVE_ID}]
+               (writers/retrieve-writers-by-user-id USER_ID) => [{:objective-id OBJECTIVE_ID}]
                (invitations/store-invitation! invitation) => :stored-invitation))
 
        (fact "succeeds when the associated objective is not in drafting and the inviter is the objective owner"
              (against-background
-               (writers/retrieve-candidates-by-user-id USER_ID) => [])
+               (writers/retrieve-writers-by-user-id USER_ID) => [])
              (actions/create-invitation! invitation) => {:status ::actions/success
                                                          :result :stored-invitation} 
              (provided
@@ -261,12 +261,12 @@
              (provided
                (objectives/retrieve-objective OBJECTIVE_ID) => {:status "open"}
                (objectives/get-objectives-owned-by-user-id USER_ID) => []
-               (writers/retrieve-candidates-by-user-id USER_ID) => []))
+               (writers/retrieve-writers-by-user-id USER_ID) => []))
 
        (fact "returns a list of objective-ids a user is writer-inviter for"
              (actions/authorised-objectives-for-inviter USER_ID) => '(1 2 3 4)
              (provided
-               (writers/retrieve-candidates-by-user-id USER_ID) => [{:objective-id 1} {:objective-id 2}]
+               (writers/retrieve-writers-by-user-id USER_ID) => [{:objective-id 1} {:objective-id 2}]
                (objectives/get-objectives-owned-by-user-id USER_ID) => [{:_id 3} {:_id 4}])))
 
 (def objective {:created-by-id USER_ID :title "SOME TITLE"})
@@ -275,8 +275,8 @@
                  :objective-id OBJECTIVE_ID
                  :reason (str "Default writer as creator of this objective")
                  :writer-name "UserName"})
-(def candidate-data {:invitation-uuid UU_ID
-                     :invitee-id USER_ID})
+(def writer-data {:invitation-uuid UU_ID
+                  :invitee-id USER_ID})
 (def user-uri (str "/users/" USER_ID))
 
 
@@ -289,4 +289,4 @@
                (users/retrieve-user user-uri) => {:username "UserName"}
                (invitations/store-invitation! invitation) => {:uuid UU_ID}
                (users/update-user! (contains {:profile {:name "UserName" :biog "This profile was automatically generated for the creator of objective: SOME TITLE"}})) => {}
-               (writers/create-candidate candidate-data) => :candidate)))
+               (writers/create-writer writer-data) => :writer)))

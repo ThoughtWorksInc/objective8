@@ -176,17 +176,17 @@
                                                           :uuid "the-uuid"})]
                        (storage/pg-retrieve {:entity :invitation :uuid "the-uuid"}) => (contains {:result (contains invitation)})))
 
-               ;;CANDIDATES
-               (fact "a candidate entity can be stored in the database"
+               ;;WRITERS
+               (fact "a writer entity can be stored in the database"
                      (let [{user-id :_id} (sh/store-a-user)
                            {objective-id :_id} (sh/store-an-open-objective)
                            {invitation-id :_id} (sh/store-an-invitation)
-                           candidate {:entity :candidate
-                                      :user-id user-id
-                                      :objective-id objective-id
-                                      :invitation-id invitation-id}
-                           store-result (storage/pg-store! candidate)
-                           retrieve-result (storage/pg-retrieve {:entity :candidate :_id (:_id store-result)})]
+                           writer {:entity :writer
+                                   :user-id user-id
+                                   :objective-id objective-id
+                                   :invitation-id invitation-id}
+                           store-result (storage/pg-store! writer)
+                           retrieve-result (storage/pg-retrieve {:entity :writer :_id (:_id store-result)})]
                        (first (:result retrieve-result)) => (contains {:user-id user-id
                                                                        :objective-id objective-id
                                                                        :invitation-id invitation-id})))
@@ -200,7 +200,7 @@
                ;;DRAFTS
                (facts "about drafts"
                       (fact "a draft can be stored in the database"
-                            (let [{objective-id :objective-id submitter-id :user-id} (sh/store-a-candidate)
+                            (let [{objective-id :objective-id submitter-id :user-id} (sh/store-a-writer)
                                   draft {:entity :draft
                                          :content "Some content"
                                          :submitter-id submitter-id

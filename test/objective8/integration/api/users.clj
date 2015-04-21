@@ -33,14 +33,14 @@
                              (helpers/truncate-tables)))
          (after :facts (helpers/truncate-tables))]
 
-        (fact "retrieves the user record and associated candidate-writer records and owned objectives records by user id"
+        (fact "retrieves the user record and associated writer records and owned objectives records by user id"
               (let [{user-id :_id :as the-user} (sh/store-a-user)
                     {owned-objective-id :_id} (sh/store-an-open-objective {:user the-user})
-                    candidate-record-1 (sh/store-a-candidate {:user the-user})
-                    candidate-record-2 (sh/store-a-candidate {:user the-user})
+                    writer-record-1 (sh/store-a-writer {:user the-user})
+                    writer-record-2 (sh/store-a-writer {:user the-user})
                     {response :response} (p/request app (str "/api/v1/users/" user-id))]
                 (:body response) =>
-                (helpers/json-contains {:writer-records (contains [(contains candidate-record-1) (contains candidate-record-2)])})
+                (helpers/json-contains {:writer-records (contains [(contains writer-record-1) (contains writer-record-2)])})
                 (:body response) =>
                 (helpers/json-contains {:owned-objectives (contains [(contains {:_id owned-objective-id})])})))
  

@@ -259,7 +259,7 @@
       (http-api/post-writer the-writer) => :api-call-result
       (provided
         (http-api/default-post-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID 
-                                                   "/candidate-writers")) the-writer) => :api-call-result))
+                                                   "/writers")) the-writer) => :api-call-result))
 
 (def declined-invitation {:invitation-uuid UUID
                           :invitation-id INVITATION_ID
@@ -274,7 +274,7 @@
       (http-api/retrieve-writers OBJECTIVE_ID) => :api-call-result
       (provided
         (http-api/default-get-call (contains (str host-url "/api/v1/objectives/"
-                                                  OBJECTIVE_ID "/candidate-writers"))) => :api-call-result))
+                                                  OBJECTIVE_ID "/writers"))) => :api-call-result))
 
 ;;DRAFTS
 

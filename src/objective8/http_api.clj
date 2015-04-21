@@ -181,12 +181,12 @@
 
 (defn retrieve-writers [objective-id]
   (default-get-call
-    (str utils/host-url "/api/v1/objectives/" objective-id "/candidate-writers")))
+    (str utils/host-url "/api/v1/objectives/" objective-id "/writers")))
 
 (defn post-writer [writer]
   (default-post-call (str utils/host-url
                           "/api/v1/objectives/" (:objective-id writer)
-                          "/candidate-writers") writer))
+                          "/writers") writer))
 
 (defn post-profile [profile-data]
   (default-put-call (utils/path-for :api/put-writer-profile) profile-data))

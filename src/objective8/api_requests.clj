@@ -11,7 +11,7 @@
             (utils/select-all-or-nothing [:writer-name :writer-email :reason :invited-by-id])
             (assoc :objective-id objective-id))))
 
-(defn request->candidate-data [{params :params :as request}]
+(defn request->writer-data [{params :params :as request}]
   params)
 
 (defn request->draft-data [{params :params :as request}]

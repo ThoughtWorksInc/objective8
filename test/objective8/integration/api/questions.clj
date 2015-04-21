@@ -120,11 +120,11 @@
        (fact "marks on questions are included when questions are retrieved for an objective"
              (let [objective (sh/store-an-open-objective)
                    {marked-by :username :as marking-user} (sh/store-a-user)
-                   marking-writer (sh/store-a-candidate {:invitation (sh/store-an-invitation {:objective objective})
+                   marking-writer (sh/store-a-writer {:invitation (sh/store-an-invitation {:objective objective})
                                                          :user marking-user})
 
                    marked-question (sh/store-a-question {:objective objective})
-                   _ (sh/store-a-mark {:question marked-question :candidate marking-writer})
+                   _ (sh/store-a-mark {:question marked-question :writer marking-writer})
 
                    unmarked-question (sh/store-a-question {:objective objective})
 
@@ -148,7 +148,7 @@
              (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
                    invitation (sh/store-an-invitation {:objective objective})
                    {question-id :_id} (sh/store-a-question {:objective objective})
-                   {user-id :user-id} (sh/store-a-candidate {:invitation invitation})
+                   {user-id :user-id} (sh/store-a-writer {:invitation invitation})
 
                    question-uri (str "/objectives/" objective-id "/questions/" question-id)
                    created-by-uri (str "/users/" user-id) 
@@ -171,7 +171,7 @@
                (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
                      invitation (sh/store-an-invitation {:objective objective})
                      {question-id :_id :as question} (sh/store-a-question {:objective objective})
-                     {user-id :user-id} (sh/store-a-candidate {:invitation invitation})
+                     {user-id :user-id} (sh/store-a-writer {:invitation invitation})
 
                      existing-mark (sh/store-a-mark {:question question})
 

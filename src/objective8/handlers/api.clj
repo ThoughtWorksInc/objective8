@@ -331,30 +331,30 @@
         (response/content-type "application/json"))
     {:status 404}))
 
-(defn post-candidate-writer [{{objective-id :id} :route-params
-                              params :params :as request}]
+(defn post-writer [{{objective-id :id} :route-params
+                    params :params :as request}]
   (try
-    (let [candidate-data (ar/request->candidate-data request)]
-      (if-let [{candidate-id :_id :as candidate} (writers/create-candidate candidate-data)]
+    (let [writer-data (ar/request->writer-data request)]
+      (if-let [{writer-id :_id :as writer} (writers/create-writer writer-data)]
         (resource-created-response (str utils/host-url
                                        "/api/v1/objectives/" objective-id
-                                       "/candidate-writers/" candidate-id) candidate)
+                                       "/writers/" writer-id) writer)
         {:status 403}))
     (catch Exception e
-      (log/info "Error when creating candidate: " e)
-      (invalid-response (str "Error when creating candidate writer")))))
+      (log/info "Error when creating writer: " e)
+      (invalid-response (str "Error when creating writer")))))
 
-(defn retrieve-candidates [{:keys [route-params params]}]
+(defn retrieve-writers [{:keys [route-params params]}]
   (try
     (let [objective-id (-> (:id route-params)
                            Integer/parseInt)
-          candidates (writers/retrieve-candidates objective-id)]
-      (-> candidates
+          writers (writers/retrieve-writers objective-id)]
+      (-> writers
           response/response
           (response/content-type "application/json")))
     (catch Exception e
-      (log/info "Error when retrieving candidates: " e)
-      (invalid-response "Invalid candidates get request for this objective"))))
+      (log/info "Error when retrieving writers: " e)
+      (invalid-response "Invalid writers get request for this objective"))))
 
 ;;DRAFTS
 (defn post-draft [{{objective-id :id} :route-params :as request}]

@@ -117,14 +117,14 @@
                          :vote-type vote-type
                          :created-by-id (:_id user)}))))
 
-(defn store-a-candidate
+(defn store-a-writer
   ([]
-   (store-a-candidate {}))
+   (store-a-writer {}))
 
   ([required-entities]
    (let [{user-id :_id} (l-get required-entities :user (store-a-user))
          {i-id :_id o-id :objective-id} (l-get required-entities :invitation (store-an-invitation))]
-     (storage/pg-store! {:entity :candidate
+     (storage/pg-store! {:entity :writer
                          :user-id user-id
                          :objective-id o-id
                          :invitation-id i-id}))))
@@ -135,8 +135,8 @@
 
   ([required-entities]
    (let [{objective-id :_id} (l-get required-entities :objective (store-an-objective-in-draft))
-         ;; NB: Candidate id not required, but for consistency, the submitter should be authorised to draft documents for this objective
-         {submitter-id :user-id} (l-get required-entities :submitter (store-a-candidate))]
+         ;; NB: Writer id not required, but for consistency, the submitter should be authorised to draft documents for this objective
+         {submitter-id :user-id} (l-get required-entities :submitter (store-a-writer))]
      (storage/pg-store! {:entity :draft
                          :submitter-id submitter-id
                          :objective-id objective-id
@@ -168,12 +168,12 @@
    (store-a-mark {}))
 
   ([entities]
-   "Can provide :question or :question and :candidate"
+   "Can provide :question or :question and :writer"
    (let [{question-id :_id objective-id :objective-id :as question} (l-get entities :question (store-a-question))]
-     (let [{created-by-id :user-id :as candidate} (l-get entities :candidate
-                                                         (store-a-candidate
-                                                          {:invitation (store-an-invitation
-                                                                        {:objective {:_id objective-id}})}))
+     (let [{created-by-id :user-id :as writer} (l-get entities :writer
+                                                      (store-a-writer
+                                                        {:invitation (store-an-invitation
+                                                                       {:objective {:_id objective-id}})}))
            active (get entities :active true)]
        (storage/pg-store! {:entity :mark
                            :created-by-id created-by-id

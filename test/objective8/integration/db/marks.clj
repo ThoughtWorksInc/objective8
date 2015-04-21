@@ -14,7 +14,7 @@
                (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
 
                      {question-id :_id} (sh/store-a-question {:objective objective})
-                     {user-id :user-id} (sh/store-a-candidate {:invitation (sh/store-an-invitation {:objective objective})})
+                     {user-id :user-id} (sh/store-a-writer {:invitation (sh/store-an-invitation {:objective objective})})
 
                      question-uri (str "/objectives/" objective-id "/questions/" question-id)
                      created-by-uri (str "/users/" user-id)

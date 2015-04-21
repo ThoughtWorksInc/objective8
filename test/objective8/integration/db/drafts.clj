@@ -14,7 +14,7 @@
          (after :facts (ih/truncate-tables))]
 
         (fact "a draft can be stored"
-              (let [{objective-id :objective-id submitter-id :user-id} (sh/store-a-candidate)
+              (let [{objective-id :objective-id submitter-id :user-id} (sh/store-a-writer)
                     _ (sh/start-drafting! objective-id)
                     draft-data {:objective-id objective-id
                                 :submitter-id submitter-id

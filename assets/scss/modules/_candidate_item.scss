@@ -1,4 +1,4 @@
-.candidate-item {
+.writer-item {
   text-decoration: none;
   display: block;
   padding: 1em;
@@ -6,7 +6,7 @@
   color: $black;
   margin-bottom: 1em;
 } 
-.candidate-name {
+.writer-name {
   font-weight: bold;
   text-transform: capitalize; //TODO remove when we have stored display names
   margin: 0 0 0.2em;
@@ -14,6 +14,6 @@
   text-decoration: underline;
   color: black;
 }
-.candidate-reason {
+.writer-reason {
   margin: 0 0 0.2em;
 }

@@ -145,9 +145,9 @@
                        [:invited-by-id :objective-id :uuid :status]
                        {:status (partial string->postgres-type "invitation_status")}))
 
-(def map->candidate
-  (db-insertion-mapper "candidate"
-                       :candidate
+(def map->writer
+  (db-insertion-mapper "writer"
+                       :writer
                        [:user-id :objective-id :invitation-id]))
 
 (def map->draft
@@ -233,7 +233,7 @@
       (assoc :_created_at (sql-time->iso-time-string (:_created_at m))) 
       (assoc :entity :star)))
 
-(declare objective user comment question answer invitation candidate bearer-token up-down-vote)
+(declare objective user comment question answer invitation writer bearer-token up-down-vote)
 
 (korma/defentity global-identifier
   (korma/pk :_id)
@@ -304,12 +304,12 @@
   (korma/transform (-> (unmap :invitation)
                        (with-columns [:objective-id :invited-by-id :uuid :status]))))
 
-(korma/defentity candidate
+(korma/defentity writer
   (korma/pk :_id)
-  (korma/table :objective8.candidates)
+  (korma/table :objective8.writers)
   (korma/belongs-to user {:fk :user_id})
-  (korma/prepare map->candidate)
-  (korma/transform (-> (unmap :candidate)
+  (korma/prepare map->writer)
+  (korma/transform (-> (unmap :writer)
                        (with-columns [:objective-id :user-id :invitation-id])
                        with-username-if-present
                        with-profile-if-present)))
@@ -350,7 +350,7 @@
                :mark      mark
                :answer    answer
                :invitation invitation
-               :candidate candidate
+               :writer writer
                :up-down-vote up-down-vote
                :draft draft
                :bearer-token bearer-token

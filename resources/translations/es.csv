@@ -25,11 +25,11 @@ masthead,objectives-link-title-attr,Ir a la lista de Objetivos
 masthead,objectives-link,Objetivos
 masthead,about-link-title-attr,Saber más sobre Objective[8]
 masthead,about-link,Sobre esta página
-candidate-list,doc-title,Candidatos a la redacción del documento | Objective[8]
-candidate-list,page-intro,Los redactores trabajan entre sí y con la comunidad para redactar el borrador
-candidate-list,candidate-list-heading,Redactores incorporados recientemente
-candidate-list,no-candidates,Ningún redactor ha sido invitado por ahora
-candidate-list,doc-description,Candidatos a la redacción del documento...
+writer-list,doc-title,Candidatos a la redacción del documento | Objective[8]
+writer-list,page-intro,Los redactores trabajan entre sí y con la comunidad para redactar el borrador
+writer-list,writer-list-heading,Redactores incorporados recientemente
+writer-list,no-writers,Ningún redactor ha sido invitado por ahora
+writer-list,doc-description,Candidatos a la redacción del documento...
 answer-votes,drafting-started,La votación ha sido congelada para este objetivo y está en proceso de redacción
 objectives-guidance,heading,¿Cuáles son los objetivos?
 objectives-guidance,text-line-1,Objective[8] centra el proceso de redacción en torno a objetivos

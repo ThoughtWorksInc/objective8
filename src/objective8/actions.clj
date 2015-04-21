@@ -20,11 +20,11 @@
                  :reason "Default writer as creator of this objective"
                  :writer-name username}
      {uuid :uuid} (invitations/store-invitation! invitation)
-     candidate {:invitation-uuid uuid
-                :invitee-id created-by-id}]
+     writer {:invitation-uuid uuid
+             :invitee-id created-by-id}]
     (when-not profile
       (users/update-user! (assoc user :profile {:name username :biog (str "This profile was automatically generated for the creator of objective: " (:title objective))})))
-    (writers/create-candidate candidate)))
+    (writers/create-writer writer)))
 
 (defn create-objective! [{:keys [created-by-id] :as objective}]
   (if-let [stored-objective (objectives/store-objective! objective)]
@@ -45,7 +45,7 @@
 
 (defn submit-draft! [{:keys [submitter-id objective-id] :as draft-data}]
   (when (objectives/in-drafting? (objectives/retrieve-objective objective-id)) 
-    (when (writers/retrieve-candidate-for-objective submitter-id objective-id)
+    (when (writers/retrieve-writer-for-objective submitter-id objective-id)
       (drafts/store-draft! draft-data))))
 
 (defn retrieve-drafts [objective-id]
@@ -122,9 +122,9 @@
 
 (defn get-user-with-roles [user-uri]
   (if-let [user (users/retrieve-user user-uri)]
-    (let [candidates (writers/retrieve-candidates-by-user-id (:_id user))
+    (let [writers (writers/retrieve-writers-by-user-id (:_id user))
           objectives (objectives/get-objectives-owned-by-user-id (:_id user))]
-      {:status ::success :result (assoc user :writer-records candidates :owned-objectives objectives)})
+      {:status ::success :result (assoc user :writer-records writers :owned-objectives objectives)})
     {:status ::entity-not-found}))
 
 (defn update-user-with-profile! [profile-data]
@@ -134,7 +134,7 @@
     {:status ::entity-not-found}))
 
 (defn authorised-objectives-for-inviter [user-id]
-  (let [writer-objective-ids (map :objective-id (writers/retrieve-candidates-by-user-id user-id))
+  (let [writer-objective-ids (map :objective-id (writers/retrieve-writers-by-user-id user-id))
         owned-objective-ids (map :_id (objectives/get-objectives-owned-by-user-id user-id))]
     (concat writer-objective-ids owned-objective-ids)))
 
