@@ -365,6 +365,18 @@
         {:status 500}))  
     {:status 401}))
 
+(defn edit-profile-post [request]
+  (if (permissions/writer? (friend/current-authentication))
+    (let [profile-data (helpers/request->profile-info request (get (friend/current-authentication) :identity))
+          {status :status} (http-api/post-profile profile-data)]
+      (cond
+        (= status ::http-api/success)
+        (-> (utils/path-for :fe/profile :username (get (friend/current-authentication) :username))
+            response/redirect)
+
+        :else {:status 500}))
+    {:status 401}))
+
 (defn decline-invitation [{session :session :as request}]
   (if-let [invitation-credentials (:invitation session)]
     (let [{status :status result :result} (http-api/decline-invitation {:invitation-id (:invitation-id invitation-credentials)

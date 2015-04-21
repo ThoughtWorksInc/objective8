@@ -421,7 +421,7 @@
                  (:status response) => 200
                  (:body response) => (contains "my existing biography")))
 
-         (fact "a user who is not a writer can not edit their profile"
+         (fact "a user who is not a writer can not reach the page to edit their profile"
                (against-background 
                  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID} 
                  (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
@@ -430,4 +430,38 @@
                (let [peridot-response (-> user-session
                                           helpers/sign-in-as-existing-user 
                                           (p/request (utils/path-for :fe/edit-profile-get)))]
-                 (:response peridot-response)) => (contains {:status 401}))))
+                 (:response peridot-response)) => (contains {:status 401}))
+         
+         (fact "a writer can edit their profile"
+               (against-background 
+                 (oauth/access-token anything anything anything) => {:user_id TWITTER_ID} 
+                 (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success :result user-with-writer-credentials}
+                 (http-api/get-user anything) => {:status ::http-api/success
+                                                  :result {:username "username"
+                                                           :profile {:name "real name"
+                                                                     :biog "my existing biography"}
+                                                           :writer-records [{:objective-id OBJECTIVE_ID}]}}) 
+               (let [{response :response} (-> user-session
+                                              helpers/sign-in-as-existing-user 
+                                              (p/request (utils/path-for :fe/edit-profile-post)
+                                                         :request-method :post
+                                                         :params {:name "My new name" :biog "My updated biog"}))]
+                 
+                 (get-in response [:headers "Location"])) => (utils/path-for :fe/profile :username "username")
+               (provided
+                 (http-api/post-profile {:name "My new name"
+                                         :biog "My updated biog"
+                                         :user-uri (str "/users/" USER_ID)}) => {:status ::http-api/success
+                                                                                 :result {}}))
+         
+         (fact "a user who is not a writer can not edit profile"
+               (against-background 
+                 (oauth/access-token anything anything anything) => {:user_id TWITTER_ID} 
+                 (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success 
+                                                                 :result {:_id USER_ID}}) 
+                (let [{response :response} (-> user-session
+                                               helpers/sign-in-as-existing-user 
+                                               (p/request (utils/path-for :fe/edit-profile-post)
+                                                          :request-method :post
+                                                          :params {:name "My new name" :biog "My updated biog"}))]
+                  (:status response) => 401))))
