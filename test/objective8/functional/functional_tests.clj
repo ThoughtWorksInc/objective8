@@ -302,7 +302,7 @@
       => "Biography with lots of text...")
 
 (fact "Can edit writer profile"
-     (try (wd/to "localhost:8080/edit-profile")
+     (try (wd/click ".func--edit-profile")
           (wait-for-title "Edit profile | Objective[8]")
           (screenshot "edit_profile_page")
 

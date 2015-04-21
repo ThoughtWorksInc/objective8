@@ -72,7 +72,7 @@
         {user-status :status user :result} (http-api/find-user-by-username username)]
     (cond
       (= user-status ::http-api/success) 
-      (let [user-profile (:profile user)
+      (let [user-profile (assoc (:profile user) :profile-owner username) 
             joined-date (utils/iso-time-string->pretty-date (:_created_at user))] 
         {:status 200
          :header {"Content-Type" "text/html"}  
