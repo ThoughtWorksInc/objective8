@@ -178,19 +178,25 @@
 
       :else {:status 500})))
 
-(defn dashboard-questions [{:keys [route-params] :as request}]
+(defn dashboard-questions [{:keys [route-params params] :as request}]
   (let [objective-id (Integer/parseInt (:id route-params))
         {objective-status :status objective :result} (http-api/get-objective objective-id)
-        {questions-status :status questions :result} (http-api/retrieve-questions objective-id)]
+        {questions-status :status questions :result} (http-api/retrieve-questions objective-id)
+        selected-question-uri (get params :selected (:uri (first questions)))
+        {answers-status :status answers :result} (if (empty? questions)
+                                                   {:status ::http-api/success :result []}
+                                                   (http-api/retrieve-answers selected-question-uri))]
     (cond
-      (every? #(= ::http-api/success %) [objective-status questions-status])
+      (every? #(= ::http-api/success %) [objective-status questions-status answers-status])
       (let [formatted-objective (format-objective objective)]
         {:status 200
          :headers {"Content-Type" "text/html"}
          :body (views/dashboard-questions-page "dashboard-questions"
                                                request
                                                :objective formatted-objective
-                                               :questions questions)}))))
+                                               :questions questions
+                                               :answers answers
+                                               :selected-question-uri selected-question-uri)}))))
 
 ;; COMMENTS
 
@@ -253,7 +259,7 @@
     (cond
       (= ::http-api/success question-status)
       (let [{answer-status :status answers :result} (http-api/retrieve-answers (:uri question))
-          {objective-status :status objective :result} (http-api/get-objective (:objective-id question))]
+            {objective-status :status objective :result} (http-api/get-objective (:objective-id question))]
       (if (every? #(= ::http-api/success %) [answer-status objective-status])
         {:status 200
          :headers {"Content-Type" "text/html"}

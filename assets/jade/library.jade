@@ -349,5 +349,23 @@ html.no-js(lang="en")
         +modal("!Your modal title", "l8n-modal-title", "func--modal-title")
           p Modal content here.
 
+      h2#dashboard-assets Dashboard assets
+
+      .example
+        .documentation
+          h3 Empty answers message
+          p Generated with dashboardAnswerBlank()
+
+        ul.answer-list
+          +dashboardAnswerBlank()
+
+      .example
+        .documentation
+          h3 Empty questions message
+          p Generated with dashboardQuestionBlank()
+
+        ul.writer-dashboard-navigation-list
+          +dashboardQuestionBlank()
+
     +googleAnalytics('${trackingID}')
     +javascriptIncludeTag("scripts.min")

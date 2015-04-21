@@ -116,6 +116,8 @@ import-draft,submit,Submit
 writer-dashboard,participants-stat-title,Participants
 writer-dashboard,starred-stat-title,Starred
 writer-dashboard,questions-navigation-title,Questions
+writer-dashboard,no-questions-message,No questions were asked for this objective.
+writer-dashboard,no-answers-message,No answers were provided for this question.
 dashboard-questions,doc-title,Writer dashboard
 dashboard-questions,doc-description,A summary of engagement with questions and answers for this objective
 comment-create,comment-title,Comments are a maximum length of 500 characters

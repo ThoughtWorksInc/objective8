@@ -1,12 +1,21 @@
 mixin dashboardAnswerItem()
-  li.dashboard-answer-item
+  li.dashboard-answer-item.clj-dashboard-answer-item
     .dashboard-answer-item-stats
       .dashboard-answer-item-up-score
         i.fa.fa-thumbs-o-up
         = " "
-        | 27
+        span.clj-dashboard-answer-item-up-count !27
       .dashboard-answer-item-down-score
         i.fa.fa-thumbs-o-down
         = " "
-        | 3
-    .dashboard-answer-item-text This is the answer to the question it has a lot of text in it becasue we want to see what happens if the answer is really long. Well not really really long but at least a reasonable length in relation to everything else on the page.
+        span.clj-dashboard-answer-item-down-count !3
+    .dashboard-answer-item-text.clj-dashboard-answer-item-text
+      | !This is the answer to the question it has a lot of text in it becasue we want to see what happens if the answer is really long. Well not really really long but at least a reasonable length in relation to everything else on the page.
+
+mixin dashboardAnswerBlank()
+  li.dashboard-answer-item.clj-dashboard-no-answer-item(data-l8n="content:writer-dashboard/no-answers-message")
+    | !No answers have been provided for this question.
+
+mixin dashboardQuestionBlank()
+  li.writer-dashboard-navigation-item.clj-dashboard-no-question-item(data-l8n="content:writer-dashboard/no-questions-message")
+    | !No questions were asked for this objective.
