@@ -10,7 +10,7 @@
 
 (defn profile-page [{:keys [doc data translations user] :as context}]
   (let [user-profile (:user-profile data)
-        profile-owner (:profile-owner user-profile)
+        profile-owner (:profile-owner data)
         joined-date (:joined-date data)
         current-user (:username user)]
   (apply str
@@ -32,4 +32,3 @@
                                     [:.clj-writer-joined-date] (html/content joined-date)
                                     [:.clj-writer-biog] (html/content (:biog user-profile))
                                     [:.clj-writer-links] nil)))))))
-

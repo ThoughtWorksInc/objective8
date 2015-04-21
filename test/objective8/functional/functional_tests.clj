@@ -311,9 +311,10 @@
               (wd/input-text "My new real name"))
           (-> ".func--biog"
               wd/clear
-              (wd/input-text  "My new biography") 
+              (wd/input-text "My new biography") 
               wd/submit)
           
+          (wait-for-title "My new real name | Objective[8]")
           (screenshot "updated_profile_page")
           
           {:name (wd/text (first (wd/elements ".func--writer-name")))
