@@ -1,11 +1,11 @@
 .info-box-text {
   font-size: 1em;
   text-align: center;
-  padding: 0 0.5em;
+  padding: 0 3em;
   margin-bottom: 1em;
   @include mq(500) {
-    padding-left: 0.75em;
-    padding-right: 0.75em;
+    padding-left: 1.75em;
+    padding-right: 1.75em;
   }
   @include mq(768) {
     font-size: 1.1em;
@@ -17,10 +17,7 @@
   overflow: hidden;
   text-align: center;
   font-size: 6em;
-  margin-bottom: 0.25em;
-  @include mq(720) {
-
-  }
+  margin-bottom: 0.15em;
 }
 .info-box-emphasis {
   color: $pink;

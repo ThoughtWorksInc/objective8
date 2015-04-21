@@ -1,33 +1,7 @@
-
-//.main-wrapper {
-////  padding: 1em;
-//  @include mq(720) {
-//    padding-left: 280px;
-//    max-width: 1100px;
-//    margin: 0 auto;
-//  }
-//}
-
 .main-content {
-  background: $white;
   padding: $alpha_body_vertical_spacing 1em;
   @include mq(720) {
     padding-top: $gamma_body_top_spacing;
     padding-bottom: $gamma_body_vertical_spacing;
   }
 }
-
-//.main-content {
-//  max-width: 45em;
-//  padding: $alpha_body_vertical_spacing;
-//  margin: 0 auto;
-//  color: rgba(black, 0.8);
-//  @include mq(720) {
-//    padding: $gamma_body_vertical_spacing 1em;
-//  }
-//}
-
-//.main-wrapper-no-sidebar {
-//  margin: 0 auto;
-//  max-width: 32em;
-//}
