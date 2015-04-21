@@ -1,7 +1,7 @@
 .draft-preview-document {
   position: relative;
   margin-bottom: 2em;
-  padding: 2em 0;
+  padding-bottom: 2em;
   font-family: $serif;
   font-size: 110%;
   color: $default_text_color;
@@ -29,4 +29,11 @@
 .draft-preview-document-with-comments {
   @extend .draft-preview-document;
   padding-right: 40px;
+}
+
+.annotate-draft-preview-document {
+  @extend .draft-preview-document;
+  @include mq(321) {
+    margin-bottom: 2em;
+  }
 }
