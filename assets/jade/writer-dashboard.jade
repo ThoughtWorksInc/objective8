@@ -1,5 +1,5 @@
-extends ../layouts/base
-include ../mixins/_view_helpers
+extends ./layouts/base
+include ./mixins/_view_helpers
 
 block vars
   - htmlClass = "html-writer-dashboard"
@@ -8,28 +8,29 @@ block vars
 
 
 mixin dashboardNavigationItem(count, cssClass)
-  li.writer-dashboard-navigation-item(class=cssClass)
+  li.writer-dashboard-navigation-item.clj-writer-dashboard-navigation-item(class=cssClass)
     a.writer-dashboard-navigation-item-link(href="#dashboard-content")
-      block
-      span.writer-dashboard-navigation-item-link-count (#{count})
+      span.clj-writer-dashboard-navigation-item-label
+        block
+      span.writer-dashboard-navigation-item-link-count.clj-writer-dashboard-navigation-item-link-count (#{count})
       i.fa.fa-angle-right
 
 block content
   .writer-dashboard
     .writer-dashboard-header
-      h1.writer-dashboard-title We need more bike lines in soho
-      .writer-dashboard-stats
+      h1.writer-dashboard-title.clj-writer-dashboard-title !We need more bike lanes in soho
+      .writer-dashboard-stats.clj-writer-dashboard-stats
         p.dashboard-stat
-          span.dashboard-stat-amount 5432
-          span.dashboard-stat-title Participants
+          span.dashboard-stat-amount.clj-dashboard-stat-participant-amount 5432
+          span.dashboard-stat-title(data-l8n="content:writer-dashboard/participants-stat-title") !Participants
         p.dashboard-stat
-          span.dashboard-stat-amount 3210
-          span.dashboard-stat-title Starred
+          span.dashboard-stat-amount.clj-dashboard-stat-starred-amount 3210
+          span.dashboard-stat-title(data-l8n="content:writer-dashboard/starred-stat-title") !Starred
 
     .writer-dashboard-body
       .writer-dashboard-navigation
-        h2.writer-dashboard-navigation-title Questions
-        ul.writer-dashboard-navigation-list
+        h2.writer-dashboard-navigation-title(data-l8n="content:writer-dashboard/questions-navigation-title") !Questions
+        ul.writer-dashboard-navigation-list.clj-writer-dashboard-navigation-list
           +dashboardNavigationItem(2000)
             | hello world
           +dashboardNavigationItem(1827, 'on')
@@ -60,7 +61,7 @@ block content
             | What colour is the sky?
 
       .writer-dashboard-content-container
-        ul.writer-dashboard-filter-list
+        ul.writer-dashboard-filter-list.clj-writer-dashboard-filter-list
           li.writer-dashboard-filter-list-item
             a.writer-dashboard-filter-list-item-button.on(href="#")
               i.fa.fa-thumbs-o-up
@@ -71,10 +72,10 @@ block content
             a.writer-dashboard-filter-list-item-button(href="#")
               i.fa.fa-paperclip
 
-        .writer-dashboard-content#dashboard-content
-          .writer-dashboard-content-stats
+        .writer-dashboard-content.clj-writer-dashboard-content#dashboard-content
+          .writer-dashboard-content-stats.clj-writer-dashboard-content-stats
             p 1827 answers from 970 people:
-          ul.answer-list
+          ul.answer-list.clj-writer-dashboard-answer-list
             +dashboardAnswerItem()
             +dashboardAnswerItem()
             +dashboardAnswerItem()

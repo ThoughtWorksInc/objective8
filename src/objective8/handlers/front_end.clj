@@ -177,6 +177,20 @@
 
       :else {:status 500})))
 
+(defn dashboard-questions [{:keys [route-params] :as request}]
+  (let [objective-id (Integer/parseInt (:id route-params))
+        {objective-status :status objective :result} (http-api/get-objective objective-id)
+        {questions-status :status questions :result} (http-api/retrieve-questions objective-id)]
+    (cond
+      (every? #(= ::http-api/success %) [objective-status questions-status])
+      (let [formatted-objective (format-objective objective)]
+        {:status 200
+         :headers {"Content-Type" "text/html"}
+         :body (views/dashboard-questions-page "dashboard-questions"
+                                               request
+                                               :objective formatted-objective
+                                               :questions questions)}))))
+
 ;; COMMENTS
 
 (defn post-comment [{:keys [t'] :as request}]

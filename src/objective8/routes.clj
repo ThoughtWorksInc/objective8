@@ -36,7 +36,8 @@
                                              "/add-draft" {:get :fe/add-draft-get
                                                            :post :fe/add-draft-post}
                                              "/import-draft" {:get :fe/import-draft-get
-                                                              :post :fe/import-draft-post}}}
+                                                              :post :fe/import-draft-post}
+                                             "/dashboard/questions" {:get :fe/dashboard-questions}}}
     "invitations"       {["/" :uuid] {:get :fe/writer-invitation}}
     "create-profile"    {:get :fe/create-profile-get
                          :post :fe/create-profile-post}

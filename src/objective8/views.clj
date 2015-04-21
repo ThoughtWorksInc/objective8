@@ -15,6 +15,7 @@
             [objective8.templates.draft-list :as draft-list]
             [objective8.templates.add-draft :as add-draft]
             [objective8.templates.import-draft :as import-draft]
+            [objective8.templates.dashboard-questions :as dashboard-questions]
             [objective8.templates.sign-in :as sign-in]  
             [objective8.templates.sign-up :as sign-up]
             [objective8.templates.error-404 :as error-404]))
@@ -70,6 +71,7 @@
 (def draft (view draft/draft-page))
 (def add-draft (view add-draft/add-draft-page))
 (def import-draft (view import-draft/import-draft-page))
+(def dashboard-questions-page (view dashboard-questions/dashboard-questions))
 (def sign-in (view sign-in/sign-in-page))
 (def sign-up (view sign-up/sign-up-page))
 (def error-404 (view error-404/error-404-page))
