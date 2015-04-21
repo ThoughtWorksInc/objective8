@@ -46,7 +46,8 @@
                  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
                  (http-api/create-user anything) => {:status ::http-api/success
                                                      :result {:_id USER_ID}}
-                 (http-api/get-user anything) => {:result {:owned-objectives [{:_id OBJECTIVE_ID}]}}
+                 (http-api/get-user anything) => {:result {:username "username"
+                                                           :owned-objectives [{:_id OBJECTIVE_ID}]}}
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success}
                  (http-api/create-invitation 
                    {:writer-name "bob"
@@ -79,7 +80,8 @@
                                                                  :result {:_id USER_ID
                                                                           :username "username"}}
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success}
-                 (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}}
+                 (http-api/get-user anything) => {:result {:username "username"
+                                                           :writer-records [{:objective-id OBJECTIVE_ID}]}}
 
                  (http-api/create-invitation 
                    {:writer-name "bob"
@@ -110,7 +112,8 @@
                  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
                  (http-api/create-user anything) => {:status ::http-api/success
                                                      :result {:_id USER_ID}}
-                 (http-api/get-user anything) => {:result {:writer-records [{:objective-id (inc OBJECTIVE_ID)}]}}
+                 (http-api/get-user anything) => {:result {:username "username"
+                                                           :writer-records [{:objective-id (inc OBJECTIVE_ID)}]}}
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success}
                  (http-api/create-invitation 
                    {:writer-name "bob"
@@ -262,7 +265,8 @@
                                            :user-uri (str "/users/" USER_ID)}) => {:status ::http-api/success
                                                                                    :result {}}
                    (http-api/get-user USER_ID) => {:status ::http-api/success
-                                                   :result {:profile {:name "John Doe"
+                                                   :result {:username "username"
+                                                            :profile {:name "John Doe"
                                                                       :biog "My biog"}}}
 
                    (http-api/post-candidate-writer {:invitee-id USER_ID
@@ -397,3 +401,13 @@
          (fact "a user cannot decline an invitation without invitation credentials"
                (-> (p/request user-session DECLINE_INVITATION_URL :request-method :post)
                    (get-in [:response :status])) => 401)))
+
+#_(binding [config/enable-csrf false]
+  (facts "about editing a writer profile"
+         (fact "a writer can reach the page to edit their profile" 
+               ()
+                )
+
+         (fact "a user who is not a writer can not edit their profile")
+         
+         ))

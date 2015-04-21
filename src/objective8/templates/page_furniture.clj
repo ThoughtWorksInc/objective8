@@ -38,7 +38,7 @@
 
 (defn masthead-signed-in [{:keys [user] :as context}]
   (html/at masthead-signed-in-snippet
-           [:.clj-edit-profile] (when (permissions/writer? user)
+           [:.clj-edit-profile] (when (and (permissions/writer? user) (:username user))
                                   (html/set-attr :href (utils/path-for :fe/profile :username (:username user))))
            [:.clj-username] (html/content (:username user))))
 
