@@ -316,14 +316,15 @@
                  (:uri request)) => (contains OBJECTIVE_URL)
                (provided
                  (http-api/get-user USER_ID) => {:status ::http-api/success
-                                                 :result {:profile {:name "John Doe"
+                                                 :result {:username "username"
+                                                          :profile {:name "John Doe"
                                                                     :biog "My biog"}}}
                  (http-api/post-candidate-writer {:invitee-id USER_ID
                                                   :invitation-uuid UUID
                                                   :objective-id OBJECTIVE_ID}) => {:status ::http-api/success
                                                                                    :result {}}))
 
-         (def user-with-writer-credentials {:_id USER_ID :writer-records [{:objective-id OBJECTIVE_ID}]})
+         (def user-with-writer-credentials {:_id USER_ID :username "username" :writer-records [{:objective-id OBJECTIVE_ID}]})
 
          (fact "a user cannot accept an invitation when they are already a writer for the same objective" 
                (against-background
@@ -361,7 +362,8 @@
 
                (provided
                  (http-api/get-user USER_ID) => {:status ::http-api/success
-                                                 :result {:profile {:name "John Doe"
+                                                 :result {:username "username"
+                                                          :profile {:name "John Doe"
                                                                     :biog "My biog"}}}
                  (http-api/post-candidate-writer {:invitee-id USER_ID
                                                   :invitation-uuid UUID
@@ -402,12 +404,30 @@
                (-> (p/request user-session DECLINE_INVITATION_URL :request-method :post)
                    (get-in [:response :status])) => 401)))
 
-#_(binding [config/enable-csrf false]
+(binding [config/enable-csrf false]
   (facts "about editing a writer profile"
          (fact "a writer can reach the page to edit their profile" 
-               ()
-                )
+               (against-background 
+                 (oauth/access-token anything anything anything) => {:user_id TWITTER_ID} 
+                 (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success :result user-with-writer-credentials} 
+                 (http-api/get-user anything) => {:status ::http-api/success
+                                                  :result {:username "username"
+                                                           :profile {:name "real name"
+                                                                     :biog "my existing biography"}
+                                                           :writer-records [{:objective-id OBJECTIVE_ID}]}})
+               (let [{response :response} (-> user-session
+                                              helpers/sign-in-as-existing-user 
+                                              (p/request (utils/path-for :fe/edit-profile-get)))]
+                 (:status response) => 200
+                 (:body response) => (contains "my existing biography")))
 
-         (fact "a user who is not a writer can not edit their profile")
-         
-         ))
+         (fact "a user who is not a writer can not edit their profile"
+               (against-background 
+                 (oauth/access-token anything anything anything) => {:user_id TWITTER_ID} 
+                 (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                                 :result {:_id USER_ID
+                                                                          :username "username"}}) 
+               (let [peridot-response (-> user-session
+                                          helpers/sign-in-as-existing-user 
+                                          (p/request (utils/path-for :fe/edit-profile-get)))]
+                 (:response peridot-response)) => (contains {:status 401}))))

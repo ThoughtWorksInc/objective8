@@ -10,6 +10,7 @@
             [objective8.templates.add-question :as add-question]
             [objective8.templates.invite-writer :as invite-writer]
             [objective8.templates.create-profile :as create-profile]
+            [objective8.templates.edit-profile :as edit-profile]
             [objective8.templates.profile :as profile]
             [objective8.templates.draft :as draft]
             [objective8.templates.draft-list :as draft-list]
@@ -66,6 +67,7 @@
 (def add-question-page (view add-question/add-question-page))
 (def invite-writer-page (view invite-writer/invite-writer-page))
 (def create-profile (view create-profile/create-profile-page))
+(def edit-profile (view edit-profile/edit-profile-page))
 (def profile (view profile/profile-page))
 (def draft-list (view draft-list/draft-list-page))
 (def draft (view draft/draft-page))

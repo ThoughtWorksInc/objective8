@@ -290,6 +290,13 @@ create-profile,profile-intro,"Your profile is open for everyone to read.  You sh
 create-profile,name-label,Name: 
 create-profile,biography,Biography: 
 create-profile,button,Create profile
+edit-profile,doc-title,Edit profile | Objective[8]
+edit-profile,doc-description,
+edit-profile,page-title,Edit your writer profile
+edit-profile,profile-intro,"Your profile is open for everyone to read.  You should talk about your writing experience. Include your areas of policy expertise."
+edit-profile,name-label,Name: 
+edit-profile,biography,Biography: 
+edit-profile,button,Update profile
 profile,doc-description,
 profile,page-title,Writer profile
 profile,joined,Joined

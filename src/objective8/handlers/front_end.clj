@@ -353,6 +353,18 @@
    :headers {"Content-Type" "text/html"}      
    :body (views/create-profile "create-profile" request)})
 
+(defn edit-profile-get [request]
+  (if (permissions/writer? (friend/current-authentication))
+    (let [{user-status :status user :result} (http-api/get-user (:identity (friend/current-authentication)))]
+      (if (= user-status ::http-api/success) 
+        (let [user-profile (:profile user)]
+          {:status 200
+           :header {"Content-Type" "text/html"}  
+           :body (views/edit-profile "edit-profile" request :user-profile user-profile)})
+
+        {:status 500}))  
+    {:status 401}))
+
 (defn decline-invitation [{session :session :as request}]
   (if-let [invitation-credentials (:invitation session)]
     (let [{status :status result :result} (http-api/decline-invitation {:invitation-id (:invitation-id invitation-credentials)

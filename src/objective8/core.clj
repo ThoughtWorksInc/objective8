@@ -52,6 +52,8 @@
                :fe/writer-invitation front-end-handlers/writer-invitation
                :fe/create-profile-get (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-profile-get) #{:signed-in})
                :fe/create-profile-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-profile-post) #{:signed-in})
+
+               :fe/edit-profile-get (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/edit-profile-get) #{:signed-in})
                :fe/accept-invitation (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/accept-invitation) #{:signed-in})
                :fe/decline-invitation (utils/anti-forgery-hook front-end-handlers/decline-invitation) 
                :fe/add-draft-get (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/add-draft-get)

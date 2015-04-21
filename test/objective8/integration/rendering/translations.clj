@@ -181,9 +181,29 @@
                                                                   :result {:title OBJECTIVE_TITLE}})
              (let [user-session (helpers/test-context)
                    {status :status body :body} (-> user-session
-                                                   (helpers/sign-in-as-existing-user)
+                                                   helpers/sign-in-as-existing-user
                                                    (p/request INVITATION_URL)
                                                    (p/request (utils/path-for :fe/create-profile-get))
+                                                   :response)]
+               status => 200
+               body => helpers/no-untranslated-strings)))
+
+(facts "about rendering edit-profile page"
+       (fact "there are no untranslated strings"
+             (against-background
+               (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
+               (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                               :result {:_id USER_ID
+                                                                        :username "username"}}
+               (http-api/get-user anything) => {:status ::http-api/success
+                                                :result {:writer-records [{:objective-id OBJECTIVE_ID}]
+                                                         :username "username"
+                                                         :profile {:name "Barry"
+                                                                   :biog "I'm Barry..."}}})
+             (let [user-session (helpers/test-context)
+                   {status :status body :body} (-> user-session 
+                                                   helpers/sign-in-as-existing-user
+                                                   (p/request (utils/path-for :fe/edit-profile-get))
                                                    :response)]
                status => 200
                body => helpers/no-untranslated-strings)))

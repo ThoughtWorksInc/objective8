@@ -1,0 +1,23 @@
+extends layouts/base
+include mixins/_view_helpers
+
+block vars
+  - bodyClass = ""
+  - pageTitle = "!Edit profile | Objective[8]"
+
+block content
+
+  .middle-container
+    h1.edit-profile-title(data-l8n="content:edit-profile/page-title") !Edit your writer profile
+    p.lede(data-l8n="content:edit-profile/profile-intro") !Your profile is open for everyone to read.  You should talk about your writing experience. Include your areas of policy expertise.
+    form.edit-profile-form.clj-edit-profile-form(action="/edit-profile" method="POST")
+      fieldset.edit-profile-fields
+        p.form-field
+          label.form-field-label(for="name")
+            span.form-field-label-title(data-l8n="content:edit-profile/name-label") !Name
+            input.clj-edit-profile-name.func--name(id="name", name="name", type="text", maxlength="50", required="required")
+        p.form-field
+          label.form-field-label(for="biography")
+            span.form-field-label-title(data-l8n="content:edit-profile/biography") !Biography
+            textarea.clj-edit-profile-biog.func--biog(id="biog", name="biog", type="text", required="required")
+      button.button(type="submit", data-l8n="content:edit-profile/button") !Update profile

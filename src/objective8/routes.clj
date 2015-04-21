@@ -41,6 +41,7 @@
     "invitations"       {["/" :uuid] {:get :fe/writer-invitation}}
     "create-profile"    {:get :fe/create-profile-get
                          :post :fe/create-profile-post}
+    "edit-profile"      {:get :fe/edit-profile-get}
     "users"             {["/" :username] {:get :fe/profile}}
 
     ;; API
