@@ -18,3 +18,13 @@
        (fact "writers and owners are authorized to mark questions"
              (let [request {:params {:question-uri "/objectives/1/questions/2"}}]
                (mark-request->mark-question-roles request) => #{:writer-for-1 :owner-of-1})))
+
+(facts "about writer permissions"
+       (fact "user is a writer if they have any writer-for permissions"
+             (writer? {:roles #{:writer-for-1}}) => truthy)
+       (fact "user is a writer if they have any owner-of permissions"
+             (writer? {:roles #{:owner-of-1}}) => truthy)
+       (fact "user is not a writer if they have no roles"
+             (writer? {:username "barry"}) => falsey)
+       (fact "user is not a writer if they don't have writer-for or owner-of permissions"
+             (writer? {:username "barry" :roles #{:wibble}}) => falsey))  

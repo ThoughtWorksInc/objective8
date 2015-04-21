@@ -13,6 +13,9 @@
 (defn writer-for? [user objective-id]
   (contains? (:roles user) (writer-for objective-id)))
 
+(defn writer? [user]
+  (some #(re-matches #":writer-for-\d+$|:owner-of-\d+$" (str %)) (:roles user)))
+
 (defn owner-of [objective-id]
   (keyword (str "owner-of-" objective-id)))
 

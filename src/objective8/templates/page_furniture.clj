@@ -4,6 +4,7 @@
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [objective8.config :as config]
             [objective8.utils :as utils]
+            [objective8.permissions :as permissions]
             [objective8.templates.template-functions :as tf]))
 
 (def library-html "templates/jade/library.html")
@@ -37,6 +38,8 @@
 
 (defn masthead-signed-in [{:keys [user] :as context}]
   (html/at masthead-signed-in-snippet
+           [:.clj-edit-profile] (when (permissions/writer? user)
+                                  (html/set-attr :href (utils/path-for :fe/profile :username (:username user))))
            [:.clj-username] (html/content (:username user))))
 
 (defn masthead [{:keys [user] :as context}]

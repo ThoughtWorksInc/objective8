@@ -9,6 +9,7 @@ node_modules/
 resources/public/*.css
 resources/public/*.css.map
 resources/public/*.js
+resources/public/images/*.svg
 resources/templates/jade
 test/objective8/functional/screenshots/*.png
 ops/.vagrant
