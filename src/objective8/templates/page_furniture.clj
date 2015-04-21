@@ -76,23 +76,23 @@
 
 (def writer-item-snippet (html/select library-html-resource [:.clj-writer-item-without-photo]))
 
-(defn writer-list-items [candidates]
+(defn writer-list-items [writers]
   (html/at writer-item-snippet
            [:.clj-writer-item-without-photo] 
-           (html/clone-for [candidate candidates]
+           (html/clone-for [writer writers]
                            [:.clj-writer-profile-link] (html/set-attr :href 
                                                                       (utils/path-for :fe/profile 
-                                                                                      :username (:username candidate)))
-                           [:.clj-writer-name] (html/content (if-let [real-name (:name (:profile candidate))]
+                                                                                      :username (:username writer)))
+                           [:.clj-writer-name] (html/content (if-let [real-name (:name (:profile writer))]
                                                                real-name
-                                                               (:username candidate)))
-                           [:.clj-writer-description] (html/content (:invitation-reason candidate)))))
+                                                               (:username writer)))
+                           [:.clj-writer-description] (html/content (:invitation-reason writer)))))
 
 (defn writer-list [context]
-  (let [candidates (get-in context [:data :candidates])]
-    (if (empty? candidates)
+  (let [writers (get-in context [:data :writers])]
+    (if (empty? writers)
       empty-writer-list-item-snippet
-      (writer-list-items candidates))))
+      (writer-list-items writers))))
 
 ;; COMMENT LIST
 

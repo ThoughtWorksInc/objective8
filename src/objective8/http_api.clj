@@ -179,14 +179,14 @@
     (str utils/host-url "/api/v1/objectives/" objective-id "/writer-invitations/" invitation-id)
     invitation))
 
-(defn retrieve-candidates [objective-id]
+(defn retrieve-writers [objective-id]
   (default-get-call
     (str utils/host-url "/api/v1/objectives/" objective-id "/candidate-writers")))
 
-(defn post-candidate-writer [candidate-writer]
+(defn post-writer [writer]
   (default-post-call (str utils/host-url
-                            "/api/v1/objectives/" (:objective-id candidate-writer)
-                            "/candidate-writers") candidate-writer))
+                          "/api/v1/objectives/" (:objective-id writer)
+                          "/candidate-writers") writer))
 
 (defn post-profile [profile-data]
   (default-put-call (utils/path-for :api/put-writer-profile) profile-data))

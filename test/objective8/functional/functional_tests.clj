@@ -225,7 +225,7 @@
 
 
                    (wd/input-text ".func--writer-name" "Invitee name")
-                   (wd/input-text ".func--writer-email" "func_test_candidate@domain.com")
+                   (wd/input-text ".func--writer-email" "func_test_writer@domain.com")
                    (-> ".func--writer-reason"
                        (wd/input-text "Functional test invitation reason")
                        wd/submit)

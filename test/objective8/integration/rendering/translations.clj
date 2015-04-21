@@ -100,7 +100,7 @@
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result open-objective}
                (http-api/get-comments anything)=> {:status ::http-api/success :result []}
-               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success :result []}
+               (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
                (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}) 
              (let [user-session (helpers/test-context)
                    {status :status body :body} (-> user-session

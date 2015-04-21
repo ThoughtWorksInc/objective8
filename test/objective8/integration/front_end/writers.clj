@@ -21,7 +21,7 @@
 (def INVITATION_ID 3)
 (def UUID "random-uuid")
 (def WRITER_EMAIL "writer@email.com")
-(def candidates-get-request (mock/request :get (utils/path-for :fe/candidate-list :id OBJECTIVE_ID)))
+(def writers-get-request (mock/request :get (utils/path-for :fe/writers-list :id OBJECTIVE_ID)))
 
 (def INVITATION_URL (utils/path-for :fe/writer-invitation :uuid UUID))
 (def ACCEPT_INVITATION_URL (utils/path-for :fe/accept-invitation :id OBJECTIVE_ID :i-id INVITATION_ID))
@@ -134,8 +134,8 @@
                                 :params params)
                  (get-in [:response :status])) => 403))
 
-         (fact "A user should be redirected to objective page when attempting to view the candidate writers page for an objective"
-               (let [response (default-app candidates-get-request)
+         (fact "A user should be redirected to objective page when attempting to view the writers page for an objective"
+               (let [response (default-app writers-get-request)
                      objective-url (utils/path-for :fe/objective :id OBJECTIVE_ID)] 
                  (:status response) => 302 
                  (get-in response [:headers "Location"]) => objective-url))))
@@ -153,7 +153,7 @@
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result {:title OBJECTIVE_TITLE
                                                                   :uri :objective-uri}}
-               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success :result []} 
+               (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []} 
                (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []} 
                (http-api/get-comments anything) => {:status ::http-api/success
                                                     :result []}) 
@@ -174,7 +174,7 @@
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result {:title OBJECTIVE_TITLE
                                                                   :uri :objective-uri}}
-               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success :result []} 
+               (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []} 
                (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []} 
                (http-api/get-comments anything) => {:status ::http-api/success
                                                     :result []}) 
@@ -191,7 +191,7 @@
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result {:title OBJECTIVE_TITLE
                                                                   :uri :objective-uri}}
-               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success :result []}
+               (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
                (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}
                (http-api/get-comments anything) => {:status ::http-api/success
                                                     :result []})
@@ -267,10 +267,10 @@
                                                    :result {:profile {:name "John Doe"
                                                                       :biog "My biog"}}}
 
-                   (http-api/post-candidate-writer {:invitee-id USER_ID
-                                                    :invitation-uuid UUID
-                                                    :objective-id OBJECTIVE_ID}) => {:status ::http-api/success
-                                                                                     :result {}}))
+                   (http-api/post-writer {:invitee-id USER_ID
+                                          :invitation-uuid UUID
+                                          :objective-id OBJECTIVE_ID}) => {:status ::http-api/success
+                                                                           :result {}}))
 
          (fact "a user gets a 401 error response if they post to create profile without an invitation in their session"
                (let [{response :response} (-> user-session
@@ -316,10 +316,10 @@
                  (http-api/get-user USER_ID) => {:status ::http-api/success
                                                  :result {:profile {:name "John Doe"
                                                                     :biog "My biog"}}}
-                 (http-api/post-candidate-writer {:invitee-id USER_ID
-                                                  :invitation-uuid UUID
-                                                  :objective-id OBJECTIVE_ID}) => {:status ::http-api/success
-                                                                                   :result {}}))
+                 (http-api/post-writer {:invitee-id USER_ID
+                                        :invitation-uuid UUID
+                                        :objective-id OBJECTIVE_ID}) => {:status ::http-api/success
+                                                                         :result {}}))
 
          (def user-with-writer-credentials {:_id USER_ID :username "username" :writer-records [{:objective-id OBJECTIVE_ID}]})
 
@@ -343,7 +343,7 @@
                  (http-api/decline-invitation {:invitation-uuid UUID
                                                :objective-id OBJECTIVE_ID
                                                :invitation-id INVITATION_ID}) => {:status ::http-api/success}
-                 (http-api/post-candidate-writer anything) => :not-called :times 0))
+                 (http-api/post-writer anything) => :not-called :times 0))
 
          (fact "a user is granted writer-for-OBJECTIVE_ID and writer-inviter-for-OBJECTIVE_ID roles when accepting an invitation"
                (against-background
@@ -361,11 +361,10 @@
                  (http-api/get-user USER_ID) => {:status ::http-api/success
                                                  :result {:profile {:name "John Doe"
                                                                     :biog "My biog"}}}
-                 (http-api/post-candidate-writer {:invitee-id USER_ID
-                                                  :invitation-uuid UUID
-                                                  :objective-id OBJECTIVE_ID})
-                 => {:status ::http-api/success
-                     :result {}}
+                 (http-api/post-writer {:invitee-id USER_ID
+                                        :invitation-uuid UUID
+                                        :objective-id OBJECTIVE_ID}) => {:status ::http-api/success
+                                                                         :result {}}
                  (permissions/add-authorisation-role anything WRITER_ROLE_FOR_OBJECTIVE) => {}
                  (permissions/add-authorisation-role anything WRITER_INVITER_ROLE_FOR_OBJECTIVE) => {}))
 

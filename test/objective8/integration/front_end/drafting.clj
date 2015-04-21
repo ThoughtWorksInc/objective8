@@ -111,7 +111,7 @@
               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                         :result {:status "drafting"
                                                                  :_id OBJECTIVE_ID}}
-              (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success}
+              (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success}
               (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
                                                              :result {:_id DRAFT_ID
                                                                       :_created_at "2015-03-24T17:06:37.714Z"
@@ -135,7 +135,7 @@
               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                         :result {:status "drafting"
                                                                  :_id OBJECTIVE_ID}}
-              (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success}
+              (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success}
               (http-api/get-draft OBJECTIVE_ID "latest") => {:status ::http-api/success
                                                               :result {:_id DRAFT_ID
                                                                        :_created_at "2015-03-24T17:06:37.714Z"
@@ -161,7 +161,7 @@
        (fact "viewing draft list when drafting hasn't started displays message"
              (against-background
                (http-api/get-all-drafts OBJECTIVE_ID) => {:status ::http-api/forbidden}
-               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success}
+               (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success}
                (http-api/get-objective OBJECTIVE_ID) => 
                {:status ::http-api/success
                 :result {:end-date (utils/date-time->date-time-plus-30-days (utils/current-time))
@@ -176,7 +176,7 @@
                                                          :result {:_id OBJECTIVE_ID
                                                                   :end-date (utils/string->date-time "2012-12-12")
                                                                   :status "drafting"}}
-               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success}
+               (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success}
                (http-api/get-all-drafts OBJECTIVE_ID) => {:status ::http-api/success
                                                           :result [{:_id DRAFT_ID
                                                                     :content SOME_HICCUP
@@ -202,7 +202,7 @@
                                                                            :submitter-id USER_ID
                                                                            :_created_at "2015-02-12T16:46:18.838Z"
                                                                            :username "UserName"}]} 
-                      (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success 
+                      (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success 
                                                                       :result []}) 
                     (let [user-session (ih/test-context)
                           {status :status body :body} (-> user-session
@@ -226,7 +226,7 @@
                                                                        :username "UserName"}}
                (http-api/get-comments :draft-uri) => {:status ::http-api/success 
                                                       :result []} 
-               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success 
+               (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success 
                                                                :result []}) 
              (let [user-session (ih/test-context)
                    {status :status body :body} (-> user-session
@@ -265,7 +265,7 @@
                                                   :result {:_id OBJECTIVE_ID
                                                            :end-date (utils/string->date-time "2012-12-12")
                                                            :status "drafting"}}
-        (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success}
+        (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success}
         (http-api/get-draft OBJECTIVE_ID "latest") => {:status ::http-api/success
                                                        :result {:_id DRAFT_ID
                                                                 :_created_at "2015-03-24T17:06:37.714Z"

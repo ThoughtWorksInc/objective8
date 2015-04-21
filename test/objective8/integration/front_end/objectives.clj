@@ -73,7 +73,7 @@
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result basic-objective}
                (http-api/get-comments anything)=> {:status ::http-api/success :result []}
-               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success :result []}
+               (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
                (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []})
              (default-app objective-view-get-request) => (contains {:status 200})
              (default-app objective-view-get-request) => (contains {:body (contains "my objective title")})
@@ -82,7 +82,7 @@
        (fact "When a signed in user views an objective, the objective contains user specific information"
              (against-background
                (http-api/get-comments anything)=> {:status ::http-api/success :result []}
-               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success :result []}
+               (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
                (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []})
              (-> user-session
                  helpers/sign-in-as-existing-user
@@ -100,7 +100,7 @@
               (against-background
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result basic-objective}
-               (http-api/retrieve-candidates OBJECTIVE_ID) => {:status ::http-api/success :result []}
+               (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
                (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}
                (http-api/get-comments anything) => {:status ::http-api/success :result []})
 

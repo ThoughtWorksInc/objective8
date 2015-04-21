@@ -179,7 +179,6 @@
 (defn objective-page [{:keys [translations data doc invitation-rsvp ring-request user] :as context}]
   (let [objective (:objective data)
         objective-id (:_id objective)
-        candidates (:candidates data)
         flash (:flash doc)
         optionally-disable-voting (if (tf/in-drafting? objective)
                                     (pf/disable-voting-actions translations)

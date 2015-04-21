@@ -25,7 +25,7 @@
                                                                     ["/" [#"\d+" :i-id]] {"/accept" {:post :fe/accept-invitation}
                                                                                           "/decline" {:post :fe/decline-invitation}
                                                                                           }}
-                                             "/candidate-writers" {:get :fe/candidate-list}
+                                             "/writers" {:get :fe/writers-list}
                                              "/add-question" {:get :fe/add-a-question}
                                              "/questions" {:post :fe/add-question-form-post
                                                            :get :fe/question-list

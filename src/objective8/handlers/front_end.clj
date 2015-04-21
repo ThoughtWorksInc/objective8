@@ -154,11 +154,11 @@
         {objective-status :status objective :result} (if signed-in-id
                                                        (http-api/get-objective objective-id {:signed-in-id signed-in-id})
                                                        (http-api/get-objective objective-id))
-        {candidate-status :status candidates :result} (http-api/retrieve-candidates objective-id)
+        {writers-status :status writers :result} (http-api/retrieve-writers objective-id)
         {questions-status :status questions :result} (http-api/retrieve-questions objective-id)
         {comments-status :status comments :result} (http-api/get-comments (:uri objective))]
     (cond
-      (every? #(= ::http-api/success %) [objective-status candidate-status questions-status comments-status])
+      (every? #(= ::http-api/success %) [objective-status writers-status questions-status comments-status])
       (let [formatted-objective (format-objective objective)]
         {:status 200
          :headers {"Content-Type" "text/html"}
@@ -166,7 +166,7 @@
         (views/objective-detail-page "objective-details"
                                      updated-request
                                      :objective formatted-objective
-                                     :candidates candidates
+                                     :writers writers
                                      :questions questions
                                      :comments comments
                                      :doc (let [details (str (:title objective) " | Objective[8]")]
@@ -313,7 +313,7 @@
       (= status ::http-api/not-found) (error-404-response request)
       :else {:status 500})))
 
-(defn candidate-list [{{id :id} :route-params :as request}]
+(defn writers-list [{{id :id} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)]
     (response/redirect (utils/path-for :fe/objective :id objective-id))))
 
@@ -404,10 +404,10 @@
 (defn create-writer [{:keys [session] :as request}]
   (let [invitation-credentials (:invitation session)
         objective-id (:objective-id invitation-credentials) 
-        candidate-writer {:invitee-id (get (friend/current-authentication) :identity)
-                          :invitation-uuid (:uuid invitation-credentials)
-                          :objective-id objective-id}
-        {status :status} (http-api/post-candidate-writer candidate-writer) ]
+        writer {:invitee-id (get (friend/current-authentication) :identity)
+                :invitation-uuid (:uuid invitation-credentials)
+                :objective-id objective-id}
+        {status :status} (http-api/post-writer writer) ]
     (cond
       (= status ::http-api/success)
       (-> (str utils/host-url "/objectives/" (:objective-id invitation-credentials) "#writers")
@@ -514,14 +514,14 @@
         {objective-status :status objective :result} (http-api/get-objective objective-id)
         {draft-status :status draft :result} (http-api/get-draft objective-id draft-id)
         {comments-status :status comments :result} (http-api/get-comments (:uri draft))
-        {candidate-status :status candidates :result} (http-api/retrieve-candidates objective-id)]
+        {writers-status :status writers :result} (http-api/retrieve-writers objective-id)]
     (cond
-      (every? #(= ::http-api/success %) [objective-status draft-status candidate-status comments-status])
+      (every? #(= ::http-api/success %) [objective-status draft-status writers-status comments-status])
       (let [draft-content (utils/hiccup->html (apply list (:content draft)))]
         {:status 200
          :body (views/draft "draft" request
                             :objective objective
-                            :candidates candidates
+                            :writers writers
                             :comments comments
                             :draft-content draft-content
                             :draft draft)
@@ -534,7 +534,7 @@
       (if (= d-id "latest")
         {:status 200
          :body (views/draft "draft" request
-                            :candidates candidates
+                            :writers writers
                             :objective (format-objective objective))
          :headers {"Content-Type" "text/html"}}
         (error-404-response request))
@@ -545,13 +545,13 @@
   (let [objective-id (Integer/parseInt id)
         {objective-status :status objective :result} (http-api/get-objective objective-id)
         {drafts-status :status drafts :result} (http-api/get-all-drafts objective-id)
-        {candidate-status :status candidates :result} (http-api/retrieve-candidates objective-id)]
+        {writers-status :status writers :result} (http-api/retrieve-writers objective-id)]
     (cond
-      (every? #(= ::http-api/success %) [drafts-status objective-status candidate-status])
+      (every? #(= ::http-api/success %) [drafts-status objective-status writers-status])
       {:status 200
        :body (views/draft-list "draft-list" request
                                :objective (format-objective objective)
-                               :candidates candidates
+                               :writers writers
                                :drafts drafts)
        :headers {"Content-Type" "text/html"}} 
 

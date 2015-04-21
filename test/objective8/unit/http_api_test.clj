@@ -251,15 +251,15 @@
         (http-api/default-get-call (contains (str host-url "/api/v1/invitations?uuid=" UUID))) => :api-call-result))
 
 (def INVITATION_ID 3)
-(def the-candidate-writer {:invitation-uuid UUID
-                           :invitee-id 10
-                           :objective-id OBJECTIVE_ID})
+(def the-writer {:invitation-uuid UUID
+                 :invitee-id 10
+                 :objective-id OBJECTIVE_ID})
 
-(fact "posting a candidate writer hits the correct API endpoint"
-      (http-api/post-candidate-writer the-candidate-writer) => :api-call-result
+(fact "posting a writer hits the correct API endpoint"
+      (http-api/post-writer the-writer) => :api-call-result
       (provided
         (http-api/default-post-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID 
-                                                     "/candidate-writers")) the-candidate-writer) => :api-call-result))
+                                                   "/candidate-writers")) the-writer) => :api-call-result))
 
 (def declined-invitation {:invitation-uuid UUID
                           :invitation-id INVITATION_ID
@@ -270,8 +270,8 @@
         (http-api/default-put-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID
                                                   "/writer-invitations/" INVITATION_ID)) declined-invitation) => :api-call-result))
 
-(fact "getting candidates for an objective hits the correct API endpoint"
-      (http-api/retrieve-candidates OBJECTIVE_ID) => :api-call-result
+(fact "getting writers for an objective hits the correct API endpoint"
+      (http-api/retrieve-writers OBJECTIVE_ID) => :api-call-result
       (provided
         (http-api/default-get-call (contains (str host-url "/api/v1/objectives/"
                                                   OBJECTIVE_ID "/candidate-writers"))) => :api-call-result))

@@ -104,7 +104,6 @@
       ((regex-checker #"/objectives/\d+/invite-writer") target)
       ((regex-checker #"/objectives/\d+/writers") target)
       ((regex-checker #"/objectives/\d+/writers/invitation") target)
-      ((regex-checker #"/objectives/\d+/candidate-writers") target)
       ((regex-checker #"/objectives/\d+/writer-invitations/\d+") target)))
 
 (defn safen-fragment [fragment]
