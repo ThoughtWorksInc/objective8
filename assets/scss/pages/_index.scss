@@ -2,11 +2,10 @@
   @include cf;
   height: 100%;
   background-color: #fefdf1;
-  position: relative;
-  z-index: 1;
   body {
     min-height: 100%;
     position: relative;
+    z-index: 1;
     &:after {
       content: '';
       position: absolute;
