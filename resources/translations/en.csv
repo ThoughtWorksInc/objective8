@@ -222,11 +222,11 @@ comment-votes,drafting-started,Voting has been frozen for this objective as it i
 answer-votes,drafting-started,Voting has been frozen for this objective as it is now in drafting.
 invite-writer,doc-title,"Invite a writer -"
 invite-writer,doc-description,Invite a writer to draft policy
-invite-writer,section-title,Invite a policy writer
-invite-writer,do-you-know-a-writer,Do you know someone with the enthusiasm and expertise to help draft this policy?
+invite-writer,section-title,Invite a policy writer for:
 invite-writer,writer-name-label,Writer name
 invite-writer,writer-email-label,Writer email
 invite-writer,writer-reason-label,"They should help draft this policy, because:"
+invite-writer,writer-reason-label-helper,"This will be displayed on the objective writer list"
 invite-writer,writer-name-attr-title,Writer names are a maximum length of 50 characters
 invite-writer,writer-email-attr-title,Writer email must be valid email address
 invite-writer,writer-reason-attr-title,Reasons are a maximum length of 1000 characters

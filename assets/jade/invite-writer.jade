@@ -17,14 +17,12 @@ block content
               = " "
               span(data-l8n="content:objective-nav/back-to-objective") !Back to objective
 
-    .objective-outline#outline
-      h1.objective-title.clj-objective-title !Build safer cycling networks in the streets of Madrid.
 
-    .objective-writers#writers
-      h2(data-l8n="content:invite-writer/section-title") !Invite a policy writer
-      p(data-l8n="content:invite-writer/do-you-know-a-writer") !Do you know someone with the enthusiasm and expertise to help draft this policy?
+    h1.objective-title
+      span.objective-title-label(data-l8n="content:invite-writer/section-title") !Invite a policy writer for:
+      span.clj-objective-title !Build safer cycling networks in the streets of Madrid.
 
-      +inviteWriterForm()
+    +inviteWriterForm()
 
 
 block footerScripts

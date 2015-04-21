@@ -11,6 +11,7 @@ mixin inviteWriterForm()
     p.form-field
       label(for="reason")
         span.form-field-label-title(data-l8n="content:invite-writer/writer-reason-label") !They should help draft this policy, because:
+        span.label-helper(data-l8n="content:invite-writer/writer-reason-label-helper") !This will be displayed on the objective writer list
         textarea.func--writer-reason(id="reason", name="reason", rows="3", cols="10", maxlength="1000", title="Reasons are a maximum length of 1000 characters", required="required", data-l8n="attr/title:invite-writer/writer-reason-attr-title")
     button.button.func--invite-writer(type="submit", data-l8n="content:invite-writer/invite-button") !Create an invite
 
