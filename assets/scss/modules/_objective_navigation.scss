@@ -2,8 +2,10 @@ $objective_navigation_height: 80px;
 
 .objective-navigation {
   height: $objective_navigation_height;
-  margin: 0 0 2em 0;
   @include mq(450) {
+    margin-bottom: 2em;
+  }
+  @include mq(720) {
     margin-bottom: 4em;
   }
 }
@@ -13,7 +15,6 @@ $objective_navigation_height: 80px;
   left: 0;
   width: 100%;
   background: rgba($white, 0.98);
-  //  border-top: 1px solid $border_color;
   border-bottom: 1px solid $grey-3;
   &.sticky {
     position: fixed;

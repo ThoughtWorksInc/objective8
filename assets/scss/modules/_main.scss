@@ -1,7 +1,6 @@
 .main-content {
   padding: $alpha_body_vertical_spacing 1em;
   @include mq(720) {
-    padding-top: $gamma_body_top_spacing;
     padding-bottom: $gamma_body_vertical_spacing;
   }
 }

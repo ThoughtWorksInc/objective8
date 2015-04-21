@@ -8,9 +8,6 @@ $guidance_text_top_gutter: 1.45em;
   @include mq(320) {
     padding: 2em;
   }
-  @include mq(720) {
-    margin-top: -$gamma_body_top_spacing;
-  }
 }
 
 .guidance-text {
