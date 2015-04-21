@@ -34,3 +34,8 @@
 
       :star {:entity :star
              :_id (Integer/parseInt (:star-id route-params))})))
+
+(defn question->uri [question]
+  (bidi/path-for uri-routes :question
+                 :question-id (:_id question)
+                 :objective-id (:objective-id question)))

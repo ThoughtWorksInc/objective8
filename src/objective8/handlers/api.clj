@@ -279,20 +279,14 @@
 
 (defn get-answers [{:keys [route-params] :as request}]
   (try
-    (let  [q-id (-> (:q-id route-params)
-                    Integer/parseInt)
-           objective-id (-> (:id route-params)
-                            Integer/parseInt)
-           question-uri (str "/objectives/" objective-id "/questions/" q-id)]
-      (if (-> (questions/get-question question-uri)
-              :objective-id
-              (= objective-id))
-        (-> (answers/get-answers q-id)
+    (let [question-uri (str "/objectives/" (:id route-params) "/questions/" (:q-id route-params))]
+      (if (questions/get-question question-uri)
+        (-> (answers/get-answers question-uri)
             response/response
-            (response/content-type "application/json")) 
+            (response/content-type "application/json"))
         (not-found-response "Question does not exist")))
     (catch Exception e
-      (log/info "Invalid route: " e)
+      (log/info "Error when retrieving answers: " e)
       (invalid-response "Invalid answer request for this objective"))))
 
 ;;WRITERS

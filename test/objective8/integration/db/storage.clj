@@ -295,9 +295,12 @@
                     votes-for-answer-1 [:up :up :down :down :down]
                     votes-for-answer-2 [:up :up]
                     stored-votes-for-answer-1 (doall (map #(sh/store-an-up-down-vote g-id-1 %) votes-for-answer-1))
-                    stored-votes-for-answer-2 (doall (map #(sh/store-an-up-down-vote g-id-2 %) votes-for-answer-2))]
+                    stored-votes-for-answer-2 (doall (map #(sh/store-an-up-down-vote g-id-2 %) votes-for-answer-2))
+                    query-map {:entity :answer
+                               :question-id (:_id question)
+                               :objective-id (:objective-id question)}]
 
-                (storage/pg-retrieve-answers-with-votes-for-question (:_id question))
+                (storage/pg-retrieve-answers-with-votes query-map)
                 => (contains [(contains (assoc answer-1 :votes {:up 2 :down 3}))
                               (contains (assoc answer-2 :votes {:up 2 :down 0}))])))
 

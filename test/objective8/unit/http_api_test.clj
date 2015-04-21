@@ -216,8 +216,9 @@
                                                              "/questions/" QUESTION_ID "/answers"))
                   the-answer) => :api-call-result))
 
+(def QUESTION_URI (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))
 (fact "getting all answers for a question hits the correct API endpoint"
-      (http-api/retrieve-answers OBJECTIVE_ID QUESTION_ID) => :api-call-result
+      (http-api/retrieve-answers QUESTION_URI) => :api-call-result
       (provided
         (http-api/default-get-call (contains (str "/api/v1/objectives/" OBJECTIVE_ID
                                                   "/questions/" QUESTION_ID "/answers"))) => :api-call-result))

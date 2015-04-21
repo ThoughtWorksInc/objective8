@@ -11,6 +11,7 @@
 
 (def OBJECTIVE_ID 1)
 (def QUESTION_ID 2)
+(def QUESTION_URI (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))
 (def USER_ID 3)
 (def DRAFT_ID 4)
 (def UUID "random-uuid")
@@ -110,6 +111,7 @@
 
 (def a-question {:question "The meaning of life?"
                  :created-by-id USER_ID
+                 :uri QUESTION_URI
                  :objective-id OBJECTIVE_ID
                  :_id QUESTION_ID})
 
@@ -120,7 +122,7 @@
                                                          :result open-objective}
                (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success 
                                                                     :result a-question}
-               (http-api/retrieve-answers OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success 
+               (http-api/retrieve-answers QUESTION_URI) => {:status ::http-api/success
                                                             :result []})
              (let [user-session (helpers/test-context)
                    {status :status body :body} (-> user-session

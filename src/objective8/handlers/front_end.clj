@@ -251,7 +251,7 @@
         {question-status :status question :result} (http-api/get-question o-id q-id)]
     (cond
       (= ::http-api/success question-status)
-      (let [{answer-status :status answers :result} (http-api/retrieve-answers (:objective-id question) (:_id question))
+      (let [{answer-status :status answers :result} (http-api/retrieve-answers (:uri question))
           {objective-status :status objective :result} (http-api/get-objective (:objective-id question))]
       (if (every? #(= ::http-api/success %) [answer-status objective-status])
         {:status 200

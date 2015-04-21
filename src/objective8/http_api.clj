@@ -160,9 +160,9 @@
          "/questions/" (:question-id answer) "/answers")
     answer))
 
-(defn retrieve-answers [objective-id question-id]
+(defn retrieve-answers [question-uri]
   (default-get-call
-    (str utils/host-url "/api/v1/objectives/" objective-id "/questions/" question-id "/answers")))
+    (str utils/host-url "/api/v1" question-uri "/answers")))
 
 ;; WRITERS
 

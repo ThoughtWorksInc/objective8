@@ -31,8 +31,9 @@
 (facts "about retrieving answers"
        (fact "answers for a question can be retrieved"
              (let [{o-id :objective-id q-id :question-id a-id :_id :as stored-answer} (sh/store-an-answer)
+                   question-uri (str "/objectives/" o-id "/questions/" q-id)
                    answer-uri (str "/objectives/" o-id "/questions/" q-id "/answers/" a-id)]
-               (answers/get-answers q-id) => (contains [(contains (-> stored-answer
+               (answers/get-answers question-uri) => (contains [(contains (-> stored-answer
                                                                       (assoc :uri answer-uri)
                                                                       (dissoc :global-id)))])
-               (answers/get-answers q-id) =not=> (contains [(contains {:global-id anything})]))))
+               (answers/get-answers question-uri) =not=> (contains [(contains {:global-id anything})]))))

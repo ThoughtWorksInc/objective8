@@ -14,6 +14,7 @@
 (def OBJECTIVE_ID 234)
 (def QUESTION_ID 42)
 (def INVALID_ID "not-an-int-id")
+(def QUESTION_URI (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))
 (def question-view-get-request (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID)))
 (defn invalid-question-get-request [objective-id question-id]
   (mock/request :get (str utils/host-url "/objectives/" objective-id "/questions/" question-id)))
@@ -51,9 +52,10 @@
                (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success
                                                                     :result {:question "The meaning of life?"
                                                                              :created-by-id USER_ID
+                                                                             :uri QUESTION_URI
                                                                              :objective-id OBJECTIVE_ID
                                                                              :_id QUESTION_ID}}
-               (http-api/retrieve-answers OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success
+               (http-api/retrieve-answers QUESTION_URI) => {:status ::http-api/success
                                                                         :result []} 
                (http-api/get-objective OBJECTIVE_ID)=> {:status ::http-api/success 
                                                         :result {:title "some title"}})

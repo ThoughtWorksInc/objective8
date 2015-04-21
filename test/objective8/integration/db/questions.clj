@@ -25,6 +25,7 @@
                                                           :username creator-name
                                                           :objective-id objective-id
                                                           :created-by-id created-by-id
+                                                          :uri question-uri
                                                           :meta {:marked false}}))
 
         (fact "attempting to get a question by a bad uri gives no result"
