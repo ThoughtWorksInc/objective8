@@ -301,6 +301,29 @@
             (throw e)))
       => "Biography with lots of text...")
 
+(fact "Can edit writer profile"
+     (try (wd/to "localhost:8080/edit-profile")
+          (wait-for-title "Edit profile | Objective[8]")
+          (screenshot "edit_profile_page")
+
+          (-> ".func--name"
+              wd/clear
+              (wd/input-text "My new real name"))
+          (-> ".func--biog"
+              wd/clear
+              (wd/input-text  "My new biography") 
+              wd/submit)
+          
+          (screenshot "updated_profile_page")
+          
+          {:name (wd/text (first (wd/elements ".func--writer-name")))
+           :biog (wd/text (first (wd/elements ".func--writer-biog")))} 
+
+          (catch Exception e
+            (screenshot "ERROR-can-edit-writer-profile") 
+            (throw e)))
+      => (contains {:biog "My new biography"}))
+
         (against-background
          [(before :contents (-> (:objective-url @journey-state)
                                 (string/split #"/")
