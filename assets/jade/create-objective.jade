@@ -18,32 +18,32 @@ block content
     h1#page-title(data-l8n="content:create-objective/page-title") !Create objective
     form.clj-create-objective-form(method="POST", action="/objectives")
       p.form-field
-        label.form-field-label(for="objective-title", aria-labelledby="objective-title-label-title", aria-describedby="objective-title-description")
+        label.form-field-label(for="objective-title")
           span.form-field-label-title#objective-title-label-title(data-l8n="content:create-objective/headline") !Headline
           = " "
           span.label-helper#objective-title-description(data-l8n="content:create-objective/headline-prompt") !A headline should encourage contribution or discussion
-          input.clj-input-objective-title.func--input-objective-title(id="objective-title", name="title", type="text", pattern=".{3,}", maxlength="120", required="required")
+          input.clj-input-objective-title.func--input-objective-title(id="objective-title", name="title", type="text", pattern=".{3,}", maxlength="120", required="required", aria-labelledby="objective-title-label-title", aria-describedby="objective-title-description")
 
       p.form-field
-        label.form-field-label(for="objective-goals", aria-labelledby="goal-1-label-title", aria-describedby="objective-goal-description")
+        label.form-field-label(for="objective-goals")
           span.form-field-label-title#goal-1-label-title(data-l8n="content:create-objective/goals") !Goals
           = " "
           span.required *
           span.label-helper#objective-goal-description(data-l8n="content:create-objective/goals-prompt") !A goal is what you’d like your change to achieve
-          input.clj-input-objective-goal-1.func--input-objective-goal-1(id="objective-goals", name="goal-1", type="text", pattern=".{3,}", required="required")
+          input.clj-input-objective-goal-1.func--input-objective-goal-1(id="objective-goals", name="goal-1", type="text", pattern=".{3,}", required="required", aria-labelledby="goal-1-label-title", aria-describedby="objective-goal-description")
       p.form-field
         label.form-field-label
-          span.form-field-label-title.visuallyhidden#goal-2-label-title(for="objective-goals-2", aria-labelledby="goal-2-label-title", data-l8n="content:create-objective/goal-2") !Goal 2
-          input.clj-input-objective-goal-2.func--input-objective-goal-2(id="objective-goals-2", name="goal-2", type="text", pattern=".{3,}")
+          span.form-field-label-title.visuallyhidden#goal-2-label-title(for="objective-goals-2", data-l8n="content:create-objective/goal-2") !Goal 2
+          input.clj-input-objective-goal-2.func--input-objective-goal-2(id="objective-goals-2", name="goal-2", type="text", pattern=".{3,}", aria-labelledby="goal-2-label-title")
       p.form-field
         label.form-field-label
-          span.form-field-label-title.visuallyhidden#goal-3-label-title(for="objective-goals-3", aria-labelledby="goal-3-label-title", data-l8n="content:create-objective/goal-3") !Goal 3
-          input.clj-input-objective-goal-3.func--input-objective-goal-3(id="objective-goals-3", name="goal-3", type="text", pattern=".{3,}")
+          span.form-field-label-title.visuallyhidden#goal-3-label-title(for="objective-goals-3", data-l8n="content:create-objective/goal-3") !Goal 3
+          input.clj-input-objective-goal-3.func--input-objective-goal-3(id="objective-goals-3", name="goal-3", type="text", pattern=".{3,}", aria-labelledby="goal-3-label-title")
 
       p.form-field
-        label.form-field-label(for="objective-description", aria-labelledby="objective-background-label-title", aria-describedby="objective-background-description")
+        label.form-field-label(for="objective-description")
           span.form-field-label-title#objective-background-label-title(data-l8n="content:create-objective/background") !Background
           span.label-helper#objective-background-description(data-l8n="content:create-objective/background-prompt") !Provide further information on why achieving this objective is important or necessary
-          textarea.clj-input-objective-background.func--input-objective-background(id="objective-description", name="description", rows="10", cols="10", maxlength="5000")
+          textarea.clj-input-objective-background.func--input-objective-background(id="objective-description", name="description", rows="10", cols="10", maxlength="5000", aria-labelledby="objective-background-label-title", aria-describedby="objective-background-description")
 
       button.button.clj-create-objective.func--create-objective(type="submit", aria-describedby="page-title", data-l8n="content:create-objective/submit-text") !Create
