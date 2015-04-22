@@ -562,7 +562,7 @@
                                                               :current-draft-diffs
                                                               utils/hiccup->html))
              :headers {"Content-Type" "text/html"}})))
-      {:status 404})))
+      (error-404-response request))))
 
 (defn draft-list [{{:keys [id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)
