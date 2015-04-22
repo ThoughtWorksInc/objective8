@@ -38,6 +38,29 @@
                     bad-question-uri (str "/objectives/" (inc objective-id) "/questions/" (:_id stored-question))]
                 (questions/get-question bad-question-uri) => nil))
 
+        (fact "questions can be sorted by numbers of answers"
+              (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+
+                    {three-answer-question-id  :_id :as question-with-three-answers} (sh/store-a-question {:objective objective})
+                    {one-answer-question-id  :_id :as question-with-one-answer} (sh/store-a-question {:objective objective})
+                    {two-answer-question-id :_id :as question-with-two-answers} (sh/store-a-question {:objective objective})
+
+                    objective-uri (str "/objectives/" objective-id)]
+
+                    (sh/store-an-answer {:question question-with-three-answers})
+                    (sh/store-an-answer {:question question-with-three-answers})
+                    (sh/store-an-answer {:question question-with-three-answers})
+
+                    (sh/store-an-answer {:question question-with-one-answer})
+
+                    (sh/store-an-answer {:question question-with-two-answers})
+                    (sh/store-an-answer {:question question-with-two-answers})
+
+                (questions/get-questions-for-objective-by-most-answered objective-uri)
+                => (contains [(contains {:_id three-answer-question-id})
+                              (contains {:_id two-answer-question-id})
+                              (contains {:_id one-answer-question-id})])))
+
         (fact "mark information is included when getting a question"
               (let [{objective-id :objective-id question-id :_id :as question} (sh/store-a-question)
                     mark (sh/store-a-mark {:question question})
@@ -61,9 +84,10 @@
                     unmarked-question (sh/store-a-question {:objective objective})
 
                     objective-uri (str "/objectives/" objective-id)]
-                (questions/get-questions-for-objective objective-uri) => (contains [(contains {:_id (:_id marked-question)
-                                                                                               :meta (contains {:marked true
-                                                                                                                :marked-by string?})})
-                                                                                    (contains {:_id (:_id unmarked-question)
-                                                                                               :meta (contains {:marked false})})]
-                                                                                   :in-any-order)))))
+                (questions/get-questions-for-objective objective-uri)
+                => (contains [(contains {:_id (:_id marked-question)
+                                         :meta (contains {:marked true
+                                                          :marked-by string?})})
+                              (contains {:_id (:_id unmarked-question)
+                                         :meta (contains {:marked false})})]
+                             :in-any-order)))))

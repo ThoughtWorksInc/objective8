@@ -115,6 +115,29 @@
                        (:result retrieve-result) => [(assoc stored-question-1 :username username)
                                                      (assoc stored-question-2 :username username)]))
 
+               (fact "quesitons can be retrieved ordered by most answered"
+                     (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+                           {username :username :as user} (sh/store-a-user)
+
+                           question-with-three-answers (sh/store-a-question {:objective objective :user user})
+                           question-with-one-answer (sh/store-a-question {:objective objective :user user})
+                           question-with-two-answers (sh/store-a-question {:objective objective :user user})]
+
+                       (sh/store-an-answer {:question question-with-three-answers})
+                       (sh/store-an-answer {:question question-with-three-answers})
+                       (sh/store-an-answer {:question question-with-three-answers})
+
+                       (sh/store-an-answer {:question question-with-one-answer})
+
+                       (sh/store-an-answer {:question question-with-two-answers})
+                       (sh/store-an-answer {:question question-with-two-answers})
+
+                       (storage/pg-retrieve-questions-for-objective-by-most-answered
+                         {:entity :question :objective_id objective-id})
+                       => [(assoc question-with-three-answers :username username :answer-count 3)
+                           (assoc question-with-two-answers :username username :answer-count 2)
+                           (assoc question-with-one-answer :username username :answer-count 1)]))
+
                ;;ANSWERS
                (fact "an answer entity can be stored in the database"
                      (let [{user-id :_id username :username} (sh/store-a-user)

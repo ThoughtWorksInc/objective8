@@ -254,3 +254,32 @@ ON latest_marks.question_id = questions._id
 JOIN objective8.users AS users
 ON users._id = questions.created_by_id
 WHERE questions.objective_id = ?" [objective-id]] :results))))
+
+(defn with-answer-count [unmap-fn]
+ (fn [m]
+   (-> (unmap-fn m)
+             (assoc :answer-count (:answer_count m)))))
+
+(def unmap-questions-with-answer-count
+  (-> (mappings/unmap :question)
+      (mappings/with-columns [:created-by-id :objective-id])
+      mappings/with-username-if-present
+      mappings/with-question-meta
+      with-answer-count))
+
+(defn pg-retrieve-questions-for-objective-by-most-answered [query-map]
+ (when-let [sanitised-query (utils/select-all-or-nothing query-map [:entity :objective_id])]
+   (let [objective-id (:objective_id sanitised-query)]
+    (apply vector (map unmap-questions-with-answer-count
+          (korma/exec-raw ["SELECT questions.*, answer_count.answer_count, answer_count.username
+                           FROM questions
+                           JOIN  (SELECT questions._id, COUNT(answers.*) AS answer_count, questions.username
+                           FROM (SELECT questions.*, users.username
+                           FROM questions
+                           JOIN users ON questions.created_by_id = users._id
+                           WHERE objective_id=?) AS questions
+                           LEFT JOIN answers ON answers.question_id = questions._id
+                           GROUP BY questions._id, questions.username) AS answer_count
+                           ON questions._id = answer_count._id
+                           ORDER BY answer_count DESC"
+                           [objective-id]] :results))))))
