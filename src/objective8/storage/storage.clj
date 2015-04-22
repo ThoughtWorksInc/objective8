@@ -272,13 +272,15 @@ WHERE questions.objective_id = ?" [objective-id]] :results))))
    (let [objective-id (:objective_id sanitised-query)]
     (apply vector (map unmap-questions-with-answer-count
           (korma/exec-raw ["SELECT questions.*, answer_count.answer_count, answer_count.username
-                           FROM questions
+                           FROM objective8.questions AS questions
                            JOIN  (SELECT questions._id, COUNT(answers.*) AS answer_count, questions.username
                            FROM (SELECT questions.*, users.username
-                           FROM questions
-                           JOIN users ON questions.created_by_id = users._id
+                           FROM objective8.questions AS questions
+                           JOIN objective8.users AS users
+                           ON questions.created_by_id = users._id
                            WHERE objective_id=?) AS questions
-                           LEFT JOIN answers ON answers.question_id = questions._id
+                           LEFT JOIN objective8.answers AS answers 
+                           ON answers.question_id = questions._id
                            GROUP BY questions._id, questions.username) AS answer_count
                            ON questions._id = answer_count._id
                            ORDER BY answer_count DESC"
