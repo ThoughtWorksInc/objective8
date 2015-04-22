@@ -31,8 +31,8 @@ mixin mastheadSignedIn()
     +mastheadContents()
     .masthead-user-nav.clj-user-navigation-signed-in
       a.masthead-edit-profile.clj-edit-profile(href="!edit-profile")
-        i.fa.fa-pencil-square-o
-      span.masthead-username.clj-username !JoeBloggs
+        i.fa.fa-pencil-square-o.clj-pencil
+        span.masthead-username.clj-username !JoeBloggs
       a.masthead-sign-out.clj-masthead-sign-out.func--masthead-sign-out(href="/sign-out", title="!Sign out", data-l8n="attr/title:navigation-global/sign-out-title")
         i.fa.fa-sign-out
         span(data-l8n="content:navigation-global/sign-out-text") !Sign out

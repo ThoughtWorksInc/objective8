@@ -38,8 +38,10 @@
 
 (defn masthead-signed-in [{:keys [user] :as context}]
   (html/at masthead-signed-in-snippet
-           [:.clj-edit-profile] (when (permissions/writer? user)
-                                  (html/set-attr :href (utils/path-for :fe/profile :username (:username user))))
+           [:.clj-edit-profile] (if (permissions/writer? user)
+                                  (html/set-attr :href (utils/path-for :fe/profile :username (:username user)))
+                                  html/unwrap)
+           [:.clj-pencil] (when (permissions/writer? user) identity)
            [:.clj-username] (html/content (:username user))))
 
 (defn masthead [{:keys [user] :as context}]
