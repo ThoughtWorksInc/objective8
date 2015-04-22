@@ -11,7 +11,7 @@ mixin dashboardAnswerItem()
         span.clj-dashboard-answer-item-down-count !3
     .dashboard-answer-item-text.clj-dashboard-answer-item-text
       | !This is the answer to the question it has a lot of text in it becasue we want to see what happens if the answer is really long. Well not really really long but at least a reasonable length in relation to everything else on the page.
-    form(actions="#", method="post").dashboard-answer-item-save
+    form(actions="#", method="post").dashboard-answer-item-save.clj-dashboard-answer-item-save
       p.form-field
         label.form-field-label(for="comment")
           span.form-field-label-title.visuallyhidden Comment

@@ -77,4 +77,5 @@
                                     [:.clj-writer-dashboard-navigation-list] (html/content (navigation-list context))
                                     [:.clj-writer-dashboard-answer-list] (html/content (answer-list context))
                                     [:.clj-writer-dashboard-content-stats] nil
-                                    [:.clj-writer-dashboard-filter-list :li] nil)))))))
+                                    [:.clj-writer-dashboard-filter-list :li] nil
+                                    [:.clj-dashboard-answer-item-save] nil)))))))
