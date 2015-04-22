@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "",
   "engines": {
-    "node": "0.10.33"
+    "node": "0.10.28"
   },
   "dependencies": {
     "grunt": "^0.4.5",
