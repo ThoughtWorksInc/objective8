@@ -216,10 +216,14 @@
 
                                       [:.clj-writer-item-list] (html/content (pf/writer-list context))
                                       [:.clj-invite-writer-link] (when (and 
-                                                                        (permissions/writer-inviter-for? user objective-id)
-                                                                        (tf/open? objective))
+                                                                         (permissions/writer-inviter-for? user objective-id)
+                                                                         (tf/open? objective))
                                                                    (html/set-attr
                                                                      :href (str "/objectives/" (:_id objective) "/invite-writer")))
+
+                                      [:.clj-writer-dashboard-link] (when (permissions/writer-for? user objective-id)
+                                                                      (html/set-attr
+                                                                        :href (str "/objectives/" (:_id objective) "/dashboard/questions")))
 
                                       [:.clj-objective-question-list] (html/content (objective-question-list context))
                                       [:.clj-community-question-list] (html/content (community-question-list context))
