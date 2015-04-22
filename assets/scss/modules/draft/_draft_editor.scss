@@ -54,14 +54,21 @@ $editor_min_device_width: 321;
 }
 
 
-.removed-from-version, del {
+.removed-from-version,
+del {
+  display: inline-block;
   background-color: rgba($pink,0.1);
   text-decoration: none;
-  outline: dashed 1px;
+  &:hover {
+    outline: dotted 1px $pink;
+  }
 }
-.added-to-version, ins {
-  position: relative;
+.added-to-version,
+ins {
+  display: inline-block;
   background-color: rgba($green2,0.1);
   text-decoration: none;
-  outline: dashed 1px;
+  &:hover {
+    outline: dotted 1px $green2;
+  }
 }
