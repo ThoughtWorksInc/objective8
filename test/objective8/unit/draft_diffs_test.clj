@@ -16,8 +16,12 @@
 (def FORMATTED_CURRENT_DIFF '([:p [:span nil "First paragraph."]] [:p [:ins nil "New"] [:span " paragraph."]] [:p [:span "Third paragraph."]]))
 (def FORMATTED_PREVIOUS_DIFF '([:p [:span nil "First paragraph."]] [:p [:del nil "Second"] [:span " paragraph."]] [:p [:span "Third paragraph."]]))
 
+
+(fact "Tags are removed from a simple hiccup"
+      (diffs/remove-tags HICCUP_2) => "First paragraph.Second paragraph.Third paragraph.")
+
 (fact "Tags are removed from hiccup"
-      (diffs/remove-tags HICCUP_1) => "First paragraph.List item 1. List item 2. List item 3.Last paragraph.")
+      (diffs/remove-tags HICCUP_1) => "First paragraph.List item 1.List item 2.List item 3.Last paragraph.")
 
 (fact "Characters in the hiccup element are counted"
       (diffs/get-char-count-for-element ELEMENT) => 32)

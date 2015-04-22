@@ -1,15 +1,24 @@
 (ns objective8.draft-diffs
   (:require [diff-match-patch-clj.core :as dmp]
-            [jsoup.soup :as jsoup]
             [objective8.utils :as utils]
             [objective8.drafts :as drafts]))
 
 
+(defn hiccup->vector-of-strings [strings hcp] 
+  (let [first-element (first hcp)] 
+    (if (sequential? first-element) 
+      (let [left-strings (hiccup->vector-of-strings strings first-element)]
+        (if (next hcp)
+          (hiccup->vector-of-strings left-strings (rest hcp)) 
+          left-strings))
+      (let [last-element (last hcp)]
+        (if (string? last-element)
+          (conj strings (last hcp))   
+          (hiccup->vector-of-strings strings (rest hcp)))))))
+
 (defn remove-tags [hiccup-draft]
-  (->> (utils/hiccup->html hiccup-draft)
-       jsoup/parse
-       (jsoup/select "body > *")
-       jsoup/text
+  (->> hiccup-draft
+       (hiccup->vector-of-strings [])
        clojure.string/join))
 
 (defn remove-hiccup-elements [hiccup element]
@@ -108,6 +117,7 @@
         previous-draft-content (apply list (:content previous-draft))
         diffs (diff-hiccup-content previous-draft-content current-draft-content)
         previous-draft-diffs (remove-hiccup-elements diffs :ins)
-        current-draft-diffs (remove-hiccup-elements diffs :del)]
-   {:previous-draft-diffs (add-formatting previous-draft-diffs previous-draft-content)
-    :current-draft-diffs (add-formatting current-draft-diffs current-draft-content)}))
+        current-draft-diffs (remove-hiccup-elements diffs :del)
+        result {:previous-draft-diffs (add-formatting previous-draft-diffs previous-draft-content)
+                :current-draft-diffs (add-formatting current-draft-diffs current-draft-content)}]
+    result))
