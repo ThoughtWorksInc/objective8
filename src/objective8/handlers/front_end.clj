@@ -546,21 +546,23 @@
   (let [objective-id (Integer/parseInt id)
         draft-id (Integer/parseInt d-id)
         {objective-status :status objective :result} (http-api/get-objective objective-id)
-        {draft-status :status draft :result} (http-api/get-draft objective-id draft-id)
-        {previous-draft-status :status previous-draft :result} (http-api/get-draft objective-id (:previous-draft-id draft))]
-    (if 
-      (every? #(= ::http-api/success %) [objective-status draft-status previous-draft-status])
-      (let [diffs (diffs/get-diffs-between-drafts draft previous-draft)]
-        {:status 200
-         ;:body (-> diffs :previous-draft-diffs utils/hiccup->html) 
-         :body (views/draft-diff "draft-diff" request
-                                 :previous-draft-diffs (-> diffs
-                                                           :previous-draft-diffs
-                                                           utils/hiccup->html) 
-                                 :current-draft-diffs (-> diffs 
-                                                          :current-draft-diffs
-                                                          utils/hiccup->html))
-         :headers {"Content-Type" "text/html"}}))))
+        {draft-status :status draft :result} (http-api/get-draft objective-id draft-id)] 
+    (if-let [previous-draft-id (:previous-draft-id draft)]
+      (let [{previous-draft-status :status previous-draft :result} (http-api/get-draft objective-id (:previous-draft-id draft))]
+        (if 
+          (every? #(= ::http-api/success %) [objective-status draft-status previous-draft-status])
+          (let [diffs (diffs/get-diffs-between-drafts draft previous-draft)]
+            {:status 200
+             ;:body (-> diffs :previous-draft-diffs utils/hiccup->html) 
+             :body (views/draft-diff "draft-diff" request
+                                     :previous-draft-diffs (-> diffs
+                                                               :previous-draft-diffs
+                                                               utils/hiccup->html) 
+                                     :current-draft-diffs (-> diffs 
+                                                              :current-draft-diffs
+                                                              utils/hiccup->html))
+             :headers {"Content-Type" "text/html"}})))
+      {:status 404})))
 
 (defn draft-list [{{:keys [id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)

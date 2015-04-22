@@ -235,9 +235,7 @@
                                                                 :submitter-id USER_ID
                                                                 :username "username"
                                                                 :next-draft-id 4
-                                                                :previous-draft-id nil}}  
-        (http-api/get-draft OBJECTIVE_ID nil) => {:status ::http-api/not-found
-                                                  :result {}}) 
+                                                                :previous-draft-id nil}})
 
         (let [{response :response} (p/request user-session draft-diff-url)]
           (:status response) => 404))) 
