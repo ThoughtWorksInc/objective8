@@ -1,9 +1,9 @@
 {
   "name": "objective8",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "engines": {
-    "node": "0.10.28"
+    "node": "0.10.33"
   },
   "dependencies": {
     "grunt": "^0.4.5",
