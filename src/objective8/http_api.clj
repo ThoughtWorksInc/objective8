@@ -144,9 +144,14 @@
   (default-get-call
     (str utils/host-url "/api/v1/objectives/" objective-id "/questions/" question-id)))
 
-(defn retrieve-questions [objective-id]
-  (default-get-call
-    (str utils/host-url "/api/v1/objectives/" objective-id "/questions")))
+(defn retrieve-questions
+  ([objective-id]
+   (retrieve-questions objective-id {}))
+
+  ([objective-id options]
+   (default-get-call
+     (str utils/host-url "/api/v1/objectives/" objective-id "/questions")
+     {:query-params options})))
 
 (defn post-mark [mark-data]
   (default-post-call (utils/path-for :api/post-mark) mark-data))

@@ -37,10 +37,13 @@
                                                    :result {:entity :objective
                                                             :title "Objective title"
                                                             :_id OBJECTIVE_ID}}
-         (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success
-                                                        :result [{:entity :question
-                                                                  :uri QUESTION_URI
-                                                                  :question "test question"}]}
+
+         (http-api/retrieve-questions OBJECTIVE_ID {:sorted-by "answers"})
+         => {:status ::http-api/success
+             :result [{:entity :question
+                       :uri QUESTION_URI
+                       :question "test question"}]}
+
          (http-api/retrieve-answers QUESTION_URI) => {:status ::http-api/success
                                                       :result [{:entity :answer
                                                                 :answer "test answer"}]})
@@ -67,7 +70,7 @@
 
        (fact "see message noting there are no questions when no questions were submitted to objective"
              (against-background
-               (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success
+               (http-api/retrieve-questions OBJECTIVE_ID {:sorted-by "answers"}) => {:status ::http-api/success
                                                               :result []})
              (let [{response :response} (-> user-session
                                             ih/sign-in-as-existing-user

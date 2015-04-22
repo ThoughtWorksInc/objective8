@@ -240,11 +240,13 @@
       (log/info "Invalid route: " e)
       (invalid-response "Invalid question request for this objective"))))
 
-(defn retrieve-questions [{:keys [route-params] :as request}]
+(defn retrieve-questions [{:keys [route-params params] :as request}]
   (let [objective-id (-> (:id route-params)
                          Integer/parseInt)
         objective-uri (str "/objectives/" objective-id)]
-    (if-let [questions (questions/get-questions-for-objective objective-uri)]
+    (if-let [questions (if (= (:sorted-by params) "answers")
+                         (questions/get-questions-for-objective-by-most-answered objective-uri)
+                         (questions/get-questions-for-objective objective-uri))]
       (-> questions
           response/response
           (response/content-type "application/json"))

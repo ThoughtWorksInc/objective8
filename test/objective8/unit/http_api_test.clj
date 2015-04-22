@@ -194,7 +194,13 @@
       (http-api/retrieve-questions OBJECTIVE_ID) => :api-call-result
       (provided
         (http-api/default-get-call (contains (str "/api/v1/objectives/" OBJECTIVE_ID
-                                                  "/questions"))) => :api-call-result))
+                                                  "/questions")) {:query-params {}}) => :api-call-result))
+
+(fact "getting all questions for an objective sorted by answer count hits the correct API endpoint"
+      (http-api/retrieve-questions OBJECTIVE_ID {:sorted-by "answers"}) => :api-call-result
+      (provided 
+        (http-api/default-get-call (contains (utils/path-for :api/get-questions-for-objective :id OBJECTIVE_ID))
+          {:query-params {:sorted-by "answers"}}) => :api-call-result))
 
 (def mark-data {:question-uri "/objectives/1/questions/2" :created-by-uri "/users/2"})
 

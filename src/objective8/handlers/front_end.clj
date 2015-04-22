@@ -182,7 +182,7 @@
 (defn dashboard-questions [{:keys [route-params params] :as request}]
   (let [objective-id (Integer/parseInt (:id route-params))
         {objective-status :status objective :result} (http-api/get-objective objective-id)
-        {questions-status :status questions :result} (http-api/retrieve-questions objective-id)
+        {questions-status :status questions :result} (http-api/retrieve-questions objective-id {:sorted-by "answers"})
         selected-question-uri (get params :selected (:uri (first questions)))
         {answers-status :status answers :result} (if (empty? questions)
                                                    {:status ::http-api/success :result []}

@@ -117,24 +117,38 @@
                    expected-result [question-1 question-2]]
                (:body response) => (helpers/json-contains (map contains expected-result) :in-any-order)))
 
-       (fact "marks on questions are included when questions are retrieved for an objective"
-             (let [objective (sh/store-an-open-objective)
-                   {marked-by :username :as marking-user} (sh/store-a-user)
-                   marking-writer (sh/store-a-writer {:invitation (sh/store-an-invitation {:objective objective})
-                                                         :user marking-user})
+         (fact "questions for an objective can be retrieved sorted by answer counts"
+               (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+                    {one-answer-q-id  :_id :as question-with-one-answer} (sh/store-a-question {:objective objective})
+                    {two-answer-q-id :_id :as question-with-two-answers} (sh/store-a-question {:objective objective})]
+                    (sh/store-an-answer {:question question-with-one-answer})
 
-                   marked-question (sh/store-a-question {:objective objective})
-                   _ (sh/store-a-mark {:question marked-question :writer marking-writer})
+                    (sh/store-an-answer {:question question-with-two-answers})
+                    (sh/store-an-answer {:question question-with-two-answers})
 
-                   unmarked-question (sh/store-a-question {:objective objective})
+                 (-> (p/request app (str "/api/v1/objectives/" objective-id "/questions")
+                            :params {:sorted-by "answers"})
+                     (get-in [:response :body])) => (helpers/json-contains [(contains {:_id two-answer-q-id})
+                                                                            (contains {:_id one-answer-q-id})])))
 
-                   {response :response} (p/request app (utils/path-for :api/get-questions-for-objective :id (:_id objective)))]
-               (:body response) => (helpers/json-contains [(contains {:_id (:_id marked-question)
-                                                                      :meta {:marked true
-                                                                             :marked-by marked-by}})
-                                                           (contains {:_id (:_id unmarked-question)
-                                                                      :meta {:marked false}})]
-                                                          :in-any-order)))))
+         (fact "marks on questions are included when questions are retrieved for an objective"
+               (let [objective (sh/store-an-open-objective)
+                     {marked-by :username :as marking-user} (sh/store-a-user)
+                     marking-writer (sh/store-a-writer {:invitation (sh/store-an-invitation {:objective objective})
+                                                        :user marking-user})
+
+                     marked-question (sh/store-a-question {:objective objective})
+                     _ (sh/store-a-mark {:question marked-question :writer marking-writer})
+
+                     unmarked-question (sh/store-a-question {:objective objective})
+
+                     {response :response} (p/request app (utils/path-for :api/get-questions-for-objective :id (:_id objective)))]
+                 (:body response) => (helpers/json-contains [(contains {:_id (:_id marked-question)
+                                                                        :meta {:marked true
+                                                                               :marked-by marked-by}})
+                                                             (contains {:_id (:_id unmarked-question)
+                                                                        :meta {:marked false}})]
+                                                            :in-any-order)))))
 
 (facts "POST /api/v1/meta/marks"
        (against-background
