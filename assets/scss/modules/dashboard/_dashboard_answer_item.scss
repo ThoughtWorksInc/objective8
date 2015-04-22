@@ -27,3 +27,29 @@ Answer item
 .dashboard-answer-item-down-score {
 
 }
+
+$dashboard_save_button_width: 100px;
+.dashboard-answer-item-save {
+  padding-top: 0.25em;
+}
+.dashboard-answer-item-save-comment {
+  padding-right: $dashboard_save_button_width;
+}
+.save-answer-button {
+  transition: background-color 250ms ease, color 250ms ease;
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  z-index: 1;
+  width: $dashboard_save_button_width;
+  height: 36px;
+  background: transparent;
+  color: $green1;
+  border: 0;
+  border-left: 1px solid $grey-3;
+  &:hover {
+    background-color: $green1;
+    color: $white;
+  }
+//  outline
+}
