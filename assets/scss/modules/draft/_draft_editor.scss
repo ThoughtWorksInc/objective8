@@ -54,10 +54,14 @@ $editor_min_device_width: 321;
 }
 
 
-.removed-from-version {
+.removed-from-version, del {
   background-color: rgba($pink,0.1);
+  text-decoration: none;
+  outline: dashed 1px;
 }
-.added-to-version {
+.added-to-version, ins {
   position: relative;
   background-color: rgba($green2,0.1);
+  text-decoration: none;
+  outline: dashed 1px;
 }

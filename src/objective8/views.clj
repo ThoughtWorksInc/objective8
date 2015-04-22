@@ -14,6 +14,7 @@
             [objective8.templates.profile :as profile]
             [objective8.templates.draft :as draft]
             [objective8.templates.draft-list :as draft-list]
+            [objective8.templates.draft-diff :as draft-diff]
             [objective8.templates.add-draft :as add-draft]
             [objective8.templates.import-draft :as import-draft]
             [objective8.templates.dashboard-questions :as dashboard-questions]
@@ -71,6 +72,7 @@
 (def profile (view profile/profile-page))
 (def draft-list (view draft-list/draft-list-page))
 (def draft (view draft/draft-page))
+(def draft-diff (view draft-diff/draft-diff-page))
 (def add-draft (view add-draft/add-draft-page))
 (def import-draft (view import-draft/import-draft-page))
 (def dashboard-questions-page (view dashboard-questions/dashboard-questions))

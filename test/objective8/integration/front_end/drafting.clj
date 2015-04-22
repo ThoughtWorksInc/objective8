@@ -17,7 +17,9 @@
 (def DRAFT_ID 3)
 
 (def SOME_MARKDOWN  "A heading\n===\nSome content")
+(def SOME_DIFFERENT_MARKDOWN  "Heading\n===\nSome different content\nSome more content")
 (def SOME_HICCUP (eh/to-hiccup (ec/mp SOME_MARKDOWN)))
+(def SOME_DIFFERENT_HICCUP (eh/to-hiccup (ec/mp SOME_DIFFERENT_MARKDOWN)))
 (def SOME_HTML (hc/html SOME_HICCUP))
 
 (def add-draft-url (utils/path-for :fe/add-draft-get :id OBJECTIVE_ID))
@@ -199,7 +201,7 @@
                (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
                                                               :result {:_id DRAFT_ID
                                                                        :_created_at "2015-03-24T17:06:37.714Z"
-                                                                       :content SOME_HICCUP
+                                                                       :content SOME_DIFFERENT_HICCUP
                                                                        :objective-id OBJECTIVE_ID
                                                                        :submitter-id USER_ID
                                                                        :username "username"
@@ -217,7 +219,8 @@
                                                                 :previous-draft-id 1}})
 
              (let [{response :response} (p/request user-session draft-diff-url)]
-               (:status response) => 200)))
+               (:status response) => 200
+               (:body response) => (contains "<span>eading</span>"))))
 
 (facts "about rendering draft-list page"
        (fact "there are no untranslated strings"
