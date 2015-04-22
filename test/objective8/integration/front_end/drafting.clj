@@ -220,7 +220,27 @@
 
              (let [{response :response} (p/request user-session draft-diff-url)]
                (:status response) => 200
-               (:body response) => (contains "<span>eading</span>"))))
+               (:body response) => (contains "<span>eading</span>")))
+
+(fact "viewing diff page for the first draft returns 404 page"
+      (against-background
+        (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                  :result {:status "drafting"
+                                                           :_id OBJECTIVE_ID}}
+        (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
+                                                       :result {:_id DRAFT_ID
+                                                                :_created_at "2015-03-24T17:06:37.714Z"
+                                                                :content SOME_HICCUP
+                                                                :objective-id OBJECTIVE_ID
+                                                                :submitter-id USER_ID
+                                                                :username "username"
+                                                                :next-draft-id 4
+                                                                :previous-draft-id nil}}  
+        (http-api/get-draft OBJECTIVE_ID nil) => {:status ::http-api/not-found
+                                                  :result {}}) 
+
+        (let [{response :response} (p/request user-session draft-diff-url)]
+          (:status response) => 404))) 
 
 (facts "about rendering draft-list page"
        (fact "there are no untranslated strings"
@@ -242,7 +262,7 @@
                                                    :response)]
                status => 200
                body => ih/no-untranslated-strings)))
-      
+
 
 (facts "about rendering draft page"
        (fact "there are no untranslated strings"
@@ -260,7 +280,7 @@
                (http-api/get-comments :draft-uri) => {:status ::http-api/success 
                                                       :result []} 
                (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success 
-                                                               :result []}) 
+                                                            :result []}) 
              (let [user-session (ih/test-context)
                    {status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/draft :id OBJECTIVE_ID :d-id DRAFT_ID))
