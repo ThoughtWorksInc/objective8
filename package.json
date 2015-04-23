@@ -11,16 +11,16 @@
     "grunt-cli": "^0.1.13",
     "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-concat": "~0.5.0",
+    "grunt-contrib-copy": "^0.8.0",
     "grunt-contrib-jade": "^0.14.1",
     "grunt-contrib-jshint": "~0.11.0",
     "grunt-contrib-uglify": "~0.7.0",
     "grunt-contrib-watch": "^0.6.1",
-    "grunt-contrib-imagemin": "^0.9.4",
     "grunt-sass": "0.18.1",
+    "jade": "^1.9.2",
     "jshint-stylish": "~1.0.0",
     "load-grunt-tasks": "~0.4.0",
-    "node-sass": "2.1.1",
-    "jade": "^1.9.2"
+    "node-sass": "2.1.1"
   },
   "devDependencies": {
     "express": "^4.12.1",
