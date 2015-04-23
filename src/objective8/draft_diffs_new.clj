@@ -35,7 +35,9 @@
   (filter #(not= element (first %)) hiccup))
 
 (defn replacement-diff-for-n-chars [n diff]
-  
+  (if (zero? n) 
+    {:replacement (list "")
+     :updated-diff diff}
     (let [diff-element (first diff)
           diff-element-string (last diff-element) 
           diff-element-char-count (count diff-element-string)]
@@ -51,7 +53,7 @@
               recursive-replacement (:replacement recursive-result)
               recursive-updated-diff (:updated-diff recursive-result)]
           {:replacement (into [] (concat (list diff-element) recursive-replacement)) 
-           :updated-diff recursive-updated-diff}))))
+           :updated-diff recursive-updated-diff})))))
 
 (defn replacement-content-and-updated-diff [content diff]
   ;; Each thing in content will be a string or a vector (another html element)

@@ -2,7 +2,7 @@
   (:require [midje.sweet :refer :all]
             [objective8.draft-diffs-new :as diffs]))
 
-(def HICCUP_1 '(["p" nil "First paragraph."] ["ul" ["li" "List item 1."] ["li" "List item 2."] ["li" "List item 3."]] ["p" {} "Last paragraph."]))
+(def HICCUP_1 '(["p" nil ""] ["p" nil "First paragraph."] ["ul" ["li" "List item 1."] ["li" "List item 2."] ["li" "List item 3."]] ["p" {} "Last paragraph."]))
 (def HICCUP_2 '(["p" {} "First paragraph."] ["p" {} "Second paragraph."] ["p" {} "Third paragraph."]))
 (def HICCUP_3 '(["p" {} "First paragraph."] ["p" {} "New paragraph."] ["p" {} "Third paragraph."]))
 
@@ -15,7 +15,7 @@
 (def FORMATTED_DIFF_2 '(["p" [:span nil "First paragraph."]] ["p" [:del nil "Second paragraph."]] ["p" [:span nil "Third paragraph."]]))
 (def FORMATTED_PREVIOUS_DIFF_2_vs_3 '(["p" {} [:span nil "First paragraph."]] ["p" {} [:del nil "Second"] [:span nil " paragraph."]] ["p" {} [:span nil "Third paragraph."]]))
 (def FORMATTED_CURRENT_DIFF_2_vs_3 '(["p" {} [:span nil "First paragraph."]] ["p" {} [:ins nil "New"] [:span nil " paragraph."]] ["p" {} [:span nil "Third paragraph."]]))
-(def FORMATTED_PREVIOUS_DIFF_1_vs_2 '(["p" nil [:span nil "First paragraph."]] ["ul" ["li" [:del nil "List item 1."]] ["li" [:del nil "List item 2."]] ["li" [:del nil "List item 3."]]] ["p" {} [:del nil "Last"] [:span nil " paragraph."]]))
+(def FORMATTED_PREVIOUS_DIFF_1_vs_2 '(["p" nil ""] ["p" nil [:span nil "First paragraph."]] ["ul" ["li" [:del nil "List item 1."]] ["li" [:del nil "List item 2."]] ["li" [:del nil "List item 3."]]] ["p" {} [:del nil "Last"] [:span nil " paragraph."]]))
 (def FORMATTED_CURRENT_DIFF_1_vs_2 '(["p" {} [:span nil "First paragraph."]]  ["p" {} [:ins nil "Second paragraph."]] ["p" {} [:ins nil "Third"] [:span nil " paragraph."]]))
 
 (fact "Tags are removed from a simple hiccup"
