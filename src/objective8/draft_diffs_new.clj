@@ -130,50 +130,43 @@
       (let [recursive-result (replacement-diff-for-n-chars (- n diff-element-char-count) (rest diff))
             recursive-replacement (:replacement recursive-result)
             recursive-updated-diff (:updated-diff recursive-result)]
-        {:replacement (concat (list diff-element) recursive-replacement)
+        {:replacement (into [] (concat (list diff-element) recursive-replacement)) 
          :updated-diff recursive-updated-diff}))))
 
-(defn get-replacement-element-and-updated-diff [element diff] 
-   (let [element-char-count (count (last element))
-         {replacement :replacement updated-diff :updated-diff} (replacement-diff-for-n-chars element-char-count diff)] 
-     {:replacement-element  (concat (pop element) replacement)
-      :updated-diff updated-diff})) 
+(defn replacement-content-and-updated-diff [content diff]
+  ;; Each thing in content will be a string or a vector (another html element)
+  (if (empty? content)
+    {:replacement-content content
+     :updated-diff diff} 
+    (let [first-element (first content)]
+      (if (string? first-element)
+        (let [{:keys [replacement updated-diff]} (replacement-diff-for-n-chars (count first-element) diff)
+              {recursive-replacement :replacement-content 
+               recursive-updated-diff :updated-diff} (replacement-content-and-updated-diff (rest content) updated-diff)]
+          {:replacement-content (into [] (concat replacement recursive-replacement)) 
+           :updated-diff recursive-updated-diff})
 
-  #_(let [element-char-count (count (last element))
-        diff-element (first diff)
-        diff-element-string (last diff-element) 
-        diff-element-char-count (count diff-element-string)] 
-    (if (> element-char-count diff-element-char-count)
-      {:replacement (concat (assoc element 2 diff-element) (rest diff))
-       :updated-diff '()}
-      (let [replacement-string (subs diff-element-string 0 element-char-count) 
-            remaining-diff-element-string (subs diff-element-string element-char-count) 
-            extracted-diff-element (assoc diff-element 2 replacement-string) 
-            updated-diff-element (if (empty? remaining-diff-element-string)
-                                   '() 
-                                   (list ( assoc diff-element 2 remaining-diff-element-string)))
-            _ (prn element-char-count) 
-            _ (prn diff-element) 
-            _ (prn diff-element-string) 
-            _ (prn replacement-string) 
-            _ (prn remaining-diff-element-string)  
-            _ (prn extracted-diff-element)   
-            _ (prn updated-diff-element)]   
-        {:replacement (assoc element 2 extracted-diff-element)  
-         :updated-diff (concat updated-diff-element (rest diff))}))) 
+        ;; else first-element must be a nested-tag vector
+        (let [{:keys [replacement-element updated-diff]} (get-replacement-element-and-updated-diff first-element diff)
+              {recursive-replacement :replacement-content 
+               recursive-updated-diff :updated-diff} (replacement-content-and-updated-diff (rest content) updated-diff)] 
+          {:replacement-content (into [] (concat [replacement-element] recursive-replacement))
+           :updated-diff recursive-updated-diff})))))
+
+(defn get-replacement-element-and-updated-diff [element diff] 
+  (let [{:keys [replacement-content updated-diff]} (replacement-content-and-updated-diff (subvec element 2) diff)]
+    {:replacement-element (into [] (concat (subvec element 0 2) replacement-content)) 
+     :updated-diff updated-diff})) 
 
 (defn insert-diffs-into-drafts [diffs draft]
-  (let [first-draft-element (first draft)
-        returned-draft (list (concat (subvec first-draft-element 0 (- (count first-draft-element) 1)) diffs))
-        ]
-    returned-draft
-    )
-  )
+  (if (empty? draft)
+    draft
+    (let [first-draft-element (first draft)
+          {:keys [replacement-element updated-diff]} (get-replacement-element-and-updated-diff first-draft-element diffs)
+          recursive-returned-draft (insert-diffs-into-drafts updated-diff (rest draft))]
+      (concat (list replacement-element) recursive-returned-draft))))
 
 (defn add-formatting [diffs draft]
-  (prn "IN ADD FORMATTING")
-  (prn "DIFFS" diffs)
-  (prn "DRAFT" draft)
   (def formatted-draft (atom {:formatted-elements []  
                               :draft-tag-types (get-types-for-hiccup draft)
                               :diff-char-count (get-char-counts-for-hiccup diffs)
@@ -194,16 +187,10 @@
 
 (defn get-diffs-between-drafts [draft previous-draft]
   (let [current-draft-content (apply list (:content draft))
-        _ (prn "CURRENT DRAFT CONTENT" current-draft-content)
         previous-draft-content (apply list (:content previous-draft))
-        _ (prn "PREVIOUS DRAFT CONTENT" previous-draft-content)
         diffs (diff-hiccup-content previous-draft-content current-draft-content)
-        _ (prn "DIFFS" diffs) 
         previous-draft-diffs (remove-hiccup-elements diffs :ins)
-        _ (prn "PREVIOUS DRAFT DIFFS" previous-draft-diffs) 
         current-draft-diffs (remove-hiccup-elements diffs :del)
-        _ (prn "CURRENT DRAFT DIFFS" current-draft-diffs) 
-        result {:previous-draft-diffs (add-formatting previous-draft-diffs previous-draft-content)
-                :current-draft-diffs (add-formatting current-draft-diffs current-draft-content)}
-        _ (prn "RESULT" result) ]
+        result {:previous-draft-diffs (insert-diffs-into-drafts previous-draft-diffs previous-draft-content)
+                :current-draft-diffs (insert-diffs-into-drafts current-draft-diffs current-draft-content)}]
     result))

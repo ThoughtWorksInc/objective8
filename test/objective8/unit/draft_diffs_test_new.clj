@@ -13,10 +13,10 @@
 
 (def FORMATTED_DIFF_1 '([:p [:span nil "Equal text. "] [:ins nil "New text."]])) 
 (def FORMATTED_DIFF_2 '(["p" [:span nil "First paragraph."]] ["p" [:del nil "Second paragraph."]] ["p" [:span nil "Third paragraph."]]))
-(def FORMATTED_PREVIOUS_DIFF_2_vs_3 '(["p" [:span nil "First paragraph."]] ["p" [:del nil "Second"] [:span " paragraph."]] ["p" [:span "Third paragraph."]]))
-(def FORMATTED_CURRENT_DIFF_2_vs_3 '(["p" [:span nil "First paragraph."]] ["p" [:ins nil "New"] [:span " paragraph."]] ["p" [:span "Third paragraph."]]))
-(def FORMATTED_PREVIOUS_DIFF_1_vs_2 '(["p" [:span nil "First paragraph."]] ["ul" ["li" [:del nil "List item 1."]] ["li" [:del nil "List item 2."]] ["li" [:del nil "List item 3."]]] ["p" [:del "Last"] [:span " paragraph."]]))
-(def FORMATTED_CURRENT_DIFF_1_vs_2 '(["p" [:span nil "First paragraph."]]  ["p" [:ins "Second paragraph."]] ["p" [:ins "Third"] [:span nil " paragraph."]]))
+(def FORMATTED_PREVIOUS_DIFF_2_vs_3 '(["p" {} [:span nil "First paragraph."]] ["p" {} [:del nil "Second"] [:span nil " paragraph."]] ["p" {} [:span nil "Third paragraph."]]))
+(def FORMATTED_CURRENT_DIFF_2_vs_3 '(["p" {} [:span nil "First paragraph."]] ["p" {} [:ins nil "New"] [:span nil " paragraph."]] ["p" {} [:span nil "Third paragraph."]]))
+(def FORMATTED_PREVIOUS_DIFF_1_vs_2 '(["p" {} [:span nil "First paragraph."]] ["ul" {} ["li" {} [:del nil "List item 1."]] ["li" {} [:del nil "List item 2."]] ["li" {} [:del nil "List item 3."]]] ["p" {} [:del nil "Last"] [:span nil " paragraph."]]))
+(def FORMATTED_CURRENT_DIFF_1_vs_2 '(["p" {} [:span nil "First paragraph."]]  ["p" {} [:ins nil "Second paragraph."]] ["p" {} [:ins nil "Third"] [:span nil " paragraph."]]))
 
 (fact "Tags are removed from a simple hiccup"
       (diffs/remove-tags HICCUP_2) => "First paragraph.Second paragraph.Third paragraph.")
@@ -55,7 +55,7 @@
       (diffs/get-diffs-between-drafts {:content HICCUP_3} {:content HICCUP_2}) => {:previous-draft-diffs FORMATTED_PREVIOUS_DIFF_2_vs_3
                                                                                    :current-draft-diffs FORMATTED_CURRENT_DIFF_2_vs_3})
 
-(future-fact "Difference between drafts 1 and 2 is returned"
+(fact "Difference between drafts 1 and 2 is returned"
       (diffs/get-diffs-between-drafts {:content HICCUP_2} {:content HICCUP_1}) => {:previous-draft-diffs FORMATTED_PREVIOUS_DIFF_1_vs_2
                                                                                    :current-draft-diffs FORMATTED_CURRENT_DIFF_1_vs_2})
 
@@ -68,9 +68,13 @@
 (fact "Insert diffs into drafts 2"
       (diffs/insert-diffs-into-drafts '([:span nil "First"] [:ins nil " paragraph."]) '(["p" {} "First paragraph."])) => '(["p" {} [:span nil "First"] [:ins nil " paragraph."]]))
 
-(future-fact "Insert diffs into drafts 3"
+(fact "Insert diffs into drafts 3"
       (diffs/insert-diffs-into-drafts '([:span nil "First paragraph."]) '(["h1" {} "First"] ["p" {} " paragraph."])) => 
  '(["h1" {} [:span nil "First"]] ["p" {} [:span nil " paragraph."]]))
+
+(fact "Insert diffs into drafts 4"
+      (diffs/insert-diffs-into-drafts '([:span nil "First paragraph."] [:del nil "List item 1."] [:span nil "List item 2."]) '(["h1" {} "First paragraph."] ["ul" {} ["li" {} "List item 1."] ["li" {} "List item 2."]] )) => 
+ '(["h1" {} [:span nil "First paragraph."]] ["ul" {} ["li" {} [:del nil "List item 1."]] ["li" {} [:span nil "List item 2."]]] ) )
 
 (fact "Diff for n chars 1"
       (diffs/replacement-diff-for-n-chars 3 '([:span nil "Hello"] [:ins nil " world"])) => 
@@ -104,4 +108,4 @@
 (fact "Get replacement element and updated diff 5"
       (diffs/get-replacement-element-and-updated-diff ["h1" {} "First element"] '([:span nil "First"] [:ins nil " element"] [:span nil " more stuff"])) =>
                                                       {:replacement-element ["h1" {} [:span nil "First"] [:ins nil " element"]]
-                                                       :updated-diff '([:span nil " more stuff"])}) 
+                                                       :updated-diff '([:span nil " more stuff"])})
