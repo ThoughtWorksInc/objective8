@@ -1,4 +1,4 @@
-(ns objective8.draft-diffs
+(ns objective8.draft-diffs-new
   (:require [diff-match-patch-clj.core :as dmp]
             [objective8.utils :as utils]
             [objective8.drafts :as drafts]))
@@ -115,13 +115,56 @@
        (remove #(= 0 %))
        flatten))
 
-(defn insert-diffs-into-drafts [diffs draft]
-  (let [first-diff-element (first diffs)
-        first-draft-element (first draft)
-        _ (prn "FIRST DRAFT ELEMENT" first-draft-element)
+(defn replacement-diff-for-n-chars [n diff]
+  (let [diff-element (first diff)
+        diff-element-string (last diff-element) 
+        diff-element-char-count (count diff-element-string)]
+    (if (<= n diff-element-char-count)
+      (let [extracted-diff-element (assoc diff-element 2 (subs diff-element-string 0 n )) 
+            remaining-diff-element-string (subs diff-element-string n)
+            updated-diff-element (if (empty? remaining-diff-element-string)
+                                   '() 
+                                   (list (assoc diff-element 2 remaining-diff-element-string)))]
+        {:replacement (list extracted-diff-element) 
+         :updated-diff (concat updated-diff-element (rest diff)) })
+      (let [recursive-result (replacement-diff-for-n-chars (- n diff-element-char-count) (rest diff))
+            recursive-replacement (:replacement recursive-result)
+            recursive-updated-diff (:updated-diff recursive-result)]
+        {:replacement (concat (list diff-element) recursive-replacement)
+         :updated-diff recursive-updated-diff}))))
 
-        returned-draft ;"Replace the third element of the first element of the draft with first-diff-elemet"
-                                 (list (assoc first-draft-element 2 first-diff-element)) 
+(defn get-replacement-element-and-updated-diff [element diff] 
+   (let [element-char-count (count (last element))
+         {replacement :replacement updated-diff :updated-diff} (replacement-diff-for-n-chars element-char-count diff)] 
+     {:replacement-element  (concat (pop element) replacement)
+      :updated-diff updated-diff})) 
+
+  #_(let [element-char-count (count (last element))
+        diff-element (first diff)
+        diff-element-string (last diff-element) 
+        diff-element-char-count (count diff-element-string)] 
+    (if (> element-char-count diff-element-char-count)
+      {:replacement (concat (assoc element 2 diff-element) (rest diff))
+       :updated-diff '()}
+      (let [replacement-string (subs diff-element-string 0 element-char-count) 
+            remaining-diff-element-string (subs diff-element-string element-char-count) 
+            extracted-diff-element (assoc diff-element 2 replacement-string) 
+            updated-diff-element (if (empty? remaining-diff-element-string)
+                                   '() 
+                                   (list ( assoc diff-element 2 remaining-diff-element-string)))
+            _ (prn element-char-count) 
+            _ (prn diff-element) 
+            _ (prn diff-element-string) 
+            _ (prn replacement-string) 
+            _ (prn remaining-diff-element-string)  
+            _ (prn extracted-diff-element)   
+            _ (prn updated-diff-element)]   
+        {:replacement (assoc element 2 extracted-diff-element)  
+         :updated-diff (concat updated-diff-element (rest diff))}))) 
+
+(defn insert-diffs-into-drafts [diffs draft]
+  (let [first-draft-element (first draft)
+        returned-draft (list (concat (subvec first-draft-element 0 (- (count first-draft-element) 1)) diffs))
         ]
     returned-draft
     )

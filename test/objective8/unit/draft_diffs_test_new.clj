@@ -1,6 +1,6 @@
-(ns objective8.unit.draft-diffs-test
+(ns objective8.unit.draft-diffs-test-new
   (:require [midje.sweet :refer :all]
-            [objective8.draft-diffs :as diffs]))
+            [objective8.draft-diffs-new :as diffs]))
 
 (def HICCUP_1 '(["p" {} "First paragraph."] ["ul" {} ["li" {} "List item 1."] ["li" {} "List item 2."] ["li" {} "List item 3."]] ["p" {} "Last paragraph."]))
 (def HICCUP_2 '(["p" {} "First paragraph."] ["p" {} "Second paragraph."] ["p" {} "Third paragraph."]))
@@ -55,13 +55,53 @@
       (diffs/get-diffs-between-drafts {:content HICCUP_3} {:content HICCUP_2}) => {:previous-draft-diffs FORMATTED_PREVIOUS_DIFF_2_vs_3
                                                                                    :current-draft-diffs FORMATTED_CURRENT_DIFF_2_vs_3})
 
-(fact "Difference between drafts 1 and 2 is returned"
+(future-fact "Difference between drafts 1 and 2 is returned"
       (diffs/get-diffs-between-drafts {:content HICCUP_2} {:content HICCUP_1}) => {:previous-draft-diffs FORMATTED_PREVIOUS_DIFF_1_vs_2
                                                                                    :current-draft-diffs FORMATTED_CURRENT_DIFF_1_vs_2})
 
 (fact "Diff tag types are extracted"
       (diffs/get-types-for-hiccup HICCUP_1) => ["p" "li" "li" "li" "p"])
 
-(fact "Insert diffs into drafts"
-      (diffs/insert-diffs-into-drafts '([:span nil "First paragraph."]) '(["p" {} "First paragraph."])) => '(["p" [:span nil "First paragraph."]])
-      )
+(fact "Insert diffs into drafts 1"
+      (diffs/insert-diffs-into-drafts '([:span nil "First paragraph."]) '(["p" {} "First paragraph."])) => '(["p" {} [:span nil "First paragraph."]])) 
+
+(fact "Insert diffs into drafts 2"
+      (diffs/insert-diffs-into-drafts '([:span nil "First"] [:ins nil " paragraph."]) '(["p" {} "First paragraph."])) => '(["p" {} [:span nil "First"] [:ins nil " paragraph."]]))
+
+(future-fact "Insert diffs into drafts 3"
+      (diffs/insert-diffs-into-drafts '([:span nil "First paragraph."]) '(["h1" {} "First"] ["p" {} " paragraph."])) => 
+ '(["h1" {} [:span nil "First"]] ["p" {} [:span nil " paragraph."]]))
+
+(fact "Diff for n chars 1"
+      (diffs/replacement-diff-for-n-chars 3 '([:span nil "Hello"] [:ins nil " world"])) => 
+      {:replacement '([:span nil "Hel"])
+       :updated-diff '([:span nil "lo"] [:ins nil " world"]) })
+
+(fact "Diff for n chars 2"
+      (diffs/replacement-diff-for-n-chars 7 '([:span nil "Hello"] [:ins nil " world"])) => 
+      {:replacement '([:span nil "Hello"] [:ins nil " w"])
+       :updated-diff '([:ins nil "orld"])})
+
+(fact "Get replacement element and updated diff 1"
+      (diffs/get-replacement-element-and-updated-diff ["h1" {} "First"] '([:span nil "First"])) => 
+                                                      {:replacement-element ["h1" {} [:span nil "First"]]
+                                                       :updated-diff '()})
+(fact "Get replacement element and updated diff 2"
+      (diffs/get-replacement-element-and-updated-diff ["h1" {} "First"] '([:span nil "First"] [:span nil " more text"])) => 
+                                                      {:replacement-element ["h1" {} [:span nil "First"]]
+                                                       :updated-diff '([:span nil " more text"])})
+
+(fact "Get replacement element and updated diff 3"
+      (diffs/get-replacement-element-and-updated-diff ["h1" {} "First"] '([:span nil "First more text"])) =>
+                                                      {:replacement-element ["h1" {} [:span nil "First"]]
+                                                       :updated-diff '([:span nil " more text"])})
+
+(fact "Get replacement element and updated diff 4"
+      (diffs/get-replacement-element-and-updated-diff ["h1" {} "First element"] '([:span nil "First"] [:ins nil " element"])) =>
+                                                      {:replacement-element ["h1" {} [:span nil "First"] [:ins nil " element"]]
+                                                       :updated-diff '()}) 
+
+(fact "Get replacement element and updated diff 5"
+      (diffs/get-replacement-element-and-updated-diff ["h1" {} "First element"] '([:span nil "First"] [:ins nil " element"] [:span nil " more stuff"])) =>
+                                                      {:replacement-element ["h1" {} [:span nil "First"] [:ins nil " element"]]
+                                                       :updated-diff '([:span nil " more stuff"])}) 
