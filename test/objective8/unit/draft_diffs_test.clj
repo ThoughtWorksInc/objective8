@@ -55,7 +55,7 @@
       (diffs/get-diffs-between-drafts {:content HICCUP_3} {:content HICCUP_2}) => {:previous-draft-diffs FORMATTED_PREVIOUS_DIFF_2_vs_3
                                                                                    :current-draft-diffs FORMATTED_CURRENT_DIFF_2_vs_3})
 
-(fact "Difference between drafts 1 and 2 is returned"
+(future-fact "Difference between drafts 1 and 2 is returned"
       (diffs/get-diffs-between-drafts {:content HICCUP_2} {:content HICCUP_1}) => {:previous-draft-diffs FORMATTED_PREVIOUS_DIFF_1_vs_2
                                                                                    :current-draft-diffs FORMATTED_CURRENT_DIFF_1_vs_2})
 
@@ -63,5 +63,5 @@
       (diffs/get-types-for-hiccup HICCUP_1) => ["p" "li" "li" "li" "p"])
 
 (fact "Insert diffs into drafts"
-      (diffs/insert-diffs-into-drafts '([:span nil "First paragraph."]) '(["p" {} "First paragraph."])) => '(["p" [:span nil "First paragraph."]])
+      (diffs/insert-diffs-into-drafts '([:span nil "First paragraph."]) '(["p" {} "First paragraph."])) => '(["p" {} [:span nil "First paragraph."]])
       )
