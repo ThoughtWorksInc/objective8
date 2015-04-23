@@ -134,6 +134,20 @@
                                                                              :result {:some :data
                                                                                       :end-date "2015-01-31T00:00:00.000Z" }}))
 
+
+(fact "getting an objective with stars-count hits the correct API endpoint with correct query parameters"
+      (http-api/get-objective OBJECTIVE_ID {:with-stars-count true}) => {:status ::http-api/success
+                                                                        :result the-objective}
+      (provided
+        (http-api/default-get-call
+          (contains (str "/api/v1/objectives/" OBJECTIVE_ID))
+          (contains {:headers (contains {"api-bearer-name" anything
+                                         "api-bearer-token" anything})
+                     :query-params (contains {:with-stars-count true})})) => {:status ::http-api/success
+                                                                             :result {:some :data
+                                                                                      :end-date "2015-01-31T00:00:00.000Z" }}))
+
+
 (fact "getting objectives hits the correct API endpoint"
       (http-api/get-objectives) => {:status ::http-api/success
                                     :result [the-objective]} 
@@ -154,7 +168,6 @@
           (contains {:query-params {:user-id USER_ID}})) => {:status ::http-api/success
                                                              :result [{:some :data
                                                                        :end-date "2015-01-31T00:00:00.000Z"}]}))
-
 ;; COMMENTS
 (def some-uri "/some/uri")
 (def comment-data {:comment-on-uri some-uri :created-by-id USER_ID :comment "A comment"})

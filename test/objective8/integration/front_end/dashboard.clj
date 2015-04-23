@@ -10,6 +10,8 @@
 (def user-session (ih/test-context))
 
 (def OBJECTIVE_ID 3)
+(def STARS_COUNT 23432)
+(def ANSWERS_COUNT 34343)
 (def TWITTER_ID 2)
 (def USER_ID 4)
 (def QUESTION_ID 5)
@@ -33,16 +35,18 @@
         (http-api/get-user anything) => {:result writer-for-objective})
 
        (against-background
-         (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                   :result {:entity :objective
-                                                            :title "Objective title"
-                                                            :_id OBJECTIVE_ID}}
+         (http-api/get-objective OBJECTIVE_ID {:with-stars-count true}) => {:status ::http-api/success
+                                                                            :result {:entity :objective
+                                                                                     :title "Objective title"
+                                                                                     :_id OBJECTIVE_ID
+                                                                                     :meta {:stars-count STARS_COUNT}}}
 
          (http-api/retrieve-questions OBJECTIVE_ID {:sorted-by "answers"})
          => {:status ::http-api/success
              :result [{:entity :question
                        :uri QUESTION_URI
-                       :question "test question"}]}
+                       :question "test question"
+                       :answer-count ANSWERS_COUNT}]}
 
          (http-api/retrieve-answers QUESTION_URI) => {:status ::http-api/success
                                                       :result [{:entity :answer
@@ -77,5 +81,19 @@
                                             (p/request (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID)))]
                (:status response) => 200
                (:body response) => (contains "Objective title")
-               (:body response) => (contains NO_QUESTION_MESSAGE))))
+               (:body response) => (contains NO_QUESTION_MESSAGE)))
+       
+       (fact "get objectives with stars-count"
+            (let [{response :response} (-> user-session
+                                           ih/sign-in-as-existing-user
+                                           (p/request (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID)))]
+              (:status response) => 200
+              (:body response) => (contains (str STARS_COUNT))))
+       
+       (fact "get questions with answer-count"
+            (let [{response :response} (-> user-session
+                                           ih/sign-in-as-existing-user
+                                           (p/request (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID)))]
+              (:status response) => 200
+              (:body response) => (contains (str "(" ANSWERS_COUNT ")")))))
 

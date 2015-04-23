@@ -112,6 +112,21 @@
                                                     (assoc :uri (str "/objectives/" o-id)))]
                         (:body response) => (helpers/json-contains retrieved-objective))))
 
+         (facts "GET /api/v1/objectives/:id?with-stars-count=true"
+                (fact "retrieves the objective by its id, along with star-count for objective"
+                      (let [{username :username :as objective-creator} (sh/store-a-user)
+                            {objective-id :_id :as objective} (sh/store-an-open-objective {:user objective-creator})
+                            retrieved-objective (-> objective
+                                                    (assoc :username username
+                                                           :uri (str "/objectives/" objective-id))
+                                                    (dissoc :global-id :meta)) 
+                            _ (sh/store-a-star {:objective objective}) 
+                            _ (sh/store-a-star {:objective objective}) 
+
+                            {response :response} (p/request app (str "/api/v1/objectives/" objective-id "?with-stars-count=true"))] 
+                        (:body response) => (helpers/json-contains retrieved-objective)
+                        (:body response) => (helpers/json-contains {:meta (contains {:starred false :stars-count 2})}))))
+
          (facts "about posting objectives"
                (against-background
                 (m/valid-credentials? anything anything anything) => true)

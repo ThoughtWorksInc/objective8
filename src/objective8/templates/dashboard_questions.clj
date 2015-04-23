@@ -30,7 +30,7 @@
       (answer-list-items context))))
 
 (def dashboard-questions-navigation-item-snippet (html/select dashboard-questions-template
-                                                              [[:.clj-writer-dashboard-navigation-item html/first-of-type]]))
+                                                              [[:.clj-dashboard-navigation-item html/first-of-type]]))
 
 (def dashboard-questions-no-questions-snippet (html/select pf/library-html-resource
                                                            [:.clj-dashboard-no-question-item]))
@@ -41,18 +41,18 @@
         selected-question-uri (:selected-question-uri data)
         dashboard-url (url/url (utils/path-for :fe/dashboard-questions :id (:_id objective)))]
     (html/at dashboard-questions-navigation-item-snippet
-             [:.clj-writer-dashboard-navigation-item]
+             [:.clj-dashboard-navigation-item]
              (html/clone-for [question questions]
-                             [:.clj-writer-dashboard-navigation-item] (if (= selected-question-uri (:uri question))
+                             [:.clj-dashboard-navigation-item] (if (= selected-question-uri (:uri question))
                                                                         (html/add-class "on")
                                                                         identity)
-                             [:.clj-writer-dashboard-navigation-item-label] (html/content (:question question))
-                             [:.clj-writer-dashboard-navigation-item-link]
+                             [:.clj-dashboard-navigation-item-label] (html/content (:question question))
+                             [:.clj-dashboard-navigation-item-link]
                              (html/set-attr :href
                                             (str (assoc dashboard-url
                                                         :query {:selected (:uri question)}
                                                         :anchor "dashboard-content")))
-                             [:.clj-writer-dashboard-navigation-item-link-count] (html/content (str "(" (:answer-count question) ")" ))))))
+                             [:.clj-dashboard-navigation-item-link-count] (html/content (str "(" (:answer-count question) ")" ))))))
 
 (defn navigation-list [{:keys [data] :as context}]
   (let [questions (:questions data)]
@@ -72,10 +72,11 @@
                                     [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
                                     [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
 
-                                    [:.clj-writer-dashboard-title] (html/content (:title objective))
-                                    [:.clj-writer-dashboard-stats] nil
-                                    [:.clj-writer-dashboard-navigation-list] (html/content (navigation-list context))
-                                    [:.clj-writer-dashboard-answer-list] (html/content (answer-list context))
-                                    [:.clj-writer-dashboard-content-stats] nil
-                                    [:.clj-writer-dashboard-filter-list :li] nil
+                                    [:.clj-dashboard-title] (html/content (:title objective))
+                                    [:.clj-dashboard-stat-participant] nil
+                                    [:.clj-dashboard-stat-starred-amount] (html/content (str (get-in objective [:meta :stars-count])))
+                                    [:.clj-dashboard-navigation-list] (html/content (navigation-list context))
+                                    [:.clj-dashboard-answer-list] (html/content (answer-list context))
+                                    [:.clj-dashboard-content-stats] nil
+                                    [:.clj-dashboard-filter-list :li] nil
                                     [:.clj-dashboard-answer-item-save] nil)))))))
