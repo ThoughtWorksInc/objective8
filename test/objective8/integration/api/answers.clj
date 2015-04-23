@@ -129,3 +129,47 @@
                      {response :response} (p/request app (str "/api/v1/objectives/" (inc o-id)
                                                               "/questions/" q-id "/answers"))]
                  (:status response) => 404))))
+
+(facts "GET /api/v1/objectives/:id/questions/:id/answers?sorted-by=up-votes"
+       (against-background
+         [(before :contents (do (helpers/db-connection)
+                                (helpers/truncate-tables)))
+          (after :facts (helpers/truncate-tables))]
+
+         (fact "retrieves answers ordered by up-votes"
+               (let [{objective-id :objective-id question-id :_id :as question} (sh/store-a-question)
+                     {least-up-votes-id :_id least-up-votes-g-id :global-id} (sh/store-an-answer {:question question})
+                     {most-up-votes-id :_id most-up-votes-g-id :global-id} (sh/store-an-answer {:question question})
+                     question-uri (str "/objectives/" objective-id "/questions/" question-id)] 
+
+                 (sh/store-an-up-down-vote most-up-votes-g-id :up) 
+                 (sh/store-an-up-down-vote most-up-votes-g-id :up) 
+                 (sh/store-an-up-down-vote least-up-votes-g-id :up) 
+
+                 (-> (p/request app (str (utils/path-for :api/get-answers-for-question
+                                                         :id objective-id
+                                                         :q-id question-id) "?sorted-by=up-votes"))
+                     (get-in [:response :body])) => (helpers/json-contains [(contains {:_id most-up-votes-id})
+                                                                            (contains {:_id least-up-votes-id})])))))
+
+(facts "GET /api/v1/objectives/:id/questions/:id/answers?sorted-by=down-votes"
+       (against-background
+         [(before :contents (do (helpers/db-connection)
+                                (helpers/truncate-tables)))
+          (after :facts (helpers/truncate-tables))]
+
+         (fact "retrieves answers ordered by down-votes"
+               (let [{objective-id :objective-id question-id :_id :as question} (sh/store-a-question)
+                     {least-down-votes-id :_id least-down-votes-g-id :global-id} (sh/store-an-answer {:question question})
+                     {most-down-votes-id :_id most-down-votes-g-id :global-id} (sh/store-an-answer {:question question})
+                     question-uri (str "/objectives/" objective-id "/questions/" question-id)] 
+
+                 (sh/store-an-up-down-vote most-down-votes-g-id :down) 
+                 (sh/store-an-up-down-vote most-down-votes-g-id :down) 
+                 (sh/store-an-up-down-vote least-down-votes-g-id :down) 
+
+                 (-> (p/request app (str (utils/path-for :api/get-answers-for-question
+                                                         :id objective-id
+                                                         :q-id question-id) "?sorted-by=down-votes"))
+                     (get-in [:response :body])) => (helpers/json-contains [(contains {:_id most-down-votes-id})
+                                                                            (contains {:_id least-down-votes-id})])))))

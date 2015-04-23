@@ -283,13 +283,17 @@
       (log/info "Error when posting answer: " e)
       (invalid-response "Invalid answer post request"))))
 
-(defn get-answers [{:keys [route-params] :as request}]
+(defn get-answers [{:keys [route-params params] :as request}]
   (try
-    (let [question-uri (str "/objectives/" (:id route-params) "/questions/" (:q-id route-params))]
+    (let [question-uri (str "/objectives/" (:id route-params) "/questions/" (:q-id route-params))
+          sorted-by (:sorted-by params)] 
       (if (questions/get-question question-uri)
-        (-> (answers/get-answers question-uri)
-            response/response
-            (response/content-type "application/json"))
+        (let [answers (if sorted-by
+                        (answers/get-answers-by-votes question-uri sorted-by)
+                        (answers/get-answers question-uri))] 
+          (-> answers 
+              response/response
+              (response/content-type "application/json"))) 
         (not-found-response "Question does not exist")))
     (catch Exception e
       (log/info "Error when retrieving answers: " e)

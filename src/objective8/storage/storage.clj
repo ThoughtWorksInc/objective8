@@ -192,9 +192,9 @@ LIMIT 50" [objective-id question-id]] :results))))))
           objective-id (:objective-id sanitised-query)
           vote-type (:vote-type sanitised-query)]
       (cond
-        (= :up vote-type)
+        (= "up-votes" vote-type)
         (retrieve-answers-ordered-by-up-votes objective-id question-id) 
-        (= :down vote-type)
+        (= "down-votes" vote-type)
         (retrieve-answers-ordered-by-down-votes objective-id question-id)))))
 
 (def unmap-comments-with-votes
