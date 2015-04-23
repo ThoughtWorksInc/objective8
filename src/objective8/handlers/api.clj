@@ -149,13 +149,14 @@
 (defn get-objective [{:keys [route-params params] :as request}]
   (let [id (-> (:id route-params)
                Integer/parseInt)
-        signed-in-id (:signed-in-id params)
-        with-stars-count (:with-stars-count params)]
-    (if-let [objective (if signed-in-id
+        signed-in-id (:signed-in-id params)]
+    (if-let [objective (cond
+                         signed-in-id
                          (objectives/get-objective-as-signed-in-user id (Integer/parseInt signed-in-id))
-                         (if with-stars-count
-                           (actions/get-objective-with-star-count id)
-                           (objectives/retrieve-objective id)))]
+                         (:with-stars-count params)
+                         (actions/get-objective-with-star-count id)
+                         :else
+                         (objectives/retrieve-objective id))]
       (-> objective
           (update-in [:end-date] utils/date-time->iso-time-string)
           response/response

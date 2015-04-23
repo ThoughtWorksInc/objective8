@@ -290,5 +290,6 @@ WHERE questions.objective_id = ?" [objective-id]] :results))))
   (when-let [sanitised-query (utils/select-all-or-nothing query-map [:entity :objective-id])]
     (let [objective-id (:objective-id sanitised-query)]
        (korma/exec-raw ["SELECT COUNT(stars.*) AS stars_count
-                       FROM objective8.stars AS stars
-                       WHERE stars.objective_id = ?" [objective-id]] :results))))
+                        FROM objective8.stars AS stars
+                        WHERE stars.active = true 
+                        AND stars.objective_id = ?" [objective-id]] :results))))

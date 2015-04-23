@@ -31,10 +31,11 @@
                      created-by-uri (str "/users/" created-by-id)]
                  (stars/get-star objective-uri created-by-uri) => star))
 
-         (fact "can get number of stars for an objective"
+         (fact "can get number of active stars for an objective"
                (let [{objective-id :_id :as objective} (sh/store-an-open-objective)]
-                 (sh/store-a-star {:objective objective})
-                 (sh/store-a-star {:objective objective})
+                 (sh/store-a-star {:objective objective :active true})
+                 (sh/store-a-star {:objective objective :active true})
+                 (sh/store-a-star {:objective objective :active false})
                  (stars/get-star-count-for-objective (str "/objectives/" objective-id)) => {:stars-count 2}))))
 
 (facts "about toggling stars"
