@@ -27,3 +27,10 @@
          (map #(dissoc % :global-id))
          (map #(utils/update-in-self % [:uri] uri-for-answer)))))
 
+(defn get-answers-by-votes [question-uri vote-type]
+  (let [query (-> (uris/uri->query question-uri)
+                  (utils/ressoc :_id :question-id)
+                  (assoc :vote-type vote-type))]
+    (->> (storage/pg-retrieve-answers-sorted-by-votes query)
+         (map #(dissoc % :global-id))
+         (map #(utils/update-in-self % [:uri] uri-for-answer)))))

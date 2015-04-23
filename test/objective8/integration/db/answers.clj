@@ -36,4 +36,20 @@
                (answers/get-answers question-uri) => (contains [(contains (-> stored-answer
                                                                       (assoc :uri answer-uri)
                                                                       (dissoc :global-id)))])
-               (answers/get-answers question-uri) =not=> (contains [(contains {:global-id anything})]))))
+               (answers/get-answers question-uri) =not=> (contains [(contains {:global-id anything})])))
+       
+       (fact "answers for a question can be retrieved sorted by up-votes or down-votes"
+             (let [{objective-id :objective-id question-id :_id :as question} (sh/store-a-question)
+                   {most-up-votes-id :_id most-up-votes-g-id :global-id} (sh/store-an-answer {:question question})
+                   {most-down-votes-id :_id most-down-votes-g-id :global-id} (sh/store-an-answer {:question question})
+                   question-uri (str "/objectives/" objective-id "/questions/" question-id)]
+
+               (sh/store-an-up-down-vote most-up-votes-g-id :up)
+               (sh/store-an-up-down-vote most-up-votes-g-id :up)
+               (sh/store-an-up-down-vote most-down-votes-g-id :up)
+               (sh/store-an-up-down-vote most-down-votes-g-id :down)
+               (sh/store-an-up-down-vote most-down-votes-g-id :down)
+               (answers/get-answers-by-votes question-uri :up) => (contains [(contains {:_id most-up-votes-id})
+                                                                             (contains {:_id most-down-votes-id})])
+               (answers/get-answers-by-votes question-uri :down) => (contains [(contains {:_id most-down-votes-id})
+                                                                               (contains {:_id most-up-votes-id})]))))

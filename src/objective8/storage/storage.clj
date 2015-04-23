@@ -154,6 +154,49 @@ WHERE answers.objective_id = ? AND answers.question_id = ?
 ORDER BY answers._created_at ASC
 LIMIT 50" [objective-id question-id]] :results))))))
 
+(defn retrieve-answers-ordered-by-up-votes [objective-id question-id]
+  (apply vector (map unmap-answer-with-votes
+                     (korma/exec-raw ["SELECT answers.*, up_votes, down_votes, users.username FROM objective8.answers AS answers
+                                      JOIN objective8.users AS users ON users._id = answers.created_by_id
+                                      LEFT JOIN (SELECT global_id, count(vote) as down_votes
+                                      FROM objective8.up_down_votes
+                                      WHERE vote < 0 GROUP BY global_id) AS agg
+                                      ON agg.global_id = answers.global_id
+                                      LEFT JOIN (SELECT global_id, count(vote) as up_votes
+                                      FROM objective8.up_down_votes
+                                      WHERE vote > 0 GROUP BY global_id) AS agg2
+                                      ON agg2.global_id = answers.global_id
+                                      WHERE answers.objective_id = ? AND answers.question_id = ?
+                                      ORDER BY up_votes DESC NULLS LAST
+                                      LIMIT 50" [objective-id question-id]] :results))))
+
+(defn retrieve-answers-ordered-by-down-votes [objective-id question-id]   
+  (apply vector (map unmap-answer-with-votes
+                     (korma/exec-raw ["SELECT answers.*, up_votes, down_votes, users.username FROM objective8.answers AS answers
+                                      JOIN objective8.users AS users ON users._id = answers.created_by_id
+                                      LEFT JOIN (SELECT global_id, count(vote) as down_votes
+                                      FROM objective8.up_down_votes
+                                      WHERE vote < 0 GROUP BY global_id) AS agg
+                                      ON agg.global_id = answers.global_id
+                                      LEFT JOIN (SELECT global_id, count(vote) as up_votes
+                                      FROM objective8.up_down_votes
+                                      WHERE vote > 0 GROUP BY global_id) AS agg2
+                                      ON agg2.global_id = answers.global_id
+                                      WHERE answers.objective_id = ? AND answers.question_id = ?
+                                      ORDER BY down_votes DESC NULLS LAST
+                                      LIMIT 50" [objective-id question-id]] :results))))
+
+(defn pg-retrieve-answers-sorted-by-votes [query-map]
+  (when-let [sanitised-query (utils/select-all-or-nothing query-map [:question-id :objective-id :vote-type :entity])]
+    (let [ question-id (:question-id sanitised-query)
+          objective-id (:objective-id sanitised-query)
+          vote-type (:vote-type sanitised-query)]
+      (cond
+        (= :up vote-type)
+        (retrieve-answers-ordered-by-up-votes objective-id question-id) 
+        (= :down vote-type)
+        (retrieve-answers-ordered-by-down-votes objective-id question-id)))))
+
 (def unmap-comments-with-votes
   (-> (mappings/unmap :comment)
       (mappings/with-columns [:comment-on-id :created-by-id :global-id :objective-id])
