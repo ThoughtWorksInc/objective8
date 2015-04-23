@@ -16,8 +16,17 @@
           (conj strings (last hcp))   
           (hiccup->vector-of-strings strings (rest hcp)))))))
 
+(defn has-content? [element]
+  (or (> (count element) 2)
+      (sequential? (last element))
+      (string? (last element))))
+
+(defn remove-empty-elements [hiccup]
+  (filter has-content? hiccup))
+
 (defn remove-tags [hiccup-draft]
   (->> hiccup-draft
+       remove-empty-elements
        (hiccup->vector-of-strings [])
        clojure.string/join))
 
@@ -38,8 +47,9 @@
    [[element-type (subs element-content 0 char-position)] 
     [element-type (subs element-content char-position)]]))
 
-(defn wrap-with-p-tag [elements]
-  (apply merge [:p] elements))
+
+(defn wrap-with-tag [elements tag]
+  (apply merge [tag] elements))
 
 (defn get-char-position [index paragraph-size cumulative-sum]
   (if (= 0 index)
@@ -70,22 +80,33 @@
       (list* (second (split-element-at-position (nth diffs index) char-position)) new-diffs) 
       new-diffs)))
 
-(defn format-diff [{:keys [diff-char-count draft-char-count formatted-elements diffs] :as data}]
+
+(defn format-diff [{:keys [draft-tag-types diff-char-count draft-char-count formatted-elements diffs] :as data}]
  (let [paragraph-size (first draft-char-count) 
      ;  paragraph-size (min (first (:draft-char-count data)) (reduce + diff-char-count))
        cumulative-sum (reductions + diff-char-count)
        index (count (filter #(< % paragraph-size) cumulative-sum))
        elements-to-format (get-elements-to-format diffs index cumulative-sum paragraph-size)]
-   {:formatted-elements (into formatted-elements [(wrap-with-p-tag elements-to-format)])
+   {:formatted-elements (into formatted-elements [(wrap-with-tag elements-to-format (first draft-tag-types))])
+    :draft-tag-types (rest draft-tag-types)
     :diff-char-count (get-remaining-char-count diff-char-count index cumulative-sum paragraph-size)
     :draft-char-count (drop 1 (:draft-char-count data))
     :diffs (get-remaining-diffs diffs index cumulative-sum paragraph-size)}))
 
 
+(defn get-types-for-element [element]
+  (let [element-content (get-element-content element)]
+    (if (string? (first element-content))
+      (first element)
+      (map get-types-for-element element-content))))
+
+(defn get-types-for-hiccup [text]
+  (-> (map get-types-for-element text)
+      flatten))
 
 (defn get-char-count-for-element [element]
   (let [element-content (get-element-content element)]
-    (if (instance? String (first element-content)) 
+    (if (string? (first element-content)) 
       (count (first element-content))
       (map get-char-count-for-element element-content))))
 
@@ -96,6 +117,7 @@
 
 (defn add-formatting [diffs draft]
   (def formatted-draft (atom {:formatted-elements []  
+                              :draft-tag-types (get-types-for-hiccup draft)
                               :diff-char-count (get-char-counts-for-hiccup diffs)
                               :draft-char-count (get-char-counts-for-hiccup draft)
                               :diffs diffs}))

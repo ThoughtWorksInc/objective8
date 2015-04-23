@@ -12,9 +12,9 @@
 (def DIFF_2 '([:span nil "First paragraph."] [:del nil "Second paragraph."] [:span nil "Third paragraph."]))
 
 (def FORMATTED_DIFF_1 '([:p [:span nil "Equal text. "] [:ins nil "New text."]])) 
-(def FORMATTED_DIFF_2 '([:p [:span nil "First paragraph."]] [:p [:del nil "Second paragraph."]] [:p [:span nil "Third paragraph."]]))
-(def FORMATTED_CURRENT_DIFF '([:p [:span nil "First paragraph."]] [:p [:ins nil "New"] [:span " paragraph."]] [:p [:span "Third paragraph."]]))
-(def FORMATTED_PREVIOUS_DIFF '([:p [:span nil "First paragraph."]] [:p [:del nil "Second"] [:span " paragraph."]] [:p [:span "Third paragraph."]]))
+(def FORMATTED_DIFF_2 '(["p" [:span nil "First paragraph."]] ["p" [:del nil "Second paragraph."]] ["p" [:span nil "Third paragraph."]]))
+(def FORMATTED_CURRENT_DIFF '(["p" [:span nil "First paragraph."]] ["p" [:ins nil "New"] [:span " paragraph."]] ["p" [:span "Third paragraph."]]))
+(def FORMATTED_PREVIOUS_DIFF '(["p" [:span nil "First paragraph."]] ["p" [:del nil "Second"] [:span " paragraph."]] ["p" [:span "Third paragraph."]]))
 
 
 (fact "Tags are removed from a simple hiccup"
@@ -38,9 +38,11 @@
 
 (fact "Diff elements are wrapped in paragraph tags"
       (diffs/format-diff {:formatted-elements []
+                          :draft-tag-types '(:p)
                           :diff-char-count '(12 9)
                           :draft-char-count '(21)
                           :diffs DIFF_1}) => {:formatted-elements FORMATTED_DIFF_1
+                                              :draft-tag-types '()
                                               :diff-char-count '()
                                               :draft-char-count '()
                                               :diffs '()})
@@ -51,3 +53,6 @@
 (fact "Difference between drafts is returned"
       (diffs/get-diffs-between-drafts {:content HICCUP_3} {:content HICCUP_2}) => {:previous-draft-diffs FORMATTED_PREVIOUS_DIFF
                                                                                    :current-draft-diffs FORMATTED_CURRENT_DIFF})
+
+(fact "Diff tag types are extracted"
+      (diffs/get-types-for-hiccup HICCUP_1) => ["p" "li" "li" "li" "p"])
