@@ -113,6 +113,8 @@ import-draft,cancel,Cancel
 import-draft,select-file,Select file
 import-draft,preview,Preview
 import-draft,submit,Submit
+draft-diff,doc-title,Draft changes | Objective[8]
+draft-diff,doc-description,View the changes made in this draft version
 writer-dashboard,participants-stat-title,Participants
 writer-dashboard,starred-stat-title,Starred
 writer-dashboard,questions-navigation-title,Questions

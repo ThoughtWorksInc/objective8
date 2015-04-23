@@ -53,9 +53,9 @@
 
 (def journey-state (atom nil))
 
-(def FIRST_DRAFT_MARKDOWN  "A heading\n===\nSome content")
-(def SECOND_DRAFT_MARKDOWN  "A heading\n===\nSome content\nSome more content")
-(def THIRD_DRAFT_MARKDOWN  "A heading\n===\nSome content\nSome more content\nAnother line of content")
+(def FIRST_DRAFT_MARKDOWN  "A heading\n===\n\n- Some content")
+(def SECOND_DRAFT_MARKDOWN  "A heading\n===\n\n- Some content\n- Some more content")
+(def THIRD_DRAFT_MARKDOWN  "A heading\n===\n\n- Some content\n- Some more content\n- Another line of content")
 (def FIRST_DRAFT_HTML (utils/hiccup->html (utils/markdown->hiccup FIRST_DRAFT_MARKDOWN)))
 (def THIRD_DRAFT_HTML (utils/hiccup->html (utils/markdown->hiccup THIRD_DRAFT_MARKDOWN)))
 
@@ -453,11 +453,23 @@
                  (wait-for-title "Policy draft | Objective[8]")
                  (screenshot "third_draft")
 
+                 (swap! journey-state assoc :draft-url (wd/current-url))
+
                  (wd/page-source)
                  (catch Exception e
                    (screenshot "ERROR-Can-navigate-between-drafts")
                    (throw e)))
                => (contains THIRD_DRAFT_HTML))
+
+         (fact "Can view draft diffs"
+               (try
+                 (wd/to (str (:draft-url @journey-state) "/diff"))
+                 (wait-for-title "Draft changes | Objective[8]")
+                 (screenshot "draft_diff")
+                 
+                 (catch Exception e
+                   (screenshot "ERROR-Can-view-draft-diffs") 
+                   (throw e))))
 
          (fact "Can navigate to import from Google Drive"
                (try
