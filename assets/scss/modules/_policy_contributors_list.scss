@@ -1,0 +1,11 @@
+.policy-contributors-list {
+  @include cf();
+  @include unstyledList();
+}
+.policy-contributors-list-item {
+  margin-bottom: 0.4em;
+  @include mq(640) {
+    width: 50%;
+    float: left;
+  }
+}
