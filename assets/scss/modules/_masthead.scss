@@ -84,6 +84,13 @@
   }
 }
 
+.masthead-edit-profile {
+  margin-right: 0.8em;
+  @include mq(720) {
+    margin-right: 0;
+  }
+}
+
 .masthead-username {
   padding-right: 1em;
 }
