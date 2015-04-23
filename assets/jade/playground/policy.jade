@@ -1,0 +1,57 @@
+extends ../layouts/base
+include ../mixins/_view_helpers
+
+block vars
+  - bodyClass = "policy"
+  - pageTitle = "Policy"
+
+block content
+
+  .middle-container
+
+    .policy-document
+      h1.document-title !Build safer cycling networks in the streets of Madrid.
+      p.lede London and Paris are two prime examples of cycle super highway heaven.  We need to show the world that madrid too can be the pinnacle in cycling and safety.
+        p Street art bitters pour-over, Portland pork belly master cleanse lumbersexual. Aesthetic 90's Shoreditch PBR. Austin sustainable Carles American Apparel, banh mi High Life selvage XOXO plaid stumptown fashion axe skateboard butcher McSweeney's. Master cleanse polaroid Shoreditch DIY, Godard salvia gastropub heirloom Kickstarter fap before they sold out chia. Disrupt Neutra tofu Godard kitsch. Chambray Helvetica plaid chia salvia. Cronut asymmetrical messenger bag, cornhole listicle selvage yr beard Godard stumptown meh sustainable.
+        p Deep v heirloom Echo Park, drinking vinegar meggings jean shorts biodiesel hoodie keytar mlkshk food truck. Kogi bitters lo-fi, keffiyeh vegan squid heirloom. Sustainable sriracha Etsy, PBR trust fund quinoa tofu Shoreditch pour-over keffiyeh meggings keytar. YOLO beard sustainable meh, semiotics Williamsburg post-ironic. Cray salvia mixtape Wes Anderson Banksy heirloom pork belly locavore retro migas. DIY fingerstache wolf master cleanse. Lumbersexual XOXO semiotics High Life, Schlitz farm-to-table biodiesel ugh jean shorts twee butcher photo booth trust fund sustainable try-hard.
+        p Mixtape Tumblr McSweeney's, fap keffiyeh whatever hoodie kale chips. Mustache pug four dollar toast slow-carb iPhone, forage twee kogi Intelligentsia heirloom hoodie pour-over. Roof party bicycle rights dreamcatcher, before they sold out kale chips 90's McSweeney's Helvetica wolf swag post-ironic bitters. Beard wolf cliche, PBR slow-carb cronut authentic Brooklyn tote bag heirloom fingerstache. Cardigan irony lumbersexual forage health goth lomo organic, stumptown letterpress chillwave. Truffaut photo booth cornhole, raw denim Wes Anderson polaroid Intelligentsia next level actually. YOLO skateboard twee, jean shorts Intelligentsia semiotics kogi Kickstarter.
+        ul
+          li Deep v heirloom Echo Park
+          li Drinking vinegar meggings
+          li Jean shorts biodiesel hoodie keytar mlkshk food truck
+        p Street art bitters pour-over, Portland pork belly master cleanse lumbersexual. Aesthetic 90's Shoreditch PBR. Austin sustainable Carles American Apparel, banh mi High Life selvage XOXO plaid stumptown fashion axe skateboard butcher McSweeney's. Master cleanse polaroid Shoreditch DIY, Godard salvia gastropub heirloom Kickstarter fap before they sold out chia. Disrupt Neutra tofu Godard kitsch. Chambray Helvetica plaid chia salvia. Cronut asymmetrical messenger bag, cornhole listicle selvage yr beard Godard stumptown meh sustainable.
+
+    .draft-writers
+      h2(data-l8n="content:draft/writers") !Writers
+      ul.writer-item-list
+        +writerItem('!Jenny Bloggs', '#', 'http://placekitten.com/g/80/80')
+          | !A cycling enthusiast, responsible for many safety policies in the UK.
+        +writerItem('!Boris Johnson', '#', 'http://placekitten.com/g/81/81')
+          | !Quirky but has achieved wonders in the London for the boris bikes.
+        +writerItem('!Bob Smith', '#', '')
+          | !Interested in anything to do with cycling and Spain.
+
+    .policy-contributors
+      h2(data-l8n="content:policy/contributors-title") !Policy Contributors
+      ul.policy-contributors-list
+        +policyContributorItem('Chris Cheshire')
+        +policyContributorItem('Phil Smith')
+        +policyContributorItem('Jen Bloggs')
+
+block footerScripts
+  script.
+    $('.js-import-draft-link').css('display', 'inline-block');
+    // temp
+    $(document).ready(function () {
+      var pageNav = $('.draft-version-navigation-content-wrapper');
+      console.log(pageNav);
+      var pageNavStickHeight = pageNav.offset().top;
+      $(window).scroll(function () {
+        if ($(this).scrollTop() > pageNavStickHeight) {
+          pageNav.addClass("sticky");
+        }
+        else {
+          pageNav.removeClass("sticky");
+        }
+      });
+    });

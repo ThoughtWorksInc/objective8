@@ -33,6 +33,7 @@
 @import 'mixins/positioning';
 @import 'mixins/dimensions';
 @import 'mixins/star';
+@import 'mixins/document';
 
 @import 'modules/bootstrap_social';
 
@@ -74,6 +75,7 @@
 @import 'modules/create_profile_form';
 @import 'modules/edit_profile_form';
 @import 'modules/profile';
+@import 'modules/policy';
 
 @import 'modules/share_widget';
 @import 'modules/get_involved';

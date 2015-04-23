@@ -1,0 +1,7 @@
+.policy-document {
+  @include previewDocument();
+  padding-top: 1em;
+  @include mq(640) {
+    padding-top: 3em;
+  }
+}

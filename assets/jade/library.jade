@@ -81,6 +81,8 @@ html.no-js(lang="en")
         li
           a(href="#drafting-assets") Drafting assets
         li
+          a(href="#policy-assets") Policy assets
+        li
           a(href="#vote-assets") Vote assets
         li
           a(href="#modal-assets") Modal assets
@@ -327,6 +329,15 @@ html.no-js(lang="en")
           h3 No drafts
         .no-drafts-yet.clj-no-drafts-yet
           p.no-drafts-yet-text(data-l8n="content:draft/no-drafts") !There are no drafts yet.
+
+      h2#policy-assets Policy assets
+
+      .example
+        .documentation
+          h3 Policy Contributor list item
+          p Generated with policyContributorItem(contributor) mixin
+        ul.policy-contributors-list
+          +policyContributorItem('Chris Cheshire')
 
       h2#vote-assets Vote assets
 

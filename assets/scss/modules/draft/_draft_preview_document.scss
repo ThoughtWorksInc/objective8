@@ -1,38 +1,13 @@
 .draft-preview-document {
-  position: relative;
-  margin-bottom: 2em;
-  padding-bottom: 2em;
-  font-family: $serif;
-  font-size: 110%;
-  color: $default_text_color;
-  border-bottom: 1px solid $border_color;
-  @include mq(321) {
-    margin-bottom: 4em;
-  }
-  .draft-title {
-    font-family: $sans-serif;
-    letter-spacing: -0.025em;
-    @include mq(720) {
-      font-size: 2.6em;
-    }
-  }
-  .lede {
-    line-height: 1.4;
-  }
-  p, li, th, td {
-    line-height: 1.6;
-  }
-  > :last-child {
-    margin-bottom: 0;
-  }
+  @include previewDocument();
 }
 .draft-preview-document-with-comments {
-  @extend .draft-preview-document;
+  @include previewDocument();
   padding-right: 40px;
 }
 
 .annotate-draft-preview-document {
-  @extend .draft-preview-document;
+  @include previewDocument();
   padding-bottom: 0;
   border-bottom: none;
   @include mq(321) {
