@@ -72,7 +72,9 @@
                                     [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
                                     [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
 
-                                    [:.clj-dashboard-title] (html/content (:title objective))
+                                    [:.clj-dashboard-title-link] (html/set-attr :href (url/url (utils/path-for :fe/objective :id (:_id objective))))
+                                    [:.clj-dashboard-title-link] (html/content (:title objective))
+
                                     [:.clj-dashboard-stat-participant] nil
                                     [:.clj-dashboard-stat-starred-amount] (html/content (str (get-in objective [:meta :stars-count])))
                                     [:.clj-dashboard-navigation-list] (html/content (navigation-list context))

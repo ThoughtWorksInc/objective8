@@ -18,7 +18,8 @@ mixin dashboardNavigationItem(count, cssClass)
 block content
   .writer-dashboard
     .writer-dashboard-header
-      h1.writer-dashboard-title.clj-dashboard-title !We need more bike lanes in soho
+      h1.writer-dashboard-title.clj-dashboard-title
+        a.writer-dashboard-title-link.clj-dashboard-title-link(href="/objectives/o_id") !We need more bike lanes in soho
       .writer-dashboard-stats.clj-dashboard-stats
         p.dashboard-stat.clj-dashboard-stat-participant
           span.dashboard-stat-amount.clj-dashboard-stat-participant-amount 5432

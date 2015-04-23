@@ -28,6 +28,10 @@
 }
 
 .writer-dashboard-title {
+  a {
+    color: inherit;
+    text-decoration: none;
+}
   margin-top: 0;
   margin-bottom: 16px;
   padding-left: 16px;
