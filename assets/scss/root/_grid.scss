@@ -13,10 +13,8 @@
 }
 
 .grid-column {
-  @include mq(500) {
+  @include mq(480) {
     min-height: 240px;
     float: left;
-  }
-  @include mq(720) {
   }
 }

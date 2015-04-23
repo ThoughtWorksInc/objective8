@@ -1,6 +1,6 @@
 .sign-in-title {
   font-size: 1.5em;
-  @include mq(720) {
+  @include mq(768) {
     font-size: 2em;
   }
 }
@@ -11,7 +11,7 @@
   padding: 1em;
   text-align: center;
   border-radius: 6px;
-  @include mq(720) {
+  @include mq(768) {
     padding: 2em;
   }
 }
@@ -28,7 +28,7 @@
   margin: 0 auto 0.5em;
   padding: 1em;
   border-radius: 4px;
-  @include mq(720) {
+  @include mq(768) {
     padding: 2em;
   }
 }

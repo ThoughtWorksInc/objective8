@@ -2,7 +2,7 @@
   margin: 1em 0 0.5em;
   font-size: 1em;
   text-align: center;
-  @include mq(720) {
+  @include mq(768) {
     text-align: left;
   }
 }

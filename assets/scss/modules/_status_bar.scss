@@ -6,7 +6,7 @@
 //  margin-bottom: $alpha_block_spacing;
   background: $dark_pink;
   color: white;
-  @include mq(720) {
+  @include mq(768) {
 //    margin-bottom: $gamma_block_spacing;
   }
   p {

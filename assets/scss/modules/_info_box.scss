@@ -3,7 +3,7 @@
   text-align: center;
   padding: 0 3em;
   margin-bottom: 1em;
-  @include mq(500) {
+  @include mq(480) {
     padding-left: 1.75em;
     padding-right: 1.75em;
   }

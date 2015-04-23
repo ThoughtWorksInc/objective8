@@ -43,7 +43,7 @@
   @include mq(640) {
     text-align: left;
   }
-  @include mq(720) {
+  @include mq(768) {
     font-size: em(42);
   }
 }

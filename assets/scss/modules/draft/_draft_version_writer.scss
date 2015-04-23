@@ -10,7 +10,7 @@ $draft_version_writer_avatar_size_beta: 60px;
   background: $grey-4;
   overflow: hidden;
   float: left;
-  @include mq(400) {
+  @include mq(480) {
     @include circle($draft_version_writer_avatar_size_beta);
   }
   img {
@@ -25,7 +25,7 @@ $draft_version_writer_avatar_size_beta: 60px;
   line-height: ($draft_version_writer_avatar_size_alpha - 3px);
   text-align: center;
   color: rgba($grey-15,0.2);
-  @include mq(400) {
+  @include mq(480) {
     height: $draft_version_writer_avatar_size_beta;
     line-height: ($draft_version_writer_avatar_size_beta - 3px);
   }
@@ -40,7 +40,7 @@ $draft_version_writer_avatar_size_beta: 60px;
 .draft-version-writer-text {
   padding-top: 0;
   padding-left: ($draft_version_writer_avatar_size_alpha + 8px);
-  @include mq(400) {
+  @include mq(480) {
     padding-top: 5px;
     padding-left: ($draft_version_writer_avatar_size_beta + 8px);
   }

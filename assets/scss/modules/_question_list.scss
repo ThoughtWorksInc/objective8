@@ -17,7 +17,7 @@
 .question-text {
   @extend %list-item-text;
   padding-right: 2em;
-  @include mq(760) {
+  @include mq(768) {
     padding-right: 7em;
   }
 }
@@ -46,7 +46,7 @@
 
 .promote-text, .demote-text {
   display: none;
-  @include mq(760) {
+  @include mq(768) {
     display: inline;
     margin-right: 0.6em;
   }

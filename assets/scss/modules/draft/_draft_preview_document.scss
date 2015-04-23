@@ -18,7 +18,7 @@
 .annotate-text {
   border-left: 5px solid $green1;
   padding-left: 1em;
-  @include mq(720) {
+  @include mq(768) {
     padding-left: 2.5em;
   }
 }

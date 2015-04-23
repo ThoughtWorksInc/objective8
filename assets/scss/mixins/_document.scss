@@ -13,7 +13,7 @@
   .document-title {
     font-family: $sans-serif;
     letter-spacing: -0.025em;
-    @include mq(720) {
+    @include mq(768) {
       font-size: 2.6em;
     }
   }

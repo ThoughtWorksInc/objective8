@@ -16,7 +16,7 @@
   line-height: 1.2;
   font-family: $sans-serif;
   letter-spacing: -0.025em;
-  @include mq(720) {
+  @include mq(768) {
     font-size: 2.6em;
   }
 }
@@ -66,7 +66,7 @@
   padding-top: 1.6em;
   margin-top: 0.6em;
   border-top: 2px solid $default_text_color;
-  @include mq(760) {
+  @include mq(768) {
     padding-top: 0;
     margin-top: 0;
     border-top: 0;
@@ -77,7 +77,7 @@
   top: -43px;
   width: 31px;
   perspective: 1000px;
-  @include mq(760) {
+  @include mq(768) {
     top: 9px;
     left: -45px;
   }
@@ -88,7 +88,7 @@
   line-height: 34px;
   border: none;
   background: transparent;
-  @include mq(760) {
+  @include mq(768) {
     font-size: 2em;
   }
 }
@@ -96,7 +96,7 @@
 .days-left {
   margin-bottom: 0;
   text-align: right;
-  @include mq(760) {
+  @include mq(768) {
     float: right;
     width: 165px;
     margin-bottom: 1em;
@@ -108,7 +108,7 @@
   }
   span {
 //    margin-right: 0.25em; // if spaces are stripped...
-    @include mq(760) {
+    @include mq(768) {
       margin-right: 0;
       display: block;
     }
@@ -120,14 +120,14 @@
 .days-left-day {
   font-weight: 700;
   font-size: 120%;
-  @include mq(760) {
+  @include mq(768) {
     line-height: 1;
     font-size: 5em;
   }
 }
 .days-left-foot {
   font-weight: 700;
-  @include mq(760) {
+  @include mq(768) {
     font-size: 2em;
   }
 }

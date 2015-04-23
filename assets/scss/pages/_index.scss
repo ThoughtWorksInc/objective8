@@ -45,7 +45,7 @@
   margin-left: auto;
   margin-right: auto;
   text-align: center;
-  @include mq(500) {
+  @include mq(480) {
     font-size: 40px;
   }
   @include mq(768) {
@@ -60,7 +60,7 @@
   max-width: 32em;
   margin-left: auto;
   margin-right: auto;
-  @include mq(500) {
+  @include mq(480) {
     font-size: 18px;
   }
   @include mq(768) {
@@ -85,7 +85,7 @@
     }
   }
   .grid-column {
-    @include mq(500) {
+    @include mq(480) {
       width: 50%;
     }
     @include mq(768) {

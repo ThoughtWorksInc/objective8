@@ -37,7 +37,7 @@
 
 .objective-list-item-star-container {
   margin-bottom: 2px;
-  @include mq(760) {
+  @include mq(768) {
     position: absolute;
     top: -2px;
     left: -38px;

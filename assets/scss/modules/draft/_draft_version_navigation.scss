@@ -4,7 +4,7 @@ $draft_navigation_height: 80px;
   @include cf;
   min-height: $draft_navigation_height;
   margin: 0 0 2em 0;
-  @include mq(450) {
+  @include mq(480) {
     margin-bottom: 4em;
   }
 }
@@ -14,7 +14,7 @@ $draft_navigation_height: 80px;
   background: rgba($white, 0.96);
   border-bottom: 1px solid $grey-3;
   padding-bottom: 1.5em;
-  @include mq(450) {
+  @include mq(480) {
     position: absolute;
     left: 0;
     width: 100%;
@@ -30,13 +30,13 @@ $draft_navigation_height: 80px;
 .draft-version-navigation-content {
   position: relative;
   margin: -1px auto;
-  @include mq(450) {
+  @include mq(480) {
     min-height: $draft_navigation_height;
     max-width: $max_content_width;
     padding: 0.5em;
     font-size: 100%;
   }
-  @include mq(720) {
+  @include mq(768) {
     padding-left: 0;
     padding-right: 0;
   }
@@ -51,11 +51,11 @@ $draft_nav_icon_spacer: 0.4em;
   margin: 0;
   list-style-type: none;
   text-align: right;
-  @include mq(450) {
+  @include mq(480) {
     right: 0.5em;
     top: 40px;
   }
-  @include mq(720) {
+  @include mq(768) {
     right: 0;
   }
   li {
@@ -73,7 +73,7 @@ $draft_nav_icon_spacer: 0.4em;
 }
 .draft-version-navigation-text {
   @include visuallyhidden;
-  @include mq(450) {
+  @include mq(480) {
     @include revert-visuallyhidden;
   }
 }

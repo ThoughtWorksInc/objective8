@@ -29,7 +29,7 @@ $draft_icon_size_beta: 60px;
   line-height: ($draft_icon_size_alpha - 3px);
   padding-left: #{$draft_icon_size_alpha + 15px};
   color: inherit;
-  @include mq(400) {
+  @include mq(480) {
     line-height: ($draft_icon_size_beta  - 3px);
     padding-left: ($draft_icon_size_beta + 15px);
   }
@@ -40,7 +40,7 @@ $draft_icon_size_beta: 60px;
   border: 2px solid $grey-4;
   overflow: hidden;
   float: left;
-  @include mq(400) {
+  @include mq(480) {
     @include circle($draft_icon_size_beta);
   }
 }
@@ -51,7 +51,7 @@ $draft_icon_size_beta: 60px;
   font-size: 1em;
   text-align: center;
   color: rgba($grey-15,1);
-  @include mq(400) {
+  @include mq(480) {
     height: $draft_icon_size_beta;
     line-height: ($draft_icon_size_beta  - 3px);
     font-size: 2em;

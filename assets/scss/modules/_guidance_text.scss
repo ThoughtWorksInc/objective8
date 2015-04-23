@@ -5,9 +5,6 @@ $guidance_text_top_gutter: 1.45em;
   background-color: $green1;
   margin: -1em -1em 2em -1em;
   padding: 1em;
-  @include mq(320) {
-    padding: 2em;
-  }
 }
 
 .guidance-text {
@@ -18,13 +15,19 @@ $guidance_text_top_gutter: 1.45em;
   background: $white;
   border: 1px solid $border_color;
   box-shadow: 0 4px 4px rgba(black,0.1);
+  ul {
+    padding-left: 1em;
+    @include mq(321) {
+      padding-left: 2em;
+    }
+  }
 }
 .guidance-text-heading {
   line-height: 1.1;
   margin-top: 0;
   margin-bottom: 0.4em;
   color: $green1;
-  @include mq(320) {
+  @include mq(640) {
     padding-right: 100px;
   }
 }
@@ -32,7 +35,7 @@ $guidance_text_top_gutter: 1.45em;
 .guidance-buttons {
   text-align: right;
   margin-bottom: 1em;
-  @include mq(320) {
+  @include mq(640) {
     margin-bottom: 0;
   }
 }
@@ -40,7 +43,7 @@ $guidance_text_top_gutter: 1.45em;
 .button-hide-guidance-text {
   text-decoration: none;
   display: block;
-  @include mq(400) {
+  @include mq(640) {
     position: absolute;
     top: 27px;
     right: $guidance_text_side_gutter;

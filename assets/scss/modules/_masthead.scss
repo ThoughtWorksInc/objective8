@@ -24,7 +24,7 @@
   left: 0.5em;
   font-weight: bold;
   font-size: 1.7em;
-  @include mq(720) {
+  @include mq(768) {
     display: none;
   }
 }
@@ -36,7 +36,7 @@
   letter-spacing: -0.025em;
   text-align: center;
   display: block;
-  @include mq(720) {
+  @include mq(768) {
     text-align: left;
     display: inline-block;
     margin-right: 1em;
@@ -45,7 +45,7 @@
 
 .masthead-large-screen-nav {
   display: none;
-  @include mq(720) {
+  @include mq(768) {
     text-transform: uppercase;
     font-size: 0.85em;
     font-weight: bold;
@@ -67,7 +67,7 @@
   }
   span {
     display: none;
-    @include mq(720) {
+    @include mq(768) {
       display: inline;
       position: relative;
       top: -4px;
@@ -86,7 +86,7 @@
 
 .masthead-edit-profile {
   margin-right: 0.8em;
-  @include mq(720) {
+  @include mq(768) {
     margin-right: 0;
   }
 }
