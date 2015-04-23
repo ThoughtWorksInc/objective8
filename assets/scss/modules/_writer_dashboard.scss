@@ -94,7 +94,7 @@
   margin: 0;
   @include mq(640) {
     height: 480px;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 }
 
@@ -104,7 +104,7 @@
   padding: 1em;
   @include mq(640) {
     height: 480px;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding-left: 2em;
     padding-right: 2em;
   }
