@@ -91,9 +91,20 @@
               (:body response) => (contains (str STARS_COUNT))))
        
        (fact "get questions with answer-count"
-            (let [{response :response} (-> user-session
-                                           ih/sign-in-as-existing-user
-                                           (p/request (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID)))]
-              (:status response) => 200
-              (:body response) => (contains (str "(" ANSWERS_COUNT ")")))))
+             (let [{response :response} (-> user-session
+                                            ih/sign-in-as-existing-user
+                                            (p/request (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID)))]
+               (:status response) => 200
+               (:body response) => (contains (str "(" ANSWERS_COUNT ")"))))
+
+       (fact "can get answers sorted by down votes"
+             (-> user-session
+                 ih/sign-in-as-existing-user
+                 (p/request (str (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID) "?sorted-by=down-votes"))
+                 :response
+                 :status) => 200
+             (provided
+               (http-api/retrieve-answers QUESTION_URI {:sorted-by "down-votes"}) => {:status ::http-api/success
+                                                                                      :result [{:entity :answer
+                                                                                                :answer "test answer"}]})))
 

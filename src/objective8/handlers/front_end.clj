@@ -184,9 +184,10 @@
         {objective-status :status objective :result} (http-api/get-objective objective-id {:with-stars-count true})
         {questions-status :status questions :result} (http-api/retrieve-questions objective-id {:sorted-by "answers"})
         selected-question-uri (get params :selected (:uri (first questions)))
+        answer-sort-method {:sorted-by (get params :sorted-by "up-votes")} 
         {answers-status :status answers :result} (if (empty? questions)
                                                    {:status ::http-api/success :result []}
-                                                   (http-api/retrieve-answers selected-question-uri {:sorted-by "up-votes"}))]
+                                                   (http-api/retrieve-answers selected-question-uri answer-sort-method))]
     (cond
       (every? #(= ::http-api/success %) [objective-status questions-status answers-status])
       (let [formatted-objective (format-objective objective)]
@@ -197,6 +198,7 @@
                                                :objective formatted-objective
                                                :questions questions
                                                :answers answers
+                                               :answers-sorted-by (:sorted-by answer-sort-method) 
                                                :selected-question-uri selected-question-uri)}))))
 
 ;; COMMENTS

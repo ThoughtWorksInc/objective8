@@ -61,7 +61,10 @@
       (navigation-list-items context))))
 
 (defn dashboard-questions [{:keys [doc data] :as context}]
-  (let [objective (:objective data)]
+  (let [objective (:objective data)
+        selected-question-uri (:selected-question-uri data)
+        dashboard-url (url/url (utils/path-for :fe/dashboard-questions :id (:_id objective)))
+        answer-sort-method (:answers-sorted-by data)]
     (apply str
            (html/emit*
             (tf/translate context
@@ -79,6 +82,24 @@
                                     [:.clj-dashboard-stat-starred-amount] (html/content (str (get-in objective [:meta :stars-count])))
                                     [:.clj-dashboard-navigation-list] (html/content (navigation-list context))
                                     [:.clj-dashboard-answer-list] (html/content (answer-list context))
+                                    [:.clj-dashboard-filter-paper-clip] nil
+                                    [:.clj-dashboard-filter-up-votes] (html/set-attr :href
+                                                                                     (str (assoc dashboard-url
+                                                                                                 :query {:selected selected-question-uri
+                                                                                                         :sorted-by "up-votes"})))
+
+                                    [:.clj-dashboard-filter-up-votes] (if (= answer-sort-method "up-votes")
+                                                                        (html/add-class "on")
+                                                                        identity)
+
+                                    [:.clj-dashboard-filter-down-votes] (html/set-attr :href
+                                                                                       (str (assoc dashboard-url
+                                                                                                   :query {:selected selected-question-uri
+                                                                                                           :sorted-by "down-votes"})))
+
+                                    [:.clj-dashboard-filter-down-votes] (if (= answer-sort-method "down-votes")
+                                                                          (html/add-class "on")
+                                                                          identity)
+
                                     [:.clj-dashboard-content-stats] nil
-                                    [:.clj-dashboard-filter-list :li] nil
                                     [:.clj-dashboard-answer-item-save] nil)))))))
