@@ -286,6 +286,35 @@
                status => 200
                body => ih/no-untranslated-strings)))
 
+(facts "about rendering draft diff page"
+       (fact "there are no untranslated strings"
+             (against-background
+               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                         :result drafting-objective} 
+               (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
+                                                              :result {:_id DRAFT_ID
+                                                                       :previous-draft-id (dec DRAFT_ID) 
+                                                                       :content SOME_HICCUP
+                                                                       :objective-id OBJECTIVE_ID
+                                                                       :submitter-id USER_ID
+                                                                       :_created_at "2015-02-12T16:46:18.838Z"
+                                                                       :uri :draft-uri 
+                                                                       :username "UserName"}}
+               (http-api/get-draft OBJECTIVE_ID (dec DRAFT_ID)) => {:status ::http-api/success
+                                                                    :result {:_id DRAFT_ID
+                                                                       :content SOME_HICCUP
+                                                                       :objective-id OBJECTIVE_ID
+                                                                       :submitter-id USER_ID
+                                                                       :_created_at "2015-02-12T16:46:18.838Z"
+                                                                       :uri :draft-uri 
+                                                                       :username "UserName"}})
+             (let [user-session (ih/test-context)
+                   {status :status body :body} (-> user-session
+                                                   (p/request (utils/path-for :fe/draft-diff :id OBJECTIVE_ID :d-id DRAFT_ID))
+                                                   :response)]
+               status => 200
+               body => ih/no-untranslated-strings)))
+
 (facts "about rendering add-draft page"
        (fact "there are no untranslated strings"
              (against-background

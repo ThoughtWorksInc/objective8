@@ -115,6 +115,8 @@ import-draft,preview,Preview
 import-draft,submit,Submit
 draft-diff,doc-title,Draft changes | Objective[8]
 draft-diff,doc-description,View the changes made in this draft version
+draft-diff,previous-version-title,Previous version
+draft-diff,this-version-title,This version
 writer-dashboard,participants-stat-title,Participants
 writer-dashboard,starred-stat-title,Starred
 writer-dashboard,questions-navigation-title,Questions

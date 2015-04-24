@@ -3,7 +3,8 @@ include mixins/_view_helpers
 
 block vars
   - htmlClass = "html-draft-editor"
-  - pageTitle = "! Add draft"
+  - pageTitle = "!Draft changes | Objective[8]"
+
 
 block headerScripts
 
@@ -12,93 +13,95 @@ block content
   .draft-editor
 
     .draft-editor-document
-      p.version Version 1
+      a.draft-version-link.clj-previous-version-link(href="!previous")
+        p.version(data-l8n="content:draft-diff/previous-version-title") !Previous version
       article.draft-preview-document.clj-add-previous-draft
-        h1 Echo Park jean shorts viral forage
-        p Craft beer biodiesel fixie cray heirloom you probably haven't heard of them. Marfa swag chillwave flannel. Distillery seitan next level, post-ironic retro banjo 90's craft beer master cleanse gluten-free YOLO. Tattooed Portland wolf retro scenester Odd Future. Shabby chic PBR Odd Future gluten-free banjo Blue Bottle. Pickled listicle fanny pack bitters.
+        h1 !Echo Park jean shorts viral forage
+        p !Craft beer biodiesel fixie cray heirloom you probably haven't heard of them. Marfa swag chillwave flannel. Distillery seitan next level, post-ironic retro banjo 90's craft beer master cleanse gluten-free YOLO. Tattooed Portland wolf retro scenester Odd Future. Shabby chic PBR Odd Future gluten-free banjo Blue Bottle. Pickled listicle fanny pack bitters.
         p
-          span.removed-from-version(title="Removed content") Freegan gluten-free farm-to-table lumbersexual. Forage swag High Life salvia, Intelligentsia Pinterest seitan whatever American Apparel typewriter. Wes Anderson bitters before they sold out
+          span.removed-from-version(title="Removed content") !Freegan gluten-free farm-to-table lumbersexual. Forage swag High Life salvia, Intelligentsia Pinterest seitan whatever American Apparel typewriter. Wes Anderson bitters before they sold out
         ul
           li
-            | Pitchfork
+            | !Pitchfork
             = " "
-            span.removed-from-version(title="Removed content") next
-          li level semiotics
-          li fap ethical church-key brunch
+            span.removed-from-version(title="Removed content") !next
+          li !level semiotics
+          li !fap ethical church-key brunch
         p
-          | Farm-to-table cronut crucifix Carles,
+          | !Farm-to-table cronut crucifix Carles,
           = " "
-          span.removed-from-version(title="Removed content") fanny pack squid PBR Intelligentsia 3 wolf moon
+          span.removed-from-version(title="Removed content") !fanny pack squid PBR Intelligentsia 3 wolf moon
           = " "
-          | Neutra 90's try-hard XOXO. Wes Anderson Williamsburg swag, butcher High Life normcore Schlitz gluten-free +1. Cronut church-key scenester, +1 fanny pack bitters seitan Tumblr Echo Park beard. Synth disrupt sartorial tofu. Paleo banjo church-key cornhole typewriter. Gluten-free four dollar toast Schlitz, banh mi hella XOXO next level paleo forage health goth Truffaut actually wayfarers Banksy. Chillwave farm-to-table Marfa single-origin coffee, kogi gentrify cold-pressed.
-        p Meh banjo polaroid synth kitsch authentic cardigan DIY, photo booth raw denim. Blog stumptown 8-bit meh 3 wolf moon. Irony cliche tote bag, pork belly farm-to-table meggings Austin kitsch post-ironic narwhal bicycle rights. Shoreditch Neutra 90's, narwhal vinyl ethical Vice chia scenester craft beer PBR blog next level tote bag. Bespoke lomo Brooklyn church-key health goth, kogi High Life dreamcatcher bicycle rights locavore letterpress banjo actually before they sold out Banksy. Gastropub quinoa hoodie stumptown kogi, umami PBR. Direct trade synth normcore hella food truck umami, pop-up tofu Shoreditch gastropub vinyl scenester keffiyeh occupy.
+          | !Neutra 90's try-hard XOXO. Wes Anderson Williamsburg swag, butcher High Life normcore Schlitz gluten-free +1. Cronut church-key scenester, +1 fanny pack bitters seitan Tumblr Echo Park beard. Synth disrupt sartorial tofu. Paleo banjo church-key cornhole typewriter. Gluten-free four dollar toast Schlitz, banh mi hella XOXO next level paleo forage health goth Truffaut actually wayfarers Banksy. Chillwave farm-to-table Marfa single-origin coffee, kogi gentrify cold-pressed.
+        p !Meh banjo polaroid synth kitsch authentic cardigan DIY, photo booth raw denim. Blog stumptown 8-bit meh 3 wolf moon. Irony cliche tote bag, pork belly farm-to-table meggings Austin kitsch post-ironic narwhal bicycle rights. Shoreditch Neutra 90's, narwhal vinyl ethical Vice chia scenester craft beer PBR blog next level tote bag. Bespoke lomo Brooklyn church-key health goth, kogi High Life dreamcatcher bicycle rights locavore letterpress banjo actually before they sold out Banksy. Gastropub quinoa hoodie stumptown kogi, umami PBR. Direct trade synth normcore hella food truck umami, pop-up tofu Shoreditch gastropub vinyl scenester keffiyeh occupy.
         table
           thead
             tr
-              th Column 1
-              th Column 2
-              th Column 3
+              th !Column 1
+              th !Column 2
+              th !Column 3
           tbody
             tr
-              td etst
-              td etst
-              td etst
+              td !etst
+              td !etst
+              td !etst
             tr
-              td etst
-              td etst
-              td etst
+              td !etst
+              td !etst
+              td !etst
             tr
-              td etst
-              td etst
-              td etst
+              td !etst
+              td !etst
+              td !etst
 
     .draft-editor-document
-      p.version Version 2
+      a.draft-version-link.clj-this-version-link(href="!this_version")
+        p.version(data-l8n="content:draft-diff/this-version-title") !This version
       article.draft-preview-document.clj-add-current-draft
         h1
-          | Echo Park viral
+          | !Echo Park viral
           span.added-to-version(title="Additional content")
             = " "
-            | forage jean shorts
-        p Craft beer biodiesel fixie cray heirloom you probably haven't heard of them. Marfa swag chillwave flannel. Distillery seitan next level, post-ironic retro banjo 90's craft beer master cleanse gluten-free YOLO. Tattooed Portland wolf retro scenester Odd Future. Shabby chic PBR Odd Future gluten-free banjo Blue Bottle. Pickled listicle fanny pack bitters.
+            | !forage jean shorts
+        p !Craft beer biodiesel fixie cray heirloom you probably haven't heard of them. Marfa swag chillwave flannel. Distillery seitan next level, post-ironic retro banjo 90's craft beer master cleanse gluten-free YOLO. Tattooed Portland wolf retro scenester Odd Future. Shabby chic PBR Odd Future gluten-free banjo Blue Bottle. Pickled listicle fanny pack bitters.
         ul
-          li Pitchfork
-          li level semiotics
-          li fap ethical church-key brunch
-        p Farm-to-table cronut crucifix Carles, Neutra 90's try-hard XOXO. Wes Anderson Williamsburg swag, butcher High Life normcore Schlitz gluten-free +1. Cronut church-key scenester, +1 fanny pack bitters seitan Tumblr Echo Park beard. Synth disrupt sartorial tofu. Paleo banjo church-key cornhole typewriter. Gluten-free four dollar toast Schlitz, banh mi hella XOXO next level paleo forage health goth Truffaut actually wayfarers Banksy. Chillwave farm-to-table Marfa single-origin coffee, kogi gentrify cold-pressed.
+          li !Pitchfork
+          li !level semiotics
+          li !fap ethical church-key brunch
+        p !Farm-to-table cronut crucifix Carles, Neutra 90's try-hard XOXO. Wes Anderson Williamsburg swag, butcher High Life normcore Schlitz gluten-free +1. Cronut church-key scenester, +1 fanny pack bitters seitan Tumblr Echo Park beard. Synth disrupt sartorial tofu. Paleo banjo church-key cornhole typewriter. Gluten-free four dollar toast Schlitz, banh mi hella XOXO next level paleo forage health goth Truffaut actually wayfarers Banksy. Chillwave farm-to-table Marfa single-origin coffee, kogi gentrify cold-pressed.
         ol
           li
-            span.added-to-version(title="Additional content") Pitchfork next
+            span.added-to-version(title="Additional content") !Pitchfork next
           li
-            span.added-to-version(title="Additional content") level semiotics
+            span.added-to-version(title="Additional content") !level semiotics
           li
-            span.added-to-version(title="Additional content") fap ethical church-key brunch
+            span.added-to-version(title="Additional content") !fap ethical church-key brunch
         p
-          span.added-to-version(title="Additional content") Farm-to-table cronut crucifix Carles, fanny pack squid PBR Intelligentsia 3 wolf moon Neutra 90's try-hard XOXO. Wes Anderson Williamsburg swag, butcher High Life normcore Schlitz gluten-free +1. Cronut church-key scenester, +1 fanny pack bitters seitan Tumblr Echo Park beard. Synth disrupt sartorial tofu. Paleo banjo church-key cornhole typewriter. Gluten-free four dollar toast Schlitz, banh mi hella XOXO next level paleo forage health goth Truffaut actually wayfarers Banksy. Chillwave farm-to-table Marfa single-origin coffee, kogi gentrify cold-pressed.
+          span.added-to-version(title="Additional content") !Farm-to-table cronut crucifix Carles, fanny pack squid PBR Intelligentsia 3 wolf moon Neutra 90's try-hard XOXO. Wes Anderson Williamsburg swag, butcher High Life normcore Schlitz gluten-free +1. Cronut church-key scenester, +1 fanny pack bitters seitan Tumblr Echo Park beard. Synth disrupt sartorial tofu. Paleo banjo church-key cornhole typewriter. Gluten-free four dollar toast Schlitz, banh mi hella XOXO next level paleo forage health goth Truffaut actually wayfarers Banksy. Chillwave farm-to-table Marfa single-origin coffee, kogi gentrify cold-pressed.
         p
-          | Meh banjo polaroid synth kitsch authentic cardigan DIY, photo booth raw denim. Blog stumptown 8-bit meh 3 wolf moon. Irony cliche tote bag, pork belly farm-to-table meggings Austin kitsch post-ironic narwhal bicycle rights. Shoreditch Neutra 90's, narwhal vinyl ethical Vice chia scenester craft beer PBR blog next level tote bag. Bespoke lomo Brooklyn church-key health goth, kogi High Life dreamcatcher bicycle rights locavore letterpress banjo actually before they sold out Banksy. Gastropub quinoa hoodie stumptown kogi, umami PBR. Direct trade synth normcore hella food truck umami,
+          | !Meh banjo polaroid synth kitsch authentic cardigan DIY, photo booth raw denim. Blog stumptown 8-bit meh 3 wolf moon. Irony cliche tote bag, pork belly farm-to-table meggings Austin kitsch post-ironic narwhal bicycle rights. Shoreditch Neutra 90's, narwhal vinyl ethical Vice chia scenester craft beer PBR blog next level tote bag. Bespoke lomo Brooklyn church-key health goth, kogi High Life dreamcatcher bicycle rights locavore letterpress banjo actually before they sold out Banksy. Gastropub quinoa hoodie stumptown kogi, umami PBR. Direct trade synth normcore hella food truck umami,
           = " "
-          span.added-to-version(title="Additional content") fanny pack squid PBR Intelligentsia 3 wolf moon
+          span.added-to-version(title="Additional content") !fanny pack squid PBR Intelligentsia 3 wolf moon
           = " "
-          | pop-up tofu Shoreditch gastropub vinyl scenester keffiyeh occupy.
+          | !pop-up tofu Shoreditch gastropub vinyl scenester keffiyeh occupy.
         table
           thead
             tr
-              th Column 1
-              th Column 2
-              th Column 3
+              th !Column 1
+              th !Column 2
+              th !Column 3
           tbody
             tr
-              td etst
-              td etst
-              td etst
+              td !etst
+              td !etst
+              td !etst
             tr
-              td etst
-              td etst
-              td etst
+              td !etst
+              td !etst
+              td !etst
             tr
-              td etst
-              td etst
-              td etst
+              td !etst
+              td !etst
+              td !etst
 
 block footerScripts
