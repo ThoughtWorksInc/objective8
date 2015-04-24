@@ -556,7 +556,6 @@
           (let [diffs (diffs/get-diffs-between-drafts draft previous-draft)]
             {:status 200
              :body (views/draft-diff "draft-diff" request
-                                     :previous-draft previous-draft
                                      :current-draft draft
                                      :previous-draft-diffs (-> diffs
                                                                :previous-draft-diffs

@@ -10,11 +10,16 @@ block headerScripts
 
 block content
 
+  .guidance-buttons.clj-guidance-buttons
+    a.button-hide-guidance-text.clj-close-link(href="!draft")
+      i.fa.fa-arrow-left
+      =" "
+      span(data-l8n="content:draft-diff/close") !Back to draft
+
   .draft-editor
 
     .draft-editor-document
-      a.draft-version-link.clj-previous-version-link(href="!previous")
-        p.version(data-l8n="content:draft-diff/previous-version-title") !Previous version
+      p.version(data-l8n="content:draft-diff/previous-version-title") !Previous version
       article.draft-preview-document.clj-add-previous-draft
         h1 !Echo Park jean shorts viral forage
         p !Craft beer biodiesel fixie cray heirloom you probably haven't heard of them. Marfa swag chillwave flannel. Distillery seitan next level, post-ironic retro banjo 90's craft beer master cleanse gluten-free YOLO. Tattooed Portland wolf retro scenester Odd Future. Shabby chic PBR Odd Future gluten-free banjo Blue Bottle. Pickled listicle fanny pack bitters.
@@ -55,8 +60,7 @@ block content
               td !etst
 
     .draft-editor-document
-      a.draft-version-link.clj-this-version-link(href="!this_version")
-        p.version(data-l8n="content:draft-diff/this-version-title") !This version
+      p.version(data-l8n="content:draft-diff/this-version-title") !This version
       article.draft-preview-document.clj-add-current-draft
         h1
           | !Echo Park viral
