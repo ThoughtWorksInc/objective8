@@ -9,6 +9,7 @@
             [objective8.users :as users]
             [objective8.questions :as questions]
             [objective8.marks :as marks]
+            [objective8.writer-notes :as writer-notes]
             [objective8.storage.storage :as storage]))
 
 (defn create-writer-for-objective! [{:keys [created-by-id] :as objective}]
@@ -151,4 +152,16 @@
         {:status ::success :result (invitations/store-invitation! invitation-data)}
         {:status ::failure})
       {:status ::objective-drafting-started}) 
+    {:status ::entity-not-found}))
+
+(defn authorised-objectives-for-note-writer [user-id]
+  (map :objective-id (writers/retrieve-writers-by-user-id user-id)))
+
+(defn create-writer-note! [{:keys [note-on-uri created-by-id] :as writer-note-data}]
+  (if-let [{o-id :objective-id :as entity-to-note-on} (storage/pg-retrieve-entity-by-uri note-on-uri :with-global-id)]
+    (if (empty? (writer-notes/retrieve-note note-on-uri)) 
+      (if (some #{o-id} (authorised-objectives-for-note-writer created-by-id))
+        {:status ::success :result (writer-notes/store-note-for! entity-to-note-on writer-note-data)}
+        {:status ::forbidden})
+      {:status ::forbidden})
     {:status ::entity-not-found}))

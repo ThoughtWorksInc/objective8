@@ -11,12 +11,16 @@
             [objective8.stars :as stars]
             [objective8.questions :as questions]
             [objective8.marks :as marks]
+            [objective8.writer-notes :as writer-notes]
             [objective8.storage.storage :as storage]))
 
 (def GLOBAL_ID 6)
 (def USER_ID 2)
 (def VOTE_ID 5)
 (def OBJECTIVE_ID 1)
+(def QUESTION_ID 2)
+(def ANSWER_ID 3)
+(def ANSWER_URI (str "/objective/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers/" ANSWER_ID))
 (def INVITATION_ID 7)
 (def UU_ID "875678950430596859403-uuid")
 (def an-answer {:global-id GLOBAL_ID})
@@ -290,3 +294,17 @@
                (invitations/store-invitation! invitation) => {:uuid UU_ID}
                (users/update-user! (contains {:profile {:name "UserName" :biog "This profile was automatically generated for the creator of objective: SOME TITLE"}})) => {}
                (writers/create-writer writer-data) => :writer)))
+
+(def writer-note {:note "the note content" :created-by-id USER_ID :note-on-uri ANSWER_URI})
+
+(def entity-to-note-on {:objective-id OBJECTIVE_ID})
+
+(facts "about creating a note"
+       (fact "writers can create a note against an answer"
+             (actions/create-writer-note! writer-note) => {:status ::actions/success
+                                                           :result :stored-note}
+             (provided
+               (writer-notes/store-note-for! entity-to-note-on writer-note) => :stored-note
+               (writers/retrieve-writers-by-user-id USER_ID) => [{:objective-id OBJECTIVE_ID} {:objective-id 2}]
+               (storage/pg-retrieve-entity-by-uri ANSWER_URI :with-global-id) => entity-to-note-on
+               (writer-notes/retrieve-note ANSWER_URI) => [])))

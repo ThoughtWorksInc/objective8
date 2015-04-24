@@ -299,6 +299,13 @@
       (log/info "Error when retrieving answers: " e)
       (invalid-response "Invalid answer request for this objective"))))
 
+;;WRITER-NOTES
+(defn post-writer-note [request]
+ (try
+   (let [writer-note-data (ar/request->writer-note-data request)
+         {status :status stored-note :result} (actions/create-writer-note! writer-note-data)])) 
+  )
+
 ;;WRITERS
 (defn post-invitation [request]
   (try

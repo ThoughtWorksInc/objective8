@@ -39,3 +39,6 @@
 
 (defn request->mark-data [{:keys [params] :as request}]
   (utils/select-all-or-nothing params [:question-uri :created-by-uri]))
+
+(defn request->writer-note-data [{:keys [params] :as request}]
+  (utils/select-all-or-nothing params [:note :created-by-id :note-on-uri]))
