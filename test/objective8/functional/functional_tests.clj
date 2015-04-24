@@ -463,7 +463,7 @@
 
          (fact "Can view draft diffs"
                (try
-                 (wd/to (str (:draft-url @journey-state) "/diff"))
+                 (wd/click ".func--what-changed")
                  (wait-for-title "Draft changes | Objective[8]")
                  (screenshot "draft_diff")
                  
