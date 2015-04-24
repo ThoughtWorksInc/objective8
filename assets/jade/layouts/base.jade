@@ -43,7 +43,16 @@ html.no-js(lang="en", class="#{htmlClass}")
   body(class="#{bodyClass}")
 
     <!--[if (IE 8)]>
-    p.browserupgrade {{browse happy message}}
+    p.browserupgrade
+      | You are using an
+      = " "
+      strong outdated
+      = " "
+      | browser. Please
+      = " "
+      a(href="http://browsehappy.com/") upgrade your browser
+      = " "
+      to improve your experience.
     <![endif]-->
 
     header(role="banner")
