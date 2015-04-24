@@ -55,20 +55,25 @@ $editor_min_device_width: 321;
 
 
 .removed-from-version,
-del {
-  display: inline-block;
-  background-color: rgba($pink,0.1);
+del,
+.added-to-version,
+ins {
   text-decoration: none;
+  white-space: pre-wrap;
+  border-bottom: 1px dotted transparent;
+}
+
+.removed-from-version,
+del {
+  background-color: rgba($pink,0.1);
   &:hover {
-    outline: dotted 1px $pink;
+    border-bottom-color: $pink;
   }
 }
 .added-to-version,
 ins {
-  display: inline-block;
   background-color: rgba($green2,0.1);
-  text-decoration: none;
   &:hover {
-    outline: dotted 1px $green2;
+    border-bottom-color: $green2;
   }
 }
