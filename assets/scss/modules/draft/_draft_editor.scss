@@ -34,7 +34,7 @@ $editor_min_device_width: 321;
   @include mq($editor_min_device_width) {
     flex: 1;
     height: 100%;
-    overflow: scroll;
+    overflow-y: auto;
   }
   @include mq(640) {
     padding: 2em;
@@ -46,7 +46,7 @@ $editor_min_device_width: 321;
     flex: 1;
     height: 100%;
     max-width: 50%;
-    overflow: scroll;
+    overflow-y: auto;
   }
   @include mq(640) {
     padding: 2em;
