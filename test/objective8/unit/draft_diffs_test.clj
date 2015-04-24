@@ -1,10 +1,15 @@
 (ns objective8.unit.draft-diffs-test
   (:require [midje.sweet :refer :all]
+            [objective8.utils :as utils]  
             [objective8.draft-diffs :as diffs]))
 
-(def HICCUP_1 '(["p" nil ""] ["p" nil "First paragraph."] ["ul" ["li" "List item 1."] ["li" "List item 2."] ["li" "List item 3."]] ["p" {} "Last paragraph."]))
-(def HICCUP_2 '(["p" {} "First paragraph."] ["p" {} "Second paragraph."] ["p" {} "Third paragraph."]))
-(def HICCUP_3 '(["p" {} "First paragraph."] ["p" {} "New paragraph."] ["p" {} "Third paragraph."]))
+(def HICCUP_1 [["p" nil ""] ["p" nil "First paragraph."] ["ul" ["li" "List item 1."] ["li" "List item 2."] ["li" "List item 3."]] ["p" {} "Last paragraph."]])
+(def HICCUP_2 [["p" {} "First paragraph."] ["p" {} "Second paragraph."] ["p" {} "Third paragraph."]])
+(def HICCUP_3 [["p" {} "First paragraph."] ["p" {} "New paragraph."] ["p" {} "Third paragraph."]])
+
+(def HICCUP_18 [["h1" "My title"]  ["p" "List elements:"]  ["ul"  ["li" "Element One"]  ["li" "Element Two"]] ])
+
+(def HICCUP_19 [["h1" "My new title"]  ["p" "List elements:"]  ["ul"  ["li" "Element One"]  ["li" "New Element Two"]  ["li" "Extra Element Three"]]])
 
 (def ELEMENT [:del {} "First sentence. Second sentence."]) 
 
@@ -18,6 +23,9 @@
 (def FORMATTED_PREVIOUS_DIFF_1_vs_2 '(["p" nil ""] ["p" nil [:span nil "First paragraph."]] ["ul" ["li" [:del nil "List item 1."]] ["li" [:del nil "List item 2."]] ["li" [:del nil "List item 3."]]] ["p" {} [:del nil "Last"] [:span nil " paragraph."]]))
 (def FORMATTED_CURRENT_DIFF_1_vs_2 '(["p" {} [:span nil "First paragraph."]]  ["p" {} [:ins nil "Second paragraph."]] ["p" {} [:ins nil "Third"] [:span nil " paragraph."]]))
 
+(def FORMATTED_PREVIOUS_DIFF_18_vs_19 '(["h1"  [:span nil "My "]  [:span nil "title"]]  ["p"  [:span nil "List elements:"]]  ["ul"  ["li"  [:span nil "Element One"]]  ["li"  [:span nil "Element Two"]]]))
+(def FORMATTED_CURRENT_DIFF_18_vs_19 '(["h1"  [:span nil "My "]  [:ins nil "new "]  [:span nil "title"]]  ["p"  [:span nil "List elements:"]]  ["ul"  ["li"  [:span nil "Element One"]]  ["li"  [:ins nil "New "]  [:span nil "Element Two"]]  ["li"  [:ins nil "Extra Element Three"]]]) )
+
 (fact "Tags are removed from a simple hiccup"
       (diffs/remove-tags HICCUP_2) => "First paragraph.Second paragraph.Third paragraph.")
 
@@ -28,6 +36,9 @@
       (diffs/remove-hiccup-elements DIFF_1 :ins) => '([:span nil "Equal text. "])
       (diffs/remove-hiccup-elements DIFF_2 :del) => '([:span nil "First paragraph."] [:span nil "Third paragraph."]))
 
+(fact "Difference between drafts 18 and 19 is returned"
+ (diffs/get-diffs-between-drafts {:content HICCUP_19} {:content HICCUP_18})  => {:previous-draft-diffs FORMATTED_PREVIOUS_DIFF_18_vs_19
+                                                                                 :current-draft-diffs FORMATTED_CURRENT_DIFF_18_vs_19})
 
 (fact "Difference between drafts 2 and 3 is returned"
       (diffs/get-diffs-between-drafts {:content HICCUP_3} {:content HICCUP_2}) => {:previous-draft-diffs FORMATTED_PREVIOUS_DIFF_2_vs_3
