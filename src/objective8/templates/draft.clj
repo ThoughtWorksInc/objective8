@@ -60,6 +60,12 @@
              [:.clj-draft-preview-document] (when-let [draft-content (:draft-content data)] 
                                               (html/html-content draft-content)) 
 
+             [:.clj-what-changed-link] (when (:previous-draft-id draft)
+                                         (html/set-attr :href 
+                                                        (utils/path-for :fe/draft-diff
+                                                                        :id objective-id
+                                                                        :d-id (:_id draft))))
+
              [:.clj-writer-item-list] (html/content (pf/writer-list context))
              [:.clj-draft-comments] (when draft
                                       (html/transformation
