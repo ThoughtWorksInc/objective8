@@ -186,7 +186,7 @@
         selected-question-uri (get params :selected (:uri (first questions)))
         {answers-status :status answers :result} (if (empty? questions)
                                                    {:status ::http-api/success :result []}
-                                                   (http-api/retrieve-answers selected-question-uri))]
+                                                   (http-api/retrieve-answers selected-question-uri {:sorted-by "up-votes"}))]
     (cond
       (every? #(= ::http-api/success %) [objective-status questions-status answers-status])
       (let [formatted-objective (format-objective objective)]

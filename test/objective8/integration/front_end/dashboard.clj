@@ -48,7 +48,7 @@
                        :question "test question"
                        :answer-count ANSWERS_COUNT}]}
 
-         (http-api/retrieve-answers QUESTION_URI) => {:status ::http-api/success
+         (http-api/retrieve-answers QUESTION_URI {:sorted-by "up-votes"}) => {:status ::http-api/success
                                                       :result [{:entity :answer
                                                                 :answer "test answer"}]})
        (fact "can see answers for specific questions"
@@ -62,7 +62,7 @@
 
        (fact "see message noting there is no answer when question has no answers"
              (against-background
-               (http-api/retrieve-answers QUESTION_URI) => {:status ::http-api/success
+               (http-api/retrieve-answers QUESTION_URI {:sorted-by "up-votes"}) => {:status ::http-api/success
                                                             :result []})
              (let [{response :response} (-> user-session
                                             ih/sign-in-as-existing-user

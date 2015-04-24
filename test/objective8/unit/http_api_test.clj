@@ -240,7 +240,14 @@
       (http-api/retrieve-answers QUESTION_URI) => :api-call-result
       (provided
         (http-api/default-get-call (contains (str "/api/v1/objectives/" OBJECTIVE_ID
-                                                  "/questions/" QUESTION_ID "/answers"))) => :api-call-result))
+                                                  "/questions/" QUESTION_ID "/answers")) {:query-params {}}) => :api-call-result))
+
+(fact "getting all answers for a question sorted by up-down-votes hits the correct API endpoint"
+      (http-api/retrieve-answers QUESTION_URI {:sorted-by "up-votes"}) => :api-call-result
+      (provided
+        (http-api/default-get-call (contains (utils/path-for :api/get-answers-for-question 
+                                                             :id OBJECTIVE_ID :q-id QUESTION_ID))
+          {:query-params {:sorted-by "up-votes"}}) => :api-call-result))
 
 ;; WRITERS
 

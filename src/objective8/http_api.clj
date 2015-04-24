@@ -165,9 +165,14 @@
          "/questions/" (:question-id answer) "/answers")
     answer))
 
-(defn retrieve-answers [question-uri]
-  (default-get-call
-    (str utils/host-url "/api/v1" question-uri "/answers")))
+(defn retrieve-answers
+  ([question-uri] 
+   (retrieve-answers question-uri {})) 
+
+  ([question-uri options]
+   (default-get-call
+     (str utils/host-url "/api/v1" question-uri "/answers")
+     {:query-params options}))) 
 
 ;; WRITERS
 
