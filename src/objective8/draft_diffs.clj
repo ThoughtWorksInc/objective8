@@ -3,33 +3,7 @@
             [objective8.utils :as utils]
             [objective8.drafts :as drafts]))
 
-(declare replacement-element-and-updated-diff)
-
-(defn hiccup->vector-of-strings [strings hcp] 
-  (let [first-element (first hcp)] 
-    (if (sequential? first-element) 
-      (let [left-strings (hiccup->vector-of-strings strings first-element)]
-        (if (next hcp)
-          (hiccup->vector-of-strings left-strings (rest hcp)) 
-          left-strings))
-      (let [last-element (last hcp)]
-        (if (string? last-element)
-          (conj strings (last hcp))   
-          (hiccup->vector-of-strings strings (rest hcp)))))))
-
-(defn has-content? [element]
-  (or (> (count element) 2)
-      (sequential? (last element))
-      (string? (last element))))
-
-(defn remove-empty-elements [hiccup]
-  (filter has-content? hiccup))
-
-(defn remove-tags [hiccup-draft]
-  (->> hiccup-draft
-       remove-empty-elements
-       (hiccup->vector-of-strings [])
-       clojure.string/join))
+(declare replacement-element-and-updated-diff strings-for-element)
 
 (defn remove-hiccup-elements [hiccup element]
   (filter #(not= element (first %)) hiccup))
@@ -97,8 +71,35 @@
           recursive-returned-draft (insert-diffs-into-drafts updated-diff (rest draft))]
       (concat (list replacement-element) recursive-returned-draft))))
 
+(defn strings-for-content [content]
+  ;; Each thing in content will be a string or a vector (another html element)
+  (if (empty? content)
+    content
+    (let [first-element (first content)]
+      (if (string? first-element)
+        (let [rest-element-strings (strings-for-content (rest content))]
+          (into [] (concat [first-element] rest-element-strings)))
+
+        ;; else first-element must be a nested-tag vector
+        (let [first-element-strings (strings-for-element first-element) 
+              rest-element-strings (strings-for-content (rest content))]
+          (into [] (concat first-element-strings rest-element-strings)))))))
+
+(defn strings-for-element [element]
+  (let [{:keys [element-without-content content]} (split-element-content element) 
+        content-strings (strings-for-content content)]
+    content-strings))
+
+(defn hiccup->content-string [draft]
+  (if (empty? draft)
+    ""
+    (let [first-draft-element (first draft)
+          first-element-strings (strings-for-element first-draft-element)
+          rest-element-strings (hiccup->content-string (rest draft))]
+      (clojure.string/join (into [] (concat first-element-strings rest-element-strings)))))) 
+
 (defn diff-hiccup-content [hiccup-1 hiccup-2]
-  (-> (dmp/diff (remove-tags hiccup-1) (remove-tags hiccup-2))
+  (-> (dmp/diff (hiccup->content-string hiccup-1) (hiccup->content-string hiccup-2))
       dmp/cleanup!
       dmp/as-hiccup))
 

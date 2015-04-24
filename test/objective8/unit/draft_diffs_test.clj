@@ -7,9 +7,11 @@
 (def HICCUP_2 [["p" {} "First paragraph."] ["p" {} "Second paragraph."] ["p" {} "Third paragraph."]])
 (def HICCUP_3 [["p" {} "First paragraph."] ["p" {} "New paragraph."] ["p" {} "Third paragraph."]])
 
-(def HICCUP_18 [["h1" "My title"]  ["p" "List elements:"]  ["ul"  ["li" "Element One"]  ["li" "Element Two"]] ])
+(def HICCUP_WITH_ELEMENT_WITH_MULTIPLE_STRINGS [["p" "string one" " string two" " string three"] ["p" "another-string"]])
+(def CONTENT_STRING_FOR_MULTIPLE_STRINGS "string one string two string threeanother-string")
 
-(def HICCUP_19 [["h1" "My new title"]  ["p" "List elements:"]  ["ul"  ["li" "Element One"]  ["li" "New Element Two"]  ["li" "Extra Element Three"]]])
+(def HICCUP_WITH_EMPTY_ELEMENT [["p" {}] ["p" "barry"]])
+(def CONTENT_STRING_FOR_EMPTY_ELEMENT "barry")
 
 (def ELEMENT [:del {} "First sentence. Second sentence."]) 
 
@@ -23,22 +25,21 @@
 (def FORMATTED_PREVIOUS_DIFF_1_vs_2 '(["p" nil ""] ["p" nil [:span nil "First paragraph."]] ["ul" ["li" [:del nil "List item 1."]] ["li" [:del nil "List item 2."]] ["li" [:del nil "List item 3."]]] ["p" {} [:del nil "Last"] [:span nil " paragraph."]]))
 (def FORMATTED_CURRENT_DIFF_1_vs_2 '(["p" {} [:span nil "First paragraph."]]  ["p" {} [:ins nil "Second paragraph."]] ["p" {} [:ins nil "Third"] [:span nil " paragraph."]]))
 
-(def FORMATTED_PREVIOUS_DIFF_18_vs_19 '(["h1"  [:span nil "My "]  [:span nil "title"]]  ["p"  [:span nil "List elements:"]]  ["ul"  ["li"  [:span nil "Element One"]]  ["li"  [:span nil "Element Two"]]]))
-(def FORMATTED_CURRENT_DIFF_18_vs_19 '(["h1"  [:span nil "My "]  [:ins nil "new "]  [:span nil "title"]]  ["p"  [:span nil "List elements:"]]  ["ul"  ["li"  [:span nil "Element One"]]  ["li"  [:ins nil "New "]  [:span nil "Element Two"]]  ["li"  [:ins nil "Extra Element Three"]]]) )
+(fact "Convert hiccup to content-string for simple hiccup"
+      (diffs/hiccup->content-string HICCUP_2) => "First paragraph.Second paragraph.Third paragraph.")
 
-(fact "Tags are removed from a simple hiccup"
-      (diffs/remove-tags HICCUP_2) => "First paragraph.Second paragraph.Third paragraph.")
+(fact "Convert hiccup to content-string with nested tags"
+      (diffs/hiccup->content-string HICCUP_1) => "First paragraph.List item 1.List item 2.List item 3.Last paragraph.")
 
-(fact "Tags are removed from hiccup"
-      (diffs/remove-tags HICCUP_1) => "First paragraph.List item 1.List item 2.List item 3.Last paragraph.")
+(fact "Convert hiccup to content-string when an element has multiple strings" 
+      (diffs/hiccup->content-string HICCUP_WITH_ELEMENT_WITH_MULTIPLE_STRINGS) => CONTENT_STRING_FOR_MULTIPLE_STRINGS)
+
+(fact "Convert hiccup to content-string when an element is empty"  
+      (diffs/hiccup->content-string HICCUP_WITH_EMPTY_ELEMENT) => CONTENT_STRING_FOR_EMPTY_ELEMENT)
 
 (fact "Diff elements are removed"
       (diffs/remove-hiccup-elements DIFF_1 :ins) => '([:span nil "Equal text. "])
       (diffs/remove-hiccup-elements DIFF_2 :del) => '([:span nil "First paragraph."] [:span nil "Third paragraph."]))
-
-(fact "Difference between drafts 18 and 19 is returned"
- (diffs/get-diffs-between-drafts {:content HICCUP_19} {:content HICCUP_18})  => {:previous-draft-diffs FORMATTED_PREVIOUS_DIFF_18_vs_19
-                                                                                 :current-draft-diffs FORMATTED_CURRENT_DIFF_18_vs_19})
 
 (fact "Difference between drafts 2 and 3 is returned"
       (diffs/get-diffs-between-drafts {:content HICCUP_3} {:content HICCUP_2}) => {:previous-draft-diffs FORMATTED_PREVIOUS_DIFF_2_vs_3
@@ -47,6 +48,12 @@
 (fact "Difference between drafts 1 and 2 is returned"
       (diffs/get-diffs-between-drafts {:content HICCUP_2} {:content HICCUP_1}) => {:previous-draft-diffs FORMATTED_PREVIOUS_DIFF_1_vs_2
                                                                                    :current-draft-diffs FORMATTED_CURRENT_DIFF_1_vs_2})
+
+(fact "Difference between hiccup with an element with multiple strings and hiccup with an empty element" 
+      (diffs/get-diffs-between-drafts {:content HICCUP_WITH_EMPTY_ELEMENT} 
+                                      {:content HICCUP_WITH_ELEMENT_WITH_MULTIPLE_STRINGS}) 
+      => {:current-draft-diffs  '(["p"  {}]  ["p"  [:ins nil "barry"]])
+          :previous-draft-diffs '(["p"  [:del nil "string one"]  [:del nil " string two"]  [:del nil " string three"]]  ["p"  [:del nil "another-string"]])})
 
 (fact "Insert diffs into drafts 1"
       (diffs/insert-diffs-into-drafts '([:span nil "First paragraph."]) '(["p" {} "First paragraph."])) => '(["p" {} [:span nil "First paragraph."]])) 
