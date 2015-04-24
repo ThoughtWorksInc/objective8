@@ -99,26 +99,38 @@ $home_icon_height: 140px;
 .icon-idea {
   height: $home_icon_height;
   margin: 0 auto;
-  background: image-url('lightbulb.svg') no-repeat 50% 0;
+  background: image-url('lightbulb.png') no-repeat 50% 0;
   background-size: contain;
+  .svg & {
+    background-image: image-url('lightbulb.svg');
+  }
 }
 .icon-users {
   height: $home_icon_height;
   margin: 0 auto;
-  background: image-url('people.svg') no-repeat 50% 0;
+  background: image-url('people.png') no-repeat 50% 0;
   background-size: contain;
+  .svg & {
+    background-image: image-url('people.svg');
+  }
 }
 .icon-comments {
   height: $home_icon_height;
   margin: 0 auto;
-  background: image-url('speechbubbles.svg') no-repeat 50% 0;
+  background: image-url('speechbubbles.png') no-repeat 50% 0;
   background-size: contain;
+  .svg & {
+    background-image: image-url('speechbubbles.svg');
+  }
 }
 .icon-policy {
   height: $home_icon_height;
   margin: 0 auto;
-  background: image-url('policy.svg') no-repeat 50% 0;
+  background: image-url('policy.png') no-repeat 50% 0;
   background-size: contain;
+  .svg & {
+    background-image: image-url('policy.svg');
+  }
 }
 
 .index-actions {
