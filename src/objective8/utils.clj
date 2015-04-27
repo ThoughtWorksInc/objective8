@@ -147,3 +147,14 @@
 
 (defn html->hiccup [html]
   (map hickory/as-hiccup (hickory/parse-fragment html)))
+
+(defn split-hiccup-element [element]
+  (if (= (count element) 1)
+    {:element-without-content element
+     :content []}
+    (let [attrs (second element)]
+      (if (or (map? attrs) (nil? attrs))
+        {:element-without-content (subvec element 0 2)
+         :content (subvec element 2)}
+        {:element-without-content (subvec element 0 1)
+         :content (subvec element 1)}))))

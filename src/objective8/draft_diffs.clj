@@ -49,16 +49,8 @@
           {:replacement-content (into [] (concat [replacement-element] recursive-replacement))
            :updated-diff recursive-updated-diff})))))
 
-(defn split-element-content [element]
-  (let [attrs (first (rest element))]
-    (if (or (map? attrs) (nil? attrs))
-      {:element-without-content (subvec element 0 2)
-       :content (subvec element 2)}
-      {:element-without-content (subvec element 0 1)
-       :content (subvec element 1)})))
-
 (defn replacement-element-and-updated-diff [element diff] 
-  (let [{:keys [element-without-content content]} (split-element-content element) 
+  (let [{:keys [element-without-content content]} (utils/split-hiccup-element element) 
         {:keys [replacement-content updated-diff]} (replacement-content-and-updated-diff content diff)]
     {:replacement-element (into [] (concat element-without-content replacement-content)) 
      :updated-diff updated-diff})) 
@@ -86,7 +78,7 @@
           (into [] (concat first-element-strings rest-element-strings)))))))
 
 (defn strings-for-element [element]
-  (let [{:keys [element-without-content content]} (split-element-content element) 
+  (let [{:keys [element-without-content content]} (utils/split-hiccup-element element) 
         content-strings (strings-for-content content)]
     content-strings))
 

@@ -10,6 +10,8 @@
 
 (def app (helpers/test-context))
 
+(def some-hiccup [["p" "tiny paragraph"]])
+
 (facts "POST /api/v1/objectives/:id/drafts"
   (against-background
     (m/valid-credentials? anything anything anything) => true)
@@ -23,15 +25,15 @@
                 _ (sh/start-drafting! objective-id)
                 draft-data {:objective-id objective-id
                             :submitter-id submitter-id
-                            :content "Some content"}
-                {response :response} (p/request app (utils/path-for :api/post-draft :id objective-id)
-                                            :request-method :post
-                                            :content-type "application/json"
-                                            :body (json/generate-string draft-data))]
+                            :content some-hiccup}
+                {response :response :as peridot-response} (p/request app (utils/path-for :api/post-draft :id objective-id)
+                                                                     :request-method :post
+                                                                     :content-type "application/json"
+                                                                     :body (json/generate-string draft-data))]
             (:body response) => (helpers/json-contains {:_id anything
                                                         :objective-id objective-id
                                                         :submitter-id submitter-id
-                                                        :content "Some content"})
+                                                        :content (just [(just ["p" (just {:data-section-label (just #"[0-9a-f]{8}")}) "tiny paragraph"])])}) 
             (:status response) => 201))
 
     (fact "a draft is not created when drafting has not started"

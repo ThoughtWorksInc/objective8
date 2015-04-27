@@ -18,8 +18,7 @@
                     _ (sh/start-drafting! objective-id)
                     draft-data {:objective-id objective-id
                                 :submitter-id submitter-id
-                                :content "Some content"
-                                }]
+                                :content [[:p "Some hiccup"]]}]
                 (drafts/store-draft! draft-data) => (contains {:uri (contains (str "/objectives/" objective-id "/drafts/")) })
                 (drafts/store-draft! draft-data) =not=> (contains {:global-id anything})))))
 
