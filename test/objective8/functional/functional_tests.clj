@@ -53,11 +53,9 @@
 
 (def journey-state (atom nil))
 
-(def FIRST_DRAFT_MARKDOWN  "A heading\n===\n\n- Some content")
-(def SECOND_DRAFT_MARKDOWN  "A heading\n===\n\n- Some content\n- Some more content")
-(def THIRD_DRAFT_MARKDOWN  "A heading\n===\n\n- Some content\n- Some more content\n- Another line of content")
-(def FIRST_DRAFT_HTML (utils/hiccup->html (utils/markdown->hiccup FIRST_DRAFT_MARKDOWN)))
-(def THIRD_DRAFT_HTML (utils/hiccup->html (utils/markdown->hiccup THIRD_DRAFT_MARKDOWN)))
+(def FIRST_DRAFT_MARKDOWN  "First draft heading\n===\n\n- Some content")
+(def SECOND_DRAFT_MARKDOWN  "Second draft heading\n===\n\n- Some content\n- Some more content")
+(def THIRD_DRAFT_MARKDOWN  "Third draft heading\n===\n\n- Some content\n- Some more content\n- Another line of content")
 
 (facts "About user journeys"
        (against-background 
@@ -358,7 +356,7 @@
                    (screenshot "ERROR-Can-submit-a-draft")
                    (throw e)))
                => (contains {:page-title "Policy draft | Objective[8]"
-                             :page-source (contains FIRST_DRAFT_HTML)}))
+                             :page-source (contains "First draft heading")}))
 
          (fact "Can view latest draft"
                (try
@@ -381,7 +379,7 @@
                    (screenshot "ERROR-Can-view-latest-draft")
                    (throw e)))
                => (contains {:page-title "Policy draft | Objective[8]"
-                             :page-source (contains FIRST_DRAFT_HTML)}))
+                             :page-source (contains "First draft heading")}))
 
          (fact "Can comment on a draft"
                (try
@@ -459,7 +457,7 @@
                  (catch Exception e
                    (screenshot "ERROR-Can-navigate-between-drafts")
                    (throw e)))
-               => (contains THIRD_DRAFT_HTML))
+               => (contains "Third draft heading"))
 
          (fact "Can view draft diffs"
                (try
