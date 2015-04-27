@@ -6,15 +6,6 @@ block vars
   - bodyClass = ""
   - pageTitle = "! Writer dashboard"
 
-
-mixin dashboardNavigationItem(count, cssClass)
-  li.writer-dashboard-navigation-item.clj-dashboard-navigation-item(class=cssClass)
-    a.writer-dashboard-navigation-item-link.clj-dashboard-navigation-item-link(href="#dashboard-content")
-      span.clj-dashboard-navigation-item-label
-        block
-      span.writer-dashboard-navigation-item-link-count.clj-dashboard-navigation-item-link-count (#{count})
-      i.fa.fa-angle-right
-
 block content
   .writer-dashboard
     .writer-dashboard-header

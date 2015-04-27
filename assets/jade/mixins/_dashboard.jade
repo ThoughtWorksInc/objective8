@@ -1,3 +1,11 @@
+mixin dashboardNavigationItem(count, cssClass)
+  li.writer-dashboard-navigation-item.clj-dashboard-navigation-item(class=cssClass)
+    a.writer-dashboard-navigation-item-link.clj-dashboard-navigation-item-link(href="#dashboard-content")
+      span.clj-dashboard-navigation-item-label
+        block
+      span.writer-dashboard-navigation-item-link-count.clj-dashboard-navigation-item-link-count (#{count})
+      i.fa.fa-angle-right
+
 mixin dashboardAnswerItem(itemSaved)
   li.dashboard-answer-item.clj-dashboard-answer-item
     .dashboard-answer-item-stats
@@ -26,10 +34,43 @@ mixin dashboardAnswerItem(itemSaved)
           button.save-answer-button(type='submit')
             i.fa.fa-paperclip
 
+mixin dashboardCommentItem(itemSaved)
+  li.dashboard-comment-item.clj-dashboard-comment-item
+    .dashboard-comment-item-stats
+      .dashboard-comment-item-up-score
+        i.fa.fa-thumbs-o-up
+        = " "
+        span.clj-dashboard-comment-item-up-count !27
+      .dashboard-comment-item-down-score
+        i.fa.fa-thumbs-o-down
+        = " "
+        span.clj-dashboard-comment-item-down-count !3
+    .dashboard-comment-item-text.clj-dashboard-comment-item-text
+      | !This is a comment on the thing that's being commented on. it has a lot of text in it becasue we want to see what happens if the answer is really long. Well not really really long but at least a reasonable length in relation to everything else on the page.
+    if itemSaved
+      .dashboard-comment-item-saved-content
+        p
+          i.fa.fa-paperclip
+          = " "
+          | Clipped. "Great for section d."
+    else
+      form(actions="#", method="post").dashboard-comment-item-save.clj-dashboard-comment-item-save
+        p.form-field
+          label.form-field-label(for="comment")
+            span.form-field-label-title.visuallyhidden Comment
+            input.dashboard-comment-item-save-comment(id="comment", name="comment", type="text", maxlength="140", placeholder="Add a reply to the community.")
+          button.save-comment-button(type='submit')
+            i.fa.fa-paperclip
+            
 mixin dashboardAnswerBlank()
   li.dashboard-answer-item.clj-dashboard-no-answer-item(data-l8n="content:writer-dashboard/no-answers-message")
     | !No answers have been provided for this question.
 
+mixin dashboardCommentBlank()
+  li.dashboard-comment-item.clj-dashboard-no-comment-item(data-l8n="content:writer-dashboard/no-comments-message")
+    | !There are no comments on this piece of content.
+
 mixin dashboardQuestionBlank()
   li.writer-dashboard-navigation-item.clj-dashboard-no-question-item(data-l8n="content:writer-dashboard/no-questions-message")
     | !No questions were asked for this objective.
+

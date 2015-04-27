@@ -1,0 +1,60 @@
+/*
+
+Comment item
+
+*/
+
+.dashboard-comment-item {
+  padding: 2em 0;
+  border-top: 1px solid $border_color;
+  border-bottom: 1px solid $border_color;
+}
+.dashboard-comment-item-text {
+  font-size: 1.1em;
+  margin-bottom: 0.5em;
+}
+.dashboard-comment-item-stats {
+  font-size: 1.3em;
+  margin-bottom: 0.15em;
+}
+.dashboard-comment-item-up-score,
+.dashboard-comment-item-down-score {
+  display: inline-block;
+}
+.dashboard-comment-item-up-score {
+  margin-right: 0.5em;
+}
+.dashboard-comment-item-down-score {
+
+}
+
+$dashboard_save_button_width: 100px;
+.dashboard-comment-item-save {
+  padding-top: 0.25em;
+}
+.dashboard-comment-item-save-comment {
+  padding-right: $dashboard_save_button_width;
+}
+.save-comment-button {
+  transition: background-color 250ms ease, color 250ms ease;
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  z-index: 1;
+  width: $dashboard_save_button_width;
+  height: 36px;
+  background: transparent;
+  color: $green1;
+  border: 0;
+  border-left: 1px solid $grey-3;
+  &:hover {
+    background-color: $green1;
+    color: $white;
+  }
+//  outline
+}
+
+.dashboard-comment-item-saved-content {
+  padding-top: 0.25em;
+  color: $green1;
+}

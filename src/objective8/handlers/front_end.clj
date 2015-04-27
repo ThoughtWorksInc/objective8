@@ -201,6 +201,24 @@
                                                :answers-sorted-by (:sorted-by answer-sort-method) 
                                                :selected-question-uri selected-question-uri)}))))
 
+(defn dashboard-comments [{:keys [route-params params] :as request}]
+  (let [objective-id (Integer/parseInt (:id route-params))
+        {objective-status :status objective :result} (http-api/get-objective objective-id {:with-stars-count true})
+        {drafts-status :status drafts :result} (http-api/get-all-drafts objective-id)
+        selected-comment-target-uri (get params :selected (:uri objective))
+        {comments-status :status comments :result} (http-api/get-comments selected-comment-target-uri)]
+    (cond
+      (every? #(= ::http-api/success %) [objective-status comments-status])
+      (let [formatted-objective (format-objective objective)]
+        {:status 200
+         :headers {"Content-Type" "text/html"}
+         :body (views/dashboard-comments-page "dashboard-comments"
+                                              request
+                                              :objective formatted-objective
+                                              :drafts drafts
+                                              :comments comments
+                                              :selected-comment-target-uri selected-comment-target-uri)}))))
+
 ;; COMMENTS
 
 (defn post-comment [{:keys [t'] :as request}]

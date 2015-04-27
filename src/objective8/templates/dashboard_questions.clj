@@ -6,7 +6,7 @@
             [objective8.templates.template-functions :as tf]))
 
 
-(def dashboard-questions-template (html/html-resource "templates/jade/writer-dashboard.html"))
+(def dashboard-questions-template (html/html-resource "templates/jade/questions-dashboard.html"))
 
 (def dashboard-questions-answer-item-snippet (html/select dashboard-questions-template
                                                           [[:.clj-dashboard-answer-item html/first-of-type]]))
