@@ -30,7 +30,9 @@
   (when (map? (second element))
     (:data-section-label (second element))))
 
-(defn store-section! [section-data])
+(defn store-section! [section-data]
+  (-> (assoc section-data :entity :section)
+      storage/pg-store!))
 
 (defn store-draft! [draft-data]
   (some-> draft-data

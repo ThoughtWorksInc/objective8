@@ -243,6 +243,14 @@
       (assoc :_created_at (sql-time->iso-time-string (:_created_at m))) 
       (assoc :entity :star)))
 
+(defn unmap-section [m]
+  (-> m
+      (utils/ressoc :draft_id :draft-id)
+      (utils/ressoc :global_id :global-id)
+      (utils/ressoc :section_label :section-label)
+      (assoc :_created_at (sql-time->iso-time-string (:_created_at m))) 
+      (assoc :entity :section)))
+
 (declare objective user comment question answer invitation writer bearer-token up-down-vote)
 
 (korma/defentity global-identifier
@@ -348,6 +356,13 @@
                        with-username-if-present
                        with-sql-time)))
 
+(korma/defentity section
+  (korma/pk :_id)
+  (korma/table :objective8.sections)
+  (korma/belongs-to draft {:fk :draft_id})
+  (korma/prepare map->section)
+  (korma/transform unmap-section))
+
 (korma/defentity bearer-token
   (korma/pk :_id)
   (korma/table :objective8.bearer_tokens)
@@ -372,6 +387,7 @@
                :writer-note writer-note
                :up-down-vote up-down-vote
                :draft draft
+               :section section
                :bearer-token bearer-token
                :star star
                :global-identifier global-identifier})

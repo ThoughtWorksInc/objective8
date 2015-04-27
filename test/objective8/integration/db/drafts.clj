@@ -74,3 +74,15 @@
                                                                              (assoc :username string?)
                                                                              (dissoc :_created_at_sql_time
                                                                                      :global-id)))))))
+
+(facts "about storing sections"
+       (against-background
+        [(before :contents (do (ih/db-connection)
+                               (ih/truncate-tables)))
+         (after :facts (ih/truncate-tables))]
+
+        (fact "a section can be stored and includes the global id to pass to create-comment!"
+              (let [draft-id (:_id (sh/store-a-draft))]
+                (drafts/store-section! {:section-label "12abcdef"
+                                        :draft-id draft-id}) => (contains {:global-id anything})))))
+
