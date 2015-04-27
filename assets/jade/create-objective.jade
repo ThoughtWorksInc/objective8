@@ -21,6 +21,7 @@ block content
         label.form-field-label(for="objective-title")
           span.form-field-label-title#objective-title-label-title(data-l8n="content:create-objective/headline") !Headline
           = " "
+          span.required *
           span.label-helper#objective-title-description(data-l8n="content:create-objective/headline-prompt") !A headline should encourage contribution or discussion
           input.clj-input-objective-title.func--input-objective-title(id="objective-title", name="title", type="text", pattern=".{3,}", maxlength="120", required="required", aria-labelledby="objective-title-label-title", aria-describedby="objective-title-description")
 
