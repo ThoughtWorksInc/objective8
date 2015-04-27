@@ -13,10 +13,10 @@
 (defn insert
   "Wrapper around Korma's insert call"
   [entity data]
-  (if (#{:answer :objective :draft :comment :writer-note} (:entity data))
+  (if (#{:answer :objective :draft :comment :writer-note :section} (:entity data))
     (kdb/transaction
-     (let [{global-id :_id} (pg-create-global-identifier)]
-       (korma/insert entity (korma/values (assoc data :global-id global-id)))))
+      (let [{global-id :_id} (pg-create-global-identifier)]
+        (korma/insert entity (korma/values (assoc data :global-id global-id)))))
     (korma/insert entity (korma/values data))))
 
 (defn pg-store!

@@ -160,6 +160,11 @@
                        :draft
                        [:submitter-id :objective-id :global-id]))
 
+(def map->section
+  (db-insertion-mapper "section"
+                       nil
+                       [:section-label :draft-id :global-id]))
+
 (def map->bearer-token
   (db-insertion-mapper "bearer-token"
                        :token-details

@@ -273,6 +273,24 @@
                (json-type->map (:draft draft)) =not=> (contains {:global-id anything})
                (json-type->map (:draft draft)) =not=> (contains {:objective-id anything}))))
 
+;;SECTIONS
+(def SECTION_LABEL "abcd1234")
+(def DRAFT_ID 2)
+(def section-map {:section-label SECTION_LABEL
+                  :draft-id DRAFT_ID
+                  :global-id GLOBAL_ID})
+
+(facts "About map->section"
+       (fact "Column values are pulled out and converted, the map gets turned to json"
+             (map->section section-map) => {:global_id GLOBAL_ID
+                                            :draft_id DRAFT_ID
+                                            :section_label SECTION_LABEL})
+       
+       (fact "throws exception if :global-id, :draft-id or :section-label are missing"
+             (map->section (dissoc section-map :global-id)) => (throws Exception)
+             (map->section (dissoc section-map :draft-id)) => (throws Exception)
+             (map->section (dissoc section-map :section-label)) => (throws Exception)))
+
 ;;BEARER-TOKENS
 (def BEARER_NAME "bearer name")
 (def BEARER_TOKEN "123")

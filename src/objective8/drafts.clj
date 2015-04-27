@@ -26,6 +26,12 @@
         section-labels (get-n-unique-section-labels number-of-sections)]
   (into [] (map insert-section-label hiccup section-labels))))
 
+(defn get-section-label [element]
+  (when (map? (second element))
+    (:data-section-label (second element))))
+
+(defn store-section! [section-data])
+
 (defn store-draft! [draft-data]
   (some-> draft-data
           (update-in [:content] add-section-labels)
@@ -79,3 +85,8 @@
        :result
        (map #(dissoc % :created_at_sql_time :global-id))
        (map #(utils/update-in-self % [:uri] uri-for-draft))))
+
+(defn get-section-labels-for-draft [draft-id]
+  (let [{:keys [content] :as draft} (retrieve-draft draft-id)]
+    (map get-section-label content)))
+

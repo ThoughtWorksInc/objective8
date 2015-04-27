@@ -10,6 +10,7 @@
             [objective8.questions :as questions]
             [objective8.marks :as marks]
             [objective8.writer-notes :as writer-notes]
+            [objective8.storage.uris :as uris]
             [objective8.storage.storage :as storage]))
 
 (defn create-writer-for-objective! [{:keys [created-by-id] :as objective}]
@@ -71,6 +72,7 @@
   (case entity
     :objective (= "open" (:status entity-to-post-to))
     :draft true
+    :section true
     false))
 
 (defn allowed-to-vote? [{:keys [global-id entity] :as entity-to-vote-on} {:keys [created-by-id] :as vote-data}]
@@ -93,6 +95,13 @@
       {:status ::forbidden})
     {:status ::entity-not-found}))
 
+(defn create-section-comment! [{:keys [draft-id section-label] :as section-data} comment-data]
+  (let [section-labels (drafts/get-section-labels-for-draft draft-id)]
+    (if (some #{section-label} section-labels)
+      (let [stored-section (drafts/store-section! section-data)
+            stored-comment (comments/store-comment-for! stored-section comment-data)]
+        {:status ::success :result stored-comment}))))
+
 (defn create-comment! [{:keys [comment-on-uri] :as comment-data}]
   (if-let [entity-to-comment-on (storage/pg-retrieve-entity-by-uri comment-on-uri :with-global-id)]
     (if (can-comment-on? entity-to-comment-on)
@@ -100,7 +109,10 @@
         {:status ::success :result stored-comment}
         {:status ::failure})
       {:status ::objective-drafting-started})
-    {:status ::entity-not-found}))
+    (let [query (uris/uri->query comment-on-uri)]
+      (if (= (:entity query) :section)
+        (create-section-comment! query comment-data)
+        {:status ::entity-not-found}))))
 
 (defn get-comments [entity-uri]
   (if-let [results (comments/get-comments entity-uri)]

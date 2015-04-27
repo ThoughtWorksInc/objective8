@@ -23,6 +23,8 @@
 (def ANSWER_URI (str "/objective/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers/" ANSWER_ID))
 (def INVITATION_ID 7)
 (def UU_ID "875678950430596859403-uuid")
+(def DRAFT_ID 8)
+(def SECTION_LABEL "a84b23ca")
 (def an-answer {:global-id GLOBAL_ID})
 (def vote-data {:vote-on-uri :entity-uri
                 :created-by-id USER_ID
@@ -111,27 +113,45 @@
                (drafts/retrieve-latest-draft OBJECTIVE_ID) => :draft)))
 
 (def a-draft {:entity :draft})
-(def comment-data {:comment-on-uri :entity-uri
+(def a-section {:entity :section})
+(def comment-data {:comment-on-uri "/entity-uri" 
                    :comment "A comment"
                    :created-by-id USER_ID})
+(def section-uri (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID "/sections/" SECTION_LABEL))
+(def section-comment-data {:comment-on-uri section-uri})
 
 (facts "about creating comments"
        (fact "can comment on an objective that is not in drafting"
              (actions/create-comment! comment-data) => {:status ::actions/success :result :the-stored-comment}
              (provided
-              (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => objective-not-in-drafting
+              (storage/pg-retrieve-entity-by-uri "/entity-uri" :with-global-id) => objective-not-in-drafting
               (comments/store-comment-for! objective-not-in-drafting comment-data) => :the-stored-comment))
 
        (fact "cannot comment on an objective that is in drafting"
              (actions/create-comment! comment-data) => {:status ::actions/objective-drafting-started}
              (provided
-              (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => objective-in-drafting))
+              (storage/pg-retrieve-entity-by-uri "/entity-uri" :with-global-id) => objective-in-drafting))
 
        (fact "can comment on a draft"
              (actions/create-comment! comment-data) => {:status ::actions/success :result :the-stored-comment}
              (provided
-              (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => a-draft
+              (storage/pg-retrieve-entity-by-uri "/entity-uri" :with-global-id) => a-draft
               (comments/store-comment-for! a-draft comment-data) => :the-stored-comment))
+
+       (fact "can comment on a draft section with existing comments"
+             (actions/create-comment! section-comment-data) => {:status ::actions/success :result :the-stored-comment}
+             (provided
+              (storage/pg-retrieve-entity-by-uri section-uri :with-global-id) => a-section 
+              (comments/store-comment-for! a-section section-comment-data) => :the-stored-comment))
+
+       (fact "can comment on a draft section with no previous comments"
+             (actions/create-comment! section-comment-data) => {:status ::actions/success :result :the-stored-comment}
+             (provided
+               (storage/pg-retrieve-entity-by-uri section-uri :with-global-id) => nil 
+               (drafts/get-section-labels-for-draft DRAFT_ID) => [SECTION_LABEL]
+               (drafts/store-section! {:entity :section :draft-id DRAFT_ID 
+                                       :section-label SECTION_LABEL}) => a-section
+               (comments/store-comment-for! a-section section-comment-data) => :the-stored-comment))
 
        (fact "reports an error when the entity to comment on cannot be found"
              (actions/create-comment! comment-data) => {:status ::actions/entity-not-found}
