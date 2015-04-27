@@ -15,6 +15,7 @@
   (korma/delete m/star)
   (korma/delete m/bearer-token)
   (korma/delete m/up-down-vote)
+  (korma/delete m/writer-note)
   (korma/delete m/writer)
   (korma/delete m/invitation)
   (korma/delete m/answer)

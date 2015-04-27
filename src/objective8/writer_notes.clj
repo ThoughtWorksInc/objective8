@@ -14,7 +14,7 @@
   (when-let [{:keys [objective-id _id global-id]} entity-to-note-on]
     (some-> note-data
             (utils/select-all-or-nothing [:note :created-by-id])
-            (assoc :entity :note
+            (assoc :entity :writer-note
                    :note-on-id global-id
                    :objective-id (or objective-id _id))
             (dissoc :note-on-uri)

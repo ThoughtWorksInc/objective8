@@ -4,7 +4,7 @@
             [objective8.integration.integration-helpers :as ih]
             [objective8.integration.storage-helpers :as sh]))
 
-(future-facts "about storing writer-notes"
+(facts "about storing writer-notes"
        (against-background
         [(before :contents (do (ih/db-connection)
                                (ih/truncate-tables)))
@@ -17,6 +17,7 @@
                     note-data {:note-on-uri uri-for-answer 
                                :note "A note"
                                :created-by-id user-id}]
+
                 (writer-notes/store-note-for! answer note-data) => (contains {:_id integer?
                                                                               :uri (contains "/notes/")
                                                                               :note-on-uri uri-for-answer 

@@ -303,8 +303,18 @@
 (defn post-writer-note [request]
  (try
    (let [writer-note-data (ar/request->writer-note-data request)
-         {status :status stored-note :result} (actions/create-writer-note! writer-note-data)])) 
-  )
+         {status :status stored-note :result} (actions/create-writer-note! writer-note-data)]
+     (cond
+       (= status ::actions/success)
+       (resource-created-response (str utils/host-url
+                                       "/api/v1/meta/writer-notes/" (:_id stored-note)) stored-note)
+
+       (= status ::actions/forbidden)
+       (forbidden-response (str "Cannot post a note against entity"))
+
+       (= status ::actions/entity-not-found)
+       (not-found-response "Entity does not exist")
+       ))))
 
 ;;WRITERS
 (defn post-invitation [request]
@@ -354,8 +364,8 @@
     (let [writer-data (ar/request->writer-data request)]
       (if-let [{writer-id :_id :as writer} (writers/create-writer writer-data)]
         (resource-created-response (str utils/host-url
-                                       "/api/v1/objectives/" objective-id
-                                       "/writers/" writer-id) writer)
+                                        "/api/v1/objectives/" objective-id
+                                        "/writers/" writer-id) writer)
         {:status 403}))
     (catch Exception e
       (log/info "Error when creating writer: " e)
@@ -378,7 +388,7 @@
   (let [draft-data (ar/request->draft-data request)] 
     (if-let [draft (actions/submit-draft! draft-data)]
       (resource-created-response (utils/path-for :api/get-draft :id objective-id :d-id (str (:_id draft)))
-                              draft)
+                                 draft)
       (response/not-found (str "No writer found with submitter-id " (:submitter-id draft-data) " for objective " objective-id)))))
 
 (defn get-draft [{{:keys [id d-id]} :route-params :as request}]
@@ -396,12 +406,12 @@
 
           :else
           (response/not-found "")))
-      
-    (if-let [draft (drafts/retrieve-draft (Integer/parseInt d-id))]
-      (-> draft
-          response/response
-          (response/content-type "application/json"))
-      (response/not-found "")))))
+
+      (if-let [draft (drafts/retrieve-draft (Integer/parseInt d-id))]
+        (-> draft
+            response/response
+            (response/content-type "application/json"))
+        (response/not-found "")))))
 
 (defn retrieve-drafts [{{:keys [id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)
@@ -431,34 +441,34 @@
 
           (= status ::actions/entity-not-found)
           (not-found-response (str "Entity with uri " (:uri vote-data) " does not exist"))
-          
+
           :else
           (internal-server-error "Error when posting vote")))
-      
+
       (invalid-response "Invalid vote post request"))
     (catch Exception e
       (log/info "Error when posting vote: " e)
       (internal-server-error "Error when posting vote"))))
 
 (defn post-mark [request]
- (try
-   (if-let [mark-data (ar/request->mark-data request)]
-     (let [{status :status mark :result} (actions/mark-question! mark-data)]
-       (cond
+  (try
+    (if-let [mark-data (ar/request->mark-data request)]
+      (let [{status :status mark :result} (actions/mark-question! mark-data)]
+        (cond
           (= status ::actions/success)
           (resource-created-response (str utils/host-url
-                                       "/api/v1" (:uri mark) 
-                                       ) mark)
+                                          "/api/v1" (:uri mark) 
+                                          ) mark)
 
           (= status ::actions/forbidden)
           (forbidden-response (str "Cannot mark question " (:question-uri mark-data)))
 
           (= status ::actions/entity-not-found)
           (not-found-response (str "Entity with uri " (:question-uri mark-data) " does not exist"))
-          
+
           :else
           (internal-server-error "Error when marking question")))
-    (invalid-response "Invalid mark request"))
-   (catch Exception e
-     (log/info "Error when marking question: " e)
-     (internal-server-error "Error when marking question"))))
+      (invalid-response "Invalid mark request"))
+    (catch Exception e
+      (log/info "Error when marking question: " e)
+      (internal-server-error "Error when marking question"))))

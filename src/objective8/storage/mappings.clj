@@ -150,6 +150,11 @@
                        :writer
                        [:user-id :objective-id :invitation-id]))
 
+(def map->writer-note 
+  (db-insertion-mapper "writer-note"
+                       :note
+                       [:global-id :created-by-id :note-on-id :objective-id]))
+
 (def map->draft
   (db-insertion-mapper "draft"
                        :draft
@@ -314,6 +319,14 @@
                        with-username-if-present
                        with-profile-if-present)))
 
+(korma/defentity writer-note
+  (korma/pk :_id)
+  (korma/table :objective8.writer_notes)
+  (korma/belongs-to user {:fk :created_by_id})
+  (korma/prepare map->writer-note)
+  (korma/transform (-> (unmap :note)
+                       (with-columns [:note-on-id :created-by-id :global-id :objective-id]))))
+
 (korma/defentity up-down-vote
   (korma/pk :_id)
   (korma/table :objective8.up_down_votes)
@@ -351,6 +364,7 @@
                :answer    answer
                :invitation invitation
                :writer writer
+               :writer-note writer-note
                :up-down-vote up-down-vote
                :draft draft
                :bearer-token bearer-token

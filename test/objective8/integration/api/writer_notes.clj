@@ -3,7 +3,10 @@
             [peridot.core :as p]
             [cheshire.core :as json]
             [objective8.utils :as utils]
+            [objective8.actions :as actions]
             [objective8.core :as core]
+            [objective8.writers :as writers]
+            [objective8.writer-notes :as writer-notes]
             [objective8.integration.integration-helpers :as helpers]
             [objective8.integration.storage-helpers :as sh]
             [objective8.middleware :as m]))
@@ -14,14 +17,17 @@
 (def USER_ID 1)
 
 
-(future-facts "POST /api/v1/meta/writer-notes"
+(facts "POST /api/v1/meta/writer-notes"
        (against-background
          (m/valid-credentials? anything anything anything) => true)
+        
        (against-background
          [(before :contents (do (helpers/db-connection)
                                 (helpers/truncate-tables)))
           (after :facts (helpers/truncate-tables))]
          (fact "the posted note is stored"
+               (against-background
+                   (actions/writer-for-objective? anything anything) => true)
                (let [{user-id :_id :as user} (sh/store-a-user)
                      {o-id :objective-id a-id :_id q-id :question-id global-id :global-id} (sh/store-an-answer)
                      uri-for-answer (str "/objectives/" o-id "/questions/" q-id "/answers/" a-id)
@@ -38,9 +44,9 @@
                                                              :note-on-uri uri-for-answer 
                                                              :note "A note"
                                                              :objective-id o-id
-                                                             :created-by-id user-id})
-                 (:body response) =not=> (helpers/json-contains {:note-on-id anything})
-                 (:body response) =not=> (helpers/json-contains {:global-id anything})
+                                                             :created-by-id user-id}) 
+                 (:body response) =not=> (helpers/json-contains {:note-on-id anything}) 
+                 (:body response) =not=> (helpers/json-contains {:global-id anything}) 
                  (:headers response) => (helpers/location-contains (str "/api/v1/meta/writer-notes/"))))
 
          (fact "returns 404 when entity to be noted on doesn't exist"

@@ -157,10 +157,13 @@
 (defn authorised-objectives-for-note-writer [user-id]
   (map :objective-id (writers/retrieve-writers-by-user-id user-id)))
 
+(defn writer-for-objective? [objective-id user-id]
+  (some #{objective-id} (authorised-objectives-for-note-writer user-id)))
+
 (defn create-writer-note! [{:keys [note-on-uri created-by-id] :as writer-note-data}]
   (if-let [{o-id :objective-id :as entity-to-note-on} (storage/pg-retrieve-entity-by-uri note-on-uri :with-global-id)]
     (if (empty? (writer-notes/retrieve-note note-on-uri)) 
-      (if (some #{o-id} (authorised-objectives-for-note-writer created-by-id))
+      (if (writer-for-objective? o-id created-by-id)
         {:status ::success :result (writer-notes/store-note-for! entity-to-note-on writer-note-data)}
         {:status ::forbidden})
       {:status ::forbidden})

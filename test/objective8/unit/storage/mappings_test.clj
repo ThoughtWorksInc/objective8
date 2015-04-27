@@ -20,6 +20,8 @@
         transformed-map => json-type?
         (.getValue transformed-map) => "{\"is\":\"a map\",\"has\":\"some keys\"}"))
 
+(def ANSWER_ID 243)
+
 ;; OBJECTIVE
 (def USER_ID 1234)
 (def GLOBAL_ID 3)
@@ -226,6 +228,34 @@
                (json-type->map (:writer writer)) =not=> (contains {:user-id anything})
                (json-type->map (:writer writer)) =not=> (contains {:invitation-id anything}))))
 
+;;WRITER-NOTES
+(def writer-note-map {:global-id GLOBAL_ID
+                      :objective-id OBJECTIVE_ID
+                      :created-by-id USER_ID
+                      :note-on-id ANSWER_ID})
+
+(facts "About map->writer-note"
+       (fact "Column values are pulled out and converted, the map gets turned to json"
+             (let [writer-note (map->writer-note writer-note-map)]
+               writer-note => (contains {:global_id GLOBAL_ID
+                                         :created_by_id USER_ID
+                                         :note_on_id ANSWER_ID
+                                         :note json-type?
+                                         :objective_id OBJECTIVE_ID})
+               (json-type->map (:note writer-note)) =not=> (contains {:created-by-id anything})
+               (json-type->map (:note writer-note)) =not=> (contains {:note-on-id anything})
+               (json-type->map (:note writer-note)) =not=> (contains {:global-id anything})
+               (json-type->map (:note writer-note)) =not=> (contains {:objective-id anything})))
+
+
+       (fact "throws exception if :created-by-id, :note-on-id or :objective-id are missing"
+
+             (map->writer-note (dissoc writer-note-map :global-id)) => (throws Exception)
+             (map->writer-note (dissoc writer-note-map :created-by-id)) => (throws Exception)
+             (map->writer-note (dissoc writer-note-map :note-on-id)) => (throws Exception)
+             (map->writer-note (dissoc writer-note-map :objective-id)) => (throws Exception))) 
+
+
 ;;DRAFTS
 (def draft-map {:submitter-id USER_ID
                 :objective-id OBJECTIVE_ID
@@ -270,7 +300,7 @@
                star => (contains {:objective_id OBJECTIVE_ID
                                   :created_by_id USER_ID
                                   :active true})))
-       
+
        (fact "throws exception if :objective-id, :created-by-id or :active are missing"
              (map->star (dissoc star-map :objective-id)) => (throws Exception)
              (map->star (dissoc star-map :created-by-id)) => (throws Exception)
