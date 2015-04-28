@@ -22,15 +22,38 @@ block content
 
     .writer-dashboard-body
       .writer-dashboard-navigation
-        h2.writer-dashboard-navigation-title(data-l8n="content:writer-dashboard/questions-navigation-title")
-          a.writer-dashboard-navigation-title-link(href="#") !Questions
-        h2.writer-dashboard-navigation-title(data-l8n="content:writer-dashboard/comments-navigation-title")
-          a.writer-dashboard-navigation-title-link.on(href="#") !Comments
+        .writer-dashboard-navigation-menu
+          a.writer-dashboard-navigation-title-link.clj-writer-dashboard-navigation-questions-link(href="#", data-l8n="content:writer-dashboard/questions-navigation-title") !Questions
+          a.writer-dashboard-navigation-title-link.clj-writer-dashboard-navigation-comments-link.on(href="#", data-l8n="content:writer-dashboard/comments-navigation-title") !Comments
         ul.writer-dashboard-navigation-list.clj-dashboard-navigation-list
           +dashboardNavigationItem(2000)
             | !Objective
           +dashboardNavigationItem(1827, 'on')
             | !Latest draft
+          +dashboardNavigationItem(999)
+            | !2015-05-10
+          +dashboardNavigationItem(210)
+            | !2015-05-02
+          +dashboardNavigationItem(40)
+            | !2015-05-01
+          +dashboardNavigationItem(999)
+            | !2015-05-10
+          +dashboardNavigationItem(210)
+            | !2015-05-02
+          +dashboardNavigationItem(40)
+            | !2015-05-01
+          +dashboardNavigationItem(999)
+            | !2015-05-10
+          +dashboardNavigationItem(210)
+            | !2015-05-02
+          +dashboardNavigationItem(40)
+            | !2015-05-01
+          +dashboardNavigationItem(999)
+            | !2015-05-10
+          +dashboardNavigationItem(210)
+            | !2015-05-02
+          +dashboardNavigationItem(40)
+            | !2015-05-01
           +dashboardNavigationItem(999)
             | !2015-05-10
           +dashboardNavigationItem(210)

@@ -72,12 +72,22 @@
   margin-bottom: 2em;
   @include mq(640) {
     float: left;
+    width: 40%;
+    margin-bottom: 0;
+  }
+  @include mq(1000) {
+    float: left;
     width: 30%;
     margin-bottom: 0;
   }
 }
 .writer-dashboard-content-container {
   @include mq(640) {
+    float: right;
+    width: 60%;
+    padding-left: 1em;
+  }
+  @include mq(1000) {
     float: right;
     width: 70%;
     padding-left: 1em;
