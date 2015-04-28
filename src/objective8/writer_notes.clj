@@ -23,4 +23,11 @@
             (utils/update-in-self [:uri] uri-for-note)
             (replace-note-on-id note-on-uri))))
 
-(defn retrieve-note [entity-uri])
+(defn retrieve-note [entity-uri]
+    (when-let [{note-on-id :global-id} (storage/pg-retrieve-entity-by-uri entity-uri :with-global-id)] 
+      (some-> (storage/pg-retrieve {:entity :writer-note :note-on-id note-on-id}) 
+              :result 
+              first
+              (dissoc :global-id)
+              (utils/update-in-self [:uri] uri-for-note)
+              (replace-note-on-id entity-uri))))

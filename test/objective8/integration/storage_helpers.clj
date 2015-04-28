@@ -129,6 +129,18 @@
                          :objective-id o-id
                          :invitation-id i-id}))))
 
+(defn store-a-note
+  ([]
+   (store-a-note {}))
+
+  ([required-entities]
+   (let [{answer-id :global-id user-id :created-by-id o-id :objective-id} (l-get required-entities :answer (store-an-answer))]
+     (storage/pg-store! {:entity :writer-note
+                         :objective-id o-id
+                         :created-by-id user-id
+                         :note-on-id answer-id
+                         :note "Test note"}))))
+
 (defn store-a-draft
   ([]
    (store-a-draft {}))

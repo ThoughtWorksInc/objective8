@@ -336,3 +336,4 @@ WHERE questions.objective_id = ?" [objective-id]] :results))))
                         FROM objective8.stars AS stars
                         WHERE stars.active = true 
                         AND stars.objective_id = ?" [objective-id]] :results))))
+
