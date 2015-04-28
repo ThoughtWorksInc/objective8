@@ -31,25 +31,28 @@
       (comment-list-items context))))
 
 (def dashboard-comments-navigation-item-snippet (html/select dashboard-comments-template
-                                                              [[:.clj-dashboard-navigation-item html/first-of-type]]))
+                                                             [[:.clj-dashboard-navigation-item html/first-of-type]]))
 
 (defn draft-label [draft]
   (str (:username draft) ", " (utils/iso-time-string->pretty-time (:_created_at draft))))
 
-(defn draft->navigation-list-item [draft]
+(defn draft->navigation-list-item [{:keys [translations] :as context} draft]
   {:label (draft-label draft)
+   :link-count (get-in draft [:meta :comments-count])
    :uri (:uri draft)})
 
-(defn objective->navigation-list-item [objective]
-  {:label "objective"
+(defn objective->navigation-list-item [{:keys [translations] :as context} objective]
+  {:label (translations :dashboard-comments/objective-label)
    :link-count (get-in objective [:meta :comments-count])
    :uri (:uri objective)})
 
-(defn navigation-list [{:keys [data] :as context}]
+(defn navigation-list [{:keys [data translations] :as context}]
   (let [objective (:objective data)
-        drafts (into [] (:drafts data))
-        navigation-list-items (conj (mapv draft->navigation-list-item drafts)
-                                    (objective->navigation-list-item objective))
+        objective-nav-item (objective->navigation-list-item context objective)
+        draft-nav-items (mapv (partial draft->navigation-list-item context) (:drafts data))
+        navigation-list-items (cond-> draft-nav-items
+                                (not (empty? draft-nav-items)) (assoc-in [0 :label] (translations :dashboard-comments/latest-draft-label))
+                                true                           (conj objective-nav-item))
         selected-comment-target-uri (:selected-comment-target-uri data)
         dashboard-url (url/url (utils/path-for :fe/dashboard-comments :id (:_id objective)))]
     (html/at dashboard-comments-navigation-item-snippet

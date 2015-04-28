@@ -81,10 +81,7 @@
           (assoc :previous-draft-id previous-draft-id)))))
 
 (defn retrieve-drafts [objective-id]
-  (->> (storage/pg-retrieve {:entity :draft :objective-id objective-id}
-                           {:limit 50
-                            :sort {:field :_created_at :ordering :DESC}})
-       :result
+  (->> (storage/pg-get-drafts objective-id)
        (map #(dissoc % :created_at_sql_time :global-id))
        (map #(utils/update-in-self % [:uri] uri-for-draft))))
 

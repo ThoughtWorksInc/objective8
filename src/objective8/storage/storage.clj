@@ -364,3 +364,18 @@ WHERE questions.objective_id = ?" [objective-id]] :results))))
                         WHERE stars.active = true 
                         AND stars.objective_id = ?" [objective-id]] :results))))
 
+(defn pg-get-drafts [objective-id]
+  (let [unmap-draft (first (get mappings/draft :transforms))]
+    (apply vector (map unmap-draft
+                       (korma/exec-raw ["
+SELECT drafts.*, users.username, comments_meta.number AS comments_count
+FROM objective8.drafts AS drafts
+JOIN objective8.users AS users
+ON users._id = drafts.submitter_id
+LEFT JOIN (SELECT comment_on_id, COUNT(*) AS number
+           FROM objective8.comments AS comments
+           GROUP BY comment_on_id) AS comments_meta
+ON drafts.global_id = comments_meta.comment_on_id
+WHERE drafts.objective_id = ?
+ORDER BY _created_at DESC
+LIMIT 50" [objective-id]] :results)))))

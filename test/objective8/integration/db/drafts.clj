@@ -62,6 +62,12 @@
                                                                                (dissoc :_created_at_sql_time
                                                                                        :global-id)))))
 
+        (fact "drafts are retrieved with a count of the number of comments"
+              (let [{objective-id :_id :as objective} (sh/store-an-objective-in-draft)
+                    draft (sh/store-a-draft {:objective objective})
+                    _ (sh/store-a-comment {:entity draft})]
+                (first (drafts/retrieve-drafts objective-id)) => (contains {:meta (contains {:comments-count 1})})))
+
         (fact "the latest draft can be retrieved"
               (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
                     first-draft (sh/store-a-draft {:objective objective})
