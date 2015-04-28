@@ -212,6 +212,9 @@
 (defn get-all-drafts [objective-id]
   (default-get-call (utils/path-for :api/get-drafts-for-objective :id objective-id)))
 
+(defn get-draft-section [section-uri]
+  (default-get-call (str utils/host-url "/api/v1" section-uri)))
+
 ;; VOTES
 
 (defn create-up-down-vote [vote]

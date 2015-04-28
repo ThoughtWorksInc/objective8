@@ -15,6 +15,7 @@
 (def OBJECTIVE_ID 2)
 (def WRONG_OBJECTIVE_ID (+ OBJECTIVE_ID 100))
 (def DRAFT_ID 3)
+(def SECTION_LABEL "abcdef12")
 
 (def SOME_MARKDOWN  "A heading\n===\nSome content")
 (def SOME_DIFFERENT_MARKDOWN  "Heading\n===\nSome different content\nSome more content")
@@ -379,3 +380,15 @@
           ih/sign-in-as-existing-user 
           (p/request latest-draft-url)
           (get-in [:response :body])) => (contains (str "/objectives/" OBJECTIVE_ID "/add-draft")))
+
+(facts "about rendering draft section page"
+       (against-background
+         (http-api/get-draft-section anything) => {:status ::http-api/success
+                                                   :result {:section '([:p {:data-section-label SECTION_LABEL} "barry"])}})
+       (fact "there are no untranslated strings"
+             (let [user-session (ih/test-context)
+                   {status :status body :body} (-> user-session
+                                                   (p/request (utils/path-for :fe/draft-section :id OBJECTIVE_ID :d-id DRAFT_ID :section-label SECTION_LABEL))
+                                                   :response)]
+               status => 200
+               body => ih/no-untranslated-strings)))

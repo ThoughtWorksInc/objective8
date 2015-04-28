@@ -101,6 +101,9 @@ draft-list,import,Import draft from Google Drive
 draft-list,drafting-begins,Drafting begins in
 draft-list,days,days
 draft-list,writers,Writers
+draft-section,doc-title,Draft section | Objective[8]
+draft-section,doc-description,
+draft-section,page-title,Add annotation to:
 add-draft,doc-title,Add draft | Objective[8]
 add-draft,doc-description,Draft policy
 add-draft,placeholder,Enter your draft here

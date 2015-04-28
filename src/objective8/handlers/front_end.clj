@@ -608,6 +608,17 @@
       (error-404-response request)
       :else {:status 500})))
 
+(defn draft-section [{:keys [uri] :as request}]
+  (let [{section-status :status section-result :result} (http-api/get-draft-section uri)]
+    (cond 
+      (every? #(= ::http-api/success %) [section-status])
+      {:status 200
+       :body (views/draft-section "draft-section" request 
+                                  :section (utils/hiccup->html (:section section-result)))
+       :headers {"Content-Type" "text/html"}}
+      
+      :else {:status 500})))
+
 (defn post-up-vote [request]
   (-> (helpers/request->up-vote-info request (get (friend/current-authentication) :identity))
       http-api/create-up-down-vote)

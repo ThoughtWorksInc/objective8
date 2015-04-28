@@ -78,8 +78,7 @@
       (-> latest-draft
           (dissoc :_created_at_sql_time :global-id)
           (utils/update-in-self [:uri] uri-for-draft)
-          (assoc :previous-draft-id previous-draft-id)
-          ))))
+          (assoc :previous-draft-id previous-draft-id)))))
 
 (defn retrieve-drafts [objective-id]
   (->> (storage/pg-retrieve {:entity :draft :objective-id objective-id}
@@ -99,7 +98,7 @@
       (= section-label)))
 
 (defn get-section-from-hiccup [hiccup section-label] 
-  (some #(when (has-section-label? section-label %) [%]) hiccup))
+  (some #(when (has-section-label? section-label %)  [%]) hiccup))
 
 (defn get-section [section-uri]
   (let [{:keys [entity section-label draft-id] :as query} (uris/uri->query section-uri)]

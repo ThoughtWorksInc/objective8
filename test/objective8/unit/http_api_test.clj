@@ -308,6 +308,9 @@
 (def draft {:content :markdown-as-hiccup
             :objective-id OBJECTIVE_ID
             :submitter-id USER_ID})
+(def SECTION_LABEL "abcd1212")
+(def section-uri (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID "/sections/" SECTION_LABEL))
+
 (fact "posting a draft hits the correct API endpoint"
       (http-api/post-draft draft) => :api-call-result
       (provided
@@ -325,6 +328,11 @@
       (http-api/get-all-drafts OBJECTIVE_ID) => :api-call-result
       (provided
         (http-api/default-get-call (contains (utils/path-for :api/get-drafts-for-objective :id OBJECTIVE_ID))) => :api-call-result))
+
+(fact "getting a draft section hits the correct API endpoint"
+      (http-api/get-draft-section section-uri) => :api-call-result
+      (provided
+        (http-api/default-get-call (contains (utils/path-for :api/get-section :id OBJECTIVE_ID :d-id DRAFT_ID :section-label SECTION_LABEL))) => :api-call-result))
 
 ;;STARS
 

@@ -142,7 +142,7 @@
                          :note-on-id answer-id
                          :note "Test note"}))))
 
-(def some-hiccup [["h1" {:data-section-label "1234abcd"} "A Heading"] ["p" {:data-section-label "abcd1234"} "A paragraph"]])
+(def some-hiccup '(["h1" {:data-section-label "1234abcd"} "A Heading"] ["p" {:data-section-label "abcd1234"} "A paragraph"]))
 
 (defn store-a-draft
   ([]

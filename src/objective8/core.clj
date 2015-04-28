@@ -63,6 +63,7 @@
                                                                 permissions/request->writer-roles)
                :fe/draft (utils/anti-forgery-hook front-end-handlers/draft)
                :fe/draft-diff front-end-handlers/draft-diff
+               :fe/draft-section front-end-handlers/draft-section
                :fe/draft-list front-end-handlers/draft-list
                :fe/import-draft-get (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/import-draft-get)
                                                                   permissions/request->writer-roles)
