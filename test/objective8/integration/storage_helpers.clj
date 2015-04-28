@@ -1,6 +1,7 @@
 (ns objective8.integration.storage-helpers
-  (:require [clj-time.core :as tc] 
-            [objective8.storage.storage :as storage] 
+  (:require [clj-time.core :as tc]
+            [objective8.objectives :as objectives]
+            [objective8.storage.storage :as storage]
             [objective8.actions :as actions]))
 
 

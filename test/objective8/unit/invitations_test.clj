@@ -12,25 +12,25 @@
        (fact "returns the accepted invitation when the associated objective is not in drafting"
              (invitations/accept-invitation! invitation) => :accepted-invitation
              (provided
-              (objectives/retrieve-objective OBJECTIVE_ID) => {:status "open"}
+              (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
               (storage/pg-update-invitation-status! invitation "accepted") => :accepted-invitation))
 
        (fact "returns nil when the associated objective is in drafting"
              (invitations/accept-invitation! invitation) => nil
              (provided
-              (objectives/retrieve-objective OBJECTIVE_ID) => {:status "drafting"})))
+              (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"})))
 
 (facts "about declining an invitation"
        (fact "returns the declined invitation when the associated objective is not in drafting"
              (invitations/decline-invitation! invitation) => :declined-invitation
              (provided
-              (objectives/retrieve-objective OBJECTIVE_ID) => {:status "open"}
+              (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
               (storage/pg-update-invitation-status! invitation "declined") => :declined-invitation))
 
        (fact "returns nil when the associated objective is in drafting"
              (invitations/decline-invitation! invitation) => nil
              (provided
-              (objectives/retrieve-objective OBJECTIVE_ID) => {:status "drafting"})))
+              (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"})))
 
 (fact "Postgresql exceptions are not caught"
       (against-background

@@ -34,132 +34,132 @@
   []
   (:_id (users/store-user! {:twitter-id "anything" :username "username"})))
 
-(facts "objectives"
-       (against-background
-        (m/valid-credentials? anything anything anything) => true)
-       (against-background
-        [(before :contents (do (helpers/db-connection)
-                               (helpers/truncate-tables)))
-         (after :facts (helpers/truncate-tables))]
+(background
+ (m/valid-credentials? anything anything anything) => true)
 
-        (facts "GET /api/v1/objectives returns a list of objectives in reverse chronological order"
-               (fact "objectives are returned as a list"
-                     (let [stored-objectives (doall (repeatedly 5 sh/store-an-open-objective))
-                           {response :response} (p/request app "/api/v1/objectives")]
-                       (:body response) => (helpers/json-contains (map contains (->> stored-objectives
-                                                                                     (map #(dissoc % :global-id))
-                                                                                     reverse)))))
+(against-background
+ [(before :contents (do (helpers/db-connection)
+                        #_(helpers/truncate-tables)))
+  #_(after :facts (helpers/truncate-tables))]
 
-               (fact "returns an empty list if there are no objectives"
-                     (do
-                       (helpers/truncate-tables)
-                       (helpers/peridot-response-json-body->map (p/request app "/api/v1/objectives")))
-                     => empty?))
+ (facts "GET /api/v1/objectives returns a list of objectives in reverse chronological order"
+        (fact "objectives are returned as a list"
+              (let [stored-objectives (doall (repeatedly 5 sh/store-an-open-objective))
+                    {response :response} (p/request app "/api/v1/objectives")]
+                (:body response) => (helpers/json-contains (map contains (->> stored-objectives
+                                                                              (map #(dissoc % :global-id))
+                                                                              reverse)))))
 
-         (facts "GET /api/v1/objectives?user-id=<user-id>"
-                (fact "returns a list of objectives with meta information for signed-in user"
-                      (let [unstarred-objective (sh/store-an-open-objective)
-                            {user-id :_id :as user} (sh/store-a-user)
-                            starred-objective (sh/store-an-open-objective)
-                            stored-star (sh/store-a-star {:user user :objective starred-objective})
-                            {response :response} (p/request app (str "/api/v1/objectives?user-id=" user-id))] 
-                        (:body response) => (helpers/json-contains [(contains {:meta {:starred true}})
-                                                                    (contains {:meta {:starred false}})] :in-any-order))))
+        (fact "returns an empty list if there are no objectives"
+              (do
+                (helpers/truncate-tables)
+                (helpers/peridot-response-json-body->map (p/request app "/api/v1/objectives")))
+              => empty?))
 
-         (facts "GET /api/v1/objectives?starred=true&user-id=<user-id>"
-                (fact "retrieves objectives in reverse chronological order that have been starred by user with given user-id"
-                      (let [{user-id :_id :as user} (sh/store-a-user)
-                            stored-objectives [(sh/store-an-open-objective)
-                                               (sh/store-an-objective-in-draft)]
+ (facts "GET /api/v1/objectives?user-id=<user-id>"
+        (fact "returns a list of objectives with meta information for signed-in user"
+              (let [unstarred-objective (sh/store-an-open-objective)
+                    {user-id :_id :as user} (sh/store-a-user)
+                    starred-objective (sh/store-an-open-objective)
+                    stored-star (sh/store-a-star {:user user :objective starred-objective})
+                    {response :response} (p/request app (str "/api/v1/objectives?user-id=" user-id))] 
+                (:body response) => (helpers/json-contains [(contains {:meta (contains {:starred true})})
+                                                            (contains {:meta (contains {:starred false})})] :in-any-order))))
 
-                            stored-stars (doall (map sh/store-a-star
-                                                     [{:user user :objective (first stored-objectives)}
-                                                      {:user user :objective (second stored-objectives)}])) ]
-                        (get-in (p/request app (str "/api/v1/objectives?starred=true&user-id=" user-id)) [:response :body])
-                        => (helpers/json-contains (map contains (->> stored-objectives
-                                                                     reverse
-                                                                     (map #(select-keys % [:_id]))))))))
+ (facts "GET /api/v1/objectives?starred=true&user-id=<user-id>"
+        (fact "retrieves objectives in reverse chronological order that have been starred by user with given user-id"
+              (let [{user-id :_id :as user} (sh/store-a-user)
+                    starred-objectives [(sh/store-an-open-objective)
+                                        (sh/store-an-objective-in-draft)]
+                    unstarred-objective (sh/store-an-open-objective)
 
-         (facts "GET /api/v1/objectives/:id"
-               (fact "can retrieve an objective using its id"
-                     (let [{user-id :_id username :username} (sh/store-a-user) 
-                           stored-objective (objectives/store-objective! (assoc the-objective :created-by-id user-id))
-                           objective-url (str "/api/v1/objectives/" (:_id stored-objective))]
-                       (get-in (p/request app objective-url)
-                               [:response :body]) => (helpers/json-contains (assoc stored-objective :username username))))
+                    stored-stars (doall (map sh/store-a-star
+                                             [{:user user :objective (first starred-objectives)}
+                                              {:user user :objective (second starred-objectives)}])) ]
+                (get-in (p/request app (str "/api/v1/objectives?starred=true&user-id=" user-id)) [:response :body])
+                => (helpers/json-contains (map contains (->> starred-objectives
+                                                             reverse
+                                                             (map #(select-keys % [:_id]))))))))
 
-               (fact "returns a 404 if an objective does not exist"
-                     (p/request app (str "/api/v1/objectives/" 123456))
-                     => (contains {:response (contains {:status 404})})) 
+ (facts "GET /api/v1/objectives/:id"
+        (fact "gets an objective along with its meta information"
+              (let [{username :username :as user} (sh/store-a-user) 
+                    stored-objective (sh/store-an-open-objective {:user user})
 
-               (fact "returns an error if objective id is not an integer"
-                     (p/request app "/api/v1/objectives/NOT-AN-INTEGER")
-                     => (contains {:response (contains {:status 404})}))) 
+                    _ (sh/store-a-comment {:entity stored-objective})
+                    _ (sh/store-a-star {:objective stored-objective})
+                    
+                    objective-uri (str "/objectives/" (:_id stored-objective))
+                    {body :body} (-> (p/request app (utils/path-for :api/get-objective
+                                                                    :id (:_id stored-objective)))
+                                     :response)]
+                body => (helpers/json-contains (dissoc stored-objective :global-id :meta))
+                body => (helpers/json-contains {:uri objective-uri})
+                body => (helpers/json-contains {:username username})
+                body => (helpers/json-contains {:meta (contains {:stars-count 1})})
+                body => (helpers/json-contains {:meta (contains {:comments-count 1})})
+                body =not=> (helpers/json-contains {:global-id anything})))
 
-         (facts "GET /api/v1/objectives/:id?signed-in-id=<user-id>"
-                (fact "retrieves the objective by its id, along with meta-information relevant for the signed in user"
-                      (let [objective-creator (sh/store-a-user)
-                            {o-id :_id :as starred-objective} (sh/store-an-open-objective {:user objective-creator})
-                            {user-id :_id :as user} (sh/store-a-user)
-                            _ (sh/store-a-star {:user user :objective starred-objective})
+        (fact "returns a 404 if an objective does not exist"
+              (p/request app (str "/api/v1/objectives/" 123456))
+              => (contains {:response (contains {:status 404})})) 
 
-                            {response :response} (p/request app (str "/api/v1/objectives/" o-id "?signed-in-id=" user-id))
-                            retrieved-objective (-> starred-objective
-                                                    (select-keys [:_id :description :_created_at :created-by-id
-                                                                  :end-date :entity :goals :status :title])
-                                                    (assoc :username (:username objective-creator))
-                                                    (assoc :meta {:starred true})
-                                                    (assoc :uri (str "/objectives/" o-id)))]
-                        (:body response) => (helpers/json-contains retrieved-objective))))
+        (fact "returns an error if objective id is not an integer"
+              (p/request app "/api/v1/objectives/NOT-AN-INTEGER")
+              => (contains {:response (contains {:status 404})})))
 
-         (facts "GET /api/v1/objectives/:id?with-stars-count=true"
-                (fact "retrieves the objective by its id, along with star-count for objective"
-                      (let [{username :username :as objective-creator} (sh/store-a-user)
-                            {objective-id :_id :as objective} (sh/store-an-open-objective {:user objective-creator})
-                            retrieved-objective (-> objective
-                                                    (assoc :username username
-                                                           :uri (str "/objectives/" objective-id))
-                                                    (dissoc :global-id :meta)) 
-                            _ (sh/store-a-star {:objective objective}) 
-                            _ (sh/store-a-star {:objective objective}) 
+ (facts "GET /api/v1/objectives/:id?signed-in-id=<user-id>"
+        (fact "retrieves the objective by its id, along with meta-information relevant for the signed in user"
+              (let [objective-creator (sh/store-a-user)
+                    {o-id :_id :as starred-objective} (sh/store-an-open-objective {:user objective-creator})
+                    {user-id :_id :as user} (sh/store-a-user)
+                    _ (sh/store-a-star {:user user :objective starred-objective})
 
-                            {response :response} (p/request app (str "/api/v1/objectives/" objective-id "?with-stars-count=true"))] 
-                        (:body response) => (helpers/json-contains retrieved-objective)
-                        (:body response) => (helpers/json-contains {:meta (contains {:starred false :stars-count 2})}))))
+                    {body :body} (-> (p/request app (str "/api/v1/objectives/" o-id "?signed-in-id=" user-id))
+                                     :response)
+                    retrieved-objective (-> starred-objective
+                                            (select-keys [:_id :description :_created_at :created-by-id
+                                                          :end-date :entity :goals :status :title])
+                                            (assoc :username (:username objective-creator))
+                                            (assoc :uri (str "/objectives/" o-id)))]
+                body => (helpers/json-contains retrieved-objective)
+                body => (helpers/json-contains {:meta (contains {:starred true})})
+                body => (helpers/json-contains {:meta (contains {:stars-count 1})})
+                body =not=> (helpers/json-contains {:global-id anything}))))
 
-         (facts "about posting objectives"
-               (against-background
-                (m/valid-credentials? anything anything anything) => true)
+ (facts "about posting objectives"
+        (against-background
+         (m/valid-credentials? anything anything anything) => true)
 
-               (fact "the posted objective is stored"
-                     (let [{user-id :_id} (sh/store-a-user)
-                           the-objective {:title "my objective title"
-                                          :goal-1 "my first objective goal"
-                                          :end-date "2015-01-01"
-                                          :created-by-id user-id}
-                           {response :response} (p/request app "/api/v1/objectives"
-                                                           :request-method :post
-                                                           :content-type "application/json"
-                                                           :body (json/generate-string the-objective))]
-                       (:body response) => (helpers/json-contains
-                                            (assoc the-objective
-                                                   :uri (contains "/objectives/")
-                                                   :end-date "2015-01-01T00:00:00.000Z"))
-                       (:body response) =not=> (helpers/json-contains {:global-id anything})
-                       (:headers response) => (helpers/location-contains (str "/api/v1/objectives/"))
-                       (:status response) => 201))
+        (fact "the posted objective is stored"
+              (let [{user-id :_id} (sh/store-a-user)
+                    the-objective {:title "my objective title"
+                                   :goal-1 "my first objective goal"
+                                   :end-date "2015-01-01"
+                                   :created-by-id user-id}
+                    {response :response} (p/request app "/api/v1/objectives"
+                                                    :request-method :post
+                                                    :content-type "application/json"
+                                                    :body (json/generate-string the-objective))]
+                (:body response) => (helpers/json-contains
+                                     (assoc the-objective
+                                            :uri (contains "/objectives/")
+                                            :end-date "2015-01-01T00:00:00.000Z"))
+                (:body response) =not=> (helpers/json-contains {:global-id anything})
+                (:headers response) => (helpers/location-contains (str "/api/v1/objectives/"))
+                (:status response) => 201))
 
-               (fact "a 400 status is returned if a PSQLException is raised"
-                     (against-background
-                      (objectives/store-objective! anything) =throws=> (org.postgresql.util.PSQLException.
-                                                                        (org.postgresql.util.ServerErrorMessage. "" 0)))
-                     (:response (p/request app "/api/v1/objectives"
-                                           :request-method :post
-                                           :content-type "application/json"
-                                           :body (json/generate-string the-objective))) => (contains {:status 400}))
+        (fact "a 400 status is returned if a PSQLException is raised"
+              (against-background
+               (objectives/store-objective! anything) =throws=> (org.postgresql.util.PSQLException.
+                                                                 (org.postgresql.util.ServerErrorMessage. "" 0)))
+              (:response (p/request app "/api/v1/objectives"
+                                    :request-method :post
+                                    :content-type "application/json"
+                                    :body (json/generate-string the-objective))) => (contains {:status 400}))
 
-               (fact "a 400 status is returned if a map->objective exception is raised"
-                     (:response (p/request app "/api/v1/objectives"
-                                           :request-method :post
-                                           :content-type "application/json"
-                                           :body (json/generate-string the-invalid-objective))) => (contains {:status 400})))))
+        (fact "a 400 status is returned if a map->objective exception is raised"
+              (:response (p/request app "/api/v1/objectives"
+                                    :request-method :post
+                                    :content-type "application/json"
+                                    :body (json/generate-string the-invalid-objective))) => (contains {:status 400}))))

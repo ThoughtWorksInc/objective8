@@ -36,7 +36,7 @@
     {:status ::failure}))
 
 (defn get-objective-with-star-count [objective-id]
-  (if-let [objective (objectives/retrieve-objective objective-id)] 
+  (if-let [objective (objectives/get-objective objective-id)] 
     (let [objective-uri (:uri objective) 
           star-count (stars/get-star-count-for-objective objective-uri)] 
       (update-in objective [:meta] merge star-count))))
@@ -52,19 +52,19 @@
               (map #(start-drafting! (:_id %))))))
 
 (defn submit-draft! [{:keys [submitter-id objective-id] :as draft-data}]
-  (when (objectives/in-drafting? (objectives/retrieve-objective objective-id)) 
+  (when (objectives/in-drafting? (objectives/get-objective objective-id)) 
     (when (writers/retrieve-writer-for-objective submitter-id objective-id)
       (drafts/store-draft! draft-data))))
 
 (defn retrieve-drafts [objective-id]
-  (if-let [objective (objectives/retrieve-objective objective-id)]
+  (if-let [objective (objectives/get-objective objective-id)]
     (if (objectives/in-drafting? objective)
       {:status ::success :result (drafts/retrieve-drafts objective-id)} 
       {:status ::objective-drafting-not-started})
     {:status ::not-found}))
 
 (defn retrieve-latest-draft [objective-id]
-  (if (objectives/in-drafting? (objectives/retrieve-objective objective-id))
+  (if (objectives/in-drafting? (objectives/get-objective objective-id))
     {:status ::success :result (drafts/retrieve-latest-draft objective-id)}
     {:status ::objective-drafting-not-started}))
 
@@ -76,7 +76,7 @@
     false))
 
 (defn allowed-to-vote? [{:keys [global-id entity] :as entity-to-vote-on} {:keys [created-by-id] :as vote-data}]
-  (let [objective (objectives/retrieve-objective (:objective-id entity-to-vote-on))
+  (let [objective (objectives/get-objective (:objective-id entity-to-vote-on))
         {owner-entity-type :entity} (if (= entity :comment)
                                       (storage/pg-retrieve-entity-by-global-id (:comment-on-id entity-to-vote-on))
                                       entity-to-vote-on)]
@@ -158,7 +158,7 @@
     (concat writer-objective-ids owned-objective-ids)))
 
 (defn create-invitation! [{:keys [invited-by-id objective-id] :as invitation-data}]
-  (if-let [objective (objectives/retrieve-objective objective-id)]
+  (if-let [objective (objectives/get-objective objective-id)]
     (if (objectives/open? objective) 
       (if (some #{objective-id} (authorised-objectives-for-inviter invited-by-id)) 
         {:status ::success :result (invitations/store-invitation! invitation-data)}

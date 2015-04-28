@@ -9,7 +9,7 @@
           (utils/update-in-self [:uri] uris/question->uri)))
 
 (defn create-question [{objective-id :objective-id :as question}]
-  (when (open? (objectives/retrieve-objective objective-id))
+  (when (open? (objectives/get-objective objective-id))
     (store-question! question)))
 
 (defn get-questions-for-objective [objective-uri]

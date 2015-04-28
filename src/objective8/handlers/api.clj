@@ -153,10 +153,9 @@
     (if-let [objective (cond
                          signed-in-id
                          (objectives/get-objective-as-signed-in-user id (Integer/parseInt signed-in-id))
-                         (:with-stars-count params)
-                         (actions/get-objective-with-star-count id)
+
                          :else
-                         (objectives/retrieve-objective id))]
+                         (objectives/get-objective id))]
       (-> objective
           (update-in [:end-date] utils/date-time->iso-time-string)
           response/response

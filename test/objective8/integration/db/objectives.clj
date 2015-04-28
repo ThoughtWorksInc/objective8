@@ -41,9 +41,21 @@
                                     :goals "goals"
                                     :title "title"}
                     {objective-id :_id :as stored-objective} (objectives/store-objective! objective-data)]
-                (objectives/retrieve-objective objective-id) => (assoc stored-objective :username username)
-                (objectives/retrieve-objective objective-id) =not=> (contains {:global-id anything})))
+                (objectives/get-objective objective-id) => (assoc stored-objective :username username)
+                (objectives/get-objective objective-id) =not=> (contains {:global-id anything})))
 
+        (fact "the objective is retrieved along with the number of times it has been starred"
+              (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+                    _ (sh/store-a-star {:objective objective}) 
+                    _ (sh/store-a-star {:objective objective})]
+                (objectives/get-objective objective-id) => (contains {:meta (contains {:stars-count 2})})))
+
+        (fact "the objective is retrieved along with the number of comments posted against it"
+              (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+                    _ (sh/store-a-comment {:entity objective})
+                    _ (sh/store-a-comment {:entity objective})]
+                (objectives/get-objective objective-id) => (contains {:meta (contains {:comments-count 2})})))
+        
         (fact "can retrieve a stored objective with meta information relevant to a signed in user"
               (let [objective-creator (sh/store-a-user)
                     {o-id :_id :as starred-objective} (sh/store-an-open-objective {:user objective-creator})
@@ -54,7 +66,9 @@
                     objective-uri (str "/objectives/" o-id)]
                 (objectives/get-objective-as-signed-in-user o-id signed-in-user-id) => (-> starred-objective
                                                                                            (assoc :username (:username objective-creator))
-                                                                                           (assoc :meta {:starred true})
+                                                                                           (assoc :meta {:starred true
+                                                                                                         :stars-count 1
+                                                                                                         :comments-count 0})
                                                                                            (dissoc :global-id)
                                                                                            (assoc :uri objective-uri))))
 
@@ -106,11 +120,11 @@
                      {user-id :created-by-id} (sh/store-a-star {:objective starred-objective})]
                  (objectives/get-objectives-as-signed-in-user user-id)
                  => (contains [(contains {:_id (:_id non-starred-objective)
-                                          :meta {:starred false}}) 
+                                          :meta (contains {:starred false})}) 
                                (contains {:_id (:_id starred-objective-for-a-different-user)
-                                          :meta {:starred false}}) 
+                                          :meta (contains {:starred false})}) 
                                (contains {:_id (:_id starred-objective)
-                                          :meta {:starred true}})]
+                                          :meta (contains {:starred true})})]
                               :in-any-order)))
          
          (fact "objectives due to start drafting can be retrieved"

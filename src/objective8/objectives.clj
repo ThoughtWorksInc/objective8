@@ -25,9 +25,8 @@
           (dissoc :global-id)
           (utils/update-in-self [:uri] uri-for-objective)))
 
-(defn retrieve-objective [objective-id]
-  (some-> (storage/pg-retrieve {:entity :objective :_id objective-id})
-          :result
+(defn get-objective [objective-id]
+  (some-> (storage/pg-get-objective objective-id)
           first
           (dissoc :global-id)
           (utils/update-in-self [:uri] uri-for-objective)))

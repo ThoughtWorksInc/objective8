@@ -13,13 +13,13 @@
 (fact "An answer can be created when the associated objective is not in drafting"
       (answers/create-answer! answer) => :stored-answer
       (provided
-        (objectives/retrieve-objective OBJECTIVE_ID) => {:status "open"}
-        (answers/store-answer! answer) => :stored-answer))
+       (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
+       (answers/store-answer! answer) => :stored-answer))
 
 (fact "Returns nil when the associated objective is not in drafting"
       (answers/create-answer! answer) => nil
       (provided
-        (objectives/retrieve-objective OBJECTIVE_ID) => {:status "drafting"}))
+       (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"}))
 
 (fact "Postgresql exceptions are not caught"
       (answers/store-answer! {:answer "something"}) => (throws org.postgresql.util.PSQLException)

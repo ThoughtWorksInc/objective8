@@ -17,7 +17,7 @@
           (utils/update-in-self [:uri] uri-for-answer)))
 
 (defn create-answer! [{objective-id :objective-id :as answer}]
-  (when (objectives/open? (objectives/retrieve-objective objective-id))
+  (when (objectives/open? (objectives/get-objective objective-id))
     (store-answer! answer)))
 
 (defn get-answers [question-uri]

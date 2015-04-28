@@ -63,9 +63,9 @@
 (facts "about allowing or disallowing voting"
        (against-background
         (up-down-votes/get-vote anything anything) => nil
-        (objectives/retrieve-objective anything) => objective-not-in-drafting
-        (objectives/retrieve-objective :objective-in-drafting) => objective-in-drafting
-        (objectives/retrieve-objective :objective-not-in-drafting) => objective-not-in-drafting
+        (objectives/get-objective anything) => objective-not-in-drafting
+        (objectives/get-objective :objective-in-drafting) => objective-in-drafting
+        (objectives/get-objective :objective-not-in-drafting) => objective-not-in-drafting
         (storage/pg-retrieve-entity-by-global-id :objective-in-drafting-global-id) => objective-in-drafting)
        
        (fact "the same user cannot vote twice on the same entity"
@@ -93,23 +93,23 @@
        (fact "can only retrieve drafts for an objective in drafting"
             (actions/retrieve-drafts OBJECTIVE_ID) => {:status ::actions/objective-drafting-not-started}
             (provided
-              (objectives/retrieve-objective OBJECTIVE_ID) => {:status "open"}))
+             (objectives/get-objective OBJECTIVE_ID) => {:status "open"}))
        
        (fact "retrieves drafts for an objective that is in drafting"
              (actions/retrieve-drafts OBJECTIVE_ID) => {:status ::actions/success :result :drafts}
              (provided
-               (objectives/retrieve-objective OBJECTIVE_ID) => {:status "drafting"}
+              (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"}
                (drafts/retrieve-drafts OBJECTIVE_ID) => :drafts))
        
        (fact "can only retrieve latest draft for an objective in drafting"
              (actions/retrieve-latest-draft OBJECTIVE_ID) => {:status ::actions/objective-drafting-not-started}
              (provided
-               (objectives/retrieve-objective OBJECTIVE_ID) => {:status "open"}))
+              (objectives/get-objective OBJECTIVE_ID) => {:status "open"}))
 
        (fact "retrieves latest draft for an objective that is in drafting"
              (actions/retrieve-latest-draft OBJECTIVE_ID) => {:status ::actions/success :result :draft}
              (provided
-               (objectives/retrieve-objective OBJECTIVE_ID) => {:status "drafting"} 
+              (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"} 
                (drafts/retrieve-latest-draft OBJECTIVE_ID) => :draft)))
 
 (def a-draft {:entity :draft})
@@ -261,7 +261,7 @@
              (actions/create-invitation! invitation) => {:status ::actions/success
                                                          :result :stored-invitation} 
              (provided
-               (objectives/retrieve-objective OBJECTIVE_ID) => {:status "open"}
+              (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
                (writers/retrieve-writers-by-user-id USER_ID) => [{:objective-id OBJECTIVE_ID}]
                (invitations/store-invitation! invitation) => :stored-invitation))
 
@@ -271,19 +271,19 @@
              (actions/create-invitation! invitation) => {:status ::actions/success
                                                          :result :stored-invitation} 
              (provided
-               (objectives/retrieve-objective OBJECTIVE_ID) => {:status "open"}
+              (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
                (objectives/get-objectives-owned-by-user-id USER_ID) => [{:_id OBJECTIVE_ID}]
                (invitations/store-invitation! invitation) => :stored-invitation))
 
        (fact "returns objective-drafting-started status when the associated objective is in drafting"
              (actions/create-invitation! invitation) => {:status ::actions/objective-drafting-started} 
              (provided
-               (objectives/retrieve-objective OBJECTIVE_ID) => {:status "drafting"}))
+              (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"}))
 
        (fact "returns failure status when the inviter is not authorised"
              (actions/create-invitation! invitation) => {:status ::actions/failure}
              (provided
-               (objectives/retrieve-objective OBJECTIVE_ID) => {:status "open"}
+              (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
                (objectives/get-objectives-owned-by-user-id USER_ID) => []
                (writers/retrieve-writers-by-user-id USER_ID) => []))
 

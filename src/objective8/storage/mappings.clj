@@ -220,7 +220,9 @@
 
 (defn with-objective-meta [unmap-fn]
   (fn [m] (-> (unmap-fn m)
-              (assoc :meta {:starred (if (:active m) true false)}))))
+              (assoc :meta {:starred (if (:active m) true false)
+                            :stars-count (if (:stars_count m) (:stars_count m) 0)
+                            :comments-count (if (:comments_count m) (:comments_count m) 0)}))))
 
 (defn with-question-meta [unmap-fn]
   (fn [m] (-> (unmap-fn m)

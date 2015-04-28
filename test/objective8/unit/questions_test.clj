@@ -12,13 +12,13 @@
 (fact "A question can be created when the associated objective is not in drafting"
       (questions/create-question question) => :stored-question
       (provided
-        (objectives/retrieve-objective OBJECTIVE_ID) => {:status "open"}
+       (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
         (questions/store-question! question) => :stored-question))
 
 (fact "Attempting to create a question against an objective that is in drafting returns nil"
       (questions/create-question question) => nil
       (provided
-        (objectives/retrieve-objective OBJECTIVE_ID) => {:status "drafting"}))
+       (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"}))
 
 (fact "Postgresql exceptions are not caught"
       (questions/store-question! {:question "something"}) => (throws org.postgresql.util.PSQLException)
