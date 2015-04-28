@@ -7,12 +7,11 @@ Dashboard comment item
 .dashboard-comment-list {
   @extend %list-item-container;
   margin-top: 1em;
-  padding-left: 1.5em;
   padding-top: 1em;
-  //border-left: 4px solid $grey-4;
 }
 
 .dashboard-comment-item {
+  font-size: 1.1em;
   padding: 2em 0;
   border-top: 1px solid $border_color;
   border-bottom: 1px solid $border_color;
@@ -32,6 +31,7 @@ Dashboard comment item
 
 .dashboard-comment-text {
   @extend %list-item-text;
+  color: $black;
 }
 
 .dashboard-vote-view {
