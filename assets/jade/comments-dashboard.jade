@@ -22,8 +22,10 @@ block content
 
     .writer-dashboard-body
       .writer-dashboard-navigation
-        h2.writer-dashboard-navigation-title(data-l8n="content:writer-dashboard/questions-navigation-title") !Questions
-        h2.writer-dashboard-navigation-title(data-l8n="content:writer-dashboard/comments-navigation-title") !Comments
+        h2.writer-dashboard-navigation-title(data-l8n="content:writer-dashboard/questions-navigation-title")
+          a.writer-dashboard-navigation-title-link(href="#") !Questions
+        h2.writer-dashboard-navigation-title(data-l8n="content:writer-dashboard/comments-navigation-title")
+          a.writer-dashboard-navigation-title-link.on(href="#") !Comments
         ul.writer-dashboard-navigation-list.clj-dashboard-navigation-list
           +dashboardNavigationItem(2000)
             | !Objective
