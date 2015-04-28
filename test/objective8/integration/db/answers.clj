@@ -5,9 +5,9 @@
             [objective8.answers :as answers]))
 
 (background
- [(before :contents (do (ih/db-connection)
-                        (ih/truncate-tables)))
-  (after :facts (ih/truncate-tables))])
+  [(before :contents (do (ih/db-connection)
+                         (ih/truncate-tables)))
+   (after :facts (ih/truncate-tables))])
 
 
 (facts "about storing answers"
@@ -34,22 +34,34 @@
                    question-uri (str "/objectives/" o-id "/questions/" q-id)
                    answer-uri (str "/objectives/" o-id "/questions/" q-id "/answers/" a-id)]
                (answers/get-answers question-uri) => (contains [(contains (-> stored-answer
-                                                                      (assoc :uri answer-uri)
-                                                                      (dissoc :global-id)))])
+                                                                              (assoc :uri answer-uri)
+                                                                              (dissoc :global-id)))])
                (answers/get-answers question-uri) =not=> (contains [(contains {:global-id anything})])))
-       
+
+       (fact "answers for a question with writer-note can be retrieved with note"
+             (let [{o-id :objective-id q-id :question-id a-id :_id :as stored-answer} (sh/store-an-answer)
+                   question-uri (str "/objectives/" o-id "/questions/" q-id)
+                   answer-uri (str "/objectives/" o-id "/questions/" q-id "/answers/" a-id)
+                   {note :note :as stored-note} (sh/store-a-note {:answer stored-answer})] 
+               (answers/get-answers question-uri) => (contains [(contains (-> stored-answer
+                                                                              (assoc :uri answer-uri)
+                                                                              (dissoc :global-id)
+                                                                              (assoc :note note)))]) 
+               (answers/get-answers question-uri) =not=> (contains [(contains {:global-id anything})])))
+
        (fact "answers for a question can be retrieved sorted by up-votes or down-votes"
              (let [{objective-id :objective-id question-id :_id :as question} (sh/store-a-question)
-                   {most-up-votes-id :_id most-up-votes-g-id :global-id} (sh/store-an-answer {:question question})
+                   {most-up-votes-id :_id most-up-votes-g-id :global-id :as most-up-votes-answer} (sh/store-an-answer {:question question})
                    {most-down-votes-id :_id most-down-votes-g-id :global-id} (sh/store-an-answer {:question question})
-                   question-uri (str "/objectives/" objective-id "/questions/" question-id)]
+                   question-uri (str "/objectives/" objective-id "/questions/" question-id)
+                   {note :note :as stored-note} (sh/store-a-note {:answer most-up-votes-answer})]
 
                (sh/store-an-up-down-vote most-up-votes-g-id :up)
                (sh/store-an-up-down-vote most-up-votes-g-id :up)
                (sh/store-an-up-down-vote most-down-votes-g-id :up)
                (sh/store-an-up-down-vote most-down-votes-g-id :down)
                (sh/store-an-up-down-vote most-down-votes-g-id :down)
-               (answers/get-answers-by-votes question-uri "up-votes") => (contains [(contains {:_id most-up-votes-id})
+               (answers/get-answers-by-votes question-uri "up-votes") => (contains [(contains {:_id most-up-votes-id :note note})
                                                                                     (contains {:_id most-down-votes-id})])
                (answers/get-answers-by-votes question-uri "down-votes") => (contains [(contains {:_id most-down-votes-id})
-                                                                                      (contains {:_id most-up-votes-id})]))))
+                                                                                      (contains {:_id most-up-votes-id :note note})]))))

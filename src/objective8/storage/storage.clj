@@ -128,9 +128,16 @@ SELECT _id, 'draft' AS entity FROM objective8.drafts WHERE global_id=?
   (fn [m] (-> (unmap-fn m)
               (assoc :votes {:up (or (:up_votes m) 0) :down (or (:down_votes m) 0)}))))
 
+(defn with-notes-if-present [unmap-fn]
+  (fn [m] (let [m' (unmap-fn m)]
+            (if (nil? (m :note))
+              m'
+              (assoc m' :note (:note (mappings/json-type->map (:note m))))))))
+
 (def unmap-answer-with-votes
   (-> (mappings/unmap :answer)
       mappings/with-username-if-present
+      with-notes-if-present
       (mappings/with-columns [:created-by-id :objective-id :question-id :global-id])
       with-aggregate-votes))
 
@@ -140,8 +147,9 @@ SELECT _id, 'draft' AS entity FROM objective8.drafts WHERE global_id=?
           objective-id (:objective-id sanitised-query)]
       (apply vector (map unmap-answer-with-votes
                          (korma/exec-raw ["
-SELECT answers.*, up_votes, down_votes, users.username FROM objective8.answers AS answers
+SELECT answers.*, up_votes, down_votes, users.username, notes.note FROM objective8.answers AS answers
 JOIN objective8.users AS users ON users._id = answers.created_by_id
+LEFT JOIN objective8.writer_notes AS notes ON notes.note_on_id = answers.global_id
 LEFT JOIN (SELECT global_id, count(vote) as down_votes
            FROM objective8.up_down_votes
            WHERE vote < 0 GROUP BY global_id) AS agg
@@ -156,8 +164,9 @@ LIMIT 50" [objective-id question-id]] :results))))))
 
 (defn retrieve-answers-ordered-by-up-votes [objective-id question-id]
   (apply vector (map unmap-answer-with-votes
-                     (korma/exec-raw ["SELECT answers.*, up_votes, down_votes, users.username FROM objective8.answers AS answers
+                     (korma/exec-raw ["SELECT answers.*, up_votes, down_votes, users.username, notes.note FROM objective8.answers AS answers
                                       JOIN objective8.users AS users ON users._id = answers.created_by_id
+                                      LEFT JOIN objective8.writer_notes AS notes ON notes.note_on_id = answers.global_id
                                       LEFT JOIN (SELECT global_id, count(vote) as down_votes
                                       FROM objective8.up_down_votes
                                       WHERE vote < 0 GROUP BY global_id) AS agg
@@ -172,8 +181,9 @@ LIMIT 50" [objective-id question-id]] :results))))))
 
 (defn retrieve-answers-ordered-by-down-votes [objective-id question-id]   
   (apply vector (map unmap-answer-with-votes
-                     (korma/exec-raw ["SELECT answers.*, up_votes, down_votes, users.username FROM objective8.answers AS answers
+                     (korma/exec-raw ["SELECT answers.*, up_votes, down_votes, users.username, notes.note FROM objective8.answers AS answers
                                       JOIN objective8.users AS users ON users._id = answers.created_by_id
+                                      LEFT JOIN objective8.writer_notes AS notes ON notes.note_on_id = answers.global_id
                                       LEFT JOIN (SELECT global_id, count(vote) as down_votes
                                       FROM objective8.up_down_votes
                                       WHERE vote < 0 GROUP BY global_id) AS agg

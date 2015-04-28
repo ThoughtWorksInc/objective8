@@ -34,6 +34,7 @@
   [pgobject]
   (json/parse-string (postgres-type->string pgobject) true))
 
+
 (defn db-column->key
   "Given a keyword representing a key in the database (i.e. with
   underscores, rather than hyphens), converts it to a conventional
