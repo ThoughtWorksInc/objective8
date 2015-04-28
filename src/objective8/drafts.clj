@@ -1,6 +1,7 @@
 (ns objective8.drafts
   (:require [crypto.random :as random] 
             [objective8.storage.storage :as storage]
+            [objective8.storage.uris :as uris]
             [objective8.utils :as utils]))
 
 (defn uri-for-draft [{:keys [_id objective-id] :as draft}]
@@ -33,6 +34,24 @@
 (defn store-section! [section-data]
   (-> (assoc section-data :entity :section)
       storage/pg-store!))
+
+(defn has-section-label? [section-label section]
+  (some-> (second section)
+      :data-section-label
+      (= section-label)))
+
+(defn get-section-from-hiccup [hiccup section-label] 
+  (some #(when (has-section-label? section-label %) [%]) hiccup))
+
+(defn get-section [section-uri]
+  (let [{:keys [entity section-label draft-id] :as query} (uris/uri->query section-uri)]
+    (when (= :section entity)
+      (let [{:keys [content objective-id] :as draft} (retrieve-draft draft-id)
+            section (get-section-from-hiccup content section-label)]
+        (when section
+          {:section section
+           :section-uri section-uri
+           :objective-id objective-id})))))
 
 (defn store-draft! [draft-data]
   (some-> draft-data
@@ -91,4 +110,3 @@
 (defn get-section-labels-for-draft [draft-id]
   (let [{:keys [content] :as draft} (retrieve-draft draft-id)]
     (map get-section-label content)))
-

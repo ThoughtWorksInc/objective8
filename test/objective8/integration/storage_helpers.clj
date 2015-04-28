@@ -141,6 +141,8 @@
                          :note-on-id answer-id
                          :note "Test note"}))))
 
+(def some-hiccup [["h1" {:data-section-label "1234abcd"} "A Heading"] ["p" {:data-section-label "abcd1234"} "A paragraph"]])
+
 (defn store-a-draft
   ([]
    (store-a-draft {}))
@@ -148,11 +150,12 @@
   ([required-entities]
    (let [{objective-id :_id} (l-get required-entities :objective (store-an-objective-in-draft))
          ;; NB: Writer id not required, but for consistency, the submitter should be authorised to draft documents for this objective
-         {submitter-id :user-id} (l-get required-entities :submitter (store-a-writer))]
+         {submitter-id :user-id} (l-get required-entities :submitter (store-a-writer))
+         content (get required-entities :content some-hiccup)]
      (storage/pg-store! {:entity :draft
                          :submitter-id submitter-id
                          :objective-id objective-id
-                         :content [["h1" "A Heading"] ["p" "A paragraph"]]}))))
+                         :content content}))))
 
 (defn start-drafting! [objective-id]
   (actions/start-drafting! objective-id)) 

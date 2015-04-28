@@ -428,6 +428,27 @@
       :else
       (response/not-found ""))))
 
+;;SECTION
+(defn get-section [{:keys [route-params] :as request}]
+  (try
+    (let [section-label (:section-label route-params)
+          draft-id (-> (:d-id route-params)
+                       Integer/parseInt)
+          objective-id (-> (:id route-params)
+                           Integer/parseInt)
+          section-uri (str "/objectives/" objective-id "/drafts/" draft-id "/sections/" section-label)]
+      (if-let [section (drafts/get-section section-uri)]
+        (if (-> (:objective-id section)
+                (= objective-id))
+          (-> section
+              response/response
+              (response/content-type "application/json"))
+          (not-found-response "Draft does not belong to this objective")) 
+        (not-found-response "Section does not exist"))) 
+    (catch Exception e
+      (log/info "Invalid route: " e)
+      (invalid-response "Invalid section request for this draft"))))
+
 (defn post-up-down-vote [request]
   (try
     (if-let [vote-data (ar/request->up-down-vote-data request)]

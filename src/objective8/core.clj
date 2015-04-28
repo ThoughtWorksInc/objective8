@@ -101,6 +101,7 @@
                :api/post-draft (m/wrap-bearer-token api-handlers/post-draft bt/token-provider)
                :api/get-draft api-handlers/get-draft
                :api/get-drafts-for-objective api-handlers/retrieve-drafts
+               :api/get-section api-handlers/get-section
                :api/post-up-down-vote (m/wrap-bearer-token api-handlers/post-up-down-vote bt/token-provider)
                :api/post-star (m/wrap-bearer-token api-handlers/post-star bt/token-provider)
                :api/post-mark (m/wrap-bearer-token api-handlers/post-mark bt/token-provider)

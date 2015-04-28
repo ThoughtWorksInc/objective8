@@ -122,3 +122,25 @@
                                                         :id (:_id objective)
                                                         :d-id "latest"))
                          [:response :body]) => (helpers/json-contains {:previous-draft-id first-draft-id})))))
+
+(def section-label "1234abcd")
+(def section [["h1" {:data-section-label section-label} "A Heading"]])
+(def draft-content [["h1" {:data-section-label section-label} "A Heading"] ["p" {:data-section-label "abcd1234"} "A paragraph"]])
+
+(facts "GET /api/v1/objectives/:id/drafts/:d-id/sections/:s-label"
+       (against-background
+         [(before :contents (do (helpers/db-connection)
+                                (helpers/truncate-tables)))
+          (after :facts (helpers/truncate-tables))]
+         
+         (fact "gets section of draft"
+               (let [{draft-id :_id objective-id :objective-id :as draft} (sh/store-a-draft {:content draft-content})] 
+                 (get-in (p/request app (utils/path-for :api/get-section
+                                                        :id objective-id
+                                                        :d-id draft-id
+                                                        :section-label section-label))
+                         [:response :body]) => (helpers/json-contains {:section section
+                                                                       :section-uri (str "/objectives/" objective-id
+                                                                                         "/drafts/" draft-id
+                                                                                         "/sections/" section-label)
+                                                                       :objective-id objective-id})))))

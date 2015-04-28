@@ -67,7 +67,8 @@
                                                                                    ["/" [#"\d+" :i-id]] {:put :api/put-invitation-declination}}
                                                             "/drafts" {:post :api/post-draft
                                                                        :get :api/get-drafts-for-objective
-                                                                       ["/" [#"\d+|latest" :d-id]] {:get :api/get-draft}}}}
+                                                                       ["/" [#"\d+|latest" :d-id]] {:get :api/get-draft
+                                                                                                    ["/sections/" [#"[0-9a-f]{8}" :section-label]] {:get :api/get-section}}}}}
 
                          "/meta" {"/comments" {:post :api/post-comment
                                                :get :api/get-comments}
