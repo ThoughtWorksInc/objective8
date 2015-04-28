@@ -72,11 +72,11 @@ Options: :with-global-id -- includes the global-id in the entity."
                                       identity
                                       #(dissoc % :global-id))]
     (when-let [query (uris/uri->query uri)]
-      (-> (pg-retrieve query)
-          :result
-          first
-          (assoc :uri uri)
-          optionally-remove-global-id))))
+      (some-> (pg-retrieve query)
+              :result
+              first
+              (assoc :uri uri)
+              optionally-remove-global-id))))
 
 (defn pg-retrieve-entity-by-global-id [global-id]
   (let [entity-query (-> (korma/exec-raw ["

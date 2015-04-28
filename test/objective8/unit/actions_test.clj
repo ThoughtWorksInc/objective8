@@ -113,7 +113,7 @@
                (drafts/retrieve-latest-draft OBJECTIVE_ID) => :draft)))
 
 (def a-draft {:entity :draft})
-(def a-section {:entity :section})
+(def a-section {:entity :section :objective-id OBJECTIVE_ID})
 (def comment-data {:comment-on-uri "/entity-uri" 
                    :comment "A comment"
                    :created-by-id USER_ID})

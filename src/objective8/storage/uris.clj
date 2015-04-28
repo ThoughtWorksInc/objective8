@@ -45,3 +45,11 @@
   (bidi/path-for uri-routes :question
                  :question-id (:_id question)
                  :objective-id (:objective-id question)))
+
+(defn uri->section-data [uri]
+  (if-let [{entity :handler route-params :route-params} (bidi/match-route uri-routes uri)]
+   (when (= entity :section)
+     {:entity :section
+      :objective-id (Integer/parseInt (:objective-id route-params))
+      :draft-id (Integer/parseInt (:draft-id route-params))
+      :section-label (:section-label route-params)})))
