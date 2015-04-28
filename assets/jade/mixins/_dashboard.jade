@@ -38,10 +38,10 @@ mixin voteUpDownView()
   - voteUpCount = Math.floor(Math.random() * 100) + 1
   - voteDownCount = Math.floor(Math.random() * 100) + 1
   span.dashboard-vote-view
-    span.dashboard-vote-count #{voteUpCount}
+    span.dashboard-vote-count.clj-dashboard-comment-up-count #{voteUpCount}
     i.fa.fa-fw.fa-angle-up
   span.dashboard-vote-view
-    span.dashboard-vote-count #{voteDownCount}
+    span.dashboard-vote-count.clj-dashboard-comment-down-count #{voteDownCount}
     i.fa.fa-fw.fa-angle-down
 
 mixin dashboardCommentItem(author, date)

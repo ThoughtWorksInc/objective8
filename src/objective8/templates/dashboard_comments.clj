@@ -19,10 +19,10 @@
     (html/at dashboard-comments-comment-item-snippet
              [:.clj-dashboard-comment-item]
              (html/clone-for [comment comments]
-                             [:.clj-dashboard-comment-item-text] (html/content (:comment comment))
-                             [:.clj-dashboard-comment-item-up-count] (html/content (str (get-in comment [:votes :up])))
-                             [:.clj-dashboard-comment-item-down-count] (html/content (str (get-in comment [:votes :down])))
-                             [:.clj-dashboard-comment-item-save] nil))))
+                             [:.clj-dashboard-comment-text] (html/content (:comment comment))
+                             [:.clj-dashboard-comment-author] (html/content (:username comment))
+                             [:.clj-dashboard-comment-up-count] (html/content (str (get-in comment [:votes :up])))
+                             [:.clj-dashboard-comment-down-count] (html/content (str (get-in comment [:votes :down])))))))
 
 (defn comment-list [{:keys [data] :as context}]
   (let [comments (:comments data)]
@@ -42,6 +42,7 @@
 
 (defn objective->navigation-list-item [objective]
   {:label "objective"
+   :link-count (get-in objective [:meta :comments-count])
    :uri (:uri objective)})
 
 (defn navigation-list [{:keys [data] :as context}]
@@ -58,7 +59,7 @@
                                                                  (html/add-class "on")
                                                                  identity)
                              [:.clj-dashboard-navigation-item-label] (html/content (:label item))
-                             [:.clj-dashboard-navigation-item-link-count] nil
+                             [:.clj-dashboard-navigation-item-link-count] (when (:link-count item) (html/content (str "(" (:link-count item) ")")))
                              [:.clj-dashboard-navigation-item-link]
                              (html/set-attr :href
                                             (str (assoc dashboard-url
@@ -84,6 +85,8 @@
 
                                     [:.clj-dashboard-stat-participant] nil
                                     [:.clj-dashboard-stat-starred-amount] (html/content (str (get-in objective [:meta :stars-count])))
+                                    [:.clj-writer-dashboard-navigation-questions-link] (html/set-attr :href (utils/path-for :fe/dashboard-questions :id (:_id objective)))
+                                    [:.clj-writer-dashboard-navigation-comments-link] (html/set-attr :href (utils/path-for :fe/dashboard-comments :id (:_id objective)))
                                     [:.clj-dashboard-navigation-list] (html/content (navigation-list context))
                                     [:.clj-dashboard-comment-list] (html/content (comment-list context))
 
