@@ -143,7 +143,8 @@
       eh/to-hiccup))
 
 (defn hiccup->html [hcp]
-  (hiccup/html hcp))
+  (-> (apply list hcp)
+      hiccup/html))
 
 (defn html->hiccup [html]
   (map hickory/as-hiccup (hickory/parse-fragment html)))

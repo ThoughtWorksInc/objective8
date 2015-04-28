@@ -164,7 +164,7 @@
         {:status 200
          :headers {"Content-Type" "text/html"}
          :body
-        (views/objective-detail-page "objective-details"
+        (views/objective-detail-page "objective-view"
                                      updated-request
                                      :objective formatted-objective
                                      :writers writers
@@ -538,7 +538,7 @@
         {writers-status :status writers :result} (http-api/retrieve-writers objective-id)]
     (cond
       (every? #(= ::http-api/success %) [objective-status draft-status writers-status comments-status])
-      (let [draft-content (utils/hiccup->html (apply list (:content draft)))]
+      (let [draft-content (utils/hiccup->html (:content draft))]
         {:status 200
          :body (views/draft "draft" request
                             :objective objective
@@ -609,12 +609,12 @@
       :else {:status 500})))
 
 (defn draft-section [{:keys [uri] :as request}]
-  (let [{section-status :status section-result :result} (http-api/get-draft-section uri)]
+  (let [{section-status :status section :result} (http-api/get-draft-section uri)]
     (cond 
       (every? #(= ::http-api/success %) [section-status])
       {:status 200
        :body (views/draft-section "draft-section" request 
-                                  :section (utils/hiccup->html (:section section-result)))
+                                  :section (update-in section [:section] utils/hiccup->html))
        :headers {"Content-Type" "text/html"}}
       
       :else {:status 500})))

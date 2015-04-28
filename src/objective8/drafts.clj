@@ -104,5 +104,5 @@
             section (get-section-from-hiccup content section-label)]
         (when section
           {:section section
-           :section-uri section-uri
+           :uri section-uri
            :objective-id objective-id})))))

@@ -452,6 +452,7 @@
                  (screenshot "third_draft")
 
                  (swap! journey-state assoc :draft-url (wd/current-url))
+                 (swap! journey-state assoc :section-label (wd/attribute "h1" :data-section-label))
 
                  (wd/page-source)
                  (catch Exception e
@@ -468,6 +469,18 @@
                  (catch Exception e
                    (screenshot "ERROR-Can-view-draft-diffs") 
                    (throw e))))
+
+         (fact "Can view draft section"
+               (try
+                 (wd/to (str (:draft-url @journey-state) "/sections/" (:section-label @journey-state)))
+                 (wait-for-title "Draft section | Objective[8]")
+                 (screenshot "draft_section")
+                 
+                 (wd/page-source) 
+                 (catch Exception e
+                   (screenshot "ERROR-Can-view-draft-section") 
+                   (throw e)))
+               => (contains "Third draft heading"))
 
          (fact "Can navigate to import from Google Drive"
                (try

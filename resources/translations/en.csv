@@ -89,6 +89,9 @@ draft,days,days
 draft,writers,Writers
 draft,comments,Comments
 draft,what-changed,What changed?
+draft,comment-box-label-title,Want to discuss this draft?
+draft,comment-box-label-helper,You can leave a comment here.
+draft,comment-post-button,Add a comment
 draft-list,doc-title,Drafts | Objective[8]
 draft-list,doc-description,
 draft-list,drafts-for,Drafts for: 
@@ -104,6 +107,9 @@ draft-list,writers,Writers
 draft-section,doc-title,Draft section | Objective[8]
 draft-section,doc-description,
 draft-section,page-title,Add annotation to:
+draft-section,comment-box-label-title,Want to discuss this section?
+draft-section,comment-box-label-helper,You can leave an annotation here.
+draft-section,comment-post-button,Add an annotation
 add-draft,doc-title,Add draft | Objective[8]
 add-draft,doc-description,Draft policy
 add-draft,placeholder,Enter your draft here
@@ -211,6 +217,7 @@ objective-view,ask-a-question,Suggest a question
 objective-view,comments,Comments for this objective
 objective-view,comment-box-label-title,Want to discuss the objective?
 objective-view,comment-box-label-helper,You can leave a comment here.
+objective-view,comment-post-button,Add a comment
 question-list,question-list-heading,Recently asked questions
 question-list,page-intro,"Gather background information such as opinions and experiences by suggesting a question for the community to answer.  Your question should be focussed and specific, as the answers will influence the policy drafting process."
 question-list,no-questions,There are no community questions yet.

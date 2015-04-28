@@ -32,6 +32,7 @@
 (defn- doc-info [request page-name translations data]
   (when (and page-name translations) 
     (-> {:flash (:flash request)}
+        (assoc :page-name page-name)
         (assoc :errors (:errors data))
         (assoc :title
                (if-let [title (get-in data [:doc :title])]

@@ -22,7 +22,7 @@ mixin addCommentForm()
     input.clj-comment-on-uri(name='comment-on-uri', type='hidden', value='!entity-to-comment-on-uri')
     p.form-field
       label.form-field-label(for="comment")
-        span.form-field-label-title#comment-label-title(data-l8n="content:objective-view/comment-box-label-title") !Want to discuss the objective?
-        span.label-helper#comment-label-description(data-l8n="content:objective-view/comment-box-label-helper") !You can leave a comment here.
+        span.form-field-label-title#comment-label-title.clj-comment-form-label-title !Want to discuss the objective?
+        span.label-helper#comment-label-description.clj-comment-form-label-helper !You can leave a comment here.
         textarea.func--comment-form-text-area(id="comment", name='comment', rows='5', cols='10', pattern=".{50,}", maxLength='500', required, aria-labelledby="comment-label-title", aria-describedby="comment-label-description")
-    button.button.func--comment-form-submit(type='submit', data-l8n="content:comment-create/post-button") !Add a comment
+    button.button.clj-comment-form-post-button.func--comment-form-submit(type='submit') !Add a comment

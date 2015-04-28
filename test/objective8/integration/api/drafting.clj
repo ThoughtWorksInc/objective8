@@ -140,7 +140,7 @@
                                                         :d-id draft-id
                                                         :section-label section-label))
                          [:response :body]) => (helpers/json-contains {:section section
-                                                                       :section-uri (str "/objectives/" objective-id
-                                                                                         "/drafts/" draft-id
-                                                                                         "/sections/" section-label)
+                                                                       :uri (str "/objectives/" objective-id
+                                                                                 "/drafts/" draft-id
+                                                                                 "/sections/" section-label)
                                                                        :objective-id objective-id})))))
