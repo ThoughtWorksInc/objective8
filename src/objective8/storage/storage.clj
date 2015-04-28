@@ -366,14 +366,6 @@ WHERE questions.objective_id = ?" [objective-id]] :results))))
                            ORDER BY answer_count DESC"
                            [objective-id]] :results))))))
 
-(defn pg-retrieve-star-count-for-objective [query-map]
-  (when-let [sanitised-query (utils/select-all-or-nothing query-map [:entity :objective-id])]
-    (let [objective-id (:objective-id sanitised-query)]
-       (korma/exec-raw ["SELECT COUNT(stars.*) AS stars_count
-                        FROM objective8.stars AS stars
-                        WHERE stars.active = true 
-                        AND stars.objective_id = ?" [objective-id]] :results))))
-
 (defn pg-get-drafts [objective-id]
   (let [unmap-draft (first (get mappings/draft :transforms))]
     (apply vector (map unmap-draft

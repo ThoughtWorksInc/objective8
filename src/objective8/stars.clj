@@ -19,9 +19,3 @@
     (-> (storage/pg-retrieve {:entity :star :objective-id objective-id :created-by-id created-by-id})
         :result
         first)))
-
-(defn get-star-count-for-objective [objective-uri]
-  (let [objective-id (:_id (uris/uri->query objective-uri))]
-    (-> (storage/pg-retrieve-star-count-for-objective {:entity :star :objective-id objective-id})
-        first
-        (utils/ressoc :stars_count :stars-count))))

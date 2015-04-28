@@ -35,12 +35,6 @@
          :status ::success})
     {:status ::failure}))
 
-(defn get-objective-with-star-count [objective-id]
-  (if-let [objective (objectives/get-objective objective-id)] 
-    (let [objective-uri (:uri objective) 
-          star-count (stars/get-star-count-for-objective objective-uri)] 
-      (update-in objective [:meta] merge star-count))))
-
 (defn start-drafting! [objective-id]
   (let [objective (storage/pg-retrieve-entity-by-uri (str "/objectives/" objective-id) :with-global-id)]
     (doall (->> (invitations/retrieve-active-invitations objective-id)
