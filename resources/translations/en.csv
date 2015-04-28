@@ -129,6 +129,8 @@ writer-dashboard,no-comments-message,There are no comments on this piece of cont
 writer-dashboard,link-button,Dashboard
 dashboard-questions,doc-title,Writer dashboard
 dashboard-questions,doc-description,A summary of engagement with questions and answers for this objective
+dashboard-comments,doc-title,Writer dashboard
+dashboard-comments,doc-description,A summary of discussions about this objective and related drafts
 comment-create,comment-title,Comments are a maximum length of 500 characters
 comment-create,post-button,Add a comment
 comment-create,comment-label,Your comment
