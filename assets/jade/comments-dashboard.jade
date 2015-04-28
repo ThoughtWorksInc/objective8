@@ -53,10 +53,14 @@ block content
         .writer-dashboard-content.clj-dashboard-content
           .writer-dashboard-content-stats.clj-dashboard-content-stats
             p 1827 answers from 970 people:
-          ul.comment-list.clj-dashboard-comment-list
-            +dashboardCommentItem()
-            +dashboardCommentItem(true)
-            +dashboardCommentItem()
-            +dashboardCommentItem()
+          ul.dashboard-comment-list.clj-dashboard-comment-list
+            +dashboardCommentItem('Chris Linseman', '28 April 2015 07:41')
+              | This is a one line commment about the content
+
+            +dashboardCommentItem('Jane Smith', '29 January 2013 23:00')
+              | This is a slightly longer comment. Possibly with more insight and relevance
+
+            +dashboardCommentItem('Fake Name', '13 November 2012 09:11')
+              | This is a longer comment that should span multiple lines. It's really just to see how the comments look in the dashboard when there is more text to display
 
 block footerScripts

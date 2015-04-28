@@ -86,6 +86,8 @@ html.no-js(lang="en")
           a(href="#vote-assets") Vote assets
         li
           a(href="#modal-assets") Modal assets
+        li
+          a(href="#dashboard-assets") Dashboard assets
 
       h2#masthead-assets Masthead assets
 
@@ -349,6 +351,14 @@ html.no-js(lang="en")
         .list-item-actions
           +voteUpDownControls()
 
+      .example
+        .documentation
+          h3 Vote view
+          p Generated with voteUpDownView()
+          p Intended for questions and comments in dashboard
+        .list-item-actions
+          +voteUpDownView()
+
       h2#modal-assets Modal assets
 
       .example
@@ -377,6 +387,15 @@ html.no-js(lang="en")
 
         ul.comment-list
           +dashboardCommentBlank()
+
+      .example
+        .documentation
+          h3 Comments message
+          p Generated with dashboardCommentItem(author, date) mixing
+
+        ul.dashboard-comment-list
+          +dashboardCommentItem("Chris Linseman", '28 April 2015 07:41')
+            | !This is a very interesting comment about the content
 
       .example
         .documentation

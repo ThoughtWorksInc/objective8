@@ -1,60 +1,49 @@
 /*
 
-Comment item
+Dashboard comment item
 
 */
+
+.dashboard-comment-list {
+  @extend %list-item-container;
+  margin-top: 1em;
+  padding-left: 1.5em;
+  padding-top: 1em;
+  //border-left: 4px solid $grey-4;
+}
 
 .dashboard-comment-item {
   padding: 2em 0;
   border-top: 1px solid $border_color;
   border-bottom: 1px solid $border_color;
 }
-.dashboard-comment-item-text {
-  font-size: 1.1em;
-  margin-bottom: 0.5em;
-}
-.dashboard-comment-item-stats {
-  font-size: 1.3em;
-  margin-bottom: 0.15em;
-}
-.dashboard-comment-item-up-score,
-.dashboard-comment-item-down-score {
-  display: inline-block;
-}
-.dashboard-comment-item-up-score {
-  margin-right: 0.5em;
-}
-.dashboard-comment-item-down-score {
 
+.dashboard-comment-meta {
+  @extend %list-item-meta;
 }
 
-$dashboard_save_button_width: 100px;
-.dashboard-comment-item-save {
-  padding-top: 0.25em;
-}
-.dashboard-comment-item-save-comment {
-  padding-right: $dashboard_save_button_width;
-}
-.save-comment-button {
-  transition: background-color 250ms ease, color 250ms ease;
-  position: absolute;
-  top: 1px;
-  right: 1px;
-  z-index: 1;
-  width: $dashboard_save_button_width;
-  height: 36px;
-  background: transparent;
-  color: $green1;
-  border: 0;
-  border-left: 1px solid $grey-3;
-  &:hover {
-    background-color: $green1;
-    color: $white;
-  }
-//  outline
+.dashboard-comment-author {
+  @extend %list-item-author;
 }
 
-.dashboard-comment-item-saved-content {
-  padding-top: 0.25em;
-  color: $green1;
+.dashboard-comment-date {
+  @extend %list-item-date;
+}
+
+.dashboard-comment-text {
+  @extend %list-item-text;
+}
+
+.dashboard-vote-view {
+  padding-right: 0.5em;
+}
+
+.dashboard-vote-count {
+  min-width: 1.5em;
+  padding-right: 0;
+  text-align: left;
+}
+
+.dashboard-comment-actions {
+  @extend .list-item-actions;
 }
