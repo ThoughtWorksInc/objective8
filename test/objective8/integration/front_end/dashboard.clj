@@ -35,22 +35,22 @@
         (http-api/get-user anything) => {:result writer-for-objective})
 
        (against-background
-         (http-api/get-objective OBJECTIVE_ID {:with-stars-count true}) => {:status ::http-api/success
-                                                                            :result {:entity :objective
-                                                                                     :title "Objective title"
-                                                                                     :_id OBJECTIVE_ID
-                                                                                     :meta {:stars-count STARS_COUNT}}}
+        (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                  :result {:entity :objective
+                                                           :title "Objective title"
+                                                           :_id OBJECTIVE_ID
+                                                           :meta {:stars-count STARS_COUNT}}}
 
-         (http-api/retrieve-questions OBJECTIVE_ID {:sorted-by "answers"})
-         => {:status ::http-api/success
-             :result [{:entity :question
-                       :uri QUESTION_URI
-                       :question "test question"
-                       :answer-count ANSWERS_COUNT}]}
+        (http-api/retrieve-questions OBJECTIVE_ID {:sorted-by "answers"})
+        => {:status ::http-api/success
+            :result [{:entity :question
+                      :uri QUESTION_URI
+                      :question "test question"
+                      :answer-count ANSWERS_COUNT}]}
 
-         (http-api/retrieve-answers QUESTION_URI {:sorted-by "up-votes"}) => {:status ::http-api/success
-                                                      :result [{:entity :answer
-                                                                :answer "test answer"}]})
+        (http-api/retrieve-answers QUESTION_URI {:sorted-by "up-votes"}) => {:status ::http-api/success
+                                                                             :result [{:entity :answer
+                                                                                       :answer "test answer"}]})
        (fact "can see answers for specific questions"
              (let [{response :response} (-> user-session
                                             ih/sign-in-as-existing-user
@@ -62,8 +62,8 @@
 
        (fact "see message noting there is no answer when question has no answers"
              (against-background
-               (http-api/retrieve-answers QUESTION_URI {:sorted-by "up-votes"}) => {:status ::http-api/success
-                                                            :result []})
+              (http-api/retrieve-answers QUESTION_URI {:sorted-by "up-votes"}) => {:status ::http-api/success
+                                                                                   :result []})
              (let [{response :response} (-> user-session
                                             ih/sign-in-as-existing-user
                                             (p/request (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID)))]
@@ -74,8 +74,8 @@
 
        (fact "see message noting there are no questions when no questions were submitted to objective"
              (against-background
-               (http-api/retrieve-questions OBJECTIVE_ID {:sorted-by "answers"}) => {:status ::http-api/success
-                                                              :result []})
+              (http-api/retrieve-questions OBJECTIVE_ID {:sorted-by "answers"}) => {:status ::http-api/success
+                                                                                    :result []})
              (let [{response :response} (-> user-session
                                             ih/sign-in-as-existing-user
                                             (p/request (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID)))]
@@ -84,11 +84,11 @@
                (:body response) => (contains NO_QUESTION_MESSAGE)))
        
        (fact "get objectives with stars-count"
-            (let [{response :response} (-> user-session
-                                           ih/sign-in-as-existing-user
-                                           (p/request (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID)))]
-              (:status response) => 200
-              (:body response) => (contains (str STARS_COUNT))))
+             (let [{response :response} (-> user-session
+                                            ih/sign-in-as-existing-user
+                                            (p/request (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID)))]
+               (:status response) => 200
+               (:body response) => (contains (str STARS_COUNT))))
        
        (fact "get questions with answer-count"
              (let [{response :response} (-> user-session
@@ -103,8 +103,8 @@
                  (p/request (str (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID) "?sorted-by=down-votes"))
                  :response
                  :status) => 200
-             (provided
-               (http-api/retrieve-answers QUESTION_URI {:sorted-by "down-votes"}) => {:status ::http-api/success
-                                                                                      :result [{:entity :answer
-                                                                                                :answer "test answer"}]})))
+                 (provided
+                  (http-api/retrieve-answers QUESTION_URI {:sorted-by "down-votes"}) => {:status ::http-api/success
+                                                                                         :result [{:entity :answer
+                                                                                                   :answer "test answer"}]})))
 

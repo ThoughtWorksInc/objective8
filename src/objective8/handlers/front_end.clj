@@ -181,7 +181,7 @@
 
 (defn dashboard-questions [{:keys [route-params params] :as request}]
   (let [objective-id (Integer/parseInt (:id route-params))
-        {objective-status :status objective :result} (http-api/get-objective objective-id {:with-stars-count true})
+        {objective-status :status objective :result} (http-api/get-objective objective-id)
         {questions-status :status questions :result} (http-api/retrieve-questions objective-id {:sorted-by "answers"})
         selected-question-uri (get params :selected (:uri (first questions)))
         answer-sort-method {:sorted-by (get params :sorted-by "up-votes")} 
@@ -203,7 +203,7 @@
 
 (defn dashboard-comments [{:keys [route-params params] :as request}]
   (let [objective-id (Integer/parseInt (:id route-params))
-        {objective-status :status objective :result} (http-api/get-objective objective-id {:with-stars-count true})
+        {objective-status :status objective :result} (http-api/get-objective objective-id)
         {drafts-status :status drafts :result} (http-api/get-all-drafts objective-id)
         selected-comment-target-uri (get params :selected (:uri objective))
         {comments-status :status comments :result} (http-api/get-comments selected-comment-target-uri)]

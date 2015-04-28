@@ -213,7 +213,7 @@
        (facts "about the questions dashboard"
               (fact "there are no untranslated strings"
                     (against-background
-                     (http-api/get-objective anything anything) => {:status ::http-api/success
+                     (http-api/get-objective anything) => {:status ::http-api/success
                                                                     :result (assoc open-objective :meta {:stars 1})}
                      (http-api/retrieve-questions anything anything) => {:status ::http-api/success
                                                                          :result []}
@@ -229,7 +229,7 @@
        (facts "about the comments dashboard"
               (fact "there are no untranslated strings"
                     (against-background
-                     (http-api/get-objective anything anything) => {:status ::http-api/success
+                     (http-api/get-objective anything) => {:status ::http-api/success
                                                                     :result (assoc open-objective :meta {:stars 1})}
                      (http-api/get-all-drafts anything) => {:status ::http-api/success
                                                             :result []}
