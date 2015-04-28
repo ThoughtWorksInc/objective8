@@ -482,10 +482,9 @@
           (throw e)))
       => (contains "Third draft heading"))
 
-(future-fact "Can annotate a draft section"
+(fact "Can annotate a draft section"
       (try
         (wd/input-text ".func--comment-form-text-area" "my draft section annotation")
-        (prn (wd/page-source))
         (wd/click ".func--comment-form-submit")
         (wait-for-title "Draft section | Objective[8]")
         (screenshot "draft_section_with_comment")

@@ -609,12 +609,14 @@
       :else {:status 500})))
 
 (defn draft-section [{:keys [uri] :as request}]
-  (let [{section-status :status section :result} (http-api/get-draft-section uri)]
+  (let [{section-status :status section :result} (http-api/get-draft-section uri)
+        {comments :result} (http-api/get-comments uri)] 
     (cond 
-      (every? #(= ::http-api/success %) [section-status])
+      (= ::http-api/success section-status)
       {:status 200
        :body (views/draft-section "draft-section" request 
-                                  :section (update-in section [:section] utils/hiccup->html))
+                                  :section (update-in section [:section] utils/hiccup->html)
+                                  :comments comments)
        :headers {"Content-Type" "text/html"}}
       
       :else {:status 500})))
