@@ -233,8 +233,8 @@
                                                                     :result (assoc open-objective :meta {:stars 1})}
                      (http-api/get-all-drafts anything) => {:status ::http-api/success
                                                             :result []}
-                     (http-api/get-comments anything) => {:status ::http-api/success
-                                                          :result []})
+                     (http-api/get-comments anything anything) => {:status ::http-api/success
+                                                                   :result []})
                     (let [{status :status body :body} (-> user-session
                                                           helpers/sign-in-as-existing-user
                                                           (p/request (utils/path-for :fe/dashboard-comments :id OBJECTIVE_ID))

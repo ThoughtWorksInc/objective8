@@ -206,7 +206,9 @@
         {objective-status :status objective :result} (http-api/get-objective objective-id)
         {drafts-status :status drafts :result} (http-api/get-all-drafts objective-id)
         selected-comment-target-uri (get params :selected (:uri objective))
-        {comments-status :status comments :result} (http-api/get-comments selected-comment-target-uri)]
+        comments-sort-method (get params :sorted-by "up-votes")
+        {comments-status :status comments :result} (http-api/get-comments selected-comment-target-uri
+                                                                          {:sorted-by comments-sort-method})]
     (cond
       (every? #(= ::http-api/success %) [objective-status comments-status])
       (let [formatted-objective (format-objective objective)]
@@ -217,6 +219,7 @@
                                               :objective formatted-objective
                                               :drafts drafts
                                               :comments comments
+                                              :comments-sorted-by comments-sort-method
                                               :selected-comment-target-uri selected-comment-target-uri)}))))
 
 ;; COMMENTS

@@ -74,7 +74,8 @@
 (defn dashboard-comments [{:keys [doc data] :as context}]
   (let [objective (:objective data)
         selected-comment-target-uri (:selected-comment-target-uri data)
-        dashboard-url (url/url (utils/path-for :fe/dashboard-comments :id (:_id objective)))]
+        dashboard-url (url/url (utils/path-for :fe/dashboard-comments :id (:_id objective)))
+        comments-sort-method (:comments-sorted-by data)]
     (apply str
            (html/emit*
             (tf/translate context
@@ -95,5 +96,24 @@
                                     [:.clj-dashboard-navigation-list] (html/content (navigation-list context))
                                     [:.clj-dashboard-comment-list] (html/content (comment-list context))
 
+                                    [:.clj-dashboard-filter-up-votes] (html/set-attr
+                                                                       :href
+                                                                       (str (assoc dashboard-url
+                                                                                   :query {:selected selected-comment-target-uri
+                                                                                           :sorted-by "up-votes"})))
+                                    
+                                    [:.clj-dashboard-filter-up-votes] (if (= comments-sort-method "up-votes")
+                                                                        (html/add-class "on")
+                                                                        identity)
+
+                                    [:.clj-dashboard-filter-down-votes] (html/set-attr
+                                                                         :href
+                                                                         (str (assoc dashboard-url
+                                                                                     :query {:selected selected-comment-target-uri
+                                                                                             :sorted-by "down-votes"})))
+                                    
+                                    [:.clj-dashboard-filter-down-votes] (if (= comments-sort-method "down-votes")
+                                                                          (html/add-class "on")
+                                                                          identity)
                                     [:.clj-dashboard-filter-paper-clip] nil
                                     [:.clj-dashboard-content-stats] nil)))))))

@@ -29,12 +29,6 @@
 
 (facts "about the questions dashboard for writers"
        (against-background
-        (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
-        (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                        :result writer-for-objective}
-        (http-api/get-user anything) => {:result writer-for-objective})
-
-       (against-background
         (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                   :result {:entity :objective
                                                            :title "Objective title"
@@ -108,3 +102,31 @@
                                                                                          :result [{:entity :answer
                                                                                                    :answer "test answer"}]})))
 
+(facts "about the comments dashboard for writers"
+       (against-background
+        (http-api/get-objective anything) => {:status ::http-api/success
+                                              :result {:entity :objective
+                                                       :title "Objective title"
+                                                       :_id OBJECTIVE_ID
+                                                       :meta {:stars-count STARS_COUNT
+                                                              :comments-count 1}}}
+        
+        (http-api/get-all-drafts anything) => {:status ::http-api/success
+                                               :result [{:meta {:comments-count 1}
+                                                         :_created_at "2015-04-04T12:00:00.000Z"}]}
+        
+        (http-api/get-comments anything) => {:status ::http-api/success
+                                             :result [{:comment "A comment"
+                                                       :_created_at "2015-01-01T01:01:00.000Z"
+                                                       :username "A User"
+                                                       :votes {:up 5 :down 3}}]})
+
+       (fact "can get comments sorted by number of up votes"
+             (-> user-session
+                 ih/sign-in-as-existing-user
+                 (p/request (str (utils/path-for :fe/dashboard-comments :id OBJECTIVE_ID) "?sorted-by=up-votes"))
+                 :response
+                 :status) => 200
+                 (provided
+                  (http-api/get-comments anything {:sorted-by "up-votes"}) => {:status ::http-api/success
+                                                                               :result []})))

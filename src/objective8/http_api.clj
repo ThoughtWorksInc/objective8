@@ -132,8 +132,12 @@
 (defn post-comment [comment-data]
   (default-post-call (utils/path-for :api/post-comment) comment-data))
 
-(defn get-comments [entity-uri]
-  (default-get-call (utils/path-for :api/get-comments) {:query-params {:uri entity-uri}}))
+(defn get-comments 
+  ([entity-uri]
+   (get-comments entity-uri {}))
+
+  ([entity-uri options]
+   (default-get-call (utils/path-for :api/get-comments) {:query-params (merge {:uri entity-uri} options)})))
 
 ;; QUESTIONS
 
