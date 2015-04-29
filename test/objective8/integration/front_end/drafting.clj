@@ -16,12 +16,17 @@
 (def WRONG_OBJECTIVE_ID (+ OBJECTIVE_ID 100))
 (def DRAFT_ID 3)
 (def SECTION_LABEL "abcdef12")
+(def SECTION_LABEL_2 "12abcdef")
 
 (def SOME_MARKDOWN  "A heading\n===\nSome content")
 (def SOME_DIFFERENT_MARKDOWN  "Heading\n===\nSome different content\nSome more content")
 (def SOME_HICCUP (eh/to-hiccup (ec/mp SOME_MARKDOWN)))
 (def SOME_DIFFERENT_HICCUP (eh/to-hiccup (ec/mp SOME_DIFFERENT_MARKDOWN)))
 (def SOME_HTML (hc/html SOME_HICCUP))
+
+(def SOME_HICCUP_WITH_LABELS [[:p nil] 
+                              [:p {:data-section-label SECTION_LABEL} "first paragraph"] 
+                              [:p {:data-section-label SECTION_LABEL_2} "second paragraph"]])
 
 (def add-draft-url (utils/path-for :fe/add-draft-get :id OBJECTIVE_ID))
 (def latest-draft-url (utils/path-for :fe/draft :id OBJECTIVE_ID :d-id "latest"))
@@ -264,28 +269,37 @@
 
 
 (facts "about rendering draft page"
+       (against-background
+         (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                   :result drafting-objective} 
+         (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
+                                                        :result {:_id DRAFT_ID
+                                                                 :content SOME_HICCUP_WITH_LABELS
+                                                                 :objective-id OBJECTIVE_ID
+                                                                 :submitter-id USER_ID
+                                                                 :_created_at "2015-02-12T16:46:18.838Z"
+                                                                 :uri :draft-uri 
+                                                                 :username "UserName"}}
+         (http-api/get-comments :draft-uri) => {:status ::http-api/success 
+                                                :result []} 
+         (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success 
+                                                      :result []}) 
        (fact "there are no untranslated strings"
-             (against-background
-               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                         :result drafting-objective} 
-               (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
-                                                              :result {:_id DRAFT_ID
-                                                                       :content SOME_HICCUP
-                                                                       :objective-id OBJECTIVE_ID
-                                                                       :submitter-id USER_ID
-                                                                       :_created_at "2015-02-12T16:46:18.838Z"
-                                                                       :uri :draft-uri 
-                                                                       :username "UserName"}}
-               (http-api/get-comments :draft-uri) => {:status ::http-api/success 
-                                                      :result []} 
-               (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success 
-                                                            :result []}) 
              (let [user-session (ih/test-context)
                    {status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/draft :id OBJECTIVE_ID :d-id DRAFT_ID))
                                                    :response)]
                status => 200
-               body => ih/no-untranslated-strings)))
+               body => ih/no-untranslated-strings))
+       
+       (fact "adds section links before elements with section labels"
+             (let [user-session (ih/test-context)
+                   {status :status body :body} (-> user-session
+                                                   (p/request (utils/path-for :fe/draft :id OBJECTIVE_ID :d-id DRAFT_ID))
+                                                   :response)]
+               (count (re-seq #"draft-add-inline-comment" body)) => 2
+               body => (contains (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID "/sections/" SECTION_LABEL))
+               body => (contains (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID "/sections/" SECTION_LABEL_2)))))
 
 (facts "about rendering draft diff page"
        (fact "there are no untranslated strings"

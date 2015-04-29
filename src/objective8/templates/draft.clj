@@ -33,6 +33,28 @@
                                 (utils/local-path-for :fe/draft :id objective-id
                                                       :d-id next-id)))))))
 
+(def section-link-snippet (first (html/select draft-template [:.draft-add-inline-comment])))
+
+(defn update-section-link-with-label [label {:keys [ring-request] :as context}]
+  (let [uri (:uri ring-request)]
+    (html/at section-link-snippet
+             [:.clj-section-comment-link] (html/set-attr :href (str uri "/sections/" label)))))
+
+(defn add-section-link [context node]
+  (let [section-label (get-in node [:attrs :data-section-label])]
+    (->  (update-section-link-with-label section-label context) 
+    (list node))))
+
+(defn add-section-links [draft-content context]
+  (let [draft-resource (-> (.getBytes draft-content "UTF-8")
+                           java.io.ByteArrayInputStream. 
+                           (html/html-resource {:parser jsoup/parser})
+                           (html/select  [:body]) 
+                           first
+                           :content)]
+    (html/at draft-resource
+             [(html/attr? :data-section-label)] (partial add-section-link context))))
+
 (def no-drafts-snippet (html/select pf/library-html-resource [:.clj-no-drafts-yet]))
 
 (def draft-wrapper-snippet (html/select draft-template [:.clj-draft-wrapper]))
@@ -58,7 +80,7 @@
                                                                         :id objective-id)))
 
              [:.clj-draft-preview-document] (when-let [draft-content (:draft-content data)] 
-                                              (html/html-content draft-content)) 
+                                              (html/content (add-section-links draft-content context)))
 
              [:.clj-what-changed-link] (when (:previous-draft-id draft)
                                          (html/set-attr :href 
