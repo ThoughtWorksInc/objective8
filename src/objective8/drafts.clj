@@ -37,7 +37,7 @@
 
 (defn store-draft! [draft-data]
   (some-> draft-data
-          (update-in [:content] utils/add-section-labels)
+          (update-in [:content] add-section-labels)
           (assoc :entity :draft)
           storage/pg-store!
           (utils/update-in-self [:uri] uri-for-draft)
