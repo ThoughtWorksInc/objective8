@@ -43,6 +43,7 @@ $guidance_text_top_gutter: 1.45em;
 .button-hide-guidance-text {
   text-decoration: none;
   display: block;
+  z-index: 10;
   @include mq(640) {
     position: absolute;
     top: 27px;
