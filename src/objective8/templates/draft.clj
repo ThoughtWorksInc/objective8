@@ -35,10 +35,11 @@
 
 (def section-link-snippet (first (html/select draft-template [:.draft-add-inline-comment])))
 
-(defn update-section-link-with-label [label {:keys [ring-request] :as context}]
-  (let [uri (:uri ring-request)]
+(defn update-section-link-with-label [label {:keys [data] :as context}]
+  (let [draft-id  (get-in data [:draft :_id]) 
+        objective-id (get-in data [:draft :objective-id])]
     (html/at section-link-snippet
-             [:.clj-annotation-link] (html/set-attr :href (str uri "/sections/" label)))))
+             [:.clj-annotation-link] (html/set-attr :href (utils/path-for :fe/draft-section :id objective-id :d-id draft-id :section-label label)))))
 
 (defn add-section-link [context node]
   (let [section-label (get-in node [:attrs :data-section-label])]
