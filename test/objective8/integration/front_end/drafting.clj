@@ -398,11 +398,22 @@
 (facts "about rendering draft section page"
        (against-background
          (http-api/get-draft-section anything) => {:status ::http-api/success
-                                                   :result {:section '([:p {:data-section-label SECTION_LABEL} "barry"])}})
+                                                   :result {:section '([:p {:data-section-label SECTION_LABEL} "barry"]) 
+                                                            :uri (str "/objectives/" OBJECTIVE_ID
+                                                                      "/drafts/" DRAFT_ID
+                                                                      "/sections/" SECTION_LABEL)}})
        (fact "there are no untranslated strings"
              (let [user-session (ih/test-context)
                    {status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/draft-section :id OBJECTIVE_ID :d-id DRAFT_ID :section-label SECTION_LABEL))
                                                    :response)]
                status => 200
-               body => ih/no-untranslated-strings)))
+               body => ih/no-untranslated-strings))
+       
+       (fact "links back to the draft"
+             (let [user-session (ih/test-context)
+                   {status :status body :body} (-> user-session
+                                                   (p/request (utils/path-for :fe/draft-section :id OBJECTIVE_ID :d-id DRAFT_ID :section-label SECTION_LABEL))
+                                                   :response)]
+               body => (contains (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID "\""))))  
+       )
