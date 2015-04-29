@@ -17,7 +17,7 @@
 (def QUESTION_ID 5)
 (def QUESTION_URI (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))
 (def NO_ANSWER_MESSAGE "No answers were provided for this question.")
-(def NO_QUESTION_MESSAGE "No questions were asked for this objective.")
+(def NO_QUESTION_MESSAGE "No questions have been asked for this objective")
 
 (def writer-for-objective {:_id USER_ID :username "username" :writer-records [{:objective-id OBJECTIVE_ID}]})
 
