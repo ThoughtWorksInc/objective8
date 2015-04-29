@@ -1,7 +1,6 @@
 (ns objective8.utils
   (:require [clj-time.format :as time-format]
             [clj-time.core :as time-core]
-            [crypto.random :as random] 
             [clojure.string :as s]
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
             [bidi.bidi :as bidi]
@@ -161,24 +160,3 @@
          :content (subvec element 2)}
         {:element-without-content (subvec element 0 1)
          :content (subvec element 1)}))))
-
-
-(defn insert-section-label [element label]
-  (let [{:keys [element-without-content content]} (split-hiccup-element element)
-        section-label-attr {:data-section-label label}]
-    (if (empty? content)
-      element 
-      (case (count element-without-content)
-        1 (into [] (concat element-without-content [section-label-attr] content)) 
-        2 (into [] (assoc element 1 (merge (second element) section-label-attr)))))))
-
-(defn generate-section-label []
-  (random/hex 4))
-
-(defn get-n-unique-section-labels [n]
-  (take n (distinct (repeatedly generate-section-label)))) 
-
-(defn add-section-labels [hiccup]
-  (let [number-of-sections (count hiccup)
-        section-labels (get-n-unique-section-labels number-of-sections)]
-  (into [] (map insert-section-label hiccup section-labels))))

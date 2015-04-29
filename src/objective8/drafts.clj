@@ -1,10 +1,31 @@
 (ns objective8.drafts
-  (:require [objective8.storage.storage :as storage]
+  (:require [crypto.random :as random] 
+            [objective8.storage.storage :as storage] 
             [objective8.storage.uris :as uris]
             [objective8.utils :as utils]))
 
 (defn uri-for-draft [{:keys [_id objective-id] :as draft}]
   (str "/objectives/" objective-id "/drafts/" _id))
+
+(defn insert-section-label [element label]
+  (let [{:keys [element-without-content content]} (utils/split-hiccup-element element)
+        section-label-attr {:data-section-label label}]
+    (if (empty? content)
+      element 
+      (case (count element-without-content)
+        1 (into [] (concat element-without-content [section-label-attr] content)) 
+        2 (into [] (assoc element 1 (merge (second element) section-label-attr)))))))
+
+(defn generate-section-label []
+  (random/hex 4))
+
+(defn get-n-unique-section-labels [n]
+  (take n (distinct (repeatedly generate-section-label)))) 
+
+(defn add-section-labels [hiccup]
+  (let [number-of-sections (count hiccup)
+        section-labels (get-n-unique-section-labels number-of-sections)]
+  (into [] (map insert-section-label hiccup section-labels))))
 
 (defn get-section-label [element]
   (when (map? (second element))
