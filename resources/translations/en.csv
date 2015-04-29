@@ -140,7 +140,8 @@ dashboard-questions,doc-title,Writer dashboard
 dashboard-questions,doc-description,A summary of engagement with questions and answers for this objective
 dashboard-comments,doc-title,Writer dashboard
 dashboard-comments,doc-description,A summary of discussions about this objective and related drafts
-dashboard-comments,latest-draft-label,Latest draft
+dashboard-comments,latest-draft-label,Latest
+dashboard-comments,draft-label-prefix,Draft
 dashboard-comments,objective-label,Objective
 comment-create,comment-title,Comments are a maximum length of 500 characters
 comment-create,post-button,Add a comment

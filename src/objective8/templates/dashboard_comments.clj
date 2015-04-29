@@ -34,11 +34,11 @@
 (def dashboard-comments-navigation-item-snippet (html/select dashboard-comments-template
                                                              [[:.clj-dashboard-navigation-item html/first-of-type]]))
 
-(defn draft-label [draft]
-  (str (:username draft) ", " (utils/iso-time-string->pretty-time (:_created_at draft))))
+(defn draft-label [{:keys [translations] :as context} draft]
+  (str (translations :dashboard-comments/draft-label-prefix) ": " (utils/iso-time-string->pretty-time (:_created_at draft))))
 
 (defn draft->navigation-list-item [{:keys [translations] :as context} draft]
-  {:label (draft-label draft)
+  {:label (draft-label context draft)
    :link-count (get-in draft [:meta :comments-count])
    :uri (:uri draft)})
 
@@ -52,7 +52,8 @@
         objective-nav-item (objective->navigation-list-item context objective)
         draft-nav-items (mapv (partial draft->navigation-list-item context) (:drafts data))
         navigation-list-items (cond-> draft-nav-items
-                                (not (empty? draft-nav-items)) (assoc-in [0 :label] (translations :dashboard-comments/latest-draft-label))
+                                (not (empty? draft-nav-items)) (update-in [0 :label]
+                                                                          #(str % " (" (translations :dashboard-comments/latest-draft-label) ")"))
                                 true                           (conj objective-nav-item))
         selected-comment-target-uri (:selected-comment-target-uri data)
         dashboard-url (url/url (utils/path-for :fe/dashboard-comments :id (:_id objective)))]
