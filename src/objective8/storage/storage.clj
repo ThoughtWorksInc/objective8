@@ -86,7 +86,11 @@ SELECT _id, 'objective' AS entity FROM objective8.objectives WHERE global_id=?
 UNION
 
 SELECT _id, 'draft' AS entity FROM objective8.drafts WHERE global_id=?
-" [global-id, global-id]] :results)
+
+UNION
+
+SELECT _id, 'section' AS entity FROM objective8.sections WHERE global_id=?
+" [global-id, global-id, global-id]] :results)
                          first
                          (update-in [:entity] keyword))]
     (-> (pg-retrieve entity-query)

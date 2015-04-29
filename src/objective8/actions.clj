@@ -76,6 +76,7 @@
                                       entity-to-vote-on)]
     (and (case owner-entity-type
            :draft (objectives/in-drafting? objective)
+           :section (objectives/in-drafting? objective)
            :objective (objectives/open? objective)
            :answer (objectives/open? objective)
            false)
