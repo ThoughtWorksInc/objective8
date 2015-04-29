@@ -26,7 +26,7 @@
             (replace-comment-on-id comment-on-uri))))
 
 
-(defn get-comments-ordered-by [entity-uri ordered-by]
+(defn get-comments-ordered-by [ordered-by entity-uri]
   (when-let [{:keys [global-id]} (storage/pg-retrieve-entity-by-uri entity-uri :with-global-id)]
     (->> (storage/pg-retrieve-comments-with-votes-ordered-by global-id ordered-by)
          (map #(dissoc % :global-id))

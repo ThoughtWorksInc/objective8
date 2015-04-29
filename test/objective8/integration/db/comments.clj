@@ -56,42 +56,28 @@
               (let [objective (sh/store-an-open-objective)
                     objective-uri (str "/objectives/" (:_id objective))
 
-                    {first-comment-id :_id} (store-comment-with-votes {:entity objective} {:up 2 :down 1})
-                    {second-comment-id :_id} (store-comment-with-votes {:entity objective} {})
-                    {third-comment-id :_id} (store-comment-with-votes {:entity objective} {:up 1 :down 2})]
-                (comments/get-comments-ordered-by objective-uri :created-at) => (contains [(contains {:_id third-comment-id})
+                    {first-comment-id :_id} (-> (sh/store-a-comment {:entity objective}) (sh/with-votes {:up 2 :down 1}))
+                    {second-comment-id :_id} (sh/store-a-comment {:entity objective})
+                    {third-comment-id :_id} (-> (sh/store-a-comment {:entity objective}) (sh/with-votes {:up 1 :down 2}))]
+                (comments/get-comments-ordered-by :created-at objective-uri) => (contains [(contains {:_id third-comment-id})
                                                                                            (contains {:_id second-comment-id})
                                                                                            (contains {:_id first-comment-id})])
 
-                (comments/get-comments-ordered-by objective-uri :up-votes) => (contains [(contains {:_id first-comment-id})
+                (comments/get-comments-ordered-by :up-votes objective-uri) => (contains [(contains {:_id first-comment-id})
                                                                                          (contains {:_id third-comment-id})
                                                                                          (contains {:_id second-comment-id})])
 
-                (comments/get-comments-ordered-by objective-uri :down-votes) => (contains [(contains {:_id third-comment-id})
+                (comments/get-comments-ordered-by :down-votes objective-uri) => (contains [(contains {:_id third-comment-id})
                                                                                            (contains {:_id first-comment-id})
                                                                                            (contains {:_id second-comment-id})])))
-
-        (fact "gets comments with aggregate votes"
-              (let [user (sh/store-a-user)
-                    {draft-id :_id objective-id :objective-id :as draft} (sh/store-a-draft)
-                    draft-uri (str "/objectives/" objective-id "/drafts/" draft-id)
-                    stored-comments (doall (->> (repeat {:entity draft :user user})
-                                                (take 1)
-                                                (map sh/store-a-comment)
-                                                (map #(dissoc % :global-id :comment-on-id))
-                                                (map #(assoc % :comment-on-uri draft-uri
-                                                             :uri (str "/comments/" (:_id %))))))]
-                (comments/get-comments-ordered-by draft-uri :created-at) => (contains (map contains (reverse stored-comments)))
-                (first (comments/get-comments-ordered-by draft-uri :created-at)) =not=> (contains {:comment-on-id anything})
-                (first (comments/get-comments-ordered-by draft-uri :created-at)) =not=> (contains {:global-id anything})))
 
         (tabular
          (fact "gets comments with aggregate votes"
                (let [objective (sh/store-an-open-objective)
                      objective-uri (str "/objectives/" (:_id objective))
 
-                     comment (store-comment-with-votes {:entity objective} {:up 2 :down 10})]
-                 (first (comments/get-comments-ordered-by objective-uri ?ordered-by)) => (contains {:votes {:up 2 :down 10}})))
+                     comment (-> (sh/store-a-comment {:entity objective}) (sh/with-votes {:up 2 :down 10}))]
+                 (first (comments/get-comments-ordered-by ?ordered-by objective-uri)) => (contains {:votes {:up 2 :down 10}})))
          ?ordered-by :up-votes :down-votes :created-at)
 
         (tabular
@@ -101,8 +87,8 @@
 
                      user (sh/store-a-user)
 
-                     comment (store-comment-with-votes {:user user :entity objective} {})]
-                 (first (comments/get-comments-ordered-by objective-uri ?ordered-by)) => (contains {:username (:username user)})))
+                     comment (sh/store-a-comment {:user user :entity objective})]
+                 (first (comments/get-comments-ordered-by ?ordered-by objective-uri)) => (contains {:username (:username user)})))
          ?ordered-by :up-votes :down-votes :created-at)
 
         (tabular
@@ -110,10 +96,10 @@
                (let [objective (sh/store-an-open-objective)
                      objective-uri (str "/objectives/" (:_id objective))
 
-                     comment (store-comment-with-votes {:entity objective} {})
+                     comment (sh/store-a-comment {:entity objective})
                      comment-uri (str "/comments/" (:_id comment))]
-                 (first (comments/get-comments-ordered-by objective-uri ?ordered-by)) =not=> (contains {:comment-on-id anything})    
-                 (first (comments/get-comments-ordered-by objective-uri ?ordered-by)) =not=> (contains {:global-id anything})
-                 (first (comments/get-comments-ordered-by objective-uri ?ordered-by)) => (contains {:uri comment-uri
+                 (first (comments/get-comments-ordered-by ?ordered-by objective-uri)) =not=> (contains {:comment-on-id anything})    
+                 (first (comments/get-comments-ordered-by ?ordered-by objective-uri)) =not=> (contains {:global-id anything})
+                 (first (comments/get-comments-ordered-by ?ordered-by objective-uri)) => (contains {:uri comment-uri
                                                                                                     :comment-on-uri objective-uri})))
          ?ordered-by :up-votes :down-votes :created-at)))

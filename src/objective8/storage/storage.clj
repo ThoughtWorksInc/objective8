@@ -142,12 +142,16 @@ SELECT _id, 'draft' AS entity FROM objective8.drafts WHERE global_id=?
       (mappings/with-columns [:created-by-id :objective-id :question-id :global-id])
       with-aggregate-votes))
 
-(defn pg-retrieve-answers-with-votes [query-map]
-  (when-let [sanitised-query (utils/select-all-or-nothing query-map [:question-id :objective-id :entity])]
-    (let [ question-id (:question-id sanitised-query)
-          objective-id (:objective-id sanitised-query)]
+(defn pg-retrieve-answers [query-map]
+  (when-let [sanitised-query (utils/select-all-or-nothing query-map [:question-id :objective-id :ordered-by :entity])]
+    (let [question-id (:question-id sanitised-query)
+          objective-id (:objective-id sanitised-query)
+          ordered-by (:ordered-by sanitised-query)
+          ordered-by-clause {:created-at "ORDER BY answers._created_at ASC"
+                             :up-votes "ORDER BY up_votes DESC NULLS LAST"
+                             :down-votes "ORDER BY down_votes DESC NULLS LAST"}]
       (apply vector (map unmap-answer-with-votes
-                         (korma/exec-raw ["
+                         (korma/exec-raw [ (string/join " " ["
 SELECT answers.*, up_votes, down_votes, users.username, notes.note FROM objective8.answers AS answers
 JOIN objective8.users AS users ON users._id = answers.created_by_id
 LEFT JOIN objective8.writer_notes AS notes ON notes.note_on_id = answers.global_id
@@ -159,54 +163,8 @@ LEFT JOIN (SELECT global_id, count(vote) as up_votes
            FROM objective8.up_down_votes
            WHERE vote > 0 GROUP BY global_id) AS agg2
 ON agg2.global_id = answers.global_id
-WHERE answers.objective_id = ? AND answers.question_id = ?
-ORDER BY answers._created_at ASC
-LIMIT 50" [objective-id question-id]] :results))))))
-
-(defn retrieve-answers-ordered-by-up-votes [objective-id question-id]
-  (apply vector (map unmap-answer-with-votes
-                     (korma/exec-raw ["SELECT answers.*, up_votes, down_votes, users.username, notes.note FROM objective8.answers AS answers
-                                      JOIN objective8.users AS users ON users._id = answers.created_by_id
-                                      LEFT JOIN objective8.writer_notes AS notes ON notes.note_on_id = answers.global_id
-                                      LEFT JOIN (SELECT global_id, count(vote) as down_votes
-                                      FROM objective8.up_down_votes
-                                      WHERE vote < 0 GROUP BY global_id) AS agg
-                                      ON agg.global_id = answers.global_id
-                                      LEFT JOIN (SELECT global_id, count(vote) as up_votes
-                                      FROM objective8.up_down_votes
-                                      WHERE vote > 0 GROUP BY global_id) AS agg2
-                                      ON agg2.global_id = answers.global_id
-                                      WHERE answers.objective_id = ? AND answers.question_id = ?
-                                      ORDER BY up_votes DESC NULLS LAST
-                                      LIMIT 50" [objective-id question-id]] :results))))
-
-(defn retrieve-answers-ordered-by-down-votes [objective-id question-id]   
-  (apply vector (map unmap-answer-with-votes
-                     (korma/exec-raw ["SELECT answers.*, up_votes, down_votes, users.username, notes.note FROM objective8.answers AS answers
-                                      JOIN objective8.users AS users ON users._id = answers.created_by_id
-                                      LEFT JOIN objective8.writer_notes AS notes ON notes.note_on_id = answers.global_id
-                                      LEFT JOIN (SELECT global_id, count(vote) as down_votes
-                                      FROM objective8.up_down_votes
-                                      WHERE vote < 0 GROUP BY global_id) AS agg
-                                      ON agg.global_id = answers.global_id
-                                      LEFT JOIN (SELECT global_id, count(vote) as up_votes
-                                      FROM objective8.up_down_votes
-                                      WHERE vote > 0 GROUP BY global_id) AS agg2
-                                      ON agg2.global_id = answers.global_id
-                                      WHERE answers.objective_id = ? AND answers.question_id = ?
-                                      ORDER BY down_votes DESC NULLS LAST
-                                      LIMIT 50" [objective-id question-id]] :results))))
-
-(defn pg-retrieve-answers-sorted-by-votes [query-map]
-  (when-let [sanitised-query (utils/select-all-or-nothing query-map [:question-id :objective-id :vote-type :entity])]
-    (let [ question-id (:question-id sanitised-query)
-          objective-id (:objective-id sanitised-query)
-          vote-type (:vote-type sanitised-query)]
-      (cond
-        (= "up-votes" vote-type)
-        (retrieve-answers-ordered-by-up-votes objective-id question-id) 
-        (= "down-votes" vote-type)
-        (retrieve-answers-ordered-by-down-votes objective-id question-id)))))
+WHERE answers.objective_id = ? AND answers.question_id = ?" (get ordered-by-clause ordered-by :created-at)
+"LIMIT 50"]) [objective-id question-id]] :results))))))
 
 (def unmap-comments-with-votes
   (-> (mappings/unmap :comment)
@@ -219,7 +177,7 @@ LIMIT 50" [objective-id question-id]] :results))))))
                            :up-votes "ORDER BY up_votes DESC NULLS LAST"
                            :down-votes "ORDER BY down_votes DESC NULLS LAST"}]
     (apply vector (map unmap-comments-with-votes
-                       (korma/exec-raw[(string/join " " ["
+                       (korma/exec-raw [ (string/join " " ["
 SELECT comments.*, up_votes, down_votes, users.username
 FROM objective8.comments AS comments
 JOIN objective8.users AS users ON users._id = comments.created_by_id
@@ -233,24 +191,6 @@ LEFT JOIN (SELECT global_id, count(vote) as up_votes
 ON agg2.global_id = comments.global_id
 WHERE comments.comment_on_id = ?" (get ordered-by-clause ordered-by :created-at)
 "LIMIT 50"]) [global-id]] :results)))))
-
-(defn pg-retrieve-comments-with-votes [global-id]
-  (apply vector (map unmap-comments-with-votes
-                     (korma/exec-raw["
-SELECT comments.*, up_votes, down_votes, users.username
-FROM objective8.comments AS comments
-JOIN objective8.users AS users ON users._id = comments.created_by_id
-LEFT JOIN (SELECT global_id, count(vote) as down_votes
-           FROM objective8.up_down_votes
-           WHERE vote < 0 GROUP BY global_id) AS agg
-ON agg.global_id = comments.global_id
-LEFT JOIN (SELECT global_id, count(vote) as up_votes
-           FROM objective8.up_down_votes
-           WHERE vote > 0 GROUP BY global_id) AS agg2
-ON agg2.global_id = comments.global_id
-WHERE comments.comment_on_id = ?
-ORDER BY comments._created_at DESC
-LIMIT 50" [global-id]] :results))))
 
 (defn pg-retrieve-starred-objectives [user-id]
   (let [unmap-objective (first (get mappings/objective :transforms))]
@@ -372,20 +312,20 @@ WHERE questions.objective_id = ?" [objective-id]] :results))))
  (when-let [sanitised-query (utils/select-all-or-nothing query-map [:entity :objective_id])]
    (let [objective-id (:objective_id sanitised-query)]
     (apply vector (map unmap-questions-with-answer-count
-          (korma/exec-raw ["SELECT questions.*, answer_count.answer_count, answer_count.username
-                           FROM objective8.questions AS questions
-                           JOIN  (SELECT questions._id, COUNT(answers.*) AS answer_count, questions.username
-                           FROM (SELECT questions.*, users.username
-                           FROM objective8.questions AS questions
-                           JOIN objective8.users AS users
-                           ON questions.created_by_id = users._id
-                           WHERE objective_id=?) AS questions
-                           LEFT JOIN objective8.answers AS answers 
-                           ON answers.question_id = questions._id
-                           GROUP BY questions._id, questions.username) AS answer_count
-                           ON questions._id = answer_count._id
-                           ORDER BY answer_count DESC"
-                           [objective-id]] :results))))))
+          (korma/exec-raw ["
+SELECT questions.*, answer_count.answer_count, answer_count.username
+FROM objective8.questions AS questions
+JOIN (SELECT questions._id, COUNT(answers.*) AS answer_count, questions.username
+      FROM (SELECT questions.*, users.username
+            FROM objective8.questions AS questions
+            JOIN objective8.users AS users
+            ON questions.created_by_id = users._id
+            WHERE objective_id=?) AS questions
+      LEFT JOIN objective8.answers AS answers 
+      ON answers.question_id = questions._id
+      GROUP BY questions._id, questions.username) AS answer_count
+ON questions._id = answer_count._id
+ORDER BY answer_count DESC" [objective-id]] :results))))))
 
 (defn pg-get-drafts [objective-id]
   (let [unmap-draft (first (get mappings/draft :transforms))]

@@ -118,6 +118,12 @@
                          :vote-type vote-type
                          :created-by-id (:_id user)}))))
 
+(defn with-votes [entity vote-counts]
+  (doseq [vote-type [:up :down]
+          _ (range (get vote-counts vote-type 0))]
+    (store-an-up-down-vote (:global-id entity) vote-type))
+  entity)
+
 (defn store-a-writer
   ([]
    (store-a-writer {}))

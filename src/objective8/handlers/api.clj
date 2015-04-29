@@ -191,7 +191,7 @@
 (defn get-comments [{:keys [params] :as request}]
   (try
     (if-let [comments-query (ar/request->comments-query request)]
-      (if-let [comments (comments/get-comments-ordered-by (:uri comments-query) (:sorted-by comments-query))]
+      (if-let [comments (comments/get-comments-ordered-by (:sorted-by comments-query) (:uri comments-query))]
         (-> comments
             response/response
             (response/content-type "application/json"))
@@ -279,16 +279,14 @@
 
 (defn get-answers [{:keys [route-params params] :as request}]
   (try
-    (let [question-uri (str "/objectives/" (:id route-params) "/questions/" (:q-id route-params))
-          sorted-by (:sorted-by params)] 
+    (if-let [{question-uri :question-uri sorted-by :sorted-by} (ar/request->answers-query request)]
       (if (questions/get-question question-uri)
-        (let [answers (if sorted-by
-                        (answers/get-answers-by-votes question-uri sorted-by)
-                        (answers/get-answers question-uri))] 
-          (-> answers 
+        (let [answers (answers/get-answers-ordered-by sorted-by question-uri)] 
+          (-> answers
               response/response
               (response/content-type "application/json"))) 
-        (not-found-response "Question does not exist")))
+        (not-found-response "Question does not exist"))
+      (invalid-response "Invalid answers query"))
     (catch Exception e
       (log/info "Error when retrieving answers: " e)
       (invalid-response "Invalid answer request for this objective"))))

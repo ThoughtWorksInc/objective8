@@ -21,6 +21,13 @@
   (some-> (utils/select-all-or-nothing params [:vote-on-uri :created-by-id :vote-type])
           (update-in [:vote-type] keyword)))
 
+(defn request->answers-query [{:keys [params route-params] :as request}]
+  (let [question-uri (str "/objectives/" (:id route-params) "/questions/" (:q-id route-params))
+        sorted-by (keyword (get params :sorted-by :created-at))]
+    (when (#{:up-votes :down-votes :created-at} sorted-by)
+      {:question-uri question-uri
+       :sorted-by sorted-by})))
+
 (defn request->comment-data [{params :params :as request}]
   (utils/select-all-or-nothing params [:comment :created-by-id :comment-on-uri]))
 

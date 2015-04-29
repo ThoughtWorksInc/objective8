@@ -29,39 +29,37 @@
                (answers/store-answer! answer-data) =not=> (contains {:global-id anything}))))
 
 (facts "about retrieving answers"
-       (fact "answers for a question can be retrieved"
-             (let [{o-id :objective-id q-id :question-id a-id :_id :as stored-answer} (sh/store-an-answer)
+       (fact "the answers are retrieved in the requested order"
+             (let [{o-id :objective-id q-id :_id :as question} (sh/store-a-question)
                    question-uri (str "/objectives/" o-id "/questions/" q-id)
-                   answer-uri (str "/objectives/" o-id "/questions/" q-id "/answers/" a-id)]
-               (answers/get-answers question-uri) => (contains [(contains (-> stored-answer
-                                                                              (assoc :uri answer-uri)
-                                                                              (dissoc :global-id)))])
-               (answers/get-answers question-uri) =not=> (contains [(contains {:global-id anything})])))
 
-       (fact "answers for a question with writer-note can be retrieved with note"
-             (let [{o-id :objective-id q-id :question-id a-id :_id :as stored-answer} (sh/store-an-answer)
+                   {first-answer-id :_id} (sh/with-votes (sh/store-an-answer {:question question}) {:up 2 :down 1})
+                   {second-answer-id :_id} (sh/with-votes (sh/store-an-answer {:question question}) {})
+                   {third-answer-id :_id} (sh/with-votes (sh/store-an-answer {:question question}) {:up 1 :down 2})]
+               (answers/get-answers-ordered-by :created-at question-uri) => (contains [(contains {:_id first-answer-id})
+                                                                                     (contains {:_id second-answer-id})
+                                                                                     (contains {:_id third-answer-id})])
+               
+               (answers/get-answers-ordered-by :up-votes question-uri) => (contains [(contains {:_id first-answer-id})
+                                                                                   (contains {:_id third-answer-id})
+                                                                                   (contains {:_id second-answer-id})])
+               
+               (answers/get-answers-ordered-by :down-votes question-uri) => (contains [(contains {:_id third-answer-id})
+                                                                                     (contains {:_id first-answer-id})
+                                                                                     (contains {:_id second-answer-id})])))
+
+       (fact "gets answers with aggregate votes"
+             (let [{o-id :objective-id q-id :_id :as question} (sh/store-a-question)
                    question-uri (str "/objectives/" o-id "/questions/" q-id)
-                   answer-uri (str "/objectives/" o-id "/questions/" q-id "/answers/" a-id)
-                   {note :note :as stored-note} (sh/store-a-note {:answer stored-answer})] 
-               (answers/get-answers question-uri) => (contains [(contains (-> stored-answer
-                                                                              (assoc :uri answer-uri)
-                                                                              (dissoc :global-id)
-                                                                              (assoc :note note)))]) 
-               (answers/get-answers question-uri) =not=> (contains [(contains {:global-id anything})])))
 
-       (fact "answers for a question can be retrieved sorted by up-votes or down-votes"
-             (let [{objective-id :objective-id question-id :_id :as question} (sh/store-a-question)
-                   {most-up-votes-id :_id most-up-votes-g-id :global-id :as most-up-votes-answer} (sh/store-an-answer {:question question})
-                   {most-down-votes-id :_id most-down-votes-g-id :global-id} (sh/store-an-answer {:question question})
-                   question-uri (str "/objectives/" objective-id "/questions/" question-id)
-                   {note :note :as stored-note} (sh/store-a-note {:answer most-up-votes-answer})]
+                   answer (sh/with-votes (sh/store-an-answer {:question question}) {:up 10 :down 5})]
+               (first (answers/get-answers-ordered-by :created-at question-uri)) => (contains {:votes {:up 10 :down 5}})))
 
-               (sh/store-an-up-down-vote most-up-votes-g-id :up)
-               (sh/store-an-up-down-vote most-up-votes-g-id :up)
-               (sh/store-an-up-down-vote most-down-votes-g-id :up)
-               (sh/store-an-up-down-vote most-down-votes-g-id :down)
-               (sh/store-an-up-down-vote most-down-votes-g-id :down)
-               (answers/get-answers-by-votes question-uri "up-votes") => (contains [(contains {:_id most-up-votes-id :note note})
-                                                                                    (contains {:_id most-down-votes-id})])
-               (answers/get-answers-by-votes question-uri "down-votes") => (contains [(contains {:_id most-down-votes-id})
-                                                                                      (contains {:_id most-up-votes-id :note note})]))))
+       (fact "gets answers with uris rather than global ids"
+             (let [{o-id :objective-id q-id :_id :as question} (sh/store-a-question)
+                   question-uri (str "/objectives/" o-id "/questions/" q-id)
+                   
+                   answer (sh/store-an-answer {:question question})
+                   answer-uri (str question-uri "/answers/" (:_id answer))]
+               (first (answers/get-answers-ordered-by :created-at question-uri)) => (contains {:uri answer-uri})
+               (first (answers/get-answers-ordered-by :created-at question-uri)) =not=> (contains {:global-id anything}))))

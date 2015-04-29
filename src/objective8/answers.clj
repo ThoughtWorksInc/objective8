@@ -21,18 +21,10 @@
   (when (objectives/open? (objectives/get-objective objective-id))
     (store-answer! answer)))
 
-(defn get-answers [question-uri]
-  (let [query (-> (uris/uri->query question-uri)
-                  (utils/ressoc :_id :question-id))]
-    
-    (->> (storage/pg-retrieve-answers-with-votes query)
-         (map #(dissoc % :global-id))
-         (map #(utils/update-in-self % [:uri] uri-for-answer)))))
-
-(defn get-answers-by-votes [question-uri vote-type]
+(defn get-answers-ordered-by [ordered-by question-uri]
   (let [query (-> (uris/uri->query question-uri)
                   (utils/ressoc :_id :question-id)
-                  (assoc :vote-type vote-type))]
-    (->> (storage/pg-retrieve-answers-sorted-by-votes query)
+                  (assoc :ordered-by ordered-by))]
+    (->> (storage/pg-retrieve-answers query)
          (map #(dissoc % :global-id))
          (map #(utils/update-in-self % [:uri] uri-for-answer)))))
