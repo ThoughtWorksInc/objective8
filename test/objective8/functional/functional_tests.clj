@@ -472,7 +472,9 @@
 
 (fact "Can view draft section"
       (try
-        (wd/to (str (:draft-url @journey-state) "/sections/" (:section-label @journey-state)))
+        (wd/click ".func--back-to-draft")
+        (wait-for-title "Policy draft | Objective[8]")
+        (wd/click ".func--annotation-link")
         (wait-for-title "Draft section | Objective[8]")
         (screenshot "draft_section")
 

@@ -38,7 +38,7 @@
 (defn update-section-link-with-label [label {:keys [ring-request] :as context}]
   (let [uri (:uri ring-request)]
     (html/at section-link-snippet
-             [:.clj-section-comment-link] (html/set-attr :href (str uri "/sections/" label)))))
+             [:.clj-annotation-link] (html/set-attr :href (str uri "/sections/" label)))))
 
 (defn add-section-link [context node]
   (let [section-label (get-in node [:attrs :data-section-label])]
