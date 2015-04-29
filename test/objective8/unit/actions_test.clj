@@ -158,18 +158,6 @@
              (provided
               (storage/pg-retrieve-entity-by-uri anything anything) => nil)))
 
-(facts "about getting comments"
-       (fact "gets comments for an entity identified by URI"
-             (actions/get-comments :uri) => {:status ::actions/success
-                                             :result :comments}
-             (provided
-              (comments/get-comments :uri) => :comments))
-
-       (fact "reports an error when the entity cannot be found"
-             (actions/get-comments :uri) => {:status ::actions/entity-not-found}
-             (provided
-              (comments/get-comments :uri) => nil)))
-
 (def STAR_ID 47)
 
 (def objective-uri (str "/objectives/" OBJECTIVE_ID))

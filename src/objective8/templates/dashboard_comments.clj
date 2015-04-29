@@ -95,5 +95,5 @@
                                     [:.clj-dashboard-navigation-list] (html/content (navigation-list context))
                                     [:.clj-dashboard-comment-list] (html/content (comment-list context))
 
-                                    [:.clj-dashboard-filter-list] nil
+                                    [:.clj-dashboard-filter-paper-clip] nil
                                     [:.clj-dashboard-content-stats] nil)))))))

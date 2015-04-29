@@ -91,3 +91,32 @@
               (let [{response :response} (p/request app (str "/api/v1/meta/comments?uri=" "%2fnonexistent%2furi"))]
                 (:status response) => 404
                 (:body response) => (helpers/json-contains {:reason "Entity does not exist"})))))
+
+(facts "GET /api/v1/meta/comments?uri=<uri>&sorted-by=<sorting type>"
+       (against-background
+        [(before :contents (do (helpers/db-connection)
+                               (helpers/truncate-tables)))
+         (after :facts (helpers/truncate-tables))]
+
+        (fact "retrieves comments sorted by number of up-votes when sorting type is 'up-votes'"
+              (let [objective (sh/store-an-open-objective)
+                    objective-uri (str "/objectives/" (:_id objective))
+
+                    comment-with-most-votes (sh/store-a-comment {:entity objective})
+                    _ (sh/store-an-up-down-vote (:global-id comment-with-most-votes) :up)
+                    _ (sh/store-an-up-down-vote (:global-id comment-with-most-votes) :up)
+
+                    comment-with-least-votes (sh/store-a-comment {:entity objective})
+
+                    comment-with-some-votes (sh/store-a-comment {:entity objective})
+                    _ (sh/store-an-up-down-vote (:global-id comment-with-some-votes) :up)
+
+                    escaped-objective-url (str "%2Fobjectives%2F" (:_id objective))
+                    {body :body} (:response (p/request app (str (utils/path-for :api/get-comments)
+                                                                "?uri=" escaped-objective-url
+                                                                "&sorted-by=up-votes")))]
+                body => (helpers/json-contains [(contains {:_id (:_id comment-with-most-votes)})
+                                                (contains {:_id (:_id comment-with-some-votes)})
+                                                (contains {:_id (:_id comment-with-least-votes)})])))
+
+        (fact "retrieves comments sorted by number of down-votes when sorting type is 'down-votes'")))

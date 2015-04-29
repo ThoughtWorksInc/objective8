@@ -1,6 +1,7 @@
 (ns objective8.storage.storage
   (:require [korma.core :as korma]
             [korma.db :as kdb]
+            [clojure.string :as string]
             [objective8.storage.uris :as uris]
             [objective8.storage.mappings :as mappings]
             [objective8.utils :as utils]))
@@ -212,6 +213,26 @@ LIMIT 50" [objective-id question-id]] :results))))))
       (mappings/with-columns [:comment-on-id :created-by-id :global-id :objective-id])
       mappings/with-username-if-present
       with-aggregate-votes))
+
+(defn pg-retrieve-comments-with-votes-ordered-by [global-id ordered-by]
+  (let [ordered-by-clause {:created-at "ORDER BY comments._created_at DESC"
+                           :up-votes "ORDER BY up_votes DESC NULLS LAST"
+                           :down-votes "ORDER BY down_votes DESC NULLS LAST"}]
+    (apply vector (map unmap-comments-with-votes
+                       (korma/exec-raw[(string/join " " ["
+SELECT comments.*, up_votes, down_votes, users.username
+FROM objective8.comments AS comments
+JOIN objective8.users AS users ON users._id = comments.created_by_id
+LEFT JOIN (SELECT global_id, count(vote) as down_votes
+           FROM objective8.up_down_votes
+           WHERE vote < 0 GROUP BY global_id) AS agg
+ON agg.global_id = comments.global_id
+LEFT JOIN (SELECT global_id, count(vote) as up_votes
+           FROM objective8.up_down_votes
+           WHERE vote > 0 GROUP BY global_id) AS agg2
+ON agg2.global_id = comments.global_id
+WHERE comments.comment_on_id = ?" (get ordered-by-clause ordered-by :created-at)
+"LIMIT 50"]) [global-id]] :results)))))
 
 (defn pg-retrieve-comments-with-votes [global-id]
   (apply vector (map unmap-comments-with-votes

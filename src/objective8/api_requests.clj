@@ -24,6 +24,17 @@
 (defn request->comment-data [{params :params :as request}]
   (utils/select-all-or-nothing params [:comment :created-by-id :comment-on-uri]))
 
+(defn get-sorted-by [params]
+  (if-let [sorted-by (keyword (:sorted-by params))]
+    (if (#{:up-votes :down-votes} sorted-by)
+      sorted-by
+      :created-at)
+    :created-at))
+
+(defn request->comments-query [{params :params :as request}]
+  (some-> (utils/select-all-or-nothing params [:uri])
+          (assoc :sorted-by (get-sorted-by params))))
+
 (defn request->star-data [{params :params :as request}]
   (utils/select-all-or-nothing params [:objective-uri :created-by-id]))
 

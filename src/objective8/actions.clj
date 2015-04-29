@@ -109,11 +109,6 @@
       (create-section-comment! section-data comment-data)
       {:status ::entity-not-found})))
 
-(defn get-comments [entity-uri]
-  (if-let [results (comments/get-comments entity-uri)]
-    {:status ::success :result results}
-    {:status ::entity-not-found}))
-
 (defn toggle-star! [{:keys [objective-uri created-by-id] :as star-data}]
   (if-let [{objective-id :_id} (storage/pg-retrieve-entity-by-uri objective-uri)]
     (if-let [star (stars/get-star objective-uri (str "/users/" created-by-id))]

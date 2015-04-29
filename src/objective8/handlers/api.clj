@@ -190,18 +190,13 @@
 
 (defn get-comments [{:keys [params] :as request}]
   (try
-    (let [{status :status comments :result} (actions/get-comments (:uri params))]
-      (cond
-        (= status ::actions/success)
+    (if-let [comments-query (ar/request->comments-query request)]
+      (if-let [comments (comments/get-comments-ordered-by (:uri comments-query) (:sorted-by comments-query))]
         (-> comments
             response/response
             (response/content-type "application/json"))
-
-        (= status ::actions/entity-not-found)
-        (not-found-response "Entity does not exist")
-
-        :else
-        (internal-server-error "Error when getting comments")))
+        (not-found-response "Entity does not exist"))
+      (invalid-response "Invalid request for comments"))
     (catch Exception e
       (log/info "Error when getting comments: " e)
       (internal-server-error "Error when getting comments"))))
