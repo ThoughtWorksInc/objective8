@@ -25,7 +25,6 @@
 (def user-session (helpers/test-context))
 
 (def basic-objective {:title "my objective title"
-                      :goal-1 "my objective goal"
                       :description "my objective description"
                       :end-date (utils/string->date-time "2012-12-12")
                       :uri (str "/objectives/" OBJECTIVE_ID)})
@@ -45,17 +44,11 @@
          (fact "authorised user can post and retrieve objective"
                (against-background (http-api/create-objective 
                                      (contains {:title "my objective title"
-                                                :goal-1 "my objective goal"
-                                                :goal-2 "second goal"
-                                                :goal-3 "third goal"
                                                 :description "my objective description"
                                                 :end-date anything
                                                 :created-by-id USER_ID})) => {:status ::http-api/success
                                                                               :result {:_id OBJECTIVE_ID}})
                (let [params {:title "my objective title"
-                             :goal-1 "my objective goal"
-                             :goal-2 "second goal"
-                             :goal-3 "third goal"
                              :description "my objective description"}
                      response (:response
                                 (-> user-session

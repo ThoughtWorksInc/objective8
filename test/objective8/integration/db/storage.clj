@@ -22,7 +22,6 @@
                                       :created-by-id NOT-EXISTENT-USER-ID
                                       :end-date "2015-01-01T00:00:00Z"
                                       :description "description"
-                                      :goals "goals"
                                       :title "title"}]
                        (storage/pg-store! objective) => (throws org.postgresql.util.PSQLException)))
 
@@ -56,7 +55,6 @@
                                    :created-by-id created-by-id
                                    :end-date "2015-01-01T00:00:00Z"
                                    :description "description"
-                                   :goals "goals"
                                    :title "title"}]
                     (storage/pg-store! objective)))
 

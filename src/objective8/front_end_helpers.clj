@@ -25,7 +25,7 @@
   [{:keys [params] :as request} user-id]
     (let [iso-time (utils/date-time->date-time-plus-30-days (utils/current-time))]
       (some-> params
-              (utils/select-all-or-nothing [:title :goal-1 :goal-2 :goal-3 :description])
+              (utils/select-all-or-nothing [:title :description])
               (assoc :end-date iso-time :created-by-id user-id))))
 
 (defn request->answer-info

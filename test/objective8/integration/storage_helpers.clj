@@ -32,7 +32,6 @@
                          :status "open"
                          :title "test title"
                          :description "test description"
-                         :goals "test goal"
                          :created-by-id user-id
                          :end-date (str (tc/from-now (tc/days 1)))}))))
 

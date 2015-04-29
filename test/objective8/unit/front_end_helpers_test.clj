@@ -15,9 +15,6 @@
 (def date-time (utils/string->date-time "2015-01-03"))
 
 (def test-objective {:title "My Objective"
-                     :goal-1 "To rock out, All day"
-                     :goal-2 "In a serious way"
-                     :goal-3 "Like Adam"
                      :description "I like cake"
                      :end-date date-time})
 

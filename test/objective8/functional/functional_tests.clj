@@ -95,7 +95,6 @@
              (wait-for-title "Create an Objective | Objective[8]")
 
              (wd/input-text ".func--input-objective-title" "Functional test headline")
-             (wd/input-text ".func--input-objective-goal-1" "Functional test goal")
              (-> ".func--input-objective-background"
                  (wd/input-text 
                    "Functional test description with lots of hipster-ipsum:

@@ -56,7 +56,6 @@
 
 (def drafting-objective {:_id OBJECTIVE_ID
                          :title "my objective title"
-                         :goal-1 "my objective goal"
                          :description "my objective description"
                          :end-date (utils/string->date-time "2012-12-12")
                          :username "Barry"

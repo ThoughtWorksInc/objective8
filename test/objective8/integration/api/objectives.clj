@@ -15,15 +15,11 @@
 (def OBJECTIVE_ID 10)
 
 (def the-objective {:title "my objective title"
-                    :goal-1 "my first objective goal"
-                    :goal-2 "my second objective goal"
                     :description "my objective description"
                     :end-date "2015-01-01"
                     :created-by-id 1})
 
 (def the-invalid-objective {:title "my objective title"
-                            :goal-1 "my first objective goal"
-                            :goal-2 "my second objective goal"
                             :description "my objective description"
                             :end-date "2015-01-01"})
 
@@ -119,7 +115,7 @@
                                      :response)
                     retrieved-objective (-> starred-objective
                                             (select-keys [:_id :description :_created_at :created-by-id
-                                                          :end-date :entity :goals :status :title])
+                                                          :end-date :entity :status :title])
                                             (assoc :username (:username objective-creator))
                                             (assoc :uri (str "/objectives/" o-id)))]
                 body => (helpers/json-contains retrieved-objective)
@@ -134,7 +130,6 @@
         (fact "the posted objective is stored"
               (let [{user-id :_id} (sh/store-a-user)
                     the-objective {:title "my objective title"
-                                   :goal-1 "my first objective goal"
                                    :end-date "2015-01-01"
                                    :created-by-id user-id}
                     {response :response} (p/request app "/api/v1/objectives"

@@ -16,14 +16,12 @@
                     objective-data {:created-by-id user-id
                                     :end-date "2015-01-01T00:00:00Z"
                                     :description "description"
-                                    :goals "goals"
                                     :title "title"}]
                 (objectives/store-objective! objective-data) => (contains {:_id integer?
                                                                            :uri (contains "/objectives/")
                                                                            :created-by-id user-id
                                                                            :end-date "2015-01-01T00:00:00.000Z"
                                                                            :description "description"
-                                                                           :goals "goals"
                                                                            :title "title"})
                 (objectives/store-objective! objective-data) =not=> (contains {:global-id anything})))))
 
@@ -38,7 +36,6 @@
                     objective-data {:created-by-id user-id
                                     :end-date "2015-01-01T00:00:00.000Z"
                                     :description "description"
-                                    :goals "goals"
                                     :title "title"}
                     {objective-id :_id :as stored-objective} (objectives/store-objective! objective-data)]
                 (objectives/get-objective objective-id) => (assoc stored-objective :username username)
@@ -77,7 +74,6 @@
                     objective-data {:created-by-id user-id
                                     :end-date "2015-01-01T00:00:00.000Z"
                                     :description "description"
-                                    :goals "goals"
                                     :title "title"}
                     {objective-id :_id :as stored-objective} (objectives/store-objective! objective-data)]
                 (objectives/retrieve-objectives) => [(assoc stored-objective :username username)]

@@ -90,15 +90,9 @@
 
 ;; OBJECTIVES
 (defn format-objective [objective]
-  (let [goals (if (:goals objective)
-                (list (:goals objective))
-                (remove clojure.string/blank? [(:goal-1 objective) (:goal-2 objective) (:goal-3 objective)]))
-        formatted-objective (-> objective
-                                (assoc :goals goals)
-                                (assoc :days-until-drafting-begins (utils/days-until (:end-date objective)))
-                                (update-in [:end-date] utils/date-time->pretty-date)
-                                (dissoc :goal-1 :goal-2 :goal-3))]
-    formatted-objective))
+  (-> objective
+      (assoc :days-until-drafting-begins (utils/days-until (:end-date objective)))
+      (update-in [:end-date] utils/date-time->pretty-date)))
 
 (defn objective-list [request]
   (let [signed-in-id (get (friend/current-authentication) :identity)
