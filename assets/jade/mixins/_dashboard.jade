@@ -24,13 +24,14 @@ mixin dashboardAnswerItem(itemSaved)
         p
           i.fa.fa-paperclip
           = " "
-          | Clipped. "Great for section d."
+          span.clj-dashboard-answer-item-saved-content
+            | Clipped. "Great for section d."
     else
       form(actions="#", method="post").dashboard-answer-item-save.clj-dashboard-answer-item-save
         p.form-field
           label.form-field-label(for="comment")
             span.form-field-label-title.visuallyhidden Comment
-            input.dashboard-answer-item-save-comment(id="comment", name="comment", type="text", maxlength="140", placeholder="Add a reply to the community.")
+            input.dashboard-answer-item-save-comment(id="comment", name="comment", type="text", maxlength="140", placeholder="!Add a reply to the community.")
           button.save-answer-button(type='submit')
             i.fa.fa-paperclip
 

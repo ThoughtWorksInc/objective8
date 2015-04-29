@@ -382,6 +382,24 @@ html.no-js(lang="en")
 
       .example
         .documentation
+          h3 Answers message with no saved item
+          p Generated with dashboardAnswerItem()
+
+        .clj-library-key--dashboard-answer-with-no-saved-item
+          ul.answer-list
+            +dashboardAnswerItem()
+
+      .example
+        .documentation
+          h3 Answers message with saved item
+          p Generated with dashboardAnswerItem(true)
+
+        .clj-library-key--dashboard-answer-with-saved-item
+          ul.answer-list
+            +dashboardAnswerItem(true)
+      
+      .example
+        .documentation
           h3 Empty comments message
           p Generated with dashboardCommentBlank()
 

@@ -14,14 +14,33 @@
 (def dashboard-questions-no-answers-snippet (html/select pf/library-html-resource
                                                          [:.clj-dashboard-no-answer-item]))
 
+(def answer-with-no-saved-item-snippet (html/select pf/library-html-resource [:.clj-library-key--dashboard-answer-with-no-saved-item]))
+
+(def answer-with-saved-item-snippet (html/select pf/library-html-resource [:.clj-library-key--dashboard-answer-with-saved-item]))
+
+(defn render-item-without-note [context answer]
+  (html/at answer-with-no-saved-item-snippet
+           [:.clj-dashboard-answer-item-text] (html/content (:answer answer)) 
+           [:.clj-dashboard-answer-item-up-count] (html/content (str (get-in answer [:votes :up]))) 
+           [:.clj-dashboard-answer-item-down-count] (html/content (str (get-in answer [:votes :down]))) 
+           [:.clj-dashboard-answer-item-save] identity))
+
+(defn render-item-with-note [context answer]
+  (html/at answer-with-saved-item-snippet
+           [:.clj-dashboard-answer-item-text] (html/content (:answer answer)) 
+           [:.clj-dashboard-answer-item-up-count] (html/content (str (get-in answer [:votes :up]))) 
+           [:.clj-dashboard-answer-item-down-count] (html/content (str (get-in answer [:votes :down]))) 
+           [:.clj-dashboard-answer-item-saved-content] (html/content (:note answer))))
+
 (defn answer-list-items [{:keys [data] :as context}]
   (let [answers (:answers data)]
-    (html/at dashboard-questions-answer-item-snippet
+    (html/at answer-with-no-saved-item-snippet
              [:.clj-dashboard-answer-item]
              (html/clone-for [answer answers]
-                             [:.clj-dashboard-answer-item-text] (html/content (:answer answer))
-                             [:.clj-dashboard-answer-item-up-count] (html/content (str (get-in answer [:votes :up])))
-                             [:.clj-dashboard-answer-item-down-count] (html/content (str (get-in answer [:votes :down])))))))
+                             [:.clj-dashboard-answer-item]  (if (contains? answer :note)
+                                                             (html/content ( render-item-with-note context answer))
+                                                              (html/content (render-item-without-note context answer))
+                                                              )))))
 
 (defn answer-list [{:keys [data] :as context}]
   (let [answers (:answers data)]
@@ -44,8 +63,8 @@
              [:.clj-dashboard-navigation-item]
              (html/clone-for [question questions]
                              [:.clj-dashboard-navigation-item] (if (= selected-question-uri (:uri question))
-                                                                        (html/add-class "on")
-                                                                        identity)
+                                                                 (html/add-class "on")
+                                                                 identity)
                              [:.clj-dashboard-navigation-item-label] (html/content (:question question))
                              [:.clj-dashboard-navigation-item-link]
                              (html/set-attr :href
@@ -67,41 +86,41 @@
         answer-sort-method (:answers-sorted-by data)]
     (apply str
            (html/emit*
-            (tf/translate context
-                          (pf/add-google-analytics
-                           (html/at dashboard-questions-template
-                                    [:title] (html/content (:title doc))
-                                    [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
-                                    [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
-                                    [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
+             (tf/translate context
+                           (pf/add-google-analytics
+                             (html/at dashboard-questions-template
+                                      [:title] (html/content (:title doc))
+                                      [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
+                                      [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+                                      [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
 
-                                    [:.clj-dashboard-title-link] (html/set-attr :href (url/url (utils/path-for :fe/objective :id (:_id objective))))
-                                    [:.clj-dashboard-title-link] (html/content (:title objective))
+                                      [:.clj-dashboard-title-link] (html/set-attr :href (url/url (utils/path-for :fe/objective :id (:_id objective))))
+                                      [:.clj-dashboard-title-link] (html/content (:title objective))
 
-                                    [:.clj-dashboard-stat-participant] nil
-                                    [:.clj-dashboard-stat-starred-amount] (html/content (str (get-in objective [:meta :stars-count])))
-                                    [:.clj-writer-dashboard-navigation-questions-link] (html/set-attr :href (utils/path-for :fe/dashboard-questions :id (:_id objective)))
-                                    [:.clj-writer-dashboard-navigation-comments-link] (html/set-attr :href (utils/path-for :fe/dashboard-comments :id (:_id objective)))
-                                    [:.clj-dashboard-navigation-list] (html/content (navigation-list context))
-                                    [:.clj-dashboard-answer-list] (html/content (answer-list context))
-                                    [:.clj-dashboard-filter-paper-clip] nil
-                                    [:.clj-dashboard-filter-up-votes] (html/set-attr :href
-                                                                                     (str (assoc dashboard-url
-                                                                                                 :query {:selected selected-question-uri
-                                                                                                         :sorted-by "up-votes"})))
-
-                                    [:.clj-dashboard-filter-up-votes] (if (= answer-sort-method "up-votes")
-                                                                        (html/add-class "on")
-                                                                        identity)
-
-                                    [:.clj-dashboard-filter-down-votes] (html/set-attr :href
+                                      [:.clj-dashboard-stat-participant] nil
+                                      [:.clj-dashboard-stat-starred-amount] (html/content (str (get-in objective [:meta :stars-count])))
+                                      [:.clj-writer-dashboard-navigation-questions-link] (html/set-attr :href (utils/path-for :fe/dashboard-questions :id (:_id objective)))
+                                      [:.clj-writer-dashboard-navigation-comments-link] (html/set-attr :href (utils/path-for :fe/dashboard-comments :id (:_id objective)))
+                                      [:.clj-dashboard-navigation-list] (html/content (navigation-list context))
+                                      [:.clj-dashboard-answer-list] (html/content (answer-list context))
+                                      [:.clj-dashboard-filter-paper-clip] nil
+                                      [:.clj-dashboard-filter-up-votes] (html/set-attr :href
                                                                                        (str (assoc dashboard-url
                                                                                                    :query {:selected selected-question-uri
-                                                                                                           :sorted-by "down-votes"})))
+                                                                                                           :sorted-by "up-votes"})))
 
-                                    [:.clj-dashboard-filter-down-votes] (if (= answer-sort-method "down-votes")
+                                      [:.clj-dashboard-filter-up-votes] (if (= answer-sort-method "up-votes")
                                                                           (html/add-class "on")
                                                                           identity)
 
-                                    [:.clj-dashboard-content-stats] nil
-                                    [:.clj-dashboard-answer-item-save] nil)))))))
+                                      [:.clj-dashboard-filter-down-votes] (html/set-attr :href
+                                                                                         (str (assoc dashboard-url
+                                                                                                     :query {:selected selected-question-uri
+                                                                                                             :sorted-by "down-votes"})))
+
+                                      [:.clj-dashboard-filter-down-votes] (if (= answer-sort-method "down-votes")
+                                                                            (html/add-class "on")
+                                                                            identity)
+
+                                      [:.clj-dashboard-content-stats] nil
+                                      )))))))

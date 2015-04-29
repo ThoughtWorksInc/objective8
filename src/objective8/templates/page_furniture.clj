@@ -172,3 +172,9 @@
   (if user
     (comment-create-form context comment-target)
     (sign-in-to-comment context)))
+
+;; ANSWERS
+
+(def answer-with-no-saved-item-snippet (html/select library-html-resource [:.cjl-dashboard-answer-with-no-saved-item]))
+
+(def answer-with-saved-item-snippet (html/select library-html-resource [:.cjl-dashboard-answer-with-saved-item]))

@@ -100,7 +100,30 @@
                  (provided
                   (http-api/retrieve-answers QUESTION_URI {:sorted-by "down-votes"}) => {:status ::http-api/success
                                                                                          :result [{:entity :answer
-                                                                                                   :answer "test answer"}]})))
+                                                                                                   :answer "test answer"}]}))
+
+       (fact "can see form if answer has no note"
+             (let [{response :response} (-> user-session
+                                            ih/sign-in-as-existing-user
+                                            (p/request (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID)))]
+               (:status response) => 200
+               (:body response) => (contains "<form")))
+
+
+       (fact "can see note text if the answer has a note"
+
+             (against-background
+               (http-api/retrieve-answers QUESTION_URI {:sorted-by "up-votes"}) => {:status ::http-api/success
+                                                                                    :result [{:entity :answer
+                                                                                              :answer "test answer with a note"
+                                                                                              :note "test note"
+                                                                                              }]}) 
+             (let [{response :response} (-> user-session
+                                            ih/sign-in-as-existing-user
+                                            (p/request (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID)))]
+               (:status response) => 200
+               (:body response) => (contains "test note")))
+)
 
 (facts "about the comments dashboard for writers"
        (against-background
