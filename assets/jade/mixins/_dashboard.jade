@@ -63,6 +63,7 @@ mixin dashboardCommentBlank()
     | !There are no comments on this piece of content.
 
 mixin dashboardQuestionBlank()
-  li.writer-dashboard-navigation-item.clj-dashboard-no-question-item(data-l8n="content:writer-dashboard/no-questions-message")
-    | !No questions were asked for this objective.
+  li.writer-dashboard-navigation-item.clj-dashboard-no-question-item
+    span.writer-dashboard-navigation-item-content(data-l8n="content:writer-dashboard/no-questions-message")
+      | !No questions have been asked for this objective.
 

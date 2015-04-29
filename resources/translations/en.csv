@@ -133,7 +133,7 @@ writer-dashboard,participants-stat-title,Participants
 writer-dashboard,starred-stat-title,Starred
 writer-dashboard,questions-navigation-title,Questions
 writer-dashboard,comments-navigation-title,Comments
-writer-dashboard,no-questions-message,No questions were asked for this objective.
+writer-dashboard,no-questions-message,No questions have been asked for this objective.
 writer-dashboard,no-answers-message,No answers were provided for this question.
 writer-dashboard,no-comments-message,There are no comments on this piece of content.
 writer-dashboard,link-button,Dashboard
