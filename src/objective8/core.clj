@@ -24,6 +24,7 @@
             [objective8.workflows.sign-up :refer [sign-up-workflow]]
             [objective8.handlers.api :as api-handlers]
             [objective8.handlers.front-end :as front-end-handlers]
+            [objective8.users :as users]
             [objective8.middleware :as m]
             [objective8.bearer-tokens :as bt])
  ; (:gen-class)
@@ -147,11 +148,18 @@
       {:bearer-name bearer-name
        :bearer-token bearer-token})))
 
+(defn store-admin [twitter-id]
+  (when-not (users/get-admin-by-twitter-id twitter-id)
+    (users/store-admin! {:twitter-id twitter-id})))
+
 (defn initialise-api []
-  (if-let [bearer-token-details (get-bearer-token-details)]
+  (when-let [bearer-token-details (get-bearer-token-details)]
     (if (bt/get-token (bearer-token-details :bearer-name))
       (bt/update-token! bearer-token-details)
-      (bt/store-token! bearer-token-details))))
+      (bt/store-token! bearer-token-details)))
+  (when-let [admins-var (config/get-var "ADMINS")]
+    (let [admins (clojure.string/split admins-var #" ")]
+        (doall (map store-admin admins)))))
 
 (defn start-scheduler []
   (reset! scheduler 
