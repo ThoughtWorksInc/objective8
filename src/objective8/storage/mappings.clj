@@ -176,6 +176,11 @@
                        nil 
                        [:objective-id :created-by-id :active]))
 
+(def map->admin
+  (db-insertion-mapper "admin"
+                       nil
+                       [:twitter-id]))
+
 (defn- extract-column [m um key]
   (let [db-column (key->db-column key)]
     (assoc um key (db-column m))))
@@ -258,7 +263,16 @@
       (assoc :_created_at (sql-time->iso-time-string (:_created_at m))) 
       (assoc :entity :section)))
 
+(defn unmap-admin [m]
+  (utils/ressoc m :twitter_id :twitter-id))
+
 (declare objective user comment question answer invitation writer bearer-token up-down-vote)
+
+(korma/defentity admin
+  (korma/pk :_id)
+  (korma/table :objective8.admins)
+  (korma/prepare map->admin)
+  (korma/transform unmap-admin))
 
 (korma/defentity global-identifier
   (korma/pk :_id)
@@ -386,6 +400,7 @@
 
 (def entities {:objective objective
                :user      user
+               :admin admin
                :comment   comment
                :question  question
                :mark      mark

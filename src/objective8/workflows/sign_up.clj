@@ -15,16 +15,19 @@
   ["/" {"sign-up" {:get :sign-up-form
                    :post :sign-up-form-post}}])
 
+
 (defn roles-for-user [user]
-  (let [{{:keys [writer-records owned-objectives]} :result :as g-user} (http-api/get-user (:_id user))
+  (let [{{:keys [writer-records owned-objectives admin]} :result :as g-user} (http-api/get-user (:_id user))
         writer-objective-ids (map :objective-id writer-records)
         owned-objective-ids (map :_id owned-objectives)
         writer-roles (map permissions/writer-for writer-objective-ids)
         writer-inviter-roles (->> writer-objective-ids
                                   (concat owned-objective-ids)
                                   (map permissions/writer-inviter-for))
-        objective-owner-roles (map permissions/owner-of owned-objective-ids)]
-    (-> (concat writer-roles writer-inviter-roles objective-owner-roles)
+        objective-owner-roles (map permissions/owner-of owned-objective-ids)
+        admin-role (if admin [:admin] [])] 
+        
+    (-> (concat writer-roles writer-inviter-roles objective-owner-roles admin-role)
         (conj :signed-in)
         set)))
 

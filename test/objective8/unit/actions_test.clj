@@ -215,15 +215,18 @@
               (questions/get-question question-uri) => nil)))
 
 (facts "about getting users"
-       (fact "gets user with writer records and owned objectives if they exist"
+       (fact "gets user with writer records, owned objectives and admin role if they exist"
              (actions/get-user-with-roles user-uri) 
              => {:status ::actions/success
                  :result {:entity :user
                           :_id USER_ID
+                          :twitter-id "twitter-id"
                           :owned-objectives :stubbed-owned-objectives
-                          :writer-records :stubbed-writer-records}}
+                          :writer-records :stubbed-writer-records
+                          :admin true}}
              (provided
-               (users/retrieve-user user-uri) => {:entity :user :_id USER_ID}
+               (users/retrieve-user user-uri) => {:entity :user :_id USER_ID :twitter-id "twitter-id"}
+               (users/get-admin-by-twitter-id "twitter-id") => {:twitter-id "twitter-id"}
                (writers/retrieve-writers-by-user-id USER_ID) => :stubbed-writer-records 
                (objectives/get-objectives-owned-by-user-id USER_ID) => :stubbed-owned-objectives)))
 

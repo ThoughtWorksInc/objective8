@@ -38,6 +38,7 @@
 
 (defn masthead-signed-in [{:keys [user] :as context}]
   (html/at masthead-signed-in-snippet
+           [:.clj-masthead-admin-badge] (when (permissions/admin? user) identity)
            [:.clj-edit-profile] (if (permissions/writer? user)
                                   (html/set-attr :href (utils/path-for :fe/profile :username (:username user)))
                                   html/unwrap)

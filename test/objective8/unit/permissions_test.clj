@@ -28,3 +28,10 @@
              (writer? {:username "barry"}) => falsey)
        (fact "user is not a writer if they don't have writer-for or owner-of permissions"
              (writer? {:username "barry" :roles #{:wibble}}) => falsey))  
+
+(facts "about admin permissions"
+       (fact "user is an admin if they have admin permission"
+             (admin? {:roles #{:admin}}) => truthy)
+       
+       (fact "user is not an admin if they have no admin permission"
+             (admin? {:roles #{:writer-for-1}}) => falsey))

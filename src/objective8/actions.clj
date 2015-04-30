@@ -133,8 +133,12 @@
 (defn get-user-with-roles [user-uri]
   (if-let [user (users/retrieve-user user-uri)]
     (let [writers (writers/retrieve-writers-by-user-id (:_id user))
-          objectives (objectives/get-objectives-owned-by-user-id (:_id user))]
-      {:status ::success :result (assoc user :writer-records writers :owned-objectives objectives)})
+          objectives (objectives/get-objectives-owned-by-user-id (:_id user))
+          admin (users/get-admin-by-twitter-id (:twitter-id user))]
+      {:status ::success :result (assoc user 
+                                        :writer-records writers
+                                        :owned-objectives objectives 
+                                        :admin (not (empty? admin)))})
     {:status ::entity-not-found}))
 
 (defn update-user-with-profile! [profile-data]

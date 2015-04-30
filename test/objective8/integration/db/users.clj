@@ -6,13 +6,18 @@
 
 (def profile-data {:name "name" :biog "biography"})
 
-(facts "about updating users" 
-       (against-background
-         [(before :contents (do (ih/db-connection)
-                                (ih/truncate-tables)))
-          (after :facts (ih/truncate-tables))]
+(against-background 
+  [(before :contents (do (ih/db-connection)
+                         (ih/truncate-tables)))
+   (after :facts (ih/truncate-tables))] 
 
-         (fact "a user can be updated with a writer profile" 
-               (let [user (sh/store-a-user)
-                     user-with-profile (assoc user :profile profile-data)]
-                 (users/update-user! user-with-profile) => user-with-profile))))
+(facts "about updating users" 
+       (fact "a user can be updated with a writer profile" 
+             (let [user (sh/store-a-user)
+                   user-with-profile (assoc user :profile profile-data)]
+               (users/update-user! user-with-profile) => user-with-profile))) 
+
+(facts "about admin roles"
+       (fact "admin roles are stored"
+             (let [admin-data {:twitter-id "192734"}]
+               (users/store-admin! admin-data) => (contains admin-data))))) 

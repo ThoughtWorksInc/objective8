@@ -229,6 +229,7 @@ navigation-global,sign-out-title,Sign out
 navigation-global,sign-out-text,Sign out
 navigation-global,sign-in-title,Sign in
 navigation-global,sign-in-text,Sign in
+navigation-global,admin-text,Admin
 to-comment,before-sign-in-link,Please
 to-comment,sign-in-link,sign-in
 to-comment,after-sign-in-link,to start commenting.

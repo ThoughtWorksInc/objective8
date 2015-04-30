@@ -12,6 +12,7 @@
 (defn db-connection [] (db/connect!))
 
 (defn truncate-tables []
+  (korma/delete m/admin)
   (korma/delete m/section)
   (korma/delete m/star)
   (korma/delete m/bearer-token)

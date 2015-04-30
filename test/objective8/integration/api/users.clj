@@ -42,7 +42,9 @@
                 (:body response) =>
                 (helpers/json-contains {:writer-records (contains [(contains writer-record-1) (contains writer-record-2)])})
                 (:body response) =>
-                (helpers/json-contains {:owned-objectives (contains [(contains {:_id owned-objective-id})])})))
+                (helpers/json-contains {:owned-objectives (contains [(contains {:_id owned-objective-id})])})
+                (:body response) =>
+                (helpers/json-contains {:admin false})))
  
          (fact "returns a 404 if the user does not exist"
                (-> (p/request app "/api/v1/users/123456")
@@ -50,7 +52,14 @@
  
          (fact "returns a 404 if the user id is not an integer"
                (-> (p/request app "/api/v1/users/NOT_AN_INTEGER")
-                   (get-in [:response :status])) => 404)))
+                   (get-in [:response :status])) => 404))
+       
+       (fact "retrieves user record with admin role for admin user"
+             (let [{user-id :_id twitter-id :twitter-id :as the-user} (sh/store-a-user)
+                   _ (users/store-admin! {:twitter-id twitter-id})
+                   {response :response} (p/request app (str "/api/v1/users/" user-id))]
+               (:body response) =>
+               (helpers/json-contains {:admin true}))))
 
 (facts "users"
        (facts "about querying for users"

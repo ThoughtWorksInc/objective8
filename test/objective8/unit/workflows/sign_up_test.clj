@@ -42,4 +42,10 @@
             (against-background
               (http-api/get-user USER_ID) => {:status ::http-api/success
                                               :result {:owned-objectives [{:_id 1} {:_id 2}]}})
-            (roles-for-user the-user) => (contains #{:writer-inviter-for-1 :writer-inviter-for-2})))
+            (roles-for-user the-user) => (contains #{:writer-inviter-for-1 :writer-inviter-for-2}))
+      
+      (fact "Users who have admin status have admin role added on sign-in"
+            (against-background
+              (http-api/get-user USER_ID) => {:status ::http-api/success
+                                              :result {:admin true}})
+            (roles-for-user the-user) => (contains #{:admin})))

@@ -21,3 +21,11 @@
 
 (defn update-user! [user]
   (storage/pg-update-user! user))
+
+(defn store-admin! [admin-data]
+  (storage/pg-store! (assoc admin-data :entity :admin)))
+
+(defn get-admin-by-twitter-id [twitter-id]
+  (-> (storage/pg-retrieve {:entity :admin :twitter-id twitter-id})
+      :result
+      first))

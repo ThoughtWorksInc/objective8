@@ -22,6 +22,9 @@
 (defn owner-of? [objective-id user]
   (contains? (:roles user) (owner-of objective-id)))
 
+(defn admin? [user]
+  (contains? (:roles user) :admin))
+
 (defn can-mark-questions? [objective user]
   (let [roles (:roles user)
         objective-id (:_id objective)]
