@@ -139,9 +139,10 @@
     (char-array md)))
 
 (defn markdown->hiccup [md]
-  (-> md
+  (->> md
       parse-markdown
-      eh/to-hiccup))
+      eh/to-hiccup
+      (remove nil?)))
 
 (defn hiccup->html [hcp]
   (-> (apply list hcp)

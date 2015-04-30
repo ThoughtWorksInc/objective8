@@ -55,6 +55,9 @@
       => {:current-draft-diffs  '(["p"  {}]  ["p"  [:ins nil "barry"]])
           :previous-draft-diffs '(["p"  [:del nil "string one"]  [:del nil " string two"]  [:del nil " string three"]]  ["p"  [:del nil "another-string"]])})
 
+
+
+
 (fact "Insert diffs into drafts 1"
       (diffs/insert-diffs-into-drafts '([:span nil "First paragraph."]) '(["p" {} "First paragraph."])) => '(["p" {} [:span nil "First paragraph."]])) 
 

@@ -3,6 +3,8 @@
             [clj-time.core :as time-core] 
             [objective8.utils :refer :all])) 
 
+(def invalid-markdown "[id]: http://octodex.github.com/images/dojocat.jpg  \"The Dojocat\"")
+
 (fact "should add 30 days to given time"
       (date-time->date-time-plus-30-days (time-core/date-time 2015 10 01 4 3 27 456)) => 
       (time-core/date-time 2015 10 31 4 3 27 456))
@@ -28,7 +30,10 @@
 
        (fact "suppresses evil html link"
              (hiccup->html (markdown->hiccup "<a href='evil-url'>evil-link</a>")) 
-             =not=> (contains "href")))
+             =not=> (contains "href"))
+       
+       (fact "filters out nil hiccup elements"
+             (markdown->hiccup invalid-markdown) => '()))
 
 (facts "about sanitising referrals"
        (fact "when a referral route is not safe, safen-url returns nil"

@@ -96,8 +96,8 @@
       dmp/as-hiccup))
 
 (defn get-diffs-between-drafts [draft previous-draft]
-  (let [current-draft-content (apply list (:content draft))
-        previous-draft-content (apply list (:content previous-draft))
+  (let [current-draft-content (apply list (remove nil? (:content draft)))
+        previous-draft-content (apply list (remove nil? (:content previous-draft)))
         diffs (diff-hiccup-content previous-draft-content current-draft-content)
         previous-draft-diffs (remove-hiccup-elements diffs :ins)
         current-draft-diffs (remove-hiccup-elements diffs :del)
