@@ -136,6 +136,38 @@ export BASE_URI=<the base uri at which the application is served, including the 
 export TWITTER_CONSUMER_TOKEN=<obtain this from twitter when registering the application to allow sign-in via twitter>
 export TWITTER_CONSUMER_SECRET_TOKEN=<as above>
 ```
+##Deployment to Heroku
+
+Pre-setup:
+Set up heroku account
+Add new heroku app
+Get Heroku tool-belt
+
+Setup Twitter API for app
+
+- create new app on www.dev.twitter.com
+- get consumer API key
+
+Setup:
+
+- Clone repo
+- To add heroku remote= heroku git:remote -a [APP_NAME]
+- Add-Ons
+        - Heroku Postgres
+
+- Set Config Vars on Heroku
+	- ADMIN = twitter-[twitter id of admin user]
+        - BUILDPACK_URL = https://www.github.com/ddollar/heroku-buildpack-multi.git
+        - BASE_URI = [app uri]
+        - HTTPS_ONLY = true
+        - SCHEDULER_INTERVAL_MINUTES = 10
+        - TWITTER_CONSUMER_SECRET_TOKEN = [twitter consumer api secret]
+        - TWITTER_CONSUMER_TOKEN = [twitter consumer api key]
+        - API_BEARER_NAME = [anything]
+        - API_BEARER_TOKEN = [anything]
+
+- Push to Heroku
+
 ## Docker
 
 With root privileges:
