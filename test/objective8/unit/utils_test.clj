@@ -3,6 +3,7 @@
             [clj-time.core :as time-core] 
             [objective8.utils :refer :all])) 
 
+
 (def invalid-markdown "[id]: http://octodex.github.com/images/dojocat.jpg  \"The Dojocat\"")
 
 (fact "should add 30 days to given time"

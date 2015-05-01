@@ -13,6 +13,8 @@
 (def HICCUP_WITH_EMPTY_ELEMENT [["p" {}] ["p" "barry"]])
 (def CONTENT_STRING_FOR_EMPTY_ELEMENT "barry")
 
+(def SOME_INVALID_HICCUP [["p" nil ")"] "\n"  ["p" nil "("] nil])
+
 (def ELEMENT [:del {} "First sentence. Second sentence."]) 
 
 (def DIFF_1 '([:span nil "Equal text. "] [:ins nil "New text."]))
@@ -24,6 +26,9 @@
 (def FORMATTED_CURRENT_DIFF_2_vs_3 '(["p" {} [:span nil "First paragraph."]] ["p" {} [:ins nil "New"] [:span nil " paragraph."]] ["p" {} [:span nil "Third paragraph."]]))
 (def FORMATTED_PREVIOUS_DIFF_1_vs_2 '(["p" nil ""] ["p" nil [:span nil "First paragraph."]] ["ul" ["li" [:del nil "List item 1."]] ["li" [:del nil "List item 2."]] ["li" [:del nil "List item 3."]]] ["p" {} [:del nil "Last"] [:span nil " paragraph."]]))
 (def FORMATTED_CURRENT_DIFF_1_vs_2 '(["p" {} [:span nil "First paragraph."]]  ["p" {} [:ins nil "Second paragraph."]] ["p" {} [:ins nil "Third"] [:span nil " paragraph."]]))
+
+(fact "Removes invalid hiccup"
+      (diffs/sanitise-hiccup SOME_INVALID_HICCUP) => [["p" nil ")"] ["p" nil "("]])
 
 (fact "Convert hiccup to content-string for simple hiccup"
       (diffs/hiccup->content-string HICCUP_2) => "First paragraph.Second paragraph.Third paragraph.")
