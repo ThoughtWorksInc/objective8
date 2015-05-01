@@ -3,9 +3,6 @@
             [clj-time.core :as time-core] 
             [objective8.utils :refer :all])) 
 
-
-(def invalid-markdown "[id]: http://octodex.github.com/images/dojocat.jpg  \"The Dojocat\"")
-
 (fact "should add 30 days to given time"
       (date-time->date-time-plus-30-days (time-core/date-time 2015 10 01 4 3 27 456)) => 
       (time-core/date-time 2015 10 31 4 3 27 456))
@@ -19,6 +16,9 @@
         uuid1 =not=> uuid2 
         (class uuid1) => String
         (count uuid1) => 36))
+
+;; A reference link that has without a reference
+(def INVALID_MARKDOWN "[id]: http://octodex.github.com/images/dojocat.jpg  \"The Dojocat\"")
 
 (facts "about converting markdown to hiccup"
        (fact "correctly converts valid markdown"
@@ -34,7 +34,14 @@
              => '([:p "\n" "evil-link" "\n"]))
        
        (fact "filters out nil hiccup elements"
-             (markdown->hiccup invalid-markdown) => '()))
+             (markdown->hiccup INVALID_MARKDOWN) => '()))
+
+(def SOME_INVALID_HICCUP [["p" nil ")"] "\n"  ["p" nil "("] nil])
+
+(facts "about sanitising hiccup"
+       (fact "removes non-sequential elements and nils"
+             (sanitise-hiccup SOME_INVALID_HICCUP) 
+             => [["p" nil ")"] ["p" nil "("]]))
 
 (facts "about sanitising referrals"
        (fact "when a referral route is not safe, safen-url returns nil"
