@@ -184,6 +184,13 @@
          (contains (utils/path-for :api/get-comments))
          {:query-params {:uri some-uri}}) => :api-call-result))
 
+;; NOTES
+(def note-data {:note-on-uri some-uri :created-by-id USER_ID :note "A note"})
+(fact "posting a note on a question hits the correct API endpoint"
+      (http-api/post-writer-note note-data) => :api-call-result
+      (provided
+        (http-api/default-post-call (contains "/api/v1/meta/writer-notes") note-data) => :api-call-result))
+
 ;; QUESTIONS
 
 (def the-question {:some :data

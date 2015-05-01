@@ -12,6 +12,13 @@
             (utils/select-all-or-nothing [:question])
             (assoc :created-by-id user-id :objective-id objective-id))))
 
+(defn request->writer-note-data
+  "Returns a map of a note if all the parts are in the request params."
+  [{:keys [params] :as request} user-id]
+  (some-> params
+          (utils/select-all-or-nothing [:note-on-uri :note])
+          (assoc :created-by-id user-id)))
+
 (defn request->comment-data
   "Returns a map of a comment if all the parts are in the request params."
   [{:keys [params] :as request} user-id]

@@ -205,6 +205,9 @@
 (defn post-profile [profile-data]
   (default-put-call (utils/path-for :api/put-writer-profile) profile-data))
 
+(defn post-writer-note [note-data]
+  (default-post-call (utils/path-for :api/post-writer-note) note-data))
+
 ;; DRAFTS
 
 (defn get-draft [objective-id draft-id]

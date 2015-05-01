@@ -27,11 +27,13 @@ mixin dashboardAnswerItem(itemSaved)
           span.clj-dashboard-answer-item-saved-content
             | Clipped. "Great for section d."
     else
-      form(actions="#", method="post").dashboard-answer-item-save.clj-dashboard-answer-item-save
+      form(action='/meta/writer-notes', method='POST').dashboard-answer-item-save.clj-dashboard-answer-item-save
+        input.clj-refer(name='refer', type='hidden', value='!redirect-after-post-uri')
+        input.clj-note-on-uri(name='note-on-uri', type='hidden', value='!entity-to-add-note-on')
         p.form-field
-          label.form-field-label(for="comment")
-            span.form-field-label-title.visuallyhidden Comment
-            input.dashboard-answer-item-save-comment(id="comment", name="comment", type="text", maxlength="140", placeholder="!Add a reply to the community.")
+          label.form-field-label(for="note")
+            span.form-field-label-title.visuallyhidden Note
+            input.dashboard-answer-item-save-comment(id="note", required="required", name="note", type="text", maxlength="140", placeholder="!Add a reply to the community.", data-l8n="attr/placeholder:writer-dashboard/writer-note-placeholder")
           button.save-answer-button(type='submit')
             i.fa.fa-paperclip
 

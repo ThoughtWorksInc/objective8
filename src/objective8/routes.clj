@@ -15,7 +15,8 @@
                          "/down-vote"    {:post :fe/post-down-vote}
                          "/comments"     {:post :fe/post-comment}
                          "/stars" {:post :fe/post-star}
-                         "/marks" {:post :fe/post-mark}}
+                         "/marks" {:post :fe/post-mark}
+                         "/writer-notes" {:post :fe/post-writer-note}}
     "objectives"        {:get :fe/objective-list
                          :post :fe/create-objective-form-post
                          "/create" {:get :fe/create-objective-form} 

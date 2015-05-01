@@ -2,6 +2,7 @@
   (:require [net.cgrand.enlive-html :as html]
             [cemerick.url :as url]
             [objective8.utils :as utils]
+            [ring.util.anti-forgery :refer [anti-forgery-field]]
             [objective8.templates.page-furniture :as pf]
             [objective8.templates.template-functions :as tf]))
 
@@ -18,11 +19,14 @@
 
 (def answer-with-saved-item-snippet (html/select pf/library-html-resource [:.clj-library-key--dashboard-answer-with-saved-item]))
 
-(defn render-item-without-note [context answer]
+(defn render-item-without-note [{:keys [ring-request] :as context} answer]
   (html/at answer-with-no-saved-item-snippet
            [:.clj-dashboard-answer-item-text] (html/content (:answer answer)) 
            [:.clj-dashboard-answer-item-up-count] (html/content (str (get-in answer [:votes :up]))) 
            [:.clj-dashboard-answer-item-down-count] (html/content (str (get-in answer [:votes :down]))) 
+           [:.clj-refer] (html/set-attr :value (:uri ring-request)) 
+           [:.clj-note-on-uri] (html/set-attr :value (:uri answer))
+           [:.clj-dashboard-answer-item-save] (html/prepend (html/html-snippet (anti-forgery-field)))
            [:.clj-dashboard-answer-item-save] identity))
 
 (defn render-item-with-note [context answer]
