@@ -128,6 +128,14 @@
                     (handler-with-anti-forgery request)
                     (handler request)))))
 
+
+;; HICCUP & MARKDOWN
+
+(defn sanitise-hiccup [hiccup]
+  (->> (remove nil? hiccup)
+       (filter sequential?)
+       (apply list)))
+
 (defn- parse-markdown 
   "Extends endophile.core's 'md' method to include SUPPRESS_ALL_HTML"
   [md]
@@ -141,13 +149,12 @@
 
 (defn markdown->hiccup [md]
   (->> md
-      parse-markdown
-      eh/to-hiccup
-      (remove nil?)))
-
+       parse-markdown
+       eh/to-hiccup
+       sanitise-hiccup))
 
 (defn hiccup->html [hcp]
-  (-> (apply list hcp)
+  (-> (sanitise-hiccup hcp)
       hiccup/html))
 
 (defn html->hiccup [html]

@@ -95,14 +95,9 @@
       dmp/cleanup!
       dmp/as-hiccup))
 
-(defn sanitise-hiccup [hiccup]
-  (->> (remove nil? hiccup)
-       (filter sequential?)
-       (apply list)))
-
 (defn get-diffs-between-drafts [draft previous-draft]
-  (let [current-draft-content (sanitise-hiccup (:content draft))
-        previous-draft-content (sanitise-hiccup (:content previous-draft))
+  (let [current-draft-content (utils/sanitise-hiccup (:content draft))
+        previous-draft-content (utils/sanitise-hiccup (:content previous-draft))
         diffs (diff-hiccup-content previous-draft-content current-draft-content)
         previous-draft-diffs (remove-hiccup-elements diffs :ins)
         current-draft-diffs (remove-hiccup-elements diffs :del)
