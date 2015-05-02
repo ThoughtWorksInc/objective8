@@ -160,7 +160,13 @@
 (defn html->hiccup [html]
   (map hickory/as-hiccup (hickory/parse-fragment html)))
 
-(defn split-hiccup-element [element]
+(defn split-hiccup-element 
+  "Returns a map with :element-without-content and :content
+   :element-without-content is either:
+   - just the html tag (string or key) (e.g. [:h1])
+   - the html tag plus a map of attributes or nil (e.g. [:h1 nil])
+   :content is a vector containing strings and/or child hiccup html elements"
+  [element]
   (if (= (count element) 1)
     {:element-without-content element
      :content []}

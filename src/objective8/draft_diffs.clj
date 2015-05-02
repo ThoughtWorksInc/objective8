@@ -5,9 +5,6 @@
 
 (declare replacement-element-and-updated-diff strings-for-element)
 
-(defn remove-hiccup-elements [hiccup element]
-  (filter #(not= element (first %)) hiccup))
-
 (defn replacement-diff-for-n-chars [n diff]
   (if (zero? n) 
     {:replacement (list "")
@@ -63,24 +60,16 @@
           recursive-returned-draft (insert-diffs-into-drafts updated-diff (rest draft))]
       (concat (list replacement-element) recursive-returned-draft))))
 
-(defn strings-for-content [content]
-  ;; Each thing in content will be a string or a vector (another html element)
-  (if (empty? content)
-    content
-    (let [first-element (first content)]
-      (if (string? first-element)
-        (let [rest-element-strings (strings-for-content (rest content))]
-          (into [] (concat [first-element] rest-element-strings)))
-
-        ;; else first-element must be a nested-tag vector
-        (let [first-element-strings (strings-for-element first-element) 
-              rest-element-strings (strings-for-content (rest content))]
-          (into [] (concat first-element-strings rest-element-strings)))))))
+(defn remove-hiccup-elements [hiccup element]
+  (remove #(= element (first %)) hiccup))
 
 (defn strings-for-element [element]
-  (let [{:keys [element-without-content content]} (utils/split-hiccup-element element) 
-        content-strings (strings-for-content content)]
-    content-strings))
+  ;; Element is either a string or a vector (a hiccup html element)
+  (if (string? element)
+    [element]
+    (->> (utils/split-hiccup-element element)
+         :content
+         (mapcat strings-for-element))))
 
 (defn hiccup->content-string [draft]
   (clojure.string/join (mapcat strings-for-element draft))) 
