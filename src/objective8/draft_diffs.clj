@@ -83,12 +83,7 @@
     content-strings))
 
 (defn hiccup->content-string [draft]
-  (if (empty? draft)
-    ""
-    (let [first-draft-element (first draft)
-          first-element-strings (strings-for-element first-draft-element)
-          rest-element-strings (hiccup->content-string (rest draft))]
-      (clojure.string/join (into [] (concat first-element-strings rest-element-strings)))))) 
+  (clojure.string/join (mapcat strings-for-element draft))) 
 
 (defn diff-hiccup-content [hiccup-1 hiccup-2]
   (-> (dmp/diff (hiccup->content-string hiccup-1) (hiccup->content-string hiccup-2))
@@ -100,7 +95,6 @@
         previous-draft-content (utils/sanitise-hiccup (:content previous-draft))
         diffs (diff-hiccup-content previous-draft-content current-draft-content)
         previous-draft-diffs (remove-hiccup-elements diffs :ins)
-        current-draft-diffs (remove-hiccup-elements diffs :del)
-        result {:previous-draft-diffs (insert-diffs-into-drafts previous-draft-diffs previous-draft-content)
-                :current-draft-diffs (insert-diffs-into-drafts current-draft-diffs current-draft-content)}]
-    result))
+        current-draft-diffs (remove-hiccup-elements diffs :del)]
+    {:previous-draft-diffs (insert-diffs-into-drafts previous-draft-diffs previous-draft-content)
+     :current-draft-diffs (insert-diffs-into-drafts current-draft-diffs current-draft-content)}))
