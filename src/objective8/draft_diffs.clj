@@ -3,7 +3,7 @@
             [objective8.utils :as utils]
             [objective8.drafts :as drafts]))
 
-(declare replacement-element-and-updated-diff strings-for-element)
+(declare replacement-element-and-updated-diffs strings-for-element)
 
 (defn replacement-diffs-for-n-chars [n diffs]
   (if (zero? n) 
