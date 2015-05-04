@@ -31,6 +31,7 @@
                  [org.clojure/java.jdbc "0.3.6"]
                  [postgresql "9.3-1102.jdbc41"]
                  [ragtime "0.3.8"]
+                 [environ "1.0.0"]
                  [endophile "0.1.2"]
                  [org.pegdown/pegdown "1.2.0"]
                  [clojure-csv/clojure-csv "2.0.1"]
@@ -39,7 +40,8 @@
                  [crypto-random "1.2.0"]
                  [com.googlecode.owasp-java-html-sanitizer/owasp-java-html-sanitizer "r239" :exclusions [com.google.guava/guava com.google.code.findbugs/jsr305]]]
   :main objective8.core
-  :plugins [[ragtime/ragtime.lein "0.3.8"]]
+  :plugins [[ragtime/ragtime.lein "0.3.8"]
+            [lein-environ "1.0.0"]]
   :profiles {:dev {:source-paths ["dev"]
                    :repl-options {:init-ns user
                                   :timeout 120000}
