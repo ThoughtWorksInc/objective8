@@ -180,10 +180,14 @@
         {objective-status :status objective :result} (http-api/get-objective objective-id)
         {questions-status :status questions :result} (http-api/retrieve-questions objective-id {:sorted-by "answers"})
         selected-question-uri (get params :selected (:uri (first questions)))
-        answer-sort-method {:sorted-by (get params :sorted-by "up-votes")} 
+        answer-query-params {:sorted-by (get params :sorted-by "up-votes")
+                             :filter-type (get params :filter-type "none")}
+        answer-view-type (if (= "has-writer-note" (:filter-type answer-query-params))
+                           "paperclip"
+                           (:sorted-by answer-query-params))
         {answers-status :status answers :result} (if (empty? questions)
                                                    {:status ::http-api/success :result []}
-                                                   (http-api/retrieve-answers selected-question-uri answer-sort-method))]
+                                                   (http-api/retrieve-answers selected-question-uri answer-query-params))]
     (cond
       (every? #(= ::http-api/success %) [objective-status questions-status answers-status])
       (let [formatted-objective (format-objective objective)]
@@ -194,7 +198,7 @@
                                                :objective formatted-objective
                                                :questions questions
                                                :answers answers
-                                               :answers-sorted-by (:sorted-by answer-sort-method) 
+                                               :answer-view-type answer-view-type
                                                :selected-question-uri selected-question-uri)}))))
 
 (defn dashboard-comments [{:keys [route-params params] :as request}]

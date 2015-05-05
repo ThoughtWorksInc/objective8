@@ -85,7 +85,7 @@
   (let [objective (:objective data)
         selected-question-uri (:selected-question-uri data)
         dashboard-url (url/url (utils/path-for :fe/dashboard-questions :id (:_id objective)))
-        answer-sort-method (:answers-sorted-by data)]
+        answer-view-type (:answer-view-type data)]
     (apply str
            (html/emit*
              (tf/translate context
@@ -105,13 +105,20 @@
                                       [:.clj-writer-dashboard-navigation-comments-link] (html/set-attr :href (utils/path-for :fe/dashboard-comments :id (:_id objective)))
                                       [:.clj-dashboard-navigation-list] (html/content (navigation-list context))
                                       [:.clj-dashboard-answer-list] (html/substitute (answer-list context))
-                                      [:.clj-dashboard-filter-paper-clip] nil
+                                      [:.clj-dashboard-filter-paper-clip] (html/set-attr :href
+                                                                                         (str (assoc dashboard-url
+                                                                                                     :query {:selected selected-question-uri
+                                                                                                             :filter-type "has-writer-note"})))
+                                      [:.clj-dashboard-filter-paper-clip] (if (= answer-view-type "paperclip")
+                                                                            (html/add-class "on")
+                                                                            identity)
+
                                       [:.clj-dashboard-filter-up-votes] (html/set-attr :href
                                                                                        (str (assoc dashboard-url
                                                                                                    :query {:selected selected-question-uri
                                                                                                            :sorted-by "up-votes"})))
 
-                                      [:.clj-dashboard-filter-up-votes] (if (= answer-sort-method "up-votes")
+                                      [:.clj-dashboard-filter-up-votes] (if (= answer-view-type "up-votes")
                                                                           (html/add-class "on")
                                                                           identity)
 
@@ -120,7 +127,7 @@
                                                                                                      :query {:selected selected-question-uri
                                                                                                              :sorted-by "down-votes"})))
 
-                                      [:.clj-dashboard-filter-down-votes] (if (= answer-sort-method "down-votes")
+                                      [:.clj-dashboard-filter-down-votes] (if (= answer-view-type "down-votes")
                                                                             (html/add-class "on")
                                                                             identity)
 

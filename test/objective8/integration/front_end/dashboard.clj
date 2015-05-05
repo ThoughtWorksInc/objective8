@@ -27,29 +27,30 @@
 (def writer-for-objective {:_id USER_ID :username "username" :writer-records [{:objective-id OBJECTIVE_ID}]})
 
 (background
- (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
- (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                 :result writer-for-objective}
- (http-api/get-user anything) => {:result writer-for-objective})
+  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
+  (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                  :result writer-for-objective}
+  (http-api/get-user anything) => {:result writer-for-objective})
 
 (facts "about the questions dashboard for writers"
        (against-background
-        (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                  :result {:entity :objective
-                                                           :title "Objective title"
-                                                           :_id OBJECTIVE_ID
-                                                           :meta {:stars-count STARS_COUNT}}}
+         (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                   :result {:entity :objective
+                                                            :title "Objective title"
+                                                            :_id OBJECTIVE_ID
+                                                            :meta {:stars-count STARS_COUNT}}}
 
-        (http-api/retrieve-questions OBJECTIVE_ID {:sorted-by "answers"})
-        => {:status ::http-api/success
-            :result [{:entity :question
-                      :uri QUESTION_URI
-                      :question "test question"
-                      :answer-count ANSWERS_COUNT}]}
+         (http-api/retrieve-questions OBJECTIVE_ID {:sorted-by "answers"})
+         => {:status ::http-api/success
+             :result [{:entity :question
+                       :uri QUESTION_URI
+                       :question "test question"
+                       :answer-count ANSWERS_COUNT}]}
 
-        (http-api/retrieve-answers QUESTION_URI {:sorted-by "up-votes"}) => {:status ::http-api/success
-                                                                             :result [{:entity :answer
-                                                                                       :answer "test answer"}]})
+         (http-api/retrieve-answers QUESTION_URI {:sorted-by "up-votes"
+                                                  :filter-type "none"}) => {:status ::http-api/success
+                                                                            :result [{:entity :answer
+                                                                                      :answer "test answer"}]})
        (fact "can see answers for specific questions"
              (let [{response :response} (-> user-session
                                             ih/sign-in-as-existing-user
@@ -61,8 +62,9 @@
 
        (fact "see message noting there is no answer when question has no answers"
              (against-background
-              (http-api/retrieve-answers QUESTION_URI {:sorted-by "up-votes"}) => {:status ::http-api/success
-                                                                                   :result []})
+               (http-api/retrieve-answers QUESTION_URI {:sorted-by "up-votes"
+                                                        :filter-type "none"}) => {:status ::http-api/success
+                                                                                  :result []})
              (let [{response :response} (-> user-session
                                             ih/sign-in-as-existing-user
                                             (p/request (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID)))]
@@ -73,22 +75,22 @@
 
        (fact "see message noting there are no questions when no questions were submitted to objective"
              (against-background
-              (http-api/retrieve-questions OBJECTIVE_ID {:sorted-by "answers"}) => {:status ::http-api/success
-                                                                                    :result []})
+               (http-api/retrieve-questions OBJECTIVE_ID {:sorted-by "answers"}) => {:status ::http-api/success
+                                                                                     :result []})
              (let [{response :response} (-> user-session
                                             ih/sign-in-as-existing-user
                                             (p/request (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID)))]
                (:status response) => 200
                (:body response) => (contains "Objective title")
                (:body response) => (contains NO_QUESTION_MESSAGE)))
-       
+
        (fact "get objectives with stars-count"
              (let [{response :response} (-> user-session
                                             ih/sign-in-as-existing-user
                                             (p/request (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID)))]
                (:status response) => 200
                (:body response) => (contains (str STARS_COUNT))))
-       
+
        (fact "get questions with answer-count"
              (let [{response :response} (-> user-session
                                             ih/sign-in-as-existing-user
@@ -102,10 +104,24 @@
                  (p/request (str (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID) "?sorted-by=down-votes"))
                  :response
                  :status) => 200
-                 (provided
-                  (http-api/retrieve-answers QUESTION_URI {:sorted-by "down-votes"}) => {:status ::http-api/success
-                                                                                         :result [{:entity :answer
-                                                                                                   :answer "test answer"}]}))
+             (provided
+               (http-api/retrieve-answers QUESTION_URI {:sorted-by "down-votes"
+                                                        :filter-type "none"}) => {:status ::http-api/success
+                                                                                  :result [{:entity :answer
+                                                                                            :answer "test answer"}]}))
+
+       (fact "can filter answers by writer note presence"
+             (-> user-session
+                 ih/sign-in-as-existing-user
+                 (p/request (str (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID) "?filter-type=has-writer-note"))
+                 :response
+                 :status) => 200
+             (provided
+               (http-api/retrieve-answers QUESTION_URI {:sorted-by "up-votes" 
+                                                        :filter-type "has-writer-note"}) => {:status ::http-api/success
+                                                                                             :result [{:entity :answer
+                                                                                                       :answer "test answer"
+                                                                                                       :note "writer note"}]}))
 
        (fact "can see form if answer has no note"
              (let [{response :response} (-> user-session
@@ -116,13 +132,12 @@
 
 
        (fact "can see note text if the answer has a note"
-
              (against-background
-               (http-api/retrieve-answers QUESTION_URI {:sorted-by "up-votes"}) => {:status ::http-api/success
-                                                                                    :result [{:entity :answer
-                                                                                              :answer "test answer with a note"
-                                                                                              :note "test note"
-                                                                                              }]}) 
+               (http-api/retrieve-answers QUESTION_URI {:sorted-by "up-votes"
+                                                        :filter-type "none"}) => {:status ::http-api/success
+                                                                                  :result [{:entity :answer
+                                                                                            :answer "test answer with a note"
+                                                                                            :note "test note"}]}) 
              (let [{response :response} (-> user-session
                                             ih/sign-in-as-existing-user
                                             (p/request (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID)))]
@@ -148,7 +163,7 @@
                  (http-api/post-writer-note {:note "Test note"
                                              :note-on-uri QUESTION_URI
                                              :created-by-id USER_ID}) => {:status ::http-api/success
-                                                    :result []}))
+                                                                          :result []}))
 
          (fact "authorised writer can post note against comment"
                (let [params {:refer (str "/objectives/" OBJECTIVE_ID "/dashboard/comments")
