@@ -1,0 +1,21 @@
+extends layouts/base
+include mixins/_view_helpers
+
+block vars
+  - bodyClass = ""
+  - pageTitle = "!Admin removal confirmation"
+
+block content
+  .middle-container
+    article
+      h1(data-l8n="content:admin-removal-confirmation/page-title") !Please confirm
+      p.lede
+        span(data-l8n="content:admin-removal-confirmation/are-you-sure") !Are you sure you want to remove this objective:
+        = " "
+        span.clj-objective-title !More bikes in Soho
+
+    .admin-removal-actions
+      a.pink-button(href="/objectives", data-l8n="content:admin-removal-confirmation/no") !No
+      form.admin-removal-confirmation-form(method="POST", action="/meta/admin-removals")
+        input.clj-removal-uri(type="hidden", value="!removal-uri", name="removal-uri")
+        button.button(type="submit", value="yes", data-l8n="content:admin-removal-confirmation/yes") !Yes

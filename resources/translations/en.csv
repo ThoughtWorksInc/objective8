@@ -335,3 +335,9 @@ profile,joined,Joined
 profile,no-profile-message,This user has not created a writer profile yet
 profile,edit-profile,Edit profile
 policy,contributors-title,Policy Contributors
+admin-removal-confirmation,doc-title,Are you sure? | Objective[8]
+admin-removal-confirmation,doc-description,Confirm removal of this content
+admin-removal-confirmation,page-title,Please confirm
+admin-removal-confirmation,are-you-sure,Are you sure you want to remove this objective:
+admin-removal-confirmation,no,No
+admin-removal-confirmation,yes,Yes

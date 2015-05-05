@@ -91,7 +91,10 @@
           (utils/select-all-or-nothing [:question-uri])
           (assoc :created-by-uri (str "/users/" user-id))))
 
-(defn request->admin-removal-info [{:keys [params] :as request} user-id]
+(defn request->admin-removal-confirmation-info [{:keys [params] :as request} user-id]
   (some-> params
           (utils/select-all-or-nothing [:removal-uri])
           (assoc :removed-by-uri (str "/users/" user-id))))
+
+(defn request->admin-removal-info [{:keys [params] :as request}]
+  (utils/select-all-or-nothing params [:removal-uri :removal-sample]))

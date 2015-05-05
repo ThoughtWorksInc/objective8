@@ -17,6 +17,8 @@
                          "/stars" {:post :fe/post-star}
                          "/marks" {:post :fe/post-mark}
                          "/writer-notes" {:post :fe/post-writer-note}
+                         "/admin-removal-confirmation" {:post :fe/admin-removal-confirmation-post
+                                                        :get :fe/admin-removal-confirmation-get}
                          "/admin-removals" {:post :fe/post-admin-removal}}
     "objectives"        {:get :fe/objective-list
                          :post :fe/create-objective-form-post

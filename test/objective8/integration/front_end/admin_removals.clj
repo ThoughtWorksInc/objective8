@@ -30,8 +30,30 @@
                      params {:removal-uri OBJECTIVE_URI}
                      {response :response} (-> user-session
                                               ih/sign-in-as-existing-user
-                                              (p/request (utils/path-for :fe/post-admin-removal)
+                                              (p/request (utils/path-for :fe/admin-removal-confirmation-post)
                                                          :request-method :post
                                                          :params params))]
                  (:headers response) => (ih/location-contains (utils/path-for :fe/objective-list))
                  (:status response) => 302))))
+
+(facts "about confirming admin-removals"
+       (binding [config/enable-csrf false]
+         (fact "admin can post to admin-removal-confirmation for an objective"
+               (against-background
+                 (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
+                 (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                                 :result {:_id USER_ID
+                                                                          :username "username"}}
+                 (http-api/get-user anything) => {:result {:admin true}})
+               (let [user-session (ih/test-context)
+                     params {:removal-uri OBJECTIVE_URI
+                             :removal-sample "Objective Title"}
+                     {response :response} (-> user-session
+                                              ih/sign-in-as-existing-user
+                                              (p/request (utils/path-for :fe/post-admin-removal)
+                                                         :request-method :post
+                                                         :params params)
+                                              p/follow-redirect)]
+                 (:status response) => 200
+                 (:body response) => (contains "Objective Title")
+                 (:body response) => (contains (:removal-uri params))))))

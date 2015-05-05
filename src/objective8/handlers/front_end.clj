@@ -657,12 +657,25 @@
         {:status 502}))
     {:status 400}))
 
-(defn post-admin-removal [request]
-  (if-let [admin-removal-data (helpers/request->admin-removal-info request (get (friend/current-authentication) :identity))]
-    (let [{status :status admin-removal :result} (http-api/post-admin-removal admin-removal-data)]
+(defn post-admin-removal-confirmation [request]
+  (if-let [admin-removal-confirmation-data (helpers/request->admin-removal-confirmation-info request (get (friend/current-authentication) :identity))]
+    (let [{status :status admin-removal :result} (http-api/post-admin-removal admin-removal-confirmation-data)]
       (case status
         ::http-api/success (response/redirect (utils/path-for :fe/objective-list))
         ::http-api/invalid-input {:status 400}
 
         {:status 502}))
+    {:status 400}))
+
+(defn admin-removal-confirmation [{:keys [flash] :as request}]
+  {:status 200
+   :body (views/admin-removal-confirmation "admin-removal-confirmation" request 
+                                           :removal-data (:data flash))
+   :headers {"Content-Type" "text/html"}})
+
+(defn post-admin-removal [request]
+  (if-let [admin-removal-data (helpers/request->admin-removal-info request)]
+    (-> (response/redirect (utils/path-for :fe/admin-removal-confirmation-get))
+        (assoc :flash {:type :flash-data
+                       :data admin-removal-data}))
     {:status 400}))
