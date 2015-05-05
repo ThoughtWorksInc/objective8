@@ -80,6 +80,7 @@
                                   "/stars" {:post :api/post-star}
                                   "/marks" {:post :api/post-mark}
                                   "/writer-notes" {:post :api/post-writer-note}
-                                  "/admin-removals" {:post :api/post-admin-removal}}
+                                  "/admin-removals" {:post :api/post-admin-removal
+                                                     :get :api/get-admin-removals}}
                          "/up-down-votes" {:post :api/post-up-down-vote}
                          "/invitations" {:get :api/get-invitation}}}])

@@ -14,6 +14,7 @@
             [objective8.utils :as utils]
             [objective8.api-requests :as ar]
             [objective8.stars :as stars]
+            [objective8.admin-removals :as admin-removals]
             [objective8.actions :as actions]))
 
 (defn error-response [status message]
@@ -134,6 +135,11 @@
     (catch Exception e
       (log/info "Error when posting admin-removal: " e)
       (internal-server-error "Error when posting admin-removal"))))
+
+(defn get-admin-removals [request]
+  (-> (admin-removals/get-admin-removals)
+      response/response
+      (response/content-type "application/json")))
 
 ;;STARS
 (defn post-star [request]

@@ -17,3 +17,11 @@
              (assoc :removed-by-uri removed-by-uri)
              (utils/update-in-self [:uri] uri-for-admin-removal)
              (dissoc :_id :removed-by-id)))))
+
+(defn get-admin-removals []
+  (->> (storage/pg-retrieve {:entity :admin-removal}
+                            {:limit 50
+                             :sort {:field :_created_at
+                                    :ordering :DESC}})
+       :result)
+  )

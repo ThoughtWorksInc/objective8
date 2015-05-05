@@ -81,3 +81,17 @@
                  (:status response) => 403
                  (:body response) => (helpers/json-contains {:reason "Admin credentials are required for this request"})))))
 
+(facts "GET /api/v1/meta/admin-removals"
+       (against-background
+         [(before :contents (do (helpers/db-connection)
+                               (helpers/truncate-tables)))
+         (after :facts (helpers/truncate-tables))]
+         
+         (future-fact "retrieves admin-removals"
+              (let [stored-admin-removal (sh/store-an-admin-removal)
+                    expected-retrieved-admin-removal (-> stored-admin-removal
+                                                         (assoc :uri (str "/admin-removals/" (:_id stored-admin-removal))
+                                                                :removed-by-uri (str "/users/" (:removed-by-id stored-admin-removal)))
+                                                         (dissoc :_id :removed-by-id))
+                    {response :response} (p/request app "/api/v1/meta/admin-removals")]
+                    (:body response)  => (helpers/json-contains [expected-retrieved-admin-removal])))))

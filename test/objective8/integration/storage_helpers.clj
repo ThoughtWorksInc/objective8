@@ -227,3 +227,12 @@
                            :question-id question-id
                            :active active})))))
 
+(defn store-an-admin-removal
+  ([]
+   (store-an-admin-removal {}))
+
+  ([entities]
+   (let [{user-id :_id} (l-get entities :user (store-a-user))]
+     (storage/pg-store! {:entity :admin-removal
+                         :removed-by-id user-id
+                         :removal-uri "/removal/uri"}))))
