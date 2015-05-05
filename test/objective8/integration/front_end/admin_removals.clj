@@ -14,9 +14,9 @@
 (def OBJECTIVE_URI (str "/objectives/" OBJECTIVE_ID))
 (def TWITTER_ID "twitter-123456")
 
-(facts "about admin-removals"
+(facts "about confirming admin-removals"
        (binding [config/enable-csrf false]
-         (fact "admin can post an admin-removal for an objective"
+         (fact "admin can post an admin-removal confirmation for an objective"
                (against-background
                  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
                  (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
@@ -34,11 +34,24 @@
                                                          :request-method :post
                                                          :params params))]
                  (:headers response) => (ih/location-contains (utils/path-for :fe/objective-list))
-                 (:status response) => 302))))
+                 (:status response) => 302))
+         
+         (fact "admin cannot reach the admin-removal confirmation page without valid removal-data flash parameters in the session"
+               (against-background
+                 (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
+                 (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                                 :result {:_id USER_ID
+                                                                          :username "username"}}
+                 (http-api/get-user anything) => {:result {:admin true}})
+               (let [user-session (ih/test-context)
+                     {response :response} (-> user-session
+                                              ih/sign-in-as-existing-user
+                                              (p/request (utils/path-for :fe/admin-removal-confirmation-get)))]
+                 (:status response) => 400))))
 
-(facts "about confirming admin-removals"
+(facts "about admin-removals"
        (binding [config/enable-csrf false]
-         (fact "admin can post to admin-removal-confirmation for an objective"
+         (fact "admin can post an admin-removal for an objective"
                (against-background
                  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
                  (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success

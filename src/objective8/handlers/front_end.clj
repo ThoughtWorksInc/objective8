@@ -668,10 +668,12 @@
     {:status 400}))
 
 (defn admin-removal-confirmation [{:keys [flash] :as request}]
-  {:status 200
-   :body (views/admin-removal-confirmation "admin-removal-confirmation" request 
-                                           :removal-data (:data flash))
-   :headers {"Content-Type" "text/html"}})
+  (if-let [removal-data (helpers/flash->removal-data flash)]
+    {:status 200
+     :body (views/admin-removal-confirmation "admin-removal-confirmation" request 
+                                             :removal-data removal-data)
+     :headers {"Content-Type" "text/html"}}
+    {:status 400}))
 
 (defn post-admin-removal [request]
   (if-let [admin-removal-data (helpers/request->admin-removal-info request)]

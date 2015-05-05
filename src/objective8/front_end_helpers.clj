@@ -98,3 +98,8 @@
 
 (defn request->admin-removal-info [{:keys [params] :as request}]
   (utils/select-all-or-nothing params [:removal-uri :removal-sample]))
+
+(defn flash->removal-data [{:keys [type data] :as flash}]
+  (when (= type :flash-data)
+    (utils/select-all-or-nothing data [:removal-uri :removal-sample])) 
+  )
