@@ -333,7 +333,7 @@
                      query-map {:entity :answer
                                 :question-id (:_id question)
                                 :objective-id (:objective-id question)
-                                :ordered-by :created-at}]
+                                :sorted-by :created-at}]
 
                  (storage/pg-retrieve-answers query-map)
                  => (contains [(contains (assoc answer :note "a real note")) ])))
