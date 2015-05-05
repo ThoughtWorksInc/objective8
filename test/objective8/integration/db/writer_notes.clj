@@ -35,7 +35,7 @@
          (fact "get writer-note by entity uri"
                (let [{o-id :objective-id a-id :_id q-id :question-id :as answer} (sh/store-an-answer)
                      uri-for-answer (str "/objectives/" o-id "/questions/" q-id "/answers/" a-id)
-                     {:keys [note _id objective-id _created_at created-by-id entity]} (sh/store-a-note {:answer answer})]
+                     {:keys [note _id objective-id _created_at created-by-id entity]} (sh/store-a-note {:note-on-entity answer})]
 
                  (writer-notes/retrieve-note uri-for-answer) => (contains {:_id _id
                                                                            :objective-id objective-id

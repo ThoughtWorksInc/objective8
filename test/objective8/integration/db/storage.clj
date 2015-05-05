@@ -329,14 +329,21 @@
          (fact "retrieving answers for a question also returns writer notes"
                (let [question (sh/store-a-question)
                      {g-id-1 :global-id :as answer} (sh/store-an-answer {:question question})
-                     _ (sh/store-a-note {:answer answer :note "a real note"})
+                     _ (sh/store-a-note {:note-on-entity answer :note "a real note"})
                      query-map {:entity :answer
                                 :question-id (:_id question)
                                 :objective-id (:objective-id question)
                                 :sorted-by :created-at}]
 
                  (storage/pg-retrieve-answers query-map)
-                 => (contains [(contains (assoc answer :note "a real note")) ])))
+                 => (contains [(contains (assoc answer :note "a real note"))])))
+
+         (fact "retrieving comments returns writer notes"
+               (let [{comment-on-id :comment-on-id :as comment} (sh/store-a-comment)
+                     _ (sh/store-a-note {:note-on-entity comment :note "a real note"})]
+
+                 (storage/pg-retrieve-comments-with-votes-ordered-by comment-on-id :created-at)
+                 => (contains [(contains (assoc comment :note "a real note"))])))
 
         (fact "retrieving a draft returns _created_at_sql_time for accurate time comparison between drafts"
               (let [draft (sh/store-a-draft)

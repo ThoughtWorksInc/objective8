@@ -176,6 +176,7 @@ WHERE answers.objective_id = ? AND answers.question_id = ?
 
 (def unmap-comments-with-votes
   (-> (mappings/unmap :comment)
+      with-notes-if-present
       (mappings/with-columns [:comment-on-id :created-by-id :global-id :objective-id])
       mappings/with-username-if-present
       with-aggregate-votes))
@@ -186,9 +187,10 @@ WHERE answers.objective_id = ? AND answers.question_id = ?
                            :down-votes "ORDER BY down_votes DESC NULLS LAST"}]
     (apply vector (map unmap-comments-with-votes
                        (korma/exec-raw [ (string/join " " ["
-SELECT comments.*, up_votes, down_votes, users.username
+SELECT comments.*, up_votes, down_votes, users.username, notes.note
 FROM objective8.comments AS comments
 JOIN objective8.users AS users ON users._id = comments.created_by_id
+LEFT JOIN objective8.writer_notes AS notes ON notes.note_on_id = comments.global_id 
 LEFT JOIN (SELECT global_id, count(vote) as down_votes
            FROM objective8.up_down_votes
            WHERE vote < 0 GROUP BY global_id) AS agg

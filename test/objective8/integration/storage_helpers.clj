@@ -165,7 +165,7 @@
    (store-a-note {}))
 
   ([required-entities]
-   (let [{answer-id :global-id user-id :created-by-id o-id :objective-id} (l-get required-entities :answer (store-an-answer))
+   (let [{answer-id :global-id user-id :created-by-id o-id :objective-id} (l-get required-entities :note-on-entity (store-an-answer))
           note (l-get required-entities :note "Test note")]
      (storage/pg-store! {:entity :writer-note
                          :objective-id o-id
