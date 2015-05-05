@@ -75,7 +75,8 @@
                                                                                              optionally-disable-voting
                                                                                              (if user
                                                                                                (voting-actions-when-signed-in context answer)
-                                                                                               (voting-actions-when-signed-out context answer))))
+                                                                                               (voting-actions-when-signed-out context answer)))
+                                                                     [:.clj-answer-item-writer-note] nil)
                                       [:.clj-jump-to-answer] (when (and (tf/open? objective) user) identity)
 
                                       [:.clj-answer-new] (when (tf/open? objective) identity)

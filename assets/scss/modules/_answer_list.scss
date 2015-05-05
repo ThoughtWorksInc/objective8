@@ -28,6 +28,18 @@
   @include default-button;
 }
 
+.answer-item-writer-note {
+  margin-top: 0.5em;
+  color: $green1;
+}
+
+.answer-item-writer-note-label {
+  font-weight: bold; 
+  &:after {
+    content: ": ";
+  }
+}
+
 .answer-new {
   padding: 1em;
   margin-bottom: 2em;
