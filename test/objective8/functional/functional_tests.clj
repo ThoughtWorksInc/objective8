@@ -8,6 +8,7 @@
             [objective8.core :as core]
             [objective8.utils :as utils]
             [objective8.actions :as actions]
+            [objective8.users :as users]
             [objective8.integration.integration-helpers :as integration-helpers]
             [dev-helpers.stub-twitter :refer [stub-twitter-auth-config twitter-id]]))
 
@@ -57,19 +58,23 @@
 (def SECOND_DRAFT_MARKDOWN  "Second draft heading\n===\n\n- Some content\n- Some more content")
 (def THIRD_DRAFT_MARKDOWN  "Third draft heading\n===\n\n- Some content\n- Some more content\n- Another line of content")
 
+(def ADMIN_AND_WRITER_TWITTER_ID "twitter-123123")
+(def OBJECTIVE_OWNER_TWITTER_ID "twitter-789789")
 
 (against-background 
   [(before :contents (do (integration-helpers/db-connection)
                          (integration-helpers/truncate-tables)
                          (core/start-server config-without-twitter)
                          (wd/set-driver! {:browser :firefox})
+                         (users/store-admin! {:twitter-id ADMIN_AND_WRITER_TWITTER_ID})  
                          (reset! journey-state {})
                          (clear-screenshots)))
    (after :contents (do (wd/quit)
                         (integration-helpers/truncate-tables)
                         (core/stop-server)))]
+
   (fact "can add an objective"
-        (try (reset! twitter-id "twitter-OBJECTIVE_OWNER")
+        (try (reset! twitter-id OBJECTIVE_OWNER_TWITTER_ID)
              (wd/to "localhost:8080")
              (wait-for-title "Objective[8]")
              (screenshot "home_page")
@@ -241,8 +246,10 @@
       => (contains {:page-title "Functional test headline | Objective[8]"
                     :flash-message (contains "Your writer's invitation")}))
 
+
+
 (fact "Can accept a writer invitation"
-      (try (reset! twitter-id "FAKE_WRITER_ID")
+      (try (reset! twitter-id ADMIN_AND_WRITER_TWITTER_ID)
            (wd/click ".func--masthead-sign-out") 
            (screenshot "after_sign_out")
 
@@ -544,4 +551,25 @@
 
         (catch Exception e
           (screenshot "ERROR-Can-navigate-to-import-from-Google-Drive")
-          (throw e)))))) 
+          (throw e))))
+
+(fact "User with admin credentials can remove an objective"
+      (let [result (try
+                     (wd/click ".func--objectives")
+                     (wait-for-title "Objectives | Objective[8]")
+                     (screenshot "admins_objectives_page")
+
+                     (wd/click ".func--remove-objective")
+                     (wait-for-title "Are you sure? | Objective[8]")
+                     (screenshot "admin_removal_confirmation_page")
+
+                     (wd/click ".func--confirm-removal")
+                     (wait-for-title "Objectives | Objective[8]")
+                     (screenshot "objectives_page_after_removing_the_only_objective")
+                     {:page-title (wd/title)
+                      :content (wd/page-source)}
+                     (catch Exception e
+                       (screenshot "ERROR-User-with-admin-credentials-can-remove-objective")
+                       (throw e)))]
+        (:page-title result) => "Objectives | Objective[8]"
+        (:content result) =not=> (contains "Functional test headline")))))

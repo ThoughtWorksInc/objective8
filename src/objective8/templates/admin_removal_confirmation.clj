@@ -18,4 +18,5 @@
                                       [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr :content (:description doc))
                                       [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
                                       [:.clj-objective-title] (html/content removal-sample)
+                                      [:.clj-removal-confirmation-form] (html/prepend (html/html-snippet (anti-forgery-field)))
                                       [:.clj-removal-uri] (html/set-attr :value removal-uri))))))))

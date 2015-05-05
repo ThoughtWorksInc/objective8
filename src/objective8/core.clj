@@ -40,7 +40,7 @@
                :fe/learn-more front-end-handlers/learn-more
                :fe/create-objective-form (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form) #{:signed-in})
                :fe/create-objective-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form-post) #{:signed-in})
-               :fe/objective-list front-end-handlers/objective-list
+               :fe/objective-list (utils/anti-forgery-hook front-end-handlers/objective-list) 
                :fe/objective (utils/anti-forgery-hook front-end-handlers/objective-detail)
                :fe/add-a-question (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-a-question) #{:signed-in}) 
                :fe/add-question-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-question-form-post) #{:signed-in})

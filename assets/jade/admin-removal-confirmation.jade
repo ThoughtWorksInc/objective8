@@ -16,6 +16,6 @@ block content
 
     .admin-removal-actions
       a.pink-button(href="/objectives", data-l8n="content:admin-removal-confirmation/no") !No
-      form.admin-removal-confirmation-form(method="POST", action="/meta/admin-removals")
+      form.admin-removal-confirmation-form.clj-removal-confirmation-form(method="POST", action="/meta/admin-removal-confirmation")
         input.clj-removal-uri(type="hidden", value="!removal-uri", name="removal-uri")
-        button.button(type="submit", value="yes", data-l8n="content:admin-removal-confirmation/yes") !Yes
+        button.button.func--confirm-removal(type="submit", value="yes", data-l8n="content:admin-removal-confirmation/yes") !Yes

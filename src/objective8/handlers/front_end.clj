@@ -104,7 +104,9 @@
       {:status 200
        :header {"Content-Type" "text/html"}  
        :body (views/objective-list "objective-list" request
-                                   :objectives (map format-objective objectives))} 
+                                   :objectives (->> objectives
+                                                    (remove #(:removed-by-admin %))
+                                                    (map format-objective)))} 
       
       (= status ::http-api/error)
       {:status 502})))
