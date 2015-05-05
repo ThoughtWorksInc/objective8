@@ -47,7 +47,23 @@
                                                     :content-type "application/json"
                                                     :body (json/generate-string removal-data))]
                 (:status response) => 404
-                (:body response) => (helpers/json-contains {:reason "Entity with that uri does not exist"})))
+                (:body response) => (helpers/json-contains {:reason "Entity with that uri does not exist for removal"})))
+
+         (fact "returns 404 when entity has already been removed"
+              (let [admin-uri (->> (sh/store-an-admin)
+                                  :_id
+                                  (str "/users/"))
+                    objective-uri (->> (sh/store-an-admin-removed-objective)
+                                       :_id
+                                       (str "/objectives/"))
+                    removal-data {:removal-uri objective-uri 
+                                  :removed-by-uri admin-uri}
+                    {response :response} (p/request app "/api/v1/meta/admin-removals"
+                                                    :request-method :post
+                                                    :content-type "application/json"
+                                                    :body (json/generate-string removal-data))]
+                (:status response) => 404
+                (:body response) => (helpers/json-contains {:reason "Entity with that uri does not exist for removal"})))
          
          (fact "removal is not posted if the user is not an admin"
                (let [user-uri (->> (sh/store-a-user)
@@ -63,7 +79,5 @@
                                                      :content-type "application/json"
                                                      :body (json/generate-string removal-data))]
                  (:status response) => 403
-                 (:body response) => (helpers/json-contains {:reason "Admin credentials are required for this request"})
-                 )
-               )))
+                 (:body response) => (helpers/json-contains {:reason "Admin credentials are required for this request"})))))
 

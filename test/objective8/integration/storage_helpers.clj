@@ -42,6 +42,21 @@
                          :created-by-id user-id
                          :end-date (str (tc/from-now (tc/days 1)))}))))
 
+(defn store-an-admin-removed-objective
+
+  ([]
+   (store-an-admin-removed-objective {}))
+
+  ([entities]
+   (let [{user-id :_id} (l-get entities :user (store-a-user))]
+     (storage/pg-store! {:entity :objective
+                         :status "open"
+                         :removed-by-admin true
+                         :title "test title"
+                         :description "test description"
+                         :created-by-id user-id
+                         :end-date (str (tc/from-now (tc/days 1)))}))))
+
 (defn store-an-objective-due-for-drafting
 ([] 
  (store-an-objective-due-for-drafting {})) 

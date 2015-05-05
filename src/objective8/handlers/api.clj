@@ -123,7 +123,7 @@
                                      admin-removal)
 
           (= status ::actions/entity-not-found)
-          (not-found-response "Entity with that uri does not exist")
+          (not-found-response "Entity with that uri does not exist for removal")
 
           (= status ::actions/forbidden)
           (forbidden-response "Admin credentials are required for this request")

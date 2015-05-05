@@ -181,11 +181,11 @@
   (if-let [user (users/retrieve-user removed-by-uri)]
     (if (users/get-admin-by-twitter-id (:twitter-id user))
       (if-let [objective (storage/pg-retrieve-entity-by-uri removal-uri :with-global-id)]
-        (do
-          (objectives/admin-remove-objective! objective)
-          {:status ::success :result (admin-removals/store-admin-removal! admin-removal-data)})
- 
+        (if (:removed-by-admin objective)
+          {:status ::entity-not-found} 
+          (do
+            (objectives/admin-remove-objective! objective)
+            {:status ::success :result (admin-removals/store-admin-removal! admin-removal-data)})) 
         {:status ::entity-not-found})
-
      {:status ::forbidden})
     {:status ::entity-not-found}))
