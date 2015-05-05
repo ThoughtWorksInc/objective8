@@ -39,6 +39,10 @@
                             (html/set-attr :disabled "disabled")
                             (html/set-attr :title (translations :answer-votes/drafting-started)))))
 
+(defn display-writer-note [answer]
+  (html/transformation
+    [:.clj-answer-item-writer-note-content] (html/content (:note answer))))
+
 (def sign-in-to-add-answer-snippet (html/select pf/library-html-resource [:.clj-to-add-answer-please-sign-in]))
 
 (defn sign-in-to-add-answer [{:keys [ring-request] :as context}]
@@ -76,7 +80,8 @@
                                                                                              (if user
                                                                                                (voting-actions-when-signed-in context answer)
                                                                                                (voting-actions-when-signed-out context answer)))
-                                                                     [:.clj-answer-item-writer-note] nil)
+                                                                     [:.clj-answer-item-writer-note-container] (when (:note answer)
+                                                                                                                 (display-writer-note answer)))
                                       [:.clj-jump-to-answer] (when (and (tf/open? objective) user) identity)
 
                                       [:.clj-answer-new] (when (tf/open? objective) identity)

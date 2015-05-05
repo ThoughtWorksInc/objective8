@@ -41,7 +41,7 @@
     (html/at answer-with-no-saved-item-snippet
              [:.clj-dashboard-answer-item]
              (html/clone-for [answer answers]
-                             [:.clj-dashboard-answer-item]  (if (contains? answer :note)
+                             [:.clj-dashboard-answer-item]  (if (:note answer)
                                                               (html/substitute (render-answer-with-note context answer))
                                                               (html/substitute (render-answer-without-note context answer)))))))
 

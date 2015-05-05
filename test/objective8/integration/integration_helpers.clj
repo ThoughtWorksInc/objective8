@@ -62,6 +62,10 @@
   "Creates a fake application context" 
   [] (p/session (core/app core/app-config)))
 
+;; Test helpers
+(defn count-matches [the-string target-regex]
+  (count (re-seq (re-pattern target-regex) the-string)))
+
 ;; Checkers for peridot responses
 (defn headers-location [expected-location]
   (midje/contains

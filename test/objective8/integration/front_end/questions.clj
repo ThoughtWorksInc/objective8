@@ -62,6 +62,37 @@
              (default-app question-view-get-request) => (contains {:status 200})
              (default-app question-view-get-request) => (contains {:body (contains "The meaning of life?")})) 
 
+       (fact "Answers are displayed when viewing a question, including writer notes when present"
+             (against-background
+               (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success
+                                                                    :result {:question "The meaning of life?"
+                                                                             :created-by-id USER_ID
+                                                                             :uri QUESTION_URI
+                                                                             :objective-id OBJECTIVE_ID
+                                                                             :_id QUESTION_ID}}
+               (http-api/retrieve-answers QUESTION_URI) => {:status ::http-api/success
+                                                                        :result [{:_id 12
+                                                                                  :objective-id OBJECTIVE_ID
+                                                                                  :question-id QUESTION_ID
+                                                                                  :created-by-id USER_ID
+                                                                                  :answer "The answer"
+                                                                                  :note "The writer note"
+                                                                                  :votes {:up 1237 
+                                                                                          :down 6601}}
+                                                                                 {:_id 13
+                                                                                  :objective-id OBJECTIVE_ID
+                                                                                  :question-id QUESTION_ID
+                                                                                  :created-by-id USER_ID
+                                                                                  :answer "Another answer"
+                                                                                  :votes {:up 0 :down 0}}]} 
+               (http-api/get-objective OBJECTIVE_ID)=> {:status ::http-api/success 
+                                                        :result {:title "some title"}})
+             (default-app question-view-get-request) => (contains {:body (contains "The answer")})
+             (default-app question-view-get-request) => (contains {:body (contains "The writer note")})
+             (default-app question-view-get-request) => (contains {:body (contains "1237")})
+             (default-app question-view-get-request) => (contains {:body (contains "6601")})
+             (helpers/count-matches (:body (default-app question-view-get-request)) "clj-answer-item-writer-note-container") => 1)
+
        (fact "A user should receive a 404 if a question doesn't exist"
              (against-background
                (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/not-found})
