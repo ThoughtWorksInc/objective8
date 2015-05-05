@@ -26,10 +26,13 @@
 
 (defn request->answers-query [{:keys [params route-params] :as request}]
   (let [question-uri (str "/objectives/" (:id route-params) "/questions/" (:q-id route-params))
-        sorted-by (keyword (get params :sorted-by :created-at))]
-    (when (#{:up-votes :down-votes :created-at} sorted-by)
+        sorted-by (keyword (get params :sorted-by :created-at))
+        filter-type (keyword (get params :filter-type :none))]
+    (when (and (#{:up-votes :down-votes :created-at} sorted-by)
+               (#{:has-writer-note :none} filter-type))
       {:question-uri question-uri
-       :sorted-by sorted-by})))
+       :sorted-by sorted-by
+       :filter-type filter-type})))
 
 (defn request->comment-data [{params :params :as request}]
   (utils/select-all-or-nothing params [:comment :created-by-id :comment-on-uri]))

@@ -21,10 +21,11 @@
   (when (objectives/open? (objectives/get-objective objective-id))
     (store-answer! answer)))
 
-(defn get-answers-ordered-by [ordered-by question-uri]
+(defn get-answers [question-uri query-params]
   (let [query (-> (uris/uri->query question-uri)
                   (utils/ressoc :_id :question-id)
-                  (assoc :ordered-by ordered-by))]
+                  (assoc :sorted-by (:sorted-by query-params))
+                  (assoc :filter-type (:filter-type query-params)))]
     (->> (storage/pg-retrieve-answers query)
          (map #(dissoc % :global-id))
          (map #(utils/update-in-self % [:uri] uri-for-answer)))))

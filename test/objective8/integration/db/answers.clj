@@ -36,24 +36,36 @@
                    {first-answer-id :_id} (sh/with-votes (sh/store-an-answer {:question question}) {:up 2 :down 1})
                    {second-answer-id :_id} (sh/with-votes (sh/store-an-answer {:question question}) {})
                    {third-answer-id :_id} (sh/with-votes (sh/store-an-answer {:question question}) {:up 1 :down 2})]
-               (answers/get-answers-ordered-by :created-at question-uri) => (contains [(contains {:_id first-answer-id})
-                                                                                     (contains {:_id second-answer-id})
-                                                                                     (contains {:_id third-answer-id})])
+               (answers/get-answers question-uri {:sorted-by :created-at}) => (contains [(contains {:_id first-answer-id})
+                                                                                         (contains {:_id second-answer-id})
+                                                                                         (contains {:_id third-answer-id})])
                
-               (answers/get-answers-ordered-by :up-votes question-uri) => (contains [(contains {:_id first-answer-id})
-                                                                                   (contains {:_id third-answer-id})
-                                                                                   (contains {:_id second-answer-id})])
+               (answers/get-answers question-uri {:sorted-by :up-votes}) => (contains [(contains {:_id first-answer-id})
+                                                                                       (contains {:_id third-answer-id})
+                                                                                       (contains {:_id second-answer-id})])
                
-               (answers/get-answers-ordered-by :down-votes question-uri) => (contains [(contains {:_id third-answer-id})
-                                                                                     (contains {:_id first-answer-id})
-                                                                                     (contains {:_id second-answer-id})])))
+               (answers/get-answers question-uri {:sorted-by :down-votes}) => (contains [(contains {:_id third-answer-id})
+                                                                                         (contains {:_id first-answer-id})
+                                                                                         (contains {:_id second-answer-id})])))
 
+       (fact "filters answers according to the filter-type"
+             (let [{o-id :objective-id q-id :_id :as question} (sh/store-a-question)
+                   question-url (str "/objectives/" o-id "/questions/" q-id)
+
+                   {answer-without-note-id :_id} (sh/store-an-answer {:question question :answer-text "without note"})
+                   {answer-with-note-id :_id :as answer-with-note} (sh/store-an-answer {:question question :answer-text "with note"})
+                   _ (sh/store-a-note {:answer answer-with-note})]
+               (answers/get-answers question-url {:filter-type :has-writer-note}) => (just [(contains {:_id answer-with-note-id})])
+               (answers/get-answers question-url {}) => (contains [(contains {:_id answer-with-note-id})
+                                                                   (contains {:_id answer-without-note-id})]
+                                                                  :in-any-order)))
+       
        (fact "gets answers with aggregate votes"
              (let [{o-id :objective-id q-id :_id :as question} (sh/store-a-question)
                    question-uri (str "/objectives/" o-id "/questions/" q-id)
 
                    answer (sh/with-votes (sh/store-an-answer {:question question}) {:up 10 :down 5})]
-               (first (answers/get-answers-ordered-by :created-at question-uri)) => (contains {:votes {:up 10 :down 5}})))
+               (first (answers/get-answers question-uri {:sorted-by :created-at})) => (contains {:votes {:up 10 :down 5}})))
 
        (fact "gets answers with uris rather than global ids"
              (let [{o-id :objective-id q-id :_id :as question} (sh/store-a-question)
@@ -61,5 +73,5 @@
                    
                    answer (sh/store-an-answer {:question question})
                    answer-uri (str question-uri "/answers/" (:_id answer))]
-               (first (answers/get-answers-ordered-by :created-at question-uri)) => (contains {:uri answer-uri})
-               (first (answers/get-answers-ordered-by :created-at question-uri)) =not=> (contains {:global-id anything}))))
+               (first (answers/get-answers question-uri {:sorted-by :created-at})) => (contains {:uri answer-uri})
+               (first (answers/get-answers question-uri {:sorted-by :created-at})) =not=> (contains {:global-id anything}))))

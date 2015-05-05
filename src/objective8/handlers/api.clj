@@ -301,9 +301,9 @@
 
 (defn get-answers [{:keys [route-params params] :as request}]
   (try
-    (if-let [{question-uri :question-uri sorted-by :sorted-by} (ar/request->answers-query request)]
+    (if-let [{question-uri :question-uri sorted-by :sorted-by filter-type :filter-type} (ar/request->answers-query request)]
       (if (questions/get-question question-uri)
-        (let [answers (answers/get-answers-ordered-by sorted-by question-uri)] 
+        (let [answers (answers/get-answers question-uri {:sorted-by sorted-by :filter-type filter-type})]
           (-> answers
               response/response
               (response/content-type "application/json"))) 

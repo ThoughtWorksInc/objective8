@@ -314,16 +314,13 @@
          (after :facts (truncate-tables))]
         (fact "retrieving answers for a question also returns aggregate up-down-votes for those answers"
               (let [question (sh/store-a-question)
-                    {g-id-1 :global-id :as answer-1} (sh/store-an-answer {:question question})
-                    {g-id-2 :global-id :as answer-2} (sh/store-an-answer {:question question})
-                    votes-for-answer-1 [:up :up :down :down :down]
-                    votes-for-answer-2 [:up :up]
-                    stored-votes-for-answer-1 (doall (map #(sh/store-an-up-down-vote g-id-1 %) votes-for-answer-1))
-                    stored-votes-for-answer-2 (doall (map #(sh/store-an-up-down-vote g-id-2 %) votes-for-answer-2))
+                    {g-id-1 :global-id :as answer-1} (sh/with-votes (sh/store-an-answer {:question question}) {:up 2 :down 3})
+                    {g-id-2 :global-id :as answer-2} (sh/with-votes (sh/store-an-answer {:question question}) {:up 2 :down 0})
                     query-map {:entity :answer
                                :question-id (:_id question)
                                :objective-id (:objective-id question)
-                               :ordered-by :created-at}]
+                               :sorted-by :created-at
+                               :filter-type :none}]
 
                 (storage/pg-retrieve-answers query-map)
                 => (contains [(contains (assoc answer-1 :votes {:up 2 :down 3}))

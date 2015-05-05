@@ -173,3 +173,20 @@
                                                          :q-id question-id) "?sorted-by=down-votes"))
                      (get-in [:response :body])) => (helpers/json-contains [(contains {:_id most-down-votes-id})
                                                                             (contains {:_id least-down-votes-id})])))))
+
+(facts "GET /api/v1/objectives/:id/questions/:id/answers?filter-type=has-writer-note"
+       (against-background
+        [(before :contents (do (helpers/db-connection)
+                               (helpers/truncate-tables)))
+         (after :facts (helpers/truncate-tables))]
+
+        (fact "retrieves answers that have writer notes"
+              (let [{objective-id :objective-id question-id :_id :as question} (sh/store-a-question)
+                    answer-without-note (sh/store-an-answer {:question question :answer-text "without note"})
+                    answer-with-note (sh/store-an-answer {:question question :answer-text "with note"})
+                    _ (sh/store-a-note {:answer answer-with-note})
+                    {response :response} (p/request app (str (utils/path-for :api/get-answers-for-question
+                                                                             :id objective-id
+                                                                             :q-id question-id) "?filter-type=has-writer-note"))]
+                (:body response) => (helpers/json-contains [(contains {:_id (:_id answer-with-note)})])
+                (:body response) =not=> (helpers/json-contains [(contains {:_id (:_id answer-without-note)})])))))

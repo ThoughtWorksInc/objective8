@@ -123,12 +123,13 @@
 
   ([required-entities]
    (let [{created-by-id :_id} (l-get required-entities :user (store-a-user))
-         {objective-id :objective-id q-id :_id} (l-get required-entities :question (store-a-question))]
+         {objective-id :objective-id q-id :_id} (l-get required-entities :question (store-a-question))
+         answer-text (get required-entities :answer-text "An answer")]
      (storage/pg-store! {:entity :answer
                          :created-by-id created-by-id
                          :objective-id objective-id
                          :question-id q-id
-                         :answer "An answer"}))))
+                         :answer answer-text}))))
 
 (defn store-an-up-down-vote
   ([global-id vote-type]
