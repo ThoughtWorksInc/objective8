@@ -656,3 +656,13 @@
 
         {:status 502}))
     {:status 400}))
+
+(defn post-admin-removal [request]
+  (if-let [admin-removal-data (helpers/request->admin-removal-info request (get (friend/current-authentication) :identity))]
+    (let [{status :status admin-removal :result} (http-api/post-admin-removal admin-removal-data)]
+      (case status
+        ::http-api/success (response/redirect (utils/path-for :fe/objective-list))
+        ::http-api/invalid-input {:status 400}
+
+        {:status 502}))
+    {:status 400}))

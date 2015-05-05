@@ -231,3 +231,8 @@
 
 (defn post-star [star-data]
   (default-post-call (utils/path-for :api/post-star) star-data))
+
+;; ADMIN REMOVALS 
+
+(defn post-admin-removal [admin-removal-data]
+  (default-post-call (utils/path-for :api/post-admin-removal) admin-removal-data))  

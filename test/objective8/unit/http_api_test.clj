@@ -65,6 +65,7 @@
 
 ;;USERS
 (def USER_ID 3)
+(def USER_URI (str "/users/" USER_ID))
 (def the-user {:some :data
                :twitter-id "twitter-TWITTER_ID"
                :username "someUsername"})
@@ -99,6 +100,7 @@
 
 ;OBJECTIVES
 (def OBJECTIVE_ID 234)
+(def OBJECTIVE_URI (str "/objectives/" OBJECTIVE_ID))
 
 (def the-objective {:some :data
                     :end-date (utils/string->date-time "2015-01-31")})
@@ -349,3 +351,12 @@
       (http-api/post-star star-data) => :api-call-result
       (provided
         (http-api/default-post-call (contains "/api/v1/meta/stars") star-data) => :api-call-result))
+
+;;ADMIN REMOVALS
+
+(def admin-removal-data {:removal-uri OBJECTIVE_URI :removed-by-uri USER_URI})
+
+(fact "posting an admin removal hits the correct API endpoint"
+      (http-api/post-admin-removal admin-removal-data) => :api-call-result
+      (provided
+        (http-api/default-post-call (contains "/api/v1/meta/admin-removals") admin-removal-data) => :api-call-result))
