@@ -1,6 +1,7 @@
 (ns objective8.objectives
   (:require [objective8.storage.mappings :as mappings]
             [objective8.storage.storage :as storage]
+            [objective8.storage.uris :as uris]
             [objective8.utils :as utils]))
 
 (defn open? [objective]
@@ -15,7 +16,8 @@
 (defn store-objective! [objective-data]
   (some-> objective-data
           (assoc :entity :objective
-                 :status "open")
+                 :status "open"
+                 :removed-by-admin false)
           storage/pg-store!
           (utils/update-in-self [:uri] uri-for-objective)
           (dissoc :global-id)))
@@ -70,3 +72,8 @@
                             :created-by-id user-id})
       :result
       (map #(dissoc % :global-id))))
+
+(defn admin-remove-objective! [objective]
+  (some-> (storage/pg-update-objective! objective :removed-by-admin true)
+          (utils/update-in-self [:uri] uri-for-objective)
+          (dissoc :global-id)))

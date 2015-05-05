@@ -29,6 +29,7 @@
 (def objective-data {:created-by-id 1
                      :global-id GLOBAL_ID
                      :status "open"
+                     :removed-by-admin false
                      :end-date "2015-01-01T00:01:01Z"
                      :description "Objective description"})
 
@@ -38,6 +39,7 @@
                objective => (contains {:created_by_id 1
                                        :global_id GLOBAL_ID
                                        :status (has-postgres-type? "objective_status") 
+                                       :removed_by_admin false
                                        :end_date  time-type?
                                        :objective json-type?})
                (str (:end_date objective)) => (contains "2015-01-01 00:01")
@@ -47,10 +49,11 @@
                (json-type->map (:objective objective)) =not=> (contains {:status anything})
                (json-type->map (:objective objective)) => (contains {:description "Objective description"})))
 
-       (fact "throws exception if :created-by-id, :end-date, or :global-id are missing"
+       (fact "throws exception if :created-by-id, status, removed-by-admin, :end-date, or :global-id are missing"
 
              (map->objective (dissoc objective-data :created-by-id)) => (throws Exception)
              (map->objective (dissoc objective-data :status)) => (throws Exception)
+             (map->objective (dissoc objective-data :removed-by-admin)) => (throws Exception)
              (map->objective (dissoc objective-data :end-date)) => (throws Exception)
              (map->objective (dissoc objective-data :global-id)) => (throws Exception)))
 
@@ -281,7 +284,7 @@
                   :global-id GLOBAL_ID})
 
 (facts "About map->section"
-       (fact "Column values are pulled out and converted, the map gets turned to json"
+       (fact "Column values are pulled out and converted"
              (map->section section-map) => {:global_id GLOBAL_ID
                                             :draft_id DRAFT_ID
                                             :section_label SECTION_LABEL})
@@ -313,7 +316,7 @@
                :active true})
 
 (facts "About map->star"
-       (fact "Column values are pulled out and converted, the map gets turned to json"
+       (fact "Column values are pulled out and converted"
              (let [star (map->star star-map)]
                star => (contains {:objective_id OBJECTIVE_ID
                                   :created_by_id USER_ID
@@ -323,6 +326,19 @@
              (map->star (dissoc star-map :objective-id)) => (throws Exception)
              (map->star (dissoc star-map :created-by-id)) => (throws Exception)
              (map->star (dissoc star-map :active)) => (throws Exception)))
+
+(def OBJECTIVE_URI (str "/objectives/" OBJECTIVE_ID))
+(def admin-removal-map {:removed-by-id USER_ID
+                        :removal-uri OBJECTIVE_URI})
+
+(facts "About map->admin-removal"
+       (fact "Column vales are pulled out and coverted"
+             (map->admin-removal admin-removal-map) => {:removed_by_id USER_ID
+                                                        :removal_uri OBJECTIVE_URI})
+
+       (fact "throws exception if :removed-by-id or :removal-uri are missing"
+             (map->admin-removal (dissoc admin-removal-map :removed-by-id)) => (throws Exception)
+             (map->admin-removal (dissoc admin-removal-map :removal-uri)) => (throws Exception)))
 
 ;; db-insertion-mapper
 (facts "about preparing maps for insertion into the db"

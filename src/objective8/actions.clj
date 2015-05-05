@@ -10,6 +10,7 @@
             [objective8.questions :as questions]
             [objective8.marks :as marks]
             [objective8.writer-notes :as writer-notes]
+            [objective8.admin-removals :as admin-removals]
             [objective8.storage.uris :as uris]
             [objective8.storage.storage :as storage]))
 
@@ -39,7 +40,7 @@
   (let [objective (storage/pg-retrieve-entity-by-uri (str "/objectives/" objective-id) :with-global-id)]
     (doall (->> (invitations/retrieve-active-invitations objective-id)
                 (map invitations/expire-invitation!)))
-    (storage/pg-update-objective-status! objective "drafting")))
+    (storage/pg-update-objective! objective :status "drafting")))
 
 (defn update-objectives-due-for-drafting! []
   (doall (->> (objectives/retrieve-objectives-due-for-drafting)
@@ -154,11 +155,11 @@
 
 (defn create-invitation! [{:keys [invited-by-id objective-id] :as invitation-data}]
   (if-let [objective (objectives/get-objective objective-id)]
-    (if (objectives/open? objective) 
-      (if (some #{objective-id} (authorised-objectives-for-inviter invited-by-id)) 
+    (if (objectives/open? objective)
+      (if (some #{objective-id} (authorised-objectives-for-inviter invited-by-id))
         {:status ::success :result (invitations/store-invitation! invitation-data)}
         {:status ::failure})
-      {:status ::objective-drafting-started}) 
+      {:status ::objective-drafting-started})
     {:status ::entity-not-found}))
 
 (defn authorised-objectives-for-note-writer [user-id]
@@ -174,4 +175,17 @@
         {:status ::success :result (writer-notes/store-note-for! entity-to-note-on writer-note-data)}
         {:status ::forbidden})
       {:status ::forbidden})
+    {:status ::entity-not-found}))
+
+(defn create-admin-removal! [{:keys [removal-uri removed-by-uri] :as admin-removal-data}]
+  (if-let [user (users/retrieve-user removed-by-uri)]
+    (if (users/get-admin-by-twitter-id (:twitter-id user))
+      (if-let [objective (storage/pg-retrieve-entity-by-uri removal-uri :with-global-id)]
+        (do
+          (objectives/admin-remove-objective! objective)
+          {:status ::success :result (admin-removals/store-admin-removal! admin-removal-data)})
+ 
+        {:status ::entity-not-found})
+
+     {:status ::forbidden})
     {:status ::entity-not-found}))

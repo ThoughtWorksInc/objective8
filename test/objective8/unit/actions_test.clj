@@ -11,11 +11,13 @@
             [objective8.stars :as stars]
             [objective8.questions :as questions]
             [objective8.marks :as marks]
+            [objective8.admin-removals :as admin-removals]
             [objective8.writer-notes :as writer-notes]
             [objective8.storage.storage :as storage]))
 
 (def GLOBAL_ID 6)
 (def USER_ID 2)
+(def USER_URI (str "/users/" USER_ID))
 (def VOTE_ID 5)
 (def OBJECTIVE_ID 1)
 (def QUESTION_ID 2)
@@ -319,3 +321,15 @@
                (writers/retrieve-writers-by-user-id USER_ID) => [{:objective-id OBJECTIVE_ID} {:objective-id 2}]
                (storage/pg-retrieve-entity-by-uri ANSWER_URI :with-global-id) => entity-to-note-on
                (writer-notes/retrieve-note ANSWER_URI) => [])))
+
+(def admin-removal {:removal-uri objective-uri
+                    :removed-by-uri USER_URI})
+(fact "admin-removals"
+     (actions/create-admin-removal! admin-removal) => {:status ::actions/success
+                                                       :result :stored-admin-removal}
+     (provided
+       (users/retrieve-user USER_URI) => {:twitter-id "twitter-123456"}
+       (users/get-admin-by-twitter-id "twitter-123456") => {:twitter-id "twitter-123456"}
+       (storage/pg-retrieve-entity-by-uri objective-uri :with-global-id) => {:_id OBJECTIVE_ID}
+       (objectives/admin-remove-objective! {:_id OBJECTIVE_ID}) => {:_id OBJECTIVE_ID}
+       (admin-removals/store-admin-removal! admin-removal) => :stored-admin-removal))

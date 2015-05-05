@@ -118,10 +118,10 @@ SELECT _id, 'section' AS entity FROM objective8.sections WHERE global_id=?
           (assoc invitation :status new-status)
           {:uuid (:uuid invitation)}))
 
-(defn pg-update-objective-status! [objective new-status]
+(defn pg-update-objective! [objective field new-value]
   (update (mappings/get-mapping {:entity :objective})
-          (assoc objective 
-                 :status new-status)
+          (assoc objective
+                 field new-value)
           {:_id (:_id objective)}))
 
 (defn pg-toggle-star! [star]

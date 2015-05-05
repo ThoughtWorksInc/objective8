@@ -19,6 +19,7 @@
                      (let [NOT-EXISTENT-USER-ID 1
                            objective {:entity :objective
                                       :status "open"
+                                      :removed-by-admin false
                                       :created-by-id NOT-EXISTENT-USER-ID
                                       :end-date "2015-01-01T00:00:00Z"
                                       :description "description"
@@ -52,6 +53,7 @@
                (defn store-an-objective-by [created-by-id]
                   (let [objective {:entity :objective
                                    :status "open"
+                                   :removed-by-admin false
                                    :created-by-id created-by-id
                                    :end-date "2015-01-01T00:00:00Z"
                                    :description "description"
@@ -69,7 +71,7 @@
 
                (fact "the status of an objective can be updated"
                      (let [objective (sh/store-an-open-objective)]
-                      (:status (storage/pg-update-objective-status! objective "drafting")) => "drafting")) 
+                      (:status (storage/pg-update-objective! objective :status "drafting")) => "drafting")) 
 
                ;;COMMENTS
                (fact "a comment entity can be stored in the database"
@@ -188,6 +190,7 @@
                      (let [user-id (:_id (sh/store-a-user))
                            objective-id (:_id (storage/pg-store! {:entity :objective
                                                                   :status "open"
+                                                                  :removed-by-admin false
                                                                   :created-by-id user-id
                                                                   :end-date "2015-01-01"}))
                            invitation (storage/pg-store! {:entity :invitation

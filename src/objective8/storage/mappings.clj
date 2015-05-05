@@ -102,7 +102,7 @@
 (def map->objective
   (db-insertion-mapper "objective"
                        :objective
-                       [:created-by-id :global-id :status :end-date]
+                       [:created-by-id :global-id :status :end-date :removed-by-admin]
                        {:status (partial string->postgres-type "objective_status")
                         :end-date tc/to-timestamp}))
 
@@ -181,6 +181,11 @@
                        nil
                        [:twitter-id]))
 
+(def map->admin-removal
+  (db-insertion-mapper "admin-removal"
+                       nil
+                       [:removed-by-id :removal-uri]))
+
 (defn- extract-column [m um key]
   (let [db-column (key->db-column key)]
     (assoc um key (db-column m))))
@@ -248,23 +253,6 @@
       (assoc :vote-type ({1 :up -1 :down} vote))
       (assoc :entity :up-down-vote)))
 
-(defn unmap-star [m]
-  (-> m
-      (utils/ressoc :objective_id :objective-id)
-      (utils/ressoc :created_by_id :created-by-id)
-      (assoc :_created_at (sql-time->iso-time-string (:_created_at m))) 
-      (assoc :entity :star)))
-
-(defn unmap-section [m]
-  (-> m
-      (utils/ressoc :draft_id :draft-id)
-      (utils/ressoc :global_id :global-id)
-      (utils/ressoc :section_label :section-label)
-      (assoc :_created_at (sql-time->iso-time-string (:_created_at m))) 
-      (assoc :entity :section)))
-
-(defn unmap-admin [m]
-  (utils/ressoc m :twitter_id :twitter-id))
 
 (declare objective user comment question answer invitation writer bearer-token up-down-vote)
 
@@ -272,7 +260,19 @@
   (korma/pk :_id)
   (korma/table :objective8.admins)
   (korma/prepare map->admin)
-  (korma/transform unmap-admin))
+  (korma/transform (-> (constantly {:entity :admin})
+                       (with-columns
+                         [:twitter-id :_created_at :_id]))))
+
+(korma/defentity admin-removal
+  (korma/pk :_id)
+  (korma/table :objective8.admin_removals)
+  (korma/belongs-to user {:fk :removed_by_id})
+  (korma/prepare map->admin-removal)
+  (korma/transform (-> (constantly {:entity :admin-removal})
+                       (with-columns
+                         [:removed-by-id :removal-uri :_created_at :_id]
+                         {:_created_at sql-time->iso-time-string}))))
 
 (korma/defentity global-identifier
   (korma/pk :_id)
@@ -285,7 +285,7 @@
   (korma/prepare map->objective)
   (korma/transform (-> (unmap :objective)
                        (with-columns
-                         [:global-id :created-by-id :status :end-date :status]
+                         [:global-id :created-by-id :status :end-date :status :removed-by-admin]
                          {:end-date sql-time->iso-time-string})
                        with-username-if-present
                        with-objective-meta)))
@@ -383,7 +383,10 @@
   (korma/table :objective8.sections)
   (korma/belongs-to draft {:fk :draft_id})
   (korma/prepare map->section)
-  (korma/transform unmap-section))
+  (korma/transform (-> (constantly {:entity :section})
+                       (with-columns
+                         [:draft-id :global-id :section-label :_created_at :_id]
+                         {:_created_at sql-time->iso-time-string}))))
 
 (korma/defentity bearer-token
   (korma/pk :_id)
@@ -396,11 +399,15 @@
   (korma/pk :_id)
   (korma/table :objective8.stars)
   (korma/prepare map->star)
-  (korma/transform unmap-star))
+  (korma/transform (-> (constantly {:entity :star})
+                       (with-columns
+                         [:objective-id :created-by-id :active :_created_at :_id]
+                         {:_created_at sql-time->iso-time-string}))))
 
 (def entities {:objective objective
                :user      user
                :admin admin
+               :admin-removal admin-removal
                :comment   comment
                :question  question
                :mark      mark

@@ -113,6 +113,28 @@
       (log/info "Error when posting profile: " e)
       (internal-server-error "Error when posting profile"))))
 
+(defn post-admin-removal [request]
+  (try
+    (if-let [admin-removal-data (ar/request->admin-removal-data request)]
+      (let [{status :status admin-removal :result} (actions/create-admin-removal! admin-removal-data)]
+        (cond
+          (= status ::actions/success)
+          (resource-created-response (str utils/host-url "/api/v1/meta/admin-removals/" (:_id admin-removal))
+                                     admin-removal)
+
+          (= status ::actions/entity-not-found)
+          (not-found-response "Entity with that uri does not exist")
+
+          (= status ::actions/forbidden)
+          (forbidden-response "Admin credentials are required for this request")
+
+          :else
+          (internal-server-error "Error when posting admin-removal")))
+      (invalid-response "Invalid admin-removal post request"))
+    (catch Exception e
+      (log/info "Error when posting admin-removal: " e)
+      (internal-server-error "Error when posting admin-removal"))))
+
 ;;STARS
 (defn post-star [request]
   (try

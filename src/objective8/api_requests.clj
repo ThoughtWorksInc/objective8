@@ -14,6 +14,9 @@
 (defn request->writer-data [{params :params :as request}]
   params)
 
+(defn request->admin-removal-data [{params :params :as request}]
+  (utils/select-all-or-nothing params [:removal-uri :removed-by-uri]))
+
 (defn request->draft-data [{params :params :as request}]
   (select-keys params [:objective-id :submitter-id :content]))
 

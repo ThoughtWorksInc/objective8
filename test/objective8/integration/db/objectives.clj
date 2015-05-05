@@ -133,3 +133,12 @@
                                                                            (assoc :username username 
                                                                                   :uri uri)
                                                                            (dissoc :global-id))]))))
+
+(facts "about removed-by-admin status"
+       (fact "can set objective 'removed-by-admin' to true"
+             (let [{o-id :_id :as objective} (sh/store-an-open-objective)
+                   uri (str "/objectives/" o-id)]
+               (:removed-by-admin objective) => false
+               (objectives/admin-remove-objective! objective) => (-> (dissoc objective :global-id) 
+                                                                     (assoc :removed-by-admin true
+                                                                            :uri uri))))) 

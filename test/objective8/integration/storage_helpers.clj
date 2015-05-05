@@ -1,6 +1,7 @@
 (ns objective8.integration.storage-helpers
   (:require [clj-time.core :as tc]
             [objective8.objectives :as objectives]
+            [objective8.users :as users]
             [objective8.storage.storage :as storage]
             [objective8.actions :as actions]))
 
@@ -21,6 +22,11 @@
                                           :profile {:name "Barry"
                                                     :biog "I'm Barry..."}}))
 
+(defn store-an-admin []
+  (let [{twitter-id :twitter-id :as user} (store-a-user)]
+    (users/store-admin! {:twitter-id twitter-id})
+    user))
+
 (defn store-an-open-objective 
   
   ([]
@@ -30,6 +36,7 @@
    (let [{user-id :_id} (l-get entities :user (store-a-user))]
      (storage/pg-store! {:entity :objective
                          :status "open"
+                         :removed-by-admin false
                          :title "test title"
                          :description "test description"
                          :created-by-id user-id
@@ -43,6 +50,7 @@
     (storage/pg-store! {:entity :objective
                         :created-by-id user-id
                         :status "open"
+                        :removed-by-admin false
                         :end-date (str (tc/ago (tc/days 1)))}))))
 
 (defn store-an-objective-in-draft []
@@ -50,6 +58,7 @@
     (storage/pg-store! {:entity :objective
                         :created-by-id user-id
                         :end-date (str (tc/ago (tc/days 1))) 
+                        :removed-by-admin false
                         :status "drafting"})))
 
 (defn store-a-comment
