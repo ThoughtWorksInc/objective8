@@ -28,20 +28,20 @@ Answer item
 
 }
 
-$dashboard_save_button_width: 100px;
-.dashboard-answer-item-save {
+$dashboard_save_writer_note_button_width: 100px;
+.dashboard-answer-item-writer-note-form {
   padding-top: 0.25em;
 }
-.dashboard-answer-item-save-comment {
-  padding-right: $dashboard_save_button_width;
+.dashboard-answer-item-writer-note-field {
+  padding-right: $dashboard_save_writer_note_button_width;
 }
-.save-answer-button {
+.dashboard-answer-item-writer-note-save-button {
   transition: background-color 250ms ease, color 250ms ease;
   position: absolute;
   top: 1px;
   right: 1px;
   z-index: 1;
-  width: $dashboard_save_button_width;
+  width: $dashboard_save_writer_note_button_width;
   height: 36px;
   background: transparent;
   color: $green1;
@@ -54,7 +54,7 @@ $dashboard_save_button_width: 100px;
 //  outline
 }
 
-.dashboard-answer-item-saved-content {
+.dashboard-answer-item-writer-note-container {
   padding-top: 0.25em;
   color: $green1;
 }

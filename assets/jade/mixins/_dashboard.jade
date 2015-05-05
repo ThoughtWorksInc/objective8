@@ -6,7 +6,7 @@ mixin dashboardNavigationItem(count, cssClass)
       span.writer-dashboard-navigation-item-link-count.clj-dashboard-navigation-item-link-count (#{count})
       i.fa.fa-angle-right
 
-mixin dashboardAnswerItem(itemSaved)
+mixin dashboardAnswerItem(withWriterNote)
   li.dashboard-answer-item.clj-dashboard-answer-item
     .dashboard-answer-item-stats
       .dashboard-answer-item-up-score
@@ -19,22 +19,22 @@ mixin dashboardAnswerItem(itemSaved)
         span.clj-dashboard-answer-item-down-count !3
     .dashboard-answer-item-text.clj-dashboard-answer-item-text
       | !This is the answer to the question it has a lot of text in it becasue we want to see what happens if the answer is really long. Well not really really long but at least a reasonable length in relation to everything else on the page.
-    if itemSaved
-      .dashboard-answer-item-saved-content
+    if withWriterNote
+      .dashboard-answer-item-writer-note-container
         p
           i.fa.fa-paperclip
           = " "
-          span.clj-dashboard-answer-item-saved-content.func--writer-note-text
+          span.clj-dashboard-answer-item-writer-note-text.func--writer-note-text
             | Clipped. "Great for section d."
     else
-      form(action='/meta/writer-notes', method='POST').dashboard-answer-item-save.clj-dashboard-answer-item-save
+      form(action='/meta/writer-notes', method='POST').dashboard-answer-item-writer-note-form.clj-dashboard-answer-item-writer-note-form
         input.clj-refer(name='refer', type='hidden', value='!redirect-after-post-uri')
         input.clj-note-on-uri(name='note-on-uri', type='hidden', value='!entity-to-add-note-on')
         p.form-field
           label.form-field-label(for="note")
             span.form-field-label-title.visuallyhidden Note
-            input.dashboard-answer-item-save-comment.func--dashboard-answer-item-note-field(id="note", required="required", name="note", type="text", maxlength="140", placeholder="!Add a reply to the community.", data-l8n="attr/placeholder:writer-dashboard/writer-note-placeholder")
-          button.save-answer-button(type='submit')
+            input.dashboard-answer-item-writer-note-field.func--dashboard-answer-item-note-field(id="note", required="required", name="note", type="text", maxlength="140", placeholder="!Add a reply to the community.", data-l8n="attr/placeholder:writer-dashboard/writer-note-placeholder")
+          button.dashboard-answer-item-writer-note-save-button(type='submit')
             i.fa.fa-paperclip
 
 mixin voteUpDownView()
