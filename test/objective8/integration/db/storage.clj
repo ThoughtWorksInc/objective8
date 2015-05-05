@@ -329,6 +329,18 @@
                 => (contains [(contains (assoc answer-1 :votes {:up 2 :down 3}))
                               (contains (assoc answer-2 :votes {:up 2 :down 0}))])))
 
+         (fact "retrieving answers for a question also returns writer notes"
+               (let [question (sh/store-a-question)
+                     {g-id-1 :global-id :as answer} (sh/store-an-answer {:question question})
+                     _ (sh/store-a-note {:answer answer :note "a real note"})
+                     query-map {:entity :answer
+                                :question-id (:_id question)
+                                :objective-id (:objective-id question)
+                                :ordered-by :created-at}]
+
+                 (storage/pg-retrieve-answers query-map)
+                 => (contains [(contains (assoc answer :note "a real note")) ])))
+
         (fact "retrieving a draft returns _created_at_sql_time for accurate time comparison between drafts"
               (let [draft (sh/store-a-draft)
                     retrieved-draft (first (:result (storage/pg-retrieve {:entity :draft :_id (:_id draft)})))]

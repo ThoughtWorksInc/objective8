@@ -164,12 +164,13 @@
    (store-a-note {}))
 
   ([required-entities]
-   (let [{answer-id :global-id user-id :created-by-id o-id :objective-id} (l-get required-entities :answer (store-an-answer))]
+   (let [{answer-id :global-id user-id :created-by-id o-id :objective-id} (l-get required-entities :answer (store-an-answer))
+          note (l-get required-entities :note "Test note")]
      (storage/pg-store! {:entity :writer-note
                          :objective-id o-id
                          :created-by-id user-id
                          :note-on-id answer-id
-                         :note "Test note"}))))
+                         :note note}))))
 
 (def some-hiccup '(["h1" {:data-section-label "1234abcd"} "A Heading"] ["p" {:data-section-label "abcd1234"} "A paragraph"]))
 
