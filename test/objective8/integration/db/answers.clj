@@ -54,7 +54,7 @@
 
                    {answer-without-note-id :_id} (sh/store-an-answer {:question question :answer-text "without note"})
                    {answer-with-note-id :_id :as answer-with-note} (sh/store-an-answer {:question question :answer-text "with note"})
-                   _ (sh/store-a-note {:answer answer-with-note})]
+                   _ (sh/store-a-note {:note-on-entity answer-with-note})]
                (answers/get-answers question-url {:filter-type :has-writer-note}) => (just [(contains {:_id answer-with-note-id})])
                (answers/get-answers question-url {}) => (contains [(contains {:_id answer-with-note-id})
                                                                    (contains {:_id answer-without-note-id})]

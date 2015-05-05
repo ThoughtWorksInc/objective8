@@ -10,7 +10,7 @@
 (def dashboard-questions-template (html/html-resource "templates/jade/questions-dashboard.html"))
 
 (def dashboard-questions-no-answers-snippet (html/select pf/library-html-resource
-                                                         [:.clj-dashboard-no-answer-item]))
+                                                         [:.clj-library-key--dashboard-no-answer-item]))
 
 (def answer-with-no-writer-note-snippet (html/select pf/library-html-resource [:.clj-library-key--dashboard-answer-without-writer-note]))
 
@@ -26,14 +26,14 @@
            [:.clj-dashboard-answer-item-down-count] (html/content (str (get-in answer [:votes :down]))) 
            [:.clj-refer] (html/set-attr :value (:uri ring-request)) 
            [:.clj-note-on-uri] (html/set-attr :value (:uri answer))
-           [:.clj-dashboard-answer-item-writer-note-form] (html/prepend (html/html-snippet (anti-forgery-field)))))
+           [:.clj-dashboard-writer-note-form] (html/prepend (html/html-snippet (anti-forgery-field)))))
 
 (defn render-answer-with-note [context answer]
   (html/at writer-note-snippet
            [:.clj-dashboard-answer-item-text] (html/content (:answer answer)) 
            [:.clj-dashboard-answer-item-up-count] (html/content (str (get-in answer [:votes :up]))) 
            [:.clj-dashboard-answer-item-down-count] (html/content (str (get-in answer [:votes :down]))) 
-           [:.clj-dashboard-answer-item-writer-note-text] (html/content (:note answer))))
+           [:.clj-dashboard-writer-note-text] (html/content (:note answer))))
 
 (defn answer-list-items [{:keys [data] :as context}]
   (let [answers (:answers data)]

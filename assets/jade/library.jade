@@ -377,7 +377,7 @@ html.no-js(lang="en")
           h3 Empty answers message
           p Generated with dashboardAnswerBlank()
 
-        ul.answer-list
+        ul.answer-list.clj-library-key--dashboard-no-answer-item
           +dashboardAnswerBlank()
 
       .example
@@ -401,17 +401,26 @@ html.no-js(lang="en")
           h3 Empty comments message
           p Generated with dashboardCommentBlank()
 
-        ul.comment-list
+        ul.comment-list.clj-library-key--dashboard-no-comment-item
           +dashboardCommentBlank()
 
       .example
         .documentation
-          h3 Comments message
-          p Generated with dashboardCommentItem(author, date) mixing
+          h3 Comments message with no saved item
+          p Generated with dashboardCommentItem(author, date) mixin
 
-        ul.dashboard-comment-list
+        ul.dashboard-comment-list.clj-library-key--dashboard-comment-without-writer-note
           +dashboardCommentItem("Chris Linseman", '28 April 2015 07:41')
-            | !This is a very interesting comment about the content
+            | !This is a very interesting comment about the content with no writer note
+
+      .example
+        .documentation
+          h3 Comments message with saved item
+          p Generated with dashboardCommentItem(author, date, true) mixin
+
+        ul.dashboard-comment-list.clj-library-key--dashboard-comment-with-writer-note
+          +dashboardCommentItem("Chris Linseman", '28 April 2015 07:41', true)
+            | !This is a very interesting comment about the content with writer note
 
       .example
         .documentation

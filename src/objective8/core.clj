@@ -71,7 +71,7 @@
                :fe/import-draft-post (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/import-draft-post)
                                                                    permissions/request->writer-roles)
                :fe/dashboard-questions (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/dashboard-questions) permissions/request->writer-roles)
-               :fe/dashboard-comments (m/authorize-based-on-request front-end-handlers/dashboard-comments permissions/request->writer-roles)
+               :fe/dashboard-comments (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/dashboard-comments) permissions/request->writer-roles)
                
                :fe/post-up-vote (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-up-vote) #{:signed-in}) 
                :fe/post-down-vote (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-down-vote) #{:signed-in}) 

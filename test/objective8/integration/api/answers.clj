@@ -184,7 +184,7 @@
               (let [{objective-id :objective-id question-id :_id :as question} (sh/store-a-question)
                     answer-without-note (sh/store-an-answer {:question question :answer-text "without note"})
                     answer-with-note (sh/store-an-answer {:question question :answer-text "with note"})
-                    _ (sh/store-a-note {:answer answer-with-note})
+                    _ (sh/store-a-note {:note-on-entity answer-with-note})
                     {response :response} (p/request app (str (utils/path-for :api/get-answers-for-question
                                                                              :id objective-id
                                                                              :q-id question-id) "?filter-type=has-writer-note"))]

@@ -2,6 +2,7 @@
   (:require [net.cgrand.enlive-html :as html]
             [cemerick.url :as url]
             [objective8.utils :as utils]
+            [ring.util.anti-forgery :refer [anti-forgery-field]]
             [objective8.templates.page-furniture :as pf]
             [objective8.templates.template-functions :as tf]))
 
@@ -12,18 +13,44 @@
                                                         [[:.clj-dashboard-comment-item html/first-of-type]]))
 
 (def dashboard-comments-no-comments-snippet (html/select pf/library-html-resource
-                                                         [:.clj-dashboard-no-comment-item]))
+                                                         [:.clj-library-key--dashboard-no-comment-item]))
+
+(def comments-without-writer-note-snippet (html/select pf/library-html-resource [:.clj-library-key--dashboard-comment-without-writer-note]))
+
+(def comments-with-writer-note-snippet (html/select pf/library-html-resource [:.clj-library-key--dashboard-comment-with-writer-note]))
+
+(def no-writer-note-snippet (html/select comments-without-writer-note-snippet [:.clj-dashboard-comment-item]))
+
+(def writer-note-snippet (html/select comments-with-writer-note-snippet [:.clj-dashboard-comment-item]))
+
+(defn render-comment-without-note [{:keys [ring-request] :as context} comment]
+    (html/at no-writer-note-snippet
+             [:.clj-dashboard-comment-text] (html/content (:comment comment))
+             [:.clj-dashboard-comment-author] (html/content (:username comment))
+             [:.clj-dashboard-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
+             [:.clj-dashboard-comment-up-count] (html/content (str (get-in comment [:votes :up])))
+             [:.clj-dashboard-comment-down-count] (html/content (str (get-in comment [:votes :down])) )
+            [:.clj-refer] (html/set-attr :value (:uri ring-request))
+            [:.clj-note-on-uri] (html/set-attr :value (:uri comment))
+            [:.clj-dashboard-writer-note-form] (html/prepend (html/html-snippet (anti-forgery-field))) ))
+
+(defn render-comment-with-note [context comment]
+ (html/at writer-note-snippet
+          [:.clj-dashboard-comment-text] (html/content (:comment comment))
+          [:.clj-dashboard-comment-author] (html/content (:username comment))
+          [:.clj-dashboard-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
+          [:.clj-dashboard-comment-up-count] (html/content (str (get-in comment [:votes :up])))
+          [:.clj-dashboard-comment-down-count] (html/content (str (get-in comment [:votes :down])))
+          [:.clj-dashboard-writer-note-text] (html/content (:note comment))))
 
 (defn comment-list-items [{:keys [data] :as context}]
   (let [comments (:comments data)]
-    (html/at dashboard-comments-comment-item-snippet
+    (html/at comments-without-writer-note-snippet
              [:.clj-dashboard-comment-item]
              (html/clone-for [comment comments]
-                             [:.clj-dashboard-comment-text] (html/content (:comment comment))
-                             [:.clj-dashboard-comment-author] (html/content (:username comment))
-                             [:.clj-dashboard-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
-                             [:.clj-dashboard-comment-up-count] (html/content (str (get-in comment [:votes :up])))
-                             [:.clj-dashboard-comment-down-count] (html/content (str (get-in comment [:votes :down])))))))
+                             [:.clj-dashboard-comment-item] (if (:note comment)
+                                                             (html/substitute (render-comment-with-note context comment))
+                                                             (html/substitute (render-comment-without-note context comment)))))))
 
 (defn comment-list [{:keys [data] :as context}]
   (let [comments (:comments data)]
@@ -94,7 +121,7 @@
                                     [:.clj-writer-dashboard-navigation-questions-link] (html/set-attr :href (utils/path-for :fe/dashboard-questions :id (:_id objective)))
                                     [:.clj-writer-dashboard-navigation-comments-link] (html/set-attr :href (utils/path-for :fe/dashboard-comments :id (:_id objective)))
                                     [:.clj-dashboard-navigation-list] (html/content (navigation-list context))
-                                    [:.clj-dashboard-comment-list] (html/content (comment-list context))
+                                    [:.clj-dashboard-comment-list] (html/substitute (comment-list context))
 
                                     [:.clj-dashboard-filter-up-votes] (html/set-attr
                                                                        :href

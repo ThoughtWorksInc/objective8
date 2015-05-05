@@ -19,23 +19,26 @@ mixin dashboardAnswerItem(withWriterNote)
         span.clj-dashboard-answer-item-down-count !3
     .dashboard-answer-item-text.clj-dashboard-answer-item-text
       | !This is the answer to the question it has a lot of text in it becasue we want to see what happens if the answer is really long. Well not really really long but at least a reasonable length in relation to everything else on the page.
-    if withWriterNote
-      .dashboard-answer-item-writer-note-container
-        p
+    +dashboardNoteItem(withWriterNote)
+
+mixin dashboardNoteItem(withWriterNote)
+  if withWriterNote
+    .dashboard-answer-item-writer-note-container
+      p
+        i.fa.fa-paperclip
+        = " "
+        span.clj-dashboard-writer-note-text.func--writer-note-text
+          | Clipped. "Great for section d."
+  else
+    form(action='/meta/writer-notes', method='POST').dashboard-answer-item-writer-note-form.clj-dashboard-writer-note-form
+      input.clj-refer(name='refer', type='hidden', value='!redirect-after-post-uri')
+      input.clj-note-on-uri(name='note-on-uri', type='hidden', value='!entity-to-add-note-on')
+      p.form-field
+        label.form-field-label(for="note")
+          span.form-field-label-title.visuallyhidden Note
+          input.dashboard-answer-item-writer-note-field.func--dashboard-answer-item-note-field(id="note", required="required", name="note", type="text", maxlength="140", placeholder="!Add a reply to the community.", data-l8n="attr/placeholder:writer-dashboard/writer-note-placeholder")
+        button.dashboard-answer-item-writer-note-save-button(type='submit')
           i.fa.fa-paperclip
-          = " "
-          span.clj-dashboard-answer-item-writer-note-text.func--writer-note-text
-            | Clipped. "Great for section d."
-    else
-      form(action='/meta/writer-notes', method='POST').dashboard-answer-item-writer-note-form.clj-dashboard-answer-item-writer-note-form
-        input.clj-refer(name='refer', type='hidden', value='!redirect-after-post-uri')
-        input.clj-note-on-uri(name='note-on-uri', type='hidden', value='!entity-to-add-note-on')
-        p.form-field
-          label.form-field-label(for="note")
-            span.form-field-label-title.visuallyhidden Note
-            input.dashboard-answer-item-writer-note-field.func--dashboard-answer-item-note-field(id="note", required="required", name="note", type="text", maxlength="140", placeholder="!Add a reply to the community.", data-l8n="attr/placeholder:writer-dashboard/writer-note-placeholder")
-          button.dashboard-answer-item-writer-note-save-button(type='submit')
-            i.fa.fa-paperclip
 
 mixin voteUpDownView()
   - voteUpCount = Math.floor(Math.random() * 100) + 1
@@ -47,7 +50,7 @@ mixin voteUpDownView()
     span.dashboard-vote-count.clj-dashboard-comment-down-count #{voteDownCount}
     i.fa.fa-fw.fa-angle-down
 
-mixin dashboardCommentItem(author, date)
+mixin dashboardCommentItem(author, date, withWriterNote)
   li.dashboard-comment-item.clj-dashboard-comment-item
     .dashboard-comment-meta
       span.dashboard-comment-author.clj-dashboard-comment-author #{author}
@@ -56,6 +59,7 @@ mixin dashboardCommentItem(author, date)
       block
     .dashboard-comment-actions
       +voteUpDownView
+    +dashboardNoteItem(withWriterNote)
             
 mixin dashboardAnswerBlank()
   li.dashboard-answer-item.clj-dashboard-no-answer-item(data-l8n="content:writer-dashboard/no-answers-message")
