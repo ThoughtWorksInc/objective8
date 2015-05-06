@@ -59,17 +59,29 @@
                     {first-comment-id :_id} (-> (sh/store-a-comment {:entity objective}) (sh/with-votes {:up 2 :down 1}))
                     {second-comment-id :_id} (sh/store-a-comment {:entity objective})
                     {third-comment-id :_id} (-> (sh/store-a-comment {:entity objective}) (sh/with-votes {:up 1 :down 2}))]
-                (comments/get-comments-ordered-by :created-at objective-uri) => (contains [(contains {:_id third-comment-id})
+                (comments/get-comments objective-uri {:sorted-by :created-at :filter-type :none}) => (contains [(contains {:_id third-comment-id})
                                                                                            (contains {:_id second-comment-id})
                                                                                            (contains {:_id first-comment-id})])
 
-                (comments/get-comments-ordered-by :up-votes objective-uri) => (contains [(contains {:_id first-comment-id})
+                (comments/get-comments objective-uri {:sorted-by :up-votes :filter-type :none})=> (contains [(contains {:_id first-comment-id})
                                                                                          (contains {:_id third-comment-id})
                                                                                          (contains {:_id second-comment-id})])
 
-                (comments/get-comments-ordered-by :down-votes objective-uri) => (contains [(contains {:_id third-comment-id})
+                (comments/get-comments objective-uri {:sorted-by :down-votes :filter-type :none})=> (contains [(contains {:_id third-comment-id})
                                                                                            (contains {:_id first-comment-id})
                                                                                            (contains {:_id second-comment-id})])))
+
+
+      (fact "filters comments according to filter type"
+            (let [objective (sh/store-an-open-objective)
+                  objective-uri (str "/objectives/" (:_id objective))
+                  {comment-without-note-id :_id} (sh/store-a-comment {:entity objective :comment-text "without note"})
+                  {comment-with-note-id :_id} (-> (sh/store-a-comment {:entity objective :comment-text "with note"})
+                                                  sh/with-note)]
+             (comments/get-comments objective-uri {:filter-type :has-writer-note}) => (just [(contains {:_id comment-with-note-id})])
+             (comments/get-comments objective-uri {:filter-type :none}) => (contains [(contains {:_id comment-with-note-id})
+                                                                                      (contains {:_id comment-without-note-id})]
+                                                                                     :in-any-order)))
 
         (tabular
          (fact "gets comments with aggregate votes"
@@ -77,8 +89,8 @@
                      objective-uri (str "/objectives/" (:_id objective))
 
                      comment (-> (sh/store-a-comment {:entity objective}) (sh/with-votes {:up 2 :down 10}))]
-                 (first (comments/get-comments-ordered-by ?ordered-by objective-uri)) => (contains {:votes {:up 2 :down 10}})))
-         ?ordered-by :up-votes :down-votes :created-at)
+                 (first (comments/get-comments objective-uri {:sorted-by ?sorted-by :filter-type :none})) => (contains {:votes {:up 2 :down 10}})))
+         ?sorted-by :up-votes :down-votes :created-at)
 
         (tabular
          (fact "gets comments with user name"
@@ -88,8 +100,8 @@
                      user (sh/store-a-user)
 
                      comment (sh/store-a-comment {:user user :entity objective})]
-                 (first (comments/get-comments-ordered-by ?ordered-by objective-uri)) => (contains {:username (:username user)})))
-         ?ordered-by :up-votes :down-votes :created-at)
+                (first (comments/get-comments objective-uri {:sorted-by ?sorted-by :filter-type :none})) => (contains {:username (:username user)})))
+         ?sorted-by :up-votes :down-votes :created-at)
 
         (tabular
          (fact "gets comments with uris rather than global ids"
@@ -98,8 +110,8 @@
 
                      comment (sh/store-a-comment {:entity objective})
                      comment-uri (str "/comments/" (:_id comment))]
-                 (first (comments/get-comments-ordered-by ?ordered-by objective-uri)) =not=> (contains {:comment-on-id anything})    
-                 (first (comments/get-comments-ordered-by ?ordered-by objective-uri)) =not=> (contains {:global-id anything})
-                 (first (comments/get-comments-ordered-by ?ordered-by objective-uri)) => (contains {:uri comment-uri
+                 (first (comments/get-comments objective-uri {:sorted-by ?sorted-by :filter-type :none})) =not=> (contains {:comment-on-id anything})    
+                 (first (comments/get-comments objective-uri {:sorted-by ?sorted-by :filter-type :none})) =not=> (contains {:global-id anything})
+                 (first (comments/get-comments objective-uri {:sorted-by ?sorted-by :filter-type :none})) => (contains {:uri comment-uri
                                                                                                     :comment-on-uri objective-uri})))
-         ?ordered-by :up-votes :down-votes :created-at)))
+         ?sorted-by :up-votes :down-votes :created-at)))

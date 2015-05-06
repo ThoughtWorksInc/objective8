@@ -44,9 +44,17 @@
       :created-at)
     :created-at))
 
+(defn get-filter-type [params]
+  (if-let [filter-type (keyword (:filter-type params))]
+    (if (#{:has-writer-note} filter-type)
+      filter-type
+      :none)
+    :none))
+
 (defn request->comments-query [{params :params :as request}]
   (some-> (utils/select-all-or-nothing params [:uri])
-          (assoc :sorted-by (get-sorted-by params))))
+          (assoc :sorted-by (get-sorted-by params))
+          (assoc :filter-type (get-filter-type params))))
 
 (defn request->star-data [{params :params :as request}]
   (utils/select-all-or-nothing params [:objective-uri :created-by-id]))

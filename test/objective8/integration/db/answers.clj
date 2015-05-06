@@ -53,13 +53,13 @@
                    question-url (str "/objectives/" o-id "/questions/" q-id)
 
                    {answer-without-note-id :_id} (sh/store-an-answer {:question question :answer-text "without note"})
-                   {answer-with-note-id :_id :as answer-with-note} (sh/store-an-answer {:question question :answer-text "with note"})
-                   _ (sh/store-a-note {:note-on-entity answer-with-note})]
+                   {answer-with-note-id :_id} (-> (sh/store-an-answer {:question question :answer-text "with note"})
+                                                  sh/with-note)]
                (answers/get-answers question-url {:filter-type :has-writer-note}) => (just [(contains {:_id answer-with-note-id})])
                (answers/get-answers question-url {}) => (contains [(contains {:_id answer-with-note-id})
                                                                    (contains {:_id answer-without-note-id})]
                                                                   :in-any-order)))
-       
+
        (fact "gets answers with aggregate votes"
              (let [{o-id :objective-id q-id :_id :as question} (sh/store-a-question)
                    question-uri (str "/objectives/" o-id "/questions/" q-id)
@@ -70,7 +70,7 @@
        (fact "gets answers with uris rather than global ids"
              (let [{o-id :objective-id q-id :_id :as question} (sh/store-a-question)
                    question-uri (str "/objectives/" o-id "/questions/" q-id)
-                   
+
                    answer (sh/store-an-answer {:question question})
                    answer-uri (str question-uri "/answers/" (:_id answer))]
                (first (answers/get-answers question-uri {:sorted-by :created-at})) => (contains {:uri answer-uri})

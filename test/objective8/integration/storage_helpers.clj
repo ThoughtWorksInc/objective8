@@ -83,12 +83,13 @@
   ([required-entities]
    (let [{created-by-id :_id} (l-get required-entities :user (store-a-user))
          {:keys [_id objective-id global-id entity]} (l-get required-entities :entity (store-an-open-objective))
+         comment-text (get required-entities :comment-text "The comment")
          objective-id (if (= entity :objective) _id objective-id)]
      (storage/pg-store! {:entity :comment
                          :created-by-id created-by-id
                          :objective-id objective-id
                          :comment-on-id global-id
-                         :comment "The comment"}))))
+                         :comment comment-text}))))
 
 (defn store-an-invitation
   ([] (store-an-invitation {}))
@@ -165,13 +166,22 @@
    (store-a-note {}))
 
   ([required-entities]
-   (let [{answer-id :global-id user-id :created-by-id o-id :objective-id} (l-get required-entities :note-on-entity (store-an-answer))
-          note (l-get required-entities :note "Test note")]
+   (let [{answer-id :global-id o-id :objective-id} (l-get required-entities :note-on-entity (store-an-answer))
+         {user-id :user-id} (l-get required-entities :writer (store-a-writer))
+         note (get required-entities :note "Test note")]
      (storage/pg-store! {:entity :writer-note
                          :objective-id o-id
                          :created-by-id user-id
                          :note-on-id answer-id
                          :note note}))))
+
+(defn with-note
+  ([entity]
+   (with-note entity "Test note"))
+
+  ([entity note-text]
+   (store-a-note {:note-on-entity entity :note note-text})
+   entity))
 
 (def some-hiccup '(["h1" {:data-section-label "1234abcd"} "A Heading"] ["p" {:data-section-label "abcd1234"} "A paragraph"]))
 

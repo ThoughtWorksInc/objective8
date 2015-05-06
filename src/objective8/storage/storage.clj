@@ -181,10 +181,15 @@ WHERE answers.objective_id = ? AND answers.question_id = ?
       mappings/with-username-if-present
       with-aggregate-votes))
 
-(defn pg-retrieve-comments-with-votes-ordered-by [global-id ordered-by]
-  (let [ordered-by-clause {:created-at "ORDER BY comments._created_at DESC"
+(defn pg-retrieve-comments-with-votes [query]
+  (when-let [sanitised-query (utils/select-all-or-nothing query [:global-id :sorted-by :filter-type])]
+  (let [global-id (:global-id sanitised-query)
+        sorted-by (:sorted-by sanitised-query)
+        sorted-by-clause {:created-at "ORDER BY comments._created_at DESC"
                            :up-votes "ORDER BY up_votes DESC NULLS LAST"
-                           :down-votes "ORDER BY down_votes DESC NULLS LAST"}]
+                           :down-votes "ORDER BY down_votes DESC NULLS LAST"}
+        filter-type (:filter-type sanitised-query)
+        filter-clause {:has-writer-note "AND notes.note IS NOT NULL"}]
     (apply vector (map unmap-comments-with-votes
                        (korma/exec-raw [ (string/join " " ["
 SELECT comments.*, up_votes, down_votes, users.username, notes.note
@@ -199,8 +204,10 @@ LEFT JOIN (SELECT global_id, count(vote) as up_votes
            FROM objective8.up_down_votes
            WHERE vote > 0 GROUP BY global_id) AS agg2
 ON agg2.global_id = comments.global_id
-WHERE comments.comment_on_id = ?" (get ordered-by-clause ordered-by (:created-at ordered-by-clause))
-"LIMIT 50"]) [global-id]] :results)))))
+WHERE comments.comment_on_id = ?
+" (get filter-clause filter-type) 
+(get sorted-by-clause sorted-by (:created-at sorted-by-clause))
+"LIMIT 50"]) [global-id]] :results))))))
 
 (defn pg-retrieve-starred-objectives [user-id]
   (let [unmap-objective (first (get mappings/objective :transforms))]
