@@ -139,6 +139,22 @@
                (throw e)))
         => (contains "starred"))
 
+  (fact "Can comment on an objective"
+        (try
+          (wd/to (:objective-url @journey-state))
+          (wait-for-title "Functional test headline | Objective[8]")
+          (wd/input-text ".func--comment-form-text-area" "Functional test comment text")
+          (wd/click ".func--comment-form-submit")
+          (wait-for-title "Functional test headline | Objective[8]")
+          (screenshot "objective_with_comment")
+
+          (wd/page-source)
+
+          (catch Exception e
+            (screenshot "ERROR-Can-comment-on-an-objective")
+            (throw e)))
+        => (contains "Functional test comment text"))
+
   (fact "Can add a question"
         (try (wd/to "localhost:8080/objectives")
              (wait-for-title "Objectives | Objective[8]")
@@ -552,6 +568,39 @@
              (screenshot "ERROR-can-add-a-writer-note-to-an-answer")
              (throw e)))
       => "Functional test writer note on answer")
+
+(fact "Can view comments dashboard" 
+      (try (wd/to (:objective-url @journey-state))
+           (wait-for-title "Functional test headline | Objective[8]")
+           (wd/click ".func--writer-dashboard-link")
+           (wait-for-title "Writer dashboard")
+           (wd/click ".func--comment-dashboard-link")
+
+           (screenshot "comments_dashboard")
+
+           {:page-title (wd/title)
+            :page-source (wd/page-source)}
+
+          (catch Exception e
+            (screenshot "ERROR-can-view-comments-dashboard")
+            (throw e)))
+      => (contains {:page-title "Writer dashboard"
+                    :page-source (every-checker (contains "Functional test comment text"))}))
+
+(fact "Can add a writer note to a comment"
+      (try (-> ".func--dashboard-writer-note-item-field"
+               (wd/input-text "Functional test writer note on comment")
+               wd/submit)
+
+           (wait-for-title "Writer dashboard")
+           (screenshot "comment_dashboard_with_writer_note")
+
+           (wd/text ".func--writer-note-text")
+
+           (catch Exception e
+             (screenshot "ERROR-can-add-a-writer-note-to-an-comment")
+             (throw e)))
+      => "Functional test writer note on comment")
 
 (fact "User with admin credentials can remove an objective"
       (let [result (try
