@@ -23,21 +23,21 @@ mixin dashboardAnswerItem(withWriterNote)
 
 mixin dashboardNoteItem(withWriterNote)
   if withWriterNote
-    .dashboard-answer-item-writer-note-container
+    .dashboard-writer-note-item-container
       p
         i.fa.fa-paperclip
         = " "
         span.clj-dashboard-writer-note-text.func--writer-note-text
           | Clipped. "Great for section d."
   else
-    form(action='/meta/writer-notes', method='POST').dashboard-answer-item-writer-note-form.clj-dashboard-writer-note-form
+    form(action='/meta/writer-notes', method='POST').dashboard-writer-note-item-form.clj-dashboard-writer-note-form
       input.clj-refer(name='refer', type='hidden', value='!redirect-after-post-uri')
       input.clj-note-on-uri(name='note-on-uri', type='hidden', value='!entity-to-add-note-on')
       p.form-field
         label.form-field-label(for="note")
           span.form-field-label-title.visuallyhidden Note
-          input.dashboard-answer-item-writer-note-field.func--dashboard-answer-item-note-field(id="note", required="required", name="note", type="text", maxlength="140", placeholder="!Add a reply to the community.", data-l8n="attr/placeholder:writer-dashboard/writer-note-placeholder")
-        button.dashboard-answer-item-writer-note-save-button(type='submit')
+          input.dashboard-writer-note-item-field.func--dashboard-answer-item-note-field(id="note", required="required", name="note", type="text", maxlength="140", placeholder="!Add a reply to the community.", data-l8n="attr/placeholder:writer-dashboard/writer-note-placeholder")
+        button.dashboard-writer-note-item-save-button(type='submit')
           i.fa.fa-paperclip
 
 mixin voteUpDownView()

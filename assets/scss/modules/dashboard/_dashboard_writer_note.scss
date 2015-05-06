@@ -1,0 +1,31 @@
+$dashboard_save_writer_note_button_width: 100px;
+.dashboard-writer-note-item-form {
+  padding-top: 0.25em;
+}
+
+.dashboard-writer-note-item-field {
+  padding-right: $dashboard_save_writer_note_button_width;
+}
+.dashboard-writer-note-item-save-button {
+  transition: background-color 250ms ease, color 250ms ease;
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  z-index: 1;
+  width: $dashboard_save_writer_note_button_width;
+  height: 36px;
+  background: transparent;
+  color: $green1;
+  border: 0;
+  border-left: 1px solid $grey-3;
+  &:hover {
+    background-color: $green1;
+    color: $white;
+  }
+  //  outline
+}
+
+.dashboard-writer-note-item-container {
+  padding-top: 0.25em;
+  color: $green1;
+}

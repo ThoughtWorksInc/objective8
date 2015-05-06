@@ -27,34 +27,3 @@ Answer item
 .dashboard-answer-item-down-score {
 
 }
-
-$dashboard_save_writer_note_button_width: 100px;
-.dashboard-answer-item-writer-note-form {
-  padding-top: 0.25em;
-}
-.dashboard-answer-item-writer-note-field {
-  padding-right: $dashboard_save_writer_note_button_width;
-}
-.dashboard-answer-item-writer-note-save-button {
-  transition: background-color 250ms ease, color 250ms ease;
-  position: absolute;
-  top: 1px;
-  right: 1px;
-  z-index: 1;
-  width: $dashboard_save_writer_note_button_width;
-  height: 36px;
-  background: transparent;
-  color: $green1;
-  border: 0;
-  border-left: 1px solid $grey-3;
-  &:hover {
-    background-color: $green1;
-    color: $white;
-  }
-//  outline
-}
-
-.dashboard-answer-item-writer-note-container {
-  padding-top: 0.25em;
-  color: $green1;
-}
