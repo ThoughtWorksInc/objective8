@@ -329,39 +329,6 @@
              (throw e)))
       => (contains {:biog "My new biography"}))
 
-(fact "Can view questions dashboard"
-      (try (wd/to (:objective-url @journey-state))
-           (wait-for-title "Functional test headline | Objective[8]")
-           (wd/click ".func--writer-dashboard-link")
-           (wait-for-title "Writer dashboard")
-
-           (screenshot "questions_dashboard")
-
-           {:page-title (wd/title)
-            :page-source (wd/page-source)}
-                     
-           (catch Exception e
-             (screenshot "ERROR-can-view-questions-dashboard")
-             (throw e)))
-      => (contains {:page-title "Writer dashboard"
-                    :page-source (every-checker (contains "Functional test question")
-                                                (contains "Functional test answer"))}))
-
-(fact "Can add a writer note to an answer"
-      (try (-> ".func--dashboard-answer-item-note-field"
-               (wd/input-text "Functional test writer note on answer")
-               wd/submit)
-
-           (wait-for-title "Writer dashboard")
-           (screenshot "questions_dashboard_with_writer_note")
-
-           (wd/text ".func--writer-note-text")
-           
-           (catch Exception e
-             (screenshot "ERROR-can-add-a-writer-note-to-an-answer")
-             (throw e)))
-      => "Functional test writer note on answer")
-
 (against-background
   [(before :contents (-> (:objective-url @journey-state)
                          (string/split #"/")
@@ -552,6 +519,39 @@
         (catch Exception e
           (screenshot "ERROR-Can-navigate-to-import-from-Google-Drive")
           (throw e))))
+
+(fact "Can view questions dashboard"
+      (try (wd/to (:objective-url @journey-state))
+           (wait-for-title "Functional test headline | Objective[8]")
+           (wd/click ".func--writer-dashboard-link")
+           (wait-for-title "Writer dashboard")
+
+           (screenshot "questions_dashboard")
+
+           {:page-title (wd/title)
+            :page-source (wd/page-source)}
+                     
+           (catch Exception e
+             (screenshot "ERROR-can-view-questions-dashboard")
+             (throw e)))
+      => (contains {:page-title "Writer dashboard"
+                    :page-source (every-checker (contains "Functional test question")
+                                                (contains "Functional test answer"))}))
+
+(fact "Can add a writer note to an answer"
+      (try (-> ".func--dashboard-writer-note-item-field"
+               (wd/input-text "Functional test writer note on answer")
+               wd/submit)
+
+           (wait-for-title "Writer dashboard")
+           (screenshot "questions_dashboard_with_writer_note")
+
+           (wd/text ".func--writer-note-text")
+           
+           (catch Exception e
+             (screenshot "ERROR-can-add-a-writer-note-to-an-answer")
+             (throw e)))
+      => "Functional test writer note on answer")
 
 (fact "User with admin credentials can remove an objective"
       (let [result (try
