@@ -28,12 +28,12 @@
   @include default-button;
 }
 
-.answer-item-writer-note-container {
+.writer-note-item-container {
   margin-top: 0.5em;
   color: $green1;
 }
 
-.answer-item-writer-note-label {
+.writer-note-item-label {
   font-weight: bold; 
   &:after {
     content: ": ";

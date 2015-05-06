@@ -91,7 +91,7 @@
              (default-app question-view-get-request) => (contains {:body (contains "The writer note")})
              (default-app question-view-get-request) => (contains {:body (contains "1237")})
              (default-app question-view-get-request) => (contains {:body (contains "6601")})
-             (helpers/count-matches (:body (default-app question-view-get-request)) "clj-answer-item-writer-note-container") => 1)
+             (helpers/count-matches (:body (default-app question-view-get-request)) "clj-writer-note-item-container") => 1)
 
        (fact "A user should receive a 404 if a question doesn't exist"
              (against-background

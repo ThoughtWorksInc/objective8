@@ -41,7 +41,7 @@
 
 (defn display-writer-note [answer]
   (html/transformation
-    [:.clj-answer-item-writer-note-content] (html/content (:note answer))))
+    [:.clj-writer-note-item-content] (html/content (:note answer))))
 
 (def sign-in-to-add-answer-snippet (html/select pf/library-html-resource [:.clj-to-add-answer-please-sign-in]))
 
@@ -80,7 +80,7 @@
                                                                                              (if user
                                                                                                (voting-actions-when-signed-in context answer)
                                                                                                (voting-actions-when-signed-out context answer)))
-                                                                     [:.clj-answer-item-writer-note-container] (when (:note answer)
+                                                                     [:.clj-writer-note-item-container] (when (:note answer)
                                                                                                                  (display-writer-note answer)))
                                       [:.clj-jump-to-answer] (when (and (tf/open? objective) user) identity)
 

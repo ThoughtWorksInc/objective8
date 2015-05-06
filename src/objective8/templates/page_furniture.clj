@@ -139,6 +139,8 @@
                              (if user
                                (voting-actions-when-signed-in context comment)
                                (voting-actions-when-not-signed-in context comment))
+                             [:.clj-writer-note-item-container] (when (:note comment) identity)
+                             [:.clj-writer-note-item-content] (html/content (:note comment))
                              [:.clj-comment-reply] nil)))) 
 
 (defn comment-list [{:keys [data] :as context}]

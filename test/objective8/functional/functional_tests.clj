@@ -585,7 +585,7 @@
             (screenshot "ERROR-can-view-comments-dashboard")
             (throw e)))
       => (contains {:page-title "Writer dashboard"
-                    :page-source (every-checker (contains "Functional test comment text"))}))
+                    :page-source (contains "Functional test comment text")}))
 
 (fact "Can add a writer note to a comment"
       (try (-> ".func--dashboard-writer-note-item-field"
@@ -601,6 +601,16 @@
              (screenshot "ERROR-can-add-a-writer-note-to-an-comment")
              (throw e)))
       => "Functional test writer note on comment")
+
+(fact "Can view writer note on objective comment" 
+      (try (wd/to (:objective-url @journey-state)) 
+           (wait-for-title "Functional test headline | Objective[8]")
+           (wd/page-source)
+
+        (catch Exception e
+             (screenshot "ERROR-can-view-writer-note-on-objective-comment")
+             (throw e)))
+      => (contains "Functional test writer note on comment"))
 
 (fact "User with admin credentials can remove an objective"
       (let [result (try
