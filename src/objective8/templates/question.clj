@@ -20,7 +20,7 @@
   (html/transformation
     [:.clj-approval-form] (html/prepend (html/html-snippet (anti-forgery-field)))
     [:.clj-vote-on-uri] (html/set-attr :value (:uri answer))
-    [:.clj-refer] (html/set-attr :value (:uri ring-request))
+    [:.clj-refer] (html/set-attr :value (str (:uri ring-request) "#answer-" (:_id answer)))
     [:.clj-up-score] (html/content (str (get-in answer [:votes :up])))
     [:.clj-down-score] (html/content (str (get-in answer [:votes :down])))))
 
@@ -29,7 +29,7 @@
     [:.clj-approval-form] (html/set-attr :method "get")
     [:.clj-approval-form] (html/set-attr :action "/sign-in")
     [:.clj-vote-on-uri] nil
-    [:.clj-refer] (html/set-attr :value (:uri ring-request))
+    [:.clj-refer] (html/set-attr :value (str (:uri ring-request) "#answer-" (:_id answer)))
     [:.clj-up-score] (html/content (str (get-in answer [:votes :up])))
     [:.clj-down-score] (html/content (str (get-in answer [:votes :down])))))
 
@@ -74,6 +74,7 @@
 
                                       [:.clj-question] (html/content (:question question))
                                       [:.clj-answer] (html/clone-for [answer answers]
+                                                                     [:.clj-answer] (html/set-attr :id (str "answer-" (:_id answer)))
                                                                      [:.clj-answer-text] (html/content (:answer answer))
                                                                      [:.clj-approval-form] (comp
                                                                                              optionally-disable-voting

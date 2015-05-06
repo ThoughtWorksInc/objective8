@@ -111,7 +111,8 @@
 
 (defn safen-fragment [fragment]
   (or ((regex-checker #"comments") fragment)
-      ((regex-checker #"questions") fragment)))
+      ((regex-checker #"questions") fragment)
+      ((regex-checker #"answer-\d+") fragment)))
 
 (defn safen-url [target]
   (when target
