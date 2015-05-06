@@ -342,3 +342,8 @@ admin-removal-confirmation,page-title,Please confirm
 admin-removal-confirmation,are-you-sure,Are you sure you want to remove this objective:
 admin-removal-confirmation,no,No
 admin-removal-confirmation,yes,Yes
+admin-activity,doc-title,Admin activity | Objective[8]
+admin-activity,doc-description,View what the admins have been doing
+admin-activity,page-title,Admin activity
+admin-activity,subtitle,The following content has been removed
+admin-activity,no-admin-removals,No content has been removed

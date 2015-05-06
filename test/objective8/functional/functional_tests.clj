@@ -572,4 +572,22 @@
                        (screenshot "ERROR-User-with-admin-credentials-can-remove-objective")
                        (throw e)))]
         (:page-title result) => "Objectives | Objective[8]"
-        (:content result) =not=> (contains "Functional test headline")))))
+        (:content result) =not=> (contains "Functional test headline")))
+
+
+(fact "Can view the removed objective on the admin-activity page"
+      (let [objective-id (-> (:objective-url @journey-state)
+                             (string/split #"/")
+                             last)
+            objective-uri (str "/objectives/" objective-id)]
+        (try
+          (wd/to "localhost:8080/admin-activity")
+          (wait-for-title "Admin activity | Objective[8]")
+          (screenshot "admin_activity_page")
+
+          (wd/page-source)
+
+          (catch Exception e
+            (screenshot "ERROR-Can-view-the-removed-objective-on-the-admin-activity-page") 
+            (throw e)))
+        => (contains objective-uri)))))

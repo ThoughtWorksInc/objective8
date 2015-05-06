@@ -22,6 +22,7 @@
             [objective8.templates.dashboard-comments :as dashboard-comments]
             [objective8.templates.sign-in :as sign-in]  
             [objective8.templates.sign-up :as sign-up]
+            [objective8.templates.admin-activity :as admin-activity]
             [objective8.templates.admin-removal-confirmation :as admin-removal-confirmation]
             [objective8.templates.error-404 :as error-404]))
 
@@ -85,4 +86,5 @@
 (def sign-in (view sign-in/sign-in-page))
 (def sign-up (view sign-up/sign-up-page))
 (def error-404 (view error-404/error-404-page))
+(def admin-activity (view admin-activity/admin-activity-page))
 (def admin-removal-confirmation (view admin-removal-confirmation/admin-removal-confirmation-page))

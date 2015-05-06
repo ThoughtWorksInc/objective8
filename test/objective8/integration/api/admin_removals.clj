@@ -31,7 +31,7 @@
                                                     :content-type "application/json"
                                                     :body (json/generate-string removal-data))]
                 (:status response) => 201
-                (:body response) => (helpers/json-contains {:uri (contains "/meta/admin-removals/")
+                (:body response) => (helpers/json-contains {:uri (contains "/admin-removals/")
                                                             :removal-uri objective-uri
                                                             :removed-by-uri admin-uri})
                 (:headers response) => (helpers/location-contains "/api/v1/meta/admin-removals/")))
@@ -87,7 +87,7 @@
                                (helpers/truncate-tables)))
          (after :facts (helpers/truncate-tables))]
          
-         (future-fact "retrieves admin-removals"
+         (fact "retrieves admin-removals"
               (let [stored-admin-removal (sh/store-an-admin-removal)
                     expected-retrieved-admin-removal (-> stored-admin-removal
                                                          (assoc :uri (str "/admin-removals/" (:_id stored-admin-removal))

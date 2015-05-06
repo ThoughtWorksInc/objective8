@@ -70,3 +70,13 @@
                  (:status response) => 200
                  (:body response) => (contains "Objective Title")
                  (:body response) => (contains (:removal-uri params))))))
+
+(facts "about admin activity"
+       (fact "admin removals can be retrieved"
+             (against-background
+               (http-api/get-admin-removals) => {:status ::http-api/success
+                                                 :result [{:removal-uri OBJECTIVE_URI}]})
+             (let [{response :response} (-> (ih/test-context) 
+                                            (p/request (utils/path-for :fe/admin-activity)))]
+               (:status response) => 200
+               (:body response) => (contains OBJECTIVE_URI))))

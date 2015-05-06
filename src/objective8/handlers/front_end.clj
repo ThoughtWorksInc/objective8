@@ -669,6 +669,8 @@
         {:status 502}))
     {:status 400}))
 
+;;ADMINS
+
 (defn post-admin-removal-confirmation [request]
   (if-let [admin-removal-confirmation-data (helpers/request->admin-removal-confirmation-info request (get (friend/current-authentication) :identity))]
     (let [{status :status admin-removal :result} (http-api/post-admin-removal admin-removal-confirmation-data)]
@@ -693,3 +695,15 @@
         (assoc :flash {:type :flash-data
                        :data admin-removal-data}))
     {:status 400}))
+
+(defn admin-activity [request]
+  (let [{status :status admin-removals :result} (http-api/get-admin-removals)]
+    (cond 
+      (= status ::http-api/success)
+      {:status 200
+       :header {"Content-Type" "text/html"}  
+       :body (views/admin-activity "admin-activity" request
+                                   :admin-removals admin-removals)}
+      
+      (= status ::http-api/error)
+      {:status 502})))

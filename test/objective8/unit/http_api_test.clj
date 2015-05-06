@@ -360,3 +360,8 @@
       (http-api/post-admin-removal admin-removal-data) => :api-call-result
       (provided
         (http-api/default-post-call (contains "/api/v1/meta/admin-removals") admin-removal-data) => :api-call-result))
+
+(fact "getting admin removals hits the correct API endpoint"
+      (http-api/get-admin-removals) => :api-call-result
+      (provided
+        (http-api/default-get-call (utils/path-for :api/get-admin-removals)) => :api-call-result))

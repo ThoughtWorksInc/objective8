@@ -236,3 +236,6 @@
 
 (defn post-admin-removal [admin-removal-data]
   (default-post-call (utils/path-for :api/post-admin-removal) admin-removal-data))  
+
+(defn get-admin-removals []
+  (default-get-call (utils/path-for :api/get-admin-removals)))

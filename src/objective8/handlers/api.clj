@@ -136,10 +136,14 @@
       (log/info "Error when posting admin-removal: " e)
       (internal-server-error "Error when posting admin-removal"))))
 
-(defn get-admin-removals [request]
-  (-> (admin-removals/get-admin-removals)
-      response/response
-      (response/content-type "application/json")))
+(defn get-admin-removals [_]
+  (try
+    (-> (admin-removals/get-admin-removals)
+        response/response
+        (response/content-type "application/json"))
+    (catch Exception e
+      (log/info "Error when getting admin-removals: " e)
+      (internal-server-error "Error when getting admin-removals"))))
 
 ;;STARS
 (defn post-star [request]

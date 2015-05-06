@@ -46,6 +46,10 @@
                  :question-id (:_id question)
                  :objective-id (:objective-id question)))
 
+(defn user-id->uri [user-id]
+  (bidi/path-for uri-routes :user
+                 :user-id user-id))
+
 (defn uri->section-data [uri]
   (if-let [{entity :handler route-params :route-params} (bidi/match-route uri-routes uri)]
    (when (= entity :section)

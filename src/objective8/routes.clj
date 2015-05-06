@@ -11,6 +11,7 @@
     "project-status"    :fe/project-status
     "learn-more"        :fe/learn-more
     "static/"           (->Resources {:prefix "public/"})
+    "admin-activity"    :fe/admin-activity
     "meta"              {"/up-vote"      {:post :fe/post-up-vote}
                          "/down-vote"    {:post :fe/post-down-vote}
                          "/comments"     {:post :fe/post-comment}
