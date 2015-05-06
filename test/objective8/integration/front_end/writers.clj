@@ -36,7 +36,7 @@
 
 (def EXPIRED_INVITATION (assoc ACTIVE_INVITATION :status "expired"))
 
-(def default-app (core/app core/app-config))
+(def default-app (core/app helpers/test-config))
 (def user-session (helpers/test-context))
 
 (facts "about writers"

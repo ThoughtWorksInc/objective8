@@ -5,7 +5,15 @@
             [cemerick.friend :as friend]
             [cemerick.friend.workflows :as workflows]))
 
-(def fake-request {})
+(def consumer (oauth/make-consumer "FAKE_TOKEN"
+                                   "FAKE_SECRET"
+                                   "https://api.twitter.com/oauth/request_token"
+                                   "https://api.twitter.com/oauth/access_token"
+                                   "https://api.twitter.com/oauth/authenticate"
+                                   :hmac-sha1))
+
+(def fake-request {:twitter-config {:consumer consumer
+                                    :callback-url :callback-url}})
 
 (defn with-verifier [request]
   (assoc-in request [:params :oauth_verifier] "verifier"))
@@ -16,13 +24,13 @@
              => (contains {:status 302
                            :headers {"Location" "https://api.twitter.com/oauth/authenticate?oauth_token=wibble"}})
              (provided
-              (oauth/request-token consumer callback-url)
+              (oauth/request-token consumer :callback-url)
               => {:oauth_token "wibble"}))
 
        (fact "Returns a Bad Gateway error if twitter response indicates an error"
              (twitter-sign-in fake-request) => (contains {:status 502})
              (provided
-              (oauth/request-token consumer callback-url)
+              (oauth/request-token consumer :callback-url)
               =throws=> (ex-info "blah" {}))))
 
 ;; (fact "step 2: handled by twitter")

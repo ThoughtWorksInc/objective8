@@ -6,6 +6,8 @@
             [cheshire.core :as json]
             [clojure.data.json :as cl-json]
             [objective8.core :as core]
+            [objective8.workflows.twitter :as twitter]
+            [objective8.workflows.sign-up :as sign-up]
             [objective8.storage.mappings :as m]
             [objective8.storage.database :as db]))
 
@@ -58,9 +60,16 @@
      (p/request "http://localhost:8080/twitter-callback?oauth_verifier=the-verifier")
      p/follow-redirect))
 
+(def test-config
+  (assoc core/app-config :authentication {:allow-anon? true
+                                          :workflows [(twitter/twitter-workflow {})
+                                                      sign-up/sign-up-workflow]
+                                          :login-uri "/sign-in"}))
+
 (defn test-context
-  "Creates a fake application context" 
-  [] (p/session (core/app core/app-config)))
+  "Creates a fake application context"
+  []
+  (p/session (core/app test-config)))
 
 ;; Test helpers
 (defn count-matches [the-string target-regex]

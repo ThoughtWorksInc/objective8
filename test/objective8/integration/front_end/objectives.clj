@@ -20,7 +20,7 @@
 (def objective-view-get-request (mock/request :get (str "/objectives/" OBJECTIVE_ID)))
 (def invalid-objective-view-get-request (mock/request :get (str "/objectives/" "not-an-objective-id")))
 
-(def default-app (core/app core/app-config))
+(def default-app (core/app helpers/test-config))
 
 (def user-session (helpers/test-context))
 

@@ -19,7 +19,7 @@
 (def objectives-create-request (mock/request :get "/objectives/create"))
 (def objectives-post-request (mock/request :post "/objectives"))
 
-(def default-app (core/app core/app-config))
+(def default-app (core/app helpers/test-config))
 
 (defn check-status [status]
   (fn [peridot-response]

@@ -20,7 +20,7 @@
   (mock/request :get (str utils/host-url "/objectives/" objective-id "/questions/" question-id)))
 (def questions-view-get-request (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/questions")))
 
-(def default-app (core/app core/app-config))
+(def default-app (core/app helpers/test-config))
 
 (def user-session (helpers/test-context))
 
