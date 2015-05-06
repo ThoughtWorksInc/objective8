@@ -11,10 +11,7 @@ mixin commentItem(author, date)
     .comment-text.clj-comment-text
       block
     +commentReply
-    .writer-note-item-container.clj-writer-note-item-container
-      p
-        span.writer-note-item-label(data-l8n="content:question-page/writer-note-label") !Writer response
-        span.writer-note-item-content.clj-writer-note-item-content !Very interesting. Useful for section 2.4.
+    +writerNote
 
 mixin commentItemBlank()
   li.comment-item.clj-empty-comment-list-item(data-l8n="content:comment-view/no-comments")

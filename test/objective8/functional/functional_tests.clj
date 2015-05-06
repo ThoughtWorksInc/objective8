@@ -605,6 +605,7 @@
 (fact "Can view writer note on objective comment" 
       (try (wd/to (:objective-url @journey-state)) 
            (wait-for-title "Functional test headline | Objective[8]")
+           (screenshot "writer_note_on_objective_comment")
            (wd/page-source)
 
         (catch Exception e
