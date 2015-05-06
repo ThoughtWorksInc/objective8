@@ -75,7 +75,8 @@
        (fact "admin removals can be retrieved"
              (against-background
                (http-api/get-admin-removals) => {:status ::http-api/success
-                                                 :result [{:removal-uri OBJECTIVE_URI}]})
+                                                 :result [{:removal-uri OBJECTIVE_URI
+                                                           :_created_at "2015-03-24T17:06:37.714Z"}]})
              (let [{response :response} (-> (ih/test-context) 
                                             (p/request (utils/path-for :fe/admin-activity)))]
                (:status response) => 200
