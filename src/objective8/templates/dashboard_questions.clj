@@ -19,6 +19,13 @@
 (def no-writer-note-snippet (html/select answer-with-no-writer-note-snippet [:.clj-dashboard-answer-item]))
 (def writer-note-snippet (html/select answer-with-writer-note-snippet [:.clj-dashboard-answer-item]))
 
+(defn dashboard-questions-no-answers [{:keys [translations data] :as context}]
+  (let [translation-key (case (:answer-view-type data)
+                          "paperclip" :writer-dashboard/no-answers-with-writer-notes-message
+                          :writer-dashboard/no-answers-message)]
+    (html/at dashboard-questions-no-answers-snippet
+             [:.clj-dashboard-no-answer-item] (html/content (translations translation-key)))))
+
 (defn render-answer-without-note [{:keys [ring-request] :as context} answer]
   (html/at no-writer-note-snippet 
            [:.clj-dashboard-answer-item-text] (html/content (:answer answer)) 
@@ -47,7 +54,7 @@
 (defn answer-list [{:keys [data] :as context}]
   (let [answers (:answers data)]
     (if (empty? answers)
-      dashboard-questions-no-answers-snippet
+      (dashboard-questions-no-answers context)
       (answer-list-items context))))
 
 (def dashboard-questions-navigation-item-snippet (html/select dashboard-questions-template
