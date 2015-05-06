@@ -31,7 +31,7 @@
            [:.clj-dashboard-answer-item-text] (html/content (:answer answer)) 
            [:.clj-dashboard-answer-item-up-count] (html/content (str (get-in answer [:votes :up]))) 
            [:.clj-dashboard-answer-item-down-count] (html/content (str (get-in answer [:votes :down]))) 
-           [:.clj-refer] (html/set-attr :value (:uri ring-request)) 
+           [:.clj-refer] (html/set-attr :value (str (:uri ring-request) "?" (:query-string ring-request)))
            [:.clj-note-on-uri] (html/set-attr :value (:uri answer))
            [:.clj-dashboard-writer-note-form] (html/prepend (html/html-snippet (anti-forgery-field)))))
 

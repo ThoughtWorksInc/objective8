@@ -37,7 +37,7 @@
              [:.clj-dashboard-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
              [:.clj-dashboard-comment-up-count] (html/content (str (get-in comment [:votes :up])))
              [:.clj-dashboard-comment-down-count] (html/content (str (get-in comment [:votes :down])) )
-            [:.clj-refer] (html/set-attr :value (:uri ring-request))
+            [:.clj-refer] (html/set-attr :value (str (:uri ring-request) "?" (:query-string ring-request)))
             [:.clj-note-on-uri] (html/set-attr :value (:uri comment))
             [:.clj-dashboard-writer-note-form] (html/prepend (html/html-snippet (anti-forgery-field))) ))
 
