@@ -33,11 +33,9 @@ block content
       .draft-version-navigation.clj-draft-version-navigation
         .draft-version-navigation-content-wrapper
           .draft-version-navigation-content
-            ul.draft-objective-navigation-controls
-              li.draft-objective-navigation
-                a.clj-draft-objective-link.func--draft-objective-link(href="#")
-                  i.fa.fa-angle-left
-                  span.draft-objective-navigation-text(data-l8n="content:draft/back-to-objective") !Back to Objective
+            +draftVersionNavigationWriter('!Jenny Bloggs', '#', '')
+              | !Drafted 5 days ago
+
 
         
             ul.draft-version-navigation-content-controls
@@ -54,10 +52,7 @@ block content
       .add-a-draft-wrapper
         a.button.add-a-draft.clj-add-a-draft.func--add-a-draft(href="/objective/:id/add-draft", data-l8n="content:draft/add-a-draft") !Add a draft
         a.button.js-import-draft-link.js-hidden.clj-import-draft(href="/objective/:id/import-draft", data-l8n="content:draft/import-draft") !Import a draft from Google Drive
-
-      +draftVersionNavigationWriter('!Jenny Bloggs', '#', '')
-        | !Drafted 5 days ago’”
-
+      
       .draft-preview-document-with-comments.clj-draft-preview-document
         h1.document-title !Build safer cycling networks in the streets of Madrid.
         p.lede London and Paris are two prime examples of cycle super highway heaven.  We need to show the world that madrid too can be the pinnacle in cycling and safety.

@@ -16,7 +16,8 @@
         previous-id (:previous-draft-id draft)
         next-id (:next-draft-id draft)] 
     (html/at draft-version-navigation-snippet
-             [:.clj-draft-objective-link] (html/set-attr :href (utils/path-for :fe/objective :id objective-id))
+             [:.clj-draft-version-writer-author] (html/content (:username draft))
+             [:.clj-draft-version-time] (html/content (utils/iso-time-string->pretty-time (:_created_at draft)))
              [:.clj-draft-version-navigation-previous] 
              (when previous-id
                (html/transformation
@@ -78,9 +79,6 @@
                                    (html/set-attr :href
                                                   (utils/local-path-for :fe/import-draft-get
                                                                         :id objective-id)))
-             [:.clj-draft-version-writer-author] (html/content (:username draft))
-
-             [:.clj-draft-version-time] (html/content (utils/iso-time-string->pretty-time (:_created_at draft)))
 
              [:.clj-draft-preview-document] (when-let [draft-content (:draft-content data)] 
                                               (html/content (add-section-links draft-content context)))
