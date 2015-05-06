@@ -30,7 +30,8 @@ mixin mastheadSignedIn()
   .masthead.clj-masthead-signed-in
     +mastheadContents()
     .masthead-user-nav.clj-user-navigation-signed-in
-      span.masthead-admin.clj-masthead-admin-badge(data-l8n="content:navigation-global/admin-text") !Admin
+      a.masthead-admin.clj-masthead-admin-badge.func--admin-link(href="/admin-activity")
+        span(data-l8n="content:navigation-global/admin-text") !Admin
       a.masthead-edit-profile.clj-edit-profile(href="!edit-profile")
         i.fa.fa-pencil-square-o.clj-pencil
         span.masthead-username.clj-username !JoeBloggs

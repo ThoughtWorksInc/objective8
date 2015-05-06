@@ -630,7 +630,7 @@
                              last)
             objective-uri (str "/objectives/" objective-id)]
         (try
-          (wd/to "localhost:8080/admin-activity")
+          (wd/click ".func--admin-link")
           (wait-for-title "Admin activity | Objective[8]")
           (screenshot "admin_activity_page")
 
