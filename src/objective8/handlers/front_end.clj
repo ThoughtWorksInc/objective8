@@ -207,14 +207,24 @@
                                                :answer-view-type answer-view-type
                                                :selected-question-uri selected-question-uri)}))))
 
+(def dashboard-comments-query-params
+  {:up-votes {:sorted-by "up-votes" :filter-type "none"}
+   :down-votes {:sorted-by "down-votes" :filter-type "none"}
+   :paperclip {:sorted-by "up-votes" :filter-type "has-writer-note"}})
+
 (defn dashboard-comments [{:keys [route-params params] :as request}]
   (let [objective-id (Integer/parseInt (:id route-params))
         {objective-status :status objective :result} (http-api/get-objective objective-id)
         {drafts-status :status drafts :result} (http-api/get-all-drafts objective-id)
+
         selected-comment-target-uri (get params :selected (:uri objective))
-        comments-sort-method (get params :sorted-by "up-votes")
+        comment-view-type (keyword (get params :comment-view "up-votes"))
+        comment-query-params (get dashboard-comments-query-params
+                                  comment-view-type
+                                  {:sorted-by "up-votes" :filter-type "none"})
+
         {comments-status :status comments :result} (http-api/get-comments selected-comment-target-uri
-                                                                          {:sorted-by comments-sort-method})]
+                                                                          comment-query-params)]
     (cond
       (every? #(= ::http-api/success %) [objective-status comments-status])
       (let [formatted-objective (format-objective objective)]
@@ -225,7 +235,7 @@
                                               :objective formatted-objective
                                               :drafts drafts
                                               :comments comments
-                                              :comments-sorted-by comments-sort-method
+                                              :comment-view-type comment-view-type
                                               :selected-comment-target-uri selected-comment-target-uri)}))))
 
 (defn post-writer-note [{:keys [route-params params] :as request}]

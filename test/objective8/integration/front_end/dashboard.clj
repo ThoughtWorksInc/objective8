@@ -257,5 +257,18 @@
                  :response
                  :status) => 200
              (provided
-               (http-api/get-comments anything {:sorted-by "up-votes"}) => {:status ::http-api/success
-                                                                            :result []})))
+               (http-api/get-comments anything {:sorted-by "up-votes"
+                                                :filter-type "none"}) => {:status ::http-api/success
+                                                                            :result []}))
+
+       (fact "can filter comments by writer note presence"
+             (-> user-session
+                 ih/sign-in-as-existing-user
+                 (p/request (str (utils/path-for :fe/dashboard-comments :id OBJECTIVE_ID) "?comment-view=paperclip"))
+                 :response
+                 :status) => 200
+             (provided
+               (http-api/get-comments anything {:sorted-by "up-votes" 
+                                                :filter-type "has-writer-note"}) => {:status ::http-api/success
+                                                                                     :result []}))
+       )

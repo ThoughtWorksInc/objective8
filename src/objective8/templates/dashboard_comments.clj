@@ -23,6 +23,13 @@
 
 (def writer-note-snippet (html/select comments-with-writer-note-snippet [:.clj-dashboard-comment-item]))
 
+(defn dashboard-comments-no-comments [{:keys [translations data] :as context}]
+  (let [translation-key (case (:comment-view-type data)
+                          :paperclip :writer-dashboard/no-comments-with-writer-notes-message
+                          :writer-dashboard/no-comments-message)]
+    (html/at dashboard-comments-no-comments-snippet
+             [:.clj-dashboard-no-comment-item] (html/content (translations translation-key)))))
+
 (defn render-comment-without-note [{:keys [ring-request] :as context} comment]
     (html/at no-writer-note-snippet
              [:.clj-dashboard-comment-text] (html/content (:comment comment))
@@ -55,7 +62,7 @@
 (defn comment-list [{:keys [data] :as context}]
   (let [comments (:comments data)]
     (if (empty? comments)
-      dashboard-comments-no-comments-snippet
+      (dashboard-comments-no-comments context)
       (comment-list-items context))))
 
 (def dashboard-comments-navigation-item-snippet (html/select dashboard-comments-template
@@ -102,7 +109,7 @@
   (let [objective (:objective data)
         selected-comment-target-uri (:selected-comment-target-uri data)
         dashboard-url (url/url (utils/path-for :fe/dashboard-comments :id (:_id objective)))
-        comments-sort-method (:comments-sorted-by data)]
+        comment-view-type (:comment-view-type data)]
     (apply str
            (html/emit*
             (tf/translate context
@@ -123,24 +130,32 @@
                                     [:.clj-dashboard-navigation-list] (html/content (navigation-list context))
                                     [:.clj-dashboard-comment-list] (html/substitute (comment-list context))
 
+                                    [:.clj-dashboard-filter-paper-clip] (html/set-attr
+                                                                       :href
+                                                                       (str (assoc dashboard-url
+                                                                                   :query {:selected selected-comment-target-uri
+                                                                                           :comment-view "paperclip"})))
                                     [:.clj-dashboard-filter-up-votes] (html/set-attr
                                                                        :href
                                                                        (str (assoc dashboard-url
                                                                                    :query {:selected selected-comment-target-uri
-                                                                                           :sorted-by "up-votes"})))
+                                                                                           :comment-view "up-votes"})))
                                     
-                                    [:.clj-dashboard-filter-up-votes] (if (= comments-sort-method "up-votes")
-                                                                        (html/add-class "on")
-                                                                        identity)
-
                                     [:.clj-dashboard-filter-down-votes] (html/set-attr
                                                                          :href
                                                                          (str (assoc dashboard-url
                                                                                      :query {:selected selected-comment-target-uri
-                                                                                             :sorted-by "down-votes"})))
-                                    
-                                    [:.clj-dashboard-filter-down-votes] (if (= comments-sort-method "down-votes")
+                                                                                             :comment-view "down-votes"})))
+
+                                    [:.clj-dashboard-filter-paper-clip] (if (= comment-view-type :paperclip)
+                                                                        (html/add-class "on")
+                                                                        identity)
+
+                                    [:.clj-dashboard-filter-up-votes] (if (= comment-view-type :up-votes)
+                                                                        (html/add-class "on")
+                                                                        identity)
+
+                                    [:.clj-dashboard-filter-down-votes] (if (= comment-view-type :down-votes)
                                                                           (html/add-class "on")
                                                                           identity)
-                                    [:.clj-dashboard-filter-paper-clip] nil
                                     [:.clj-dashboard-content-stats] nil)))))))

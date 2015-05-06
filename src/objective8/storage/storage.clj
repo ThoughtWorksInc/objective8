@@ -183,15 +183,15 @@ WHERE answers.objective_id = ? AND answers.question_id = ?
 
 (defn pg-retrieve-comments-with-votes [query]
   (when-let [sanitised-query (utils/select-all-or-nothing query [:global-id :sorted-by :filter-type])]
-  (let [global-id (:global-id sanitised-query)
-        sorted-by (:sorted-by sanitised-query)
-        sorted-by-clause {:created-at "ORDER BY comments._created_at DESC"
-                           :up-votes "ORDER BY up_votes DESC NULLS LAST"
-                           :down-votes "ORDER BY down_votes DESC NULLS LAST"}
-        filter-type (:filter-type sanitised-query)
-        filter-clause {:has-writer-note "AND notes.note IS NOT NULL"}]
-    (apply vector (map unmap-comments-with-votes
-                       (korma/exec-raw [ (string/join " " ["
+    (let [global-id (:global-id sanitised-query)
+          sorted-by (:sorted-by sanitised-query)
+          sorted-by-clause {:created-at "ORDER BY comments._created_at DESC"
+                            :up-votes "ORDER BY up_votes DESC NULLS LAST"
+                            :down-votes "ORDER BY down_votes DESC NULLS LAST"}
+          filter-type (:filter-type sanitised-query)
+          filter-clause {:has-writer-note "AND notes.note IS NOT NULL"}]
+      (apply vector (map unmap-comments-with-votes
+                         (korma/exec-raw [ (string/join " " ["
 SELECT comments.*, up_votes, down_votes, users.username, notes.note
 FROM objective8.comments AS comments
 JOIN objective8.users AS users ON users._id = comments.created_by_id

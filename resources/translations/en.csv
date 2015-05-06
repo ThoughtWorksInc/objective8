@@ -137,6 +137,7 @@ writer-dashboard,no-questions-message,No questions have been asked for this obje
 writer-dashboard,no-answers-message,No answers were provided for this question.
 writer-dashboard,no-answers-with-writer-notes-message,There are no answers with writer notes for this question.
 writer-dashboard,no-comments-message,There are no comments on this piece of content.
+writer-dashboard,no-comments-with-writer-notes-message,There are no comments with writer notes on this piece of content.
 writer-dashboard,link-button,Dashboard
 writer-dashboard,writer-note-placeholder,Add a reply to the community
 dashboard-questions,doc-title,Writer dashboard
