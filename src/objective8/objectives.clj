@@ -33,14 +33,19 @@
           (dissoc :global-id)
           (utils/update-in-self [:uri] uri-for-objective)))
 
-(defn retrieve-objectives []
-  (->> (storage/pg-retrieve {:entity :objective}
-                            {:limit 50
-                             :sort {:field :_created_at
-                                    :ordering :DESC}})
-       :result
-       (map #(dissoc % :global-id))
-       (map #(utils/update-in-self % [:uri] uri-for-objective))))
+(defn retrieve-objectives 
+  ([]
+   (retrieve-objectives false)) 
+  ([include-removed?] 
+   (let [query-map (cond-> {:entity :objective} 
+                     (not include-removed?) (assoc :removed-by-admin false))]
+     (->> (storage/pg-retrieve query-map
+                               {:limit 50
+                                :sort {:field :_created_at
+                                       :ordering :DESC}})
+          :result
+          (map #(dissoc % :global-id))
+          (map #(utils/update-in-self % [:uri] uri-for-objective))))))
 
 (defn get-objectives-as-signed-in-user [user-id]
   (->> (storage/pg-get-objectives-as-signed-in-user user-id) 
@@ -52,12 +57,12 @@
        (map #(dissoc % :global-id))
        (map #(utils/update-in-self % [:uri] uri-for-objective))))
 
-(defn get-objectives [{:keys [signed-in-id filters] :as query}]
+(defn get-objectives [{:keys [signed-in-id filters include-removed?] :as query}]
   (if-let [signed-in-id (:signed-in-id query)]
     (if (:starred filters)
       (retrieve-starred-objectives signed-in-id)
       (get-objectives-as-signed-in-user signed-in-id))
-    (retrieve-objectives)))
+    (retrieve-objectives include-removed?)))
 
 (defn retrieve-objectives-due-for-drafting []
   (->> (storage/pg-retrieve {:entity :objective 

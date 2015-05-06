@@ -78,6 +78,31 @@
                     {objective-id :_id :as stored-objective} (objectives/store-objective! objective-data)]
                 (objectives/retrieve-objectives) => [(assoc stored-objective :username username)]
                 (first (objectives/retrieve-objectives)) =not=> (contains {:global-id anything})))
+         
+         (fact "the retrieved list of objectives does not include removed objectives"
+               (let [{username :username :as user} (sh/store-a-user) 
+                     stored-objective  (sh/store-an-open-objective {:user user})
+                     expected-retrieved-objective (-> stored-objective
+                                                      (assoc :username username)
+                                                      (assoc :uri (str "/objectives/" (:_id stored-objective)))
+                                                      (dissoc :global-id))]
+                 (sh/store-an-admin-removed-objective) 
+                 (objectives/retrieve-objectives) => [expected-retrieved-objective]))
+
+         (fact "can retrieve objectives with removed objectives if specified"
+               (let [{username :username :as user} (sh/store-a-user) 
+                     stored-objective  (sh/store-an-open-objective {:user user})
+                     removed-objective (sh/store-an-admin-removed-objective {:user user}) 
+                     expected-retrieved-objective (-> stored-objective
+                                                      (assoc :username username)
+                                                      (assoc :uri (str "/objectives/" (:_id stored-objective)))
+                                                      (dissoc :global-id))
+                     expected-removed-objective (-> removed-objective
+                                                    (assoc :username username)
+                                                    (assoc :uri (str "/objectives/" (:_id removed-objective)))
+                                                    (dissoc :global-id))]
+                 (objectives/retrieve-objectives true) => (just [expected-removed-objective 
+                                                            expected-retrieved-objective] :in-any-order)))
 
          (fact "can retrieve a list of objectives created by a given user"
                (let [{user-id :_id :as user} (sh/store-a-user)

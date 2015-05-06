@@ -64,10 +64,12 @@
 
 (defn request->objectives-query [{:keys [params] :as request}]
   (let [user-id (:user-id params)
-        starred (:starred params)] 
+        starred (:starred params)
+        include-removed? (:include-removed params)] 
     (cond-> {}
       user-id (assoc :signed-in-id (Integer/parseInt user-id))
-      starred (assoc :filters {:starred starred}))))
+      starred (assoc :filters {:starred starred})
+      include-removed? (assoc :include-removed? include-removed?))))
 
 (defn request->mark-data [{:keys [params] :as request}]
   (utils/select-all-or-nothing params [:question-uri :created-by-uri]))
