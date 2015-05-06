@@ -6,7 +6,7 @@
 
 (def admin-activity-template (html/html-resource "templates/jade/admin-activity.html"))
 
-(def removals-list-item-snippet (html/select admin-activity-template [:.clj-admin-removals-list-item]))
+(def removals-list-item-snippet (first (html/select admin-activity-template [:.clj-admin-removals-list-item])))
 
 (defn empty-removals-list-item [{:keys [translations] :as context}]
   (html/at removals-list-item-snippet

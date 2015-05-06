@@ -89,6 +89,15 @@
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/not-found})
              (default-app objective-view-get-request) => (contains {:status 404}))
 
+       (fact "A user should receive a 404 if an objective has been removed"
+             (against-background
+               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                         :result (assoc basic-objective :removed-by-admin true)}
+               (http-api/get-comments anything)=> {:status ::http-api/success :result []} 
+               (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []} 
+               (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}) 
+             (default-app objective-view-get-request) => (contains {:status 404}))
+
        (facts "about comments"
               (against-background
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success

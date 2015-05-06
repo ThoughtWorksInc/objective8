@@ -156,19 +156,21 @@
         {comments-status :status comments :result} (http-api/get-comments (:uri objective))]
     (cond
       (every? #(= ::http-api/success %) [objective-status writers-status questions-status comments-status])
-      (let [formatted-objective (format-objective objective)]
-        {:status 200
-         :headers {"Content-Type" "text/html"}
-         :body
-        (views/objective-detail-page "objective-view"
-                                     updated-request
-                                     :objective formatted-objective
-                                     :writers writers
-                                     :questions questions
-                                     :comments comments
-                                     :doc (let [details (str (:title objective) " | Objective[8]")]
-                                            {:title details
-                                             :description details}))})
+      (if (:removed-by-admin objective)
+        (error-404-response updated-request)
+        (let [formatted-objective (format-objective objective)]
+          {:status 200
+           :headers {"Content-Type" "text/html"}
+           :body
+           (views/objective-detail-page "objective-view"
+                                        updated-request
+                                        :objective formatted-objective
+                                        :writers writers
+                                        :questions questions
+                                        :comments comments
+                                        :doc (let [details (str (:title objective) " | Objective[8]")]
+                                               {:title details
+                                                :description details}))})) 
       (= objective-status ::http-api/not-found) (error-404-response updated-request)
 
       (= objective-status ::http-api/invalid-input) {:status 400}
