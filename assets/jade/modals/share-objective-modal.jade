@@ -1,0 +1,25 @@
+extends ../layouts/base
+include ../mixins/_view_helpers
+
+block vars
+  - bodyClass = "objective"
+  - pageTitle = "!Share objective modal"
+
+block content
+  .middle-container.clj-share-objective-modal
+    article
+      h1.share-objective-modal-heading(data-l8n="content:share-objective-modal/heading") !Objective created
+      p.modal-share-objective-text
+        em.clj-objective-text.func--share-objective-modal-text !Improve the cycling experience in Soho
+      p.lede
+        span(data-l8n="content:share-objective-modal/helper-text") !Build community engagement around your objective by sharing it
+      p.share-box
+        ul.modal-share-list
+          +shareIcon("fa-reddit-square", "reddit")
+          +shareIcon("fa-facebook-square", "facebook")
+          +shareIcon("fa-google-plus-square", "google-plus")
+          +shareIcon("fa-twitter-square", "twitter")
+          +shareIcon("fa-linkedin-square", "linked-in")
+      .share-by-url
+        label.share-by-url-label(for="copy-url", data-l8n="content:share-objective-modal/share-by-url-label") !Share this link:
+        input.share-by-url-text-input.clj-share-by-url-text-input(type="text", value="!url-for-objective")

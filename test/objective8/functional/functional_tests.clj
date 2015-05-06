@@ -104,19 +104,21 @@
                  (wd/input-text 
                    "Functional test description with lots of hipster-ipsum:
                    Master cleanse squid nulla, ugh kitsch biodiesel cronut food truck. Nostrud Schlitz tempor farm-to-table skateboard, wayfarers adipisicing Pitchfork sunt Neutra brunch four dollar toast forage placeat. Fugiat lo-fi sed polaroid Portland et tofu Austin. Blue Bottle labore forage, in bitters incididunt ugh delectus seitan flannel. Mixtape migas cardigan, quis American Apparel culpa aliquip cupidatat et nisi scenester. Labore sriracha Etsy flannel XOXO. Normcore selvage do vero keytar synth.")
-                 wd/submit) 
+                 wd/submit)
 
              (wait-for-title "Functional test headline | Objective[8]")
              (swap! journey-state assoc :objective-url (wd/current-url))
              (screenshot "objective_page")
 
              {:page-title (wd/title)
+              :modal-text (wd/text ".func--share-objective-modal-text")
               :writer-name (wd/text ".func--writer-name")}
 
              (catch Exception e
                (screenshot "ERROR-Can-add-an-objective")
                (throw e)))
         =>  (contains {:page-title "Functional test headline | Objective[8]"
+                       :modal-text "Functional test headline"
                        :writer-name "funcTestUser123"}))
 
   (fact "Can star an objective"
@@ -170,14 +172,17 @@
 
              (-> ".func--question-textarea"
                  (wd/input-text "Functional test question") 
-                 (wd/submit)) 
+                 (wd/submit))
 
              (wait-for-element ".func--add-question")
              (screenshot "objective_page_with_question")
 
+             {:modal-text (wd/text ".func--share-question-modal-text")}
+             
              (catch Exception e
                (screenshot "Error-Can-add-questions")
-               (throw e))))
+               (throw e)))
+        => {:modal-text "Functional test question"})
 
 (fact "Objective owner can promote and demote questions"
       (try (wd/to (:objective-url @journey-state))

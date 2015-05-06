@@ -122,8 +122,8 @@
       (cond (= status ::http-api/success)
             (let [objective-url (str utils/host-url "/objectives/" (:_id stored-objective))]
               (-> (response/redirect objective-url)
-                  (assoc :flash {:type :flash-message
-                                 :message :objective-view/created-message}
+                  (assoc :flash {:type :share-objective
+                                 :created-objective stored-objective}
                          :session session)
                   (permissions/add-authorisation-role (permissions/writer-for (:_id stored-objective)))
                   (permissions/add-authorisation-role (permissions/writer-inviter-for (:_id stored-objective)))))
@@ -278,8 +278,7 @@
                    request
                    :objective (format-objective objective)
                    :doc {:title (str (t' :question-create/doc-title) " to "(:title objective) " | Objective[8]")
-                         :description (str (t' :question-create/doc-description))}
-                   )
+                         :description (str (t' :question-create/doc-description))})
            :headers {"Content-Type" "text/html"}}
 
           (= objective-status ::http-api/not-found) (error-404-response request)

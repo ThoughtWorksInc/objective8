@@ -50,16 +50,15 @@
                                                                               :result {:_id OBJECTIVE_ID}})
                (let [params {:title "my objective title"
                              :description "my objective description"}
-                     response (:response
-                                (-> user-session
-                                    (helpers/with-sign-in "http://localhost:8080/objectives/create")
-                                    (p/request "http://localhost:8080/objectives"
-                                               :request-method :post
-                                               :params params)))]
-                 (:flash response) => (contains {:type :flash-message :message :objective-view/created-message})
-                 (-> response
-                     :headers
-                     (get "Location")) => (contains (str "/objectives/" OBJECTIVE_ID)))))
+                     form-post (-> user-session
+                                   (helpers/with-sign-in "http://localhost:8080/objectives/create")
+                                   (p/request "http://localhost:8080/objectives"
+                                              :request-method :post
+                                              :params params))]
+                 (:flash (:response form-post)) => (contains {:type :share-objective
+                                                              :created-objective anything})
+                 (-> form-post :response :status) => 302
+                 (-> form-post :response :headers) => (helpers/location-contains (str "/objectives/" OBJECTIVE_ID)))))
 
        (fact "Any user can view an objective"
              (against-background

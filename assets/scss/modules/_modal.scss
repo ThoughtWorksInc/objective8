@@ -102,3 +102,15 @@
 .modal-share-question-text {
   font-size: 1.6em;
 }
+
+.modal-share-objective-text {
+  font-size: 2em;
+  font-style: italic;
+}
+
+.share-objective-modal-heading {
+  margin-bottom: 0.1em;
+  &:after {
+    content: ":";
+  }
+}

@@ -287,8 +287,11 @@ sharing,google-plus-link-title,Plus one this page on Google
 sharing,twitter-link-title,Share this page on Twitter
 sharing,linked-in-link-title,Share this page on LinkedIn
 share-question-modal,heading,Question created
-share-question-modal,helper-text,Share your question to increase the number of answers.
+share-question-modal,helper-text,Share your question to increase the number of answers
 share-question-modal,share-by-url-label,Share this link:
+share-objective-modal,heading,Objective created
+share-objective-modal,helper-text,Build community engagement around your objective by sharing it
+share-objective-modal,share-by-url-label,Share this link:
 invitation-modal,guidance-text-line-1,Your writer's invitation
 invitation-modal,guidance-text-line-2,To complete your invitation
 invitation-modal,guidance-text-line-3,Alternatively send the writer this link:

@@ -56,6 +56,9 @@
 (def share-question-modal-snippet (html/select (html/html-resource "templates/jade/modals/share-question-modal.html")
                                                [:.clj-share-question-modal]))
 
+(def share-objective-modal-snippet (html/select (html/html-resource "templates/jade/modals/share-objective-modal.html")
+                                                [:.clj-share-objective-modal]))
+
 (def share-endpoints
   {:reddit (url/url "http://reddit.com/submit")
    :facebook (url/url "http://www.facebook.com/sharer.php")
@@ -63,27 +66,40 @@
    :twitter (url/url "https://twitter.com/share")
    :google-plus (url/url "https://plusone.google.com/_/+1/confirm")})
 
+(defn configure-social-network-links [url-to-share sharing-text]
+  (let [reddit-url (str (assoc (:reddit share-endpoints) :query {:url url-to-share :title sharing-text}))
+        facebook-url (str (assoc (:facebook share-endpoints) :query {:u url-to-share :t sharing-text}))
+        twitter-url (str (assoc (:twitter share-endpoints) :query {:url url-to-share :text sharing-text}))
+        linked-in-url (str (assoc (:linked-in share-endpoints) :query {:mini "true" :url url-to-share}))
+        google-plus-url (str (assoc (:google-plus share-endpoints) :query {:hl "en" :url url-to-share}))]
+    (html/transformation
+     [:.clj-share-on-reddit] (html/set-attr :href reddit-url)
+     [:.clj-share-on-facebook] (html/set-attr :href facebook-url)
+     [:.clj-share-on-linked-in] (html/set-attr :href linked-in-url)
+     [:.clj-share-on-twitter] (html/set-attr :href twitter-url)
+     [:.clj-share-on-google-plus] (html/set-attr :href google-plus-url)
+     [:.clj-share-by-url-text-input] (html/set-attr :value url-to-share))))
+
 (defn share-question-modal [{:keys [doc] :as context}]
   (when-let [question (get-in doc [:flash :created-question])]
     (let [question-url (utils/path-for :fe/question
                                        :id (:objective-id question)
                                        :q-id (:_id question))
           question-text (:question question)
-          sharing-text question-text
-          reddit-url (str (assoc (:reddit share-endpoints) :query {:url question-url :title sharing-text}))
-          facebook-url (str (assoc (:facebook share-endpoints) :query {:u question-url :t sharing-text}))
-          twitter-url (str (assoc (:twitter share-endpoints) :query {:url question-url :text sharing-text}))
-          linked-in-url (str (assoc (:linked-in share-endpoints) :query {:mini "true" :url question-url}))
-          google-plus-url (str (assoc (:google-plus share-endpoints) :query {:hl "en" :url question-url}))]
-
+          sharing-text question-text]
       (html/content (html/at share-question-modal-snippet
-                           [:.clj-question-text] (html/content question-text)
-                           [:.clj-share-on-reddit] (html/set-attr :href reddit-url)
-                           [:.clj-share-on-facebook] (html/set-attr :href facebook-url)
-                           [:.clj-share-on-linked-in] (html/set-attr :href linked-in-url)
-                           [:.clj-share-on-twitter] (html/set-attr :href twitter-url)
-                           [:.clj-share-on-google-plus] (html/set-attr :href google-plus-url)
-                           [:.clj-share-by-url-text-input] (html/set-attr :value question-url))))))
+                             [:.clj-question-text] (html/content question-text)
+                             [:.clj-share-question-modal] (configure-social-network-links question-url sharing-text))))))
+
+(defn share-objective-modal [{:keys [doc] :as context}]
+  (when-let [objective (get-in doc [:flash :created-objective])]
+    (let [objective-url (utils/path-for :fe/objective
+                                        :id (:_id objective))
+          objective-text (:title objective)
+          sharing-text objective-text]
+      (html/content (html/at share-objective-modal-snippet
+                             [:.clj-objective-text] (html/content objective-text)
+                             [:.clj-share-objective-modal] (configure-social-network-links objective-url sharing-text))))))
 
 ;; DRAFTING HAS STARTED MESSAGE
 
@@ -195,6 +211,7 @@
                                       (case (:type flash)
                                         :invitation (writer-invitation-modal context)
                                         :share-question (share-question-modal context)
+                                        :share-objective (share-objective-modal context)
                                         (when (invitation-rsvp-for-objective? objective invitation-rsvp)
                                           (invitation-rsvp-modal context)))
 
