@@ -78,9 +78,9 @@
                                    (html/set-attr :href
                                                   (utils/local-path-for :fe/import-draft-get
                                                                         :id objective-id)))
-             [:.clj-draft-version-writer-author] (html/content (:username draft))
+             [:.clj-draft-version-writer-author] (when draft (html/content (:username draft)))
 
-             [:.clj-draft-version-time] (html/content (utils/iso-time-string->pretty-time (:_created_at draft)))
+             [:.clj-draft-version-time] (when draft (html/content (utils/iso-time-string->pretty-time (:_created_at draft)))) 
 
              [:.clj-draft-preview-document] (when-let [draft-content (:draft-content data)] 
                                               (html/content (add-section-links draft-content context)))
