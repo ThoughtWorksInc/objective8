@@ -137,6 +137,26 @@
                  body => (helpers/json-contains {:meta (contains {:stars-count 1})})
                  body =not=> (helpers/json-contains {:global-id anything}))))
 
+(facts "About retrieving a removed objective"
+       (fact "GET /api/v1/objectives/:id?include-removed=true returns the removed objective"
+             (let [{username :username :as user} (sh/store-a-user) 
+                   stored-objective (sh/store-an-admin-removed-objective {:user user}) 
+                   objective-uri (str "/objectives/" (:_id stored-objective))
+                   {body :body} (-> (p/request app (str (utils/path-for :api/get-objective
+                                                                        :id (:_id stored-objective)) 
+                                                        "?include-removed=true"))
+                                    :response)]
+               body => (helpers/json-contains (dissoc stored-objective :global-id :meta))))
+
+       (fact "GET /api/v1/objectives/:id returns a 404"
+             (let [{username :username :as user} (sh/store-a-user) 
+                   stored-objective (sh/store-an-admin-removed-objective {:user user}) 
+                   objective-uri (str "/objectives/" (:_id stored-objective))
+                   {status :status} (-> (p/request app (utils/path-for :api/get-objective
+                                                                       :id (:_id stored-objective)))
+                                        :response)]
+               status => 404)))
+
   (facts "about posting objectives"
          (against-background
            (m/valid-credentials? anything anything anything) => true)

@@ -22,16 +22,25 @@
           (utils/update-in-self [:uri] uri-for-objective)
           (dissoc :global-id)))
 
+(defn include-removed-objective? [retrieved-objectives include?]
+  (if include?
+    retrieved-objectives
+    (remove :removed-by-admin retrieved-objectives)))
+
 (defn get-objective-as-signed-in-user [objective-id user-id]
   (some-> (storage/pg-get-objective-as-signed-in-user objective-id user-id)
           (dissoc :global-id)
           (utils/update-in-self [:uri] uri-for-objective)))
 
-(defn get-objective [objective-id]
-  (some-> (storage/pg-get-objective objective-id)
-          first
-          (dissoc :global-id)
-          (utils/update-in-self [:uri] uri-for-objective)))
+(defn get-objective 
+  ([objective-id]
+   (get-objective objective-id false)) 
+  ([objective-id include-removed?]
+   (some-> (storage/pg-get-objective objective-id) 
+           (include-removed-objective? include-removed?)
+           first
+           (dissoc :global-id)
+           (utils/update-in-self [:uri] uri-for-objective))))
 
 (defn retrieve-objectives 
   ([]

@@ -219,6 +219,7 @@ ON stars.objective_id = objectives._id
 JOIN objective8.users AS users
 ON objectives.created_by_id = users._id
 WHERE stars.active=true AND stars.created_by_id=?
+AND objectives.removed_by_admin=false
 ORDER BY objectives._created_at DESC
 LIMIT 50" [user-id]] :results)))))
 
@@ -251,6 +252,7 @@ LEFT JOIN (SELECT active, objective_id
 ON stars.objective_id = objectives._id
 JOIN objective8.users AS users
 ON objectives.created_by_id = users._id
+WHERE objectives.removed_by_admin=false 
 ORDER BY objectives._created_at DESC
 LIMIT 50" [user-id]] :results)))))
 
@@ -274,7 +276,7 @@ LEFT JOIN (SELECT comments.comment_on_id, COUNT(comments.*) AS number
 ON comments_meta.comment_on_id = objectives.global_id
 JOIN objective8.users AS users
 ON objectives.created_by_id = users._id
-WHERE objectives._id=?" [user-id objective-id]] :results)))))
+WHERE objectives._id=? AND objectives.removed_by_admin=false" [user-id objective-id]] :results)))))
 
 (defn pg-retrieve-question-by-query-map [query-map]
   (when-let [sanitised-query (utils/select-all-or-nothing query-map [:_id :objective-id :entity])]

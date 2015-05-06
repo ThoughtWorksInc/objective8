@@ -181,13 +181,14 @@
 (defn get-objective [{:keys [route-params params] :as request}]
   (let [id (-> (:id route-params)
                Integer/parseInt)
-        signed-in-id (:signed-in-id params)]
+        signed-in-id (:signed-in-id params)
+        include-removed? (:include-removed params)]
     (if-let [objective (cond
                          signed-in-id
                          (objectives/get-objective-as-signed-in-user id (Integer/parseInt signed-in-id))
 
                          :else
-                         (objectives/get-objective id))]
+                         (objectives/get-objective id include-removed?))]
       (-> objective
           (update-in [:end-date] utils/date-time->iso-time-string)
           response/response
