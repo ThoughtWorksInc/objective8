@@ -3,6 +3,8 @@ $draft_version_writer_avatar_size_beta: 60px;
 
 .draft-version-writer {
   width: 70%;
+  margin-bottom: 1em;
+  @include cf
 }
 
 .draft-version-writer-photo {
