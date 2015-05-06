@@ -175,16 +175,22 @@
 
       :else {:status 500})))
 
+(def dashboard-questions-answer-view-query-params
+  {:up-votes {:sorted-by "up-votes" :filter-type "none"}
+   :down-votes {:sorted-by "down-votes" :filter-type "none"}
+   :paperclip {:sorted-by "up-votes" :filter-type "has-writer-note"}})
+
 (defn dashboard-questions [{:keys [route-params params] :as request}]
   (let [objective-id (Integer/parseInt (:id route-params))
         {objective-status :status objective :result} (http-api/get-objective objective-id)
         {questions-status :status questions :result} (http-api/retrieve-questions objective-id {:sorted-by "answers"})
+
         selected-question-uri (get params :selected (:uri (first questions)))
-        answer-query-params {:sorted-by (get params :sorted-by "up-votes")
-                             :filter-type (get params :filter-type "none")}
-        answer-view-type (if (= "has-writer-note" (:filter-type answer-query-params))
-                           "paperclip"
-                           (:sorted-by answer-query-params))
+        answer-view-type (keyword (get params :answer-view "up-votes"))
+        answer-query-params (get dashboard-questions-answer-view-query-params
+                                 answer-view-type
+                                 {:sorted-by "up-votes" :filter-type "none"})
+
         {answers-status :status answers :result} (if (empty? questions)
                                                    {:status ::http-api/success :result []}
                                                    (http-api/retrieve-answers selected-question-uri answer-query-params))]

@@ -101,7 +101,7 @@
        (fact "can get answers sorted by down votes"
              (-> user-session
                  ih/sign-in-as-existing-user
-                 (p/request (str (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID) "?sorted-by=down-votes"))
+                 (p/request (str (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID) "?answer-view=down-votes"))
                  :response
                  :status) => 200
              (provided
@@ -113,7 +113,7 @@
        (fact "can filter answers by writer note presence"
              (-> user-session
                  ih/sign-in-as-existing-user
-                 (p/request (str (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID) "?filter-type=has-writer-note"))
+                 (p/request (str (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID) "?answer-view=paperclip"))
                  :response
                  :status) => 200
              (provided

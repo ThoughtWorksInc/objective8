@@ -21,7 +21,7 @@
 
 (defn dashboard-questions-no-answers [{:keys [translations data] :as context}]
   (let [translation-key (case (:answer-view-type data)
-                          "paperclip" :writer-dashboard/no-answers-with-writer-notes-message
+                          :paperclip :writer-dashboard/no-answers-with-writer-notes-message
                           :writer-dashboard/no-answers-message)]
     (html/at dashboard-questions-no-answers-snippet
              [:.clj-dashboard-no-answer-item] (html/content (translations translation-key)))))
@@ -112,31 +112,36 @@
                                       [:.clj-writer-dashboard-navigation-comments-link] (html/set-attr :href (utils/path-for :fe/dashboard-comments :id (:_id objective)))
                                       [:.clj-dashboard-navigation-list] (html/content (navigation-list context))
                                       [:.clj-dashboard-answer-list] (html/substitute (answer-list context))
-                                      [:.clj-dashboard-filter-paper-clip] (html/set-attr :href
-                                                                                         (str (assoc dashboard-url
-                                                                                                     :query {:selected selected-question-uri
-                                                                                                             :filter-type "has-writer-note"})))
-                                      [:.clj-dashboard-filter-paper-clip] (if (= answer-view-type "paperclip")
+
+                                      [:.clj-dashboard-filter-paper-clip]
+                                      (html/set-attr :href
+                                                     (str (assoc dashboard-url
+                                                                 :query {:selected selected-question-uri
+                                                                         :answer-view "paperclip"})))
+                                      
+                                      [:.clj-dashboard-filter-up-votes]
+                                      (html/set-attr :href
+                                                     (str (assoc dashboard-url
+                                                                 :query {:selected selected-question-uri
+                                                                         :answer-view "up-votes"})))
+
+                                      [:.clj-dashboard-filter-down-votes]
+                                      (html/set-attr :href
+                                                     (str (assoc dashboard-url
+                                                                 :query {:selected selected-question-uri
+                                                                         :answer-view "down-votes"})))
+
+                                      [:.clj-dashboard-filter-paper-clip] (if (= answer-view-type :paperclip)
                                                                             (html/add-class "on")
                                                                             identity)
 
-                                      [:.clj-dashboard-filter-up-votes] (html/set-attr :href
-                                                                                       (str (assoc dashboard-url
-                                                                                                   :query {:selected selected-question-uri
-                                                                                                           :sorted-by "up-votes"})))
 
-                                      [:.clj-dashboard-filter-up-votes] (if (= answer-view-type "up-votes")
+                                      [:.clj-dashboard-filter-up-votes] (if (= answer-view-type :up-votes)
                                                                           (html/add-class "on")
                                                                           identity)
 
-                                      [:.clj-dashboard-filter-down-votes] (html/set-attr :href
-                                                                                         (str (assoc dashboard-url
-                                                                                                     :query {:selected selected-question-uri
-                                                                                                             :sorted-by "down-votes"})))
-
-                                      [:.clj-dashboard-filter-down-votes] (if (= answer-view-type "down-votes")
+                                      [:.clj-dashboard-filter-down-votes] (if (= answer-view-type :down-votes)
                                                                             (html/add-class "on")
                                                                             identity)
 
-                                      [:.clj-dashboard-content-stats] nil
-                                      )))))))
+                                      [:.clj-dashboard-content-stats] nil)))))))
