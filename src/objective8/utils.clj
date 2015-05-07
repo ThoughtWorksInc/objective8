@@ -106,8 +106,8 @@
       ((regex-checker #"/objectives/\d+/writers") target)
       ((regex-checker #"/objectives/\d+/writers/invitation") target)
       ((regex-checker #"/objectives/\d+/writer-invitations/\d+") target)
-      ((regex-checker #"/objectives/\d+/dashboard/questions(?:\?(?:(?:(?:[a-zA-Z-]*=[a-zA-Z0-9-|%2F]*)&?)+)?)?(?:#[a-zA-Z-]*)?") target)
-      ((regex-checker #"/objectives/\d+/dashboard/comments(?:\?(?:(?:(?:[a-zA-Z-]*=[a-zA-Z0-9-|%2F]*)&?)+)?)?(?:#[a-zA-Z-]*)?") target)))
+      ((regex-checker #"/objectives/\d+/dashboard/questions(?:\?(?:(?:(?:[a-zA-Z-]*=[a-zA-Z0-9-|%2F]*)&?)+)?)?") target)
+      ((regex-checker #"/objectives/\d+/dashboard/comments(?:\?(?:(?:(?:[a-zA-Z-]*=[a-zA-Z0-9-|%2F]*)&?)+)?)?") target)))
 
 (defn safen-fragment [fragment]
   (or ((regex-checker #"comments") fragment)
