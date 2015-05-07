@@ -6,6 +6,7 @@
             [org.httpkit.client :as http]
             [objective8.http-api :as http-api]
             [objective8.front-end-helpers :as helpers]
+            [objective8.front-end-requests :as fr]
             [objective8.utils :as utils]
             [objective8.permissions :as permissions]
             [objective8.draft-diffs :as diffs]
@@ -121,21 +122,24 @@
    :body (views/create-objective "create-objective" request)})
 
 (defn create-objective-form-post [{:keys [t' locale session] :as request}]
-  (if-let [objective (helpers/request->objective request (get (friend/current-authentication) :identity))]
-    (let [{status :status stored-objective :result} (http-api/create-objective objective)]
-      (cond (= status ::http-api/success)
-            (let [objective-url (str utils/host-url "/objectives/" (:_id stored-objective))]
-              (-> (response/redirect objective-url)
-                  (assoc :flash {:type :share-objective
-                                 :created-objective stored-objective}
-                         :session session)
-                  (permissions/add-authorisation-role (permissions/writer-for (:_id stored-objective)))
-                  (permissions/add-authorisation-role (permissions/writer-inviter-for (:_id stored-objective)))))
+  (let [objective-data (fr/request->objective-data request (get (friend/current-authentication) :identity) (utils/current-time))]
+    (case (:status objective-data)
 
-            (= status ::http-api/invalid-input) {:status 400}
+      ::fr/valid (let [{status :status stored-objective :result} (http-api/create-objective (:data objective-data))]
+                   (cond (= status ::http-api/success)
+                         (let [objective-url (str utils/host-url "/objectives/" (:_id stored-objective))]
+                           (-> (response/redirect objective-url)
+                               (assoc :flash {:type :share-objective
+                                              :created-objective stored-objective}
+                                      :session session)
+                               (permissions/add-authorisation-role (permissions/writer-for (:_id stored-objective)))
+                               (permissions/add-authorisation-role (permissions/writer-inviter-for (:_id stored-objective)))))
+                         (= status ::http-api/invalid-input) {:status 400}
+                         :else {:status 502}))
 
-            :else {:status 502}))
-    {:status 400}))
+      ::fr/invalid (-> (response/redirect (utils/path-for :fe/create-objective-form))
+                       (assoc :flash {:validation {:report (:report objective-data)
+                                                   :data (:data objective-data)}})))))
 
 (defn remove-invitation-from-session [response]
   (update-in response [:session] dissoc :invitation))

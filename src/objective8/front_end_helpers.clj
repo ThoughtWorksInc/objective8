@@ -26,15 +26,6 @@
           (utils/select-all-or-nothing [:comment-on-uri :comment])
           (assoc :created-by-id user-id)))
 
-(defn request->objective
-  "Returns a map of an objective if all the parts are in the
-  request params. Otherwise returns nil"
-  [{:keys [params] :as request} user-id]
-    (let [iso-time (utils/date-time->date-time-plus-30-days (utils/current-time))]
-      (some-> params
-              (utils/select-all-or-nothing [:title :description])
-              (assoc :end-date iso-time :created-by-id user-id))))
-
 (defn request->answer-info
   "Returns a map of an answer if all the parts are in the request. Otherwise returns nil"
   [{:keys [params route-params] :as request} user-id]

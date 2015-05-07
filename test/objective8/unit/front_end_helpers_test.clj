@@ -14,15 +14,6 @@
 
 (def date-time (utils/string->date-time "2015-01-03"))
 
-(def test-objective {:title "My Objective"
-                     :description "I like cake"
-                     :end-date date-time})
-
-(fact "creates an objective from a request"
-      (let [objective (request->objective (requestify test-objective)
-                                          USER_ID)]
-        (:created-by-id objective) => 1
-        (:end-date objective) =not=> nil))
 
 (fact "extracts comment data from a request"
       (let [comment-data (request->comment-data {:params {:comment "the comment"
