@@ -164,7 +164,7 @@
 (def map->section
   (db-insertion-mapper "section"
                        nil
-                       [:section-label :draft-id :global-id]))
+                       [:section-label :objective-id :draft-id :global-id]))
 
 (def map->bearer-token
   (db-insertion-mapper "bearer-token"
@@ -385,7 +385,7 @@
   (korma/prepare map->section)
   (korma/transform (-> (constantly {:entity :section})
                        (with-columns
-                         [:draft-id :global-id :section-label :_created_at :_id]
+                         [:draft-id :objective-id :global-id :section-label :_created_at :_id]
                          {:_created_at sql-time->iso-time-string}))))
 
 (korma/defentity bearer-token

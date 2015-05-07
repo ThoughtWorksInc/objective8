@@ -19,7 +19,8 @@
                     :_id (Integer/parseInt (:objective-id route-params))}
 
         :draft {:entity :draft
-                :_id (Integer/parseInt (:draft-id route-params))}
+                :_id (Integer/parseInt (:draft-id route-params))
+                :objective-id (Integer/parseInt (:objective-id route-params))}
 
         :section {:entity :section
                   :draft-id (Integer/parseInt (:draft-id route-params))

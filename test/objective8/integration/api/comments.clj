@@ -139,3 +139,30 @@
                                                                  "&filter-type=has-writer-note")))]
                  body => (helpers/json-contains [(contains {:_id comment-with-note-id})])
                  body =not=> (helpers/json-contains [(contains {:_id comment-without-note-id})])))))
+
+(def section-label "1234abcd")
+(def draft-content [["h1" {:data-section-label section-label} "A Heading"] ["p" {:data-section-label "abcd1234"} "A paragraph"]])
+
+(facts "About posting comments on draft sections AKA 'annotations'"
+       (against-background
+        (m/valid-credentials? anything anything anything) => true)
+       (against-background 
+        [(before :contents (do (helpers/db-connection)
+                               (helpers/truncate-tables)))
+         (after :facts (helpers/truncate-tables))] 
+        (fact "Bugfix: multiple annotations can be posted on the same draft section"
+              (let [{user-id :_id :as user} (sh/store-a-user)
+                    {d-id :_id o-id :objective-id global-id :global-id :as draft} (sh/store-a-draft {:content draft-content}) 
+                    uri-for-draft-section (str "/objectives/" o-id "/drafts/" d-id "/sections/" section-label)
+                    comment-data {:comment-on-uri uri-for-draft-section
+                                  :comment "A comment"
+                                  :created-by-id user-id}
+                    {first-response :response} (p/request app (str "/api/v1/meta/comments")
+                                                    :request-method :post
+                                                    :content-type "application/json"
+                                                    :body (json/generate-string comment-data))
+                    {second-response :response} (p/request app (str "/api/v1/meta/comments")
+                                                    :request-method :post
+                                                    :content-type "application/json"
+                                                    :body (json/generate-string comment-data))] 
+                (:status second-response) => 201))))

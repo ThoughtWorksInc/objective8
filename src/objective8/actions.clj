@@ -92,11 +92,9 @@
     {:status ::entity-not-found}))
 
 (defn create-section-comment! [{:keys [objective-id draft-id section-label] :as section-data} comment-data]
-  (let [section-labels (drafts/get-section-labels-for-draft draft-id)]
+  (let [section-labels (drafts/get-section-labels-for-draft-uri (str "/objectives/" objective-id "/drafts/" draft-id))]
     (if (some #{section-label} section-labels)
-      (let [stored-section (-> (dissoc section-data :objective-id) 
-                               drafts/store-section!
-                               (assoc :objective-id objective-id)) 
+      (let [stored-section (drafts/store-section! section-data) 
             stored-comment (comments/store-comment-for! stored-section comment-data)]
         {:status ::success :result stored-comment}))))
 

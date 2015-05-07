@@ -281,17 +281,20 @@
 (def DRAFT_ID 2)
 (def section-map {:section-label SECTION_LABEL
                   :draft-id DRAFT_ID
+                  :objective-id OBJECTIVE_ID
                   :global-id GLOBAL_ID})
 
 (facts "About map->section"
        (fact "Column values are pulled out and converted"
              (map->section section-map) => {:global_id GLOBAL_ID
                                             :draft_id DRAFT_ID
+                                            :objective_id OBJECTIVE_ID
                                             :section_label SECTION_LABEL})
        
        (fact "throws exception if :global-id, :draft-id or :section-label are missing"
              (map->section (dissoc section-map :global-id)) => (throws Exception)
              (map->section (dissoc section-map :draft-id)) => (throws Exception)
+             (map->section (dissoc section-map :objective-id)) => (throws Exception)
              (map->section (dissoc section-map :section-label)) => (throws Exception)))
 
 ;;BEARER-TOKENS

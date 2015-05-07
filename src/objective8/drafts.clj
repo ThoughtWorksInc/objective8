@@ -69,6 +69,17 @@
           (utils/update-in-self [:uri] uri-for-draft)
           (assoc :previous-draft-id previous-draft-id :next-draft-id next-draft-id)))))
 
+(defn retrieve-draft-by-uri [draft-uri]
+  (when-let [draft (-> (storage/pg-retrieve (uris/uri->query draft-uri))
+                       :result
+                       first)]
+    (let [previous-draft-id (:_id (retrieve-previous-draft draft))
+          next-draft-id (:_id (retrieve-next-draft draft))]
+      (-> draft
+          (dissoc :_created_at_sql_time :global-id)
+          (utils/update-in-self [:uri] uri-for-draft)
+          (assoc :previous-draft-id previous-draft-id :next-draft-id next-draft-id)))))
+
 (defn retrieve-latest-draft [objective-id]
   (when-let [latest-draft (-> (storage/pg-retrieve {:entity :draft :objective-id objective-id}
                                                    {:sort {:field :_created_at :ordering :DESC}})
@@ -85,8 +96,8 @@
        (map #(dissoc % :created_at_sql_time :global-id))
        (map #(utils/update-in-self % [:uri] uri-for-draft))))
 
-(defn get-section-labels-for-draft [draft-id]
-  (let [{:keys [content] :as draft} (retrieve-draft draft-id)]
+(defn get-section-labels-for-draft-uri [draft-uri]
+  (let [{:keys [content] :as draft} (retrieve-draft-by-uri draft-uri)]
     (map get-section-label content)))
 
 (defn has-section-label? [section-label section]

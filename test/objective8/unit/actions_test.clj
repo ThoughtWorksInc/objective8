@@ -22,10 +22,11 @@
 (def OBJECTIVE_ID 1)
 (def QUESTION_ID 2)
 (def ANSWER_ID 3)
-(def ANSWER_URI (str "/objective/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers/" ANSWER_ID))
+(def ANSWER_URI (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers/" ANSWER_ID))
 (def INVITATION_ID 7)
 (def UU_ID "875678950430596859403-uuid")
 (def DRAFT_ID 8)
+(def DRAFT_URI (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID))
 (def SECTION_LABEL "a84b23ca")
 (def an-answer {:global-id GLOBAL_ID})
 (def vote-data {:vote-on-uri :entity-uri
@@ -150,8 +151,8 @@
              (actions/create-comment! section-comment-data) => {:status ::actions/success :result :the-stored-comment}
              (provided
                (storage/pg-retrieve-entity-by-uri section-uri :with-global-id) => nil 
-               (drafts/get-section-labels-for-draft DRAFT_ID) => [SECTION_LABEL]
-               (drafts/store-section! {:entity :section :draft-id DRAFT_ID 
+               (drafts/get-section-labels-for-draft-uri DRAFT_URI) => [SECTION_LABEL]
+               (drafts/store-section! {:entity :section :draft-id DRAFT_ID :objective-id OBJECTIVE_ID
                                        :section-label SECTION_LABEL}) => a-section
                (comments/store-comment-for! a-section section-comment-data) => :the-stored-comment))
 

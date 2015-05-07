@@ -88,7 +88,6 @@
          (after :facts (ih/truncate-tables))]
 
         (fact "a section can be stored and includes the global id to pass to create-comment!"
-              (let [draft-id (:_id (sh/store-a-draft))]
-                (drafts/store-section! {:section-label "12abcdef"
-                                        :draft-id draft-id}) => (contains {:global-id anything})))))
-
+              (let [{:keys [_id objective-id]} (sh/store-a-draft)]
+                (drafts/store-section! {:section-label "12abcdef" 
+                                        :draft-id _id :objective-id objective-id}) => (contains {:global-id anything})))))

@@ -13,12 +13,14 @@
 
 (defn store-comment-for! [entity-to-comment-on
                           {:keys [comment-on-uri] :as comment-data}]
-  (when-let [{:keys [objective-id _id global-id]} entity-to-comment-on]
+  (when-let [{:keys [objective-id _id global-id entity]} entity-to-comment-on]
     (some-> comment-data
             (utils/select-all-or-nothing [:comment :created-by-id])
             (assoc :entity :comment
                    :comment-on-id global-id
-                   :objective-id (or objective-id _id))
+                   :objective-id (if (= entity :objective) 
+                                   _id
+                                   objective-id))
             (dissoc :comment-on-uri)
             storage/pg-store!
             (dissoc :global-id)
