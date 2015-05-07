@@ -333,7 +333,7 @@
       (cond
         (= status ::http-api/success)
         (let [answer-url (str utils/host-url "/objectives/" (:objective-id stored-answer)
-                              "/questions/" (:question-id stored-answer))]
+                              "/questions/" (:question-id stored-answer) "#answer-" (:_id stored-answer))]
           (assoc (response/redirect answer-url) :flash {:type :flash-message
                                                         :message :question-view/added-answer-message}))
 
