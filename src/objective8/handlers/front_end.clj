@@ -355,10 +355,11 @@
           :else {:status 502}))
 
       ::fr/invalid
-      (-> (response/redirect (utils/path-for :fe/question
-                                             :id (:id route-params)
-                                             :q-id (:q-id route-params)))
-          (assoc :flash {:validation (dissoc :status answer-data)})))))
+      (-> (response/redirect (str (utils/path-for :fe/question
+                                                  :id (:id route-params)
+                                                  :q-id (:q-id route-params))
+                                  "#add-an-answer"))
+          (assoc :flash {:validation (dissoc answer-data :status)})))))
 
 ;; WRITERS
 
