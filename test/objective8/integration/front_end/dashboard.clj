@@ -20,7 +20,9 @@
 (def NOTE_ID 42)
 (def COMMENT_ID 543)
 (def QUESTION_URI (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))
+(def QUESTION_QUERY_URI (str "%2Fobjectives%2F" OBJECTIVE_ID "%2Fquestions%2F" QUESTION_ID))
 (def COMMENT_URI (str "/comments/" COMMENT_ID))
+(def COMMENT_QUERY_URI (str "%2Fcomments%2F" COMMENT_ID))
 (def NO_ANSWER_MESSAGE "No answers were provided for this question.")
 (def NO_QUESTION_MESSAGE "No questions have been asked for this objective")
 
@@ -147,7 +149,7 @@
 (facts "notes"
        (binding [config/enable-csrf false]
          (fact "authorised writer can post note against question"
-               (let [params {:refer (str "/objectives/" OBJECTIVE_ID "/dashboard/questions")
+               (let [params {:refer (str "/objectives/" OBJECTIVE_ID "/dashboard/questions?selected=" QUESTION_QUERY_URI)
                              :note "Test note"
                              :note-on-uri QUESTION_URI}
                      {response :response} (-> user-session
@@ -156,7 +158,7 @@
                                                          :request-method :post 
                                                          :params params))]
                  {:headers (:headers response)
-                  :status (:status response)}) => (just {:headers (ih/location-contains (str "/objectives/" OBJECTIVE_ID "/dashboard/questions"))
+                  :status (:status response)}) => (just {:headers (ih/location-contains (str "/objectives/" OBJECTIVE_ID "/dashboard/questions?selected=" QUESTION_QUERY_URI))
                                                          :status 302}) 
 
                (provided
@@ -166,7 +168,7 @@
                                                                           :result []}))
 
          (fact "authorised writer can post note against comment"
-               (let [params {:refer (str "/objectives/" OBJECTIVE_ID "/dashboard/comments")
+               (let [params {:refer (str "/objectives/" OBJECTIVE_ID "/dashboard/comments?selected=" COMMENT_QUERY_URI)
                              :note "Test note"
                              :note-on-uri COMMENT_URI}
                      {response :response} (-> user-session
@@ -175,7 +177,7 @@
                                                          :request-method :post 
                                                          :params params))]
                  {:headers (:headers response)
-                  :status (:status response)}) => (just {:headers (ih/location-contains (str "/objectives/" OBJECTIVE_ID "/dashboard/comments"))
+                  :status (:status response)}) => (just {:headers (ih/location-contains (str "/objectives/" OBJECTIVE_ID "/dashboard/comments?selected=" COMMENT_QUERY_URI))
                                                          :status 302}) 
 
                (provided

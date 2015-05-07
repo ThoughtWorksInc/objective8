@@ -121,6 +121,9 @@
         (str safe-route (when fragment
                           (str "#" (safen-fragment fragment))))))))
 
+(defn referer-url [{:keys [uri query-string] :as ring-request}]
+  (str uri (when query-string
+             (str "?" query-string))))
 
 (defn anti-forgery-hook 
   "Hook enables CSRF when config variable set. Can be disabled for tests"

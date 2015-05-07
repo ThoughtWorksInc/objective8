@@ -43,6 +43,20 @@
              (sanitise-hiccup SOME_INVALID_HICCUP) 
              => [["p" nil ")"] ["p" nil "("]]))
 
+(def URI "/objectives/765/dashboard/questions")
+(def URI_WITH_QUERY "/objectives/765/dashboard/questions?answer-view=down-votes&selected=%2Fobjectives%2F765%2Fquestions%2F177")
+(def QUERY "answer-view=down-votes&selected=%2Fobjectives%2F765%2Fquestions%2F177")
+
+(def RING_REQUEST {:uri URI :query-string nil})
+(def RING_REQUEST_WITH_QUERY {:uri URI :query-string QUERY})
+
 (facts "about sanitising referrals"
        (fact "when a referral route is not safe, safen-url returns nil"
-             (safen-url "/unsafe-route") => nil))
+             (safen-url "/unsafe-route") => nil)
+
+       (fact "when there is a query string referer-url returns the query string appended to the uri"
+             (referer-url RING_REQUEST_WITH_QUERY) => URI_WITH_QUERY)
+
+       (fact "when there is no query string referer-url returns just the uri"
+            (referer-url RING_REQUEST) => URI))
+
