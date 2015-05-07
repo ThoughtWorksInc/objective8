@@ -9,37 +9,41 @@ block content
       h1.index-welcome(data-l8n="content:index/index-welcome") !Collaborative policy making for democratic organisations.
       p.index-intro(data-l8n="content:index/index-intro") !Gather community opinion, generate ideas, share, discuss, vote and collaborate with experts to draft new policy.
     .grid-container
-      .grid-column
-        .info-box-icon
-          .icon-idea
-        .info-box-text
-          span(data-l8n="content:index/create-objective-begin") !An
-          =" "
-          span.info-box-emphasis(data-l8n="content:index/create-objective-keyword") !objective
-          =" "
-          span(data-l8n="content:index/create-objective-end") !is an idea to describe the change you want to achieve.
-      .grid-column
+      .grid-column.index-link
+        a(href="/objectives")
+          .info-box-icon
+            .icon-idea
+          .info-box-text
+            span(data-l8n="content:index/create-objective-begin") !An
+            =" "
+            span.info-box-emphasis(data-l8n="content:index/create-objective-keyword") !objective
+            =" "
+            span(data-l8n="content:index/create-objective-end") !is an idea to describe the change you want to achieve.
+      .grid-column.index-link
+        a(href="/objectives")
           .info-box-icon
             .icon-users
           .info-box-text(data-l8n="content:index/collaborate-info")
             | !Collaborate by asking and answering questions
-      .grid-column
-        .info-box-icon
-          .icon-comments
-        .info-box-text
-          span(data-l8n="content:index/draft-info-begin") !Review the writers
-          =" "
-          span.info-box-emphasis(data-l8n="content:index/draft-info-keyword") !drafts
-          =" "
-          span(data-l8n="content:index/draft-info-end") !in an open and transparent way.
-      .grid-column
-        .info-box-icon
-          .icon-policy
-        .info-box-text
-          span(data-l8n="content:index/draft-finished") !Policy
-          = " "
-          span(data-l8n="content:index/draft-finished-info") !is made!
+      .grid-column.index-link
+        a(href="/objectives")
+          .info-box-icon
+            .icon-comments
+          .info-box-text
+            span(data-l8n="content:index/draft-info-begin") !Review the writers
+            =" "
+            span.info-box-emphasis(data-l8n="content:index/draft-info-keyword") !drafts
+            =" "
+            span(data-l8n="content:index/draft-info-end") !in an open and transparent way.
+      .grid-column.index-link
+        a(href="/objectives")
+          .info-box-icon
+            .icon-policy
+          .info-box-text
+            span(data-l8n="content:index/draft-finished") !Policy
+            = " "
+            span(data-l8n="content:index/draft-finished-info") !is made!
 
   .index-actions
-    a.button.objectives-link(href="/objectives", data-l8n="content:index/objectives") !Objectives
-    a.index-learn-more(href="/learn-more", data-l8n="content:index/learn-more") !Learn more
+    a.button.objectives-link(href="/objectives", data-l8n="content:index/objectives") !View Objectives
+    a.button.index-learn-more(href="/learn-more", data-l8n="content:index/learn-more") !Learn more
