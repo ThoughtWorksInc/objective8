@@ -2,6 +2,9 @@ $draft_icon_size_alpha: 40px;
 $draft_icon_size_beta: 60px;
 
 
+.draft-list-title {
+  @include word_wrap;
+}
 
 .draft-item-list {
   list-style: none;

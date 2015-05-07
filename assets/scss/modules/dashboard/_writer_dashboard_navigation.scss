@@ -42,6 +42,7 @@
 }
 
 .writer-dashboard-navigation-item {
+  @include word_wrap;
   border-bottom: 1px solid $grey-4;
   &.on {
     background: $grey-4;

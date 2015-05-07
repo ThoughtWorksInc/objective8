@@ -46,6 +46,7 @@
   font-size: em(32);
   letter-spacing: -0.025em;
   text-align: center;
+  @include word_wrap;
   @include mq(640) {
     text-align: left;
   }
@@ -83,6 +84,7 @@
     margin-bottom: 0;
   }
 }
+
 .writer-dashboard-content-container {
   @include mq(640) {
     float: right;

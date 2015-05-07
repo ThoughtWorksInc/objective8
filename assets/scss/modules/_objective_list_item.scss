@@ -67,6 +67,7 @@
   font-size: 1.3em;
   line-height: 1.2;
   color: $link-colour;
+  @include word_wrap;
 }
 
 .objective-list-item-draft-begins {

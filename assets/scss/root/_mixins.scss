@@ -97,3 +97,8 @@
     @content;
   }
 }
+
+// Word Wrap
+@mixin word_wrap {
+  word-wrap: break-word;
+}

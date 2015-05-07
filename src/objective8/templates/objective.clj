@@ -229,7 +229,7 @@
                                                           (drafting-begins objective))
                                       [:.clj-drafting-started-wrapper] (when (tf/in-drafting? objective)
                                                                          (html/substitute (drafting-message context)))
-                                      [:.clj-replace-with-objective-detail] (html/substitute (tf/text->p-nodes (:description objective)))
+                                      [:.clj-objective-detail] (html/content (tf/text->p-nodes (:description objective)))
 
                                       [:.clj-writer-item-list] (html/content (pf/writer-list context))
                                       [:.clj-invite-writer-link] (when (and 

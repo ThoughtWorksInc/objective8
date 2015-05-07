@@ -16,10 +16,16 @@
   line-height: 1.2;
   font-family: $sans-serif;
   letter-spacing: -0.025em;
+  @include word_wrap;
   @include mq(768) {
     font-size: 2.6em;
   }
 }
+
+.objective-detail {
+  @include word_wrap;
+}
+
 .objective-title-label {
   display: block;
   margin-bottom: 0.2em;

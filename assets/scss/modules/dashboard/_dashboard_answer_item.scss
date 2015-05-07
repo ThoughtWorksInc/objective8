@@ -12,6 +12,7 @@ Answer item
 .dashboard-answer-item-text {
   font-size: 1.1em;
   margin-bottom: 0.5em;
+  @include word_wrap;
 }
 .dashboard-answer-item-stats {
   font-size: 1.3em;

@@ -27,6 +27,7 @@ Dashboard comment item
 }
 
 .dashboard-comment-text {
+  @include word_wrap;
   @extend %list-item-text;
   color: $default_text_color;
   font-size: 1.1em;

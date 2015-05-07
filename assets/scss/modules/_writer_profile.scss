@@ -51,7 +51,7 @@ $writer_profile_avatar_size_beta: 200px;
 }
 
 .writer-profile-biog {
-
+  @include word_wrap;
 }
 .writer-profile-links {
 

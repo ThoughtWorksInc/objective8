@@ -30,6 +30,7 @@
   @extend %list-item-date;
 }
 .comment-text {
+  @include word_wrap;
   @extend %list-item-text;
 }
 

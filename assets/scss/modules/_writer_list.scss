@@ -73,4 +73,5 @@ $writer_avatar_size_beta: 60px;
 .writer-item-descripton {
   color: $grey-1;
   font-style: italic;
+  @include word_wrap;
 }
