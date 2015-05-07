@@ -50,6 +50,14 @@
            [:.clj-to-add-answer-sign-in-link] 
            (html/set-attr :href (str "/sign-in?refer=" (:uri ring-request)))))
 
+(defn apply-validations [{:keys [doc] :as context} nodes]
+  (let [validation-data (get-in doc [:flash :validation])
+        validation-report (:report validation-data)
+        previous-inputs (:data validation-data)]
+    (html/at nodes
+             [:.clj-answer-length-error] (when (:answer validation-report) identity)
+             [:.clj-input-answer] (html/content (:answer previous-inputs)))))
+
 (defn question-page [{:keys [translations data user doc] :as context}]
   (let [question (:question data)
         answers (:answers data)
@@ -62,6 +70,7 @@
            (html/emit*
              (tf/translate context
                            (pf/add-google-analytics
+                             (apply-validations context
                              (html/at question-template
                                       [:title] (html/content (:title doc))
                                       [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
@@ -96,4 +105,4 @@
                                          (html/prepend (html/html-snippet (anti-forgery-field))))
                                         (html/substitute (sign-in-to-add-answer context)))
 
-                                      [:.l8n-guidance-heading] (tl8 :question-page/guidance-heading))))))))
+                                      [:.l8n-guidance-heading] (tl8 :question-page/guidance-heading)))))))))

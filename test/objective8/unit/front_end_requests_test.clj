@@ -5,6 +5,7 @@
 
 (def USER_ID 1)
 (def OBJECTIVE_ID 2)
+(def QUESTION_ID 3)
 
 (def test-objective {:title "My Objective"
                      :description "I like cake"})
@@ -48,3 +49,29 @@
                                          :objective-id OBJECTIVE_ID}
                (:status question-data) => ::objective8.front-end-requests/invalid
                (:report question-data) => {:question :length})))
+
+(fact "about transforming requests to answer-data"
+      (fact "extracts the relevant data"
+            (let [answer-data (request->answer-data {:route-params {:id (str OBJECTIVE_ID)
+                                                                    :q-id (str QUESTION_ID)}
+                                                     :params {:answer "the answer"}}
+                                                    USER_ID)]
+              (:data answer-data) => {:answer "the answer"
+                                      :question-id QUESTION_ID
+                                      :objective-id OBJECTIVE_ID
+                                      :created-by-id USER_ID}
+              (:status answer-data) => ::objective8.front-end-requests/valid
+              (:report answer-data) => {}))
+
+      (fact "reports validation errors"
+            (let [answer-data (request->answer-data {:route-params {:id (str OBJECTIVE_ID)
+                                                                    :q-id (str QUESTION_ID)}
+                                                     :params {:answer ""}}
+                                                    USER_ID)]
+              (:data answer-data) => {:answer ""
+                                      :question-id QUESTION_ID
+                                      :objective-id OBJECTIVE_ID
+                                      :created-by-id USER_ID}
+              (:status answer-data) => ::objective8.front-end-requests/invalid
+              (:report answer-data) => {:answer :length})))
+

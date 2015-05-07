@@ -3,15 +3,6 @@
             [objective8.utils :as utils]
             [objective8.sanitiser :as sanitiser]))
 
-(defn request->question
-  "Returns a map of a question if all parts are in the request. Otherwise returns nil"
-  [{:keys [params route-params] :as request} user-id]
-  (when-let [objective-id (some-> (:id route-params) 
-                                  Integer/parseInt)]
-    (some-> params
-            (utils/select-all-or-nothing [:question])
-            (assoc :created-by-id user-id :objective-id objective-id))))
-
 (defn request->writer-note-data
   "Returns a map of a note if all the parts are in the request params."
   [{:keys [params] :as request} user-id]
@@ -25,20 +16,6 @@
   (some-> params
           (utils/select-all-or-nothing [:comment-on-uri :comment])
           (assoc :created-by-id user-id)))
-
-(defn request->answer-info
-  "Returns a map of an answer if all the parts are in the request. Otherwise returns nil"
-  [{:keys [params route-params] :as request} user-id]
-  (when-let [id-map (some-> route-params
-                            (utils/select-all-or-nothing [:id :q-id])
-                            (update-in [:id] #(Integer/parseInt %))
-                            (update-in [:q-id] #(Integer/parseInt %))
-                            (utils/ressoc :id :objective-id)
-                            (utils/ressoc :q-id :question-id))] 
-    (some-> params
-            (utils/select-all-or-nothing [:answer])
-            (assoc :created-by-id user-id)
-            (merge id-map))))
 
 (defn request->invitation-info
   "Returns a map with the invitation details if all the parts are in the request. Otherwise return nil"

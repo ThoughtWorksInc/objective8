@@ -20,15 +20,6 @@
                          :comment-on-uri "/some/uri"
                          :created-by-id USER_ID}))
 
-(fact "creates answer-info map from a request"
-      (let [answer (request->answer-info {:route-params {:id (str OBJECTIVE_ID)
-                                                         :q-id (str QUESTION_ID)} 
-                                          :params {:answer "the answer"}} USER_ID)]
-        answer => {:answer "the answer"
-                   :question-id QUESTION_ID
-                   :objective-id OBJECTIVE_ID
-                   :created-by-id USER_ID}))
-
 (fact "creates invited-writer-info map from a request"
       (let [writer (request->invitation-info {:route-params {:id (str OBJECTIVE_ID)} 
                                               :params {:writer-name "Jenny" 

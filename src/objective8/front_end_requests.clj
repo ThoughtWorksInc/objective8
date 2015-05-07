@@ -42,10 +42,25 @@
       (not (length-range question 10 500)) (assoc :valid false :reason :length))))
 
 (defn request->question-data [{:keys [route-params] :as request} user-id]
-  (let [objective-id (some-> (:id route-params)
-                             Integer/parseInt)]
+  (let [objective-id (some-> route-params :id Integer/parseInt)]
     (-> (initialise-validation request)
         (validate :question question-validator)
         (assoc-in [:data :created-by-id] user-id)
         (assoc-in [:data :objective-id] objective-id)
         (dissoc :request))))
+
+(defn answer-validator [request]
+  (let [answer (get-in request [:params :answer])]
+    (cond-> {:valid true :reason [] :value answer}
+      (not (length-range answer 1 500)) (assoc :valid false :reason :length))))
+
+(defn request->answer-data [{:keys [params route-params] :as request} user-id]
+  (let [objective-id (some-> route-params :id Integer/parseInt)
+        question-id (some-> route-params :q-id Integer/parseInt)]
+    (-> (initialise-validation request)
+        (validate :answer answer-validator)
+        (assoc-in [:data :created-by-id] user-id)
+        (assoc-in [:data :objective-id] objective-id)
+        (assoc-in [:data :question-id] question-id)
+        (dissoc :request))))
+

@@ -338,20 +338,27 @@
 
 ;; ANSWERS
 
-(defn add-answer-form-post [{:keys [uri t' locale] :as request}]
-  (if-let [answer (helpers/request->answer-info request (get (friend/current-authentication) :identity))]
-    (let [{status :status stored-answer :result} (http-api/create-answer answer)]
-      (cond
-        (= status ::http-api/success)
-        (let [answer-url (str utils/host-url "/objectives/" (:objective-id stored-answer)
-                              "/questions/" (:question-id stored-answer) "#answer-" (:_id stored-answer))]
-          (assoc (response/redirect answer-url) :flash {:type :flash-message
-                                                        :message :question-view/added-answer-message}))
+(defn add-answer-form-post [{:keys [uri t' locale route-params] :as request}]
+  (let [answer-data (fr/request->answer-data request (get (friend/current-authentication) :identity))]
+    (case (:status answer-data)
+      ::fr/valid
+      (let [{status :status stored-answer :result} (http-api/create-answer (:data answer-data))]
+        (cond
+          (= status ::http-api/success)
+          (let [answer-url (str utils/host-url "/objectives/" (:objective-id stored-answer)
+                                "/questions/" (:question-id stored-answer) "#answer-" (:_id stored-answer))]
+            (assoc (response/redirect answer-url) :flash {:type :flash-message
+                                                          :message :question-view/added-answer-message}))
 
-        (= status ::http-api/invalid-input) {:status 400}
+          (= status ::http-api/invalid-input) {:status 400}
 
-        :else {:status 502}))
-    {:status 400}))
+          :else {:status 502}))
+
+      ::fr/invalid
+      (-> (response/redirect (utils/path-for :fe/question
+                                             :id (:id route-params)
+                                             :q-id (:q-id route-params)))
+          (assoc :flash {:validation (dissoc :status answer-data)})))))
 
 ;; WRITERS
 
