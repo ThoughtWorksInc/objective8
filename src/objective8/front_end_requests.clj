@@ -35,3 +35,17 @@
         (assoc-in [:data :end-date] iso-time)
         (assoc-in [:data :created-by-id] user-id)
         (dissoc :request))))
+
+(defn question-validator [request]
+  (let [question (get-in request [:params :question])]
+    (cond-> {:valid true :reason [] :value question}
+      (not (length-range question 10 500)) (assoc :valid false :reason :length))))
+
+(defn request->question-data [{:keys [route-params] :as request} user-id]
+  (let [objective-id (some-> (:id route-params)
+                             Integer/parseInt)]
+    (-> (initialise-validation request)
+        (validate :question question-validator)
+        (assoc-in [:data :created-by-id] user-id)
+        (assoc-in [:data :objective-id] objective-id)
+        (dissoc :request))))

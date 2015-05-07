@@ -9,9 +9,6 @@
 (def QUESTION_ID 3)
 (def GLOBAL_ID 5)
 
-(defn requestify [params]
-  {:params (dissoc params :end-date)})
-
 (def date-time (utils/string->date-time "2015-01-03"))
 
 
@@ -22,14 +19,6 @@
         comment-data => {:comment "the comment"
                          :comment-on-uri "/some/uri"
                          :created-by-id USER_ID}))
-
-(fact "creates a question from a request"
-      (let [question (request->question {:route-params {:id (str OBJECTIVE_ID)}
-                                         :params {:question "the question"}}
-                                        USER_ID)]
-        question => {:question "the question"
-                     :created-by-id USER_ID
-                     :objective-id OBJECTIVE_ID}))
 
 (fact "creates answer-info map from a request"
       (let [answer (request->answer-info {:route-params {:id (str OBJECTIVE_ID)

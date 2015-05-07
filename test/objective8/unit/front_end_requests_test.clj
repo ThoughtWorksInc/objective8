@@ -4,6 +4,7 @@
             [objective8.utils :as utils]))
 
 (def USER_ID 1)
+(def OBJECTIVE_ID 2)
 
 (def test-objective {:title "My Objective"
                      :description "I like cake"})
@@ -26,3 +27,24 @@
                (:data objective-data) => (assoc invalid-test-objective :created-by-id USER_ID :end-date date-plus-30-days)
                (:status objective-data) => ::objective8.front-end-requests/invalid
                (:report objective-data) => {:title :length})))
+
+(facts "about transforming requests to question-data"
+       (fact "extracts the relevant data"
+             (let [question-data (request->question-data {:route-params {:id (str OBJECTIVE_ID)}
+                                                          :params {:question "The question"}}
+                                                         USER_ID)]
+               (:data question-data) => {:question "The question"
+                                         :created-by-id USER_ID
+                                         :objective-id OBJECTIVE_ID}
+               (:status question-data) => ::objective8.front-end-requests/valid
+               (:report question-data) => {}))
+       
+       (fact "reports validation errors"
+             (let [question-data (request->question-data {:route-params {:id (str OBJECTIVE_ID)}
+                                                          :params {:question "Why?"}}
+                                                         USER_ID)]
+               (:data question-data) => {:question "Why?"
+                                         :created-by-id USER_ID
+                                         :objective-id OBJECTIVE_ID}
+               (:status question-data) => ::objective8.front-end-requests/invalid
+               (:report question-data) => {:question :length})))

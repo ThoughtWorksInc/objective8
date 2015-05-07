@@ -10,6 +10,14 @@
 
 (def add-question-form-snippet (html/select add-question-template [:.clj-question-create-form]))
 
+(defn apply-validations [{:keys [doc] :as context} nodes]
+  (let [validation-data (get-in doc [:flash :validation])
+        validation-report (:report validation-data)
+        previous-inputs (:data validation-data)]
+    (html/at nodes
+             [:.clj-question-length-error] (when (:question validation-report) identity)
+             [:.clj-input-question] (html/content (:question previous-inputs)))))
+
 (defn add-question-form [{:keys [data] :as context}]
   (let [objective-id (get-in data [:objective :_id])]
     (html/at add-question-form-snippet 
@@ -37,14 +45,15 @@
            (html/emit*
              (tf/translate context
                            (pf/add-google-analytics
-                             (html/at add-question-template
-                                      [:title] (html/content (:title doc))
-                                      [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
-                                      [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
-                                      [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
+                             (apply-validations context
+                                                (html/at add-question-template
+                                                         [:title] (html/content (:title doc))
+                                                         [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
+                                                         [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+                                                         [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
 
-                                      [:.clj-guidance-buttons] nil
-                                      [:.l8n-guidance-heading] (html/content (translations :question-create/guidance-heading))
-                                      [:.clj-objective-navigation-item-objective] (html/set-attr :href (utils/local-path-for :fe/objective :id objective-id))
-                                      [:.clj-objective-title] (html/content (:title objective))
-                                      [:.clj-question-create] (html/content (add-question context)))))))))
+                                                         [:.clj-guidance-buttons] nil
+                                                         [:.l8n-guidance-heading] (html/content (translations :question-create/guidance-heading))
+                                                         [:.clj-objective-navigation-item-objective] (html/set-attr :href (utils/local-path-for :fe/objective :id objective-id))
+                                                         [:.clj-objective-title] (html/content (:title objective))
+                                                         [:.clj-question-create] (html/content (add-question context))))))))))

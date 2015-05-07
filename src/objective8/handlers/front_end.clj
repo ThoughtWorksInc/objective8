@@ -138,8 +138,7 @@
                          :else {:status 502}))
 
       ::fr/invalid (-> (response/redirect (utils/path-for :fe/create-objective-form))
-                       (assoc :flash {:validation {:report (:report objective-data)
-                                                   :data (:data objective-data)}})))))
+                       (assoc :flash {:validation (dissoc objective-data :status)})))))
 
 (defn remove-invitation-from-session [response]
   (update-in response [:session] dissoc :invitation))
@@ -294,19 +293,22 @@
   (let [objective-id (Integer/parseInt id)]
     (response/redirect (utils/path-for :fe/objective :id objective-id))))
 
-(defn add-question-form-post [{:keys [uri t' locale] :as request}]
-  (if-let [question-data (helpers/request->question request (get (friend/current-authentication) :identity))]
-    (let [{status :status question :result} (http-api/create-question question-data)]
-      (cond 
-        (= status ::http-api/success)
-        (let [objective-url (str utils/host-url "/objectives/" (:objective-id question) "#questions")]
-          (assoc (response/redirect objective-url) :flash {:type :share-question
-                                                           :created-question question}))
+(defn add-question-form-post [{:keys [uri t' locale route-params] :as request}]
+  (let [question-data (fr/request->question-data request (get (friend/current-authentication) :identity))]
+    (case (:status question-data)
+      ::fr/valid (let [{status :status question :result} (http-api/create-question (:data question-data))]
+                   (cond 
+                     (= status ::http-api/success)
+                     (let [objective-url (str utils/host-url "/objectives/" (:objective-id question) "#questions")]
+                       (assoc (response/redirect objective-url) :flash {:type :share-question
+                                                                        :created-question question}))
 
-        (= status ::http-api/invalid-input) {:status 400}
+                     (= status ::http-api/invalid-input) {:status 400}
 
-        :else {:status 502}))
-    {:status 400}))
+                     :else {:status 502}))
+      ::fr/invalid (-> (response/redirect (utils/path-for :fe/add-a-question
+                                                          :id (:id route-params)))
+                       (assoc :flash {:validation (dissoc question-data :status)})))))
 
 (defn question-detail [{:keys [route-params uri t' locale] :as request}]
   (let [q-id (-> (:q-id route-params) Integer/parseInt)

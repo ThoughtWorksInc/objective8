@@ -318,6 +318,7 @@ question-create,guidance-text,"Your question should be focused and specific, as 
 question-create,question-title,Questions are a maximum length of 500 characters
 question-create,question-label,Question
 question-create,post-button,Add question
+question-create,question-length-validation-message,The question must be between 10 and 500 characters
 invitation-response,page-title,You've been invited to help draft some policy!
 invitation-response,help-achieve,Can you help us to draft some policy to achieve this objective:
 invitation-response,rsvp-text,"If you're interested, you can sign in and accept the invitation below."
