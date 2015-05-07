@@ -52,6 +52,7 @@
     "edit-profile"      {:get :fe/edit-profile-get
                          :post :fe/edit-profile-post}
     "users"             {["/" :username] {:get :fe/profile}}
+    "error"             {"/configuration" {:get :fe/error-configuration}}
 
     ;; API
     "api/v1"            {"/users" {:post :api/post-user-profile

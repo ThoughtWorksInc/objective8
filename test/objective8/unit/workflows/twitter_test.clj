@@ -1,9 +1,11 @@
 (ns objective8.unit.workflows.twitter-test
-  (:require [objective8.workflows.twitter :refer :all]
-            [midje.sweet :refer :all]
+  (:require [midje.sweet :refer :all]
+            [peridot.core :as p]
             [oauth.client :as oauth]
             [cemerick.friend :as friend]
-            [cemerick.friend.workflows :as workflows]))
+            [cemerick.friend.workflows :as workflows]
+            [objective8.integration.integration-helpers :as ih]
+            [objective8.workflows.twitter :refer :all]))
 
 (def consumer (oauth/make-consumer "FAKE_TOKEN"
                                    "FAKE_SECRET"
@@ -53,3 +55,13 @@
 
              (twitter-callback fake-request) => (contains {:status 302})
              (:headers (twitter-callback fake-request)) => (contains {"Location" (contains "/")})))
+
+(facts "About wrap-twitter-config"
+       (fact "includes the twitter configuration in the request when twitter is correctly configured"
+             (let [handler (wrap-twitter-config identity :a-valid-twitter-configuration)]
+               (handler {}) => {:twitter-config :a-valid-twitter-configuration}))
+       
+       (fact "Redirects to configuration error page when twitter is incorrectly configured"
+             (let [handler (wrap-twitter-config identity :invalid-configuration)]
+               (handler {}) => (contains {:status 302
+                                          :headers (contains {"Location" (contains "/error/configuration")})}))))

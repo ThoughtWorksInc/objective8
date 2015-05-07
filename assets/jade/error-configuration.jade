@@ -1,0 +1,10 @@
+extends layouts/base
+
+block vars
+  - pageTitle = "!Configuration error | Objective[8]"
+
+block content
+
+  .middle-container.clj-error-404
+    h1(data-l8n="content:error-configuration/page-title") !Application configuration error
+    p(data-l8n="content:error-configuration/page-intro").lede !There is a problem with the way this instance of Objective8 has been set up.  Please contact the site administrator!

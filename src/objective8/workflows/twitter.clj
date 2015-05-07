@@ -4,6 +4,7 @@
               [ring.util.response :as response]
               [ring.util.request :as request]
               [bidi.ring :refer [make-handler]]
+              [objective8.views :as views]
               [objective8.utils :as utils]
               [objective8.config :as config]))
 
@@ -51,15 +52,14 @@
       (do (log/info (str "Did not get authentication from twitter: " e))
           (response/redirect "/")))))
 
-(defn twitter-invalid-config-handler [request]
-  {:headers {"Content-Type" "text/html"}
-   :status 500
-   :body "<html><body><h1>Incorrectly configured application</h1>Please contact the site administrator</body></html>"})
+(defn invalid-configuration-handler [request]
+  (log/info "Twitter credentials not provided.")
+  (response/redirect (utils/path-for :fe/error-configuration)))
 
 (defn wrap-twitter-config [handler twitter-config]
   (if (valid? twitter-config)
     (fn [request] (handler (assoc request :twitter-config twitter-config)))
-    twitter-invalid-config-handler))
+    invalid-configuration-handler))
 
 (def twitter-routes
   ["/" {"twitter-sign-in"  :sign-in

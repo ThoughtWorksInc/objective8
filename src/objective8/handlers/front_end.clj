@@ -35,6 +35,11 @@
 (defn error-404 [request]
   (error-404-response request))
 
+(defn error-configuration [request]
+  {:status 500
+   :headers {"Content-Type" "text/html"}
+   :body (views/error-configuration "configuration-error" request)})
+
 (defn index [request]
   {:status 200
    :headers {"Content-Type" "text/html"}

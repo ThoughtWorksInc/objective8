@@ -83,6 +83,7 @@
                :fe/admin-removal-confirmation-get (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/admin-removal-confirmation) #{:admin})
                :fe/admin-removal-confirmation-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-admin-removal-confirmation) #{:admin})
                :fe/post-admin-removal (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-admin-removal) #{:admin})
+               :fe/error-configuration front-end-handlers/error-configuration
 
                
                ;; API Handlers

@@ -24,7 +24,8 @@
             [objective8.templates.sign-up :as sign-up]
             [objective8.templates.admin-activity :as admin-activity]
             [objective8.templates.admin-removal-confirmation :as admin-removal-confirmation]
-            [objective8.templates.error-404 :as error-404]))
+            [objective8.templates.error-404 :as error-404]
+            [objective8.templates.error-configuration :as error-configuration]))
 
 
 (defn- user-info [request auth-map]
@@ -63,6 +64,9 @@
   (fn [page-name ring-request & data] 
     (viewfn (make-view-context page-name ring-request data))))
 
+(def error-404 (view error-404/error-404-page))
+(def error-configuration (view error-configuration/error-configuration-page))
+
 (def index (view index/index-page))
 (def learn-more-page (view learn-more/learn-more-page))
 (def project-status (view project-status/project-status-page))
@@ -85,6 +89,6 @@
 (def dashboard-comments-page (view dashboard-comments/dashboard-comments))
 (def sign-in (view sign-in/sign-in-page))
 (def sign-up (view sign-up/sign-up-page))
-(def error-404 (view error-404/error-404-page))
 (def admin-activity (view admin-activity/admin-activity-page))
 (def admin-removal-confirmation (view admin-removal-confirmation/admin-removal-confirmation-page))
+
