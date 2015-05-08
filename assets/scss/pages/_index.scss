@@ -139,6 +139,9 @@ $home_icon_height: 140px;
   a {
     text-decoration: none;
     color: inherit;
+    &:focus {
+      outline: none;
+    }
   }
 }
 
