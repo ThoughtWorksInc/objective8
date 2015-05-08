@@ -256,18 +256,24 @@
 
 ;; COMMENTS
 
-(defn post-comment [{:keys [t'] :as request}]
-  (if-let [comment-data (helpers/request->comment-data request (get (friend/current-authentication) :identity))]
-    (let [{status :status stored-comment :result} (http-api/post-comment comment-data)]
-      (cond
-        (= status ::http-api/success)
-        (-> (redirect-to-params-referer request "comments")
-            (assoc :flash {:type :flash-message
-                           :message :comment-view/created-message}))
+(defn post-comment [{:keys [t' route-params] :as request}]
+  (if-let [comment-data (fr/request->comment-data request (get (friend/current-authentication) :identity))]
+    (case (:status comment-data)
+      ::fr/valid
+      (let [{status :status stored-comment :result} (http-api/post-comment (:data comment-data))]
+        (cond
+          (= status ::http-api/success)
+          (-> (redirect-to-params-referer request "comments")
+              (assoc :flash {:type :flash-message
+                             :message :comment-view/created-message}))
 
-        (= status ::http-api/invalid-input) {:status 400}
+          (= status ::http-api/invalid-input) {:status 400}
 
-        :else {:status 502}))
+          :else {:status 502}))
+
+      ::fr/invalid
+      (-> (redirect-to-params-referer request "comments")
+          (assoc :flash {:validation (dissoc comment-data :status)})))
     {:status 400}))
 
 ;; QUESTIONS

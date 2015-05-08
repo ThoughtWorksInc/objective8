@@ -12,14 +12,6 @@
 (def date-time (utils/string->date-time "2015-01-03"))
 
 
-(fact "extracts comment data from a request"
-      (let [comment-data (request->comment-data {:params {:comment "the comment"
-                                                          :comment-on-uri "/some/uri"}}
-                                                USER_ID)]
-        comment-data => {:comment "the comment"
-                         :comment-on-uri "/some/uri"
-                         :created-by-id USER_ID}))
-
 (fact "creates invited-writer-info map from a request"
       (let [writer (request->invitation-info {:route-params {:id (str OBJECTIVE_ID)} 
                                               :params {:writer-name "Jenny" 

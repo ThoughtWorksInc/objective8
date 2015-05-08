@@ -15,7 +15,7 @@
         validation-report (:report validation-data)
         previous-inputs (:data validation-data)]
     (html/at nodes
-             [:.clj-question-length-error] (when (:question validation-report) identity)
+             [:.clj-question-length-error] (when (contains? (:question validation-report) :length) identity)
              [:.clj-input-question] (html/content (:question previous-inputs)))))
 
 (defn add-question-form [{:keys [data] :as context}]

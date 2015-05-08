@@ -12,10 +12,10 @@
         validation-report (:report validation-data)
         previous-inputs (:data validation-data)]
     (html/at nodes
-             [:.clj-title-length-error] (when (:title validation-report) identity)
+             [:.clj-title-length-error] (when (contains? (:title validation-report) :length) identity)
              [:.clj-input-objective-title] (html/content (:title previous-inputs))
 
-             [:.clj-description-length-error] (when (:description validation-report) identity)
+             [:.clj-description-length-error] (when (:contains? (:description validation-report) :length) identity)
              [:.clj-input-objective-background] (html/content (:description previous-inputs)))))
 
 (defn create-objective-page [{:keys [doc] :as context}]

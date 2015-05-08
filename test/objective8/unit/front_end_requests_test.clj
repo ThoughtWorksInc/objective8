@@ -16,6 +16,9 @@
 (def date (utils/string->date-time "2015-01-01"))
 (def date-plus-30-days (utils/string->date-time "2015-01-31"))
 
+(defn string-of-length [l]
+  (apply str (repeat l "x")))
+
 (facts "about transforming requests to objective-data"
        (fact "creates an objective from a request"
              (let [objective-data (request->objective-data {:params test-objective} USER_ID date)]
@@ -27,7 +30,7 @@
              (let [objective-data (request->objective-data {:params invalid-test-objective} USER_ID date)]
                (:data objective-data) => (assoc invalid-test-objective :created-by-id USER_ID :end-date date-plus-30-days)
                (:status objective-data) => ::objective8.front-end-requests/invalid
-               (:report objective-data) => {:title :length})))
+               (:report objective-data) => {:title #{:length}})))
 
 (facts "about transforming requests to question-data"
        (fact "extracts the relevant data"
@@ -48,7 +51,7 @@
                                          :created-by-id USER_ID
                                          :objective-id OBJECTIVE_ID}
                (:status question-data) => ::objective8.front-end-requests/invalid
-               (:report question-data) => {:question :length})))
+               (:report question-data) => {:question #{:length}})))
 
 (fact "about transforming requests to answer-data"
       (fact "extracts the relevant data"
@@ -73,5 +76,34 @@
                                       :objective-id OBJECTIVE_ID
                                       :created-by-id USER_ID}
               (:status answer-data) => ::objective8.front-end-requests/invalid
-              (:report answer-data) => {:answer :length})))
+              (:report answer-data) => {:answer #{:length}})))
 
+(fact "about transforming requests to comment-data"
+      (fact "extracts the relevant data"
+            (let [comment-data (request->comment-data {:params {:comment "the comment"
+                                                                :comment-on-uri "/some/uri"}}
+                                                      USER_ID)]
+              (:data comment-data) => {:comment "the comment"
+                                       :comment-on-uri "/some/uri"
+                                       :created-by-id USER_ID}
+              (:status comment-data) => ::objective8.front-end-requests/valid
+              (:report comment-data) => {}))
+
+      (tabular
+       (fact "reports validation errors"
+             (let [comment-data (request->comment-data {:params {:comment ?comment
+                                                                 :comment-on-uri "/some/uri"}}
+                                                       USER_ID)]
+               (:data comment-data) => {:comment ?comment
+                                        :comment-on-uri "/some/uri"
+                                        :created-by-id USER_ID}
+               (:status comment-data) => ::objective8.front-end-requests/invalid
+               (:report comment-data) => {:comment ?error-type}))
+       ?comment                 ?error-type
+       ""                       #{:empty}
+       (string-of-length 501)   #{:length})
+
+      (fact "returns nil when data that is not directly provided by the user is invalid"
+            (let [comment-data (request->comment-data {:params {:comment ""}}
+                                                      USER_ID)]
+              comment-data => nil)))

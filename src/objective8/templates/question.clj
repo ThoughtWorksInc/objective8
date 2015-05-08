@@ -55,7 +55,7 @@
         validation-report (:report validation-data)
         previous-inputs (:data validation-data)]
     (html/at nodes
-             [:.clj-answer-length-error] (when (:answer validation-report) identity)
+             [:.clj-answer-length-error] (when (contains? (:answer validation-report) :length) identity)
              [:.clj-input-answer] (html/content (:answer previous-inputs)))))
 
 (defn question-page [{:keys [translations data user doc] :as context}]

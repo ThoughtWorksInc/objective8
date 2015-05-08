@@ -153,15 +153,25 @@
 
 (def comment-create-form-snippet (html/select library-html-resource [:.clj-add-comment-form])) 
 
+(defn render-comment-form-validations [{:keys [doc] :as context} nodes]
+  (let [validation-data (get-in doc [:flash :validation])
+        validation-report (:report validation-data)
+        previous-inputs (:data validation-data)]
+    (html/at nodes
+             [:.clj-comment-length-error] (when (contains? (:comment validation-report) :length) identity)
+             [:.clj-comment-empty-error] (when (contains? (:comment validation-report) :empty) identity)
+             [:.clj-input-comment] (html/content (:comment previous-inputs)))))
+
 (defn comment-create-form [{:keys [data doc ring-request translations] :as context} comment-target]
   (let [page-name (:page-name doc)]
-    (html/at comment-create-form-snippet
-             [:.clj-add-comment-form] (html/prepend (html/html-snippet (anti-forgery-field)))
-             [:.clj-refer] (html/set-attr :value (:uri ring-request)) 
-             [:.clj-comment-on-uri] (html/set-attr :value (get-in data [comment-target :uri]))
-             [:.clj-comment-form-label-title] (html/content (translations (keyword page-name "comment-box-label-title") ))
-             [:.clj-comment-form-label-helper] (html/content (translations (keyword page-name "comment-box-label-helper")))
-             [:.clj-comment-form-post-button] (html/content (translations (keyword page-name "comment-post-button"))))))
+    (->> (html/at comment-create-form-snippet
+                  [:.clj-add-comment-form] (html/prepend (html/html-snippet (anti-forgery-field)))
+                  [:.clj-refer] (html/set-attr :value (:uri ring-request)) 
+                  [:.clj-comment-on-uri] (html/set-attr :value (get-in data [comment-target :uri]))
+                  [:.clj-comment-form-label-title] (html/content (translations (keyword page-name "comment-box-label-title") ))
+                  [:.clj-comment-form-label-helper] (html/content (translations (keyword page-name "comment-box-label-helper")))
+                  [:.clj-comment-form-post-button] (html/content (translations (keyword page-name "comment-post-button"))))
+         (render-comment-form-validations context))))
 
 (def sign-in-to-comment-snippet (html/select library-html-resource [:.clj-to-comment-please-sign-in]))
 

@@ -10,13 +10,6 @@
           (utils/select-all-or-nothing [:note-on-uri :note])
           (assoc :created-by-id user-id)))
 
-(defn request->comment-data
-  "Returns a map of a comment if all the parts are in the request params."
-  [{:keys [params] :as request} user-id]
-  (some-> params
-          (utils/select-all-or-nothing [:comment-on-uri :comment])
-          (assoc :created-by-id user-id)))
-
 (defn request->invitation-info
   "Returns a map with the invitation details if all the parts are in the request. Otherwise return nil"
   [{:keys [params route-params] :as request} user-id]
