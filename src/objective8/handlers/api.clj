@@ -474,6 +474,11 @@
       (log/info "Invalid route: " e)
       (invalid-response "Invalid section request for this draft"))))
 
+
+(defn get-annotations [{:keys [route-params] :as request}]
+  (let [draft-uri (str "/objectives/" (:id route-params) "/drafts/" (:d-id route-params))
+        annotations (actions/get-annotations-for-draft draft-uri)]))
+
 (defn post-up-down-vote [request]
   (try
     (if-let [vote-data (ar/request->up-down-vote-data request)]

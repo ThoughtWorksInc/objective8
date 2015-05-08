@@ -161,6 +161,19 @@
              (provided
               (storage/pg-retrieve-entity-by-uri anything anything) => nil)))
 
+(facts "about retrieving annotations for a draft"
+       (fact "annotations are retrieved with the annotated section"
+             (actions/get-annotations-for-draft DRAFT_URI) => {:status ::actions/success
+                                                               :result [{:section :some-hiccup
+                                                                         :uri :section-uri
+                                                                         :objective-id OBJECTIVE_ID
+                                                                         :comments [:annotation]}]}
+
+             (provided
+               (drafts/get-annotated-sections DRAFT_URI) => [{:uri :section-uri :objective-id OBJECTIVE_ID
+                                                              :section :some-hiccup}] 
+               (comments/get-comments :section-uri {}) => [:annotation])))
+
 (def STAR_ID 47)
 
 (def objective-uri (str "/objectives/" OBJECTIVE_ID))

@@ -117,3 +117,6 @@
           {:section section
            :uri section-uri
            :objective-id objective-id})))))
+
+(defn get-annotated-sections [draft-uri])
+

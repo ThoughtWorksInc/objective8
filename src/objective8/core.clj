@@ -110,6 +110,7 @@
                :api/get-draft api-handlers/get-draft
                :api/get-drafts-for-objective api-handlers/retrieve-drafts
                :api/get-section api-handlers/get-section
+               :api/get-annotations api-handlers/get-annotations
                :api/post-admin-removal (m/wrap-bearer-token api-handlers/post-admin-removal bt/token-provider)
                :api/get-admin-removals api-handlers/get-admin-removals
                :api/post-up-down-vote (m/wrap-bearer-token api-handlers/post-up-down-vote bt/token-provider)

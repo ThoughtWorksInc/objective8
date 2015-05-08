@@ -91,6 +91,14 @@
       {:status ::forbidden})
     {:status ::entity-not-found}))
 
+(defn merge-comments-with-section [section]
+  (let [comments (comments/get-comments (:uri section) {})]
+    (assoc section :comments comments)))
+
+(defn get-annotations-for-draft [draft-uri]
+  (let [annotated-sections (drafts/get-annotated-sections draft-uri)]
+    {:status ::success :result (map merge-comments-with-section annotated-sections)}))
+
 (defn create-section-comment! [{:keys [objective-id draft-id section-label] :as section-data} comment-data]
   (let [section-labels (drafts/get-section-labels-for-draft-uri (str "/objectives/" objective-id "/drafts/" draft-id))]
     (if (some #{section-label} section-labels)

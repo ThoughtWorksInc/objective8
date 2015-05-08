@@ -75,6 +75,7 @@
                                                             "/drafts" {:post :api/post-draft
                                                                        :get :api/get-drafts-for-objective
                                                                        ["/" [#"\d+|latest" :d-id]] {:get :api/get-draft
+                                                                                                    "/annotations" {:get :api/get-annotations}
                                                                                                     ["/sections/" [#"[0-9a-f]{8}" :section-label]] {:get :api/get-section}}}}}
 
                          "/meta" {"/comments" {:post :api/post-comment
