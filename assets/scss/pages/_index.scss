@@ -96,9 +96,14 @@
 
 $home_icon_height: 140px;
 
-.icon-idea {
+%index-icon {
+  display: block;
   height: $home_icon_height;
   margin: 0 auto;
+}
+
+.icon-idea {
+  @extend %index-icon;
   background: image-url('lightbulb.png') no-repeat 50% 0;
   background-size: contain;
   .svg & {
@@ -106,8 +111,7 @@ $home_icon_height: 140px;
   }
 }
 .icon-users {
-  height: $home_icon_height;
-  margin: 0 auto;
+  @extend %index-icon;
   background: image-url('people.png') no-repeat 50% 0;
   background-size: contain;
   .svg & {
@@ -115,8 +119,7 @@ $home_icon_height: 140px;
   }
 }
 .icon-comments {
-  height: $home_icon_height;
-  margin: 0 auto;
+  @extend %index-icon;
   background: image-url('speechbubbles.png') no-repeat 50% 0;
   background-size: contain;
   .svg & {
@@ -124,8 +127,7 @@ $home_icon_height: 140px;
   }
 }
 .icon-policy {
-  height: $home_icon_height;
-  margin: 0 auto;
+  @extend %index-icon;
   background: image-url('policy.png') no-repeat 50% 0;
   background-size: contain;
   .svg & {
@@ -148,7 +150,7 @@ $home_icon_height: 140px;
   padding-bottom: 1em;
   a {
     display: inline-block;
-    margin: 0 0.5em;
+    margin: 0 0.5em 1em 0;
     background-color: transparent;
   }
 }
