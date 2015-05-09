@@ -1,30 +1,31 @@
 (ns objective8.draft-diffs
   (:require [diff-match-patch-clj.core :as dmp]
+            [clojure.tools.logging :as log]
             [objective8.utils :as utils]
             [objective8.drafts :as drafts]))
 
-(declare replacement-element-and-updated-diffs strings-for-element)
+(declare replacement-element-and-updated-diffs)
 
-(defn replacement-diffs-for-n-chars [n diffs]
-  (if (zero? n) 
-    {:replacement (list "")
-     :updated-diffs diffs}
-    (let [diff-element (first diffs)
-          diff-element-string (last diff-element) 
-          diff-element-char-count (count diff-element-string)]
-      (if (<= n diff-element-char-count)
-        (let [extracted-diff-element (conj (pop diff-element) (subs diff-element-string 0 n)) 
-              remaining-diff-element-string (subs diff-element-string n)
-              updated-diff-element (if (empty? remaining-diff-element-string)
-                                     '() 
-                                     (list (conj (pop diff-element) remaining-diff-element-string)))]
-          {:replacement (list extracted-diff-element) 
-           :updated-diffs (concat updated-diff-element (rest diffs)) })
-        (let [recursive-result (replacement-diffs-for-n-chars (- n diff-element-char-count) (rest diffs))
-              recursive-replacement (:replacement recursive-result)
-              recursive-updated-diffs (:updated-diffs recursive-result)]
-          {:replacement (into [] (concat (list diff-element) recursive-replacement)) 
-           :updated-diffs recursive-updated-diffs})))))
+(defn replacement-diffs-for-n-chars 
+  ([n diffs] 
+   (replacement-diffs-for-n-chars n diffs []))
+  ([n diffs replacement]
+   (if (and (> n 0) (empty? diffs))
+     (do
+       (log/info "Error when finding diffs for n chars. Should never see this.")
+       {:replacement replacement
+        :updated-diffs diffs}) 
+     (let [diff-element (first diffs)
+           diff-element-string (last diff-element)
+           diff-element-char-count (count diff-element-string)]
+       (if (<= n diff-element-char-count)
+         (let [extracted-diff-element (conj (pop diff-element) (subs diff-element-string 0 n)) 
+               remaining-diff-element-string (subs diff-element-string n)
+               updated-diff-element (when-not (empty? remaining-diff-element-string) 
+                                      (conj (pop diff-element) remaining-diff-element-string))]
+           {:replacement (conj replacement extracted-diff-element) 
+            :updated-diffs (remove nil? (cons updated-diff-element (rest diffs)))})
+         (recur (- n diff-element-char-count) (rest diffs) (conj replacement diff-element)))))))
 
 (defn replacement-content-and-updated-diffs [content diffs]
   ;; Each thing in content will be a string or a vector (another html element)
@@ -52,14 +53,17 @@
     {:replacement-element (into [] (concat element-without-content replacement-content)) 
      :updated-diffs updated-diffs})) 
 
-(defn insert-diffs-into-draft [diffs draft-without-diffs draft-with-diffs]
-  (if (empty? draft-without-diffs)
-    draft-with-diffs
-    (let [element (first draft-without-diffs)
-          {:keys [replacement-element updated-diffs]} (replacement-element-and-updated-diffs 
-                                                        element diffs)
-          updated-draft-with-diffs (concat draft-with-diffs (list replacement-element))]
-      (recur updated-diffs (rest draft-without-diffs) updated-draft-with-diffs))))
+(defn insert-diffs-into-draft 
+  ([diffs draft-without-diffs] 
+   (insert-diffs-into-draft  diffs draft-without-diffs nil))
+  ([diffs draft-without-diffs draft-with-diffs] 
+   (if (empty? draft-without-diffs)
+     draft-with-diffs
+     (let [element (first draft-without-diffs)
+           {:keys [replacement-element updated-diffs]} (replacement-element-and-updated-diffs 
+                                                         element diffs)
+           updated-draft-with-diffs (concat draft-with-diffs (list replacement-element))]
+       (recur updated-diffs (rest draft-without-diffs) updated-draft-with-diffs)))))
 
 (defn remove-hiccup-elements [hiccup element]
   (remove #(= element (first %)) hiccup))
@@ -86,5 +90,5 @@
         diffs (diff-hiccup-content previous-draft-content current-draft-content)
         previous-draft-diffs (remove-hiccup-elements diffs :ins)
         current-draft-diffs (remove-hiccup-elements diffs :del)]
-    {:previous-draft-diffs (insert-diffs-into-draft previous-draft-diffs previous-draft-content nil)
-     :current-draft-diffs (insert-diffs-into-draft current-draft-diffs current-draft-content nil)}))
+    {:previous-draft-diffs (insert-diffs-into-draft previous-draft-diffs previous-draft-content)
+     :current-draft-diffs (insert-diffs-into-draft current-draft-diffs current-draft-content)}))

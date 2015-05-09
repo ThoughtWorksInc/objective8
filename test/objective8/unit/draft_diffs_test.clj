@@ -1,5 +1,6 @@
 (ns objective8.unit.draft-diffs-test
   (:require [midje.sweet :refer :all]
+            [clojure.tools.logging :as log]
             [objective8.utils :as utils]  
             [objective8.draft-diffs :as diffs]))
 
@@ -22,7 +23,7 @@
 (def FORMATTED_DIFF_2 '(["p" [:span nil "First paragraph."]] ["p" [:del nil "Second paragraph."]] ["p" [:span nil "Third paragraph."]]))
 (def FORMATTED_PREVIOUS_DIFF_2_vs_3 '(["p" {} [:span nil "First paragraph."]] ["p" {} [:del nil "Second"] [:span nil " paragraph."]] ["p" {} [:span nil "Third paragraph."]]))
 (def FORMATTED_CURRENT_DIFF_2_vs_3 '(["p" {} [:span nil "First paragraph."]] ["p" {} [:ins nil "New"] [:span nil " paragraph."]] ["p" {} [:span nil "Third paragraph."]]))
-(def FORMATTED_PREVIOUS_DIFF_1_vs_2 '(["p" nil ""] ["p" nil [:span nil "First paragraph."]] ["ul" ["li" [:del nil "List item 1."]] ["li" [:del nil "List item 2."]] ["li" [:del nil "List item 3."]]] ["p" {} [:del nil "Last"] [:span nil " paragraph."]]))
+(def FORMATTED_PREVIOUS_DIFF_1_vs_2 '(["p" nil [:span nil ""]] ["p" nil [:span nil "First paragraph."]] ["ul" ["li" [:del nil "List item 1."]] ["li" [:del nil "List item 2."]] ["li" [:del nil "List item 3."]]] ["p" {} [:del nil "Last"] [:span nil " paragraph."]]))
 (def FORMATTED_CURRENT_DIFF_1_vs_2 '(["p" {} [:span nil "First paragraph."]]  ["p" {} [:ins nil "Second paragraph."]] ["p" {} [:ins nil "Third"] [:span nil " paragraph."]]))
 
 (fact "Convert hiccup to content-string for simple hiccup"
@@ -59,28 +60,49 @@
 
 
 (fact "Insert diffs into draft 1"
-      (diffs/insert-diffs-into-draft '([:span nil "First paragraph."]) '(["p" {} "First paragraph."]) nil) => '(["p" {} [:span nil "First paragraph."]])) 
+      (diffs/insert-diffs-into-draft '([:span nil "First paragraph."]) '(["p" {} "First paragraph."])) => '(["p" {} [:span nil "First paragraph."]])) 
 
 (fact "Insert diffs into draft 2"
-      (diffs/insert-diffs-into-draft '([:span nil "First"] [:ins nil " paragraph."]) '(["p" {} "First paragraph."]) nil) => '(["p" {} [:span nil "First"] [:ins nil " paragraph."]]))
+      (diffs/insert-diffs-into-draft '([:span nil "First"] [:ins nil " paragraph."]) '(["p" {} "First paragraph."])) => '(["p" {} [:span nil "First"] [:ins nil " paragraph."]]))
 
 (fact "Insert diffs into draft 3"
-      (diffs/insert-diffs-into-draft '([:span nil "First paragraph."]) '(["h1" {} "First"] ["p" {} " paragraph."]) nil) => 
+      (diffs/insert-diffs-into-draft '([:span nil "First paragraph."]) '(["h1" {} "First"] ["p" {} " paragraph."])) => 
  '(["h1" {} [:span nil "First"]] ["p" {} [:span nil " paragraph."]]))
 
 (fact "Insert diffs into draft 4"
-      (diffs/insert-diffs-into-draft '([:span nil "First paragraph."] [:del nil "List item 1."] [:span nil "List item 2."]) '(["h1" {} "First paragraph."] ["ul" {} ["li" {} "List item 1."] ["li" {} "List item 2."]]) nil) => 
+      (diffs/insert-diffs-into-draft '([:span nil "First paragraph."] [:del nil "List item 1."] [:span nil "List item 2."]) '(["h1" {} "First paragraph."] ["ul" {} ["li" {} "List item 1."] ["li" {} "List item 2."]])) => 
  '(["h1" {} [:span nil "First paragraph."]] ["ul" {} ["li" {} [:del nil "List item 1."]] ["li" {} [:span nil "List item 2."]]] ) )
 
-(fact "Diff for n chars 1"
-      (diffs/replacement-diffs-for-n-chars 3 '([:span nil "Hello"] [:ins nil " world"])) => 
-      {:replacement '([:span nil "Hel"])
-       :updated-diffs '([:span nil "lo"] [:ins nil " world"])})
+(facts "about replacement-diffs-for-n-chars"
+       (fact "when n is smaller than the string in the first diff element"
+             (let [result (diffs/replacement-diffs-for-n-chars 3 '([:span nil "Hello"] 
+                                                                   [:ins nil " world"]))]
+               result => {:replacement '([:span nil "Hel"])
+                          :updated-diffs '([:span nil "lo"] [:ins nil " world"])})) 
 
-(fact "Diff for n chars 2"
-      (diffs/replacement-diffs-for-n-chars 7 '([:span nil "Hello"] [:ins nil " world"])) => 
-      {:replacement '([:span nil "Hello"] [:ins nil " w"])
-       :updated-diffs '([:ins nil "orld"])})
+       (fact "when n is larger than the string in the first diff element"
+             (diffs/replacement-diffs-for-n-chars 7 '([:span nil "Hello"] 
+                                                      [:ins nil " world"])) => 
+             {:replacement '([:span nil "Hello"] [:ins nil " w"])
+              :updated-diffs '([:ins nil "orld"])}) 
+
+       (fact "when n is zero returns an empty string diff element"
+             (diffs/replacement-diffs-for-n-chars 0 '([:span nil "Hello"] 
+                                                      [:ins nil " world"])) => 
+             {:replacement '([:span nil ""])
+              :updated-diffs '([:span nil "Hello"] [:ins nil " world"])}) 
+
+       (fact "when n is the size of all strings in the diff elements combined"
+             (diffs/replacement-diffs-for-n-chars 11 '([:span nil "Hello"] 
+                                                       [:ins nil " world"])) => 
+             {:replacement '([:span nil "Hello"] [:ins nil " world"])
+              :updated-diffs '()})
+
+       (fact "when n is larger than the size of all strings in the diff elements combined, the error is handled gracefully and logged - this should never happen"
+             (diffs/replacement-diffs-for-n-chars 12 '([:span nil "Hello"] 
+                                                       [:ins nil " world"])) => 
+             {:replacement '([:span nil "Hello"] [:ins nil " world"])
+              :updated-diffs '()}))
 
 (fact "Get replacement element and updated diff 1"
       (diffs/replacement-element-and-updated-diffs ["h1" {} "First"] '([:span nil "First"])) => 
