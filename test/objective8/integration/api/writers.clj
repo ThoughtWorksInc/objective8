@@ -89,3 +89,23 @@
                     {response :response} (p/request app (str "/api/v1/objectives/" o-id "/writers"))]
                 (:body response) => (helpers/json-contains (map contains writers))))))
 
+
+(facts "GET /api/v1/writers/:id/objectives"
+       (against-background
+         [(m/valid-credentials? anything anything anything) => true
+          (before :contents (do (helpers/db-connection)
+                                (helpers/truncate-tables)))
+          (after :facts (helpers/truncate-tables))])
+       
+       (fact "retrieves list of objectives that belongs to the writer"
+             (let [user (sh/store-a-user)
+                   objective (sh/store-an-open-objective)
+                   second-objective (sh/store-an-open-objective)
+                   objective-for-another-user (sh/store-an-open-objective)
+                   {user_id :user-id :as writer} (sh/store-a-writer {:objective objective :user user})
+                   {user_id :user-id :as writer} (sh/store-a-writer {:objective second-objective :user user})
+                   _ (sh/store-a-writer {:objective objective-for-another-user})
+                   {response :response} (p/request app (str "/api/v1/writers/" user_id "/objectives"))]
+             (:body response) => (helpers/json-contains objective)
+             (:body response) => (helpers/json-contains second-objective)
+             (:body response) =not=> (helpers/json-contains objective-for-another-user))))

@@ -408,6 +408,20 @@
       (log/info "Error when retrieving writers: " e)
       (invalid-response "Invalid writers get request for this objective"))))
 
+;;WRITER-OBJECTIVES
+
+(defn get-objectives-for-writer [{:keys [route-params]}]
+(try
+   (let [user-id (-> (:id route-params)
+                     Integer/parseInt)
+         objectives (objectives/get-objectives-for-writer user-id)]
+     (-> objectives
+         response/response
+         (response/content-type "application/json"))) 
+    (catch Exception e
+      (log/info "Errow when retrieving objectives for writer: " e)
+      (invalid-response "Invalid objectives get request for this writer"))))
+
 ;;DRAFTS
 (defn post-draft [{{objective-id :id} :route-params :as request}]
   (let [draft-data (ar/request->draft-data request)] 

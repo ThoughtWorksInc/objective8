@@ -106,6 +106,7 @@
                :api/post-writer (m/wrap-bearer-token api-handlers/post-writer bt/token-provider)
                :api/put-invitation-declination (m/wrap-bearer-token api-handlers/put-invitation-declination bt/token-provider)
                :api/get-writers-for-objective api-handlers/retrieve-writers
+               :api/get-objectives-for-writer api-handlers/get-objectives-for-writer
                :api/post-draft (m/wrap-bearer-token api-handlers/post-draft bt/token-provider)
                :api/get-draft api-handlers/get-draft
                :api/get-drafts-for-objective api-handlers/retrieve-drafts

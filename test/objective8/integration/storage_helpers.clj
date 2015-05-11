@@ -155,7 +155,8 @@
 
   ([required-entities]
    (let [{user-id :_id} (l-get required-entities :user (store-a-user))
-         {i-id :_id o-id :objective-id} (l-get required-entities :invitation (store-an-invitation))]
+         objective (l-get required-entities :objective (store-an-open-objective))
+         {i-id :_id o-id :objective-id} (l-get required-entities :invitation (store-an-invitation {:objective objective}))]
      (storage/pg-store! {:entity :writer
                          :user-id user-id
                          :objective-id o-id

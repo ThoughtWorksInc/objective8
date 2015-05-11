@@ -241,6 +241,17 @@ LEFT JOIN (SELECT comments.comment_on_id, COUNT(comments.*) AS number
 ON comments_meta.comment_on_id = objectives.global_id
 WHERE objectives._id = ?" [objective-id]] :results)))))
 
+(defn pg-get-objectives-for-writer [user-id]
+  (let [unmap-objective (first (get mappings/objective :transforms))]
+    (apply vector (map unmap-objective
+                      (korma/exec-raw ["
+SELECT objectives.* FROM objective8.objectives AS objectives
+JOIN objective8.writers AS writers
+ON writers.objective_id = objectives._id
+WHERE writers.user_id = ?
+AND objectives.removed_by_admin=false
+ORDER BY objectives._created_at DESC" [user-id]] :results)))))
+
 (defn pg-get-objectives-as-signed-in-user [user-id]
   (let [unmap-objective (first (get mappings/objective :transforms))]
     (apply vector (map unmap-objective
