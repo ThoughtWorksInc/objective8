@@ -319,6 +319,7 @@
             :submitter-id USER_ID})
 (def SECTION_LABEL "abcd1212")
 (def section-uri (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID "/sections/" SECTION_LABEL))
+(def draft-uri (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID))
 
 (fact "posting a draft hits the correct API endpoint"
       (http-api/post-draft draft) => :api-call-result
@@ -342,6 +343,11 @@
       (http-api/get-draft-section section-uri) => :api-call-result
       (provided
         (http-api/default-get-call (contains (utils/path-for :api/get-section :id OBJECTIVE_ID :d-id DRAFT_ID :section-label SECTION_LABEL))) => :api-call-result))
+
+(fact "getting annotations hits the correct API endpoint"
+      (http-api/get-annotations draft-uri) => :api-call-result
+      (provided
+        (http-api/default-get-call (contains (utils/path-for :api/get-annotations :id OBJECTIVE_ID :d-id DRAFT_ID))) => :api-call-result))
 
 ;;STARS
 

@@ -273,3 +273,29 @@
                (http-api/get-comments anything {:sorted-by "up-votes" 
                                                 :filter-type "has-writer-note"}) => {:status ::http-api/success
                                                                                      :result []})))
+(def section [["h1" {:data-section-label "1234abcd"} "A Heading"]])
+
+(facts "about the annotations dashboard for writers"
+       (against-background
+         (http-api/get-objective anything) => {:status ::http-api/success
+                                               :result {:entity :objective
+                                                        :title "Objective title"
+                                                        :_id OBJECTIVE_ID
+                                                        :meta {:stars-count STARS_COUNT}}}
+
+         (http-api/get-all-drafts anything) => {:status ::http-api/success
+                                                :result [{:_created_at "2015-04-04T12:00:00.000Z"}]}
+
+         (http-api/get-annotations anything) => {:status ::http-api/success
+                                                 :result [{:section section
+                                                           :comments [{:comment "A section comment"
+                                                                       :_created_at "2015-01-01T01:01:00.000Z"
+                                                                       :username "A User"
+                                                                       :votes {:up 5 :down 3}}]}]})
+       (future-fact "can view annotations on dashboard"
+             (let [{response :response} (-> user-session
+                                            ih/sign-in-as-existing-user
+                                            (p/request (utils/path-for :fe/dashboard-annotations :id OBJECTIVE_ID)))]
+               (:status response) => 200
+               (:body response) => (contains "Objective title")
+               (:body response) => (contains "A section comment"))))

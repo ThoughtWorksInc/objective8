@@ -234,16 +234,34 @@
                                                                           comment-query-params)]
     (cond
       (every? #(= ::http-api/success %) [objective-status comments-status])
-      (let [formatted-objective (format-objective objective)]
         {:status 200
          :headers {"Content-Type" "text/html"}
          :body (views/dashboard-comments-page "dashboard-comments"
                                               request
-                                              :objective formatted-objective
+                                              :objective (format-objective objective) 
                                               :drafts drafts
                                               :comments comments
                                               :comment-view-type comment-view-type
-                                              :selected-comment-target-uri selected-comment-target-uri)}))))
+                                              :selected-comment-target-uri selected-comment-target-uri)})))
+
+(defn dashboard-annotations [{:keys [route-params params] :as request}]
+  (let [objective-id (Integer/parseInt (:id route-params))
+        {objective-status :status objective :result} (http-api/get-objective objective-id)
+        {drafts-status :status drafts :result} (http-api/get-all-drafts objective-id)
+
+        selected-draft-uri (params :selected)
+        {annotations-status :status annotations :result} (http-api/get-annotations selected-draft-uri)]
+
+    (cond
+      (every? #(= ::http-api/success %) [objective-status annotations-status])
+      {:status 200
+       :headers {"Content-Type" "text/html"}
+       :body (views/dashboard-annotations-page "dashboard-annotations"
+                                               request
+                                               :objective (format-objective objective) 
+                                               :drafts drafts
+                                               :annotations annotations
+                                               :selected-draft-uri selected-draft-uri)})))
 
 (defn post-writer-note [{:keys [route-params params] :as request}]
   (if-let [writer-note-data (fr/request->writer-note-data request (get (friend/current-authentication) :identity))]
@@ -289,18 +307,18 @@
                        :keys [uri t' locale] :as request}]
   (let [objective-id (Integer/parseInt id)
         {objective-status :status objective :result} (http-api/get-objective objective-id)]
-        (cond
-          (every? #(= ::http-api/success %) [objective-status])
-          {:status 200
-           :body (views/add-question-page "question-create"
-                   request
-                   :objective (format-objective objective)
-                   :doc {:title (str (t' :question-create/doc-title) " to "(:title objective) " | Objective[8]")
-                         :description (str (t' :question-create/doc-description))})
-           :headers {"Content-Type" "text/html"}}
+    (cond
+      (every? #(= ::http-api/success %) [objective-status])
+      {:status 200
+       :body (views/add-question-page "question-create"
+                                      request
+                                      :objective (format-objective objective)
+                                      :doc {:title (str (t' :question-create/doc-title) " to "(:title objective) " | Objective[8]")
+                                            :description (str (t' :question-create/doc-description))})
+       :headers {"Content-Type" "text/html"}}
 
-          (= objective-status ::http-api/not-found) (error-404-response request)
-          :else {:status 500})))
+      (= objective-status ::http-api/not-found) (error-404-response request)
+      :else {:status 500})))
 
 (defn question-list [{{id :id} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)]
@@ -384,8 +402,8 @@
       (= status ::http-api/success)
       {:status 200
        :body (views/invite-writer-page "invite-writer" request
-               :objective (format-objective objective)
-               :doc {:title (str (t' :invite-writer/doc-title) " " (:title objective) " | Objective[8]")})
+                                       :objective (format-objective objective)
+                                       :doc {:title (str (t' :invite-writer/doc-title) " " (:title objective) " | Objective[8]")})
        :headers {"Content-Type" "text/html"}}
 
       (= status ::http-api/not-found)
@@ -413,7 +431,7 @@
 
           ::http-api/invalid-input
           {:status 400}
-          
+
           {:status 502}))
 
       ::fr/invalid
@@ -423,7 +441,7 @@
 
 (defn writer-invitation [{{uuid :uuid} :route-params :keys [t' locale session] :as request}]
   (let [{status :status invitation :result} (http-api/retrieve-invitation-by-uuid uuid)
-         {:keys [objective-id _id] invitation-status :status} invitation]
+        {:keys [objective-id _id] invitation-status :status} invitation]
     (cond
       (= status ::http-api/success)
       (cond
@@ -432,7 +450,7 @@
             response/redirect
             (assoc :session session)
             (assoc-in [:session :invitation] {:uuid uuid :objective-id objective-id :invitation-id _id}))
- 
+
         (= invitation-status "expired")
         (-> (str utils/host-url "/objectives/" objective-id)
             response/redirect
@@ -476,18 +494,18 @@
 (defn decline-invitation [{session :session :as request}]
   (if-let [invitation-credentials (:invitation session)]
     (let [{status :status result :result} (http-api/decline-invitation {:invitation-id (:invitation-id invitation-credentials)
-                                                         :objective-id (:objective-id invitation-credentials)
-                                                         :invitation-uuid (:uuid invitation-credentials)})] 
+                                                                        :objective-id (:objective-id invitation-credentials)
+                                                                        :invitation-uuid (:uuid invitation-credentials)})] 
       (cond
-       (#{::http-api/success ::http-api/invalid-input ::http-api/not-found} status)
+        (#{::http-api/success ::http-api/invalid-input ::http-api/not-found} status)
         (-> (str utils/host-url)
             response/redirect
             (assoc :flash {:type :flash-message
                            :message :invitation-response/invitation-declined-banner-message})
             (assoc :session session)
             remove-invitation-from-session)
-       
-       :else {:status 500}))
+
+        :else {:status 500}))
     {:status 401}))
 
 (defn create-writer [{:keys [session] :as request}]
@@ -533,32 +551,32 @@
 ;;DRAFTS
 
 (defn add-draft-get [{{objective-id :id} :route-params :as request}]
-   (let [{objective-status :status objective :result} (http-api/get-objective (Integer/parseInt objective-id))]
-     (cond
-       (= objective-status ::http-api/success)
-       (if (= "drafting" (:status objective))
-         {:status 200
-          :headers {"Content-Type" "text/html"}      
-          :body (views/add-draft "add-draft" request :objective-id objective-id)} 
-         {:status 401}) 
-       (= objective-status ::http-api/not-found) (error-404-response request)
-       :else {:status 500}))) 
+  (let [{objective-status :status objective :result} (http-api/get-objective (Integer/parseInt objective-id))]
+    (cond
+      (= objective-status ::http-api/success)
+      (if (= "drafting" (:status objective))
+        {:status 200
+         :headers {"Content-Type" "text/html"}      
+         :body (views/add-draft "add-draft" request :objective-id objective-id)} 
+        {:status 401}) 
+      (= objective-status ::http-api/not-found) (error-404-response request)
+      :else {:status 500}))) 
 
 (defn import-draft-get [{{objective-id :id} :route-params :as request}]
-   (let [{objective-status :status objective :result} (http-api/get-objective (Integer/parseInt objective-id))]
-     (cond
-       (= objective-status ::http-api/success)
-       (if (= "drafting" (:status objective))
-         {:status 200
-          :headers {"Content-Type" "text/html"}      
-          :body (views/import-draft "import-draft" request :objective-id objective-id)} 
-         {:status 401}) 
-       (= objective-status ::http-api/not-found) (error-404-response request)
-       :else {:status 500})))
+  (let [{objective-status :status objective :result} (http-api/get-objective (Integer/parseInt objective-id))]
+    (cond
+      (= objective-status ::http-api/success)
+      (if (= "drafting" (:status objective))
+        {:status 200
+         :headers {"Content-Type" "text/html"}      
+         :body (views/import-draft "import-draft" request :objective-id objective-id)} 
+        {:status 401}) 
+      (= objective-status ::http-api/not-found) (error-404-response request)
+      :else {:status 500})))
 
 (defn add-draft-post [{{o-id :id} :route-params
-                        {content :content action :action} :params
-                        :as request}]
+                       {content :content action :action} :params
+                       :as request}]
   (let [parsed-markdown (utils/markdown->hiccup content)
         objective-id (Integer/parseInt o-id)]
     (cond
@@ -686,7 +704,7 @@
                                   :section (update-in section [:section] utils/hiccup->html)
                                   :comments comments)
        :headers {"Content-Type" "text/html"}}
-      
+
       :else {:status 500})))
 
 (defn post-up-vote [request]
@@ -754,6 +772,6 @@
        :header {"Content-Type" "text/html"}  
        :body (views/admin-activity "admin-activity" request
                                    :admin-removals admin-removals)}
-      
+
       (= status ::http-api/error)
       {:status 502})))

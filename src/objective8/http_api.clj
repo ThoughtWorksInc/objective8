@@ -222,6 +222,9 @@
 (defn get-draft-section [section-uri]
   (default-get-call (str utils/host-url "/api/v1" section-uri)))
 
+(defn get-annotations [draft-uri]
+  (default-get-call (str utils/host-url "/api/v1" draft-uri "/annotations")))
+
 ;; VOTES
 
 (defn create-up-down-vote [vote]

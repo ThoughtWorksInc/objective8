@@ -1,0 +1,88 @@
+extends ./layouts/base
+include ./mixins/_view_helpers
+
+block vars
+  - htmlClass = "html-writer-dashboard"
+  - bodyClass = ""
+  - pageTitle = "! Writer dashboard"
+
+
+block content
+  .writer-dashboard
+    .writer-dashboard-header
+      h1.writer-dashboard-title.clj-dashboard-title
+        a.writer-dashboard-title-link.clj-dashboard-title-link(href="/objectives/o_id") !We need more bike lanes in soho
+      .writer-dashboard-stats.clj-dashboard-stats
+        p.dashboard-stat.clj-dashboard-stat-participant
+          span.dashboard-stat-amount.clj-dashboard-stat-participant-amount 5432
+          span.dashboard-stat-title(data-l8n="content:writer-dashboard/participants-stat-title") !Participants
+        p.dashboard-stat.clj-dashboard-stat-starred
+          span.dashboard-stat-amount.clj-dashboard-stat-starred-amount 3210
+          span.dashboard-stat-title(data-l8n="content:writer-dashboard/starred-stat-title") !Starred
+
+    .writer-dashboard-body
+      .writer-dashboard-navigation-menu
+        a.writer-dashboard-navigation-title-link.clj-writer-dashboard-navigation-questions-link(href="#", data-l8n="content:writer-dashboard/questions-navigation-title") !Questions
+        a.writer-dashboard-navigation-title-link.clj-writer-dashboard-navigation-comments-link(href="#", data-l8n="content:writer-dashboard/comments-navigation-title") !Comments
+        a.writer-dashboard-navigation-title-link.clj-writer-dashboard-navigation-annotations-link.on(href="#", data-l8n="content:writer-dashboard/annotations-navigation-title") !Annotations
+      .writer-dashboard-navigation
+        ul.writer-dashboard-navigation-list.clj-dashboard-navigation-list
+          +dashboardNavigationItem(1827, 'on')
+            | !Latest draft
+          +dashboardNavigationItem(999)
+            | !2015-05-10
+          +dashboardNavigationItem(210)
+            | !2015-05-02
+          +dashboardNavigationItem(40)
+            | !2015-05-01
+          +dashboardNavigationItem(999)
+            | !2015-05-10
+          +dashboardNavigationItem(210)
+            | !2015-05-02
+          +dashboardNavigationItem(40)
+            | !2015-05-01
+          +dashboardNavigationItem(999)
+            | !2015-05-10
+          +dashboardNavigationItem(210)
+            | !2015-05-02
+          +dashboardNavigationItem(40)
+            | !2015-05-01
+          +dashboardNavigationItem(999)
+            | !2015-05-10
+          +dashboardNavigationItem(210)
+            | !2015-05-02
+          +dashboardNavigationItem(40)
+            | !2015-05-01
+          +dashboardNavigationItem(999)
+            | !2015-05-10
+          +dashboardNavigationItem(210)
+            | !2015-05-02
+          +dashboardNavigationItem(40)
+            | !2015-05-01
+      
+      .writer-dashboard-content-container#dashboard-content
+        ul.writer-dashboard-filter-list.clj-dashboard-filter-list
+          li.writer-dashboard-filter-list-item
+            a.writer-dashboard-filter-list-item-button.clj-dashboard-filter-up-votes(href="#")
+              i.fa.fa-angle-up
+          li.writer-dashboard-filter-list-item
+            a.writer-dashboard-filter-list-item-button.clj-dashboard-filter-down-votes(href="#")
+              i.fa.fa-angle-down
+          li.writer-dashboard-filter-list-item
+            a.writer-dashboard-filter-list-item-button.clj-dashboard-filter-paper-clip(href="#")
+              i.fa.fa-paperclip
+
+        .writer-dashboard-content.clj-dashboard-content
+          .writer-dashboard-content-stats.clj-dashboard-content-stats
+            p 1827 answers from 970 people:
+          ul.dashboard-comment-list.clj-dashboard-comment-list
+            +dashboardCommentItem('Chris Linseman', '28 April 2015 07:41')
+              | This is a one line commment about the content
+
+            +dashboardCommentItem('Jane Smith', '29 January 2013 23:00', true)
+              | This is a slightly longer comment. Possibly with more insight and relevance
+
+            +dashboardCommentItem('Fake Name', '13 November 2012 09:11')
+              | This is a longer comment that should span multiple lines. It's really just to see how the comments look in the dashboard when there is more text to display
+
+block footerScripts

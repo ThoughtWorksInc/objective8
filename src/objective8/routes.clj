@@ -45,7 +45,8 @@
                                              "/import-draft" {:get :fe/import-draft-get
                                                               :post :fe/import-draft-post}
                                              "/dashboard" {"/questions" {:get :fe/dashboard-questions}
-                                                           "/comments" {:get :fe/dashboard-comments}}}}
+                                                           "/comments" {:get :fe/dashboard-comments}
+                                                           "/annotations" {:get :fe/dashboard-annotations}}}}
     "invitations"       {["/" :uuid] {:get :fe/writer-invitation}}
     "create-profile"    {:get :fe/create-profile-get
                          :post :fe/create-profile-post}

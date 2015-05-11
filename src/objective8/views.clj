@@ -20,6 +20,7 @@
             [objective8.templates.import-draft :as import-draft]
             [objective8.templates.dashboard-questions :as dashboard-questions]
             [objective8.templates.dashboard-comments :as dashboard-comments]
+            [objective8.templates.dashboard-annotations :as dashboard-annotations]
             [objective8.templates.sign-in :as sign-in]  
             [objective8.templates.sign-up :as sign-up]
             [objective8.templates.admin-activity :as admin-activity]
@@ -87,6 +88,7 @@
 (def import-draft (view import-draft/import-draft-page))
 (def dashboard-questions-page (view dashboard-questions/dashboard-questions))
 (def dashboard-comments-page (view dashboard-comments/dashboard-comments))
+(def dashboard-annotations-page (view dashboard-annotations/dashboard-annotations))
 (def sign-in (view sign-in/sign-in-page))
 (def sign-up (view sign-up/sign-up-page))
 (def admin-activity (view admin-activity/admin-activity-page))
