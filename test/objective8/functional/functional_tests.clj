@@ -99,12 +99,12 @@
              (screenshot "create_objective_page")
              (wait-for-title "Create an Objective | Objective[8]")
 
-             (-> (wd/input-text ".func--input-objective-title" "A")
+             (-> (wd/input-text ".func--input-objective-title" "F")
                  (wd/submit))
              (wait-for-element ".func--objective-title-error")
              (screenshot "create_objective_invalid_title")
 
-             (wd/input-text ".func--input-objective-title" "Functional test headline")
+             (wd/input-text ".func--input-objective-title" "unctional test headline")
              (-> ".func--input-objective-background"
                  (wd/input-text 
                    "Functional test description with lots of hipster-ipsum:
