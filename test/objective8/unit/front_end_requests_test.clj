@@ -107,3 +107,30 @@
             (let [comment-data (request->comment-data {:params {:comment ""}}
                                                       USER_ID)]
               comment-data => nil)))
+
+(facts "about transforming requests to writer note data"
+       (fact "extracts the relevant data"
+             (let [note-data (request->writer-note-data {:params {:note "the note"
+                                                                  :note-on-uri "/some/uri"}}
+                                                        USER_ID)]
+               (:data note-data) => {:note "the note"
+                                     :note-on-uri "/some/uri"
+                                     :created-by-id USER_ID}
+               (:status note-data) => ::objective8.front-end-requests/valid
+               (:report note-data) => {}))
+
+       (fact "reports validation errors"
+             (let [note-data (request->writer-note-data {:params {:note ""
+                                                                  :note-on-uri "/some/uri"}}
+                                                        USER_ID)]
+               (:data note-data) => {:note ""
+                                     :note-on-uri "/some/uri"
+                                     :created-by-id USER_ID}
+               (:status note-data) => ::objective8.front-end-requests/invalid
+               (:report note-data) => {:note #{:empty}}))
+
+       (fact "returns nil when data that is not directly provided by the user is invalid"
+             (let [note-data (request->writer-note-data {:params {:note "the note"}}
+                                                        USER_ID)]
+               note-data => nil)))
+

@@ -3,13 +3,6 @@
             [objective8.utils :as utils]
             [objective8.sanitiser :as sanitiser]))
 
-(defn request->writer-note-data
-  "Returns a map of a note if all the parts are in the request params."
-  [{:keys [params] :as request} user-id]
-  (some-> params
-          (utils/select-all-or-nothing [:note-on-uri :note])
-          (assoc :created-by-id user-id)))
-
 (defn request->invitation-info
   "Returns a map with the invitation details if all the parts are in the request. Otherwise return nil"
   [{:keys [params route-params] :as request} user-id]
@@ -62,5 +55,4 @@
 
 (defn flash->removal-data [{:keys [type data] :as flash}]
   (when (= type :flash-data)
-    (utils/select-all-or-nothing data [:removal-uri :removal-sample])) 
-  )
+    (utils/select-all-or-nothing data [:removal-uri :removal-sample])))

@@ -26,14 +26,28 @@
     (html/at dashboard-questions-no-answers-snippet
              [:.clj-dashboard-no-answer-item] (html/content (translations translation-key)))))
 
+(defn apply-writer-note-form-validations [{:keys [doc] :as context} answer nodes]
+  (let [validation-data (get-in doc [:flash :validation])
+        validation-report (:report validation-data)
+        previous-inputs (:data validation-data)
+        is-relevant-answer (= (:uri answer)
+                              (:note-on-uri previous-inputs))]
+    (if is-relevant-answer
+      (html/at nodes
+               [:.clj-writer-note-empty-error] (when (contains? (:note validation-report) :empty) identity)
+               [:.clj-writer-note-item-field] (html/set-attr :value (:note previous-inputs)))
+      (html/at nodes
+               [:.clj-writer-note-empty-error] nil))))
+
 (defn render-answer-without-note [{:keys [ring-request] :as context} answer]
-  (html/at no-writer-note-snippet 
-           [:.clj-dashboard-answer-item-text] (html/content (:answer answer)) 
-           [:.clj-dashboard-answer-item-up-count] (html/content (str (get-in answer [:votes :up]))) 
-           [:.clj-dashboard-answer-item-down-count] (html/content (str (get-in answer [:votes :down]))) 
-           [:.clj-refer] (html/set-attr :value (utils/referer-url ring-request))
-           [:.clj-note-on-uri] (html/set-attr :value (:uri answer))
-           [:.clj-dashboard-writer-note-form] (html/prepend (html/html-snippet (anti-forgery-field)))))
+  (->> (html/at no-writer-note-snippet 
+                [:.clj-dashboard-answer-item-text] (html/content (:answer answer)) 
+                [:.clj-dashboard-answer-item-up-count] (html/content (str (get-in answer [:votes :up]))) 
+                [:.clj-dashboard-answer-item-down-count] (html/content (str (get-in answer [:votes :down]))) 
+                [:.clj-refer] (html/set-attr :value (utils/referer-url ring-request))
+                [:.clj-note-on-uri] (html/set-attr :value (:uri answer))
+                [:.clj-dashboard-writer-note-form] (html/prepend (html/html-snippet (anti-forgery-field))))
+       (apply-writer-note-form-validations context answer)))
 
 (defn render-answer-with-note [context answer]
   (html/at writer-note-snippet

@@ -101,3 +101,20 @@
           (assoc-in [:data :created-by-id] user-id)
           (dissoc :request)))
 
+;; Writer notes
+
+(defn note-validator [request]
+  (let [note (get-in request [:params :note])]
+    (cond-> (initialise-field-validation note)
+      (empty? note) (report-error :empty))))
+
+(defn note-on-uri-validator [request]
+  (when-let [note-on-uri (get-in request [:params :note-on-uri])]
+    (initialise-field-validation note-on-uri)))
+
+(defn request->writer-note-data [{:keys [params] :as request} user-id]
+  (some-> (initialise-request-validation request)
+          (validate :note note-validator)
+          (validate :note-on-uri note-on-uri-validator)
+          (assoc-in [:data :created-by-id] user-id)
+          (dissoc :request)))

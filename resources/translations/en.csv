@@ -146,6 +146,7 @@ writer-dashboard,no-comments-message,There are no comments on this piece of cont
 writer-dashboard,no-comments-with-writer-notes-message,There are no comments with writer notes on this piece of content.
 writer-dashboard,link-button,Dashboard
 writer-dashboard,writer-note-placeholder,Add a reply to the community
+writer-dashboard,writer-note-empty-validation-message,Your response cannot be empty
 dashboard-questions,doc-title,Writer dashboard
 dashboard-questions,doc-description,A summary of engagement with questions and answers for this objective
 dashboard-comments,doc-title,Writer dashboard

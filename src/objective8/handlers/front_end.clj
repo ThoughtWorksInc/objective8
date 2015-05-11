@@ -246,13 +246,20 @@
                                               :selected-comment-target-uri selected-comment-target-uri)}))))
 
 (defn post-writer-note [{:keys [route-params params] :as request}]
-  (let [writer-note-data (helpers/request->writer-note-data request (get (friend/current-authentication) :identity))
-        {status :status} (http-api/post-writer-note writer-note-data)]
-   (cond
-     (= status ::http-api/success)
-     (redirect-to-params-referer request)
-     (= status ::http-api/forbidden)
-     {:status 403})))
+  (if-let [writer-note-data (fr/request->writer-note-data request (get (friend/current-authentication) :identity))]
+    (case (:status writer-note-data)
+      ::fr/valid
+      (let [{status :status} (http-api/post-writer-note (:data writer-note-data))]
+        (cond
+          (= status ::http-api/success)
+          (redirect-to-params-referer request)
+          (= status ::http-api/forbidden)
+          {:status 403}))
+
+      ::fr/invalid
+      (-> (redirect-to-params-referer request)
+          (assoc :flash {:validation (dissoc writer-note-data :status)})))
+    {:status 400}))
 
 ;; COMMENTS
 
