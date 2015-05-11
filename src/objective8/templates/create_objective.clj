@@ -13,7 +13,7 @@
         previous-inputs (:data validation-data)]
     (html/at nodes
              [:.clj-title-length-error] (when (contains? (:title validation-report) :length) identity)
-             [:.clj-input-objective-title] (html/content (:title previous-inputs))
+             [:.clj-input-objective-title] (html/set-attr :value (:title previous-inputs))
 
              [:.clj-description-length-error] (when (contains? (:description validation-report) :length) identity)
              [:.clj-input-objective-background] (html/content (:description previous-inputs)))))

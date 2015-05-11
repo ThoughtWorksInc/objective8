@@ -272,5 +272,4 @@
              (provided
                (http-api/get-comments anything {:sorted-by "up-votes" 
                                                 :filter-type "has-writer-note"}) => {:status ::http-api/success
-                                                                                     :result []}))
-       )
+                                                                                     :result []})))
