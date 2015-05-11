@@ -29,7 +29,30 @@
                       :end-date (utils/string->date-time "2012-12-12")
                       :uri (str "/objectives/" OBJECTIVE_ID)})
 
-
+(facts "about the create objective form"
+       (binding [config/enable-csrf false]
+         (tabular
+          (fact "validation errors are reported"
+                (against-background
+                 (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
+                 (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                                 :result {:_id USER_ID :username "username" :writer-records []}}
+                 (http-api/get-user anything) => {:result {:_id USER_ID :username "username" :writer-records []}})
+                
+                (-> user-session
+                    helpers/sign-in-as-existing-user
+                    (p/request (utils/path-for :fe/create-objective-form-post)
+                               :request-method :post
+                               :params {:title ?title
+                                        :description ?description})
+                    p/follow-redirect
+                    :response
+                    :body) => (contains ?expected-error-message))
+          
+          ?title                           ?description                    ?expected-error-message
+          "12"                             "A description"                 "clj-title-length-error"
+          (helpers/string-of-length 121)   "A description"                 "clj-title-length-error"
+          "A valid title"                  (helpers/string-of-length 5001) "clj-description-length-error")))
 
 (facts "objectives"
        (against-background

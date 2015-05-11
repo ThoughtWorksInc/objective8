@@ -43,8 +43,6 @@
 
 (facts "about the invite writer form"
        (binding [config/enable-csrf false]
-         
-         
          (tabular
           (fact "validation errors are reported"
                 (against-background
