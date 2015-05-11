@@ -13,6 +13,7 @@
 (def USER_ID 1)
 (def OBJECTIVE_ID 234)
 (def QUESTION_ID 42)
+(def TWITTER_ID "twitter-12345")
 (def INVALID_ID "not-an-int-id")
 (def QUESTION_URI (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))
 (def question-view-get-request (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID)))
@@ -23,6 +24,30 @@
 (def default-app (core/app helpers/test-config))
 
 (def user-session (helpers/test-context))
+
+(facts "about creating questions"
+       (binding [config/enable-csrf false]
+         (tabular
+          (fact "validation errors are reported"
+                (against-background
+                 (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
+                 (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                                 :result {:_id USER_ID :username "username" :writer-records []}}
+                 (http-api/get-user anything) => {:result {:_id USER_ID :username "username" :writer-records []}}
+                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                           :result {:_id OBJECTIVE_ID}})
+                (-> user-session
+                    helpers/sign-in-as-existing-user
+                    (p/request (utils/path-for :fe/add-question-form-post :id OBJECTIVE_ID)
+                               :request-method :post
+                               :params {:question ?question})
+                    p/follow-redirect
+                    :response
+                    :body) => (contains ?expected-error-message))
+          
+          ?question                        ?expected-error-message
+          (helpers/string-of-length 9)     "clj-question-length-error"
+          (helpers/string-of-length 501)   "clj-question-length-error")))
 
 (facts "about questions"
        (binding [config/enable-csrf false]
