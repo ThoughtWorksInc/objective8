@@ -41,35 +41,6 @@
 
 (def writer-for-objective {:_id USER_ID :username "username" :writer-records [{:objective-id OBJECTIVE_ID}]})
 
-(facts "about the invite writer form"
-       (binding [config/enable-csrf false]
-         (tabular
-          (fact "validation errors are reported"
-                (against-background
-                 (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
-                 (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                                 :result writer-for-objective}
-                 (http-api/get-user anything) => {:result writer-for-objective}
-                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success})
-                (-> user-session
-                    helpers/sign-in-as-existing-user
-                    (p/request (utils/path-for :fe/invitation-form-post :id OBJECTIVE_ID)
-                               :request-method :post
-                               :params {:writer-name ?writer-name
-                                        :writer-email ?writer-email
-                                        :reason ?reason})
-                    p/follow-redirect
-                    :response
-                    :body) => (contains ?expected-error-message))
-          
-          ?writer-name                     ?writer-email   ?reason                           ?expected-error-message
-          ""                               "a@b.com"       "a reason"                        "clj-writer-name-empty-error"
-          (helpers/string-of-length 51)    "a@b.com"       "a reason"                        "clj-writer-name-length-error"
-          "Jenny"                          ""              "a reason"                        "clj-writer-email-empty-error"
-          "Jenny"                          "invalid-email" "a reason"                        "clj-writer-email-invalid-error"
-          "Jenny"                          "a@b.com"       ""                                "clj-writer-reason-empty-error"
-          "Jenny"                          "a@b.com"       (helpers/string-of-length 5001)   "clj-writer-reason-length-error")))
-
 (facts "about writers"
        (binding [config/enable-csrf false]
          (fact "the objective owner can invite a policy writer on an objective"

@@ -17,7 +17,6 @@
 (def participant {:_id USER_ID :username "username" :writer-records []})
 (def writer-for-objective {:_id USER_ID :username "username" :writer-records [{:objective-id OBJECTIVE_ID}]})
 
-(def user participant)
 (def objective {:_id OBJECTIVE_ID :status "open"})
 (def objective-in-drafting {:_id OBJECTIVE_ID :status "drafting"})
 (def question {:_id QUESTION_ID :objective-id OBJECTIVE_ID})
@@ -28,13 +27,14 @@
                     :uri (str "/objective/" OBJECTIVE_ID "/drafts/" DRAFT_ID "/sections/" SECTION_LABEL)})
 
 (def ^:dynamic the-objective objective)
+(def ^:dynamic the-user participant)
 
 (background
  ;; Sign-in background
  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
  (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                 :result user}
- (http-api/get-user anything) => {:result user}
+                                                 :result the-user}
+ (http-api/get-user anything) => {:result the-user}
 
  ;; Test data background
  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
@@ -154,4 +154,26 @@
  ""                              "clj-comment-empty-error"
  (ih/string-of-length 501)       "clj-comment-length-error")
 
-
+(facts "about inviting writers"
+       (binding [config/enable-csrf false
+                 the-user           writer-for-objective]
+         (tabular
+          (fact "validation errors are reported"
+                (-> user-session
+                    ih/sign-in-as-existing-user
+                    (p/request (utils/path-for :fe/invitation-form-post :id OBJECTIVE_ID)
+                               :request-method :post
+                               :params {:writer-name ?writer-name
+                                        :writer-email ?writer-email
+                                        :reason ?reason})
+                    p/follow-redirect
+                    :response
+                    :body) => (contains ?expected-error-message))
+          
+          ?writer-name                     ?writer-email   ?reason                           ?expected-error-message
+          ""                               "a@b.com"       "a reason"                        "clj-writer-name-empty-error"
+          (ih/string-of-length 51)         "a@b.com"       "a reason"                        "clj-writer-name-length-error"
+          "Jenny"                          ""              "a reason"                        "clj-writer-email-empty-error"
+          "Jenny"                          "invalid-email" "a reason"                        "clj-writer-email-invalid-error"
+          "Jenny"                          "a@b.com"       ""                                "clj-writer-reason-empty-error"
+          "Jenny"                          "a@b.com"       (ih/string-of-length 5001)        "clj-writer-reason-length-error")))
