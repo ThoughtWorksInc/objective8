@@ -177,3 +177,45 @@
           "Jenny"                          "invalid-email" "a reason"                        "clj-writer-email-invalid-error"
           "Jenny"                          "a@b.com"       ""                                "clj-writer-reason-empty-error"
           "Jenny"                          "a@b.com"       (ih/string-of-length 5001)        "clj-writer-reason-length-error")))
+
+(tabular
+ (facts "about writer notes"
+        (binding [config/enable-csrf false
+                  the-user           writer-for-objective]
+          (fact "validation errors are reported on the questions dashboard"
+                (against-background
+                 (http-api/retrieve-questions OBJECTIVE_ID anything) => {:status ::http-api/success
+                                                                         :result [{}]}
+                 (http-api/retrieve-answers anything anything) => {:status ::http-api/success
+                                                                   :result [{:uri "/answer/uri"}]})
+                (-> user-session
+                    ih/sign-in-as-existing-user
+                    (p/request (utils/path-for :fe/post-writer-note)
+                               :request-method :post
+                               :params {:note ?note
+                                        :note-on-uri "/answer/uri"
+                                        :refer (utils/local-path-for :fe/dashboard-questions :id OBJECTIVE_ID)})
+                    p/follow-redirect
+                    :response
+                    :body) => (contains ?expected-error-message))
+
+          (fact "validation errors are reported on the comments dashboard"
+                (against-background
+                 (http-api/get-all-drafts anything) => {:status ::http-api/success
+                                                        :result [{:_created_at "2015-04-04T12:00:00.000Z"}]}
+                 (http-api/get-comments anything anything) => {:status ::http-api/success
+                                                               :result [{:uri "/comment/uri"
+                                                                         :_created_at "2015-01-01T01:01:00.000Z"}]})
+                (-> user-session
+                    ih/sign-in-as-existing-user
+                    (p/request (utils/path-for :fe/post-writer-note)
+                               :request-method :post
+                               :params {:note ?note
+                                        :note-on-uri "/comment/uri"
+                                        :refer (utils/local-path-for :fe/dashboard-comments :id OBJECTIVE_ID)})
+                    p/follow-redirect
+                    :response
+                    :body) => (contains ?expected-error-message))))
+
+ ?note     ?expected-error-message
+ ""        "clj-writer-note-empty-error")
