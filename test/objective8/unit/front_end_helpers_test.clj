@@ -11,18 +11,6 @@
 
 (def date-time (utils/string->date-time "2015-01-03"))
 
-
-(fact "creates invited-writer-info map from a request"
-      (let [writer (request->invitation-info {:route-params {:id (str OBJECTIVE_ID)} 
-                                              :params {:writer-name "Jenny" 
-                                                       :reason "Just because"
-                                                       :writer-email "e@mail.com"}} USER_ID)]
-        writer => {:writer-name "Jenny"
-                   :reason "Just because"
-                   :writer-email "e@mail.com"
-                   :objective-id OBJECTIVE_ID
-                   :invited-by-id USER_ID}))
-
 (fact "creates draft-info map from a request"
       (let [html-string "<p>Hello!</p>"
             draft-info (request->draft-info {:params {:id (str OBJECTIVE_ID)

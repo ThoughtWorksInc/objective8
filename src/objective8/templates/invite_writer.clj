@@ -25,20 +25,37 @@
     (invite-writer-form) 
     (sign-in-to-invite-writer context)))
 
+(defn apply-validations [{:keys [doc] :as context} nodes]
+  (let [validation-data (get-in doc [:flash :validation])
+        validation-report (:report validation-data)
+        previous-inputs (:data validation-data)]
+    (html/at nodes
+             [:.clj-writer-name-empty-error] (when (contains? (:writer-name validation-report) :empty) identity)
+             [:.clj-writer-name-length-error] (when (contains? (:writer-name validation-report) :length) identity)
+             [:.clj-writer-email-empty-error] (when (contains? (:writer-email validation-report) :empty) identity)
+             [:.clj-writer-email-invalid-error] (when (contains? (:writer-email validation-report) :invalid) identity)
+             [:.clj-writer-reason-empty-error] (when (contains? (:reason validation-report) :empty) identity)
+             [:.clj-writer-reason-length-error] (when (contains? (:reason validation-report) :length) identity)
+
+             [:.clj-writer-name-field] (html/set-attr :value (:writer-name previous-inputs))
+             [:.clj-writer-email-field] (html/set-attr :value (:writer-email previous-inputs))
+             [:.clj-invitation-reason-field] (html/content (:reason previous-inputs)))))
+
 (defn invite-writer-page [{:keys [data doc] :as context}]
   (let [objective (:objective data)]
     (apply str
            (html/emit*
              (tf/translate context
                            (pf/add-google-analytics
-                             (html/at invite-writer-template
-                                      [:title] (html/content (:title doc))
-                                      [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
-                                      [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
-                                      [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
+                            (apply-validations context
+                                               (html/at invite-writer-template
+                                                        [:title] (html/content (:title doc))
+                                                        [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
+                                                        [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+                                                        [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
 
-                                      [:.clj-objective-navigation-item-objective] (html/set-attr :href (str "/objectives/" (:_id objective)))
-                                      [:.clj-objective-title] (html/content (:title objective))
+                                                        [:.clj-objective-navigation-item-objective] (html/set-attr :href (str "/objectives/" (:_id objective)))
+                                                        [:.clj-objective-title] (html/content (:title objective))
 
-                                      [:.clj-invite-a-writer-form] (html/content (invite-writer context))
-                                      [:.clj-invite-a-writer-form] (html/set-attr :action (str "/objectives/" (:_id objective) "/writer-invitations")))))))))
+                                                        [:.clj-invite-a-writer-form] (html/content (invite-writer context))
+                                                        [:.clj-invite-a-writer-form] (html/set-attr :action (str "/objectives/" (:_id objective) "/writer-invitations"))))))))))

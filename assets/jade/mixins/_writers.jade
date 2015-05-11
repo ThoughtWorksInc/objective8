@@ -3,16 +3,22 @@ mixin inviteWriterForm()
     p.form-field
       label.form-field-label(for="writer-name")
         span.form-field-label-title(data-l8n="content:invite-writer/writer-name-label") !Writer name
-        input.func--writer-name(id="writer-name", name="writer-name", type="text", pattern=".{3,}", title="", maxlength="50", required="required", data-l8n="attr/title:invite-writer/writer-name-attr-title")
+        input.clj-writer-name-field.func--writer-name(id="writer-name", name="writer-name", type="text", pattern=".{3,}", title="", maxlength="50", required="required", data-l8n="attr/title:invite-writer/writer-name-attr-title")
+        span.user-input-error-message.clj-writer-name-empty-error(data-l8n="content:invite-writer/writer-name-empty-validation-message") !You must provide a name
+        span.user-input-error-message.clj-writer-name-length-error(data-l8n="content:invite-writer/writer-name-length-validation-message") !Names can be at most 50 characters
     p.form-field
       label.form-field-label(for="writer-email")
         span.form-field-label-title(data-l8n="content:invite-writer/writer-email-label") !Writer email
-        input.func--writer-email(id="writer-email", name="writer-email", type="email", required="required", data-l8n="attr/title:invite-writer/writer-email-attr-title")
+        input.clj-writer-email-field.func--writer-email(id="writer-email", name="writer-email", type="email", required="required", data-l8n="attr/title:invite-writer/writer-email-attr-title")
+        span.user-input-error-message.clj-writer-email-empty-error(data-l8n="content:invite-writer/writer-email-empty-validation-message") !You must provide an email address
+        span.user-input-error-message.clj-writer-email-invalid-error(data-l8n="content:invite-writer/writer-email-invalid-validation-message") !The email address is invalid
     p.form-field
       label(for="reason")
         span.form-field-label-title(data-l8n="content:invite-writer/writer-reason-label") !They should help draft this policy, because:
         span.label-helper(data-l8n="content:invite-writer/writer-reason-label-helper") !This will be displayed on the objective writer list
-        textarea.func--writer-reason(id="reason", name="reason", rows="3", cols="10", maxlength="1000", title="Reasons are a maximum length of 1000 characters", required="required", data-l8n="attr/title:invite-writer/writer-reason-attr-title")
+        textarea.clj-invitation-reason-field.func--writer-reason(id="reason", name="reason", rows="3", cols="10", maxlength="5000", title="Reasons are a maximum length of 1000 characters", required="required", data-l8n="attr/title:invite-writer/writer-reason-attr-title")
+        span.user-input-error-message.clj-writer-reason-empty-error(data-l8n="content:invite-writer/writer-reason-empty-validation-message") !You must provide a reason for inviting this person
+        span.user-input-error-message.clj-writer-reason-length-error(data-l8n="content:invite-writer/writer-reason-length-validation-message") !Your reason can be at most 5000 characters
     button.button.func--invite-writer(type="submit", data-l8n="content:invite-writer/invite-button") !Create an invite
 
 mixin writerItem(name, href, photo)

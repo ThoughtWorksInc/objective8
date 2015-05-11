@@ -3,15 +3,6 @@
             [objective8.utils :as utils]
             [objective8.sanitiser :as sanitiser]))
 
-(defn request->invitation-info
-  "Returns a map with the invitation details if all the parts are in the request. Otherwise return nil"
-  [{:keys [params route-params] :as request} user-id]
-  (when-let [objective-id (some-> (:id route-params)
-                                  Integer/parseInt)]
-    (some-> params
-            (utils/select-all-or-nothing [:writer-name :writer-email :reason])
-            (assoc :objective-id objective-id :invited-by-id user-id))))
-
 (defn request->profile-info [{:keys [params] :as request} user-id]
   (some-> params
           (utils/select-all-or-nothing [:name :biog])

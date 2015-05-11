@@ -286,6 +286,12 @@ invite-writer,writer-name-attr-title,Writer names are a maximum length of 50 cha
 invite-writer,writer-email-attr-title,Writer email must be valid email address
 invite-writer,writer-reason-attr-title,Reasons are a maximum length of 1000 characters
 invite-writer,invite-button,Create an invite
+invite-writer,writer-name-empty-validation-message,You must provide a name
+invite-writer,writer-name-length-validation-message,Names can be at most 50 characters
+invite-writer,writer-email-empty-validation-message,You must provide an email address
+invite-writer,writer-email-invalid-validation-message,The email address is invalid
+invite-writer,writer-reason-empty-validation-message,You must provide a reason for inviting this person
+invite-writer,writer-reason-length-validation-message,Your reason can be at most 5000 characters
 invitation,writer-name-title,Writer names are a maximum length of 50 characters
 invitation,reason-title,Reasons are a maximum length of 1000 characters
 invitation,reason-label,"They should help draft this policy, because: "

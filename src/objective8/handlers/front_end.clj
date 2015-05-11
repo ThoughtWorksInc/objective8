@@ -382,33 +382,43 @@
         {status :status objective :result} (http-api/get-objective objective-id)]
     (cond
       (= status ::http-api/success)
-
       {:status 200
        :body (views/invite-writer-page "invite-writer" request
                :objective (format-objective objective)
                :doc {:title (str (t' :invite-writer/doc-title) " " (:title objective) " | Objective[8]")})
        :headers {"Content-Type" "text/html"}}
 
-      (= status ::http-api/not-found) (error-404-response request)
+      (= status ::http-api/not-found)
+      (error-404-response request)
+
       :else {:status 500})))
 
 (defn writers-list [{{id :id} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)]
     (response/redirect (utils/path-for :fe/objective :id objective-id))))
 
-(defn invitation-form-post [{:keys [t' locale] :as request}]
-  (if-let [invitation (helpers/request->invitation-info request (get (friend/current-authentication) :identity))]
-    (let [{status :status stored-invitation :result} (http-api/create-invitation invitation)]
+(defn invitation-form-post [{:keys [t' locale route-params] :as request}]
+  (if-let [invitation-data (fr/request->invitation-data request (get (friend/current-authentication) :identity))]
+    (case (:status invitation-data)
+      ::fr/valid
+      (let [{status :status stored-invitation :result} (http-api/create-invitation (:data invitation-data))]
+        (case status
+          ::http-api/success
+          (let [objective-url (str utils/host-url "/objectives/" (:objective-id stored-invitation))
+                invitation-url (str utils/host-url "/invitations/" (:uuid stored-invitation))]
+            (-> (response/redirect objective-url)
+                (assoc :flash {:type :invitation
+                               :invitation-url invitation-url
+                               :writer-email (:writer-email stored-invitation)})))
 
-      (cond
-        (= status ::http-api/success)
-        (let [objective-url (str utils/host-url "/objectives/" (:objective-id stored-invitation))
-              invitation-url (str utils/host-url "/invitations/" (:uuid stored-invitation))]
-          (assoc (response/redirect objective-url) :flash {:type :invitation
-                                                           :invitation-url invitation-url
-                                                           :writer-email (:writer-email stored-invitation)}))
-        (= status ::http-api/invalid-input) {:status 400}
-        :else {:status 502}))
+          ::http-api/invalid-input
+          {:status 400}
+          
+          {:status 502}))
+
+      ::fr/invalid
+      (-> (response/redirect (utils/path-for :fe/invite-writer :id (:id route-params)))
+          (assoc :flash {:validation (dissoc invitation-data :status)})))
     {:status 400}))
 
 (defn writer-invitation [{{uuid :uuid} :route-params :keys [t' locale session] :as request}]

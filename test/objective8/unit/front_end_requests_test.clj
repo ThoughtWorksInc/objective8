@@ -19,6 +19,21 @@
 (defn string-of-length [l]
   (apply str (repeat l "x")))
 
+(facts "about valid email addresses"
+       (fact "they contain exactly one @ symbol"
+             (valid-email? "a@b") => truthy
+             (valid-email? "a@b.com") => truthy
+             (valid-email? "12345") => falsey
+             (valid-email? "a@b@c") => falsey)
+       
+       (fact "the @ symbol is not in the first or last position"
+             (valid-email? "@abc") => falsey
+             (valid-email? "abc@") => falsey)
+       
+       (fact "they contains no spaces"
+             (valid-email? "a b@cd") => falsey
+             (valid-email? "ab@c d") => falsey))
+
 (facts "about transforming requests to objective-data"
        (fact "creates an objective from a request"
              (let [objective-data (request->objective-data {:params test-objective} USER_ID date)]
@@ -107,6 +122,55 @@
             (let [comment-data (request->comment-data {:params {:comment ""}}
                                                       USER_ID)]
               comment-data => nil)))
+
+(facts "about transforming requests to writer invitation data"
+       (fact "extracts the relevant data"
+             (let [invitation-data (request->invitation-data {:params {:writer-name "Jenny"
+                                                                       :reason "Just because"
+                                                                       :writer-email "writer@email.com"}
+                                                              :route-params {:id (str OBJECTIVE_ID)}}
+                                                             USER_ID)]
+               (:data invitation-data) => {:writer-name "Jenny"
+                                           :reason "Just because"
+                                           :writer-email "writer@email.com"
+                                           :objective-id OBJECTIVE_ID
+                                           :invited-by-id USER_ID}
+               (:status invitation-data) => ::objective8.front-end-requests/valid
+               (:report invitation-data) => {}))
+
+       (tabular
+        (fact "reports validation errors"
+              (let [invitation-data (request->invitation-data {:params {:writer-name ?writer-name
+                                                                        :reason ?reason
+                                                                        :writer-email ?writer-email}
+                                                               :route-params {:id (str OBJECTIVE_ID)}}
+                                                              USER_ID)]
+                (:data invitation-data) => {:writer-name (clojure.string/trim ?writer-name)
+                                            :reason (clojure.string/trim ?reason)
+                                            :writer-email (clojure.string/trim ?writer-email)
+                                            :objective-id OBJECTIVE_ID
+                                            :invited-by-id USER_ID}
+                (:status invitation-data) => ::objective8.front-end-requests/invalid
+                (:report invitation-data) => ?report))
+        ?writer-name           ?reason                 ?writer-email    ?report
+        ""                     "a reason"              "a@b.com"        {:writer-name #{:empty}}
+        "    "                 "a reason"              "a@b.com"        {:writer-name #{:empty}}
+        (string-of-length 51)  "a reason"              "a@b.com"        {:writer-name #{:length}}
+        "Jenny"                ""                      "a@b.com"        {:reason #{:empty}}
+        "Jenny"                (string-of-length 5001) "a@b.com"        {:reason #{:length}}
+        "Jenny"                "a reason"              ""               {:writer-email #{:empty}}
+        "Jenny"                "a reason"              "a"              {:writer-email #{:invalid}}
+        ""                     " "                     ""               {:writer-name #{:empty}
+                                                                         :reason #{:empty}
+                                                                         :writer-email #{:empty}})
+
+       (fact "returns nil when data that is not directly provided by the user is invalid"
+             (let [invitation-data (request->invitation-data {:params {:writer-name "Jenny"
+                                                                       :reason "a reason"
+                                                                       :writer-email "a@b"
+                                                                       :objective-id nil}}
+                                                              USER_ID)]
+               invitation-data => nil)))
 
 (facts "about transforming requests to writer note data"
        (fact "extracts the relevant data"

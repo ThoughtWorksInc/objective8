@@ -71,6 +71,11 @@
   []
   (p/session (core/app test-config)))
 
+;; Test data generators
+
+(defn string-of-length [l]
+  (apply str (repeat l "x")))
+
 ;; Test helpers
 (defn count-matches [the-string target-regex]
   (count (re-seq (re-pattern target-regex) the-string)))
