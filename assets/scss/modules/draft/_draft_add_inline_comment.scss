@@ -24,6 +24,9 @@
       top: -($hit_area_spacer/2);
       left: -($hit_area_spacer/2);
     }
+    &:focus {
+      outline: none;
+    }
     i {
       position: absolute;
       top: $hit_area_spacer/2;
