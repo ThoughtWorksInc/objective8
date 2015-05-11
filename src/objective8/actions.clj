@@ -96,7 +96,7 @@
     (assoc section :comments comments)))
 
 (defn get-annotations-for-draft [draft-uri]
-  (let [annotated-sections (drafts/get-annotated-sections draft-uri)]
+  (let [annotated-sections (drafts/get-annotated-sections-with-section-content draft-uri)]
     {:status ::success :result (map merge-comments-with-section annotated-sections)}))
 
 (defn create-section-comment! [{:keys [objective-id draft-id section-label] :as section-data} comment-data]

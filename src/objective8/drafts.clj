@@ -7,6 +7,9 @@
 (defn uri-for-draft [{:keys [_id objective-id] :as draft}]
   (str "/objectives/" objective-id "/drafts/" _id))
 
+(defn uri-for-section [{:keys [objective-id draft-id section-label] :as section}]
+  (str "/objectives/" objective-id "/drafts/" draft-id "/sections/" section-label))
+
 (defn insert-section-label [element label]
   (let [{:keys [element-without-content content]} (utils/split-hiccup-element element)
         section-label-attr {:data-section-label label}]
@@ -96,9 +99,12 @@
        (map #(dissoc % :created_at_sql_time :global-id))
        (map #(utils/update-in-self % [:uri] uri-for-draft))))
 
+(defn get-ordered-section-labels-for-draft-hiccup [hiccup]
+  (map get-section-label hiccup))
+
 (defn get-section-labels-for-draft-uri [draft-uri]
   (let [{:keys [content] :as draft} (retrieve-draft-by-uri draft-uri)]
-    (map get-section-label content)))
+    (get-ordered-section-labels-for-draft-hiccup content)))
 
 (defn has-section-label? [section-label section]
   (some-> (second section)
@@ -118,5 +124,26 @@
            :uri section-uri
            :objective-id objective-id})))))
 
-(defn get-annotated-sections [draft-uri])
+(defn get-section-label-from-uri [section-uri]
+  (:section-label (uris/uri->section-data section-uri)))
 
+(defn merge-section-content-with-section [hiccup section]
+  (assoc section :section (get-section-from-hiccup hiccup (-> (:uri section)
+                                                              get-section-label-from-uri))))
+(defn retrieve-annotated-sections [sections-uri]
+  (->> (storage/pg-retrieve (uris/uri->query sections-uri))
+       :result
+       (map #(dissoc % :global-id :_id :_created_at :entity)) 
+       (map #(utils/update-in-self % [:uri] uri-for-section))  
+       (map #(dissoc % :draft-id :section-label))))
+
+(defn get-annotated-sections-with-section-content [draft-uri]
+  (let [sections-uri (str draft-uri "/sections")
+        annotated-sections (retrieve-annotated-sections sections-uri)
+        draft-content (:content (retrieve-draft-by-uri draft-uri))
+        ordered-section-labels (get-ordered-section-labels-for-draft-hiccup draft-content)
+        ordered-annotated-sections (sort-by 
+                                     #((into {} (map-indexed (fn [i e] [e i]) ordered-section-labels)) 
+                                       (get-section-label-from-uri (:uri %))) 
+                                     annotated-sections)]
+    (map #(merge-section-content-with-section draft-content %) ordered-annotated-sections)))

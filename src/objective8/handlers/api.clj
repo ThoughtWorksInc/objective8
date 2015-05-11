@@ -477,7 +477,12 @@
 
 (defn get-annotations [{:keys [route-params] :as request}]
   (let [draft-uri (str "/objectives/" (:id route-params) "/drafts/" (:d-id route-params))
-        annotations (actions/get-annotations-for-draft draft-uri)]))
+        {status :status annotations :result} (actions/get-annotations-for-draft draft-uri)]
+    (if (= status ::actions/success)
+      (-> annotations
+          response/response
+          (response/content-type "application/json"))
+      (response/not-found ""))))
 
 (defn post-up-down-vote [request]
   (try

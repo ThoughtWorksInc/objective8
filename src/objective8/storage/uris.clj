@@ -6,7 +6,8 @@
                                                 ["/questions/" [#"\d+" :question-id]] {"" :question
                                                                                        ["/answers/" [#"\d+" :answer-id]] :answer}
                                                 ["/drafts/" [#"\d+" :draft-id]] {"" :draft
-                                                                                 ["/sections/" [#"[0-9a-f]{8}" :section-label]] :section}}
+                                                                                 "/sections" {"" :sections 
+                                                                                              ["/" [#"[0-9a-f]{8}" :section-label]] :section}}}
         ["users/" [#"\d+" :user-id]] :user
         ["comments/" [#"\d+" :comment-id]] :comment
         ["meta/stars/" [#"\d+" :star-id]] :star}])
@@ -25,6 +26,10 @@
         :section {:entity :section
                   :draft-id (Integer/parseInt (:draft-id route-params))
                   :section-label (:section-label route-params)}
+
+        :sections {:entity :section
+                   :draft-id (Integer/parseInt (:draft-id route-params))
+                   :objective-id (Integer/parseInt (:objective-id route-params))}
 
         :question {:entity :question
                    :objective-id (Integer/parseInt (:objective-id route-params))

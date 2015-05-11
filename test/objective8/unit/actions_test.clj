@@ -170,8 +170,9 @@
                                                                          :comments [:annotation]}]}
 
              (provided
-               (drafts/get-annotated-sections DRAFT_URI) => [{:uri :section-uri :objective-id OBJECTIVE_ID
-                                                              :section :some-hiccup}] 
+               (drafts/get-annotated-sections-with-section-content DRAFT_URI) => [{:uri :section-uri 
+                                                                                   :objective-id OBJECTIVE_ID
+                                                                                   :section :some-hiccup}] 
                (comments/get-comments :section-uri {}) => [:annotation])))
 
 (def STAR_ID 47)

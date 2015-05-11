@@ -152,18 +152,22 @@
                                 (helpers/truncate-tables)))
           (after :facts (helpers/truncate-tables))]
          
-         (future-fact "gets all draft annotations with the annotated section" 
+         (fact "gets all draft annotations with the annotated section" 
                (let [{draft-id :_id objective-id :objective-id :as draft} (sh/store-a-draft {:content draft-content}) 
                      section-data {:objective-id objective-id
                                    :draft-id draft-id
                                    :section-label section-label} 
-                     section-comment (actions/create-section-comment! section-data {:comment "section comment" :created-by-id (:submitter-id draft)})] 
+                     comment-for-this-section {:comment "section comment" :created-by-id (:submitter-id draft)}
+                     _ (actions/create-section-comment! section-data comment-for-this-section)] 
                  (get-in (p/request app (utils/path-for :api/get-annotations
                                                         :id objective-id
                                                         :d-id draft-id))
-                         [:response :body]) => (helpers/json-contains [{:section section
-                                                                        :uri (str "/objectives/" objective-id
-                                                                                  "/drafts/" draft-id
-                                                                                  "/sections/" section-label)
-                                                                        :objective-id objective-id
-                                                                        :comments [section-comment]}])))))
+                         [:response :body]) => (helpers/json-contains 
+                                                 [(just 
+                                                    {:section section
+                                                     :uri (str "/objectives/" objective-id
+                                                               "/drafts/" draft-id
+                                                               "/sections/" section-label)
+                                                     :objective-id objective-id
+                                                     :comments (just 
+                                                                 [(contains comment-for-this-section)])})])))))
