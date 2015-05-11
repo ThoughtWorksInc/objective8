@@ -331,16 +331,16 @@
       (= ::http-api/success question-status)
       (let [{answer-status :status answers :result} (http-api/retrieve-answers (:uri question))
             {objective-status :status objective :result} (http-api/get-objective (:objective-id question))]
-      (if (every? #(= ::http-api/success %) [answer-status objective-status])
-        {:status 200
-         :headers {"Content-Type" "text/html"}
-         :body (views/question-page "question-page" request
-                                    :objective (format-objective objective)
-                                    :question question
-                                    :answers answers
-                                    :doc {:title (:question question)
-                                          :description (:question question)})}
-        {:status 500}))
+        (if (every? #(= ::http-api/success %) [answer-status objective-status])
+          {:status 200
+           :headers {"Content-Type" "text/html"}
+           :body (views/question-page "question-page" request
+                                      :objective (format-objective objective)
+                                      :question question
+                                      :answers answers
+                                      :doc {:title (:question question)
+                                            :description (:question question)})}
+          {:status 500}))
 
       (= question-status ::http-api/not-found) (error-404-response request)
 

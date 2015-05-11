@@ -30,16 +30,30 @@
     (html/at dashboard-comments-no-comments-snippet
              [:.clj-dashboard-no-comment-item] (html/content (translations translation-key)))))
 
+(defn apply-writer-note-form-validations [{:keys [doc] :as context} comment nodes]
+  (let [validation-data (get-in doc [:flash :validation])
+        validation-report (:report validation-data)
+        previous-inputs (:data validation-data)
+        is-relevant-comment (= (:uri comment)
+                               (:note-on-uri previous-inputs))]
+    (if is-relevant-comment
+      (html/at nodes
+               [:.clj-writer-note-empty-error] (when (contains? (:note validation-report) :empty) identity)
+               [:.clj-writer-note-item-field] (html/set-attr :value (:note previous-inputs)))
+      (html/at nodes
+               [:.clj-writer-note-empty-error] nil))))
+
 (defn render-comment-without-note [{:keys [ring-request] :as context} comment]
-    (html/at no-writer-note-snippet
-             [:.clj-dashboard-comment-text] (html/content (:comment comment))
-             [:.clj-dashboard-comment-author] (html/content (:username comment))
-             [:.clj-dashboard-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
-             [:.clj-dashboard-comment-up-count] (html/content (str (get-in comment [:votes :up])))
-             [:.clj-dashboard-comment-down-count] (html/content (str (get-in comment [:votes :down])) )
-             [:.clj-refer] (html/set-attr :value (utils/referer-url ring-request))
-            [:.clj-note-on-uri] (html/set-attr :value (:uri comment))
-            [:.clj-dashboard-writer-note-form] (html/prepend (html/html-snippet (anti-forgery-field))) ))
+  (->> (html/at no-writer-note-snippet
+                [:.clj-dashboard-comment-text] (html/content (:comment comment))
+                [:.clj-dashboard-comment-author] (html/content (:username comment))
+                [:.clj-dashboard-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
+                [:.clj-dashboard-comment-up-count] (html/content (str (get-in comment [:votes :up])))
+                [:.clj-dashboard-comment-down-count] (html/content (str (get-in comment [:votes :down])) )
+                [:.clj-refer] (html/set-attr :value (utils/referer-url ring-request))
+                [:.clj-note-on-uri] (html/set-attr :value (:uri comment))
+                [:.clj-dashboard-writer-note-form] (html/prepend (html/html-snippet (anti-forgery-field))))
+       (apply-writer-note-form-validations context comment)))
 
 (defn render-comment-with-note [context comment]
  (html/at writer-note-snippet

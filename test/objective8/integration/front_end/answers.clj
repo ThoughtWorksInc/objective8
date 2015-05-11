@@ -15,32 +15,6 @@
 
 (def user-session (helpers/test-context))
 
-(facts "about creating answers"
-       (binding [config/enable-csrf false]
-         (tabular
-          (fact "validation errors are reported"
-                (against-background
-                 (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
-                 (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                                 :result {:_id USER_ID :username "username" :writer-records []}}
-                 (http-api/get-user anything) => {:result {:_id USER_ID :username "username" :writer-records []}}
-                 (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success}
-                 (http-api/retrieve-answers anything) => {:status ::http-api/success :result []}
-                 (http-api/get-objective anything) => {:status ::http-api/success :result {:_id OBJECTIVE_ID :status "open"}})
-                
-                (-> user-session
-                    helpers/sign-in-as-existing-user
-                    (p/request (utils/path-for :fe/add-answer-form-post :id OBJECTIVE_ID :q-id QUESTION_ID)
-                               :request-method :post
-                               :params {:answer ?answer})
-                    p/follow-redirect
-                    :response
-                    :body) => (contains ?expected-error-message))
-          
-          ?answer                          ?expected-error-message
-          ""                               "clj-answer-empty-error"
-          (helpers/string-of-length 501)   "clj-answer-length-error")))
-
 (facts "answers"
        (binding [config/enable-csrf false]
          (fact "authorised user can post and retrieve answer to a question"

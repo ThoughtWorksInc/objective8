@@ -414,5 +414,4 @@
                    {status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/draft-section :id OBJECTIVE_ID :d-id DRAFT_ID :section-label SECTION_LABEL))
                                                    :response)]
-               body => (contains (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID "\""))))  
-       )
+               body => (contains (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID "\"")))))

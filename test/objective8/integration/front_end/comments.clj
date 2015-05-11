@@ -16,6 +16,8 @@
 (def GLOBAL_ID 223)
 (def OBJECTIVE_URI (str "/objectives/" OBJECTIVE_ID))
 
+(def user-session (helpers/test-context))
+
 (facts "comments"
        (binding [config/enable-csrf false]
          (fact "authorised user can post and retrieve comment against an objective"
@@ -33,8 +35,7 @@
                  (oauth/access-token anything anything anything) => {:user_id USER_ID}
                  (http-api/create-user anything) => {:status ::http-api/success
                                                      :result {:_id USER_ID}})
-               (let [user-session (helpers/test-context)
-                     params {:comment "The comment"
+               (let [params {:comment "The comment"
                              :refer (str "/objectives/" OBJECTIVE_ID)
                              :comment-on-uri OBJECTIVE_URI}
                      {response :response} (-> user-session

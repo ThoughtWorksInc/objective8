@@ -81,17 +81,21 @@
               (:status answer-data) => ::objective8.front-end-requests/valid
               (:report answer-data) => {}))
 
-      (fact "reports validation errors"
-            (let [answer-data (request->answer-data {:route-params {:id (str OBJECTIVE_ID)
-                                                                    :q-id (str QUESTION_ID)}
-                                                     :params {:answer ""}}
-                                                    USER_ID)]
-              (:data answer-data) => {:answer ""
-                                      :question-id QUESTION_ID
-                                      :objective-id OBJECTIVE_ID
-                                      :created-by-id USER_ID}
-              (:status answer-data) => ::objective8.front-end-requests/invalid
-              (:report answer-data) => {:answer #{:length}})))
+      (tabular
+       (fact "reports validation errors"
+             (let [answer-data (request->answer-data {:route-params {:id (str OBJECTIVE_ID)
+                                                                     :q-id (str QUESTION_ID)}
+                                                      :params {:answer ""}}
+                                                     USER_ID)]
+               (:data answer-data) => {:answer ""
+                                       :question-id QUESTION_ID
+                                       :objective-id OBJECTIVE_ID
+                                       :created-by-id USER_ID}
+               (:status answer-data) => ::objective8.front-end-requests/invalid
+               (:report answer-data) => {:answer #{:empty}}))
+       ?answer                 ?report
+       ""                      {:answer #{:empty}}
+       (string-of-length 501)  {:answer #{:length}}))
 
 (fact "about transforming requests to comment-data"
       (fact "extracts the relevant data"
