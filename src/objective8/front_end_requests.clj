@@ -73,7 +73,7 @@
 (defn answer-validator [request]
   (let [answer (s/trim (get-in request [:params :answer]))]
     (cond-> (initialise-field-validation answer)
-      (shorter? answer 1)  (report-error :length)
+      (empty? answer)  (report-error :empty)
       (longer? answer 500) (report-error :length))))
 
 (defn request->answer-data [{:keys [params route-params] :as request} user-id]
