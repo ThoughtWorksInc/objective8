@@ -3,6 +3,7 @@
             [ring.mock.request :as mock]
             [peridot.core :as p]
             [oauth.client :as oauth]
+            [clj-time.core :as tc]
             [objective8.config :as config]
             [objective8.integration.integration-helpers :as helpers]
             [objective8.utils :as utils]
@@ -14,6 +15,10 @@
 (def TWITTER_ID "twitter-ID")
 (def USER_ID 1)
 (def OBJECTIVE_ID 2)
+(def OBJECTIVE {:title "Objective Title 1"
+                :description "An objective"
+                :end-date (utils/string->date-time "2015-12-12")
+                :uri (str "/objectives/" OBJECTIVE_ID) })
 (def WRITER_ROLE_FOR_OBJECTIVE (keyword (str "writer-for-" OBJECTIVE_ID)))
 (def WRITER_INVITER_ROLE_FOR_OBJECTIVE (keyword (str "writer-inviter-for-" OBJECTIVE_ID)))
 (def OBJECTIVE_TITLE "some title")
@@ -460,3 +465,20 @@
                                                           :request-method :post
                                                           :params {:name "My new name" :biog "My updated biog"}))]
                   (:status response) => 401))))
+(facts "about viewing the writer profile"
+       (fact "a writer can view their profile with a list of objectives that they are writer for"
+            (against-background 
+              (http-api/get-objectives-for-writer USER_ID) => {:status ::http-api/success 
+                                                               :result [{:_id OBJECTIVE_ID 
+                                                                         :title "Test Objective 1" 
+                                                                         :end-date (-> 25 tc/hours tc/from-now) 
+                                                                         :status "open"}]}   
+
+              (http-api/find-user-by-username anything) => {:status ::http-api/success
+                                                            :result {:_id USER_ID
+                                                                     :username "username"
+                                                                     :profile {:name "Test User"}
+                                                                     :_created_at "2015-02-12T16:46:18.838Z"}})
+             (let [{response :response} (p/request user-session (utils/path-for :fe/profile :username "username"))]
+               (:body response) => (contains "Test Objective 1") 
+               (:body response)  => (contains "1 day"))))

@@ -31,6 +31,11 @@
          redirect-url (utils/safen-url (str location (when fragment (str "#" fragment))))]
      (response/redirect redirect-url))))
 
+(defn format-objective [objective]
+  (-> objective
+      (assoc :days-until-drafting-begins (utils/days-until (:end-date objective)))
+      (update-in [:end-date] utils/date-time->pretty-date)))
+
 ;; HANDLERS
 
 (defn error-404 [request]
@@ -76,9 +81,10 @@
 
 (defn profile [{:keys [route-params] :as request}]
   (let [username (:username route-params)
-        {user-status :status user :result} (http-api/find-user-by-username username)]
+        {user-status :status user :result} (http-api/find-user-by-username username)
+        {objective-status :status  objectives-for-writer :result} (http-api/get-objectives-for-writer (:_id user))]
     (cond
-      (= user-status ::http-api/success) 
+      (and (= user-status ::http-api/success) (= objective-status ::http-api/success)) 
       (let [user-profile (:profile user)
             joined-date (utils/iso-time-string->pretty-date (:_created_at user))] 
         {:status 200
@@ -86,6 +92,8 @@
          :body (views/profile "profile" request 
                               :user-profile user-profile
                               :profile-owner username
+                              :objectives-for-writer (->> objectives-for-writer
+                                                          (map format-objective)) 
                               :joined-date joined-date
                               :doc {:title (str (:name user-profile) " | Objective[8]")})}) 
 
@@ -95,11 +103,6 @@
 
 
 ;; OBJECTIVES
-(defn format-objective [objective]
-  (-> objective
-      (assoc :days-until-drafting-begins (utils/days-until (:end-date objective)))
-      (update-in [:end-date] utils/date-time->pretty-date)))
-
 (defn objective-list [request]
   (let [signed-in-id (get (friend/current-authentication) :identity)
         {status :status objectives :result} (if signed-in-id

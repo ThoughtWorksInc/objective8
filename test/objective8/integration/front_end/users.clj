@@ -16,6 +16,10 @@
 (def CREATED_AT "2015-04-20T10:31:17.343Z")
 
 (facts "about viewing profile page"
+       (against-background
+         (http-api/get-objectives-for-writer USER_ID) => {:status ::http-api/success
+                                                          :result []})
+
        (fact "profile is shown of the user matching the provided username"
              (let [user-session (helpers/test-context)
                    {response :response} (-> user-session
@@ -25,6 +29,7 @@
              (provided
                (http-api/find-user-by-username "someUsername") => {:status ::http-api/success
                                                                    :result {:username "someUsername"
+                                                                            :_id USER_ID
                                                                             :profile {:name "Barry"
                                                                                       :biog "I'm Barry..."}
                                                                             :_created_at CREATED_AT}})) 
@@ -38,4 +43,5 @@
              (provided
                (http-api/find-user-by-username "someUsername") => {:status ::http-api/success
                                                                    :result {:username "someUsername"
+                                                                            :_id USER_ID
                                                                             :_created_at CREATED_AT}})))  

@@ -170,6 +170,24 @@
           (contains {:query-params {:user-id USER_ID}})) => {:status ::http-api/success
                                                              :result [{:some :data
                                                                        :end-date "2015-01-31T00:00:00.000Z"}]}))
+
+(fact "getting objectives for a writer returns list of objectives when API call is successful"
+      (http-api/get-objectives-for-writer USER_ID) => {:status ::http-api/success
+                                                                  :result [the-objective]}
+
+      (provided
+        (http-api/default-get-call
+          (contains (utils/path-for :api/get-objectives-for-writer :id USER_ID))) => {:status ::http-api/success
+                                                            :result [{:some :data
+                                                                       :end-date "2015-01-31T00:00:00.000Z"}]}))
+
+(fact "getting objectives for a writer returns failure status if api call is unsuccessful"
+      (http-api/get-objectives-for-writer USER_ID) => {:status ::http-api/not-found}
+
+      (provided
+        (http-api/default-get-call
+          (contains (utils/path-for :api/get-objectives-for-writer :id USER_ID))) => {:status ::http-api/not-found}))
+
 ;; COMMENTS
 (def some-uri "/some/uri")
 (def comment-data {:comment-on-uri some-uri :created-by-id USER_ID :comment "A comment"})

@@ -249,8 +249,12 @@
                (http-api/find-user-by-username "username") => {:status ::http-api/success
                                                                :result {:username "username"
                                                                         :_created_at CREATED_AT
+                                                                        :_id USER_ID 
                                                                         :profile {:name "Barry"
-                                                                                  :biog "I'm Barry..."}}})
+                                                                                  :biog "I'm Barry..."}}}
+
+               (http-api/get-objectives-for-writer USER_ID) => {:status ::http-api/success
+                                                                :result []})
              (let [{status :status body :body} (-> user-session 
                                                    (p/request (utils/path-for :fe/profile :username "username"))
                                                    :response)]

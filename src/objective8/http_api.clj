@@ -128,6 +128,13 @@
        (update-in api-result [:result] #(map parse-objective %))
        api-result))))
 
+(defn get-objectives-for-writer [user-id]
+ (let [api-result (default-get-call
+                    (utils/path-for :api/get-objectives-for-writer :id user-id))]
+     (if (= ::success (:status api-result))
+       (update-in api-result [:result] #(map parse-objective %))
+       api-result)))
+
 ;; COMMENTS
 (defn post-comment [comment-data]
   (default-post-call (utils/path-for :api/post-comment) comment-data))

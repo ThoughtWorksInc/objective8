@@ -8,6 +8,44 @@
 
 (def profile-template (html/html-resource "templates/jade/profile.html" {:parser jsoup/parser}))
 
+(def objective-list-item-resource (html/select pf/library-html-resource [:.clj-objective-list-item]))
+
+(defn- shorten-content [content]
+  (let [content (or content "")
+        shortened-content (clojure.string/trim (subs content 0 (min (count content) 100)))]
+    (when-not (empty? shortened-content)
+      (str shortened-content "..."))))
+
+(defn brief-description [objective]
+  (shorten-content (:description objective)))
+
+(defn objective-list-items [{:keys [translations data] :as context}]
+  (let [objectives (:objectives-for-writer data)]
+    (html/at objective-list-item-resource [:.clj-objective-list-item]
+             (html/clone-for [objective objectives]
+                             [:.clj-objective-list-item-star] nil
+
+                             [:.clj-objective-list-item-removal-container] nil
+
+                             [:.clj-objective-list-item-link] (html/set-attr :href (utils/path-for :fe/objective :id (:_id objective)))
+                             [:.clj-objective-list-item-title] (html/content (:title objective))
+
+                             [:.l8n-drafting-begins]
+                             (html/content (if (tf/in-drafting? objective)
+                                             (translations :objective-list/drafting-started)
+                                             (translations :objective-list/drafting-begins)))
+
+                             [:.clj-objective-drafting-begins-date]
+                             (when (tf/open? objective)
+                               (html/do->
+                                 (html/set-attr :drafting-begins-date (:end-date objective))
+                                 (html/content (str (:days-until-drafting-begins objective)
+                                                    " "
+                                                    (translations :objective-list/days)))))
+
+                             [:.clj-objective-brief-description]
+                             (html/content (brief-description objective))))))
+
 (defn profile-page [{:keys [doc data translations user] :as context}]
   (let [user-profile (:user-profile data)
         profile-owner (:profile-owner data)
@@ -31,4 +69,6 @@
                                     [:.clj-writer-name] (html/content (:name user-profile))
                                     [:.clj-writer-joined-date] (html/content joined-date)
                                     [:.clj-writer-biog] (html/content (:biog user-profile))
-                                    [:.clj-writer-links] nil)))))))
+                                    [:.clj-writer-links] nil
+                                    [:.clj-objective-list-item-removal-container] nil
+                                    [:.clj-objective-list] (html/content (objective-list-items context)))))))))
