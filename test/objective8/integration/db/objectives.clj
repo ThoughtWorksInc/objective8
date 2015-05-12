@@ -114,6 +114,28 @@
                                (contains {:_id second-objective-id})] 
                               :in-any-order)))
 
+         (fact "can retrieve a list of writer objectives for a given user"
+               (let [{user-id :_id username :username :as user} (sh/store-a-user)
+                     stored-objective (sh/store-an-open-objective {:user user})
+                     retrieved-objective (-> stored-objective
+                                             (assoc :username username
+                                                    :uri (str "/objectives/" (:_id stored-objective)))
+                                             (dissoc :global-id))
+                     second-stored-objective (sh/store-an-open-objective {:user user})
+                     second-retrieved-objective (-> second-stored-objective
+                                                    (assoc :username username
+                                                           :uri (str "/objectives/" (:_id second-stored-objective)))
+                                                    (dissoc :global-id))
+                     objective-for-another-user (sh/store-an-open-objective)]
+
+                 (sh/store-a-writer {:objective stored-objective :user user})
+                 (sh/store-a-writer {:objective second-stored-objective :user user})
+                 (sh/store-a-writer {:objective objective-for-another-user})
+
+                 (objectives/get-objectives-for-writer user-id) => (just [retrieved-objective
+                                                                          second-retrieved-objective]
+                                                                         :in-any-order)))
+
          (fact "can retrieve a list of starred objectives for a given user"
                (let [non-starred-objective (sh/store-an-open-objective)
 
@@ -123,10 +145,10 @@
                      {username :username :as objective-creator} (sh/store-a-user)
                      {starred-objective-id :_id :as starred-objective} (sh/store-an-open-objective {:user objective-creator})
                      starred-objective-uri (str "/objectives/" starred-objective-id)
-                     {user-id :created-by-id} (sh/store-a-star {:objective starred-objective})] 
+                     {user-id :created-by-id} (sh/store-a-star {:objective starred-objective})]
                  (objectives/retrieve-starred-objectives user-id) => [(-> starred-objective
                                                                           (assoc :username username
-                                                                                 :uri starred-objective-uri) 
+                                                                                 :uri starred-objective-uri)
                                                                           (dissoc :global-id))]))
 
          (fact "can retrieve objectives with the meta information relevant for a signed in user"

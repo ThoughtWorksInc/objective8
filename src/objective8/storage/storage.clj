@@ -245,9 +245,11 @@ WHERE objectives._id = ?" [objective-id]] :results)))))
   (let [unmap-objective (first (get mappings/objective :transforms))]
     (apply vector (map unmap-objective
                       (korma/exec-raw ["
-SELECT objectives.* FROM objective8.objectives AS objectives
+SELECT objectives.*, users.username FROM objective8.objectives AS objectives
 JOIN objective8.writers AS writers
 ON writers.objective_id = objectives._id
+JOIN objective8.users AS users
+ON objectives.created_by_id = users._id
 WHERE writers.user_id = ?
 AND objectives.removed_by_admin=false
 ORDER BY objectives._created_at DESC" [user-id]] :results)))))

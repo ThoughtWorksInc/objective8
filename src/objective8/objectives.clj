@@ -67,7 +67,9 @@
        (map #(utils/update-in-self % [:uri] uri-for-objective))))
 
 (defn get-objectives-for-writer [user-id]
-  (storage/pg-get-objectives-for-writer user-id))
+  (->> (storage/pg-get-objectives-for-writer user-id)
+       (map #(dissoc % :global-id))
+       (map #(utils/update-in-self % [:uri] uri-for-objective))))
 
 (defn get-objectives [{:keys [signed-in-id filters include-removed?] :as query}]
   (if-let [signed-in-id (:signed-in-id query)]

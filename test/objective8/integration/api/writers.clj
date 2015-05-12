@@ -98,14 +98,16 @@
           (after :facts (helpers/truncate-tables))])
        
        (fact "retrieves list of objectives that belongs to the writer"
-             (let [user (sh/store-a-user)
+             (let [{user-id :_id :as user} (sh/store-a-user)
                    objective (sh/store-an-open-objective)
                    second-objective (sh/store-an-open-objective)
                    objective-for-another-user (sh/store-an-open-objective)
-                   {user_id :user-id :as writer} (sh/store-a-writer {:objective objective :user user})
-                   {user_id :user-id :as writer} (sh/store-a-writer {:objective second-objective :user user})
+                   _ (sh/store-a-writer {:objective objective :user user})
+                   _ (sh/store-a-writer {:objective second-objective :user user})
                    _ (sh/store-a-writer {:objective objective-for-another-user})
-                   {response :response} (p/request app (str "/api/v1/writers/" user_id "/objectives"))]
-             (:body response) => (helpers/json-contains objective)
-             (:body response) => (helpers/json-contains second-objective)
+                   {response :response} (p/request app (str "/api/v1/writers/" user-id "/objectives"))]
+             (:body response) => (helpers/json-contains 
+                                   (map contains (->> [second-objective objective] 
+                                                          (map #(dissoc % :global-id)))))
              (:body response) =not=> (helpers/json-contains objective-for-another-user))))
+
