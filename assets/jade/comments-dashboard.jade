@@ -21,10 +21,19 @@ block content
           span.dashboard-stat-title(data-l8n="content:writer-dashboard/starred-stat-title") !Starred
 
     .writer-dashboard-body
+      .writer-dashboard-navigation-menu
+        nav.writer-dashboard-navigation-menu-nav
+          ul.writer-dashboard-navigation-menu-list
+            li.writer-dashboard-navigation-menu-list-item
+              a.clj-writer-dashboard-navigation-questions-link(href="#")
+                span(data-l8n="content:writer-dashboard/questions-navigation-title") !Questions
+            li.writer-dashboard-navigation-menu-list-item.on
+              a.clj-writer-dashboard-navigation-comments-link.func--comment-dashboard-link(href="#")
+                span(data-l8n="content:writer-dashboard/comments-navigation-title") !Comments
+            li.writer-dashboard-navigation-menu-list-item
+              span &nbsp;
+
       .writer-dashboard-navigation
-        .writer-dashboard-navigation-menu
-          a.writer-dashboard-navigation-title-link.clj-writer-dashboard-navigation-questions-link(href="#", data-l8n="content:writer-dashboard/questions-navigation-title") !Questions
-          a.writer-dashboard-navigation-title-link.clj-writer-dashboard-navigation-comments-link.on(href="#", data-l8n="content:writer-dashboard/comments-navigation-title") !Comments
         ul.writer-dashboard-navigation-list.clj-dashboard-navigation-list
           +dashboardNavigationItem(2000)
             | !Objective
@@ -60,7 +69,7 @@ block content
             | !2015-05-02
           +dashboardNavigationItem(40)
             | !2015-05-01
-      
+
       .writer-dashboard-content-container#dashboard-content
         ul.writer-dashboard-filter-list.clj-dashboard-filter-list
           li.writer-dashboard-filter-list-item
