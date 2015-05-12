@@ -4,6 +4,7 @@
             [ring.util.anti-forgery :refer [anti-forgery-field]]  
             [objective8.permissions :as permissions]
             [objective8.templates.page-furniture :as pf]
+            [objective8.utils :as utils]
             [objective8.templates.template-functions :as tf]))   
 
 (def objective-list-resource (html/html-resource "templates/jade/objective-list.html" {:parser jsoup/parser}))
@@ -30,7 +31,7 @@
 (defn objective-list-items [{:keys [translations data user] :as context}]
   (let [objectives (:objectives data)]
     (html/at objective-list-item-resource [:.clj-objective-list-item] 
-             (html/clone-for [objective objectives]
+             (html/clone-for [{objective-id :_id :as objective} objectives]
                              [:.clj-objective-list-item-star] (if (get-in objective [:meta :starred])
                                                                 (html/add-class "starred")
                                                                 identity)    
@@ -38,8 +39,11 @@
                              [:.clj-objective-list-item-removal-container] (when (permissions/admin? user) 
                                                                              (html/substitute (removal-container objective)))
 
+
+                             [:.clj-objective-list-dashboard-link]  (when (permissions/writer-for? user objective-id)
+                                                                      (html/set-attr :href (utils/path-for :fe/dashboard-questions :id objective-id))) 
                              [:.clj-objective-list-item-link] (html/set-attr :href (str "/objectives/" 
-                                                                                        (:_id objective)))
+                                                                                        objective-id))
                              [:.clj-objective-list-item-title] (html/content (:title objective))
 
                              [:.l8n-drafting-begins] 
@@ -56,8 +60,7 @@
                                                     (translations :objective-list/days))))) 
 
                              [:.clj-objective-brief-description]
-                             (html/content (brief-description objective))
-                             ))))
+                             (html/content (brief-description objective))))))
 
 (defn objective-list-page [{:keys [translations data doc] :as context}]
   (apply str

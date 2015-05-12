@@ -19,15 +19,16 @@
 (defn brief-description [objective]
   (shorten-content (:description objective)))
 
-(defn objective-list-items [{:keys [translations data] :as context}]
+(defn objective-list-items [{:keys [translations data user] :as context}]
   (let [objectives (:objectives-for-writer data)]
     (html/at objective-list-item-resource [:.clj-objective-list-item]
-             (html/clone-for [objective objectives]
-                             [:.clj-objective-list-item-star] nil
+             (html/clone-for [{objective-id :_id :as objective} objectives]
+                             [:.clj-star-container] nil
 
                              [:.clj-objective-list-item-removal-container] nil
-
-                             [:.clj-objective-list-item-link] (html/set-attr :href (utils/path-for :fe/objective :id (:_id objective)))
+                             [:.clj-objective-list-dashboard-link] (when (permissions/writer-for? user objective-id)
+                                                                     (html/set-attr :href (utils/path-for :fe/dashboard-questions :id objective-id))) 
+                             [:.clj-objective-list-item-link] (html/set-attr :href (utils/path-for :fe/objective :id objective-id))
                              [:.clj-objective-list-item-title] (html/content (:title objective))
 
                              [:.l8n-drafting-begins]

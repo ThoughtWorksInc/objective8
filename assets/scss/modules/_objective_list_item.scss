@@ -52,7 +52,7 @@
   margin-bottom: 2px;
   @include mq(768) {
     position: absolute;
-    top: 36px;
+    top: 65px;
     left: -37px;
   }
 }
@@ -62,6 +62,14 @@
   background: none;
 }
 
+.objective-list-dashboard-container {
+  margin-bottom: 2px;
+  @include mq(768) {
+    position: absolute;
+    top: 36px;
+    left: -37px;
+  }
+}
 .objective-list-item-title {
   margin: 0 0 0.2em;
   font-size: 1.3em;

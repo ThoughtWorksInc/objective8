@@ -147,9 +147,9 @@ writer-dashboard,no-comments-with-writer-notes-message,There are no comments wit
 writer-dashboard,link-button,Dashboard
 writer-dashboard,writer-note-placeholder,Add a reply to the community
 writer-dashboard,writer-note-empty-validation-message,Your response cannot be empty
-dashboard-questions,doc-title,Writer dashboard
+dashboard-questions,doc-title,Writer dashboard | Objective[8]
 dashboard-questions,doc-description,A summary of engagement with questions and answers for this objective
-dashboard-comments,doc-title,Writer dashboard
+dashboard-comments,doc-title,Writer dashboard | Objective[8]
 dashboard-comments,doc-description,A summary of discussions about this objective and related drafts
 dashboard-comments,latest-draft-label,Latest
 dashboard-comments,draft-label-prefix,Draft

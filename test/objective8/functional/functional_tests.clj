@@ -325,11 +325,13 @@
            (wait-for-title "Invited writer real name | Objective[8]")
            (screenshot "writer_profile_page")
 
-           (wd/text (first (wd/elements ".func--writer-biog")))
+           {:biog-text (wd/text (first (wd/elements ".func--writer-biog")))
+            :objective-title (wd/text (first (wd/elements ".func--objective-title")))}
            (catch Exception e
              (screenshot "ERROR-can-view-writer-profile")
              (throw e)))
-      => "Biography with lots of text...")
+      => {:biog-text "Biography with lots of text..."
+          :objective-title "Functional test headline"})
 
 (fact "Can edit writer profile"
       (try (wd/click ".func--edit-profile")
@@ -354,6 +356,20 @@
              (screenshot "ERROR-can-edit-writer-profile") 
              (throw e)))
       => (contains {:biog "My new biography"}))
+
+(fact "Can access dashboard from profile page"
+      (try 
+        (wd/click ".func--dashboard-link")
+        (wait-for-title "Writer dashboard | Objective[8]")
+        (screenshot "writer_dashboard_from_profile_page")
+       
+        (wd/current-url)
+        
+        (catch Exception e
+          (screenshot "ERROR-can-access-dashboard-from-profile-page")
+          (throw e)))
+      => (contains (str (:objective-url @journey-state) "/dashboard/questions"))
+      )
 
 (against-background
   [(before :contents (-> (:objective-url @journey-state)
@@ -547,10 +563,13 @@
           (throw e))))
 
 (fact "Can view questions dashboard"
-      (try (wd/to (:objective-url @journey-state))
-           (wait-for-title "Functional test headline | Objective[8]")
-           (wd/click ".func--writer-dashboard-link")
-           (wait-for-title "Writer dashboard")
+      (try (wd/to "localhost:8080/objectives")
+           (wait-for-title "Objectives | Objective[8]")
+           (screenshot "objectives_list_as_a_writer_with_an_objective")
+
+           (wd/click ".func--dashboard-link")
+
+           (wait-for-title "Writer dashboard | Objective[8]")
 
            (screenshot "questions_dashboard")
 
@@ -560,7 +579,7 @@
            (catch Exception e
              (screenshot "ERROR-can-view-questions-dashboard")
              (throw e)))
-      => (contains {:page-title "Writer dashboard"
+      => (contains {:page-title "Writer dashboard | Objective[8]"
                     :page-source (every-checker (contains "Functional test question")
                                                 (contains "Functional test answer"))}))
 
@@ -569,7 +588,7 @@
                (wd/input-text "Functional test writer note on answer")
                wd/submit)
 
-           (wait-for-title "Writer dashboard")
+           (wait-for-title "Writer dashboard | Objective[8]")
            (screenshot "questions_dashboard_with_writer_note")
 
            (wd/text ".func--writer-note-text")
@@ -583,7 +602,7 @@
       (try (wd/to (:objective-url @journey-state))
            (wait-for-title "Functional test headline | Objective[8]")
            (wd/click ".func--writer-dashboard-link")
-           (wait-for-title "Writer dashboard")
+           (wait-for-title "Writer dashboard | Objective[8]")
            (wd/click ".func--comment-dashboard-link")
 
            (screenshot "comments_dashboard")
@@ -594,7 +613,7 @@
           (catch Exception e
             (screenshot "ERROR-can-view-comments-dashboard")
             (throw e)))
-      => (contains {:page-title "Writer dashboard"
+      => (contains {:page-title "Writer dashboard | Objective[8]"
                     :page-source (contains "Functional test comment text")}))
 
 (fact "Can add a writer note to a comment"
@@ -602,7 +621,7 @@
                (wd/input-text "Functional test writer note on comment")
                wd/submit)
 
-           (wait-for-title "Writer dashboard")
+           (wait-for-title "Writer dashboard | Objective[8]")
            (screenshot "comment_dashboard_with_writer_note")
 
            (wd/text ".func--writer-note-text")
