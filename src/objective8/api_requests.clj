@@ -35,7 +35,10 @@
        :filter-type filter-type})))
 
 (defn request->comment-data [{params :params :as request}]
-  (utils/select-all-or-nothing params [:comment :created-by-id :comment-on-uri]))
+  (let [reason (:reason params)]
+    (cond-> params 
+      true (utils/select-all-or-nothing [:comment :created-by-id :comment-on-uri])
+      reason (assoc :reason reason))))
 
 (defn get-sorted-by [params]
   (if-let [sorted-by (keyword (:sorted-by params))]

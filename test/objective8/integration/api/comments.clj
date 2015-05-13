@@ -56,6 +56,29 @@
                 (:body response) =not=> (helpers/json-contains {:global-id anything})
                 (:headers response) => (helpers/location-contains (str "/api/v1/meta/comments/"))))
 
+         (fact "the posted annotation is stored with a reason"
+               (let [{user-id :_id :as user} (sh/store-a-user)
+                    {d-id :_id o-id :objective-id global-id :global-id :as draft} (sh/store-a-draft {:content draft-content}) 
+                    uri-for-draft-section (str "/objectives/" o-id "/drafts/" d-id "/sections/" section-label)
+                    comment-data {:comment-on-uri uri-for-draft-section
+                                  :comment "A comment"
+                                  :created-by-id user-id
+                                  :reason "unclear"}
+                     {response :response} (p/request app (str "/api/v1/meta/comments")
+                                                     :request-method :post
+                                                     :content-type "application/json"
+                                                     :body (json/generate-string comment-data))]
+                 (:status response) => 201
+                 (:body response) => (helpers/json-contains {:_id integer?
+                                                             :uri (contains "/comments/")
+                                                             :comment-on-uri uri-for-draft-section
+                                                             :comment "A comment"
+                                                             :created-by-id user-id
+                                                             :reason "unclear"})
+                 (:body response) =not=> (helpers/json-contains {:comment-on-id anything})
+                 (:body response) =not=> (helpers/json-contains {:global-id anything})
+                 (:headers response) => (helpers/location-contains (str "/api/v1/meta/comments/"))))
+
         (fact "returns 404 when entity to be commented on doesn't exist"
               (let [comment-data {:comment-on-uri "nonexistent/entity"
                                   :comment "A comment"

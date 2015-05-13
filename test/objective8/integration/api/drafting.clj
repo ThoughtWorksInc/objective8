@@ -157,7 +157,7 @@
                      section-data {:objective-id objective-id
                                    :draft-id draft-id
                                    :section-label section-label} 
-                     comment-for-this-section {:comment "section comment" :created-by-id (:submitter-id draft)}
+                     comment-for-this-section {:comment "section comment" :reason "general" :created-by-id (:submitter-id draft)}
                      _ (actions/create-section-comment! section-data comment-for-this-section)] 
                  (get-in (p/request app (utils/path-for :api/get-annotations
                                                         :id objective-id
@@ -170,4 +170,4 @@
                                                                "/sections/" section-label)
                                                      :objective-id objective-id
                                                      :comments (just 
-                                                                 [(contains comment-for-this-section)])})])))))
+                                                                 [(contains (dissoc comment-for-this-section :reason))])})])))))

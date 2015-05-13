@@ -120,8 +120,10 @@
 (def comment-data {:comment-on-uri "/entity-uri" 
                    :comment "A comment"
                    :created-by-id USER_ID})
+(def COMMENT_ID)
 (def section-uri (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID "/sections/" SECTION_LABEL))
-(def section-comment-data {:comment-on-uri section-uri})
+(def reason-type "expand")
+(def section-comment-data {:comment-on-uri section-uri :reason reason-type}) 
 
 (facts "about creating comments"
        (fact "can comment on an objective that is not in drafting"
@@ -142,19 +144,21 @@
               (comments/store-comment-for! a-draft comment-data) => :the-stored-comment))
 
        (fact "can comment on a draft section with existing comments"
-             (actions/create-comment! section-comment-data) => {:status ::actions/success :result :the-stored-comment}
+             (actions/create-comment! section-comment-data) => {:status ::actions/success :result {:_id COMMENT_ID :reason reason-type}} 
              (provided
-              (storage/pg-retrieve-entity-by-uri section-uri :with-global-id) => a-section 
-              (comments/store-comment-for! a-section section-comment-data) => :the-stored-comment))
+               (storage/pg-retrieve-entity-by-uri section-uri :with-global-id) => a-section 
+               (comments/store-comment-for! a-section section-comment-data) => {:_id COMMENT_ID} 
+               (comments/store-reason! {:reason reason-type :comment-id COMMENT_ID}) => {:reason reason-type}))
 
        (fact "can comment on a draft section with no previous comments"
-             (actions/create-comment! section-comment-data) => {:status ::actions/success :result :the-stored-comment}
+             (actions/create-comment! section-comment-data) => {:status ::actions/success :result {:_id COMMENT_ID :reason reason-type}}
              (provided
                (storage/pg-retrieve-entity-by-uri section-uri :with-global-id) => nil 
                (drafts/get-section-labels-for-draft-uri DRAFT_URI) => [SECTION_LABEL]
                (drafts/store-section! {:entity :section :draft-id DRAFT_ID :objective-id OBJECTIVE_ID
                                        :section-label SECTION_LABEL}) => a-section
-               (comments/store-comment-for! a-section section-comment-data) => :the-stored-comment))
+               (comments/store-comment-for! a-section section-comment-data) => {:_id COMMENT_ID}
+               (comments/store-reason! {:reason reason-type :comment-id COMMENT_ID}) => {:reason reason-type}))
 
        (fact "reports an error when the entity to comment on cannot be found"
              (actions/create-comment! comment-data) => {:status ::actions/entity-not-found}
