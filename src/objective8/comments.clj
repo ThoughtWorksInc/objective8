@@ -34,3 +34,9 @@
            (map #(dissoc % :global-id))
            (map #(utils/update-in-self % [:uri] uri-for-comment))
            (map #(replace-comment-on-id % entity-uri))))))
+
+(defn store-reason! [reason-data]
+ (some-> reason-data
+         (utils/select-all-or-nothing [:comment-id :reason])
+         (assoc :entity :reason)
+         storage/pg-store!))

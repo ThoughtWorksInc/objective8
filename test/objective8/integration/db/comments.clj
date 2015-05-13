@@ -38,6 +38,20 @@
                                                                                    :created-by-id user-id})
                 (comments/store-comment-for! objective comment-data) =not=> (contains {:comment-on-id anything})))))
 
+(facts "about storing reasons"
+       (against-background 
+        [(before :contents (do (ih/db-connection)
+                               (ih/truncate-tables)))
+         (after :facts (ih/truncate-tables))]) 
+
+       (fact "reasons can be stored against an annotation comment"
+             (let [{comment-id :_id} (sh/store-a-comment)
+                   reason-data {:comment-id comment-id
+                                 :reason "unclear"}]
+             (comments/store-reason! reason-data) => (contains {:_id integer?
+                                                                :comment-id comment-id
+                                                                :reason "unclear"}))))
+
 
 (defn store-comment-with-votes [entities vote-counts]
   (let [comment (sh/store-a-comment entities)]

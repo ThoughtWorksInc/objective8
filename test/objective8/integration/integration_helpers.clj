@@ -14,6 +14,7 @@
 (defn db-connection [] (db/connect!))
 
 (defn truncate-tables []
+  (korma/delete m/reason)
   (korma/delete m/admin-removal)
   (korma/delete m/admin)
   (korma/delete m/section)

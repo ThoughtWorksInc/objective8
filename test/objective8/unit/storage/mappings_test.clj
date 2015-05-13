@@ -120,6 +120,20 @@
              (map->comment (dissoc comment-map :objective-id)) => (throws Exception)
              (map->comment (dissoc comment-map :comment-on-id)) => (throws Exception)))
 
+;;REASONS
+(def COMMENT_ID 32)
+(def reason-map {:comment-id COMMENT_ID
+                 :reason "unclear"})
+
+(facts "About map->reason"
+       (fact "Column values are pulled out and converted"
+             (let [test-reason (map->reason reason-map)]
+               test-reason => (contains {:comment_id COMMENT_ID 
+                                         :reason (has-postgres-type? "reason_type")})))
+       
+       (fact "throws exception if :comment-id or :reason are missing"
+             (map->reason (dissoc reason-map :comment-id)) => (throws Exception)
+             (map->reason (dissoc reason-map :reason)) => (throws Exception)))
 
 ;;QUESTIONS
 (def question-map {:created-by-id USER_ID

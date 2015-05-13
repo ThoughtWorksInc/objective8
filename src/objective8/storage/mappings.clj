@@ -111,6 +111,12 @@
                        :comment
                        [:global-id :created-by-id :objective-id :comment-on-id]))
 
+(def map->reason 
+  (db-insertion-mapper "reason"
+                       nil
+                       [:comment-id :reason]
+                       {:reason (partial string->postgres-type "reason_type")}))
+
 (def map->user
   (db-insertion-mapper "user"
                        :user-data
@@ -308,6 +314,15 @@
                        (with-columns [:comment-on-id :created-by-id :global-id :objective-id])
                        with-username-if-present)))
 
+(korma/defentity reason 
+  (korma/pk :_id)
+  (korma/table :objective8.reasons)
+  (korma/prepare map->reason)
+  (korma/transform (-> (constantly {:entity :reason})
+                       (with-columns
+                         [:comment-id :reason :_created_at :_id]
+                         {:_created_at sql-time->iso-time-string}))))
+
 (korma/defentity question
   (korma/pk :_id)
   (korma/table :objective8.questions)
@@ -405,13 +420,14 @@
                          {:_created_at sql-time->iso-time-string}))))
 
 (def entities {:objective objective
-               :user      user
+               :user user
                :admin admin
                :admin-removal admin-removal
-               :comment   comment
-               :question  question
-               :mark      mark
-               :answer    answer
+               :comment comment
+               :reason reason
+               :question question
+               :mark mark
+               :answer answer
                :invitation invitation
                :writer writer
                :writer-note writer-note
