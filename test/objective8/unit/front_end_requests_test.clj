@@ -202,6 +202,11 @@
                                                         USER_ID)]
                note-data => nil)))
 
+(facts "about transforming requests to profile info"
+       (future-fact "transforms request to profile info"
+             (let [profile-data (request->profile-info {:params {:name "Name" :biog "Biog"}} USER_ID)]
+               (:data profile-data) => {:name "Name" :biog "Biog" :user-uri (str "/users/" USER_ID)})))
+
 (facts "about up voting"
        (fact "transforms request to up vote info"
              (request->up-vote-info {:params {:vote-on-uri "/some/uri"}} USER_ID)
@@ -233,7 +238,4 @@
              (request->mark-info {:params {:question-uri "/some/uri"}} USER_ID) => {:question-uri "/some/uri"
                                                                                     :created-by-uri (str "/users/" USER_ID)})) 
 
-(facts "about creating profiles"
-       (fact "transforms request to profile info"
-             (request->profile-info {:params {:name "Name" :biog "Biog"}} USER_ID)
-             => {:name "Name" :biog "Biog" :user-uri (str "/users/" USER_ID)}))
+
