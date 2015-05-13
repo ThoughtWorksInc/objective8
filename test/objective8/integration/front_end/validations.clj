@@ -137,6 +137,27 @@
                   answer-form-html =not=> (contains ?error-tag)))
           ?error-tag "clj-answer-length-error" "clj-answer-empty-error")))
 
+(facts "about the edit profile form"
+       (binding [config/enable-csrf false
+                 the-user           writer-for-objective] 
+         (tabular
+           (future-fact "validation errors are reported"
+                 (-> user-session
+                     ih/sign-in-as-existing-user
+                     (p/request (utils/path-for :fe/edit-profile-post)
+                                :request-method :post
+                                :params {:name ?name
+                                         :biog ?biog})
+                     p/follow-redirect
+                     :response
+                     :body) => (contains ?expected-error-message))
+
+           ?name                      ?biog                       ?expected-error-message
+           ""                         "valid biography"           "clj-name-empty-error"
+           (ih/string-of-length 51)   "valid biography"           "clj-name-length-error"
+           "Peter Profile"            ""                          "clj-biog-empty-error"
+           "Peter Profile"            (ih/string-of-length 5001)  "clj-biog-length-error")))
+
 (tabular
  (facts "about creating comments"
         (binding [config/enable-csrf false]

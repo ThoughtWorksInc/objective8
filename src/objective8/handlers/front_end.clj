@@ -493,14 +493,17 @@
 
 (defn edit-profile-post [request]
   (if (permissions/writer? (friend/current-authentication))
-    (let [profile-data (helpers/request->profile-info request (get (friend/current-authentication) :identity))
-          {status :status} (http-api/post-profile profile-data)]
-      (cond
-        (= status ::http-api/success)
-        (-> (utils/path-for :fe/profile :username (get (friend/current-authentication) :username))
-            response/redirect)
+    (let [profile-data (fr/request->profile-info request (get (friend/current-authentication) :identity))]
+     (case (:status profile-data)
+       ::fr/valid (let [{status :status} (http-api/post-profile (:data profile-data))]
+                    (cond
+                      (= status ::http-api/success)
+                      (-> (utils/path-for :fe/profile :username (get (friend/current-authentication) :username))
+                          response/redirect)
 
-        :else {:status 500}))
+                      :else {:status 500})) 
+       ::fr/invalid (-> (response/redirect (utils/path-for :fe/edit-profile-get)) 
+                        (assoc :flash {:validation (dissoc profile-data :status)}))))
     {:status 401}))
 
 (defn decline-invitation [{session :session :as request}]
@@ -552,8 +555,8 @@
 
 (defn create-profile-post [{:keys [session] :as request}]
   (if (:invitation session) 
-    (let [profile-data (helpers/request->profile-info request (get (friend/current-authentication) :identity))
-          {status :status} (http-api/post-profile profile-data)]
+    (let [profile-data (fr/request->profile-info request (get (friend/current-authentication) :identity))
+          {status :status} (http-api/post-profile (:data profile-data))]
       (cond
         (= status ::http-api/success)
         (accept-invitation request) 

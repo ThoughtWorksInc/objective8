@@ -18,8 +18,3 @@
         draft-info => {:objective-id OBJECTIVE_ID 
                    :submitter-id USER_ID 
                    :content  (utils/html->hiccup html-string)}))
-
-(facts "about creating profiles"
-       (fact "transforms request to profile info"
-             (request->profile-info {:params {:name "Name" :biog "Biog"}} USER_ID)
-             => {:name "Name" :biog "Biog" :user-uri (str "/users/" USER_ID)}))

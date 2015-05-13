@@ -3,11 +3,6 @@
             [objective8.utils :as utils]
             [objective8.sanitiser :as sanitiser]))
 
-(defn request->profile-info [{:keys [params] :as request} user-id]
-  (some-> params
-          (utils/select-all-or-nothing [:name :biog])
-          (assoc :user-uri (str "/users/" user-id))))
-
 (defn request->draft-info [{:keys [params] :as request} user-id]
   (some-> params
           (utils/select-all-or-nothing [:id :google-doc-html-content])

@@ -154,6 +154,27 @@
           (assoc-in [:data :created-by-id] user-id)
           (dissoc :request)))
 
+;; Profiles
+
+(defn name-validator [request]
+  (let [name (s/trim (get-in request [:params :name]))]
+    (cond-> (initialise-field-validation name)
+      (empty? name) (report-error :empty)
+      (longer? name 50) (report-error :length))))
+
+(defn biog-validator [request]
+  (let [biog (s/trim (get-in request [:params :biog]))]
+    (cond-> (initialise-field-validation biog)
+      (empty? biog) (report-error :empty)
+      (longer? biog 5000) (report-error :length))))
+
+(defn request->profile-info [{:keys [params] :as request} user-id]
+  (some-> (initialise-request-validation request)
+          (validate :name name-validator)
+          (validate :biog biog-validator)
+          (assoc-in [:data :user-uri] (str "/users/" user-id))
+          (dissoc :request)))
+
 ;; Votes
 
 (defn request->up-vote-info [{:keys [params] :as request} user-id]
