@@ -285,11 +285,19 @@
 
 ;; COMMENTS
 
+
+;;Temporarily defaulting annotation reasons to general
+(defn section? [uri]
+ (re-matches #".*/section.*" uri))
+
 (defn post-comment [{:keys [t' route-params] :as request}]
   (if-let [comment-data (fr/request->comment-data request (get (friend/current-authentication) :identity))]
     (case (:status comment-data)
       ::fr/valid
-      (let [{status :status stored-comment :result} (http-api/post-comment (:data comment-data))]
+      (let [data (if (section? (get-in comment-data [:data :comment-on-uri]))
+                   (assoc (:data comment-data) :reason "general")
+                   (:data comment-data))
+            {status :status stored-comment :result} (http-api/post-comment data)]
         (cond
           (= status ::http-api/success)
           (-> (redirect-to-params-referer request "comments")

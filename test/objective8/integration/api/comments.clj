@@ -28,6 +28,10 @@
    :comment-on-id comment-on-id
    :created-by-id created-by-id})
 
+(def section-label "1234abcd")
+(def draft-content [["h1" {:data-section-label section-label} "A Heading"] ["p" {:data-section-label "abcd1234"} "A paragraph"]])
+
+
 (facts "POST /api/v1/meta/comments"
        (against-background
         (m/valid-credentials? anything anything anything) => true)
@@ -162,9 +166,6 @@
                                                                  "&filter-type=has-writer-note")))]
                  body => (helpers/json-contains [(contains {:_id comment-with-note-id})])
                  body =not=> (helpers/json-contains [(contains {:_id comment-without-note-id})])))))
-
-(def section-label "1234abcd")
-(def draft-content [["h1" {:data-section-label section-label} "A Heading"] ["p" {:data-section-label "abcd1234"} "A paragraph"]])
 
 (facts "About posting comments on draft sections AKA 'annotations'"
        (against-background
