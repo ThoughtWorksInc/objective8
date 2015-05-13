@@ -124,6 +124,7 @@
                                       [:.clj-dashboard-stat-starred-amount] (html/content (str (get-in objective [:meta :stars-count])))
                                       [:.clj-writer-dashboard-navigation-questions-link] (html/set-attr :href (utils/path-for :fe/dashboard-questions :id (:_id objective)))
                                       [:.clj-writer-dashboard-navigation-comments-link] (html/set-attr :href (utils/path-for :fe/dashboard-comments :id (:_id objective)))
+                                      [:.clj-writer-dashboard-navigation-annotations-link] (html/set-attr :href (utils/path-for :fe/dashboard-annotations :id (:_id objective)))
                                       [:.clj-dashboard-navigation-list] (html/content (navigation-list context))
                                       [:.clj-dashboard-answer-list] (html/substitute (answer-list context))
 

@@ -642,6 +642,24 @@
              (throw e)))
       => (contains "Functional test writer note on comment"))
 
+(fact "Can view annotations dashboard"
+  (try (wd/to (:objective-url @journey-state))
+    (wait-for-title "Functional test headline | Objective[8]")
+    (wd/click ".func--writer-dashboard-link")
+    (wait-for-title "Writer dashboard | Objective[8]")
+    (wd/click ".func--annotaion-dashboard-link")
+
+    (screenshot "annotations_dashboard")
+
+    {:page-title (wd/title)
+     :page-source (wd/page-source)}
+
+    (catch Exception e
+      (screenshot "ERROR-can-view-annotations-dashboard")
+      (throw e)))
+  => (contains {:page-title "Writer dashboard | Objective[8]"
+                :page-source (contains "my draft section annotation")}))
+
 (fact "User with admin credentials can remove an objective"
       (let [result (try
                      (wd/click ".func--objectives")

@@ -7,65 +7,55 @@
             [objective8.templates.template-functions :as tf]))
 
 
-(def dashboard-comments-template (html/html-resource "templates/jade/comments-dashboard.html"))
+(def dashboard-annotations-template (html/html-resource "templates/jade/annotations-dashboard.html"))
 
-(def dashboard-comments-comment-item-snippet (html/select dashboard-comments-template
-                                                        [[:.clj-dashboard-comment-item html/first-of-type]]))
+(def annotations-list-snippet (html/select dashboard-annotations-template [[:.clj-dashboard-annotation-section-list-item html/first-of-type]]))
 
-(def dashboard-comments-no-comments-snippet (html/select pf/library-html-resource
-                                                         [:.clj-library-key--dashboard-no-comment-item]))
+(def comments-snippet (html/select annotations-list-snippet [[:.clj-dashboard-annotation-item html/first-of-type]]))
 
-(def comments-without-writer-note-snippet (html/select pf/library-html-resource [:.clj-library-key--dashboard-comment-without-writer-note]))
+(def dashboard-annotations-no-annotations-snippet (html/select pf/library-html-resource
+                                                         [:.clj-library-key--dashboard-no-annotation-item]))
 
-(def comments-with-writer-note-snippet (html/select pf/library-html-resource [:.clj-library-key--dashboard-comment-with-writer-note]))
+(defn render-comment [comment]
+  (html/at comments-snippet
+    [:.clj-dashboard-annotation-text] (html/content (:comment comment))
+    [:.clj-dashboard-annotation-author] (html/content (:username comment))
+    [:.clj-dashboard-annotation-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
+    [:.clj-dashboard-comment-up-count] (html/content (str (get-in comment [:votes :up])))
+    [:.clj-dashboard-comment-down-count] (html/content (str (get-in comment [:votes :down])))))
 
-(def no-writer-note-snippet (html/select comments-without-writer-note-snippet [:.clj-dashboard-comment-item]))
+(defn comment-list [annotation]
+  (let [comments (:comments annotation)]
+    (html/at comments-snippet
+      [:.clj-dashboard-annotation-item]
+      (html/clone-for [comment comments]
+        [:.clj-dashboard-annotation-item] (html/substitute (render-comment comment))))))
 
-(def writer-note-snippet (html/select comments-with-writer-note-snippet [:.clj-dashboard-comment-item]))
+(def annotation-snippet (html/select dashboard-annotations-template [[:.clj-dashboard-annotation-section-list-item html/first-of-type]]))
 
-(defn dashboard-comments-no-comments [{:keys [translations data] :as context}]
-  (let [translation-key (case (:comment-view-type data)
-                          :paperclip :writer-dashboard/no-comments-with-writer-notes-message
-                          :writer-dashboard/no-comments-message)]
-    (html/at dashboard-comments-no-comments-snippet
-             [:.clj-dashboard-no-comment-item] (html/content (translations translation-key)))))
+(defn dashboard-annotations-no-annotations [{:keys [translations data] :as context}]
+  (html/at dashboard-annotations-no-annotations-snippet
+    [:.clj-dashboard-no-annotation-item] (html/content (translations :writer-dashboard/no-annotations-message))))
 
-(defn render-comment-without-note [{:keys [ring-request] :as context} comment]
-    (html/at no-writer-note-snippet
-             [:.clj-dashboard-comment-text] (html/content (:comment comment))
-             [:.clj-dashboard-comment-author] (html/content (:username comment))
-             [:.clj-dashboard-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
-             [:.clj-dashboard-comment-up-count] (html/content (str (get-in comment [:votes :up])))
-             [:.clj-dashboard-comment-down-count] (html/content (str (get-in comment [:votes :down])) )
-             [:.clj-refer] (html/set-attr :value (utils/referer-url ring-request))
-            [:.clj-note-on-uri] (html/set-attr :value (:uri comment))
-            [:.clj-dashboard-writer-note-form] (html/prepend (html/html-snippet (anti-forgery-field))) ))
+(defn render-annotation [context annotation]
+  (html/at annotation-snippet
+    [:.clj-dashboard-annotation-section] (html/html-content (utils/hiccup->html (:section annotation)))
+    [:.clj-dashboard-annotation-section-list] (html/content (comment-list annotation))))
 
-(defn render-comment-with-note [context comment]
- (html/at writer-note-snippet
-          [:.clj-dashboard-comment-text] (html/content (:comment comment))
-          [:.clj-dashboard-comment-author] (html/content (:username comment))
-          [:.clj-dashboard-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
-          [:.clj-dashboard-comment-up-count] (html/content (str (get-in comment [:votes :up])))
-          [:.clj-dashboard-comment-down-count] (html/content (str (get-in comment [:votes :down])))
-          [:.clj-dashboard-writer-note-text] (html/content (:note comment))))
+(defn annotation-list-items [{:keys [data] :as context}]
+  (let [annotations (:annotations data)]
+    (html/at annotations-list-snippet
+             [:.clj-dashboard-annotation-section-list-item]
+             (html/clone-for [annotation annotations]
+               [:.clj-dashboard-annotation-section-list-item] (html/substitute (render-annotation context annotation))))))
 
-(defn comment-list-items [{:keys [data] :as context}]
-  (let [comments (:comments data)]
-    (html/at comments-without-writer-note-snippet
-             [:.clj-dashboard-comment-item]
-             (html/clone-for [comment comments]
-                             [:.clj-dashboard-comment-item] (if (:note comment)
-                                                             (html/substitute (render-comment-with-note context comment))
-                                                             (html/substitute (render-comment-without-note context comment)))))))
+(defn annotation-list [{:keys [data] :as context}]
+  (let [annotations (:annotations data)]
+    (if (empty? annotations)
+      (dashboard-annotations-no-annotations context)
+      (annotation-list-items context))))
 
-(defn comment-list [{:keys [data] :as context}]
-  (let [comments (:comments data)]
-    (if (empty? comments)
-      (dashboard-comments-no-comments context)
-      (comment-list-items context))))
-
-(def dashboard-comments-navigation-item-snippet (html/select dashboard-comments-template
+(def dashboard-annotations-navigation-item-snippet (html/select dashboard-annotations-template
                                                              [[:.clj-dashboard-navigation-item html/first-of-type]]))
 
 (defn draft-label [{:keys [translations] :as context} draft]
@@ -83,83 +73,50 @@
 
 (defn navigation-list [{:keys [data translations] :as context}]
   (let [objective (:objective data)
-        objective-nav-item (objective->navigation-list-item context objective)
         draft-nav-items (mapv (partial draft->navigation-list-item context) (:drafts data))
         navigation-list-items (cond-> draft-nav-items
                                 (not (empty? draft-nav-items)) (update-in [0 :label]
-                                                                          #(str % " (" (translations :dashboard-comments/latest-draft-label) ")"))
-                                true                           (conj objective-nav-item))
-        selected-comment-target-uri (:selected-comment-target-uri data)
-        dashboard-url (url/url (utils/path-for :fe/dashboard-comments :id (:_id objective)))]
-    (html/at dashboard-comments-navigation-item-snippet
+                                                                 #(str % " (" (translations :dashboard-comments/latest-draft-label) ")")))
+        selected-draft-uri (:selected-draft-uri data)
+        dashboard-url (url/url (utils/path-for :fe/dashboard-annotations :id (:_id objective)))]
+    (html/at dashboard-annotations-navigation-item-snippet
              [:.clj-dashboard-navigation-item]
              (html/clone-for [item navigation-list-items]
-                             [:.clj-dashboard-navigation-item] (if (= selected-comment-target-uri (:uri item))
+                             [:.clj-dashboard-navigation-item] (if (= selected-draft-uri (:uri item))
                                                                  (html/add-class "on")
-                                                                 identity)
+                                                                 (html/remove-class "on"))
                              [:.clj-dashboard-navigation-item-label] (html/content (:label item))
-                             [:.clj-dashboard-navigation-item-link-count] (when (:link-count item) (html/content (str "(" (:link-count item) ")")))
+                             [:.clj-dashboard-navigation-item-link-count] nil
                              [:.clj-dashboard-navigation-item-link]
                              (html/set-attr :href
                                             (str (assoc dashboard-url
                                                         :query {:selected (:uri item)}
                                                         :anchor "dashboard-content")))))))
 
-(defn dashboard-annotations [request]
-  "TO DO"
-  )
-
-(defn dashboard-comments [{:keys [doc data] :as context}]
+(defn dashboard-annotations [{:keys [doc data] :as context}]
   (let [objective (:objective data)
-        selected-comment-target-uri (:selected-comment-target-uri data)
-        dashboard-url (url/url (utils/path-for :fe/dashboard-comments :id (:_id objective)))
+        selected-comment-target-uri (:selected-draft-uri data)
+        dashboard-url (url/url (utils/path-for :fe/dashboard-annotations :id (:_id objective)))
         comment-view-type (:comment-view-type data)]
     (apply str
-           (html/emit*
-            (tf/translate context
-                          (pf/add-google-analytics
-                           (html/at dashboard-comments-template
-                                    [:title] (html/content (:title doc))
-                                    [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
-                                    [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
-                                    [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
+      (html/emit*
+        (tf/translate context
+          (pf/add-google-analytics
+            (html/at dashboard-annotations-template
+              [:title] (html/content (:title doc))
+              [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
+              [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+              [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
 
-                                    [:.clj-dashboard-title-link] (html/set-attr :href (url/url (utils/path-for :fe/objective :id (:_id objective))))
-                                    [:.clj-dashboard-title-link] (html/content (:title objective))
+              [:.clj-dashboard-title-link] (html/set-attr :href (url/url (utils/path-for :fe/objective :id (:_id objective))))
+              [:.clj-dashboard-title-link] (html/content (:title objective))
 
-                                    [:.clj-dashboard-stat-participant] nil
-                                    [:.clj-dashboard-stat-starred-amount] (html/content (str (get-in objective [:meta :stars-count])))
-                                    [:.clj-writer-dashboard-navigation-questions-link] (html/set-attr :href (utils/path-for :fe/dashboard-questions :id (:_id objective)))
-                                    [:.clj-writer-dashboard-navigation-comments-link] (html/set-attr :href (utils/path-for :fe/dashboard-comments :id (:_id objective)))
-                                    [:.clj-dashboard-navigation-list] (html/content (navigation-list context))
-                                    [:.clj-dashboard-comment-list] (html/substitute (comment-list context))
+              [:.clj-dashboard-stat-participant] nil
+              [:.clj-dashboard-stat-starred-amount] (html/content (str (get-in objective [:meta :stars-count])))
+              [:.clj-writer-dashboard-navigation-questions-link] (html/set-attr :href (utils/path-for :fe/dashboard-questions :id (:_id objective)))
+              [:.clj-writer-dashboard-navigation-comments-link] (html/set-attr :href (utils/path-for :fe/dashboard-comments :id (:_id objective)))
+              [:.clj-writer-dashboard-navigation-annotations-link] (html/set-attr :href (utils/path-for :fe/dashboard-annotations :id (:_id objective)))
+              [:.clj-dashboard-navigation-list] (html/content (navigation-list context))
 
-                                    [:.clj-dashboard-filter-paper-clip] (html/set-attr
-                                                                       :href
-                                                                       (str (assoc dashboard-url
-                                                                                   :query {:selected selected-comment-target-uri
-                                                                                           :comment-view "paperclip"})))
-                                    [:.clj-dashboard-filter-up-votes] (html/set-attr
-                                                                       :href
-                                                                       (str (assoc dashboard-url
-                                                                                   :query {:selected selected-comment-target-uri
-                                                                                           :comment-view "up-votes"})))
-                                    
-                                    [:.clj-dashboard-filter-down-votes] (html/set-attr
-                                                                         :href
-                                                                         (str (assoc dashboard-url
-                                                                                     :query {:selected selected-comment-target-uri
-                                                                                             :comment-view "down-votes"})))
-
-                                    [:.clj-dashboard-filter-paper-clip] (if (= comment-view-type :paperclip)
-                                                                        (html/add-class "on")
-                                                                        identity)
-
-                                    [:.clj-dashboard-filter-up-votes] (if (= comment-view-type :up-votes)
-                                                                        (html/add-class "on")
-                                                                        identity)
-
-                                    [:.clj-dashboard-filter-down-votes] (if (= comment-view-type :down-votes)
-                                                                          (html/add-class "on")
-                                                                          identity)
-                                    [:.clj-dashboard-content-stats] nil)))))))
+              [:.clj-dashboard-annotation-list] (html/content (annotation-list context))
+              [:.clj-dashboard-filter-list] nil)))))))

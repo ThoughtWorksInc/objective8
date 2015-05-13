@@ -119,7 +119,7 @@
                  :response
                  :status) => 200
              (provided
-               (http-api/retrieve-answers QUESTION_URI {:sorted-by "up-votes" 
+               (http-api/retrieve-answers QUESTION_URI {:sorted-by "up-votes"
                                                         :filter-type "has-writer-note"}) => {:status ::http-api/success
                                                                                              :result [{:entity :answer
                                                                                                        :answer "test answer"
@@ -139,7 +139,7 @@
                                                         :filter-type "none"}) => {:status ::http-api/success
                                                                                   :result [{:entity :answer
                                                                                             :answer "test answer with a note"
-                                                                                            :note "test note"}]}) 
+                                                                                            :note "test note"}]})
              (let [{response :response} (-> user-session
                                             ih/sign-in-as-existing-user
                                             (p/request (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID)))]
@@ -154,12 +154,12 @@
                              :note-on-uri QUESTION_URI}
                      {response :response} (-> user-session
                                               ih/sign-in-as-existing-user
-                                              (p/request (utils/path-for :fe/post-writer-note) 
-                                                         :request-method :post 
+                                              (p/request (utils/path-for :fe/post-writer-note)
+                                                         :request-method :post
                                                          :params params))]
                  {:headers (:headers response)
                   :status (:status response)}) => (just {:headers (ih/location-contains (str "/objectives/" OBJECTIVE_ID "/dashboard/questions?selected=" QUESTION_QUERY_URI))
-                                                         :status 302}) 
+                                                         :status 302})
 
                (provided
                  (http-api/post-writer-note {:note "Test note"
@@ -173,12 +173,12 @@
                              :note-on-uri COMMENT_URI}
                      {response :response} (-> user-session
                                               ih/sign-in-as-existing-user
-                                              (p/request (utils/path-for :fe/post-writer-note) 
-                                                         :request-method :post 
+                                              (p/request (utils/path-for :fe/post-writer-note)
+                                                         :request-method :post
                                                          :params params))]
                  {:headers (:headers response)
                   :status (:status response)}) => (just {:headers (ih/location-contains (str "/objectives/" OBJECTIVE_ID "/dashboard/comments?selected=" COMMENT_QUERY_URI))
-                                                         :status 302}) 
+                                                         :status 302})
 
                (provided
                  (http-api/post-writer-note {:note "Test note"
@@ -192,10 +192,10 @@
                              :note-on-uri QUESTION_URI}
                      {response :response} (-> user-session
                                               ih/sign-in-as-existing-user
-                                              (p/request (utils/path-for :fe/post-writer-note) 
-                                                         :request-method :post 
+                                              (p/request (utils/path-for :fe/post-writer-note)
+                                                         :request-method :post
                                                          :params params))]
-                 {:status (:status response)}) => (just { :status 403}) 
+                 {:status (:status response)}) => (just { :status 403})
 
                (provided
                  (http-api/post-writer-note {:note "Test note"
@@ -210,10 +210,10 @@
                              :note-on-uri QUESTION_URI}
                      {response :response} (-> user-session
                                               ih/sign-in-as-existing-user
-                                              (p/request (utils/path-for :fe/post-writer-note) 
-                                                         :request-method :post 
+                                              (p/request (utils/path-for :fe/post-writer-note)
+                                                         :request-method :post
                                                          :params params))]
-                 {:status (:status response)}) => (just { :status 404}) 
+                 {:status (:status response)}) => (just { :status 404})
 
                (provided
                  (http-api/post-writer-note {:note "Test note"
@@ -227,8 +227,8 @@
                              :note "Test note"
                              :note-on-uri QUESTION_URI}
                      {response :response} (-> user-session
-                                              (p/request (utils/path-for :fe/post-writer-note) 
-                                                         :request-method :post 
+                                              (p/request (utils/path-for :fe/post-writer-note)
+                                                         :request-method :post
                                                          :params params))]
                  {:headers (:headers response)
                   :status (:status response)}) => (just {:headers (ih/location-contains "sign-in") :status 302}))))
@@ -270,7 +270,7 @@
                  :response
                  :status) => 200
              (provided
-               (http-api/get-comments anything {:sorted-by "up-votes" 
+               (http-api/get-comments anything {:sorted-by "up-votes"
                                                 :filter-type "has-writer-note"}) => {:status ::http-api/success
                                                                                      :result []})))
 (def section [["h1" {:data-section-label "1234abcd"} "A Heading"]])
@@ -292,10 +292,28 @@
                                                                        :_created_at "2015-01-01T01:01:00.000Z"
                                                                        :username "A User"
                                                                        :votes {:up 5 :down 3}}]}]})
-       (future-fact "can view annotations on dashboard"
+
+  (fact "can view annotations on dashboard"
+    (let [{response :response} (-> user-session
+                                 ih/sign-in-as-existing-user
+                                 (p/request (utils/path-for :fe/dashboard-annotations :id OBJECTIVE_ID)))]
+      (:status response) => 200
+      (:body response) => (contains "Objective title")
+      (:body response) => (contains "A Heading")
+      (:body response) => (contains "A section comment")))
+
+  (fact "can view drafting warning message when annotaions api returns not-found"
+         (against-background
+           (http-api/get-annotations anything) => {:status ::http-api/not-found
+                                                   :result []})
+
              (let [{response :response} (-> user-session
                                             ih/sign-in-as-existing-user
                                             (p/request (utils/path-for :fe/dashboard-annotations :id OBJECTIVE_ID)))]
                (:status response) => 200
-               (:body response) => (contains "Objective title")
-               (:body response) => (contains "A section comment"))))
+               (:body response) => (contains "There are no annotations associated with this draft.")))
+
+
+
+
+  )

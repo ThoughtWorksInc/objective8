@@ -254,7 +254,7 @@
         {objective-status :status objective :result} (http-api/get-objective objective-id)
         {drafts-status :status drafts :result} (http-api/get-all-drafts objective-id)
 
-        selected-draft-uri (params :selected)
+        selected-draft-uri (get params :selected (:uri (first drafts)))
         {annotations-status :status annotations :result} (http-api/get-annotations selected-draft-uri)]
 
     (cond
@@ -266,7 +266,16 @@
                                                :objective (format-objective objective) 
                                                :drafts drafts
                                                :annotations annotations
-                                               :selected-draft-uri selected-draft-uri)})))
+                                               :selected-draft-uri selected-draft-uri)}
+      (and (= objective-status ::http-api/success) (= annotations-status ::http-api/not-found))
+      {:status 200
+       :headers {"Content-Type" "text/html"}
+       :body (views/dashboard-annotations-page "dashboard-annotations"
+               request
+               :objective (format-objective objective)
+               :drafts drafts
+               :annotations nil
+               :selected-draft-uri selected-draft-uri)})))
 
 (defn post-writer-note [{:keys [route-params params] :as request}]
   (if-let [writer-note-data (fr/request->writer-note-data request (get (friend/current-authentication) :identity))]

@@ -61,7 +61,17 @@ mixin dashboardCommentItem(author, date, withWriterNote)
     .dashboard-comment-actions
       +voteUpDownView
     +dashboardNoteItem(withWriterNote)
-            
+
+mixin dashboardAnnotationItem(author, date)
+  li.dashboard-annotation-item.clj-dashboard-annotation-item
+    .dashboard-annotation-meta
+      span.dashboard-annotation-author.clj-dashboard-annotation-author #{author}
+      span.dashboard-annotation-date.clj-dashboard-annotation-date #{date}
+    .dashboard-annotation-text.clj-dashboard-annotation-text
+      block
+    .dashboard-annotation-actions
+      +voteUpDownView
+
 mixin dashboardAnswerBlank()
   li.dashboard-answer-item.clj-dashboard-no-answer-item
     | !No answers have been provided for this question.
@@ -69,6 +79,10 @@ mixin dashboardAnswerBlank()
 mixin dashboardCommentBlank()
   li.dashboard-comment-item.clj-dashboard-no-comment-item
     | !There are no comments on this piece of content.
+
+mixin dashboardAnnotationBlank()
+  li.dashboard-annotation-item.clj-dashboard-no-annotation-item
+    | !There are no annotations associated with this draft.
 
 mixin dashboardQuestionBlank()
   li.writer-dashboard-navigation-item.clj-dashboard-no-question-item

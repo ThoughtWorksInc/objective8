@@ -1,0 +1,59 @@
+/*
+
+Dashboard annotation item
+
+*/
+
+.dashboard-annotation-section-list {
+  @extend %list-item-container;
+}
+
+.dashboard-annotation-list {
+  @extend %list-item-container;
+}
+
+.dashboard-annotation-item {
+  padding: 2em 0;
+  border-top: 1px solid $border_color;
+  border-bottom: 1px solid $border_color;
+  &:first-child {
+    border-top: none;
+    padding-top: 0;
+  }
+}
+
+.dashboard-annotation-meta {
+  @extend %list-item-meta;
+}
+
+.dashboard-annotation-author {
+  @extend %list-item-author;
+}
+
+.dashboard-annotation-date {
+  @extend %list-item-date;
+}
+
+.dashboard-annotation-text {
+  @include word_wrap;
+  @extend %list-item-text;
+  color: $default_text_color;
+}
+
+.dashboard-annotation-actions {
+  @extend .list-item-actions;
+  margin-bottom: 0.5em;
+  font-size: 1em;
+}
+
+.dashboard-annotation-section {
+  padding-left: 2em;
+  margin-bottom: 2em;
+  border-left: solid 5px $green1;
+}
+
+.dashboard-annotation-section-item {
+  &:not(:first-child) {
+    padding-top: 2em;
+  }
+}
