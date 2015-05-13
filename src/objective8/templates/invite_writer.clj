@@ -43,19 +43,19 @@
 
 (defn invite-writer-page [{:keys [data doc] :as context}]
   (let [objective (:objective data)]
-    (apply str
-           (html/emit*
-             (tf/translate context
-                           (pf/add-google-analytics
-                            (apply-validations context
-                                               (html/at invite-writer-template
-                                                        [:title] (html/content (:title doc))
-                                                        [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
-                                                        [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
-                                                        [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
-
-                                                        [:.clj-objective-navigation-item-objective] (html/set-attr :href (str "/objectives/" (:_id objective)))
-                                                        [:.clj-objective-title] (html/content (:title objective))
-
-                                                        [:.clj-invite-a-writer-form] (html/content (invite-writer context))
-                                                        [:.clj-invite-a-writer-form] (html/set-attr :action (str "/objectives/" (:_id objective) "/writer-invitations"))))))))))
+    (->> (html/at invite-writer-template
+                  [:title] (html/content (:title doc))
+                  [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
+                  [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+                  [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
+                  
+                  [:.clj-objective-navigation-item-objective] (html/set-attr :href (str "/objectives/" (:_id objective)))
+                  [:.clj-objective-title] (html/content (:title objective))
+                  
+                  [:.clj-invite-a-writer-form] (html/content (invite-writer context))
+                  [:.clj-invite-a-writer-form] (html/set-attr :action (str "/objectives/" (:_id objective) "/writer-invitations")))
+         (apply-validations context)
+         pf/add-google-analytics
+         (tf/translate context)
+         html/emit*
+         (apply str))))

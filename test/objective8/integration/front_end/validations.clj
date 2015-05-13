@@ -71,7 +71,17 @@
           ?title                           ?description                    ?expected-error-message
           "12"                             "A description"                 "clj-title-length-error"
           (ih/string-of-length 121)        "A description"                 "clj-title-length-error"
-          "A valid title"                  (ih/string-of-length 5001)      "clj-description-length-error")))
+          "A valid title"                  (ih/string-of-length 5001)      "clj-description-length-error")
+
+         (tabular
+          (fact "validation errors are hidden by default"
+                (let [objective-form-html (-> user-session
+                                              ih/sign-in-as-existing-user
+                                              (p/request (utils/path-for :fe/create-objective-form))
+                                              :response
+                                              :body)]
+                  objective-form-html =not=> (contains ?error-tag)))
+          ?error-tag "clj-title-length-error" "clj-description-length-error")))
 
 (facts "about the add question form"
        (binding [config/enable-csrf false]
@@ -88,7 +98,17 @@
           
           ?question                        ?expected-error-message
           (ih/string-of-length 9)     "clj-question-length-error"
-          (ih/string-of-length 501)   "clj-question-length-error")))
+          (ih/string-of-length 501)   "clj-question-length-error")
+
+         (tabular
+          (fact "validation errors are hidden by default"
+                (let [question-form-html (-> user-session
+                                              ih/sign-in-as-existing-user
+                                              (p/request (utils/path-for :fe/add-a-question :id OBJECTIVE_ID))
+                                              :response
+                                              :body)]
+                  question-form-html =not=> (contains ?error-tag)))
+          ?error-tag "clj-question-length-error")))
 
 (facts "about the add answer form"
        (binding [config/enable-csrf false]
@@ -105,7 +125,17 @@
           
           ?answer                          ?expected-error-message
           ""                               "clj-answer-empty-error"
-          (ih/string-of-length 501)        "clj-answer-length-error")))
+          (ih/string-of-length 501)        "clj-answer-length-error")
+
+         (tabular
+          (fact "validation errors are hidden by default"
+                (let [answer-form-html (-> user-session
+                                              ih/sign-in-as-existing-user
+                                              (p/request (utils/path-for :fe/question :id OBJECTIVE_ID :q-id QUESTION_ID))
+                                              :response
+                                              :body)]
+                  answer-form-html =not=> (contains ?error-tag)))
+          ?error-tag "clj-answer-length-error" "clj-answer-empty-error")))
 
 (tabular
  (facts "about creating comments"
@@ -120,7 +150,15 @@
                                         :refer (utils/local-path-for :fe/objective :id OBJECTIVE_ID)})
                     p/follow-redirect
                     :response
-                    :body) => (contains ?expected-error-message))
+                    :body) => (contains ?error-tag))
+
+          (fact "comment validation errors are hidden by default on the objective detail page"
+                (let [objective-details-html (-> user-session
+                                                 ih/sign-in-as-existing-user
+                                                 (p/request (utils/path-for :fe/objective :id OBJECTIVE_ID))
+                                                 :response
+                                                 :body)]
+                  objective-details-html =not=> (contains ?error-tag)))
 
           (binding [the-objective objective-in-drafting]
             (fact "validation errors are reported when posting a comment on a draft"
@@ -133,7 +171,15 @@
                                           :refer (utils/local-path-for :fe/draft :id OBJECTIVE_ID :d-id DRAFT_ID)})
                       p/follow-redirect
                       :response
-                      :body) => (contains ?expected-error-message))
+                      :body) => (contains ?error-tag))
+
+            (fact "comment validation errors are hidden by default on draft view pages"
+                  (let [draft-html (-> user-session
+                                       ih/sign-in-as-existing-user
+                                       (p/request (utils/path-for :fe/draft :id OBJECTIVE_ID :d-id DRAFT_ID))
+                                       :response
+                                       :body)]
+                    draft-html =not=> (contains ?error-tag)))
 
             (fact "validation errors are reported when posting a comment on a draft section"
                   (-> user-session
@@ -148,9 +194,20 @@
                                                                        :section-label SECTION_LABEL)})
                       p/follow-redirect
                       :response
-                      :body) => (contains ?expected-error-message)))))
+                      :body) => (contains ?error-tag))
 
- ?comment                        ?expected-error-message
+            (fact "comment validation errors are hidden by default on draft view pages"
+                  (let [draft-section-html (-> user-session
+                                       ih/sign-in-as-existing-user
+                                       (p/request (utils/path-for :fe/draft-section
+                                                                  :id OBJECTIVE_ID
+                                                                  :d-id DRAFT_ID
+                                                                  :section-label SECTION_LABEL))
+                                       :response
+                                       :body)]
+                    draft-section-html =not=> (contains ?error-tag))))))
+
+ ?comment                        ?error-tag
  ""                              "clj-comment-empty-error"
  (ih/string-of-length 501)       "clj-comment-length-error")
 
@@ -176,46 +233,81 @@
           "Jenny"                          ""              "a reason"                        "clj-writer-email-empty-error"
           "Jenny"                          "invalid-email" "a reason"                        "clj-writer-email-invalid-error"
           "Jenny"                          "a@b.com"       ""                                "clj-writer-reason-empty-error"
-          "Jenny"                          "a@b.com"       (ih/string-of-length 5001)        "clj-writer-reason-length-error")))
+          "Jenny"                          "a@b.com"       (ih/string-of-length 5001)        "clj-writer-reason-length-error")
+
+         (tabular
+          (fact "validation errors are hidden by default"
+                (let [invitation-form-html (-> user-session
+                                              ih/sign-in-as-existing-user
+                                              (p/request (utils/path-for :fe/invite-writer :id OBJECTIVE_ID))
+                                              :response
+                                              :body)]
+                  invitation-form-html =not=> (contains ?error-tag)))
+          ?error-tag
+          "clj-writer-name-empty-error"
+          "clj-writer-name-length-error" 
+          "clj-writer-email-empty-error"  
+          "clj-writer-email-invalid-error"
+          "clj-writer-reason-empty-error" 
+          "clj-writer-reason-length-error")))
 
 (tabular
  (facts "about writer notes"
         (binding [config/enable-csrf false
                   the-user           writer-for-objective]
-          (fact "validation errors are reported on the questions dashboard"
-                (against-background
-                 (http-api/retrieve-questions OBJECTIVE_ID anything) => {:status ::http-api/success
-                                                                         :result [{}]}
-                 (http-api/retrieve-answers anything anything) => {:status ::http-api/success
-                                                                   :result [{:uri "/answer/uri"}]})
-                (-> user-session
-                    ih/sign-in-as-existing-user
-                    (p/request (utils/path-for :fe/post-writer-note)
-                               :request-method :post
-                               :params {:note ?note
-                                        :note-on-uri "/answer/uri"
-                                        :refer (utils/local-path-for :fe/dashboard-questions :id OBJECTIVE_ID)})
-                    p/follow-redirect
-                    :response
-                    :body) => (contains ?expected-error-message))
+          (facts "on the questions dashboard"
+                 (against-background
+                   (http-api/retrieve-questions OBJECTIVE_ID anything) => {:status ::http-api/success
+                                                                           :result [{}]}
+                   (http-api/retrieve-answers anything anything) => {:status ::http-api/success
+                                                                     :result [{:uri "/answer/uri"}]})
+                 (fact "validation errors are reported"
+                       (-> user-session
+                           ih/sign-in-as-existing-user
+                           (p/request (utils/path-for :fe/post-writer-note)
+                                      :request-method :post
+                                      :params {:note ?note
+                                               :note-on-uri "/answer/uri"
+                                               :refer (utils/local-path-for :fe/dashboard-questions :id OBJECTIVE_ID)})
+                           p/follow-redirect
+                           :response
+                           :body) => (contains ?error-tag))
 
-          (fact "validation errors are reported on the comments dashboard"
-                (against-background
-                 (http-api/get-all-drafts anything) => {:status ::http-api/success
-                                                        :result [{:_created_at "2015-04-04T12:00:00.000Z"}]}
-                 (http-api/get-comments anything anything) => {:status ::http-api/success
-                                                               :result [{:uri "/comment/uri"
-                                                                         :_created_at "2015-01-01T01:01:00.000Z"}]})
-                (-> user-session
-                    ih/sign-in-as-existing-user
-                    (p/request (utils/path-for :fe/post-writer-note)
-                               :request-method :post
-                               :params {:note ?note
-                                        :note-on-uri "/comment/uri"
-                                        :refer (utils/local-path-for :fe/dashboard-comments :id OBJECTIVE_ID)})
-                    p/follow-redirect
-                    :response
-                    :body) => (contains ?expected-error-message))))
+                 (fact "validation errors are hidden by default"
+                       (let [dashboard-html (-> user-session
+                                                ih/sign-in-as-existing-user
+                                                (p/request (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID))
+                                                :response
+                                                :body)]
+                         dashboard-html =not=> (contains ?error-tag))))
 
- ?note     ?expected-error-message
+
+          (facts "on the comments dashboard"
+                 (against-background
+                   (http-api/get-all-drafts anything) => {:status ::http-api/success
+                                                          :result [{:_created_at "2015-04-04T12:00:00.000Z"}]}
+                   (http-api/get-comments anything anything) => {:status ::http-api/success
+                                                                 :result [{:uri "/comment/uri"
+                                                                           :_created_at "2015-01-01T01:01:00.000Z"}]})
+                 (fact "validation errors are reported"
+                       (-> user-session
+                           ih/sign-in-as-existing-user
+                           (p/request (utils/path-for :fe/post-writer-note)
+                                      :request-method :post
+                                      :params {:note ?note
+                                               :note-on-uri "/comment/uri"
+                                               :refer (utils/local-path-for :fe/dashboard-comments :id OBJECTIVE_ID)})
+                           p/follow-redirect
+                           :response
+                           :body) => (contains ?error-tag))
+
+                 (fact "validation errors are hidden by default"
+                       (let [dashboard-html (-> user-session
+                                                ih/sign-in-as-existing-user
+                                                (p/request (utils/path-for :fe/dashboard-comments :id OBJECTIVE_ID))
+                                                :response
+                                                :body)]
+                         dashboard-html =not=> (contains ?error-tag))))))
+
+ ?note     ?error-tag
  ""        "clj-writer-note-empty-error")

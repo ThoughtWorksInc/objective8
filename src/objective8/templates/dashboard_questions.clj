@@ -40,7 +40,7 @@
                [:.clj-writer-note-empty-error] nil))))
 
 (defn render-answer-without-note [{:keys [ring-request] :as context} answer]
-  (->> (html/at no-writer-note-snippet 
+  (->> (html/at no-writer-note-snippet
                 [:.clj-dashboard-answer-item-text] (html/content (:answer answer)) 
                 [:.clj-dashboard-answer-item-up-count] (html/content (str (get-in answer [:votes :up]))) 
                 [:.clj-dashboard-answer-item-down-count] (html/content (str (get-in answer [:votes :down]))) 

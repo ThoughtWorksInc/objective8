@@ -56,6 +56,7 @@
         previous-inputs (:data validation-data)]
     (html/at nodes
              [:.clj-answer-length-error] (when (contains? (:answer validation-report) :length) identity)
+             [:.clj-answer-empty-error] (when (contains? (:answer validation-report) :empty) identity)
              [:.clj-input-answer] (html/content (:answer previous-inputs)))))
 
 (defn question-page [{:keys [translations data user doc] :as context}]
@@ -66,43 +67,43 @@
         optionally-disable-voting (if (tf/in-drafting? (:objective data))
                                     (disable-voting context)
                                     identity)]
-    (apply str
-           (html/emit*
-             (tf/translate context
-                           (pf/add-google-analytics
-                             (apply-validations context
-                             (html/at question-template
-                                      [:title] (html/content (:title doc))
-                                      [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
-                                      [:head] (facebook-meta-tags context)
-                                      [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
-                                      [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
-                                      [:.clj-objective-link] (html/set-attr :href (str "/objectives/" (:_id objective)))
-                                      [:.clj-objective-link] (html/content (:title objective)) 
-                                      [:.clj-question-breadcrumb] (html/content (:question question))
+    (->> (html/at question-template
+                  [:title] (html/content (:title doc))
+                  [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
+                  [:head] (facebook-meta-tags context)
+                  [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+                  [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
+                  [:.clj-objective-link] (html/set-attr :href (str "/objectives/" (:_id objective)))
+                  [:.clj-objective-link] (html/content (:title objective)) 
+                  [:.clj-question-breadcrumb] (html/content (:question question))
 
-                                      [:.clj-question] (html/content (:question question))
-                                      [:.clj-answer] (html/clone-for [answer answers]
-                                                                     [:.clj-answer] (html/set-attr :id (str "answer-" (:_id answer)))
-                                                                     [:.clj-answer-text] (html/content (:answer answer))
-                                                                     [:.clj-approval-form] (comp
-                                                                                             optionally-disable-voting
-                                                                                             (if user
-                                                                                               (voting-actions-when-signed-in context answer)
-                                                                                               (voting-actions-when-signed-out context answer)))
-                                                                     [:.clj-writer-note-item-container] (when (:note answer)
-                                                                                                                 (display-writer-note answer)))
-                                      [:.clj-jump-to-answer] (when (and (tf/open? objective) user) identity)
+                  [:.clj-question] (html/content (:question question))
+                  [:.clj-answer] (html/clone-for [answer answers]
+                                                 [:.clj-answer] (html/set-attr :id (str "answer-" (:_id answer)))
+                                                 [:.clj-answer-text] (html/content (:answer answer))
+                                                 [:.clj-approval-form] (comp
+                                                                        optionally-disable-voting
+                                                                        (if user
+                                                                          (voting-actions-when-signed-in context answer)
+                                                                          (voting-actions-when-signed-out context answer)))
+                                                 [:.clj-writer-note-item-container] (when (:note answer)
+                                                                                      (display-writer-note answer)))
+                  [:.clj-jump-to-answer] (when (and (tf/open? objective) user) identity)
 
-                                      [:.clj-answer-new] (when (tf/open? objective) identity)
-                                      
-                                      [:.clj-answer-form]
-                                      (if user
-                                        (html/do->
-                                         (html/set-attr :action
-                                                        (str "/objectives/" (:_id objective)
-                                                             "/questions/" (:_id question) "/answers"))
-                                         (html/prepend (html/html-snippet (anti-forgery-field))))
-                                        (html/substitute (sign-in-to-add-answer context)))
+                  [:.clj-answer-new] (when (tf/open? objective) identity)
+                  
+                  [:.clj-answer-form]
+                  (if user
+                    (html/do->
+                     (html/set-attr :action
+                                    (str "/objectives/" (:_id objective)
+                                         "/questions/" (:_id question) "/answers"))
+                     (html/prepend (html/html-snippet (anti-forgery-field))))
+                    (html/substitute (sign-in-to-add-answer context)))
 
-                                      [:.l8n-guidance-heading] (tl8 :question-page/guidance-heading)))))))))
+                  [:.l8n-guidance-heading] (tl8 :question-page/guidance-heading))
+         (apply-validations context)
+         pf/add-google-analytics
+         (tf/translate context)
+         html/emit*
+         (apply str))))

@@ -199,57 +199,58 @@
         optionally-disable-voting (if (tf/in-drafting? objective)
                                     (pf/disable-voting-actions translations)
                                     identity)]
-    (apply str
-           (html/emit*
-             (tf/translate context
-                           (pf/add-google-analytics
-                             (html/at objective-template
-                                      [:title] (html/content (:title doc))
-                                      [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
-                                      [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
-                                      [:.clj-modal-contents]
-                                      (case (:type flash)
-                                        :invitation (writer-invitation-modal context)
-                                        :share-question (share-question-modal context)
-                                        :share-objective (share-objective-modal context)
-                                        (when (invitation-rsvp-for-objective? objective invitation-rsvp)
-                                          (invitation-rsvp-modal context)))
+    (->>
+     (html/at objective-template
+              [:title] (html/content (:title doc))
+              [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+              [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
+              [:.clj-modal-contents]
+              (case (:type flash)
+                :invitation (writer-invitation-modal context)
+                :share-question (share-question-modal context)
+                :share-objective (share-objective-modal context)
+                (when (invitation-rsvp-for-objective? objective invitation-rsvp)
+                  (invitation-rsvp-modal context)))
 
-                                      [:.clj-objective-progress-indicator] nil
-                                      [:.clj-guidance-buttons] nil
-                                      [:.clj-guidance-heading] (html/content (translations :objective-guidance/heading))
+              [:.clj-objective-progress-indicator] nil
+              [:.clj-guidance-buttons] nil
+              [:.clj-guidance-heading] (html/content (translations :objective-guidance/heading))
 
-                                      [:.clj-star-form] (if user
-                                                          (star-form-when-signed-in context)
-                                                          (star-form-when-not-signed-in context))
+              [:.clj-star-form] (if user
+                                  (star-form-when-signed-in context)
+                                  (star-form-when-not-signed-in context))
 
-                                      [:.clj-objective-title] (html/content (:title objective))
+              [:.clj-objective-title] (html/content (:title objective))
 
-                                      [:.clj-days-left] (when (tf/open? objective)
-                                                          (drafting-begins objective))
-                                      [:.clj-drafting-started-wrapper] (when (tf/in-drafting? objective)
-                                                                         (html/substitute (drafting-message context)))
-                                      [:.clj-objective-detail] (html/content (tf/text->p-nodes (:description objective)))
+              [:.clj-days-left] (when (tf/open? objective)
+                                  (drafting-begins objective))
+              [:.clj-drafting-started-wrapper] (when (tf/in-drafting? objective)
+                                                 (html/substitute (drafting-message context)))
+              [:.clj-objective-detail] (html/content (tf/text->p-nodes (:description objective)))
 
-                                      [:.clj-writer-item-list] (html/content (pf/writer-list context))
-                                      [:.clj-invite-writer-link] (when (and 
-                                                                         (permissions/writer-inviter-for? user objective-id)
-                                                                         (tf/open? objective))
-                                                                   (html/set-attr
-                                                                     :href (str "/objectives/" (:_id objective) "/invite-writer")))
+              [:.clj-writer-item-list] (html/content (pf/writer-list context))
+              [:.clj-invite-writer-link] (when (and 
+                                                (permissions/writer-inviter-for? user objective-id)
+                                                (tf/open? objective))
+                                           (html/set-attr
+                                            :href (str "/objectives/" (:_id objective) "/invite-writer")))
 
-                                      [:.clj-writer-dashboard-link] (when (permissions/writer-for? user objective-id)
-                                                                      (html/set-attr
-                                                                        :href (str "/objectives/" (:_id objective) "/dashboard/questions")))
+              [:.clj-writer-dashboard-link] (when (permissions/writer-for? user objective-id)
+                                              (html/set-attr
+                                               :href (str "/objectives/" (:_id objective) "/dashboard/questions")))
 
-                                      [:.clj-objective-question-list] (html/content (objective-question-list context))
-                                      [:.clj-community-question-list] (html/content (community-question-list context))
-                                      [:.clj-ask-question-link] (when (tf/open? objective)
-                                                                  (html/set-attr
-                                                                    "href" (str "/objectives/" (:_id objective) "/add-question")))
+              [:.clj-objective-question-list] (html/content (objective-question-list context))
+              [:.clj-community-question-list] (html/content (community-question-list context))
+              [:.clj-ask-question-link] (when (tf/open? objective)
+                                          (html/set-attr
+                                           "href" (str "/objectives/" (:_id objective) "/add-question")))
 
-                                      [:.clj-comment-list] (html/content
-                                                             (optionally-disable-voting
-                                                               (pf/comment-list context)))
-                                      [:.clj-comment-create] (when (tf/open? objective)
-                                                               (html/content (pf/comment-create context :objective))))))))))
+              [:.clj-comment-list] (html/content
+                                    (optionally-disable-voting
+                                     (pf/comment-list context)))
+              [:.clj-comment-create] (when (tf/open? objective)
+                                       (html/content (pf/comment-create context :objective))))
+     pf/add-google-analytics
+     (tf/translate context)
+     html/emit*
+     (apply str))))

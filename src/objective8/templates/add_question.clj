@@ -41,19 +41,20 @@
 (defn add-question-page [{:keys [translations data doc] :as context}]
   (let [objective (:objective data)
         objective-id (:_id objective)]
-    (apply str
-           (html/emit*
-             (tf/translate context
-                           (pf/add-google-analytics
-                             (apply-validations context
-                                                (html/at add-question-template
-                                                         [:title] (html/content (:title doc))
-                                                         [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
-                                                         [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
-                                                         [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
+    (->>
+     (html/at add-question-template
+              [:title] (html/content (:title doc))
+              [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
+              [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+              [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
 
-                                                         [:.clj-guidance-buttons] nil
-                                                         [:.l8n-guidance-heading] (html/content (translations :question-create/guidance-heading))
-                                                         [:.clj-objective-navigation-item-objective] (html/set-attr :href (utils/local-path-for :fe/objective :id objective-id))
-                                                         [:.clj-objective-title] (html/content (:title objective))
-                                                         [:.clj-question-create] (html/content (add-question context))))))))))
+              [:.clj-guidance-buttons] nil
+              [:.l8n-guidance-heading] (html/content (translations :question-create/guidance-heading))
+              [:.clj-objective-navigation-item-objective] (html/set-attr :href (utils/local-path-for :fe/objective :id objective-id))
+              [:.clj-objective-title] (html/content (:title objective))
+              [:.clj-question-create] (html/content (add-question context)))
+     (apply-validations context)
+     pf/add-google-analytics
+     (tf/translate context)
+     html/emit*
+     (apply str))))
