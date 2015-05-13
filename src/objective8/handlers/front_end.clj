@@ -712,17 +712,17 @@
       :else {:status 500})))
 
 (defn post-up-vote [request]
-  (-> (helpers/request->up-vote-info request (get (friend/current-authentication) :identity))
+  (-> (fr/request->up-vote-info request (get (friend/current-authentication) :identity))
       http-api/create-up-down-vote)
   (redirect-to-params-referer request))
 
 (defn post-down-vote [request]
-  (-> (helpers/request->down-vote-info request (get (friend/current-authentication) :identity))
+  (-> (fr/request->down-vote-info request (get (friend/current-authentication) :identity))
       http-api/create-up-down-vote)
   (redirect-to-params-referer request))
 
 (defn post-star [{:keys [t'] :as request}]
-  (let [star-data (helpers/request->star-info request (get (friend/current-authentication) :identity))
+  (let [star-data (fr/request->star-info request (get (friend/current-authentication) :identity))
         {status :status stored-star :result} (http-api/post-star star-data)]
     (cond
       (= status ::http-api/success) (redirect-to-params-referer request)
@@ -732,7 +732,7 @@
       :else {:status 502}))) 
 
 (defn post-mark [request]
-  (if-let [mark-data (helpers/request->mark-info request (get (friend/current-authentication) :identity))]
+  (if-let [mark-data (fr/request->mark-info request (get (friend/current-authentication) :identity))]
     (let [{status :status mark :result} (http-api/post-mark mark-data)]
       (case status
         ::http-api/success (redirect-to-params-referer request)
@@ -744,7 +744,7 @@
 ;;ADMINS
 
 (defn post-admin-removal-confirmation [request]
-  (if-let [admin-removal-confirmation-data (helpers/request->admin-removal-confirmation-info request (get (friend/current-authentication) :identity))]
+  (if-let [admin-removal-confirmation-data (fr/request->admin-removal-confirmation-info request (get (friend/current-authentication) :identity))]
     (let [{status :status admin-removal :result} (http-api/post-admin-removal admin-removal-confirmation-data)
           updated-session (dissoc (:session request) :removal-data)]
       (case status
@@ -756,7 +756,7 @@
     {:status 400}))
 
 (defn admin-removal-confirmation [request]
-  (if-let [removal-data (helpers/request->removal-data request)]
+  (if-let [removal-data (fr/request->removal-data request)]
     {:status 200
      :body (views/admin-removal-confirmation "admin-removal-confirmation" request 
                                              :removal-data removal-data)
@@ -764,7 +764,7 @@
     (error-404-response request)))
 
 (defn post-admin-removal [request]
-  (if-let [admin-removal-data (helpers/request->admin-removal-info request)]
+  (if-let [admin-removal-data (fr/request->admin-removal-info request)]
     (let [updated-session (assoc (:session request) :removal-data admin-removal-data)]
       (-> (response/redirect (utils/path-for :fe/admin-removal-confirmation-get))
           (assoc :session updated-session))) 

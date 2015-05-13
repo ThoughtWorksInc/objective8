@@ -153,3 +153,42 @@
           (validate :note-on-uri note-on-uri-validator)
           (assoc-in [:data :created-by-id] user-id)
           (dissoc :request)))
+
+;; Votes
+
+(defn request->up-vote-info [{:keys [params] :as request} user-id]
+  (some-> params
+          (utils/select-all-or-nothing [:vote-on-uri])
+          (assoc :created-by-id user-id :vote-type "up")))
+
+(defn request->down-vote-info [{:keys [params] :as request} user-id]
+  (some-> params
+          (utils/select-all-or-nothing [:vote-on-uri])
+          (assoc :created-by-id user-id :vote-type "down"))) 
+
+;; Stars
+
+(defn request->star-info [{:keys [params] :as request} user-id]
+  (when-let [objective-uri (:objective-uri params)]
+    {:objective-uri objective-uri :created-by-id user-id})) 
+
+;; Marks
+
+(defn request->mark-info [{:keys [params] :as request} user-id]
+  (some-> params
+          (utils/select-all-or-nothing [:question-uri])
+          (assoc :created-by-uri (str "/users/" user-id))))
+
+;; Admin removals
+
+(defn request->admin-removal-confirmation-info [{:keys [params] :as request} user-id]
+  (some-> params
+          (utils/select-all-or-nothing [:removal-uri])
+          (assoc :removed-by-uri (str "/users/" user-id))))
+
+(defn request->admin-removal-info [{:keys [params] :as request}]
+  (utils/select-all-or-nothing params [:removal-uri :removal-sample]))
+
+(defn request->removal-data [{:keys [session] :as request}]
+  (some-> (:removal-data session)
+          (utils/select-all-or-nothing [:removal-uri :removal-sample])))
