@@ -19,7 +19,7 @@
 
 (def objective {:_id OBJECTIVE_ID :status "open"})
 (def objective-in-drafting {:_id OBJECTIVE_ID :status "drafting"})
-(def question {:_id QUESTION_ID :objective-id OBJECTIVE_ID})
+(def question {:_id QUESTION_ID :objective-id OBJECTIVE_ID :question "Why?"})
 (def draft {:_id DRAFT_ID
             :objective-id OBJECTIVE_ID
             :_created_at "2015-02-12T16:46:18.838Z"})
