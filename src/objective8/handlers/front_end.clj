@@ -745,27 +745,29 @@
 
 (defn post-admin-removal-confirmation [request]
   (if-let [admin-removal-confirmation-data (helpers/request->admin-removal-confirmation-info request (get (friend/current-authentication) :identity))]
-    (let [{status :status admin-removal :result} (http-api/post-admin-removal admin-removal-confirmation-data)]
+    (let [{status :status admin-removal :result} (http-api/post-admin-removal admin-removal-confirmation-data)
+          updated-session (dissoc (:session request) :removal-data)]
       (case status
-        ::http-api/success (response/redirect (utils/path-for :fe/objective-list))
+        ::http-api/success (-> (response/redirect (utils/path-for :fe/objective-list))
+                               (assoc :session updated-session)) 
         ::http-api/invalid-input {:status 400}
 
         {:status 502}))
     {:status 400}))
 
-(defn admin-removal-confirmation [{:keys [flash] :as request}]
-  (if-let [removal-data (helpers/flash->removal-data flash)]
+(defn admin-removal-confirmation [request]
+  (if-let [removal-data (helpers/request->removal-data request)]
     {:status 200
      :body (views/admin-removal-confirmation "admin-removal-confirmation" request 
                                              :removal-data removal-data)
      :headers {"Content-Type" "text/html"}}
-    {:status 400}))
+    (error-404-response request)))
 
 (defn post-admin-removal [request]
   (if-let [admin-removal-data (helpers/request->admin-removal-info request)]
-    (-> (response/redirect (utils/path-for :fe/admin-removal-confirmation-get))
-        (assoc :flash {:type :flash-data
-                       :data admin-removal-data}))
+    (let [updated-session (assoc (:session request) :removal-data admin-removal-data)]
+      (-> (response/redirect (utils/path-for :fe/admin-removal-confirmation-get))
+          (assoc :session updated-session))) 
     {:status 400}))
 
 (defn admin-activity [request]
