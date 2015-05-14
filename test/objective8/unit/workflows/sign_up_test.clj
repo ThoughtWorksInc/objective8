@@ -11,12 +11,6 @@
         (provided
          (authorise (contains {:session (contains {:invitation :invitation-data})}) :user) => :authorised-response))
 
-(fact "only usernames containing alphanumeric characters, and between 1 and 16 characters long are valid"
-      (validate-username "1-a") => falsey
-      (validate-username "") => falsey
-      (validate-username "123456789abcdefgh") => falsey
-      (validate-username "val1d") => "val1d")
-
 (def USER_ID 1)
 (def the-user {:_id USER_ID})
 
