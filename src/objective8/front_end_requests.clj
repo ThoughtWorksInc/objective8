@@ -30,6 +30,29 @@
 (defn valid-email? [email-address]
   (re-matches #"[^ @]+@[^ @]+$" email-address))
 
+(defn valid-username? [username]
+  (re-matches #"[a-zA-Z0-9]{1,16}" username))
+
+;; User sign-up
+
+(defn username-validator [request]
+  (let [username (s/trim (get-in request [:params :username]))]
+    (cond-> (initialise-field-validation username)
+      (not (valid-username? username)) (report-error :invalid))))
+
+(defn email-address-validator [request]
+  (let [email-address (s/trim (get-in request [:params :email-address]))]
+    (cond-> (initialise-field-validation email-address)
+      (empty? email-address) (report-error :empty)
+      (and (not (empty? email-address))
+           (not (valid-email? email-address))) (report-error :invalid))))
+
+(defn request->user-sign-up-data [request]
+  (-> (initialise-request-validation request)
+      (validate :username username-validator)
+      (validate :email-address email-address-validator)
+      (dissoc :request)))
+
 ;; Create objective
 
 (defn objective-title-validator [request]

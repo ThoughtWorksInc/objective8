@@ -36,6 +36,44 @@
              (valid-email? "a b@cd") => falsey
              (valid-email? "ab@c d") => falsey))
 
+(facts "about valid usernames"
+       (fact "they contain between 1 and 16 chracters"
+             (valid-username? "username") => truthy
+             (valid-username? "") => falsey
+             (valid-username? (string-of-length 17)) => falsey)
+
+       (fact "must be alphanumeric"
+             (valid-username? "ABCabc123") => truthy
+             (valid-username? "ABC abc123") => falsey
+             (valid-username? "ABC-abc123") => falsey))
+
+(facts "about transforming requests to user-sign-up-data"
+       (fact "extracts the relevant data"
+             (let [user-sign-up-data (request->user-sign-up-data {:params {:username "validUsername"
+                                                                           :email-address "abc@def.com"}})]
+
+               (:data user-sign-up-data) => {:username "validUsername"
+                                             :email-address "abc@def.com"}
+               (:status user-sign-up-data) => ::objective8.front-end-requests/valid
+               (:report user-sign-up-data) => {}))
+
+       (tabular
+         (fact "reports validation errors from a request"
+             (let [user-sign-up-data (request->user-sign-up-data {:params {:username ?username
+                                                                           :email-address ?email-address}})]
+
+               (:data user-sign-up-data) => {:username ?username
+                                             :email-address ?email-address}
+               (:status user-sign-up-data) => ::objective8.front-end-requests/invalid
+               (:report user-sign-up-data) => ?report) 
+               )
+         ?username               ?email-address          ?report
+         ""                      "abc@def.com"           {:username #{:invalid}}
+         "validUsername"         ""                      {:email-address #{:empty}}
+         "validUsername"         "no-at-symbol"          {:email-address #{:invalid}}) 
+       
+       )
+
 (facts "about transforming requests to objective-data"
        (fact "creates an objective from a request"
              (let [objective-data (request->objective-data {:params test-objective} USER_ID date)]
@@ -43,7 +81,7 @@
                (:status objective-data) => ::objective8.front-end-requests/valid
                (:report objective-data) => {}))
 
-       (fact "reports validation errors from a request"
+       (fact "reports validation errors"
              (let [objective-data (request->objective-data {:params invalid-test-objective} USER_ID date)]
                (:data objective-data) => (assoc invalid-test-objective :created-by-id USER_ID :end-date date-plus-30-days)
                (:status objective-data) => ::objective8.front-end-requests/invalid

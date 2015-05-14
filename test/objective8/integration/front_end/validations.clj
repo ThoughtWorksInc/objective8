@@ -35,13 +35,12 @@
 
 (def ^:dynamic the-objective objective)
 (def ^:dynamic the-user participant)
-
+(def ^:dynamic find-user-by-twitter-id-result {:status ::http-api/success :result the-user})
 
 (background
  ;; Sign-in background
  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
- (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                 :result the-user}
+ (http-api/find-user-by-twitter-id anything) => find-user-by-twitter-id-result 
  (http-api/get-user anything) => {:status ::http-api/success
                                   :result the-user}
 
@@ -61,8 +60,57 @@
                                                 :result draft}
  (http-api/get-draft-section anything) => {:status ::http-api/success :result draft-section})
 
+(def twitter-callback-url (str utils/host-url "/twitter-callback?oauth_verifier=VERIFICATION_TOKEN"))
+(def sign-up-url (str utils/host-url "/sign-up"))
 
 (def user-session (ih/test-context))
+
+(facts "about the sign-up form"
+       (binding [config/enable-csrf false
+                 find-user-by-twitter-id-result {:status ::http-api/not-found}]
+         (tabular
+           (fact "validation errors are reported"
+                 (-> user-session
+                     (p/request twitter-callback-url)
+                     (p/request sign-up-url
+                                :request-method :post
+                                :params {:username ?username
+                                         :email-address ?email-address})
+                     p/follow-redirect
+                     :response
+                     :body) => (contains ?error-tag))
+
+           ?username     ?email-address     ?error-tag
+           ""            "abc@def.com"      "clj-username-invalid-error"
+           "valid"       ""                 "clj-email-empty-error"
+           "valid"       "invalid"          "clj-email-invalid-error")
+
+         (fact "error is reported if username is not unique"
+               (against-background
+                 (http-api/create-user anything) => {:status ::http-api/invalid-input})
+
+               (-> user-session
+                   (p/request twitter-callback-url)
+                   (p/request sign-up-url
+                              :request-method :post
+                              :params {:username "valid"
+                                       :email-address "valid@email.com"})
+                   p/follow-redirect
+                   :response
+                   :body) => (contains "clj-username-duplicated-error"))
+         
+         (tabular
+           (fact "validation errors are hidden by default"
+                 (-> user-session
+                     (p/request twitter-callback-url)
+                     (p/request sign-up-url)
+                     :response
+                     :body) =not=> (contains ?error-tag))
+
+           ?error-tag
+           "clj-username-invalid-error" "clj-username-duplicated-error"
+           "clj-email-empty-error" "clj-email-invalid-error")))
+
 
 (facts "about the create objective form"
        (binding [config/enable-csrf false]

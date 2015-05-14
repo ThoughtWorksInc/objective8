@@ -18,9 +18,11 @@ sign-up,doc-description,
 sign-up,page-title,Almost there
 sign-up,welcome,"Adding your email address will let us notify you when you receive responses to comments, objectives and votes."
 sign-up,username-label,Username
-sign-up,not-unique,Username already exists
-sign-up,not-well-formed,"Username must be 1-16 characters in length, containing only letters and numbers"
+sign-up,username-duplicated-validation-message,This username is already taken. Please choose another.
+sign-up,username-invalid-validation-message,"Username must be 1-16 characters in length, containing only letters and numbers"
 sign-up,email-label,Email
+sign-up,email-empty-validation-message,You must enter an email address
+sign-up,email-invalid-validation-message,The email address you have entered is invalid
 sign-up,button,Create account
 objective-guidance,heading,What is an Objective?
 objective-guidance,text-line-1,A policy starts with an idea.

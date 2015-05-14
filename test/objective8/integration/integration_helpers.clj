@@ -53,7 +53,7 @@
         ; Post user email address to store --- returns authentication map
         (p/request "http://localhost:8080/sign-up" :request-method :post 
                    :content-type "application/x-www-form-urlencoded"
-                   :body "&username=someusername&email-address=test%40email.address.com")
+                   :body "username=someusername&email-address=test%40email.address.com")
         ; Follow redirect to originally requested resource
         (p/follow-redirect))))
 

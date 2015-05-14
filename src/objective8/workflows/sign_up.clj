@@ -8,6 +8,7 @@
             [objective8.config :as config]
             [objective8.http-api :as http-api]
             [objective8.utils :as utils]
+            [objective8.front-end-requests :as fr]
             [objective8.permissions :as permissions]
             [objective8.handlers.front-end :as front-end]))
 
@@ -58,25 +59,27 @@
         :else {:status 500}))
     (response/redirect "/sign-in")))
 
-(defn validate-username [username]
-  (re-matches #"[a-zA-Z0-9]{1,16}" username))
-
-(defn sign-up-form-post [{params :params session :session :as request}]
+(defn sign-up-form-post [{:keys [params session] :as request}]
   (if-let [twitter-id (:twitter-id session)]
-    (if-let [username (validate-username (:username params))]
-      (let [email-address (:email-address params) 
-            {status :status user :result} (http-api/create-user {:twitter-id twitter-id
-                                                                 :username username
-                                                                 :email-address email-address})]
-        (cond
-          (= status ::http-api/success) (finalise-authorisation user session)
-          (= status ::http-api/invalid-input) (-> request
-                                                  (assoc :errors {:username :not-unique})
-                                                  front-end/sign-up-form)
-          :else {:status 502}))
-      (-> request
-          (assoc :errors {:username :not-well-formed})
-          front-end/sign-up-form)) 
+    (let [user-sign-up-data (fr/request->user-sign-up-data request)]
+      (case (:status user-sign-up-data)
+        ::fr/valid
+        (let [{status :status user :result} (http-api/create-user 
+                                              {:twitter-id twitter-id
+                                               :username (-> user-sign-up-data :data :username)
+                                               :email-address (-> user-sign-up-data :data :email-address)})]
+          (case status
+            ::http-api/success (finalise-authorisation user session)
+            ::http-api/invalid-input (-> (response/redirect (str utils/host-url "/sign-up"))
+                                         (assoc :flash {:validation 
+                                                        (-> user-sign-up-data
+                                                            (assoc :report {:username #{:duplicated}})
+                                                            (dissoc :status))})) 
+            {:status 502})) 
+
+        ::fr/invalid
+        (-> (response/redirect (str utils/host-url "/sign-up"))
+            (assoc :flash {:validation (dissoc user-sign-up-data :status)}))))
     {:status 401}))
 
 (def sign-up-handlers
