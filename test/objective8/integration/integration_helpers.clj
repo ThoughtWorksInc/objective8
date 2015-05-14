@@ -5,6 +5,7 @@
             [peridot.core :as p]
             [cheshire.core :as json]
             [clojure.data.json :as cl-json]
+            [ring.middleware.session.store :as rss]
             [objective8.core :as core]
             [objective8.workflows.twitter :as twitter]
             [objective8.workflows.sign-up :as sign-up]
@@ -61,16 +62,41 @@
      (p/request "http://localhost:8080/twitter-callback?oauth_verifier=the-verifier")
      p/follow-redirect))
 
+;; Session store implementation for testing
+(deftype TestSessionStore [session-atom]
+  rss/SessionStore
+  (read-session [_ _]
+    (prn "read-session" @session-atom)
+    @session-atom)
+  (write-session [_ _ data]
+    (prn "write-session" @session-atom data)
+    (swap! session-atom data)
+    "dummy-key")
+  (delete-session [_ _]
+    (prn "delete-session" @session-atom)
+    (swap! session-atom nil)
+    nil))
+
+(defn test-session-store [session-atom]
+  (TestSessionStore. session-atom))
+
+(def session-atom (atom nil))
+
+;; App configuration for integration tests
 (def test-config
-  (assoc core/app-config :authentication {:allow-anon? true
-                                          :workflows [(twitter/twitter-workflow {})
-                                                      sign-up/sign-up-workflow]
-                                          :login-uri "/sign-in"}))
+  (assoc core/app-config
+         :authentication {:allow-anon? true
+                          :workflows [(twitter/twitter-workflow {})
+                                      sign-up/sign-up-workflow]
+                          :login-uri "/sign-in"}
+         :https nil))
 
 (defn test-context
   "Creates a fake application context"
-  []
-  (p/session (core/app test-config)))
+  ([] (test-context {}))
+
+  ([config-changes]
+   (p/session (core/app (merge test-config config-changes)))))
 
 ;; Test data generators
 

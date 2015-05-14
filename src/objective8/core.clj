@@ -5,6 +5,7 @@
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.session :refer [wrap-session]]
+            [ring.middleware.session.memory :refer [memory-store]]
             [ring.middleware.flash :refer [wrap-flash]]
             [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
             [ring.middleware.x-headers :refer [wrap-xss-protection wrap-frame-options wrap-content-type-options]]
@@ -132,10 +133,11 @@
       wrap-json-params
       wrap-json-response
       wrap-flash
-      (wrap-session {:cookie-attrs {:http-only true}})
+      (wrap-session {:cookie-attrs {:http-only true}
+                     :store (:session-store app-config)})
       (wrap-xss-protection true {:mode :block})
       (wrap-frame-options :sameorigin)
-      ((if (config/get-var "HTTPS_ONLY")
+      ((if (:https app-config)
          (comp wrap-forwarded-scheme wrap-ssl-redirect)
          identity))
       ))
@@ -150,7 +152,9 @@
                                   (twitter-workflow (configure-twitter))),
                                 sign-up-workflow]
                     :login-uri "/sign-in"}
+   :session-store (memory-store)
    :translation (configure-translations)
+   :https (config/get-var "HTTPS_ONLY")
    :db-spec db/postgres-spec})
 
 (defn get-bearer-token-details []
