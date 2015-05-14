@@ -39,7 +39,8 @@
                                              "/drafts" {:get :fe/draft-list
                                                         ["/" [#"\d+|latest" :d-id]] {:get :fe/draft
                                                                                      "/diff" {:get :fe/draft-diff}
-                                                                                     ["/sections/" [#"[0-9a-f]{8}" :section-label]] {:get :fe/draft-section}}}
+                                                                                     ["/sections/" [#"[0-9a-f]{8}" :section-label]] {:get :fe/draft-section
+                                                                                                                                     "/annotations" {:post :fe/post-annotation}}}}
                                              "/add-draft" {:get :fe/add-draft-get
                                                            :post :fe/add-draft-post}
                                              "/import-draft" {:get :fe/import-draft-get

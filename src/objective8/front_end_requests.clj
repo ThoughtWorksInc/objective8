@@ -105,6 +105,23 @@
           (assoc-in [:data :created-by-id] user-id)
           (dissoc :request)))
 
+;; Create Annotation
+
+(def annotation-reasons '("general" "unclear" "expand" "suggestion" "language"))
+
+(defn annotation-reason-validator [request]
+  (let [reason (s/trim (get-in request [:params :reason]))]
+    (cond-> (initialise-field-validation reason)
+      (not (some #{reason} annotation-reasons)) (report-error :incorrect-type))))
+
+(defn request->annotation-data [request user-id]
+  (some-> (initialise-request-validation request)
+          (validate :comment comment-validator)
+          (validate :comment-on-uri comment-on-uri-validator)
+          (validate :reason annotation-reason-validator)
+          (assoc-in [:data :created-by-id] user-id)
+          (dissoc :request)))
+
 ;; Invitations
 
 (defn writer-name-validator [request]

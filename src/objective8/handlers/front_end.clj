@@ -285,19 +285,11 @@
 
 ;; COMMENTS
 
-
-;;Temporarily defaulting annotation reasons to general
-(defn section? [uri]
- (re-matches #".*/section.*" uri))
-
 (defn post-comment [{:keys [t' route-params] :as request}]
   (if-let [comment-data (fr/request->comment-data request (get (friend/current-authentication) :identity))]
     (case (:status comment-data)
       ::fr/valid
-      (let [data (if (section? (get-in comment-data [:data :comment-on-uri]))
-                   (assoc (:data comment-data) :reason "general")
-                   (:data comment-data))
-            {status :status stored-comment :result} (http-api/post-comment data)]
+      (let [{status :status stored-comment :result} (http-api/post-comment (:data comment-data))]
         (cond
           (= status ::http-api/success)
           (-> (redirect-to-params-referer request "comments")
@@ -311,6 +303,27 @@
       ::fr/invalid
       (-> (redirect-to-params-referer request "comments")
           (assoc :flash {:validation (dissoc comment-data :status)})))
+    {:status 400}))
+
+
+(defn post-annotation [request]
+  (if-let [annotation-data (fr/request->annotation-data request (get (friend/current-authentication) :identity))]
+    (case (:status annotation-data)
+      ::fr/valid
+      (let [{status :status stored-comment :result} (http-api/post-comment (:data annotation-data))]
+        (cond
+          (= status ::http-api/success)
+          (-> (redirect-to-params-referer request)
+              (assoc :flash {:type :flash-message
+                             :message :comment-view/created-message}))
+
+          (= status ::http-api/invalid-input) {:status 400}
+
+          :else {:status 502}))
+
+      ::fr/invalid
+      (-> (redirect-to-params-referer request)
+          (assoc :flash {:validation (dissoc annotation-data :status)})))
     {:status 400}))
 
 ;; QUESTIONS
