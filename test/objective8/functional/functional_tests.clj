@@ -547,7 +547,7 @@
           (screenshot "ERROR-Can-annotate-a-draft-section")  
           (throw e)))
       => {:annotation "my draft section annotation"
-          :annotation-reason  "Content is difficult to understand"})
+          :annotation-reason  "Section is difficult to understand"})
 
 (fact "Can navigate to import from Google Drive"
       (try
