@@ -15,9 +15,13 @@ block content
         p.form-field
           label.form-field-label(for="name")
             span.form-field-label-title(data-l8n="content:create-profile/name-label") !Name
-            input.func--name(id="name", name="name", type="text", maxlength="50", required="required")
+            input.clj-create-profile-name.func--name(id="name", name="name", type="text", maxlength="50", required="required")
+            span.user-input-error-message.clj-name-length-error(data-l8n="content:create-profile/name-length-validation-message") !The name can have at most 50 characters
+            span.user-input-error-message.clj-name-empty-error(data-l8n="content:create-profile/name-empty-validation-message") !The name cannot be empty
         p.form-field
           label.form-field-label(for="biography")
             span.form-field-label-title(data-l8n="content:create-profile/biography") !Biography
-            textarea.func--biog(id="biog", name="biog", type="text", required="required")
+            textarea.clj-create-profile-biog.func--biog(id="biog", name="biog", type="text", required="required")
+            span.user-input-error-message.clj-biog-length-error(data-l8n="content:create-profile/biog-length-validation-message") !The biography can have at most 5000 characters
+            span.user-input-error-message.clj-biog-empty-error(data-l8n="content:create-profile/biog-empty-validation-message") !The biography cannot be empty
       button.button(type="submit", data-l8n="content:create-profile/button") !Create profile

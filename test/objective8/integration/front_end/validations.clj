@@ -11,8 +11,11 @@
 (def OBJECTIVE_ID 2)
 (def QUESTION_ID 3)
 (def DRAFT_ID 4)
+(def INVITATION_ID 5)
+(def INVITATION_UUID "SOME_UUID")
 (def SECTION_LABEL "abcdef12")
 (def TWITTER_ID "twitter-123456")
+
 
 (def participant {:_id USER_ID :username "username" :writer-records []})
 (def writer-for-objective {:_id USER_ID :username "username" :writer-records [{:objective-id OBJECTIVE_ID}]})
@@ -25,9 +28,14 @@
             :_created_at "2015-02-12T16:46:18.838Z"})
 (def draft-section {:section '()
                     :uri (str "/objective/" OBJECTIVE_ID "/drafts/" DRAFT_ID "/sections/" SECTION_LABEL)})
+(def the-invitation {:uuid INVITATION_UUID
+                     :objective-id OBJECTIVE_ID 
+                     :invitation-id INVITATION_ID
+                     :status "active"})
 
 (def ^:dynamic the-objective objective)
 (def ^:dynamic the-user participant)
+
 
 (background
  ;; Sign-in background
@@ -46,6 +54,7 @@
                                                       :result question}
  (http-api/retrieve-answers anything) => {:status ::http-api/success :result []}
  (http-api/get-comments anything) => {:status ::http-api/success :result []}
+ (http-api/retrieve-invitation-by-uuid INVITATION_UUID) => {:status ::http-api/success :result the-invitation}
  (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
  (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}
  (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
@@ -59,7 +68,7 @@
        (binding [config/enable-csrf false]
          (tabular
           (fact "validation errors are reported"
-                (-> user-session
+                (-> user-session 
                     ih/sign-in-as-existing-user
                     (p/request (utils/path-for :fe/create-objective-form-post)
                                :request-method :post
@@ -137,6 +146,39 @@
                                               :body)]
                   answer-form-html =not=> (contains ?error-tag)))
           ?error-tag "clj-answer-length-error" "clj-answer-empty-error")))
+
+(facts "about the create profile form"
+       (binding [config/enable-csrf false
+                 the-user           writer-for-objective] 
+         (tabular
+           (fact "validation errors are reported"
+                 (-> user-session
+                     ih/sign-in-as-existing-user
+                     (p/request (utils/path-for :fe/writer-invitation
+                                                :uuid INVITATION_UUID))
+                     (p/request (utils/path-for :fe/create-profile-post)
+                                :request-method :post
+                                :params {:name ?name
+                                         :biog ?biog})
+                     p/follow-redirect
+                     :response
+                     :body) => (contains ?expected-error-message))
+
+           ?name                      ?biog                       ?expected-error-message
+           ""                         "valid biography"           "clj-name-empty-error"
+           (ih/string-of-length 51)   "valid biography"           "clj-name-length-error"
+           "Peter Profile"            ""                          "clj-biog-empty-error"
+           "Peter Profile"            (ih/string-of-length 5001)  "clj-biog-length-error")
+         
+         (tabular
+          (fact "validation errors are hidden by default"
+                (let [create-profile-form-html (-> user-session
+                                                 ih/sign-in-as-existing-user
+                                                 (p/request (utils/path-for :fe/create-profile-get))
+                                                 :response
+                                                 :body)]
+                  create-profile-form-html =not=> (contains ?error-tag)))
+           ?error-tag "clj-name-empty-error" "clj-name-length-error" "clj-biog-empty-error" "clj-biog-length-error")))
 
 (facts "about the edit profile form"
        (binding [config/enable-csrf false

@@ -202,8 +202,8 @@
                                                         USER_ID)]
                note-data => nil)))
 
-(facts "about transforming requests to profile info"
-       (fact "transforms request to profile info"
+(facts "about transforming requests to profile data"
+       (fact "transforms request to profile data"
              (let [profile-data (request->profile-data {:params {:name "Name" :biog "Biog"}} USER_ID)]
                (:data profile-data) => {:name "Name" 
                                         :biog "Biog" 

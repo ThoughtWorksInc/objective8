@@ -65,16 +65,17 @@
 ;; Session store implementation for testing
 (deftype TestSessionStore [session-atom]
   rss/SessionStore
-  (read-session [_ _]
-    (prn "read-session" @session-atom)
-    @session-atom)
-  (write-session [_ _ data]
-    (prn "write-session" @session-atom data)
-    (swap! session-atom data)
-    "dummy-key")
-  (delete-session [_ _]
+  (read-session [_ key]
+    (prn "read-session" @session-atom key)
+    (@session-atom key))
+  (write-session [_ key data]
+    (let [key (or key "dummy-key")]
+    (prn "write-session" @session-atom key data) 
+    (swap! session-atom assoc key data) 
+    key))
+  (delete-session [_ key]
     (prn "delete-session" @session-atom)
-    (swap! session-atom nil)
+    (swap! session-atom dissoc key)
     nil))
 
 (defn test-session-store [session-atom]

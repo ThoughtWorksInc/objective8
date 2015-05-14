@@ -12,6 +12,8 @@
             [objective8.draft-diffs :as diffs]
             [objective8.views :as views]))
 
+(declare accept-invitation)
+
 ;; HELPERS
 
 (defn signed-in? []
@@ -474,7 +476,7 @@
         (-> (utils/path-for :fe/objective :id objective-id) 
             response/redirect
             (assoc :session session)
-            (assoc-in [:session :invitation] {:uuid uuid :objective-id objective-id :invitation-id _id}))
+            (assoc-in [:session :invitation] {:uuid uuid :objective-id objective-id :invitation-id _id})) 
 
         (= invitation-status "expired")
         (-> (str utils/host-url "/objectives/" objective-id)
@@ -491,6 +493,18 @@
   {:status 200
    :headers {"Content-Type" "text/html"}      
    :body (views/create-profile "create-profile" request)})
+
+(defn create-profile-post [{:keys [session] :as request}]
+  (if (:invitation session)
+    (let [profile-data (fr/request->profile-data request (get (friend/current-authentication) :identity))] 
+      (case (:status profile-data)
+        ::fr/valid (let [{status :status} (http-api/post-profile (:data profile-data))] 
+                     (if (= status ::http-api/success)
+                       (accept-invitation request) 
+                       {:status 500}))
+        ::fr/invalid (-> (response/redirect (utils/path-for :fe/create-profile-get)) 
+                         (assoc :flash {:validation (dissoc profile-data :status)}))))
+    {:status 401}))
 
 (defn edit-profile-get [request]
   (if (permissions/writer? (friend/current-authentication))
@@ -564,16 +578,6 @@
           (-> (utils/path-for :fe/create-profile-get)
               response/redirect
               (assoc :session session)))))
-    {:status 401}))
-
-(defn create-profile-post [{:keys [session] :as request}]
-  (if (:invitation session) 
-    (let [profile-data (fr/request->profile-data request (get (friend/current-authentication) :identity))
-          {status :status} (http-api/post-profile (:data profile-data))]
-      (cond
-        (= status ::http-api/success)
-        (accept-invitation request) 
-        :else {:status 500}))
     {:status 401}))
 
 ;;DRAFTS
