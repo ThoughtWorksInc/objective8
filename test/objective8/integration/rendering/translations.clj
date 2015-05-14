@@ -25,7 +25,12 @@
                         :status "active"})
 (def INVITATION_URL (utils/path-for :fe/writer-invitation :uuid UUID))
 (def SOME_MARKDOWN  "A heading\n===\nSome content")
+(def SECTION_LABEL "abcdef12")
+(def SECTION_LABEL_2 "12abcdef")
 (def SOME_HICCUP (eh/to-hiccup (ec/mp SOME_MARKDOWN)))
+(def SOME_HICCUP_WITH_LABELS [[:p nil] 
+                              [:p {:data-section-label SECTION_LABEL} "first paragraph"] 
+                              [:p {:data-section-label SECTION_LABEL_2} "second paragraph"]])
 (def SOME_HTML (hc/html SOME_HICCUP))
 
 (def user-session (helpers/test-context))
@@ -157,6 +162,133 @@
              (let [{status :status body :body} (-> user-session
                                                    (helpers/sign-in-as-existing-user)
                                                    (p/request (utils/path-for :fe/invite-writer :id OBJECTIVE_ID))
+                                                   :response)]
+               status => 200
+               body => helpers/no-untranslated-strings)))
+
+(facts "about rendering draft-list page"
+       (fact "there are no untranslated strings"
+             (against-background
+               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                         :result drafting-objective} 
+               (http-api/get-all-drafts OBJECTIVE_ID) => {:status ::http-api/success
+                                                          :result [{:_id DRAFT_ID
+                                                                    :content SOME_HICCUP
+                                                                    :objective-id OBJECTIVE_ID
+                                                                    :submitter-id USER_ID
+                                                                    :_created_at "2015-02-12T16:46:18.838Z"
+                                                                    :username "UserName"}]} 
+               (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success 
+                                                            :result []}) 
+             (let [user-session (helpers/test-context)
+                   {status :status body :body} (-> user-session
+                                                   (p/request (utils/path-for :fe/draft-list :id OBJECTIVE_ID))
+                                                   :response)]
+               status => 200
+               body => helpers/no-untranslated-strings)))
+
+(facts "about rendering draft page"
+       (fact "there are no untranslated strings"
+             (against-background
+               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                         :result drafting-objective} 
+               (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
+                                                              :result {:_id DRAFT_ID
+                                                                       :content SOME_HICCUP_WITH_LABELS
+                                                                       :objective-id OBJECTIVE_ID
+                                                                       :submitter-id USER_ID
+                                                                       :_created_at "2015-02-12T16:46:18.838Z"
+                                                                       :uri :draft-uri 
+                                                                       :username "UserName"}}
+               (http-api/get-comments :draft-uri) => {:status ::http-api/success 
+                                                      :result []} 
+               (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success 
+                                                            :result []}) 
+
+             (let [user-session (helpers/test-context)
+                   {status :status body :body} (-> user-session
+                                                   (p/request (utils/path-for :fe/draft :id OBJECTIVE_ID :d-id DRAFT_ID))
+                                                   :response)]
+               status => 200
+               body => helpers/no-untranslated-strings))) 
+
+(facts "about rendering draft diff page"
+       (fact "there are no untranslated strings"
+             (against-background
+               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                         :result drafting-objective} 
+               (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
+                                                              :result {:_id DRAFT_ID
+                                                                       :previous-draft-id (dec DRAFT_ID) 
+                                                                       :content SOME_HICCUP
+                                                                       :objective-id OBJECTIVE_ID
+                                                                       :submitter-id USER_ID
+                                                                       :_created_at "2015-02-12T16:46:18.838Z"
+                                                                       :uri :draft-uri 
+                                                                       :username "UserName"}}
+               (http-api/get-draft OBJECTIVE_ID (dec DRAFT_ID)) => {:status ::http-api/success
+                                                                    :result {:_id DRAFT_ID
+                                                                       :content SOME_HICCUP
+                                                                       :objective-id OBJECTIVE_ID
+                                                                       :submitter-id USER_ID
+                                                                       :_created_at "2015-02-12T16:46:18.838Z"
+                                                                       :uri :draft-uri 
+                                                                       :username "UserName"}})
+             (let [user-session (helpers/test-context)
+                   {status :status body :body} (-> user-session
+                                                   (p/request (utils/path-for :fe/draft-diff :id OBJECTIVE_ID :d-id DRAFT_ID))
+                                                   :response)]
+               status => 200
+               body => helpers/no-untranslated-strings)))
+
+(facts "about rendering add-draft page"
+       (fact "there are no untranslated strings"
+             (against-background
+               (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
+               (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                               :result {:_id USER_ID
+                                                                        :username "username"}}
+               (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}} 
+               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                         :result drafting-objective})
+             (let [user-session (helpers/test-context)
+                   {status :status body :body} (-> user-session
+                                                   (helpers/sign-in-as-existing-user)
+                                                   (p/request (utils/path-for :fe/add-draft-get
+                                                                              :id OBJECTIVE_ID))
+                                                   :response)]
+               status => 200
+               body => helpers/no-untranslated-strings)))
+
+(facts "about rendering import-draft page"
+       (fact "there are no untranslated strings" 
+             (against-background
+               (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
+               (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                               :result {:_id USER_ID
+                                                                        :username "username"}}
+               (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}} 
+               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                         :result drafting-objective})
+             (let [{status :status body :body} (-> user-session
+                                                   (helpers/sign-in-as-existing-user)
+                                                   (p/request (utils/path-for :fe/import-draft-get
+                                                                              :id OBJECTIVE_ID))
+                                                   :response)]
+               status => 200 
+               body) => helpers/no-untranslated-strings)) 
+
+(facts "about rendering draft section page"
+       (fact "there are no untranslated strings"
+             (against-background
+               (http-api/get-draft-section anything) => {:status ::http-api/success
+                                                         :result {:section '([:p {:data-section-label SECTION_LABEL} "barry"]) 
+                                                                  :uri (str "/objectives/" OBJECTIVE_ID
+                                                                            "/drafts/" DRAFT_ID
+                                                                            "/sections/" SECTION_LABEL)}})
+             (let [user-session (helpers/test-context)
+                   {status :status body :body} (-> user-session
+                                                   (p/request (utils/path-for :fe/draft-section :id OBJECTIVE_ID :d-id DRAFT_ID :section-label SECTION_LABEL))
                                                    :response)]
                status => 200
                body => helpers/no-untranslated-strings)))
