@@ -258,9 +258,14 @@
             (fact "validation errors are reported when posting a comment on a draft section"
                   (-> user-session
                       ih/sign-in-as-existing-user
-                      (p/request (utils/path-for :fe/post-comment)
+                      (p/request (utils/path-for :fe/post-annotation
+                                                 :id OBJECTIVE_ID
+                                                 :d-id DRAFT_ID
+                                                 :section-label SECTION_LABEL)
+
                                  :request-method :post
                                  :params {:comment ?comment
+                                          :reason "general"
                                           :comment-on-uri "/thing/to/comment/on"
                                           :refer (utils/local-path-for :fe/draft-section
                                                                        :id OBJECTIVE_ID
@@ -270,7 +275,7 @@
                       :response
                       :body) => (contains ?error-tag))
 
-            (fact "comment validation errors are hidden by default on draft view pages"
+            (fact "comment validation errors are hidden by default on draft section pages"
                   (let [draft-section-html (-> user-session
                                        ih/sign-in-as-existing-user
                                        (p/request (utils/path-for :fe/draft-section
