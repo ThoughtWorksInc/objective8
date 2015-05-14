@@ -285,6 +285,28 @@
  ""                              "clj-comment-empty-error"
  (ih/string-of-length 501)       "clj-comment-length-error")
 
+(facts "about importing drafts"
+       (binding [config/enable-csrf false
+                 the-user writer-for-objective
+                 the-objective objective-in-drafting]
+          (fact "validation errors are reported"
+                (-> user-session
+                    ih/sign-in-as-existing-user
+                    (p/request (utils/path-for :fe/import-draft-post :id OBJECTIVE_ID)
+                               :request-method :post
+                               :params {:google-doc-html-content ""})
+                    p/follow-redirect
+                    :response
+                    :body) => (contains "clj-draft-content-empty-error"))
+          
+          (fact "validation errors are hidden by default"
+                (let [import-draft-html (-> user-session
+                                            ih/sign-in-as-existing-user
+                                            (p/request (utils/path-for :fe/import-draft-get :id OBJECTIVE_ID))
+                                            :response
+                                            :body)]
+                  import-draft-html =not=> (contains "clj-draft-content-empty-error")))))
+
 (facts "about inviting writers"
        (binding [config/enable-csrf false
                  the-user           writer-for-objective]

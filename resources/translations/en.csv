@@ -130,6 +130,7 @@ import-draft,cancel,Cancel
 import-draft,select-file,Select file
 import-draft,preview,Preview
 import-draft,submit,Submit
+import-draft,draft-empty-validation-message,The document you selected contains no content. Please check you have selected the correct document and try again.
 draft-diff,doc-title,Draft changes | Objective[8]
 draft-diff,doc-description,View the changes made in this draft version
 draft-diff,previous-version-title,Previous version

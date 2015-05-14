@@ -629,21 +629,23 @@
           (= status ::http-api/not-found) {:status 404}
           :else {:status 502})))))
 
-(defn import-draft-post [{:keys [params] :as request}]
-  (let [action (:action params)
-        draft-data (helpers/request->draft-info request (get (friend/current-authentication) :identity))]
-    (cond
-      (= action "preview")
-      (-> (response/redirect (utils/path-for :fe/import-draft-get :id  (:objective-id draft-data) ))
-          (assoc :flash {:type :import-draft-preview
-                         :import-draft-preview-html (utils/hiccup->html (:content draft-data))}))
-      (= action "submit")
-      (let [{status :status draft :result} (http-api/post-draft draft-data)]
-        (cond
-          (= status ::http-api/success) 
-          (response/redirect (utils/path-for :fe/draft :id (:objective-id draft-data) :d-id (:_id draft)))
-          (= status ::http-api/not-found) {:status 404}
-          :else {:status 502})))))
+(defn import-draft-post [{:keys [params route-params] :as request}]
+  (let [draft-data (fr/request->imported-draft-data request (get (friend/current-authentication) :identity))]
+    (case (:status draft-data)
+      ::fr/valid (case (:action params)
+                   "preview" (-> (response/redirect (utils/path-for :fe/import-draft-get :id  (:objective-id draft-data)))
+                                 (assoc :flash {:type :import-draft-preview
+                                                :import-draft-preview-html (utils/hiccup->html (:content draft-data))}))
+
+                   "submit" (let [{status :status draft :result} (http-api/post-draft draft-data)]
+                              (cond
+                                (= status ::http-api/success) 
+                                (response/redirect (utils/path-for :fe/draft :id (:objective-id draft-data) :d-id (:_id draft)))
+                                (= status ::http-api/not-found) {:status 404}
+                                :else {:status 502})))
+
+      ::fr/invalid (-> (response/redirect (utils/path-for :fe/import-draft-get :id (:id route-params))) 
+                       (assoc :flash {:validation (dissoc draft-data :status)})))))
 
 (defn draft [{{:keys [d-id id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)

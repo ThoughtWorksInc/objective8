@@ -203,7 +203,7 @@
                note-data => nil)))
 
 (facts "about transforming requests to profile data"
-       (fact "transforms request to profile data"
+       (fact "extracts the relevant data"
              (let [profile-data (request->profile-data {:params {:name "Name" :biog "Biog"}} USER_ID)]
                (:data profile-data) => {:name "Name" 
                                         :biog "Biog" 
@@ -227,6 +227,28 @@
         "Jenny"                (string-of-length 5001) {:biog #{:length}}
         ""                     " "                     {:name #{:empty}
                                                         :biog #{:empty}})) 
+
+(fact "about transforming requests to imported draft data"
+      (fact "extracts the relevant data"
+            (let [html-string "<p>Hello!</p>"
+                  imported-draft-data (request->imported-draft-data {:route-params {:id (str OBJECTIVE_ID)}
+                                                                     :params {:google-doc-html-content html-string}} USER_ID)]
+              (:data imported-draft-data) => {:submitter-id USER_ID
+                                              :objective-id OBJECTIVE_ID
+                                              :content (utils/html->hiccup html-string)}
+              (:status imported-draft-data) => ::objective8.front-end-requests/valid
+              (:report imported-draft-data) => {}))
+      
+      (fact "reports validation errors"
+            (let [html-string ""
+                  imported-draft-data (request->imported-draft-data {:route-params {:id (str OBJECTIVE_ID)}
+                                                                     :params {:google-doc-html-content html-string}} USER_ID)]
+              (:data imported-draft-data) => {:submitter-id USER_ID
+                                              :objective-id OBJECTIVE_ID
+                                              :content (utils/html->hiccup html-string)}
+              (:status imported-draft-data) => ::objective8.front-end-requests/invalid
+              (:report imported-draft-data) => {:content #{:empty}})))
+
 (facts "about up voting"
        (fact "transforms request to up vote info"
              (request->up-vote-info {:params {:vote-on-uri "/some/uri"}} USER_ID)

@@ -192,6 +192,23 @@
           (assoc-in [:data :user-uri] (str "/users/" user-id))
           (dissoc :request)))
 
+;; Drafts
+
+(defn import-draft-content-validator [request]
+  (let [html-content (-> (get-in request [:params :google-doc-html-content])
+                         s/trim)]
+    (cond-> (initialise-field-validation html-content)
+      (empty? html-content) (report-error :empty))))
+
+(defn request->imported-draft-data [{:keys [route-params] :as request} user-id]
+  (let [objective-id (Integer/parseInt (:id route-params))]
+  (some-> (initialise-request-validation request)
+          (validate :content import-draft-content-validator)
+          (assoc-in [:data :objective-id] objective-id)
+          (assoc-in [:data :submitter-id] user-id)
+          (update-in [:data :content] (comp utils/html->hiccup sanitiser/sanitise-html))
+          (dissoc :request))))
+
 ;; Votes
 
 (defn request->up-vote-info [{:keys [params] :as request} user-id]
