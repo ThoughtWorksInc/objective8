@@ -34,7 +34,8 @@
  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
  (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
                                                  :result the-user}
- (http-api/get-user anything) => {:result the-user}
+ (http-api/get-user anything) => {:status ::http-api/success
+                                  :result the-user}
 
  ;; Test data background
  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
@@ -141,7 +142,7 @@
        (binding [config/enable-csrf false
                  the-user           writer-for-objective] 
          (tabular
-           (future-fact "validation errors are reported"
+           (fact "validation errors are reported"
                  (-> user-session
                      ih/sign-in-as-existing-user
                      (p/request (utils/path-for :fe/edit-profile-post)
@@ -156,7 +157,17 @@
            ""                         "valid biography"           "clj-name-empty-error"
            (ih/string-of-length 51)   "valid biography"           "clj-name-length-error"
            "Peter Profile"            ""                          "clj-biog-empty-error"
-           "Peter Profile"            (ih/string-of-length 5001)  "clj-biog-length-error")))
+           "Peter Profile"            (ih/string-of-length 5001)  "clj-biog-length-error")
+         
+         (tabular
+          (fact "validation errors are hidden by default"
+                (let [edit-profile-form-html (-> user-session
+                                                 ih/sign-in-as-existing-user
+                                                 (p/request (utils/path-for :fe/edit-profile-get))
+                                                 :response
+                                                 :body)]
+                  edit-profile-form-html =not=> (contains ?error-tag)))
+           ?error-tag "clj-name-empty-error" "clj-name-length-error" "clj-biog-empty-error" "clj-biog-length-error")))
 
 (tabular
  (facts "about creating comments"

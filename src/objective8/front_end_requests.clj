@@ -185,7 +185,7 @@
       (empty? biog) (report-error :empty)
       (longer? biog 5000) (report-error :length))))
 
-(defn request->profile-info [{:keys [params] :as request} user-id]
+(defn request->profile-data [{:keys [params] :as request} user-id]
   (some-> (initialise-request-validation request)
           (validate :name name-validator)
           (validate :biog biog-validator)

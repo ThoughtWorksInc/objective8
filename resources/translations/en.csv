@@ -355,7 +355,11 @@ edit-profile,doc-description,
 edit-profile,page-title,Edit your writer profile
 edit-profile,profile-intro,"Your profile is open for everyone to read.  You should talk about your writing experience. Include your areas of policy expertise."
 edit-profile,name-label,Name: 
+edit-profile,name-length-validation-message,The name has a maximum length of 50 characters
+edit-profile,name-empty-validation-message,The name cannot be empty
 edit-profile,biography,Biography: 
+edit-profile,biog-length-validation-message,The biography has a maximum length of 5000 characters
+edit-profile,biog-empty-validation-message,The biography cannot be empty
 edit-profile,button,Update profile
 profile,doc-description,
 profile,page-title,Writer profile

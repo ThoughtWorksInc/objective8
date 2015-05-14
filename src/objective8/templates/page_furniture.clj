@@ -153,7 +153,7 @@
 
 (def comment-create-form-snippet (html/select library-html-resource [:.clj-add-comment-form])) 
 
-(defn render-comment-form-validations [{:keys [doc] :as context} nodes]
+(defn apply-comment-form-validations [{:keys [doc] :as context} nodes]
   (let [validation-data (get-in doc [:flash :validation])
         validation-report (:report validation-data)
         previous-inputs (:data validation-data)]
@@ -175,7 +175,7 @@
                   [:.clj-comment-form-label-title] (html/content (translations (keyword page-name "comment-box-label-title") ))
                   [:.clj-comment-form-label-helper] (html/content (translations (keyword page-name "comment-box-label-helper")))
                   [:.clj-comment-form-post-button] (html/content (translations (keyword page-name "comment-post-button"))))
-         (render-comment-form-validations context))))
+         (apply-comment-form-validations context))))
 
 (def sign-in-to-comment-snippet (html/select library-html-resource [:.clj-to-comment-please-sign-in]))
 

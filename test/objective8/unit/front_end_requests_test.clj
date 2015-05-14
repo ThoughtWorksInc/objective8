@@ -203,10 +203,30 @@
                note-data => nil)))
 
 (facts "about transforming requests to profile info"
-       (future-fact "transforms request to profile info"
-             (let [profile-data (request->profile-info {:params {:name "Name" :biog "Biog"}} USER_ID)]
-               (:data profile-data) => {:name "Name" :biog "Biog" :user-uri (str "/users/" USER_ID)})))
-
+       (fact "transforms request to profile info"
+             (let [profile-data (request->profile-data {:params {:name "Name" :biog "Biog"}} USER_ID)]
+               (:data profile-data) => {:name "Name" 
+                                        :biog "Biog" 
+                                        :user-uri (str "/users/" USER_ID)}
+               (:status profile-data) => ::objective8.front-end-requests/valid
+               (:report profile-data) => {}))
+       
+       (tabular
+        (fact "reports validation errors"
+              (let [profile-data (request->profile-data {:params {:name ?name :biog ?biog}} USER_ID)]
+                (:data profile-data) => {:name (clojure.string/trim ?name)
+                                         :biog (clojure.string/trim ?biog)
+                                         :user-uri (str "/users/" USER_ID)}
+                (:status profile-data) => ::objective8.front-end-requests/invalid
+                (:report profile-data) => ?report))
+        ?name                  ?biog                   ?report
+        ""                     "biography"             {:name #{:empty}}
+        "    "                 "biography"             {:name #{:empty}}
+        (string-of-length 51)  "biography"             {:name #{:length}}
+        "Jenny"                ""                      {:biog #{:empty}}
+        "Jenny"                (string-of-length 5001) {:biog #{:length}}
+        ""                     " "                     {:name #{:empty}
+                                                        :biog #{:empty}})) 
 (facts "about up voting"
        (fact "transforms request to up vote info"
              (request->up-vote-info {:params {:vote-on-uri "/some/uri"}} USER_ID)

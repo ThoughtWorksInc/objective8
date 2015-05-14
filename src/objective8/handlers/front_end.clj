@@ -506,7 +506,7 @@
 
 (defn edit-profile-post [request]
   (if (permissions/writer? (friend/current-authentication))
-    (let [profile-data (fr/request->profile-info request (get (friend/current-authentication) :identity))]
+    (let [profile-data (fr/request->profile-data request (get (friend/current-authentication) :identity))]
      (case (:status profile-data)
        ::fr/valid (let [{status :status} (http-api/post-profile (:data profile-data))]
                     (cond
@@ -568,7 +568,7 @@
 
 (defn create-profile-post [{:keys [session] :as request}]
   (if (:invitation session) 
-    (let [profile-data (fr/request->profile-info request (get (friend/current-authentication) :identity))
+    (let [profile-data (fr/request->profile-data request (get (friend/current-authentication) :identity))
           {status :status} (http-api/post-profile (:data profile-data))]
       (cond
         (= status ::http-api/success)
