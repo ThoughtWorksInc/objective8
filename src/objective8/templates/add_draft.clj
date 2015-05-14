@@ -8,23 +8,31 @@
 
 (def add-draft-template (html/html-resource "templates/jade/add-draft.html" {:parser jsoup/parser}))
 
+(defn apply-validations [{:keys [doc] :as context} nodes]
+  (let [validation-data (get-in doc [:flash :validation])
+        validation-report (:report validation-data)
+        previous-inputs (:data validation-data)]
+    (html/at nodes
+             [:.clj-draft-empty-error] (when (contains? (:markdown validation-report) :empty) identity))))
+
 (defn add-draft-page [{:keys [data doc] :as context}]
   (let [objective-id (:objective-id data)]
-  (apply str
-         (html/emit*
-           (tf/translate context
-                         (pf/add-google-analytics
-                           (html/at add-draft-template
-                                    [:title] (html/content (:title doc))
-                                    [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr :content (:description doc))
-                                    [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
-                                    [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
-
-                                    [:.clj-add-draft-preview] (when-let [preview (:preview data)]
-                                                                (html/html-content preview))
-
-                                    [:.clj-add-draft-form] (html/do->
-                                                             (html/set-attr :action (utils/local-path-for :fe/add-draft-get :id objective-id))
-                                                             (html/prepend (html/html-snippet (anti-forgery-field)))) 
-                                    [:.clj-add-draft-content] (html/content (:markdown data))
-                                    [:.clj-cancel-link] (html/set-attr :href (utils/local-path-for :fe/draft-list :id objective-id)))))))))
+    (->> (html/at add-draft-template
+                  [:title] (html/content (:title doc))
+                  [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr :content (:description doc))
+                  [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+                  [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
+                  
+                  [:.clj-add-draft-preview] (when-let [preview (:preview data)]
+                                              (html/html-content preview))
+                  
+                  [:.clj-add-draft-form] (html/do->
+                                          (html/set-attr :action (utils/local-path-for :fe/add-draft-get :id objective-id))
+                                          (html/prepend (html/html-snippet (anti-forgery-field)))) 
+                  [:.clj-add-draft-content] (html/content (:markdown data))
+                  [:.clj-cancel-link] (html/set-attr :href (utils/local-path-for :fe/draft-list :id objective-id)))
+         (apply-validations context)
+         pf/add-google-analytics
+         (tf/translate context)
+         html/emit*
+         (apply str))))

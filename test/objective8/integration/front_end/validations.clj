@@ -307,6 +307,28 @@
                                             :body)]
                   import-draft-html =not=> (contains "clj-draft-content-empty-error")))))
 
+(facts "about adding drafts"
+       (binding [config/enable-csrf false
+                 the-user writer-for-objective
+                 the-objective objective-in-drafting]
+          (fact "validation errors are reported"
+                (-> user-session
+                    ih/sign-in-as-existing-user
+                    (p/request (utils/path-for :fe/add-draft-post :id OBJECTIVE_ID)
+                               :request-method :post
+                               :params {:content ""})
+                    p/follow-redirect
+                    :response
+                    :body) => (contains "clj-draft-empty-error"))
+          
+          (fact "validation errors are hidden by default"
+                (let [add-draft-html (-> user-session
+                                            ih/sign-in-as-existing-user
+                                            (p/request (utils/path-for :fe/add-draft-get :id OBJECTIVE_ID))
+                                            :response
+                                            :body)]
+                  add-draft-html =not=> (contains "clj-draft-empty-error")))))
+
 (facts "about inviting writers"
        (binding [config/enable-csrf false
                  the-user           writer-for-objective]

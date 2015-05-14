@@ -91,14 +91,16 @@
 
          (fact "writer can submit a draft"
                (against-background
-                 (http-api/post-draft anything) => {:status ::http-api/success
-                                                    :result {:_id DRAFT_ID}})
+                (http-api/post-draft {:objective-id OBJECTIVE_ID
+                                      :submitter-id USER_ID
+                                      :content SOME_HICCUP}) => {:status ::http-api/success
+                                                                 :result {:_id DRAFT_ID}})
                (let [{response :response} (-> user-session
                                               ih/sign-in-as-existing-user
                                               (p/request (utils/path-for :fe/add-draft-post :id OBJECTIVE_ID)
                                                          :request-method :post
                                                          :params {:action "submit"
-                                                                  :some :content}))]
+                                                                  :content SOME_MARKDOWN}))]
                  (:headers response) => (ih/location-contains (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID))
                  (:status response) => 302))
 
@@ -110,7 +112,7 @@
                                               (p/request (utils/path-for :fe/add-draft-post :id OBJECTIVE_ID)
                                                          :request-method :post
                                                          :params {:action "submit"
-                                                                  :some :content}))]
+                                                                  :content SOME_MARKDOWN}))]
                  (:status response) => 404))))
 
 (facts "about viewing drafts"

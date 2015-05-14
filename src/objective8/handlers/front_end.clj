@@ -602,6 +602,34 @@
       (= objective-status ::http-api/not-found) (error-404-response request)
       :else {:status 500}))) 
 
+(defn add-draft-post [{:keys [params route-params] :as request}]
+  (let [draft-data (fr/request->add-draft-data request (get (friend/current-authentication) :identity))]
+    (case (:status draft-data)
+      ::fr/valid
+      (case (:action params)
+        "preview"
+        {:status 200
+         :headers {"Content-Type" "text/html"}
+         :body (views/add-draft "add-draft" request
+                                :objective-id (-> draft-data :data :objective-id)
+                                :preview (utils/hiccup->html (-> draft-data :data :hiccup))
+                                :markdown (-> draft-data :data :markdown))}
+
+        "submit"
+        (let [draft-info {:submitter-id (-> draft-data :data :submitter-id)
+                          :objective-id (-> draft-data :data :objective-id)
+                          :content (-> draft-data :data :hiccup)}
+              {status :status draft :result} (http-api/post-draft draft-info)]
+          (case status
+            ::http-api/success (response/redirect (str "/objectives/" (:id route-params) "/drafts/" (:_id draft)))    
+
+            ::http-api/not-found (error-404-response request)
+
+            {:status 502})))
+
+      ::fr/invalid (-> (response/redirect (utils/path-for :fe/add-draft-get :id (:id route-params))) 
+                       (assoc :flash {:validation (dissoc draft-data :status)})))))
+
 (defn import-draft-get [{{objective-id :id} :route-params :as request}]
   (let [{objective-status :status objective :result} (http-api/get-objective (Integer/parseInt objective-id))]
     (cond
@@ -613,29 +641,6 @@
         {:status 401}) 
       (= objective-status ::http-api/not-found) (error-404-response request)
       :else {:status 500})))
-
-(defn add-draft-post [{{o-id :id} :route-params
-                       {content :content action :action} :params
-                       :as request}]
-  (let [parsed-markdown (utils/markdown->hiccup content)
-        objective-id (Integer/parseInt o-id)]
-    (cond
-      (= action "preview")
-      (let [preview (utils/hiccup->html parsed-markdown)]
-        {:status 200
-         :headers {"Content-Type" "text/html"}      
-         :body (views/add-draft "add-draft" request :objective-id objective-id 
-                                :preview preview :markdown content)})
-
-      (= action "submit")
-      (let [{status :status draft :result} (http-api/post-draft {:objective-id objective-id
-                                                                 :submitter-id (get (friend/current-authentication) 
-                                                                                    :identity)
-                                                                 :content parsed-markdown})]
-        (cond
-          (= status ::http-api/success) (response/redirect (str "/objectives/" o-id "/drafts/" (:_id draft)))    
-          (= status ::http-api/not-found) {:status 404}
-          :else {:status 502})))))
 
 (defn import-draft-post [{:keys [params route-params] :as request}]
   (let [draft-data (fr/request->imported-draft-data request (get (friend/current-authentication) :identity))]

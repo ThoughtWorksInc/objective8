@@ -122,6 +122,7 @@ add-draft,doc-description,Draft policy
 add-draft,placeholder,Enter your draft here
 add-draft,cancel,Cancel
 add-draft,submit,Add draft
+add-draft,draft-empty-validation-message,The draft cannot be empty
 add-draft,preview,Preview
 import-draft,doc-title,Import draft | Objective[8]
 import-draft,doc-description,Import a draft from Google Drive

@@ -194,6 +194,27 @@
 
 ;; Drafts
 
+;;; Adding drafts
+(defn add-draft-markdown-validator [request]
+  (let [content (-> (get-in request [:params :content] "") s/trim)]
+    (cond-> (initialise-field-validation content)
+      (empty? content) (report-error :empty))))
+
+(defn add-draft-generate-hiccup [validation-state]
+  (let [markdown (get-in validation-state [:data :markdown])]
+    (assoc-in validation-state [:data :hiccup]
+              (utils/markdown->hiccup markdown))))
+
+(defn request->add-draft-data [request user-id]
+  (let [objective-id (Integer/parseInt (get-in request [:route-params :id]))]
+    (some-> (initialise-request-validation request)
+            (validate :markdown add-draft-markdown-validator)
+            (assoc-in [:data :objective-id] objective-id)
+            (assoc-in [:data :submitter-id] user-id)
+            add-draft-generate-hiccup
+            (dissoc :request))))
+
+;;; Importing drafts
 (defn import-draft-content-validator [request]
   (let [html-content (-> (get-in request [:params :google-doc-html-content])
                          s/trim)]
@@ -202,12 +223,14 @@
 
 (defn request->imported-draft-data [{:keys [route-params] :as request} user-id]
   (let [objective-id (Integer/parseInt (:id route-params))]
-  (some-> (initialise-request-validation request)
-          (validate :content import-draft-content-validator)
-          (assoc-in [:data :objective-id] objective-id)
-          (assoc-in [:data :submitter-id] user-id)
-          (update-in [:data :content] (comp utils/html->hiccup sanitiser/sanitise-html))
-          (dissoc :request))))
+    (some-> (initialise-request-validation request)
+            (validate :content import-draft-content-validator)
+            (assoc-in [:data :objective-id] objective-id)
+            (assoc-in [:data :submitter-id] user-id)
+            (update-in [:data :content] (comp utils/html->hiccup sanitiser/sanitise-html))
+            (dissoc :request))))
+
+
 
 ;; Votes
 

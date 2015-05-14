@@ -1,5 +1,7 @@
 (ns objective8.unit.front-end-requests-test
   (:require [midje.sweet :refer :all]
+            [endophile.core :as ec]
+            [endophile.hiccup :as eh]
             [objective8.front-end-requests :refer :all]
             [objective8.utils :as utils]))
 
@@ -248,6 +250,37 @@
                                               :content (utils/html->hiccup html-string)}
               (:status imported-draft-data) => ::objective8.front-end-requests/invalid
               (:report imported-draft-data) => {:content #{:empty}})))
+
+(def SOME_MARKDOWN  "A heading\n===\nSome content")
+(def SOME_HICCUP (eh/to-hiccup (ec/mp SOME_MARKDOWN)))
+
+(fact "about transforming requests to add-draft-data"
+      (fact "extracts the relevant data"
+            (let [add-draft-data (request->add-draft-data {:route-params {:id (str OBJECTIVE_ID)}
+                                                           :params {:content SOME_MARKDOWN}}
+                                                          USER_ID)]
+              (:data add-draft-data) => {:submitter-id USER_ID
+                                         :objective-id OBJECTIVE_ID
+                                         :markdown SOME_MARKDOWN
+                                         :hiccup SOME_HICCUP}
+              (:status add-draft-data) => ::objective8.front-end-requests/valid
+              (:report add-draft-data) => {}))
+
+      (tabular
+       (fact "reports validation errors"
+             (let [add-draft-data (request->add-draft-data {:route-params {:id (str OBJECTIVE_ID)}
+                                                            :params ?params}
+                                                           USER_ID)]
+               (:data add-draft-data) => {:submitter-id USER_ID
+                                          :objective-id OBJECTIVE_ID
+                                          :markdown ?expected-markdown
+                                          :hiccup '()}
+               (:status add-draft-data) => ::objective8.front-end-requests/invalid
+               (:report add-draft-data) => ?report))
+       ?params        ?expected-markdown   ?report
+       {:content ""}  ""                   {:markdown #{:empty}}
+       {:content " "} ""                   {:markdown #{:empty}}
+       {}             ""                   {:markdown #{:empty}}))
 
 (facts "about up voting"
        (fact "transforms request to up vote info"
