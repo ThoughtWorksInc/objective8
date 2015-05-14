@@ -8,7 +8,8 @@ mixin commentItem(author, date)
     .comment-meta
       span.comment-author.clj-comment-author #{author}
       span.comment-date.clj-comment-date #{date}
-    .comment-text.clj-comment-text
+    .comment-text.clj-comment-text.func--comment-text
+    .comment-reason-text.clj-comment-reason-text.func--comment-reason-text
       block
     +commentReply
     +writerNote
@@ -19,7 +20,6 @@ mixin commentItemBlank()
 
 mixin addCommentForm()
   form.add-comment-form.clj-add-comment-form(method='POST', action='/meta/comments')
-    input.clj-reason(name='reason', type='hidden', value='general')
     input.clj-refer(name='refer', type='hidden', value='!redirect-after-post-uri')
     input.clj-comment-on-uri(name='comment-on-uri', type='hidden', value='!entity-to-comment-on-uri')
     p.form-field
@@ -29,4 +29,23 @@ mixin addCommentForm()
         textarea.clj-input-comment.func--comment-form-text-area(id="comment", name='comment', rows='5', cols='10', maxLength='500', required, aria-labelledby="comment-label-title", aria-describedby="comment-label-description")
         span.user-input-error-message.clj-comment-length-error(data-l8n="content:add-comment-form/comment-length-validation-message") !The comment can have at most 500 characters
         span.user-input-error-message.clj-comment-empty-error(data-l8n="content:add-comment-form/comment-empty-validation-message") !The comment cannot be empty
+
+    .annotation-reason-form.clj-reason
+      span.form-field-label-title(data-l8n="content:add-comment-form/comment-reason-title") !What is your comment about?
+      label.form-field-label(for='reason-unclear')
+        input#reason-unclear.func--comment-reason-select(name='reason', type='radio', value='unclear')
+        span(data-l8n="content:add-comment-form/comment-reason-unclear") !Content is difficult to understand
+      label.form-field-label(for='reason-expand')
+        input#reason-expand(name='reason', type='radio', value='expand')
+        span(data-l8n="content:add-comment-form/comment-reason-expand") !Section needs more information
+      label.form-field-label(for='reason-suggestion')
+        input#reason-suggestion(name='reason', type='radio', value='suggestion')
+        span(data-l8n="content:add-comment-form/comment-reason-suggestion") !Suggestion for consideration
+      label.form-field-label(for='reason-language')
+        input#reason-language(name='reason', type='radio', value='language')
+        span(data-l8n="content:add-comment-form/comment-reason-language") !Grammar, spelling, or structure
+      label.form-field-label(for='reason-general')
+        input#reason-general(name='reason', type='radio', value='general', checked)
+        span(data-l8n="content:add-comment-form/comment-reason-general") !General feedback
+    
     button.button.clj-comment-form-post-button.func--comment-form-submit(type='submit') !Add a comment

@@ -535,15 +535,19 @@
 (fact "Can annotate a draft section"
       (try
         (wd/input-text ".func--comment-form-text-area" "my draft section annotation")
+        (wd/click ".func--comment-reason-select")
         (wd/click ".func--comment-form-submit")
         (wait-for-title "Draft section | Objective[8]")
         (screenshot "draft_section_with_comment")
 
-        (wd/page-source)
+        {:annotation (wd/text ".func--comment-text") 
+         :annotation-reason (wd/text ".func--comment-reason-text")} 
+
         (catch Exception e
           (screenshot "ERROR-Can-annotate-a-draft-section")  
           (throw e)))
-      => (contains "my draft section annotation"))
+      => {:annotation "my draft section annotation"
+          :annotation-reason  "Content is difficult to understand"})
 
 (fact "Can navigate to import from Google Drive"
       (try

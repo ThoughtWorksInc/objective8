@@ -101,11 +101,12 @@
 
 (defn create-section-comment! [{:keys [objective-id draft-id section-label] :as section-data} {:keys [reason] :as comment-data}]
   (let [section-labels (drafts/get-section-labels-for-draft-uri (str "/objectives/" objective-id "/drafts/" draft-id))]
-    (when (some #{section-label} section-labels)
+    (if (some #{section-label} section-labels)
       (let [stored-section (drafts/store-section! section-data) 
             {comment-id :_id :as stored-comment} (comments/store-comment-for! stored-section comment-data)
             {stored-reason :reason} (comments/store-reason! {:comment-id comment-id :reason reason})] 
-        {:status ::success :result (assoc stored-comment :reason stored-reason)}))))
+        {:status ::success :result (assoc stored-comment :reason stored-reason)})
+      {:status ::entity-not-found})))
 
 (defn create-comment! [{:keys [comment-on-uri] :as comment-data}]
   (if-let [entity-to-comment-on (storage/pg-retrieve-entity-by-uri comment-on-uri :with-global-id)]

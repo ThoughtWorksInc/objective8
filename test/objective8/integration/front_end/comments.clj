@@ -22,8 +22,6 @@
        (binding [config/enable-csrf false]
          (fact "authorised user can post and retrieve comment against an objective"
               (against-background
-                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success})
-              (against-background
                (http-api/post-comment {:comment "The comment"
                                        :comment-on-uri OBJECTIVE_URI
                                        :created-by-id USER_ID}) => {:status ::http-api/success

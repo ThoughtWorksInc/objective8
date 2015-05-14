@@ -295,7 +295,7 @@
 
 ;; COMMENTS
 
-(defn post-comment [{:keys [t' route-params] :as request}]
+(defn post-comment [request]
   (if-let [comment-data (fr/request->comment-data request (get (friend/current-authentication) :identity))]
     (case (:status comment-data)
       ::fr/valid
@@ -325,7 +325,7 @@
           (= status ::http-api/success)
           (-> (redirect-to-params-referer request)
               (assoc :flash {:type :flash-message
-                             :message :comment-view/created-message}))
+                             :message :draft-section/annotation-created-message}))
 
           (= status ::http-api/invalid-input) {:status 400}
 

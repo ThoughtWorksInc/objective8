@@ -1,6 +1,8 @@
 (ns objective8.integration.db.comments
   (:require [midje.sweet :refer :all]
             [objective8.comments :as comments]
+            [objective8.utils :as utils]
+            [objective8.actions :as actions]
             [objective8.integration.integration-helpers :as ih]
             [objective8.integration.storage-helpers :as sh]))
 
@@ -103,8 +105,29 @@
                      objective-uri (str "/objectives/" (:_id objective))
 
                      comment (-> (sh/store-a-comment {:entity objective}) (sh/with-votes {:up 2 :down 10}))]
-                 (first (comments/get-comments objective-uri {:sorted-by ?sorted-by :filter-type :none})) => (contains {:votes {:up 2 :down 10}})))
+                 (-> (comments/get-comments objective-uri {:sorted-by ?sorted-by :filter-type :none})
+                     first) => (contains {:votes {:up 2 :down 10}})))
          ?sorted-by :up-votes :down-votes :created-at)
+
+         (def REASON "unclear")
+         (def hiccup '(["h1" {:data-section-label "1234abcd"} "A Heading"] ["p" {:data-section-label "abcd1234"} "A paragraph"]))
+
+         (fact "get comments with reasons if they exist"
+               (let [{user-id :_id :as user} (sh/store-a-user)
+                     {draft-id :_id objective-id :objective-id} (sh/store-a-draft {:content hiccup})
+                     section-uri (utils/local-path-for :fe/draft-section
+                                                 :id objective-id
+                                                 :d-id draft-id
+                                                 :section-label "1234abcd")
+
+                     comment-data {:comment-on-uri section-uri
+                                   :reason REASON
+                                   :comment "test comment"
+                                   :created-by-id user-id}
+
+                     comment (actions/create-comment! comment-data)]
+                 (-> (comments/get-comments section-uri {:sorted-by :created-at :filter-type :none})
+                     first)  => (contains {:reason REASON})))
 
         (tabular
          (fact "gets comments with user name"
@@ -114,7 +137,8 @@
                      user (sh/store-a-user)
 
                      comment (sh/store-a-comment {:user user :entity objective})]
-                (first (comments/get-comments objective-uri {:sorted-by ?sorted-by :filter-type :none})) => (contains {:username (:username user)})))
+                 (-> (comments/get-comments objective-uri {:sorted-by ?sorted-by :filter-type :none})
+                     first) => (contains {:username (:username user)})))
          ?sorted-by :up-votes :down-votes :created-at)
 
         (tabular
@@ -124,8 +148,11 @@
 
                      comment (sh/store-a-comment {:entity objective})
                      comment-uri (str "/comments/" (:_id comment))]
-                 (first (comments/get-comments objective-uri {:sorted-by ?sorted-by :filter-type :none})) =not=> (contains {:comment-on-id anything})    
-                 (first (comments/get-comments objective-uri {:sorted-by ?sorted-by :filter-type :none})) =not=> (contains {:global-id anything})
-                 (first (comments/get-comments objective-uri {:sorted-by ?sorted-by :filter-type :none})) => (contains {:uri comment-uri
+                 (-> (comments/get-comments objective-uri {:sorted-by ?sorted-by :filter-type :none})
+                     first) =not=> (contains {:comment-on-id anything})    
+                 (-> (comments/get-comments objective-uri {:sorted-by ?sorted-by :filter-type :none})
+                     first) =not=> (contains {:global-id anything})
+                 (-> (comments/get-comments objective-uri {:sorted-by ?sorted-by :filter-type :none})
+                     first) => (contains {:uri comment-uri
                                                                                                     :comment-on-uri objective-uri})))
          ?sorted-by :up-votes :down-votes :created-at)))

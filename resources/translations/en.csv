@@ -117,6 +117,7 @@ draft-section,page-title,Add annotation to:
 draft-section,comment-box-label-title,Want to discuss this section?
 draft-section,comment-box-label-helper,You can leave an annotation here.
 draft-section,comment-post-button,Add an annotation
+draft-section,annotation-created-message,Your annotation has been added!
 add-draft,doc-title,Add draft | Objective[8]
 add-draft,doc-description,Draft policy
 add-draft,placeholder,Enter your draft here
@@ -280,6 +281,12 @@ comment-view,created-message,Your comment has been added!
 comment-view,comment-title,Comments
 add-comment-form,comment-length-validation-message,The comment can have at most 500 characters
 add-comment-form,comment-empty-validation-message,Please provide some text for your comment
+add-comment-form,comment-reason-title,What is your annotation about?
+add-comment-form,comment-reason-unclear,Content is difficult to understand
+add-comment-form,comment-reason-expand,Section needs more information
+add-comment-form,comment-reason-suggestion,Suggestion for consideration
+add-comment-form,comment-reason-language,"Grammar, spelling, or structure"
+add-comment-form,comment-reason-general,General feedback
 comment-votes,drafting-started,Voting has been frozen for this objective as it is now in drafting.
 answer-votes,drafting-started,Voting has been frozen for this objective as it is now in drafting.
 invite-writer,doc-title,"Invite a writer -"

@@ -23,7 +23,7 @@
 
 (facts "annotations"
        (binding [config/enable-csrf false]
-         (fact "authorised user can post and retrieve annotation against a draft"  
+         (fact "authorised user can post an annotation against a draft"  
               (against-background
                (http-api/post-comment {:comment "The comment"
                                        :comment-on-uri SECTION_URI 
@@ -49,6 +49,6 @@
                                                                          :section-label SECTION_LABEL)
                                                          :request-method :post
                                                          :params params))]
-                 (:flash response) => (contains {:type :flash-message :message :comment-view/created-message})
+                 (:flash response) => (contains {:type :flash-message :message :draft-section/annotation-created-message})
                  (:headers response) => (helpers/location-contains SECTION_URI)
                  (:status response) => 302))))

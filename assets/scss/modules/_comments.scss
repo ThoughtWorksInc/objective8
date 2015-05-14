@@ -55,5 +55,28 @@
   }
 }
 
+.comment-reason-text {
+  @extend %list-item-date;
+  margin-bottom: 0.8em;
+}
+
+.annotation-reason-form {
+  .form-field-label-title {
+    padding-left: 0;
+    width: 100%;
+  }
+  label {
+    float: left;
+    width: 45%;  
+    &:last-child {
+      width: 100%;
+      margin-bottom: 1em;
+    }
+  }
+  span {
+    padding-left: 0.4em;
+    font-size: 0.9em;
+  }
+}
 
 

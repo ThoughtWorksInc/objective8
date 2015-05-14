@@ -127,7 +127,7 @@
 
 (def comment-list-item-snippet (html/select library-html-resource [:.clj-comment-item])) 
 
-(defn comment-list-items [{:keys [data user] :as context}]
+(defn comment-list-items [{:keys [data user translations] :as context}]
   (let [comments (:comments data)]
     (html/at comment-list-item-snippet
              [:.clj-comment-item] 
@@ -135,6 +135,9 @@
                              [:.clj-comment-author] (html/content (:username comment))
                              [:.clj-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
                              [:.clj-comment-text] (html/content (:comment comment))
+                             [:.clj-comment-reason-text] (when (:reason comment)
+                                                           (html/content 
+                                                             (translations (keyword "add-comment-form" (str "comment-reason-" (:reason comment))))))
                              [:.clj-up-down-vote-form] 
                              (if user
                                (voting-actions-when-signed-in context comment)

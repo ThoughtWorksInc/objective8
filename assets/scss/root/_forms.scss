@@ -44,6 +44,11 @@ textarea {
   }
 }
 
+input[type='radio'] {
+  width: initial;
+  outline: none;
+}
+
 .user-input-error-message {
   font-size: 0.85em;
   color: $dark_pink;
