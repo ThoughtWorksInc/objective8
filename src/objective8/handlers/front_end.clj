@@ -5,7 +5,6 @@
             [cheshire.core :as json]
             [org.httpkit.client :as http]
             [objective8.http-api :as http-api]
-            [objective8.front-end-helpers :as helpers]
             [objective8.front-end-requests :as fr]
             [objective8.utils :as utils]
             [objective8.permissions :as permissions]
