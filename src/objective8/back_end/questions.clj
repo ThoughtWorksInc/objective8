@@ -1,8 +1,8 @@
 (ns objective8.back-end.questions
   (:require [objective8.back-end.objectives :as objectives]
-            [objective8.storage.uris :as uris]
+            [objective8.back-end.storage.uris :as uris]
             [objective8.utils :as utils]
-            [objective8.storage.storage :as storage]))
+            [objective8.back-end.storage.storage :as storage]))
 
 (defn store-question! [question]
   (some-> (storage/pg-store! (assoc question :entity :question))

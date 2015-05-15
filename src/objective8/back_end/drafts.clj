@@ -1,7 +1,7 @@
 (ns objective8.back-end.drafts
   (:require [crypto.random :as random] 
-            [objective8.storage.storage :as storage] 
-            [objective8.storage.uris :as uris]
+            [objective8.back-end.storage.storage :as storage] 
+            [objective8.back-end.storage.uris :as uris]
             [objective8.utils :as utils]))
 
 (defn uri-for-draft [{:keys [_id objective-id] :as draft}]

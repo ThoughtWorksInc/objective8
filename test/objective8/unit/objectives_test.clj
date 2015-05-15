@@ -1,7 +1,7 @@
 (ns objective8.unit.objectives-test
   (:require [midje.sweet :refer :all]
             [objective8.back-end.objectives :as objectives]
-            [objective8.storage.storage :as storage]))
+            [objective8.back-end.storage.storage :as storage]))
 
 (def USER_ID 1)
 (def OBJECTIVE_ID 234)

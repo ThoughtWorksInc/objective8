@@ -2,7 +2,7 @@
   (:require [org.httpkit.server :as server]
             [objective8.core :as core]
             [objective8.config :as config]
-            [objective8.storage.database :as db]))
+            [objective8.back-end.storage.database :as db]))
 
 ;; Launching / relaunching / loading
 (defonce the-system nil)

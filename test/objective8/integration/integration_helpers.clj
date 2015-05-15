@@ -9,8 +9,8 @@
             [objective8.core :as core]
             [objective8.workflows.twitter :as twitter]
             [objective8.workflows.sign-up :as sign-up]
-            [objective8.storage.mappings :as m]
-            [objective8.storage.database :as db]))
+            [objective8.back-end.storage.mappings :as m]
+            [objective8.back-end.storage.database :as db]))
 
 (defn db-connection [] (db/connect!))
 

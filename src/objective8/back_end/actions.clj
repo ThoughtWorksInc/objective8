@@ -11,8 +11,8 @@
             [objective8.back-end.marks :as marks]
             [objective8.back-end.writer-notes :as writer-notes]
             [objective8.back-end.admin-removals :as admin-removals]
-            [objective8.storage.uris :as uris]
-            [objective8.storage.storage :as storage]
+            [objective8.back-end.storage.uris :as uris]
+            [objective8.back-end.storage.storage :as storage]
             [objective8.config :as config]))
 
 

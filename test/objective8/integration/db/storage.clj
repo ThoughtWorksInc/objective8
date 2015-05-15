@@ -1,7 +1,7 @@
 (ns objective8.integration.db.storage
   (:require [midje.sweet :refer :all]
-            [objective8.storage.storage :as storage]
-            [objective8.storage.database :as db]
+            [objective8.back-end.storage.storage :as storage]
+            [objective8.back-end.storage.database :as db]
             [objective8.integration.integration-helpers :refer [truncate-tables
                                                                 db-connection]]
             [objective8.integration.storage-helpers :as sh]))

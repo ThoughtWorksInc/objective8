@@ -2,7 +2,7 @@
   (:require [clojure.tools.logging :as log]
             [ring.util.response :as response]
             [cheshire.core :as json]
-            [objective8.storage.storage :as storage]
+            [objective8.back-end.storage.storage :as storage]
             [objective8.back-end.objectives :as objectives]
             [objective8.back-end.comments :as comments]
             [objective8.back-end.questions :as questions]

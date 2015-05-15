@@ -1,4 +1,4 @@
-(ns objective8.storage.mappings
+(ns objective8.back-end.storage.mappings
   (:refer-clojure :exclude [comment])
   (:require [korma.core :as korma]
             [cheshire.core :as json]

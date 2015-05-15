@@ -3,7 +3,7 @@
             [objective8.back-end.writers :as writers]
             [objective8.back-end.invitations :as i]
             [objective8.utils :as utils]
-            [objective8.storage.storage :as storage]))
+            [objective8.back-end.storage.storage :as storage]))
 
 (def OBJECTIVE_ID 123)
 (def INVITATION_ID 4)

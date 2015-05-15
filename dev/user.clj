@@ -5,7 +5,7 @@
             [korma.db :as kdb]
             [objective8.core :as core]
             [objective8.config :as config]
-            [objective8.storage.database :as db]
+            [objective8.back-end.storage.database :as db]
             [objective8.utils :as utils]
             [dev-helpers.stub-twitter :refer [stub-twitter-auth-config]]
             [dev-helpers.launch :refer [stop make-launcher-map]]))

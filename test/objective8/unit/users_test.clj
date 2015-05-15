@@ -3,7 +3,7 @@
             [objective8.back-end.users :as users]
             [objective8.back-end.writers :as writers]
             [objective8.back-end.objectives :as objectives]
-            [objective8.storage.storage :as storage]))
+            [objective8.back-end.storage.storage :as storage]))
 
 (def email-address "test@email.com")
 (def twitter-id "twitter-1")

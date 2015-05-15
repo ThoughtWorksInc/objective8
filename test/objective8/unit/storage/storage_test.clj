@@ -1,8 +1,8 @@
 (ns objective8.unit.storage.storage_test
   (:require [midje.sweet :refer :all]
             [korma.core :as korma]
-            [objective8.storage.storage :as s]
-            [objective8.storage.mappings :as m]))
+            [objective8.back-end.storage.storage :as s]
+            [objective8.back-end.storage.mappings :as m]))
 
 (fact "attempts to store an object by looking up the entity mapping"
       (let [some-map {:foo "bar" :entity :i-am-entity}]

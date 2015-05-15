@@ -1,6 +1,6 @@
 (ns objective8.back-end.admin-removals
-  (:require [objective8.storage.uris :as uris]
-            [objective8.storage.storage :as storage]
+  (:require [objective8.back-end.storage.uris :as uris]
+            [objective8.back-end.storage.storage :as storage]
             [objective8.utils :as utils]))
 
 (defn uri-for-admin-removal [admin-removal]

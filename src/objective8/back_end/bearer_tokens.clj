@@ -1,5 +1,5 @@
 (ns objective8.back-end.bearer-tokens
- (:require [objective8.storage.storage :as storage]))
+ (:require [objective8.back-end.storage.storage :as storage]))
 
 (defn get-token [name]
   (-> (storage/pg-retrieve {:entity :bearer-token :bearer-name name}) 

@@ -1,7 +1,7 @@
 (ns objective8.back-end.objectives
-  (:require [objective8.storage.mappings :as mappings]
-            [objective8.storage.storage :as storage]
-            [objective8.storage.uris :as uris]
+  (:require [objective8.back-end.storage.mappings :as mappings]
+            [objective8.back-end.storage.storage :as storage]
+            [objective8.back-end.storage.uris :as uris]
             [objective8.config :as config]
             [objective8.utils :as utils]))
 

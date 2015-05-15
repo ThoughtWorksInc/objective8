@@ -1,4 +1,4 @@
-(ns objective8.storage.uris
+(ns objective8.back-end.storage.uris
   (:require [bidi.bidi :as bidi]))
 
 (def uri-routes

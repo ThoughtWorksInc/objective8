@@ -1,5 +1,5 @@
 (ns objective8.back-end.up-down-votes
-  (:require [objective8.storage.storage :as storage]
+  (:require [objective8.back-end.storage.storage :as storage]
             [objective8.utils :as utils]))
 
 (defn store-vote! [{:keys [global-id] :as entity-to-vote-on}

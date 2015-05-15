@@ -1,6 +1,6 @@
 (ns objective8.back-end.stars
-  (:require [objective8.storage.storage :as storage]
-            [objective8.storage.uris :as uris]
+  (:require [objective8.back-end.storage.storage :as storage]
+            [objective8.back-end.storage.uris :as uris]
             [objective8.utils :as utils]))
 
 (defn store-star! [data]

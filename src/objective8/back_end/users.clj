@@ -1,5 +1,5 @@
 (ns objective8.back-end.users
-  (:require [objective8.storage.storage :as storage]))
+  (:require [objective8.back-end.storage.storage :as storage]))
 
 (defn retrieve-user [user-uri]
   (let [result (storage/pg-retrieve-entity-by-uri user-uri)]

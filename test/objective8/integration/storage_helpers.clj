@@ -2,7 +2,7 @@
   (:require [clj-time.core :as tc]
             [objective8.back-end.objectives :as objectives]
             [objective8.back-end.users :as users]
-            [objective8.storage.storage :as storage]
+            [objective8.back-end.storage.storage :as storage]
             [objective8.back-end.actions :as actions]))
 
 

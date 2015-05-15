@@ -1,5 +1,5 @@
 (ns objective8.back-end.writer-notes
-  (:require [objective8.storage.storage :as storage]
+  (:require [objective8.back-end.storage.storage :as storage]
             [objective8.utils :as utils]))
 
 (defn replace-note-on-id [note note-on-uri]

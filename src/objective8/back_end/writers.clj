@@ -2,7 +2,7 @@
   (:require [clojure.tools.logging :as log]
             [objective8.utils :as utils]
             [objective8.back-end.invitations :as i]
-            [objective8.storage.storage :as storage]))  
+            [objective8.back-end.storage.storage :as storage]))  
 
 
 (defn create-writer [{:keys [invitation-uuid invitee-id] :as writer-data}]

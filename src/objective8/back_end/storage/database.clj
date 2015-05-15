@@ -1,4 +1,4 @@
-(ns objective8.storage.database
+(ns objective8.back-end.storage.database
   (:require [korma.db :as db]
             [clojure.tools.logging :as log]
             [objective8.config :as config]))

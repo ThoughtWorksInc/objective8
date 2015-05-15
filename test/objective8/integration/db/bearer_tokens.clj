@@ -1,8 +1,8 @@
 (ns objective8.integration.db.bearer_tokens
   (:require [midje.sweet :refer :all]
             [objective8.back-end.bearer-tokens :as bt]
-            [objective8.storage.storage :as s]
-            [objective8.storage.database :as db]
+            [objective8.back-end.storage.storage :as s]
+            [objective8.back-end.storage.database :as db]
             [objective8.integration.integration-helpers :as helpers]))
 
 (def bearer-name "mr-api")

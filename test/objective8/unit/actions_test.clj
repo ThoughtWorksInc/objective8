@@ -14,7 +14,7 @@
             [objective8.back-end.marks :as marks]
             [objective8.back-end.admin-removals :as admin-removals]
             [objective8.back-end.writer-notes :as writer-notes]
-            [objective8.storage.storage :as storage]))
+            [objective8.back-end.storage.storage :as storage]))
 
 (def GLOBAL_ID 6)
 (def USER_ID 2)

@@ -1,7 +1,7 @@
 (ns objective8.unit.storage.mappings-test
   (:refer-clojure :exclude [comment])
   (:require [midje.sweet :refer :all]
-            [objective8.storage.mappings :refer :all]))
+            [objective8.back-end.storage.mappings :refer :all]))
 
 (defn json-type? [thing]
     (and (= (type thing) org.postgresql.util.PGobject)

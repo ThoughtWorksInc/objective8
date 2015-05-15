@@ -1,5 +1,5 @@
 (ns objective8.back-end.comments
-  (:require [objective8.storage.storage :as storage]
+  (:require [objective8.back-end.storage.storage :as storage]
             [objective8.utils :as utils]))
 
 (defn replace-comment-on-id [comment comment-on-uri]

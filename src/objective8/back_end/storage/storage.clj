@@ -1,9 +1,9 @@
-(ns objective8.storage.storage
+(ns objective8.back-end.storage.storage
   (:require [korma.core :as korma]
             [korma.db :as kdb]
             [clojure.string :as string]
-            [objective8.storage.uris :as uris]
-            [objective8.storage.mappings :as mappings]
+            [objective8.back-end.storage.uris :as uris]
+            [objective8.back-end.storage.mappings :as mappings]
             [objective8.utils :as utils]))
 
 (defn pg-create-global-identifier []
