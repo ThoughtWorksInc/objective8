@@ -1,7 +1,7 @@
 (ns objective8.unit.views_test
   (:require [midje.sweet :refer :all]
             [cemerick.friend :as friend]
-            [objective8.views :as views]))
+            [objective8.front-end.views :as views]))
 
 (def test-view identity)
 

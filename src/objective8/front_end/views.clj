@@ -1,4 +1,4 @@
-(ns objective8.views
+(ns objective8.front-end.views
   (:require [cemerick.friend :as friend]
             [objective8.templates.index :as index]
             [objective8.templates.learn-more :as learn-more]

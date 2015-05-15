@@ -4,7 +4,7 @@
               [ring.util.response :as response]
               [ring.util.request :as request]
               [bidi.ring :refer [make-handler]]
-              [objective8.views :as views]
+              [objective8.front-end.views :as views]
               [objective8.utils :as utils]
               [objective8.config :as config]))
 
