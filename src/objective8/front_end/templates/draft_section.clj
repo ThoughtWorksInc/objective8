@@ -1,9 +1,9 @@
-(ns objective8.templates.draft-section 
+(ns objective8.front-end.templates.draft-section 
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [objective8.utils :as utils]
-            [objective8.templates.page-furniture :as pf]
-            [objective8.templates.template-functions :as tf])) 
+            [objective8.front-end.templates.page-furniture :as pf]
+            [objective8.front-end.templates.template-functions :as tf])) 
 
 (def draft-section-template (html/html-resource "templates/jade/draft-section.html" {:parser jsoup/parser}))
 

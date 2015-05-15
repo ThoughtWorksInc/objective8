@@ -1,4 +1,4 @@
-(ns objective8.templates.template-functions
+(ns objective8.front-end.templates.template-functions
   (:require [net.cgrand.enlive-html :as html]
             [objective8.config :as config]))
 

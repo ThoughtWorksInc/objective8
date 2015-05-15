@@ -1,9 +1,9 @@
-(ns objective8.templates.import-draft
+(ns objective8.front-end.templates.import-draft
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [ring.util.anti-forgery :refer [anti-forgery-field]]  
-            [objective8.templates.page-furniture :as pf]
-            [objective8.templates.template-functions :as tf]
+            [objective8.front-end.templates.page-furniture :as pf]
+            [objective8.front-end.templates.template-functions :as tf]
             [objective8.utils :as utils]))
 
 (def import-draft-template (html/html-resource "templates/jade/import-draft.html" {:parser jsoup/parser}))

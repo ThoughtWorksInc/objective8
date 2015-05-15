@@ -1,9 +1,9 @@
-(ns objective8.templates.draft-diff
+(ns objective8.front-end.templates.draft-diff
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [objective8.utils :as utils]
-            [objective8.templates.page-furniture :as pf]
-            [objective8.templates.template-functions :as tf])) 
+            [objective8.front-end.templates.page-furniture :as pf]
+            [objective8.front-end.templates.template-functions :as tf])) 
 
 (def draft-diff-template (html/html-resource "templates/jade/draft-diff.html" {:parser jsoup/parser}))
 

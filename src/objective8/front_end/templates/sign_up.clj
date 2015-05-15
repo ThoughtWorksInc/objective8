@@ -1,9 +1,9 @@
-(ns objective8.templates.sign-up 
+(ns objective8.front-end.templates.sign-up 
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [ring.util.anti-forgery :refer [anti-forgery-field]]  
-            [objective8.templates.page-furniture :as f]
-            [objective8.templates.template-functions :as tf]))
+            [objective8.front-end.templates.page-furniture :as f]
+            [objective8.front-end.templates.template-functions :as tf]))
 
 (def sign-up-template (html/html-resource "templates/jade/sign-up.html" {:parser jsoup/parser}))
 

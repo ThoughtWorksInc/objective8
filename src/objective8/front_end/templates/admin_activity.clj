@@ -1,8 +1,8 @@
-(ns objective8.templates.admin-activity  
+(ns objective8.front-end.templates.admin-activity  
   (:require [net.cgrand.enlive-html :as html]
-            [objective8.templates.page-furniture :as pf]
+            [objective8.front-end.templates.page-furniture :as pf]
             [objective8.utils :as utils]
-            [objective8.templates.template-functions :as tf])) 
+            [objective8.front-end.templates.template-functions :as tf])) 
 
 (def admin-activity-template (html/html-resource "templates/jade/admin-activity.html"))
 

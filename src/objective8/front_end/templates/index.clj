@@ -1,16 +1,16 @@
-(ns objective8.templates.learn-more
+(ns objective8.front-end.templates.index 
   (:require [net.cgrand.enlive-html :as html]
-            [objective8.templates.page-furniture :as pf]
-            [objective8.templates.template-functions :as tf])) 
+            [objective8.front-end.templates.page-furniture :as pf]
+            [objective8.front-end.templates.template-functions :as tf])) 
 
-(def learn-more (html/html-resource "templates/jade/learn-more.html"))
+(def index-template (html/html-resource "templates/jade/index.html"))
 
-(defn learn-more-page [{:keys [doc] :as context}]
+(defn index-page [{:keys [doc] :as context}]
   (apply str
          (html/emit*
            (tf/translate context
-                         (pf/add-google-analytics
-                           (html/at learn-more
+                         (pf/add-google-analytics 
+                           (html/at index-template
                                     [:title] (html/content (:title doc))
                                     [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
                                     [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))

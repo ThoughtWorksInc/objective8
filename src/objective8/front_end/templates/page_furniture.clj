@@ -1,11 +1,11 @@
-(ns objective8.templates.page-furniture
+(ns objective8.front-end.templates.page-furniture
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [objective8.config :as config]
             [objective8.utils :as utils]
             [objective8.permissions :as permissions]
-            [objective8.templates.template-functions :as tf]))
+            [objective8.front-end.templates.template-functions :as tf]))
 
 (def library-html "templates/jade/library.html")
 (def library-html-resource (html/html-resource library-html {:parser jsoup/parser}))

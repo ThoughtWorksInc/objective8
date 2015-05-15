@@ -1,13 +1,13 @@
-(ns objective8.templates.objective-list
+(ns objective8.front-end.templates.objective-list
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [ring.util.anti-forgery :refer [anti-forgery-field]]  
             [objective8.permissions :as permissions]
             [objective8.config :as config]
-            [objective8.templates.page-furniture :as pf]
+            [objective8.front-end.templates.page-furniture :as pf]
             [objective8.api.domain :as domain]
             [objective8.utils :as utils]
-            [objective8.templates.template-functions :as tf]))   
+            [objective8.front-end.templates.template-functions :as tf]))   
 
 (def objective-list-resource (html/html-resource "templates/jade/objective-list.html" {:parser jsoup/parser}))
 

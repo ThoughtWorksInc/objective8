@@ -1,9 +1,9 @@
-(ns objective8.templates.admin-removal-confirmation 
+(ns objective8.front-end.templates.admin-removal-confirmation 
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [ring.util.anti-forgery :refer [anti-forgery-field]]  
-            [objective8.templates.page-furniture :as pf]
-            [objective8.templates.template-functions :as tf]))
+            [objective8.front-end.templates.page-furniture :as pf]
+            [objective8.front-end.templates.template-functions :as tf]))
 
 (def admin-removal-confirmation-template (html/html-resource "templates/jade/admin-removal-confirmation.html" {:parser jsoup/parser}))
 

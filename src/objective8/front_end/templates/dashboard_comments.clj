@@ -1,10 +1,10 @@
-(ns objective8.templates.dashboard-comments
+(ns objective8.front-end.templates.dashboard-comments
   (:require [net.cgrand.enlive-html :as html]
             [cemerick.url :as url]
             [objective8.utils :as utils]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
-            [objective8.templates.page-furniture :as pf]
-            [objective8.templates.template-functions :as tf]))
+            [objective8.front-end.templates.page-furniture :as pf]
+            [objective8.front-end.templates.template-functions :as tf]))
 
 
 (def dashboard-comments-template (html/html-resource "templates/jade/comments-dashboard.html"))
