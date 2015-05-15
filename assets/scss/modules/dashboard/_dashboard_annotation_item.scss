@@ -6,6 +6,9 @@ Dashboard annotation item
 
 .dashboard-annotation-section-list {
   @extend %list-item-container;
+  padding-left: 1.5em;
+  margin-left: 1em;
+  border-left: solid 3px $green1;
 }
 
 .dashboard-annotation-list {
@@ -13,12 +16,12 @@ Dashboard annotation item
 }
 
 .dashboard-annotation-item {
-  padding: 2em 0;
-  border-top: 1px solid $border_color;
-  border-bottom: 1px solid $border_color;
+  padding: 0.75em 0;
   &:first-child {
-    border-top: none;
     padding-top: 0;
+  }
+  &:last-child {
+    border-bottom: 1px solid $border_color;
   }
 }
 
@@ -47,9 +50,8 @@ Dashboard annotation item
 }
 
 .dashboard-annotation-section {
-  padding-left: 2em;
+  padding-left: 1em;
   margin-bottom: 2em;
-  border-left: solid 5px $green1;
 }
 
 .dashboard-annotation-section-item {
