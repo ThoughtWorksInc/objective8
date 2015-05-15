@@ -36,12 +36,12 @@
 ;; User sign-up
 
 (defn username-validator [request]
-  (let [username (s/trim (get-in request [:params :username]))]
+  (let [username (s/trim (get-in request [:params :username] ""))]
     (cond-> (initialise-field-validation username)
       (not (valid-username? username)) (report-error :invalid))))
 
 (defn email-address-validator [request]
-  (let [email-address (s/trim (get-in request [:params :email-address]))]
+  (let [email-address (s/trim (get-in request [:params :email-address] ""))]
     (cond-> (initialise-field-validation email-address)
       (empty? email-address) (report-error :empty)
       (and (not (empty? email-address))
@@ -56,13 +56,13 @@
 ;; Create objective
 
 (defn objective-title-validator [request]
-  (let [title (s/trim (get-in request [:params :title]))]
+  (let [title (s/trim (get-in request [:params :title] ""))]
     (cond-> (initialise-field-validation title)
       (shorter? title 3) (report-error :length)
       (longer? title 120) (report-error :length))))
 
 (defn objective-description-validator [request]
-  (let [description (s/trim (get-in request [:params :description]))]
+  (let [description (s/trim (get-in request [:params :description] ""))]
     (cond-> (initialise-field-validation description)
       (empty? description) (report-error :empty)
       (longer? description 5000) (report-error :length))))
@@ -79,7 +79,7 @@
 ;; Create Question
 
 (defn question-validator [request]
-  (let [question (s/trim (get-in request [:params :question]))]
+  (let [question (s/trim (get-in request [:params :question] ""))]
     (cond-> (initialise-field-validation question)
       (shorter? question 10) (report-error :length)
       (longer? question 500) (report-error :length))))
@@ -95,7 +95,7 @@
 ;; Create Answer
 
 (defn answer-validator [request]
-  (let [answer (s/trim (get-in request [:params :answer]))]
+  (let [answer (s/trim (get-in request [:params :answer] ""))]
     (cond-> (initialise-field-validation answer)
       (empty? answer)  (report-error :empty)
       (longer? answer 500) (report-error :length))))
@@ -113,7 +113,7 @@
 ;; Create Comment
 
 (defn comment-validator [request]
-  (let [comment (s/trim (get-in request [:params :comment]))]
+  (let [comment (s/trim (get-in request [:params :comment] ""))]
     (cond-> (initialise-field-validation comment)
       (longer? comment 500) (report-error :length)
       (empty? comment)      (report-error :empty))))
@@ -149,19 +149,19 @@
 ;; Invitations
 
 (defn writer-name-validator [request]
-  (let [name (s/trim (get-in request [:params :writer-name]))]
+  (let [name (s/trim (get-in request [:params :writer-name] ""))]
     (cond-> (initialise-field-validation name)
       (empty? name) (report-error :empty)
       (longer? name 50) (report-error :length))))
 
 (defn reason-validator [request]
-  (let [reason (s/trim (get-in request [:params :reason]))]
+  (let [reason (s/trim (get-in request [:params :reason] ""))]
     (cond-> (initialise-field-validation reason)
       (empty? reason) (report-error :empty)
       (longer? reason 5000) (report-error :length))))
 
 (defn writer-email-validator [request]
-  (let [writer-email (s/trim (get-in request [:params :writer-email]))]
+  (let [writer-email (s/trim (get-in request [:params :writer-email] ""))]
     (cond-> (initialise-field-validation writer-email)
       (empty? writer-email) (report-error :empty)
       (and (not (empty? writer-email))
@@ -180,7 +180,7 @@
 ;; Writer notes
 
 (defn note-validator [request]
-  (let [note (s/trim (get-in request [:params :note]))]
+  (let [note (s/trim (get-in request [:params :note] ""))]
     (cond-> (initialise-field-validation note)
       (empty? note) (report-error :empty))))
 
@@ -198,13 +198,13 @@
 ;; Profiles
 
 (defn name-validator [request]
-  (let [name (s/trim (get-in request [:params :name]))]
+  (let [name (s/trim (get-in request [:params :name] ""))]
     (cond-> (initialise-field-validation name)
       (empty? name) (report-error :empty)
       (longer? name 50) (report-error :length))))
 
 (defn biog-validator [request]
-  (let [biog (s/trim (get-in request [:params :biog]))]
+  (let [biog (s/trim (get-in request [:params :biog] ""))]
     (cond-> (initialise-field-validation biog)
       (empty? biog) (report-error :empty)
       (longer? biog 5000) (report-error :length))))
@@ -220,7 +220,7 @@
 
 ;;; Adding drafts
 (defn add-draft-markdown-validator [request]
-  (let [content (-> (get-in request [:params :content] "") s/trim)]
+  (let [content (s/trim (get-in request [:params :content] ""))]
     (cond-> (initialise-field-validation content)
       (empty? content) (report-error :empty))))
 
@@ -240,8 +240,7 @@
 
 ;;; Importing drafts
 (defn import-draft-content-validator [request]
-  (let [html-content (-> (get-in request [:params :google-doc-html-content])
-                         s/trim)]
+  (let [html-content (s/trim (get-in request [:params :google-doc-html-content] ""))]
     (cond-> (initialise-field-validation html-content)
       (empty? html-content) (report-error :empty))))
 
