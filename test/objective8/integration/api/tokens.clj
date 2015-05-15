@@ -5,7 +5,7 @@
             [objective8.integration.integration-helpers :as helpers]
             [objective8.storage.storage :as storage]
             [objective8.storage.database :as db]
-            [objective8.bearer-tokens :as bearer-tokens]))
+            [objective8.back-end.bearer-tokens :as bearer-tokens]))
 
 (def app (helpers/test-context))
 (def the-token "token")

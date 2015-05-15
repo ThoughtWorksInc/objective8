@@ -27,7 +27,7 @@
             [objective8.handlers.front-end :as front-end-handlers]
             [objective8.back-end.users :as users]
             [objective8.middleware :as m]
-            [objective8.bearer-tokens :as bt])
+            [objective8.back-end.bearer-tokens :as bt])
  ; (:gen-class)
   
   )

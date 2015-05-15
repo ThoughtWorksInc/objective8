@@ -1,4 +1,4 @@
-(ns objective8.bearer-tokens
+(ns objective8.back-end.bearer-tokens
  (:require [objective8.storage.storage :as storage]))
 
 (defn get-token [name]
