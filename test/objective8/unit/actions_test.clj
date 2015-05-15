@@ -128,45 +128,46 @@
 (def reason-type "expand")
 (def section-comment-data {:comment-on-uri section-uri :reason reason-type}) 
 
-(facts "about creating comments"
-       (fact "can comment on an objective that is not in drafting"
-             (actions/create-comment! comment-data) => {:status ::actions/success :result :the-stored-comment}
-             (provided
-              (storage/pg-retrieve-entity-by-uri "/entity-uri" :with-global-id) => objective-not-in-drafting
-              (comments/store-comment-for! objective-not-in-drafting comment-data) => :the-stored-comment))
+(binding [config/two-phase? true]
+  (facts "about creating comments"
+         (fact "can comment on an objective that is not in drafting"
+               (actions/create-comment! comment-data) => {:status ::actions/success :result :the-stored-comment}
+               (provided
+                 (storage/pg-retrieve-entity-by-uri "/entity-uri" :with-global-id) => objective-not-in-drafting
+                 (comments/store-comment-for! objective-not-in-drafting comment-data) => :the-stored-comment))
 
-       (fact "cannot comment on an objective that is in drafting"
-             (actions/create-comment! comment-data) => {:status ::actions/objective-drafting-started}
-             (provided
-              (storage/pg-retrieve-entity-by-uri "/entity-uri" :with-global-id) => objective-in-drafting))
+         (fact "cannot comment on an objective that is in drafting"
+               (actions/create-comment! comment-data) => {:status ::actions/objective-drafting-started}
+               (provided
+                 (storage/pg-retrieve-entity-by-uri "/entity-uri" :with-global-id) => objective-in-drafting))
 
-       (fact "can comment on a draft"
-             (actions/create-comment! comment-data) => {:status ::actions/success :result :the-stored-comment}
-             (provided
-              (storage/pg-retrieve-entity-by-uri "/entity-uri" :with-global-id) => a-draft
-              (comments/store-comment-for! a-draft comment-data) => :the-stored-comment))
+         (fact "can comment on a draft"
+               (actions/create-comment! comment-data) => {:status ::actions/success :result :the-stored-comment}
+               (provided
+                 (storage/pg-retrieve-entity-by-uri "/entity-uri" :with-global-id) => a-draft
+                 (comments/store-comment-for! a-draft comment-data) => :the-stored-comment))
 
-       (fact "can comment on a draft section with existing comments"
-             (actions/create-comment! section-comment-data) => {:status ::actions/success :result {:_id COMMENT_ID :reason reason-type}} 
-             (provided
-               (storage/pg-retrieve-entity-by-uri section-uri :with-global-id) => a-section 
-               (comments/store-comment-for! a-section section-comment-data) => {:_id COMMENT_ID} 
-               (comments/store-reason! {:reason reason-type :comment-id COMMENT_ID}) => {:reason reason-type}))
+         (fact "can comment on a draft section with existing comments"
+               (actions/create-comment! section-comment-data) => {:status ::actions/success :result {:_id COMMENT_ID :reason reason-type}} 
+               (provided
+                 (storage/pg-retrieve-entity-by-uri section-uri :with-global-id) => a-section 
+                 (comments/store-comment-for! a-section section-comment-data) => {:_id COMMENT_ID} 
+                 (comments/store-reason! {:reason reason-type :comment-id COMMENT_ID}) => {:reason reason-type}))
 
-       (fact "can comment on a draft section with no previous comments"
-             (actions/create-comment! section-comment-data) => {:status ::actions/success :result {:_id COMMENT_ID :reason reason-type}}
-             (provided
-               (storage/pg-retrieve-entity-by-uri section-uri :with-global-id) => nil 
-               (drafts/get-section-labels-for-draft-uri DRAFT_URI) => [SECTION_LABEL]
-               (drafts/store-section! {:entity :section :draft-id DRAFT_ID :objective-id OBJECTIVE_ID
-                                       :section-label SECTION_LABEL}) => a-section
-               (comments/store-comment-for! a-section section-comment-data) => {:_id COMMENT_ID}
-               (comments/store-reason! {:reason reason-type :comment-id COMMENT_ID}) => {:reason reason-type}))
+         (fact "can comment on a draft section with no previous comments"
+               (actions/create-comment! section-comment-data) => {:status ::actions/success :result {:_id COMMENT_ID :reason reason-type}}
+               (provided
+                 (storage/pg-retrieve-entity-by-uri section-uri :with-global-id) => nil 
+                 (drafts/get-section-labels-for-draft-uri DRAFT_URI) => [SECTION_LABEL]
+                 (drafts/store-section! {:entity :section :draft-id DRAFT_ID :objective-id OBJECTIVE_ID
+                                         :section-label SECTION_LABEL}) => a-section
+                 (comments/store-comment-for! a-section section-comment-data) => {:_id COMMENT_ID}
+                 (comments/store-reason! {:reason reason-type :comment-id COMMENT_ID}) => {:reason reason-type}))
 
-       (fact "reports an error when the entity to comment on cannot be found"
-             (actions/create-comment! comment-data) => {:status ::actions/entity-not-found}
-             (provided
-              (storage/pg-retrieve-entity-by-uri anything anything) => nil)))
+         (fact "reports an error when the entity to comment on cannot be found"
+               (actions/create-comment! comment-data) => {:status ::actions/entity-not-found}
+               (provided
+                 (storage/pg-retrieve-entity-by-uri anything anything) => nil)))) 
 
 (facts "about retrieving annotations for a draft"
        (fact "annotations are retrieved with the annotated section"
@@ -269,44 +270,45 @@
 (def invitation {:objective-id OBJECTIVE_ID
                  :invited-by-id USER_ID})
 
-(facts "about creating an invitation"
-       (fact "succeeds when the associated objective is not in drafting and the inviter is an existing writer"
-             (against-background
-               (objectives/get-objectives-owned-by-user-id USER_ID) => [])
-             (actions/create-invitation! invitation) => {:status ::actions/success
-                                                         :result :stored-invitation} 
-             (provided
-              (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
-               (writers/retrieve-writers-by-user-id USER_ID) => [{:objective-id OBJECTIVE_ID}]
-               (invitations/store-invitation! invitation) => :stored-invitation))
+(binding [config/two-phase? true]
+  (facts "about creating an invitation"
+         (fact "succeeds when the associated objective is not in drafting and the inviter is an existing writer"
+               (against-background
+                 (objectives/get-objectives-owned-by-user-id USER_ID) => [])
+               (actions/create-invitation! invitation) => {:status ::actions/success
+                                                           :result :stored-invitation} 
+               (provided
+                 (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
+                 (writers/retrieve-writers-by-user-id USER_ID) => [{:objective-id OBJECTIVE_ID}]
+                 (invitations/store-invitation! invitation) => :stored-invitation))
 
-       (fact "succeeds when the associated objective is not in drafting and the inviter is the objective owner"
-             (against-background
-               (writers/retrieve-writers-by-user-id USER_ID) => [])
-             (actions/create-invitation! invitation) => {:status ::actions/success
-                                                         :result :stored-invitation} 
-             (provided
-              (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
-               (objectives/get-objectives-owned-by-user-id USER_ID) => [{:_id OBJECTIVE_ID}]
-               (invitations/store-invitation! invitation) => :stored-invitation))
+         (fact "succeeds when the associated objective is not in drafting and the inviter is the objective owner"
+               (against-background
+                 (writers/retrieve-writers-by-user-id USER_ID) => [])
+               (actions/create-invitation! invitation) => {:status ::actions/success
+                                                           :result :stored-invitation} 
+               (provided
+                 (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
+                 (objectives/get-objectives-owned-by-user-id USER_ID) => [{:_id OBJECTIVE_ID}]
+                 (invitations/store-invitation! invitation) => :stored-invitation))
 
-       (fact "returns objective-drafting-started status when the associated objective is in drafting"
-             (actions/create-invitation! invitation) => {:status ::actions/objective-drafting-started} 
-             (provided
-              (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"}))
+         (fact "returns objective-drafting-started status when the associated objective is in drafting"
+               (actions/create-invitation! invitation) => {:status ::actions/objective-drafting-started} 
+               (provided
+                 (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"}))
 
-       (fact "returns failure status when the inviter is not authorised"
-             (actions/create-invitation! invitation) => {:status ::actions/failure}
-             (provided
-              (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
-               (objectives/get-objectives-owned-by-user-id USER_ID) => []
-               (writers/retrieve-writers-by-user-id USER_ID) => []))
+         (fact "returns failure status when the inviter is not authorised"
+               (actions/create-invitation! invitation) => {:status ::actions/failure}
+               (provided
+                 (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
+                 (objectives/get-objectives-owned-by-user-id USER_ID) => []
+                 (writers/retrieve-writers-by-user-id USER_ID) => []))
 
-       (fact "returns a list of objective-ids a user is writer-inviter for"
-             (actions/authorised-objectives-for-inviter USER_ID) => '(1 2 3 4)
-             (provided
-               (writers/retrieve-writers-by-user-id USER_ID) => [{:objective-id 1} {:objective-id 2}]
-               (objectives/get-objectives-owned-by-user-id USER_ID) => [{:_id 3} {:_id 4}])))
+         (fact "returns a list of objective-ids a user is writer-inviter for"
+               (actions/authorised-objectives-for-inviter USER_ID) => '(1 2 3 4)
+               (provided
+                 (writers/retrieve-writers-by-user-id USER_ID) => [{:objective-id 1} {:objective-id 2}]
+                 (objectives/get-objectives-owned-by-user-id USER_ID) => [{:_id 3} {:_id 4}])))) 
 
 (def objective {:created-by-id USER_ID :title "SOME TITLE"})
 (def stored-objective (assoc objective :_id OBJECTIVE_ID))

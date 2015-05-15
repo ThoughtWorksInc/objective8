@@ -3,6 +3,7 @@
             [net.cgrand.jsoup :as jsoup]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [cemerick.url :as url]
+            [objective8.config :as config]
             [objective8.utils :as utils]
             [objective8.permissions :as permissions]
             [objective8.api.domain :as domain]
@@ -101,6 +102,18 @@
       (html/content (html/at share-objective-modal-snippet
                              [:.clj-objective-text] (html/content objective-text)
                              [:.clj-share-objective-modal] (configure-social-network-links objective-url sharing-text))))))
+
+;; PROGRESS INDICATOR
+
+(def progress-snippet (html/select objective-template [:.clj-objective-progress-indicator]))
+
+(defn progress-indicator [{:keys [data] :as context}]
+  (let [objective (:objective data)]
+    (html/at progress-snippet
+             [:.clj-progress-objective-link] (html/set-attr :href 
+                                                            (url/url (utils/path-for :fe/objective :id (:_id objective)))) 
+             [:.clj-progress-drafts-link] (html/set-attr :href
+                                                         (url/url (utils/path-for :fe/draft-list :id (:_id objective)))))))
 
 ;; DRAFTING HAS STARTED MESSAGE
 
@@ -213,7 +226,8 @@
                 (when (invitation-rsvp-for-objective? objective invitation-rsvp)
                   (invitation-rsvp-modal context)))
 
-              [:.clj-objective-progress-indicator] nil
+              [:.clj-objective-progress-indicator] (when (not config/two-phase?)
+                                                     (html/substitute (progress-indicator context)))
               [:.clj-guidance-buttons] nil
               [:.clj-guidance-heading] (html/content (translations :objective-guidance/heading))
 
@@ -223,9 +237,9 @@
 
               [:.clj-objective-title] (html/content (:title objective))
 
-              [:.clj-days-left] (when (domain/open? objective)
+              [:.clj-days-left] (when (and (domain/open? objective) config/two-phase?) 
                                   (drafting-begins objective))
-              [:.clj-drafting-started-wrapper] (when (domain/in-drafting? objective)
+              [:.clj-drafting-started-wrapper] (when (and (domain/in-drafting? objective) config/two-phase?) 
                                                  (html/substitute (drafting-message context)))
               [:.clj-objective-detail] (html/content (tf/text->p-nodes (:description objective)))
 

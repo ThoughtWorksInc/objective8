@@ -2,35 +2,38 @@
   (:require [midje.sweet :refer :all]
             [objective8.back-end.invitations :as invitations]
             [objective8.back-end.storage.storage :as storage]
+            [objective8.config :as config]
             [objective8.back-end.objectives :as objectives]
             [objective8.utils :as utils]))
 
 (def OBJECTIVE_ID 1)
 (def invitation {:objective-id OBJECTIVE_ID})
 
-(facts "about accepting an invitation"
-       (fact "returns the accepted invitation when the associated objective is not in drafting"
-             (invitations/accept-invitation! invitation) => :accepted-invitation
-             (provided
-              (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
-              (storage/pg-update-invitation-status! invitation "accepted") => :accepted-invitation))
+(binding [config/two-phase? true]
+  (facts "about accepting an invitation"
+         (fact "returns the accepted invitation when the associated objective is not in drafting"
+               (invitations/accept-invitation! invitation) => :accepted-invitation
+               (provided
+                 (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
+                 (storage/pg-update-invitation-status! invitation "accepted") => :accepted-invitation))
 
-       (fact "returns nil when the associated objective is in drafting"
-             (invitations/accept-invitation! invitation) => nil
-             (provided
-              (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"})))
+         (fact "returns nil when the associated objective is in drafting"
+               (invitations/accept-invitation! invitation) => nil
+               (provided
+                 (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"})))) 
 
-(facts "about declining an invitation"
-       (fact "returns the declined invitation when the associated objective is not in drafting"
-             (invitations/decline-invitation! invitation) => :declined-invitation
-             (provided
-              (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
-              (storage/pg-update-invitation-status! invitation "declined") => :declined-invitation))
+(binding [config/two-phase? true]
+  (facts "about declining an invitation"
+         (fact "returns the declined invitation when the associated objective is not in drafting"
+               (invitations/decline-invitation! invitation) => :declined-invitation
+               (provided
+                 (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
+                 (storage/pg-update-invitation-status! invitation "declined") => :declined-invitation))
 
-       (fact "returns nil when the associated objective is in drafting"
-             (invitations/decline-invitation! invitation) => nil
-             (provided
-              (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"})))
+         (fact "returns nil when the associated objective is in drafting"
+               (invitations/decline-invitation! invitation) => nil
+               (provided
+                 (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"})))) 
 
 (fact "Postgresql exceptions are not caught"
       (against-background

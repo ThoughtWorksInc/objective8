@@ -28,96 +28,98 @@
                       :end-date (utils/string->date-time "2012-12-12")
                       :uri (str "/objectives/" OBJECTIVE_ID)})
 
-(facts "objectives"
-       (against-background
-        ;; Twitter authentication background
-        (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
-        (http-api/create-user anything) => {:status ::http-api/success
-                                            :result {:_id USER_ID}}
-        (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                        :result {:_id USER_ID
-                                                                 :username "username"}})
-       (binding [config/enable-csrf false]
-         (fact "authorised user can post and retrieve objective"
-               (against-background (http-api/create-objective 
-                                     (contains {:title "my objective title"
-                                                :description "my objective description"
-                                                :end-date anything
-                                                :created-by-id USER_ID})) => {:status ::http-api/success
-                                                                              :result {:_id OBJECTIVE_ID}})
-               (let [params {:title "my objective title"
-                             :description "my objective description"}
-                     form-post (-> user-session
-                                   (helpers/with-sign-in "http://localhost:8080/objectives/create")
-                                   (p/request "http://localhost:8080/objectives"
-                                              :request-method :post
-                                              :params params))]
-                 (:flash (:response form-post)) => (contains {:type :share-objective
-                                                              :created-objective anything})
-                 (-> form-post :response :status) => 302
-                 (-> form-post :response :headers) => (helpers/location-contains (str "/objectives/" OBJECTIVE_ID)))))
+(binding [config/two-phase? true]
+  (facts "objectives"
+         (against-background
+           ;; Twitter authentication background
+           (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
+           (http-api/create-user anything) => {:status ::http-api/success
+                                               :result {:_id USER_ID}}
+           (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                           :result {:_id USER_ID
+                                                                    :username "username"}})
+         (binding [config/enable-csrf false]
+           (fact "authorised user can post and retrieve objective"
+                 (against-background (http-api/create-objective 
+                                       (contains {:title "my objective title"
+                                                  :description "my objective description"
+                                                  :end-date anything
+                                                  :created-by-id USER_ID})) => {:status ::http-api/success
+                                                                                :result {:_id OBJECTIVE_ID}})
+                 (let [params {:title "my objective title"
+                               :description "my objective description"}
+                       form-post (-> user-session
+                                     (helpers/with-sign-in "http://localhost:8080/objectives/create")
+                                     (p/request "http://localhost:8080/objectives"
+                                                :request-method :post
+                                                :params params))]
+                   (:flash (:response form-post)) => (contains {:type :share-objective
+                                                                :created-objective anything})
+                   (-> form-post :response :status) => 302
+                   (-> form-post :response :headers) => (helpers/location-contains (str "/objectives/" OBJECTIVE_ID)))))
 
-       (fact "Any user can view an objective"
-             (against-background
-               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                         :result basic-objective}
-               (http-api/get-comments anything)=> {:status ::http-api/success :result []}
-               (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
-               (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []})
-             (default-app objective-view-get-request) => (contains {:status 200})
-             (default-app objective-view-get-request) => (contains {:body (contains "my objective title")})
-             (default-app objective-view-get-request) => (contains {:body (contains "my objective description")}))
+         (fact "Any user can view an objective"
+               (against-background
+                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                           :result basic-objective}
+                 (http-api/get-comments anything)=> {:status ::http-api/success :result []}
+                 (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
+                 (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []})
+               (default-app objective-view-get-request) => (contains {:status 200})
+               (default-app objective-view-get-request) => (contains {:body (contains "my objective title")})
+               (default-app objective-view-get-request) => (contains {:body (contains "my objective description")}))
 
-       (fact "When a signed in user views an objective, the objective contains user specific information"
-             (against-background
-               (http-api/get-comments anything)=> {:status ::http-api/success :result []}
-               (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
-               (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []})
-             (-> user-session
-                 helpers/sign-in-as-existing-user
-                 (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID))) => anything
-             (provided
-              (http-api/get-objective OBJECTIVE_ID {:signed-in-id USER_ID}) => {:status ::http-api/success
-                                                                                :result basic-objective}))
+         
+           (fact "When a signed in user views an objective, the objective contains user specific information"
+                 (against-background
+                   (http-api/get-comments anything)=> {:status ::http-api/success :result []}
+                   (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
+                   (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []})
+                 (-> user-session
+                     helpers/sign-in-as-existing-user
+                     (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID))) => anything
+                 (provided
+                   (http-api/get-objective OBJECTIVE_ID {:signed-in-id USER_ID}) => {:status ::http-api/success
+                                                                                     :result basic-objective})) 
 
-       (fact "A user should receive a 404 if an objective doesn't exist"
-             (against-background
-               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/not-found})
-             (default-app objective-view-get-request) => (contains {:status 404}))
+         (fact "A user should receive a 404 if an objective doesn't exist"
+               (against-background
+                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/not-found})
+               (default-app objective-view-get-request) => (contains {:status 404}))
 
-       (facts "about comments"
-              (against-background
-               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                         :result basic-objective}
-               (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
-               (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}
-               (http-api/get-comments anything) => {:status ::http-api/success :result []})
+         (facts "about comments"
+                (against-background
+                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                            :result basic-objective}
+                  (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
+                  (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}
+                  (http-api/get-comments anything) => {:status ::http-api/success :result []})
 
-              (fact "Any user can view comments with votes on an objective"
-                    (against-background
-                      (http-api/get-comments anything) => {:status ::http-api/success
-                                                           :result [{:_id 1
-                                                                     :_created_at "2015-02-12T16:46:18.838Z"
-                                                                     :objective-id OBJECTIVE_ID
-                                                                     :created-by-id USER_ID
-                                                                     :comment "Comment 1"
-                                                                     :uri "/comments/1"
-                                                                     :votes {:up 123456789 :down 987654321}}]})
-                    (let [{response :response} (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))]
-                      (:body response) => (contains "Comment 1")
-                      ;;(:body response) => (contains "123456789")
-                      ;;(:body response) => (contains "987654321")
-                      ))
+                (fact "Any user can view comments with votes on an objective"
+                      (against-background
+                        (http-api/get-comments anything) => {:status ::http-api/success
+                                                             :result [{:_id 1
+                                                                       :_created_at "2015-02-12T16:46:18.838Z"
+                                                                       :objective-id OBJECTIVE_ID
+                                                                       :created-by-id USER_ID
+                                                                       :comment "Comment 1"
+                                                                       :uri "/comments/1"
+                                                                       :votes {:up 123456789 :down 987654321}}]})
+                      (let [{response :response} (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))]
+                        (:body response) => (contains "Comment 1")
+                        ;;(:body response) => (contains "123456789")
+                        ;;(:body response) => (contains "987654321")
+                        ))
 
-              (fact "An objective that is in drafting cannot be commented on"
-                    (against-background
-                     (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                               :result (assoc basic-objective :status "drafting")})
-                    (let [{response :response} (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))]
-                      (:body response) =not=> (contains "clj-comment-create"))))
+                (fact "An objective that is in drafting cannot be commented on"
+                      (against-background
+                        (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                                  :result (assoc basic-objective :status "drafting")})
+                      (let [{response :response} (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))]
+                        (:body response) =not=> (contains "clj-comment-create"))))
 
-       (fact "A user should see an error page when they attempt to access an objective with a non-integer ID"
-             (default-app invalid-objective-view-get-request) => (contains {:status 404})))
+         (fact "A user should see an error page when they attempt to access an objective with a non-integer ID"
+               (default-app invalid-objective-view-get-request) => (contains {:status 404})))) 
 
 
 (facts "About viewing the list of objectives"
