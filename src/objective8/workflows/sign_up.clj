@@ -10,7 +10,7 @@
             [objective8.utils :as utils]
             [objective8.front-end-requests :as fr]
             [objective8.permissions :as permissions]
-            [objective8.handlers.front-end :as front-end]))
+            [objective8.front-end.handlers :as front-end]))
 
 (def sign-up-routes
   ["/" {"sign-up" {:get :sign-up-form

@@ -24,7 +24,7 @@
             [objective8.back-end.scheduler :as scheduler]
             [objective8.workflows.sign-up :refer [sign-up-workflow]]
             [objective8.back-end.handlers :as back-end-handlers]
-            [objective8.handlers.front-end :as front-end-handlers]
+            [objective8.front-end.handlers :as front-end-handlers]
             [objective8.back-end.users :as users]
             [objective8.middleware :as m]
             [objective8.back-end.bearer-tokens :as bt])

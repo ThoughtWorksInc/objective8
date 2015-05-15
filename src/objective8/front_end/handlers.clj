@@ -1,4 +1,4 @@
-(ns objective8.handlers.front-end
+(ns objective8.front-end.handlers
   (:require [clojure.tools.logging :as log]
             [cemerick.friend :as friend]
             [ring.util.response :as response]

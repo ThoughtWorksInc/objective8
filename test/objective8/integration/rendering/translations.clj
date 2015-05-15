@@ -5,7 +5,6 @@
             [endophile.core :as ec]
             [endophile.hiccup :as eh]
             [hiccup.core :as hc]
-            [objective8.handlers.front-end :as fe]
             [objective8.utils :as utils]
             [objective8.api.http :as http-api]
             [objective8.integration.integration-helpers :as helpers]))

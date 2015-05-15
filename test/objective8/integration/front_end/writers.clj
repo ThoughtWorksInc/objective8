@@ -9,7 +9,7 @@
             [objective8.utils :as utils]
             [objective8.permissions :as permissions]
             [objective8.core :as core]
-            [objective8.handlers.front-end :as front-end]
+            [objective8.front-end.handlers :as front-end]
             [objective8.api.http :as http-api]))
 
 (def TWITTER_ID "twitter-ID")
