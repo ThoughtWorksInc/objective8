@@ -28,7 +28,7 @@
   (< (count value) min))
 
 (defn valid-email? [email-address]
-  (re-matches #"[^ @]+@[^ @]+$" email-address))
+  (and (re-matches #"[^ @]+@[^ @]+$" email-address) (shorter? email-address 257)))
 
 (defn valid-username? [username]
   (re-matches #"[a-zA-Z0-9]{1,16}" username))
@@ -64,6 +64,7 @@
 (defn objective-description-validator [request]
   (let [description (s/trim (get-in request [:params :description]))]
     (cond-> (initialise-field-validation description)
+      (empty? description) (report-error :empty)
       (longer? description 5000) (report-error :length))))
 
 (defn request->objective-data [{:keys [params] :as request} user-id current-time]

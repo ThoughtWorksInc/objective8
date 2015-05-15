@@ -82,6 +82,7 @@ create-objective,background,Background
 create-objective,background-prompt,Provide further information on why achieving this objective is important or necessary
 create-objective,submit-text,Create
 create-objective,title-length-validation-message,The objective title must be between 3 and 120 characters
+create-objective,description-empty-validation-message,Please enter a description for your objective
 create-objective,description-length-validation-message,The objective description can have at most 5000 characters
 draft,doc-title,Policy draft | Objective[8]
 draft,doc-description,Draft policy for objective ... 

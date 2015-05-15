@@ -50,7 +50,7 @@ mixin addQuestionForm(allowFocus)
       p.form-field
         label.form-field-label(for="new-question")
           span.form-field-label-title(data-l8n="content:question-create/question-label") !Add a question
-          textarea.clj-input-question.func--question-textarea#new-question(name="question", rows="5", cols="10", maxlength="500", title="!Textarea title", autofocus=focus, data-l8n="attr/title:question-create/question-title")
+          textarea.clj-input-question.func--question-textarea#new-question(name="question", rows="5", cols="10", title="!Textarea title", autofocus=focus, data-l8n="attr/title:question-create/question-title")
           span.user-input-error-message.clj-question-length-error(data-l8n="content:question-create/question-length-validation-message") !The question must be between 10 and 500 characters
       button.button.func--add-question(type="submit", data-l8n="content:question-create/post-button") !Add question
 

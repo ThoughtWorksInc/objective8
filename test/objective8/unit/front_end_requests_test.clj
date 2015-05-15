@@ -9,12 +9,6 @@
 (def OBJECTIVE_ID 2)
 (def QUESTION_ID 3)
 
-(def test-objective {:title "My Objective"
-                     :description "I like cake"})
-
-(def invalid-test-objective {:title ""
-                             :description "I like cake"})
-
 (def date (utils/string->date-time "2015-01-01"))
 (def date-plus-30-days (utils/string->date-time "2015-01-31"))
 
@@ -34,7 +28,11 @@
        
        (fact "they contains no spaces"
              (valid-email? "a b@cd") => falsey
-             (valid-email? "ab@c d") => falsey))
+             (valid-email? "ab@c d") => falsey)
+       
+       (fact "they have max length 256 char"
+             (valid-email? (str (string-of-length 100) "@" (string-of-length 155))) => truthy
+             (valid-email? (str (string-of-length 100) "@" (string-of-length 156))) => falsey))
 
 (facts "about valid usernames"
        (fact "they contain between 1 and 16 chracters"
@@ -70,22 +68,35 @@
          ?username               ?email-address          ?report
          ""                      "abc@def.com"           {:username #{:invalid}}
          "validUsername"         ""                      {:email-address #{:empty}}
-         "validUsername"         "no-at-symbol"          {:email-address #{:invalid}}) 
-       
-       )
+         "validUsername"         "no-at-symbol"          {:email-address #{:invalid}}))
 
 (facts "about transforming requests to objective-data"
        (fact "creates an objective from a request"
-             (let [objective-data (request->objective-data {:params test-objective} USER_ID date)]
+             (let [test-objective {:title "My Objective" :description "I like cake"} 
+                   objective-data (request->objective-data {:params test-objective} USER_ID date)]
                (:data objective-data) => (assoc test-objective :created-by-id USER_ID :end-date date-plus-30-days)
                (:status objective-data) => ::objective8.front-end-requests/valid
                (:report objective-data) => {}))
 
-       (fact "reports validation errors"
-             (let [objective-data (request->objective-data {:params invalid-test-objective} USER_ID date)]
-               (:data objective-data) => (assoc invalid-test-objective :created-by-id USER_ID :end-date date-plus-30-days)
-               (:status objective-data) => ::objective8.front-end-requests/invalid
-               (:report objective-data) => {:title #{:length}})))
+       (tabular
+         (fact "reports validation errors"
+               (let [invalid-test-objective {:title ?title :description ?description}
+                     objective-data (request->objective-data {:params invalid-test-objective} USER_ID date)]
+                 (:data objective-data) => {:title (clojure.string/trim ?title)
+                                            :description (clojure.string/trim ?description)
+                                            :created-by-id USER_ID
+                                            :end-date date-plus-30-days}
+                 (:status objective-data) => ::objective8.front-end-requests/invalid
+                 (:report objective-data) => ?report))
+
+         ?title                    ?description                ?report
+         ""                        "I like CAKE!"              {:title #{:length}}
+         "      "                  "I like CAKE!"              {:title #{:length}}
+         "Hi"                      "I like CAKE!"              {:title #{:length}}
+         (string-of-length 121)    "I like CAKE!"              {:title #{:length}}
+         "Valid Title"             ""                          {:description #{:empty}}
+         "Valid Title"             "       "                   {:description #{:empty}}
+         "Valid Title"             (string-of-length 5001)     {:description #{:length}}))
 
 (facts "about transforming requests to question-data"
        (fact "extracts the relevant data"

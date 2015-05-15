@@ -15,13 +15,13 @@ block content
         p.form-field
           label.form-field-label(for="name")
             span.form-field-label-title(data-l8n="content:edit-profile/name-label") !Name
-            input.clj-edit-profile-name.func--name(id="name", name="name", type="text", maxlength="50", required="required")
+            input.clj-edit-profile-name.func--name(id="name", name="name", type="text")
             span.user-input-error-message.clj-name-length-error(data-l8n="content:edit-profile/name-length-validation-message") !The name can have at most 50 characters
             span.user-input-error-message.clj-name-empty-error(data-l8n="content:edit-profile/name-empty-validation-message") !The name cannot be empty
         p.form-field
           label.form-field-label(for="biography")
             span.form-field-label-title(data-l8n="content:edit-profile/biography") !Biography
-            textarea.clj-edit-profile-biog.func--biog(id="biog", name="biog", type="text", required="required")
+            textarea.clj-edit-profile-biog.func--biog(id="biog", name="biog", type="text")
             span.user-input-error-message.clj-biog-length-error(data-l8n="content:edit-profile/biog-length-validation-message") !The biography can have at most 5000 characters
             span.user-input-error-message.clj-biog-empty-error(data-l8n="content:edit-profile/biog-empty-validation-message") !The biography cannot be empty
       button.button(type="submit", data-l8n="content:edit-profile/button") !Update profile

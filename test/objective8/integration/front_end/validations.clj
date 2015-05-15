@@ -129,6 +129,7 @@
           ?title                           ?description                    ?expected-error-message
           "12"                             "A description"                 "clj-title-length-error"
           (ih/string-of-length 121)        "A description"                 "clj-title-length-error"
+          "A valid title"                  ""                              "clj-description-empty-error"
           "A valid title"                  (ih/string-of-length 5001)      "clj-description-length-error")
 
          (tabular
@@ -139,7 +140,7 @@
                                               :response
                                               :body)]
                   objective-form-html =not=> (contains ?error-tag)))
-          ?error-tag "clj-title-length-error" "clj-description-length-error")))
+          ?error-tag "clj-title-length-error" "clj-description-length-error" "clj-description-empty-error")))
 
 (facts "about the add question form"
        (binding [config/enable-csrf false]

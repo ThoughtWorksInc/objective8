@@ -15,6 +15,7 @@
              [:.clj-title-length-error] (when (contains? (:title validation-report) :length) identity)
              [:.clj-input-objective-title] (html/set-attr :value (:title previous-inputs))
 
+             [:.clj-description-empty-error] (when (contains? (:description validation-report) :empty) identity)
              [:.clj-description-length-error] (when (contains? (:description validation-report) :length) identity)
              [:.clj-input-objective-background] (html/content (:description previous-inputs)))))
 
