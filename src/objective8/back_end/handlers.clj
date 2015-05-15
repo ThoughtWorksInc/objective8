@@ -1,4 +1,4 @@
-(ns objective8.handlers.api
+(ns objective8.back-end.handlers
   (:require [clojure.tools.logging :as log]
             [ring.util.response :as response]
             [cheshire.core :as json]
