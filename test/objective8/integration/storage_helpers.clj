@@ -1,9 +1,9 @@
 (ns objective8.integration.storage-helpers
   (:require [clj-time.core :as tc]
-            [objective8.objectives :as objectives]
-            [objective8.users :as users]
+            [objective8.back-end.objectives :as objectives]
+            [objective8.back-end.users :as users]
             [objective8.storage.storage :as storage]
-            [objective8.actions :as actions]))
+            [objective8.back-end.actions :as actions]))
 
 
 (defmacro l-get [m k default]

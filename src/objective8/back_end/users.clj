@@ -1,4 +1,4 @@
-(ns objective8.users
+(ns objective8.back-end.users
   (:require [objective8.storage.storage :as storage]))
 
 (defn retrieve-user [user-uri]

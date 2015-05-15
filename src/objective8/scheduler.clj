@@ -2,7 +2,7 @@
   (:require [chime :as chime]
             [clj-time.core :as time-core]
             [clj-time.periodic :as time-periodic]
-            [objective8.actions :as actions]))
+            [objective8.back-end.actions :as actions]))
 
 (defn update-objectives [time]
   (prn (str "Scheduler is updating objectives due for drafting at time:" time)) 

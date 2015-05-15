@@ -1,4 +1,4 @@
-(ns objective8.stars
+(ns objective8.back-end.stars
   (:require [objective8.storage.storage :as storage]
             [objective8.storage.uris :as uris]
             [objective8.utils :as utils]))

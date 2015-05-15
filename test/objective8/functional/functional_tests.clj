@@ -7,8 +7,8 @@
             [clojure.string :as string]
             [objective8.core :as core]
             [objective8.utils :as utils]
-            [objective8.actions :as actions]
-            [objective8.users :as users]
+            [objective8.back-end.actions :as actions]
+            [objective8.back-end.users :as users]
             [objective8.integration.integration-helpers :as integration-helpers]
             [dev-helpers.stub-twitter :refer [stub-twitter-auth-config twitter-id]]))
 

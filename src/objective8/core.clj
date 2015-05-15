@@ -25,7 +25,7 @@
             [objective8.workflows.sign-up :refer [sign-up-workflow]]
             [objective8.handlers.api :as api-handlers]
             [objective8.handlers.front-end :as front-end-handlers]
-            [objective8.users :as users]
+            [objective8.back-end.users :as users]
             [objective8.middleware :as m]
             [objective8.bearer-tokens :as bt])
  ; (:gen-class)

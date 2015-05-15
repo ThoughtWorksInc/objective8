@@ -6,9 +6,9 @@
             [objective8.core :as core]
             [objective8.integration.integration-helpers :as helpers]
             [objective8.integration.storage-helpers :as sh]
-            [objective8.objectives :as objectives]
+            [objective8.back-end.objectives :as objectives]
             [objective8.middleware :as m]
-            [objective8.questions :as questions]))
+            [objective8.back-end.questions :as questions]))
 
 (def app (helpers/test-context))
 

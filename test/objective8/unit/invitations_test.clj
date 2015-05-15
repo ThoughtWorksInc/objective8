@@ -1,8 +1,8 @@
 (ns objective8.unit.invitations-test
   (:require [midje.sweet :refer :all]
-            [objective8.invitations :as invitations]
+            [objective8.back-end.invitations :as invitations]
             [objective8.storage.storage :as storage]
-            [objective8.objectives :as objectives]
+            [objective8.back-end.objectives :as objectives]
             [objective8.utils :as utils]))
 
 (def OBJECTIVE_ID 1)

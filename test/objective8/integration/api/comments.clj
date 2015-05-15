@@ -7,7 +7,7 @@
             [objective8.integration.integration-helpers :as helpers]
             [objective8.integration.storage-helpers :as sh]
             [objective8.middleware :as m]
-            [objective8.comments :as comments]))
+            [objective8.back-end.comments :as comments]))
 
 (def app (helpers/test-context))
 

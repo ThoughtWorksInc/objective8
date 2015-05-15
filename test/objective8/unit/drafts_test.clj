@@ -1,6 +1,6 @@
 (ns objective8.unit.drafts-test
   (:require [midje.sweet :refer :all]
-            [objective8.drafts :refer :all]))
+            [objective8.back-end.drafts :refer :all]))
 
 (def some-hiccup [[:p "barry"] [:p "brenda"] [:p] [:p nil] [:p {:class "test"} [:ul [:li "first item"]]]])
 (def OBJECTIVE_ID 1)

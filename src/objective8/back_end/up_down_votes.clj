@@ -1,4 +1,4 @@
-(ns objective8.up-down-votes
+(ns objective8.back-end.up-down-votes
   (:require [objective8.storage.storage :as storage]
             [objective8.utils :as utils]))
 

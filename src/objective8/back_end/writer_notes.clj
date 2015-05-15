@@ -1,4 +1,4 @@
-(ns objective8.writer-notes
+(ns objective8.back-end.writer-notes
   (:require [objective8.storage.storage :as storage]
             [objective8.utils :as utils]))
 

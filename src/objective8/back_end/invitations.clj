@@ -1,7 +1,7 @@
-(ns objective8.invitations
+(ns objective8.back-end.invitations
   (:require [objective8.storage.storage :as storage]
             [objective8.storage.mappings :as mappings]
-            [objective8.objectives :as objectives]
+            [objective8.back-end.objectives :as objectives]
             [objective8.utils :as utils]))
 
 (defn store-invitation! [invitation]

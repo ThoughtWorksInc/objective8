@@ -1,4 +1,4 @@
-(ns objective8.comments
+(ns objective8.back-end.comments
   (:require [objective8.storage.storage :as storage]
             [objective8.utils :as utils]))
 

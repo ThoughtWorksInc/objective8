@@ -1,7 +1,7 @@
-(ns objective8.answers
+(ns objective8.back-end.answers
   (:require [objective8.storage.storage :as storage]
-            [objective8.objectives :as objectives]
-            [objective8.writer-notes :as notes]
+            [objective8.back-end.objectives :as objectives]
+            [objective8.back-end.writer-notes :as notes]
             [objective8.storage.uris :as uris]
             [objective8.utils :as utils]))
 

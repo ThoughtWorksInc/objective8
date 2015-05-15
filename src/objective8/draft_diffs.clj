@@ -2,7 +2,7 @@
   (:require [diff-match-patch-clj.core :as dmp]
             [clojure.tools.logging :as log]
             [objective8.utils :as utils]
-            [objective8.drafts :as drafts]))
+            [objective8.back-end.drafts :as drafts]))
 
 (declare replacement-element-and-updated-diffs)
 

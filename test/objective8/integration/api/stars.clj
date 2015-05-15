@@ -5,7 +5,7 @@
             [objective8.middleware :as m]
             [objective8.integration.storage-helpers :as sh]
             [objective8.integration.integration-helpers :as helpers]
-            [objective8.stars :as stars]))
+            [objective8.back-end.stars :as stars]))
 
 (def app (helpers/test-context))
 

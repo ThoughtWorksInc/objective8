@@ -1,6 +1,6 @@
 (ns objective8.unit.api-requests-test
   (:require [midje.sweet :refer :all]
-            [objective8.api-requests :as ar]))
+            [objective8.back-end.api-requests :as ar]))
 
 (def OBJECTIVE_ID 1)
 (def QUESTION_ID 2)

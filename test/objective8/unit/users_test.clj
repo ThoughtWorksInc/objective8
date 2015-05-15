@@ -1,8 +1,8 @@
 (ns objective8.unit.users-test
   (:require [midje.sweet :refer :all]
-            [objective8.users :as users]
-            [objective8.writers :as writers]
-            [objective8.objectives :as objectives]
+            [objective8.back-end.users :as users]
+            [objective8.back-end.writers :as writers]
+            [objective8.back-end.objectives :as objectives]
             [objective8.storage.storage :as storage]))
 
 (def email-address "test@email.com")

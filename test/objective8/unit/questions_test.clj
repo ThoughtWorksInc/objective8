@@ -1,7 +1,7 @@
 (ns objective8.unit.questions-test
   (:require [midje.sweet :refer :all]
-            [objective8.questions :as questions]
-            [objective8.objectives :as objectives]
+            [objective8.back-end.questions :as questions]
+            [objective8.back-end.objectives :as objectives]
             [objective8.storage.storage :as storage]))
 
 (def USER_ID 1)

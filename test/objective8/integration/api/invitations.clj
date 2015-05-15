@@ -4,10 +4,10 @@
             [cheshire.core :as json]
             [objective8.integration.integration-helpers :as helpers]
             [objective8.integration.storage-helpers :as sh]
-            [objective8.writers :as writers]
-            [objective8.invitations :as invitations]
-            [objective8.users :as users]
-            [objective8.objectives :as objectives]
+            [objective8.back-end.writers :as writers]
+            [objective8.back-end.invitations :as invitations]
+            [objective8.back-end.users :as users]
+            [objective8.back-end.objectives :as objectives]
             [objective8.middleware :as m])) 
 
 (def app (helpers/test-context))

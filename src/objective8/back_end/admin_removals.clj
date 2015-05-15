@@ -1,4 +1,4 @@
-(ns objective8.admin-removals
+(ns objective8.back-end.admin-removals
   (:require [objective8.storage.uris :as uris]
             [objective8.storage.storage :as storage]
             [objective8.utils :as utils]))

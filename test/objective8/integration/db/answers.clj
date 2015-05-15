@@ -2,7 +2,7 @@
   (:require [midje.sweet :refer :all]
             [objective8.integration.integration-helpers :as ih]
             [objective8.integration.storage-helpers :as sh]
-            [objective8.answers :as answers]))
+            [objective8.back-end.answers :as answers]))
 
 (background
   [(before :contents (do (ih/db-connection)

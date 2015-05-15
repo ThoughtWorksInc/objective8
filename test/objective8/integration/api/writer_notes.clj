@@ -3,10 +3,10 @@
             [peridot.core :as p]
             [cheshire.core :as json]
             [objective8.utils :as utils]
-            [objective8.actions :as actions]
+            [objective8.back-end.actions :as actions]
             [objective8.core :as core]
-            [objective8.writers :as writers]
-            [objective8.writer-notes :as writer-notes]
+            [objective8.back-end.writers :as writers]
+            [objective8.back-end.writer-notes :as writer-notes]
             [objective8.integration.integration-helpers :as helpers]
             [objective8.integration.storage-helpers :as sh]
             [objective8.middleware :as m]))
