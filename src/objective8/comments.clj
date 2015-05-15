@@ -1,6 +1,5 @@
 (ns objective8.comments
   (:require [objective8.storage.storage :as storage]
-            [objective8.objectives :refer [open?] :as objectives]
             [objective8.utils :as utils]))
 
 (defn replace-comment-on-id [comment comment-on-uri]

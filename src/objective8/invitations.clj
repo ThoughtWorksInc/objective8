@@ -1,7 +1,7 @@
 (ns objective8.invitations
   (:require [objective8.storage.storage :as storage]
             [objective8.storage.mappings :as mappings]
-            [objective8.objectives :refer [open?] :as objectives]
+            [objective8.objectives :as objectives]
             [objective8.utils :as utils]))
 
 (defn store-invitation! [invitation]
@@ -26,11 +26,11 @@
       first))
 
 (defn accept-invitation! [{objective-id :objective-id :as invitation}]
-  (when (open? (objectives/get-objective objective-id))
+  (when (objectives/open? (objectives/get-objective objective-id))
     (storage/pg-update-invitation-status! invitation "accepted")))
 
 (defn decline-invitation! [{objective-id :objective-id :as invitation}]
-  (when (open? (objectives/get-objective objective-id))
+  (when (objectives/open? (objectives/get-objective objective-id))
     (storage/pg-update-invitation-status! invitation "declined")))
 
 (defn decline-invitation-by-uuid [uuid]

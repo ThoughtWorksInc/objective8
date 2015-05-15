@@ -455,16 +455,10 @@
 (defn retrieve-drafts [{{:keys [id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)
         {status :status drafts :result} (actions/retrieve-drafts objective-id)]
-    (cond
-      (= status ::actions/success)
+    (if (= status ::actions/success)
       (-> drafts
           response/response
           (response/content-type "application/json"))
-
-      (= status ::actions/objective-drafting-not-started)
-      {:status 403}
-
-      :else
       (response/not-found ""))))
 
 ;;SECTION

@@ -5,6 +5,7 @@
             [cheshire.core :as json]
             [org.httpkit.client :as http]
             [objective8.api.http :as http-api]
+            [objective8.api.domain :as domain]
             [objective8.front-end-requests :as fr]
             [objective8.utils :as utils]
             [objective8.permissions :as permissions]
@@ -595,7 +596,7 @@
   (let [{objective-status :status objective :result} (http-api/get-objective (Integer/parseInt objective-id))]
     (cond
       (= objective-status ::http-api/success)
-      (if (= "drafting" (:status objective))
+      (if (domain/in-drafting? objective)
         {:status 200
          :headers {"Content-Type" "text/html"}      
          :body (views/add-draft "add-draft" request :objective-id objective-id)} 
@@ -732,7 +733,7 @@
                                :drafts drafts)
        :headers {"Content-Type" "text/html"}} 
 
-      (= drafts-status ::http-api/forbidden)
+      (and (= objective-status ::http-api/success) (not (domain/in-drafting? objective))) 
       {:status 200
        :body (views/draft-list "draft-list" request
                                :objective (format-objective objective))

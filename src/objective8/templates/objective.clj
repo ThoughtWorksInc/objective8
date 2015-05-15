@@ -5,6 +5,7 @@
             [cemerick.url :as url]
             [objective8.utils :as utils]
             [objective8.permissions :as permissions]
+            [objective8.api.domain :as domain]
             [objective8.templates.page-furniture :as pf]
             [objective8.templates.template-functions :as tf]))   
 
@@ -145,7 +146,7 @@
                                                                            "/questions/" (:_id question))))))
 
 (defn objective-question-list [{:keys [data user] :as context}]
-  (let [objective-questions (filter tf/marked? (:questions data))
+  (let [objective-questions (filter domain/marked? (:questions data))
         list-item-snippet (if (permissions/can-mark-questions? (:objective data) user)
                             question-list-item-with-demote-form-snippet
                             question-list-item-snippet)]
@@ -154,7 +155,7 @@
       (question-list-items list-item-snippet objective-questions))))
 
 (defn community-question-list [{:keys [data user] :as context}]
-  (let [community-questions (filter (complement tf/marked?) (:questions data))
+  (let [community-questions (filter (complement domain/marked?) (:questions data))
         list-item-snippet (if (permissions/can-mark-questions? (:objective data) user)
                             question-list-item-with-promote-form-snippet
                             question-list-item-snippet)]
@@ -169,7 +170,7 @@
              [:.clj-star-form] (html/prepend (html/html-snippet (anti-forgery-field)))
              [:.clj-refer] (html/set-attr :value (:uri ring-request))
              [:.clj-star-on-uri] (html/set-attr :value (:uri ring-request))
-             [:.clj-objective-star] (if (tf/starred? (:objective data))
+             [:.clj-objective-star] (if (domain/starred? (:objective data))
                                       (html/add-class "starred")
                                       identity)))
 
@@ -188,7 +189,7 @@
            [:.clj-star-form] (html/prepend (html/html-snippet (anti-forgery-field)))
            [:.clj-refer] (html/set-attr :value (:uri ring-request))
            [:.clj-star-on-uri] (html/set-attr :value (:uri ring-request))
-           [:.clj-objective-star] (if (tf/starred? objective)
+           [:.clj-objective-star] (if (domain/starred? objective)
                                     (html/add-class "starred")
                                     identity)))
 
@@ -196,9 +197,9 @@
   (let [objective (:objective data)
         objective-id (:_id objective)
         flash (:flash doc)
-        optionally-disable-voting (if (tf/in-drafting? objective)
-                                    (pf/disable-voting-actions translations)
-                                    identity)]
+        optionally-disable-voting (if (domain/open? objective)
+                                    identity
+                                    (pf/disable-voting-actions translations))]
     (->>
      (html/at objective-template
               [:title] (html/content (:title doc))
@@ -222,16 +223,16 @@
 
               [:.clj-objective-title] (html/content (:title objective))
 
-              [:.clj-days-left] (when (tf/open? objective)
+              [:.clj-days-left] (when (domain/open? objective)
                                   (drafting-begins objective))
-              [:.clj-drafting-started-wrapper] (when (tf/in-drafting? objective)
+              [:.clj-drafting-started-wrapper] (when (domain/in-drafting? objective)
                                                  (html/substitute (drafting-message context)))
               [:.clj-objective-detail] (html/content (tf/text->p-nodes (:description objective)))
 
               [:.clj-writer-item-list] (html/content (pf/writer-list context))
               [:.clj-invite-writer-link] (when (and 
                                                 (permissions/writer-inviter-for? user objective-id)
-                                                (tf/open? objective))
+                                                (domain/open? objective))
                                            (html/set-attr
                                             :href (str "/objectives/" (:_id objective) "/invite-writer")))
 
@@ -241,14 +242,14 @@
 
               [:.clj-objective-question-list] (html/content (objective-question-list context))
               [:.clj-community-question-list] (html/content (community-question-list context))
-              [:.clj-ask-question-link] (when (tf/open? objective)
+              [:.clj-ask-question-link] (when (domain/open? objective)
                                           (html/set-attr
                                            "href" (str "/objectives/" (:_id objective) "/add-question")))
 
               [:.clj-comment-list] (html/content
                                     (optionally-disable-voting
                                      (pf/comment-list context)))
-              [:.clj-comment-create] (when (tf/open? objective)
+              [:.clj-comment-create] (when (domain/open? objective)
                                        (html/content (pf/comment-create context :objective))))
      pf/add-google-analytics
      (tf/translate context)

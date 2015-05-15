@@ -12,7 +12,9 @@
             [objective8.writer-notes :as writer-notes]
             [objective8.admin-removals :as admin-removals]
             [objective8.storage.uris :as uris]
-            [objective8.storage.storage :as storage]))
+            [objective8.storage.storage :as storage]
+            [objective8.config :as config]))
+
 
 (defn create-writer-for-objective! [{:keys [created-by-id] :as objective}]
   (let
@@ -65,7 +67,7 @@
 
 (defn can-comment-on? [{:keys [entity] :as entity-to-post-to}]
   (case entity
-    :objective (= "open" (:status entity-to-post-to))
+    :objective (objectives/open? entity-to-post-to)
     :draft true
     :section true
     false))

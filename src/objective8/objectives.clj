@@ -2,13 +2,17 @@
   (:require [objective8.storage.mappings :as mappings]
             [objective8.storage.storage :as storage]
             [objective8.storage.uris :as uris]
+            [objective8.config :as config]
             [objective8.utils :as utils]))
 
 (defn open? [objective]
-  (when (= "open" (:status objective)) objective))
+  (if config/two-phase?
+    (= "open" (:status objective)) 
+    true))
 
 (defn in-drafting? [objective]
-  (when (= "drafting" (:status objective)) objective))
+  (not (and (open? objective)
+            config/two-phase?)))
 
 (defn uri-for-objective [{:keys [_id] :as objective}]
   (str "/objectives/" _id))

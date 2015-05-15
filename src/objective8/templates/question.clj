@@ -3,6 +3,7 @@
             [net.cgrand.jsoup :as jsoup]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [objective8.utils :as utils]
+            [objective8.api.domain :as domain]
             [objective8.templates.page-furniture :as pf]
             [objective8.templates.template-functions :as tf]))
 
@@ -64,9 +65,9 @@
         answers (:answers data)
         objective (:objective data)
         tl8 (tf/translator context)
-        optionally-disable-voting (if (tf/in-drafting? (:objective data))
-                                    (disable-voting context)
-                                    identity)]
+        optionally-disable-voting (if (domain/open? (:objective data))
+                                    identity
+                                    (disable-voting context))]
     (->> (html/at question-template
                   [:title] (html/content (:title doc))
                   [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
@@ -88,9 +89,9 @@
                                                                           (voting-actions-when-signed-out context answer)))
                                                  [:.clj-writer-note-item-container] (when (:note answer)
                                                                                       (display-writer-note answer)))
-                  [:.clj-jump-to-answer] (when (and (tf/open? objective) user) identity)
+                  [:.clj-jump-to-answer] (when (and (domain/open? objective) user) identity)
 
-                  [:.clj-answer-new] (when (tf/open? objective) identity)
+                  [:.clj-answer-new] (when (domain/open? objective) identity)
                   
                   [:.clj-answer-form]
                   (if user

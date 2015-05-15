@@ -3,6 +3,7 @@
             [peridot.core :as p]
             [cheshire.core :as json]
             [objective8.utils :as utils]
+            [objective8.config :as config]
             [objective8.integration.integration-helpers :as helpers]
             [objective8.integration.storage-helpers :as sh]
             [objective8.drafts :as drafts]
@@ -13,52 +14,53 @@
 
 (def some-hiccup [["p" "tiny paragraph"]])
 
+(binding [config/two-phase? true]
 (facts "POST /api/v1/objectives/:id/drafts"
-  (against-background
-    (m/valid-credentials? anything anything anything) => true)
-  (against-background
-    [(before :contents (do (helpers/db-connection)
-                           (helpers/truncate-tables)))
-     (after :facts (helpers/truncate-tables))]
-    
-    (fact "creates a draft when submitter id is a writer for the objective and drafting has started"
-          (let [{objective-id :objective-id submitter-id :user-id} (sh/store-a-writer)
-                _ (sh/start-drafting! objective-id)
-                draft-data {:objective-id objective-id
-                            :submitter-id submitter-id
-                            :content some-hiccup}
-                {response :response :as peridot-response} (p/request app (utils/path-for :api/post-draft :id objective-id)
-                                                                     :request-method :post
-                                                                     :content-type "application/json"
-                                                                     :body (json/generate-string draft-data))]
-            (:body response) => (helpers/json-contains {:_id anything
-                                                        :objective-id objective-id
-                                                        :submitter-id submitter-id
-                                                        :content (just [(just ["p" (just {:data-section-label (just #"[0-9a-f]{8}")}) "tiny paragraph"])])}) 
-            (:status response) => 201))
+         (against-background
+           (m/valid-credentials? anything anything anything) => true) 
+         (against-background
+           [(before :contents (do (helpers/db-connection)
+                                  (helpers/truncate-tables)))
+            (after :facts (helpers/truncate-tables))]
 
-    (fact "a draft is not created when drafting has not started"
-          (let [{objective-id :objective-id submitter-id :user-id} (sh/store-a-writer)
-                the-draft {:objective-id objective-id
-                           :submitter-id submitter-id
-                           :content "Some content"}
-                {response :response} (p/request app (utils/path-for :api/post-draft :id objective-id)
-                                                :request-method :post
-                                                :content-type "application/json"
-                                                :body (json/generate-string the-draft))]
-            (:status response) => 404))
+           (fact "creates a draft when submitter id is a writer for the objective and drafting has started"
+                 (let [{objective-id :objective-id submitter-id :user-id} (sh/store-a-writer)
+                       _ (sh/start-drafting! objective-id)
+                       draft-data {:objective-id objective-id
+                                   :submitter-id submitter-id
+                                   :content some-hiccup}
+                       {response :response :as peridot-response} (p/request app (utils/path-for :api/post-draft :id objective-id)
+                                                                            :request-method :post
+                                                                            :content-type "application/json"
+                                                                            :body (json/generate-string draft-data))]
+                   (:body response) => (helpers/json-contains {:_id anything
+                                                               :objective-id objective-id
+                                                               :submitter-id submitter-id
+                                                               :content (just [(just ["p" (just {:data-section-label (just #"[0-9a-f]{8}")}) "tiny paragraph"])])}) 
+                   (:status response) => 201))
 
-    (fact "a draft is not created when submitter id is not a writer for the objective"
-          (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
-                {submitter-id :_id} (sh/store-a-user)
-                the-draft {:objective-id objective-id
-                           :submitter-id submitter-id 
-                           :content "Some content"}
-                {response :response} (p/request app (utils/path-for :api/post-draft :id objective-id)
-                                                :request-method :post
-                                                :content-type "application/json"
-                                                :body (json/generate-string the-draft))]
-            (:status response) => 404)))) 
+           (fact "a draft is not created when drafting has not started"
+                 (let [{objective-id :objective-id submitter-id :user-id} (sh/store-a-writer)
+                       the-draft {:objective-id objective-id
+                                  :submitter-id submitter-id
+                                  :content "Some content"}
+                       {response :response} (p/request app (utils/path-for :api/post-draft :id objective-id)
+                                                       :request-method :post
+                                                       :content-type "application/json"
+                                                       :body (json/generate-string the-draft))]
+                   (:status response) => 404))
+
+           (fact "a draft is not created when submitter id is not a writer for the objective"
+                 (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+                       {submitter-id :_id} (sh/store-a-user)
+                       the-draft {:objective-id objective-id
+                                  :submitter-id submitter-id 
+                                  :content "Some content"}
+                       {response :response} (p/request app (utils/path-for :api/post-draft :id objective-id)
+                                                       :request-method :post
+                                                       :content-type "application/json"
+                                                       :body (json/generate-string the-draft))]
+                   (:status response) => 404))))) 
 
 (facts "GET /api/v1/objectives/:id/drafts/:d-id"
        (against-background
@@ -74,26 +76,27 @@
                  (:status response) => 200
                  (:body response) => (helpers/json-contains draft)))))
 
-(facts "GET /api/v1/objectives/:id/drafts"
-       (against-background
-         [(before :contents (do (helpers/db-connection)
-                                (helpers/truncate-tables)))
-          (after :facts (helpers/truncate-tables))]
+(binding [config/two-phase? true]
+  (facts "GET /api/v1/objectives/:id/drafts"
+         (against-background
+           [(before :contents (do (helpers/db-connection)
+                                  (helpers/truncate-tables)))
+            (after :facts (helpers/truncate-tables))]
 
-         (fact "gets drafts for an objective"
-               (let [objective (sh/store-an-objective-in-draft)
-                     stored-drafts (doall (->> (repeat {:objective objective})
-                                               (take 5)
-                                               (map sh/store-a-draft)
-                                               (map #(dissoc % :_created_at_sql_time))))
-                     {response :response} (p/request app (utils/path-for :api/get-drafts-for-objective :id (:_id objective)))]
-                 (:status response) => 200
-                 (:body response) => (helpers/json-contains (map contains (-> stored-drafts :_id reverse)))))
+           (fact "gets drafts for an objective"
+                 (let [objective (sh/store-an-objective-in-draft)
+                       stored-drafts (doall (->> (repeat {:objective objective})
+                                                 (take 5)
+                                                 (map sh/store-a-draft)
+                                                 (map #(dissoc % :_created_at_sql_time))))
+                       {response :response} (p/request app (utils/path-for :api/get-drafts-for-objective :id (:_id objective)))]
+                   (:status response) => 200
+                   (:body response) => (helpers/json-contains (map contains (-> stored-drafts :_id reverse)))))
 
-         (fact "returns 403 if objective not in drafting"
-               (let [objective (sh/store-an-open-objective)]
-                 (get-in (p/request app (utils/path-for :api/get-drafts-for-objective :id (:_id objective)))
-                         [:response :status]) => 403))))
+           (fact "returns 404 if objective not in drafting"
+                 (let [objective (sh/store-an-open-objective)]
+                   (get-in (p/request app (utils/path-for :api/get-drafts-for-objective :id (:_id objective)))
+                           [:response :status]) => 404))))) 
 
 (facts "GET /api/v1/objectives/:id/drafts/latest"
        (against-background

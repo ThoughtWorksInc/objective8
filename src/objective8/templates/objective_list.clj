@@ -3,7 +3,9 @@
             [net.cgrand.jsoup :as jsoup]
             [ring.util.anti-forgery :refer [anti-forgery-field]]  
             [objective8.permissions :as permissions]
+            [objective8.config :as config]
             [objective8.templates.page-furniture :as pf]
+            [objective8.api.domain :as domain]
             [objective8.utils :as utils]
             [objective8.templates.template-functions :as tf]))   
 
@@ -12,6 +14,7 @@
 (def objective-list-item-resource (html/select pf/library-html-resource [:.clj-objective-list-item]))
 (def objective-list-item-removal-container (html/select objective-list-resource 
                                                         [:.clj-objective-list-item-removal-container]))
+(def objective-list-item-drafting-begins (html/select objective-list-resource [:.clj-objective-drafting-begins]))
 
 (defn removal-container [{:keys [title uri] :as objective}]
   (html/at objective-list-item-removal-container
@@ -28,6 +31,21 @@
 (defn brief-description [objective]
   (shorten-content (:description objective)))
 
+(defn drafting-begins [objective translations]
+ (html/at objective-list-item-drafting-begins
+          [:.l8n-drafting-begins] 
+          (html/content (if (domain/in-drafting? objective)
+                          (translations :objective-list/drafting-started)
+                          (translations :objective-list/drafting-begins)))
+
+          [:.clj-objective-drafting-begins-date] 
+          (when (domain/open? objective) 
+            (html/do->
+              (html/set-attr :drafting-begins-date (:end-date objective)) 
+              (html/content (str (:days-until-drafting-begins objective)
+                                 " " 
+                                 (translations :objective-list/days)))))))
+
 (defn objective-list-items [{:keys [translations data user] :as context}]
   (let [objectives (:objectives data)]
     (html/at objective-list-item-resource [:.clj-objective-list-item] 
@@ -42,22 +60,14 @@
 
                              [:.clj-objective-list-dashboard-link]  (when (permissions/writer-for? user objective-id)
                                                                       (html/set-attr :href (utils/path-for :fe/dashboard-questions :id objective-id))) 
+
+                             [:.clj-objective-drafting-begins] (when config/two-phase?
+                                                                 (html/substitute (drafting-begins objective translations)))
+
                              [:.clj-objective-list-item-link] (html/set-attr :href (str "/objectives/" 
                                                                                         objective-id))
                              [:.clj-objective-list-item-title] (html/content (:title objective))
 
-                             [:.l8n-drafting-begins] 
-                             (html/content (if (tf/in-drafting? objective)
-                                             (translations :objective-list/drafting-started)
-                                             (translations :objective-list/drafting-begins)))
-
-                             [:.clj-objective-drafting-begins-date] 
-                             (when (tf/open? objective) 
-                               (html/do->
-                                 (html/set-attr :drafting-begins-date (:end-date objective)) 
-                                 (html/content (str (:days-until-drafting-begins objective)
-                                                    " " 
-                                                    (translations :objective-list/days))))) 
 
                              [:.clj-objective-brief-description]
                              (html/content (brief-description objective))))))

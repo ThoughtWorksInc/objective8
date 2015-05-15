@@ -2,6 +2,7 @@
  (:require [clojure.tools.logging :as log]))
 
 (def ^:dynamic enable-csrf true)
+(def ^:dynamic two-phase? true)
 
 (defn- env-lookup [var-name]
   (get (System/getenv) var-name))

@@ -1,5 +1,5 @@
 (ns objective8.questions
-  (:require [objective8.objectives :as objectives :refer [open?]]
+  (:require [objective8.objectives :as objectives]
             [objective8.storage.uris :as uris]
             [objective8.utils :as utils]
             [objective8.storage.storage :as storage]))
@@ -9,7 +9,7 @@
           (utils/update-in-self [:uri] uris/question->uri)))
 
 (defn create-question [{objective-id :objective-id :as question}]
-  (when (open? (objectives/get-objective objective-id))
+  (when (objectives/open? (objectives/get-objective objective-id))
     (store-question! question)))
 
 (defn get-questions-for-objective [objective-uri]

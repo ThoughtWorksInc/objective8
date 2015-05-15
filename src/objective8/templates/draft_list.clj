@@ -1,6 +1,7 @@
 (ns objective8.templates.draft-list
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
+            [objective8.api.domain :as domain]
             [objective8.templates.template-functions :as tf]
             [objective8.templates.page-furniture :as pf]
             [objective8.utils :as utils]
@@ -75,7 +76,7 @@
 
                                       [:.clj-draft-list-title] (html/content (:title objective))
 
-                                      [:.clj-drafts-wrapper] (if (tf/in-drafting? objective)
+                                      [:.clj-drafts-wrapper] (if (domain/in-drafting? objective)
                                                                (html/substitute (drafts-wrapper context)) 
                                                                (html/do->
                                                                  (html/set-attr :drafting-begins-date

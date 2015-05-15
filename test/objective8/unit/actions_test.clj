@@ -1,5 +1,6 @@
 (ns objective8.unit.actions-test
   (:require [midje.sweet :refer :all]
+            [objective8.config :as config]
             [objective8.actions :as actions]
             [objective8.up-down-votes :as up-down-votes]
             [objective8.drafts :as drafts]
@@ -63,57 +64,59 @@
 (def objective-not-in-drafting {:entity :objective
                                 :status "open"})
 
-(facts "about allowing or disallowing voting"
-       (against-background
-        (up-down-votes/get-vote anything anything) => nil
-        (objectives/get-objective anything) => objective-not-in-drafting
-        (objectives/get-objective :objective-in-drafting) => objective-in-drafting
-        (objectives/get-objective :objective-not-in-drafting) => objective-not-in-drafting
-        (storage/pg-retrieve-entity-by-global-id :objective-in-drafting-global-id) => objective-in-drafting)
-       
-       (fact "the same user cannot vote twice on the same entity"
-             (actions/allowed-to-vote? objective-not-in-drafting :vote-data) => falsey
-             (provided
-              (up-down-votes/get-vote anything anything) => :a-vote))
-       
-       (fact "a comment attached to an objective can not be voted on when the objective is in drafting"
-             (actions/allowed-to-vote? {:entity :comment
-                                        :objective-id :objective-in-drafting
-                                        :comment-on-id :objective-in-drafting-global-id} :vote-data) => falsey)
+(binding [config/two-phase? true]
+  (facts "about allowing or disallowing voting"
+         (against-background
+           (up-down-votes/get-vote anything anything) => nil
+           (objectives/get-objective anything) => objective-not-in-drafting
+           (objectives/get-objective :objective-in-drafting) => objective-in-drafting
+           (objectives/get-objective :objective-not-in-drafting) => objective-not-in-drafting
+           (storage/pg-retrieve-entity-by-global-id :objective-in-drafting-global-id) => objective-in-drafting)
 
-       (fact "a comment attached to a draft can not be voted on when the associated objective is not in drafting"
-             (against-background
-              (storage/pg-retrieve-entity-by-global-id :draft-global-id) => {:entity :draft
-                                                                             :objective-id :objective-not-in-drafting})
-             (actions/allowed-to-vote? {:entity :comment
-                                        :comment-on-id :draft-global-id} :vote-data) => falsey)
-       
-       (fact "an answer can not be voted on when the associated objective is in drafting"
-             (actions/allowed-to-vote? {:entity :answer
-                                        :objective-id :objective-in-drafting} :vote-data) => falsey))
+         (fact "the same user cannot vote twice on the same entity"
+               (actions/allowed-to-vote? objective-not-in-drafting :vote-data) => falsey
+               (provided
+                 (up-down-votes/get-vote anything anything) => :a-vote))
 
-(facts "about retrieving drafts"
-       (fact "can only retrieve drafts for an objective in drafting"
-            (actions/retrieve-drafts OBJECTIVE_ID) => {:status ::actions/objective-drafting-not-started}
-            (provided
-             (objectives/get-objective OBJECTIVE_ID) => {:status "open"}))
-       
-       (fact "retrieves drafts for an objective that is in drafting"
-             (actions/retrieve-drafts OBJECTIVE_ID) => {:status ::actions/success :result :drafts}
-             (provided
-              (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"}
-               (drafts/retrieve-drafts OBJECTIVE_ID) => :drafts))
-       
-       (fact "can only retrieve latest draft for an objective in drafting"
-             (actions/retrieve-latest-draft OBJECTIVE_ID) => {:status ::actions/objective-drafting-not-started}
-             (provided
-              (objectives/get-objective OBJECTIVE_ID) => {:status "open"}))
+         (fact "a comment attached to an objective can not be voted on when the objective is in drafting"
+               (actions/allowed-to-vote? {:entity :comment
+                                          :objective-id :objective-in-drafting
+                                          :comment-on-id :objective-in-drafting-global-id} :vote-data) => falsey)
 
-       (fact "retrieves latest draft for an objective that is in drafting"
-             (actions/retrieve-latest-draft OBJECTIVE_ID) => {:status ::actions/success :result :draft}
-             (provided
-              (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"} 
-               (drafts/retrieve-latest-draft OBJECTIVE_ID) => :draft)))
+         (fact "a comment attached to a draft can not be voted on when the associated objective is not in drafting"
+               (against-background
+                 (storage/pg-retrieve-entity-by-global-id :draft-global-id) => {:entity :draft
+                                                                                :objective-id :objective-not-in-drafting})
+               (actions/allowed-to-vote? {:entity :comment
+                                          :comment-on-id :draft-global-id} :vote-data) => falsey)
+
+         (fact "an answer can not be voted on when the associated objective is in drafting"
+               (actions/allowed-to-vote? {:entity :answer
+                                          :objective-id :objective-in-drafting} :vote-data) => falsey))) 
+
+(binding [config/two-phase? true]
+  (facts "about retrieving drafts"
+         (fact "can only retrieve drafts for an objective in drafting"
+               (actions/retrieve-drafts OBJECTIVE_ID) => {:status ::actions/objective-drafting-not-started}
+               (provided
+                 (objectives/get-objective OBJECTIVE_ID) => {:status "open"}))
+
+         (fact "retrieves drafts for an objective that is in drafting"
+               (actions/retrieve-drafts OBJECTIVE_ID) => {:status ::actions/success :result :drafts}
+               (provided
+                 (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"}
+                 (drafts/retrieve-drafts OBJECTIVE_ID) => :drafts))
+
+         (fact "can only retrieve latest draft for an objective in drafting"
+               (actions/retrieve-latest-draft OBJECTIVE_ID) => {:status ::actions/objective-drafting-not-started}
+               (provided
+                 (objectives/get-objective OBJECTIVE_ID) => {:status "open"}))
+
+         (fact "retrieves latest draft for an objective that is in drafting"
+               (actions/retrieve-latest-draft OBJECTIVE_ID) => {:status ::actions/success :result :draft}
+               (provided
+                 (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"} 
+                 (drafts/retrieve-latest-draft OBJECTIVE_ID) => :draft)))) 
 
 (def a-draft {:entity :draft})
 (def a-section {:entity :section :objective-id OBJECTIVE_ID})

@@ -2,6 +2,7 @@
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [objective8.permissions :as permissions]
+            [objective8.api.domain :as domain]
             [objective8.utils :as utils]
             [objective8.templates.page-furniture :as pf]
             [objective8.templates.template-functions :as tf]))
@@ -32,12 +33,12 @@
                              [:.clj-objective-list-item-title] (html/content (:title objective))
 
                              [:.l8n-drafting-begins]
-                             (html/content (if (tf/in-drafting? objective)
+                             (html/content (if (domain/in-drafting? objective)
                                              (translations :objective-list/drafting-started)
                                              (translations :objective-list/drafting-begins)))
 
                              [:.clj-objective-drafting-begins-date]
-                             (when (tf/open? objective)
+                             (when (domain/open? objective)
                                (html/do->
                                  (html/set-attr :drafting-begins-date (:end-date objective))
                                  (html/content (str (:days-until-drafting-begins objective)

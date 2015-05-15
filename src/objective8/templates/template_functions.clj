@@ -1,5 +1,6 @@
 (ns objective8.templates.template-functions
-  (:require [net.cgrand.enlive-html :as html]))
+  (:require [net.cgrand.enlive-html :as html]
+            [objective8.config :as config]))
 
 
 (defn translator
@@ -48,15 +49,3 @@
 (defn translate [context nodes]
   (html/at nodes
            [(html/attr? :data-l8n)] #(translate-node % context)))
-
-(defn open? [objective]
-  (= "open" (:status objective)))
-
-(defn in-drafting? [objective]
-  (= "drafting" (:status objective)))
-
-(defn starred? [objective]
-  (get-in objective [:meta :starred]))
-
-(defn marked? [question]
-  (get-in question [:meta :marked]))

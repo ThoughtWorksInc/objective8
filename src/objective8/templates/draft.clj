@@ -2,6 +2,7 @@
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [objective8.templates.template-functions :as tf]
+            [objective8.api.domain :as domain]
             [objective8.templates.page-furniture :as pf]
             [objective8.utils :as utils]
             [objective8.permissions :as permissions]))
@@ -63,7 +64,7 @@
   (let [draft (:draft data)
         objective (:objective data)
         {objective-id :_id objective-status :status} objective
-        optionally-disable-voting (if (tf/in-drafting? objective) 
+        optionally-disable-voting (if (domain/in-drafting? objective) 
                                     identity
                                     pf/disable-voting-actions)]
     (html/at draft-wrapper-snippet
@@ -121,6 +122,6 @@
                                       [:.clj-guidance-buttons] nil
                                       [:.clj-guidance-heading] (html/content (translations :draft-guidance/heading))
 
-                                      [:.clj-draft-wrapper] (if (tf/in-drafting? objective)
+                                      [:.clj-draft-wrapper] (if (domain/in-drafting? objective)
                                                               (html/substitute (draft-wrapper context))
                                                               (html/content (drafting-begins-in context))))))))))
