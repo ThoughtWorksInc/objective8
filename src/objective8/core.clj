@@ -21,7 +21,7 @@
             [objective8.storage.database :as db]
             [objective8.workflows.twitter :refer [twitter-workflow configure-twitter]]
             [objective8.workflows.stub-twitter :refer [stub-twitter-workflow]]
-            [objective8.scheduler :as scheduler]
+            [objective8.back-end.scheduler :as scheduler]
             [objective8.workflows.sign-up :refer [sign-up-workflow]]
             [objective8.handlers.api :as api-handlers]
             [objective8.handlers.front-end :as front-end-handlers]

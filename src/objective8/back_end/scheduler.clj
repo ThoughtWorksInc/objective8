@@ -1,4 +1,4 @@
-(ns objective8.scheduler
+(ns objective8.back-end.scheduler
   (:require [chime :as chime]
             [clj-time.core :as time-core]
             [clj-time.periodic :as time-periodic]

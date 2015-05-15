@@ -2,7 +2,7 @@
   (:require [midje.sweet :refer :all]
             [objective8.integration.integration-helpers :as helpers]
             [objective8.integration.storage-helpers :as sh]
-            [objective8.scheduler :as scheduler]))
+            [objective8.back-end.scheduler :as scheduler]))
 
 (def ANY_SCHEDULED_TIME "11-11-2015")
 
