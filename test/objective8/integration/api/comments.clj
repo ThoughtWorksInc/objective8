@@ -180,6 +180,7 @@
                     uri-for-draft-section (str "/objectives/" o-id "/drafts/" d-id "/sections/" section-label)
                     comment-data {:comment-on-uri uri-for-draft-section
                                   :comment "A comment"
+                                  :reason "general"
                                   :created-by-id user-id}
                     {first-response :response} (p/request app (str "/api/v1/meta/comments")
                                                     :request-method :post

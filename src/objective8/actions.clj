@@ -99,25 +99,31 @@
   (let [annotated-sections (drafts/get-annotated-sections-with-section-content draft-uri)]
     {:status ::success :result (map merge-comments-with-section annotated-sections)}))
 
-(defn create-section-comment! [{:keys [objective-id draft-id section-label] :as section-data} {:keys [reason] :as comment-data}]
-  (let [section-labels (drafts/get-section-labels-for-draft-uri (str "/objectives/" objective-id "/drafts/" draft-id))]
-    (if (some #{section-label} section-labels)
-      (let [stored-section (drafts/store-section! section-data) 
-            {comment-id :_id :as stored-comment} (comments/store-comment-for! stored-section comment-data)
-            {stored-reason :reason} (comments/store-reason! {:comment-id comment-id :reason reason})] 
-        {:status ::success :result (assoc stored-comment :reason stored-reason)})
-      {:status ::entity-not-found})))
+(defn create-reason-for-comment! [reason stored-comment]
+  (if-let [comment-with-reason (some->> {:comment-id (:_id stored-comment) :reason reason}
+                                        comments/store-reason!
+                                        :reason
+                                        (assoc stored-comment :reason))]
+    {:status ::success :result comment-with-reason}
+    {:status ::failure}))
+
+(defn create-section-comment! [{:keys [objective-id draft-id section-label] :as section-data} comment-data]
+  (if-let [reason (:reason comment-data)]
+    (let [section-labels (drafts/get-section-labels-for-draft-uri (str "/objectives/" objective-id "/drafts/" draft-id))]
+      (if (some #{section-label} section-labels)
+        (let [stored-section (drafts/store-section! section-data) 
+              stored-comment (comments/store-comment-for! stored-section comment-data)]
+          (create-reason-for-comment! reason stored-comment))
+        {:status ::entity-not-found}))
+    {:status ::failure}))
 
 (defn create-comment! [{:keys [comment-on-uri] :as comment-data}]
   (if-let [entity-to-comment-on (storage/pg-retrieve-entity-by-uri comment-on-uri :with-global-id)]
     (if (can-comment-on? entity-to-comment-on)
       (if-let [{comment-id :_id :as stored-comment} (comments/store-comment-for! entity-to-comment-on comment-data)]
-        (if-let [reason (:reason comment-data)] 
-          {:status ::success :result (->> {:comment-id comment-id :reason reason}
-                                          comments/store-reason!
-                                          :reason
-                                          (assoc stored-comment :reason))}
-          {:status ::success :result stored-comment})  
+        (if-let [reason (:reason comment-data)]
+          (create-reason-for-comment! reason stored-comment)
+          {:status ::success :result stored-comment})
         {:status ::failure})
       {:status ::objective-drafting-started})
     (if-let [section-data (uris/uri->section-data comment-on-uri)]
