@@ -267,6 +267,7 @@
                                                :drafts drafts
                                                :annotations annotations
                                                :selected-draft-uri selected-draft-uri)}
+      
       (and (= objective-status ::http-api/success) (= annotations-status ::http-api/not-found))
       {:status 200
        :headers {"Content-Type" "text/html"}

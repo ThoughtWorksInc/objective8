@@ -68,6 +68,18 @@
                     _ (sh/store-a-comment {:entity draft})]
                 (first (drafts/retrieve-drafts objective-id)) => (contains {:meta (contains {:comments-count 1})})))
 
+        (fact "drafts are retrieved with a count of all annotations"
+              (let [{objective-id :_id :as objective} (sh/store-an-objective-in-draft)
+
+                    draft (sh/store-a-draft {:objective objective})
+
+                    section-with-1-annotation (-> (sh/store-a-section {:draft draft})
+                                                  (sh/with-annotations ["general"]))
+                    
+                    section-with-2-annotations (-> (sh/store-a-section {:draft draft})
+                                                   (sh/with-annotations ["general" "general"]))]
+                (first (drafts/retrieve-drafts objective-id)) => (contains {:meta (contains {:annotations-count 3})})))
+        
         (fact "the latest draft can be retrieved"
               (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
                     first-draft (sh/store-a-draft {:objective objective})

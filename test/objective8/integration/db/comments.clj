@@ -54,14 +54,6 @@
                                                                 :comment-id comment-id
                                                                 :reason "unclear"}))))
 
-
-(defn store-comment-with-votes [entities vote-counts]
-  (let [comment (sh/store-a-comment entities)]
-    (doseq [vote-type [:up :down]
-            _ (range (get vote-counts vote-type 0))]
-      (sh/store-an-up-down-vote (:global-id comment) vote-type))
-    comment))
-
 (facts "about getting comments by uri"
        (against-background
         [(before :contents (do (ih/db-connection)

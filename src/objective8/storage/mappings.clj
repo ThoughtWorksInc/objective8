@@ -249,7 +249,8 @@
 
 (defn with-draft-meta [unmap-fn]
   (fn [m] (-> (unmap-fn m)
-              (assoc :meta {:comments-count (if (:comments_count m) (:comments_count m) 0)}))))
+              (assoc :meta {:comments-count (if (:comments_count m) (:comments_count m) 0)
+                            :annotations-count (if (:annotations_count m) (:annotations_count m) 0)}))))
 
 (defn unmap-up-down-vote [{vote :vote :as m}]
   (-> m

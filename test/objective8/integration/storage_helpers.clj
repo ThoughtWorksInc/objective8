@@ -76,21 +76,6 @@
                         :removed-by-admin false
                         :status "drafting"})))
 
-(defn store-a-comment
-  ([]
-   (store-a-comment {:user (store-a-user) :entity (store-an-open-objective)}))
-
-  ([required-entities]
-   (let [{created-by-id :_id} (l-get required-entities :user (store-a-user))
-         {:keys [_id objective-id global-id entity]} (l-get required-entities :entity (store-an-open-objective))
-         comment-text (get required-entities :comment-text "The comment")
-         objective-id (if (= entity :objective) _id objective-id)]
-     (storage/pg-store! {:entity :comment
-                         :created-by-id created-by-id
-                         :objective-id objective-id
-                         :comment-on-id global-id
-                         :comment comment-text}))))
-
 (defn store-an-invitation
   ([] (store-an-invitation {}))
 
@@ -199,6 +184,50 @@
                          :submitter-id submitter-id
                          :objective-id objective-id
                          :content content}))))
+
+(defn store-a-section
+  ([] (store-a-section {}))
+
+  ([entities]
+   (let [draft (l-get entities :draft (store-a-draft))]
+     (storage/pg-store! {:entity :section
+                         :draft-id (:_id draft)
+                         :objective-id (:objective-id draft)
+                         :section-label "abcdefg"}))))
+
+(defn store-a-comment
+  ([]
+   (store-a-comment {:user (store-a-user) :entity (store-an-open-objective)}))
+
+  ([required-entities]
+   (let [{created-by-id :_id} (l-get required-entities :user (store-a-user))
+         {:keys [_id objective-id global-id entity]} (l-get required-entities :entity (store-an-open-objective))
+         comment-text (get required-entities :comment-text "The comment")
+         objective-id (if (= entity :objective) _id objective-id)]
+     (storage/pg-store! {:entity :comment
+                         :created-by-id created-by-id
+                         :objective-id objective-id
+                         :comment-on-id global-id
+                         :comment comment-text}))))
+
+(defn store-an-annotation
+  ([] (store-an-annotation {}))
+
+  ([entities]
+   (let [section (l-get entities :section (store-a-section {:draft (store-a-draft)}))
+         annotation-text (get entities :annotation-text "The annotation")
+         reason (get entities :reason "general")]
+     (let [stored-comment (store-a-comment {:entity section :comment-text annotation-text})
+           stored-reason (storage/pg-store! {:entity :reason
+                                             :comment-id (:_id stored-comment)
+                                             :reason reason})]
+       {:comment stored-comment
+        :reason stored-reason}))))
+
+(defn with-annotations [section-entity annotation-reasons]
+  (doseq [reason annotation-reasons]
+    (store-an-annotation {:section section-entity :reason reason}))
+  section-entity)
 
 (defn start-drafting! [objective-id]
   (actions/start-drafting! objective-id)) 

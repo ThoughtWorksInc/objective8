@@ -3,7 +3,7 @@ mixin dashboardNavigationItem(count, cssClass)
     a.writer-dashboard-navigation-item-link.clj-dashboard-navigation-item-link(href="#dashboard-content")
       span.clj-dashboard-navigation-item-label
         block
-      span.writer-dashboard-navigation-item-link-count.clj-dashboard-navigation-item-link-count (#{count})
+      span.writer-dashboard-navigation-item-link-count.clj-dashboard-navigation-item-link-count.func--item-count (#{count})
       i.fa.fa-angle-right
 
 mixin dashboardAnswerItem(withWriterNote)

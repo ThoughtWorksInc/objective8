@@ -656,13 +656,15 @@
     (screenshot "annotations_dashboard")
 
     {:page-title (wd/title)
-     :page-source (wd/page-source)}
+     :page-source (wd/page-source)
+     :annotation-count (wd/text ".func--item-count")}
 
     (catch Exception e
       (screenshot "ERROR-can-view-annotations-dashboard")
       (throw e)))
   => (contains {:page-title "Writer dashboard | Objective[8]"
-                :page-source (contains "my draft section annotation")}))
+                :page-source (contains "my draft section annotation")
+                :annotation-count (contains "1")}))
 
 (fact "User with admin credentials can remove an objective"
       (let [result (try
