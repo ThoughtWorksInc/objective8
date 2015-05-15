@@ -2,7 +2,7 @@
   (:require [midje.sweet :refer :all]
             [cemerick.friend :as friend]
             [objective8.workflows.sign-up :refer :all]
-            [objective8.http-api :as http-api]
+            [objective8.api.http :as http-api]
             [objective8.utils :as utils]))
 
 (fact "retain invitation information in session when signing in / signing up with redirect"

@@ -7,7 +7,7 @@
             [hiccup.core :as hc]
             [objective8.handlers.front-end :as fe]
             [objective8.utils :as utils]
-            [objective8.http-api :as http-api]
+            [objective8.api.http :as http-api]
             [objective8.integration.integration-helpers :as helpers]))
 
 (def OBJECTIVE_ID 1)

@@ -3,7 +3,7 @@
   (:require [org.httpkit.client :as http]
             [midje.sweet :refer :all]
             [cheshire.core :as json]
-            [objective8.http-api :as http-api]
+            [objective8.api.http :as http-api]
             [objective8.utils :as utils]))
 
 (def host-url utils/host-url)

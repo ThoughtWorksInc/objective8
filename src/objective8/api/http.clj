@@ -1,4 +1,4 @@
-(ns objective8.http-api
+(ns objective8.api.http
   (:require [org.httpkit.client :as http]
             [ring.util.response :as response]
             [cheshire.core :as json]

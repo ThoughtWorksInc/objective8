@@ -2,7 +2,7 @@
   (:require [midje.sweet :refer :all]
             [peridot.core :as p]
             [oauth.client :as oauth]
-            [objective8.http-api :as http-api]
+            [objective8.api.http :as http-api]
             [objective8.utils :as utils]
             [objective8.config :as config]
             [objective8.core :as core]
