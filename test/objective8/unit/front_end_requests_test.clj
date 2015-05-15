@@ -214,19 +214,58 @@
              (let [comment-data (request->comment-data {:params {:comment ?comment
                                                                  :comment-on-uri "/some/uri"}}
                                                        USER_ID)]
-               (:data comment-data) => {:comment ?comment
+               (:data comment-data) => {:comment (s/trim ?comment) 
                                         :comment-on-uri "/some/uri"
                                         :created-by-id USER_ID}
                (:status comment-data) => ::objective8.front-end-requests/invalid
                (:report comment-data) => {:comment ?error-type}))
        ?comment                 ?error-type
        ""                       #{:empty}
-       (string-of-length 501)   #{:length})
+       " "                      #{:empty}
+       (string-of-length 501)   #{:length}))
 
-      (fact "returns nil when data that is not directly provided by the user is invalid"
-            (let [comment-data (request->comment-data {:params {:comment ""}}
-                                                      USER_ID)]
-              comment-data => nil)))
+(facts "about transforming requests to annotation data"
+       (tabular
+         (fact "extracts the relevant data"
+               (let [annotation-data (request->annotation-data {:params {:reason ?reason
+                                                                         :comment "comment"
+                                                                         :comment-on-uri "some-uri"}} USER_ID)]
+                 (:data annotation-data) => {:reason ?reason
+                                             :comment "comment"
+                                             :comment-on-uri "some-uri"
+                                             :created-by-id USER_ID}
+                 (:status annotation-data) => ::objective8.front-end-requests/valid
+                 (:report annotation-data) => {}))
+         ?reason "general" "unclear" "expand" "suggestion" "language") 
+
+       (fact "reports validation errors correctly when parameters are missing"
+             (request->annotation-data {:params {}} USER_ID) => nil
+
+             (let [annotation-data (request->annotation-data {:params {:comment-on-uri "some-uri"}} USER_ID)]
+               (:data annotation-data) => {:reason ""
+                                           :comment ""
+                                           :comment-on-uri "some-uri"
+                                           :created-by-id USER_ID}
+               (:status annotation-data) => ::objective8.front-end-requests/invalid
+               (:report annotation-data) => {:reason #{:incorrect-type}
+                                             :comment #{:empty}})) 
+       (tabular
+         (fact "reports validation errors"
+               (let [annotation-data (request->annotation-data {:params {:reason ?reason
+                                                                         :comment ?comment
+                                                                         :comment-on-uri "some-uri"}} USER_ID)]
+                 (:data annotation-data) => {:reason ?reason
+                                             :comment (s/trim ?comment)
+                                             :comment-on-uri "some-uri"
+                                             :created-by-id USER_ID}
+                 (:status annotation-data) => ::objective8.front-end-requests/invalid
+                 (:report annotation-data) => ?report))
+         ?reason             ?comment                ?report
+         ""                  "comment"               {:reason #{:incorrect-type}}
+         "invalid-reason"    "comment"               {:reason #{:incorrect-type}}
+         "general"           ""                      {:comment #{:empty}}
+         "general"           " "                     {:comment #{:empty}}
+         "general"           (string-of-length 501)  {:comment #{:length}}))
 
 (facts "about transforming requests to writer invitation data"
        (fact "extracts the relevant data"
@@ -313,12 +352,7 @@
                                      :note-on-uri "/some/uri"
                                      :created-by-id USER_ID}
                (:status note-data) => ::objective8.front-end-requests/invalid
-               (:report note-data) => {:note #{:empty}}))
-
-       (fact "returns nil when data that is not directly provided by the user is invalid"
-             (let [note-data (request->writer-note-data {:params {:note "the note"}}
-                                                        USER_ID)]
-               note-data => nil)))
+               (:report note-data) => {:note #{:empty}})))
 
 (facts "about transforming requests to profile data"
        (fact "extracts the relevant data"

@@ -134,7 +134,7 @@
 (def annotation-reasons '("general" "unclear" "expand" "suggestion" "language"))
 
 (defn annotation-reason-validator [request]
-  (let [reason (s/trim (get-in request [:params :reason]))]
+  (let [reason (s/trim (get-in request [:params :reason] ""))]
     (cond-> (initialise-field-validation reason)
       (not (some #{reason} annotation-reasons)) (report-error :incorrect-type))))
 
