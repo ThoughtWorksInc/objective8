@@ -52,10 +52,9 @@
              (against-background
                (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
                (http-api/find-user-by-twitter-id "twitter-TWITTER_ID") => {:status ::http-api/not-found})
-
-             (let [signed-in-context (p/request test-session twitter-callback-url)]
-               (p/follow-redirect signed-in-context))
-             => (check-html-content "<title>Sign up"))
+             (-> test-session
+                 (p/request twitter-callback-url)
+                 p/follow-redirect) => (check-html-content "<title>Sign up"))
 
        (binding [config/enable-csrf false]
          (fact "After signing up (by posting their email address) the user is sent back to the resource they were trying to access"

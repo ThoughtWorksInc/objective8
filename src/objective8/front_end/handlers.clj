@@ -76,11 +76,6 @@
 
 ;; USER PROFILE
 
-(defn sign-up-form [{:keys [t' locale errors] :as request}]
-  {:status 200
-   :header {"Content-Type" "text/html"}  
-   :body (views/sign-up "sign-up" request :errors errors)})
-
 (defn profile [{:keys [route-params] :as request}]
   (let [username (:username route-params)
         {user-status :status user :result} (http-api/find-user-by-username username)]

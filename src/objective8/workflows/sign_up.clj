@@ -10,7 +10,7 @@
             [objective8.utils :as utils]
             [objective8.front-end-requests :as fr]
             [objective8.permissions :as permissions]
-            [objective8.front-end.handlers :as front-end]))
+            [objective8.front-end.views :as views]))
 
 (def sign-up-routes
   ["/" {"sign-up" {:get :sign-up-form
@@ -54,7 +54,9 @@
     (let [{status :status user :result} (http-api/find-user-by-twitter-id twitter-id)]
       (cond
         (= status ::http-api/success) (finalise-authorisation user session)
-        (= status ::http-api/not-found) (front-end/sign-up-form request)
+        (= status ::http-api/not-found) {:status 200
+                                         :header {"Content-Type" "text/html"}  
+                                         :body (views/sign-up "sign-up" request)}
         (= status ::http-api/invalid-input) {:status 400}
         :else {:status 500}))
     (response/redirect "/sign-in")))
