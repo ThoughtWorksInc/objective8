@@ -5,23 +5,6 @@
   }
 }
 
-.progress-indicator {
-  a {
-    &:hover {
-      color: $green2;
-      border-bottom-color: rgba($green2, 0.1);
-    }
-    &:focus {
-      outline: none;
-      border-bottom-color: rgba($green2, 0.1);
-    }
-    &.on {
-      color: $green2;
-      border-bottom-color: $green1;
-    }
-  }
-}
-
 .objective-outline {
   @extend %objective-section;
   position: relative;
