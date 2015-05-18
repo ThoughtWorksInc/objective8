@@ -1,4 +1,4 @@
-(ns objective8.back-end.api-requests
+(ns objective8.back-end.requests
   (:require [objective8.utils :as utils]))
 
 (defn request->objective-data [{params :params :as request}]

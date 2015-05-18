@@ -12,7 +12,7 @@
             [objective8.back-end.writers :as writers]
             [objective8.back-end.invitations :as invitations]
             [objective8.back-end.drafts :as drafts]
-            [objective8.back-end.api-requests :as ar]
+            [objective8.back-end.requests :as br]
             [objective8.back-end.stars :as stars]
             [objective8.back-end.admin-removals :as admin-removals]
             [objective8.back-end.actions :as actions]))
@@ -98,7 +98,7 @@
 
 (defn put-writer-profile [request]
   (try
-    (if-let [profile-data (ar/request->profile-data request)]
+    (if-let [profile-data (br/request->profile-data request)]
       (let [{status :status user :result} (actions/update-user-with-profile! profile-data)]
         (cond
           (= status ::actions/success)
@@ -116,7 +116,7 @@
 
 (defn post-admin-removal [request]
   (try
-    (if-let [admin-removal-data (ar/request->admin-removal-data request)]
+    (if-let [admin-removal-data (br/request->admin-removal-data request)]
       (let [{status :status admin-removal :result} (actions/create-admin-removal! admin-removal-data)]
         (cond
           (= status ::actions/success)
@@ -148,7 +148,7 @@
 ;;STARS
 (defn post-star [request]
   (try
-    (if-let [star-data (ar/request->star-data request)]
+    (if-let [star-data (br/request->star-data request)]
       (let [{status :status star :result} (actions/toggle-star! star-data)]
         (cond
           (= status ::actions/success)
@@ -168,7 +168,7 @@
 ;; OBJECTIVES
 (defn post-objective [request]
   (try
-    (let [objective (ar/request->objective-data request)
+    (let [objective (br/request->objective-data request)
           {status :status stored-objective :result} (actions/create-objective! objective)]
       (if (= status ::actions/success)
         (resource-created-response (str utils/host-url "/api/v1/objectives/" (:_id stored-objective))
@@ -196,7 +196,7 @@
       (response/not-found ""))))
 
 (defn get-objectives [request]
-  (if-let [query (ar/request->objectives-query request)]
+  (if-let [query (br/request->objectives-query request)]
     (let [objectives (objectives/get-objectives query)]
       (response/content-type (response/response objectives) "application/json"))
     (invalid-response "Invalid objectives query")))
@@ -204,7 +204,7 @@
 ;; COMMENT
 (defn post-comment [{:keys [params] :as request}]
   (try
-    (if-let [comment-data (ar/request->comment-data request)]
+    (if-let [comment-data (br/request->comment-data request)]
       (let [{status :status comment :result} (actions/create-comment! comment-data)]
         (cond
           (= status ::actions/success)
@@ -223,7 +223,7 @@
 
 (defn get-comments [{:keys [params] :as request}]
   (try
-    (if-let [{uri :uri sorted-by :sorted-by filter-type :filter-type} (ar/request->comments-query request)]
+    (if-let [{uri :uri sorted-by :sorted-by filter-type :filter-type} (br/request->comments-query request)]
       (if-let [comments (comments/get-comments uri {:sorted-by sorted-by :filter-type filter-type})]
         (-> comments
             response/response
@@ -312,7 +312,7 @@
 
 (defn get-answers [{:keys [route-params params] :as request}]
   (try
-    (if-let [{question-uri :question-uri sorted-by :sorted-by filter-type :filter-type} (ar/request->answers-query request)]
+    (if-let [{question-uri :question-uri sorted-by :sorted-by filter-type :filter-type} (br/request->answers-query request)]
       (if (questions/get-question question-uri)
         (let [answers (answers/get-answers question-uri {:sorted-by sorted-by :filter-type filter-type})]
           (-> answers
@@ -327,7 +327,7 @@
 ;;WRITER-NOTES
 (defn post-writer-note [request]
  (try
-   (let [writer-note-data (ar/request->writer-note-data request)
+   (let [writer-note-data (br/request->writer-note-data request)
          {status :status stored-note :result} (actions/create-writer-note! writer-note-data)]
      (cond
        (= status ::actions/success)
@@ -344,7 +344,7 @@
 ;;WRITERS
 (defn post-invitation [request]
   (try
-    (let [invitation-data (ar/request->invitation-data request)
+    (let [invitation-data (br/request->invitation-data request)
           {status :status stored-invitation :result} (actions/create-invitation! invitation-data)]
       (cond
         (= status ::actions/success)
@@ -386,7 +386,7 @@
 (defn post-writer [{{objective-id :id} :route-params
                     params :params :as request}]
   (try
-    (let [writer-data (ar/request->writer-data request)]
+    (let [writer-data (br/request->writer-data request)]
       (if-let [{writer-id :_id :as writer} (writers/create-writer writer-data)]
         (resource-created-response (str utils/host-url
                                         "/api/v1/objectives/" objective-id
@@ -424,7 +424,7 @@
 
 ;;DRAFTS
 (defn post-draft [{{objective-id :id} :route-params :as request}]
-  (let [draft-data (ar/request->draft-data request)] 
+  (let [draft-data (br/request->draft-data request)] 
     (if-let [draft (actions/submit-draft! draft-data)]
       (resource-created-response (utils/path-for :api/get-draft :id objective-id :d-id (str (:_id draft)))
                                  draft)
@@ -494,7 +494,7 @@
 
 (defn post-up-down-vote [request]
   (try
-    (if-let [vote-data (ar/request->up-down-vote-data request)]
+    (if-let [vote-data (br/request->up-down-vote-data request)]
       (let [{status :status vote :result} (actions/cast-up-down-vote! vote-data)]
         (cond
           (= status ::actions/success)
@@ -516,7 +516,7 @@
 
 (defn post-mark [request]
   (try
-    (if-let [mark-data (ar/request->mark-data request)]
+    (if-let [mark-data (br/request->mark-data request)]
       (let [{status :status mark :result} (actions/mark-question! mark-data)]
         (cond
           (= status ::actions/success)

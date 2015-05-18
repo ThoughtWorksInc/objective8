@@ -1,6 +1,6 @@
-(ns objective8.unit.api-requests-test
+(ns objective8.unit.back-end-requests-test
   (:require [midje.sweet :refer :all]
-            [objective8.back-end.api-requests :as ar]))
+            [objective8.back-end.requests :as br]))
 
 (def OBJECTIVE_ID 1)
 (def QUESTION_ID 2)
@@ -10,7 +10,7 @@
 (facts "request->answers-query"
        (tabular
         (fact "returns a query map when the request is valid"
-              (ar/request->answers-query {:params ?params
+              (br/request->answers-query {:params ?params
                                           :route-params {:id OBJECTIVE_ID :q-id QUESTION_ID}})
               => ?answers-query)
         ?params                          ?answers-query
@@ -23,7 +23,7 @@
 
        (tabular
         (fact "returns nil when the request is invalid"
-              (ar/request->answers-query {:params ?params
+              (br/request->answers-query {:params ?params
                                           :route-params {:id OBJECTIVE_ID :q-id QUESTION_ID}})
               => nil)
         ?params
