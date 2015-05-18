@@ -2,6 +2,8 @@
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [objective8.front-end.api.domain :as domain]
+            [cemerick.url :as url]
+            [objective8.config :as config]
             [objective8.front-end.templates.template-functions :as tf]
             [objective8.front-end.templates.page-furniture :as pf]
             [objective8.utils :as utils]
@@ -14,6 +16,18 @@
 (def previous-draft-item-snippet (html/select draft-list-template [:.clj-previous-draft-item])) 
 
 (def no-drafts-snippet (html/select pf/library-html-resource [:.clj-no-drafts-yet]))
+
+;; PROGRESS INDICATOR
+
+(def progress-snippet (html/select draft-list-template [:.clj-objective-progress-indicator]))
+
+(defn progress-indicator [{:keys [data] :as context}]
+  (let [objective (:objective data)]
+    (html/at progress-snippet
+             [:.clj-progress-objective-link] (html/set-attr :href 
+                                                            (url/url (utils/path-for :fe/objective :id (:_id objective)))) 
+             [:.clj-progress-drafts-link] (html/set-attr :href
+                                                         (url/url (utils/path-for :fe/draft-list :id (:_id objective)))))))
 
 (defn- local-draft-path
   ([draft] (local-draft-path draft false))
@@ -69,7 +83,8 @@
                                       [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
                                       [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
                                       [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
-                                      [:.clj-objective-progress-indicator] nil
+                                      [:.clj-objective-progress-indicator] (when (not config/two-phase?)
+                                                                             (html/substitute (progress-indicator context)))
                                       [:.clj-guidance-buttons] nil
 
                                       [:.clj-guidance-heading] (html/content (translations :draft-guidance/heading))

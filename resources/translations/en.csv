@@ -104,6 +104,8 @@ draft,comment-box-label-helper,You can leave a comment here.
 draft,comment-post-button,Add a comment
 draft-list,doc-title,Drafts | Objective[8]
 draft-list,doc-description,
+draft-list,objective,Objective
+draft-list,drafts,Drafts
 draft-list,drafts-for,Drafts for: 
 draft-list,no-drafts,No drafts have been submitted yet
 draft-list,latest-draft,Latest draft
