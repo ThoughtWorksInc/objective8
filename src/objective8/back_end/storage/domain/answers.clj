@@ -2,7 +2,7 @@
   (:require [objective8.back-end.storage.storage :as storage]
             [objective8.back-end.storage.uris :as uris]
             [objective8.back-end.storage.domain.objectives :as objectives]
-            [objective8.back-end.writer-notes :as notes]
+            [objective8.back-end.storage.domain.writer-notes :as notes]
             [objective8.utils :as utils]))
 
 (defn uri-for-answer [answer]

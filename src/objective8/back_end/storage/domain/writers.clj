@@ -1,4 +1,4 @@
-(ns objective8.back-end.writers
+(ns objective8.back-end.storage.domain.writers
   (:require [clojure.tools.logging :as log]
             [objective8.utils :as utils]
             [objective8.back-end.storage.domain.invitations :as i]

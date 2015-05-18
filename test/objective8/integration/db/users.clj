@@ -1,6 +1,6 @@
 (ns objective8.integration.db.users
   (:require [midje.sweet :refer :all]
-            [objective8.back-end.users :as users]
+            [objective8.back-end.storage.domain.users :as users]
             [objective8.integration.integration-helpers :as ih]
             [objective8.integration.storage-helpers :as sh]))
 

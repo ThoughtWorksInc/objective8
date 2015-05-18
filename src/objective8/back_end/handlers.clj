@@ -8,12 +8,12 @@
             [objective8.back-end.storage.domain.comments :as comments]
             [objective8.back-end.storage.domain.questions :as questions]
             [objective8.back-end.storage.domain.answers :as answers]
-            [objective8.back-end.users :as users]
-            [objective8.back-end.writers :as writers]
+            [objective8.back-end.storage.domain.users :as users]
+            [objective8.back-end.storage.domain.writers :as writers]
             [objective8.back-end.storage.domain.invitations :as invitations]
             [objective8.back-end.storage.domain.drafts :as drafts]
             [objective8.back-end.requests :as br]
-            [objective8.back-end.stars :as stars]
+            [objective8.back-end.storage.domain.stars :as stars]
             [objective8.back-end.storage.domain.admin-removals :as admin-removals]
             [objective8.back-end.actions :as actions]))
 

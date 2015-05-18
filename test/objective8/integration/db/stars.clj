@@ -1,6 +1,6 @@
 (ns objective8.integration.db.stars
   (:require [midje.sweet :refer :all]
-            [objective8.back-end.stars :as stars]
+            [objective8.back-end.storage.domain.stars :as stars]
             [objective8.integration.integration-helpers :as ih]
             [objective8.integration.storage-helpers :as sh]))
 

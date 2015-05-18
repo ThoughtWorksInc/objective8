@@ -1,6 +1,6 @@
 (ns objective8.unit.writers-test
   (:require [midje.sweet :refer :all]
-            [objective8.back-end.writers :as writers]
+            [objective8.back-end.storage.domain.writers :as writers]
             [objective8.back-end.storage.domain.invitations :as i]
             [objective8.utils :as utils]
             [objective8.back-end.storage.storage :as storage]))
