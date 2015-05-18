@@ -4,7 +4,7 @@
             [peridot.core :as p]
             [oauth.client :as oauth]
             [objective8.back-end.storage.storage :as storage]
-            [objective8.api.http :as http-api]
+            [objective8.front-end.api.http :as http-api]
             [objective8.integration.integration-helpers :as helpers]
             [objective8.utils :as utils]
             [objective8.config :as config]

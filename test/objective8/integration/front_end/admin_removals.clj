@@ -3,7 +3,7 @@
             [ring.mock.request :as mock]
             [peridot.core :as p]
             [oauth.client :as oauth]
-            [objective8.api.http :as http-api]
+            [objective8.front-end.api.http :as http-api]
             [objective8.config :as config]
             [objective8.utils :as utils]
             [objective8.integration.integration-helpers :as ih]))

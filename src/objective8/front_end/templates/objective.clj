@@ -6,7 +6,7 @@
             [objective8.config :as config]
             [objective8.utils :as utils]
             [objective8.permissions :as permissions]
-            [objective8.api.domain :as domain]
+            [objective8.front-end.api.domain :as domain]
             [objective8.front-end.templates.page-furniture :as pf]
             [objective8.front-end.templates.template-functions :as tf]))   
 

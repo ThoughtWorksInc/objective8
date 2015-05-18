@@ -1,7 +1,7 @@
 (ns objective8.front-end.templates.draft-list
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
-            [objective8.api.domain :as domain]
+            [objective8.front-end.api.domain :as domain]
             [objective8.front-end.templates.template-functions :as tf]
             [objective8.front-end.templates.page-furniture :as pf]
             [objective8.utils :as utils]

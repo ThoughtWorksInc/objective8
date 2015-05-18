@@ -2,7 +2,7 @@
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [objective8.permissions :as permissions]
-            [objective8.api.domain :as domain]
+            [objective8.front-end.api.domain :as domain]
             [objective8.utils :as utils]
             [objective8.front-end.templates.page-furniture :as pf]
             [objective8.front-end.templates.template-functions :as tf]))

@@ -1,4 +1,4 @@
-(ns objective8.api.domain
+(ns objective8.front-end.api.domain
   (:require [objective8.config :as config]))
 
 (defn open? [objective]

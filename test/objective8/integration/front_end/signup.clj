@@ -8,7 +8,7 @@
             [objective8.core :as core]
             [objective8.config :as config]
             [objective8.integration.integration-helpers :as helpers]
-            [objective8.api.http :as http-api]
+            [objective8.front-end.api.http :as http-api]
             [objective8.utils :as utils]
             [objective8.workflows.sign-up :as sign-up]))
 

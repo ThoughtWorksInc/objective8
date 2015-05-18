@@ -6,7 +6,7 @@
             [endophile.hiccup :as eh]
             [hiccup.core :as hc]
             [objective8.utils :as utils]
-            [objective8.api.http :as http-api]
+            [objective8.front-end.api.http :as http-api]
             [objective8.integration.integration-helpers :as helpers]))
 
 (def OBJECTIVE_ID 1)
