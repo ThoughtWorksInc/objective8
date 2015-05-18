@@ -191,15 +191,15 @@
 
 (fact "Objective owner can promote and demote questions"
       (try (wd/to (:objective-url @journey-state))
-           (wait-for-element ".func--promote-question")
-
-           (wd/click ".func--promote-question")
            (wait-for-element ".func--demote-question")
-           (screenshot "promoted_question")
-
            (wd/click ".func--demote-question")
            (wait-for-element ".func--promote-question")
            (screenshot "demoted_question")
+
+           (wait-for-element ".func--promote-question")
+           (wd/click ".func--promote-question")
+           (screenshot "promoted_question")
+
 
            (catch Exception e
              (screenshot "Error-Objective-owner-can-promote-and-demote-questions")

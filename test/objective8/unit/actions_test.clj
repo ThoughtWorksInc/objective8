@@ -217,6 +217,21 @@
 (def mark-data {:question-uri question-uri
                :created-by-uri user-uri })
 
+(facts "about creating questions"
+(def question {:objective-id OBJECTIVE_ID})
+
+       (binding [config/two-phase? true]
+         (fact "A question can be created when the associated objective is not in drafting"
+               (actions/create-question! question) => :stored-question
+               (provided
+                 (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
+                 (questions/store-question! question) => :stored-question))
+
+         (fact "Attempting to create a question against an objective that is in drafting returns nil"
+               (actions/create-question! question) => nil
+               (provided
+                 (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"}))))
+
 (facts "about marking questions"
        (fact "a mark is created if none already exists"
              (actions/mark-question! mark-data) => {:status ::actions/success

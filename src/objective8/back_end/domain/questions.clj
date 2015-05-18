@@ -8,10 +8,6 @@
   (some-> (storage/pg-store! (assoc question :entity :question))
           (utils/update-in-self [:uri] uris/question->uri)))
 
-(defn create-question [{objective-id :objective-id :as question}]
-  (when (objectives/open? (objectives/get-objective objective-id))
-    (store-question! question)))
-
 (defn get-questions-for-objective [objective-uri]
   (let [{entity :entity objective-id :_id :as query} (uris/uri->query objective-uri)]
     (when (= :objective entity)

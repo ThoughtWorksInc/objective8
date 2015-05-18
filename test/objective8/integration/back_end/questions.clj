@@ -60,6 +60,19 @@
                    (:headers response) => (helpers/location-contains (str "/api/v1/objectives/" obj-id
                                                                           "/questions/"))))
 
+           (fact "a question posted by a writer is automatically marked"
+                 (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+                       {writer-id :user-id} (sh/store-a-writer {:objective objective})
+                       question (a-question objective-id writer-id)
+                       {response :response} (p/request app (str "/api/v1/objectives/" objective-id "/questions")
+                                                       :request-method :post
+                                                       :content-type "application/json"
+                                                       :body (json/generate-string question))]
+
+                   (:body response) => (helpers/json-contains {:objective-id objective-id
+                                                               :created-by-id writer-id
+                                                               :meta {:marked true}})))
+
            (fact "a 400 status is returned if a PSQLException is raised"
                  (against-background
                    (questions/store-question! anything) =throws=> (org.postgresql.util.PSQLException.
