@@ -17,9 +17,12 @@ block content
       li
         a.clj-progress-objective-link(href="/objective", data-l8n="content:draft-list/objective") !Objective
       li.on
-        a.clj-progress-drafts-link(href="/draft", data-l8n="content:draft-list/drafts") !Drafts
-      // li
-      //  a(href="#") !Policy
+        a.clj-progress-drafts-link(href="/draft")
+          span(data-l8n="content:draft-list/drafts") !Drafts
+          =" "
+          span.clj-progress-draft-count !(3)
+      //- li
+      //-  a(href="#") !Policy
 
     h1.draft-list-title
       span(data-l8n="content:draft-list/drafts-for") !Drafts for: 

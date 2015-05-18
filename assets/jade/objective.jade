@@ -22,7 +22,10 @@ block content
       li.on
         a.clj-progress-objective-link(href="/objective", data-l8n="content:objective-nav/objective") !Objective
       li
-        a.clj-progress-drafts-link.func--drafting-message-link(href="/draft", data-l8n="content:objective-nav/drafts") !Drafts (3)
+        a.clj-progress-drafts-link.func--drafting-message-link(href="/draft")
+          span(data-l8n="content:objective-nav/drafts") !Drafts
+          =" "
+          span.clj-progress-draft-count !(3)
     //  li
     //    a(href="#") Policy
 
@@ -37,6 +40,7 @@ block content
             a(href="#questions", data-l8n="content:objective-nav/questions") !Questions
           li
             a(href="#comments", data-l8n="content:objective-nav/comments") !Comments
+
 
     .objective-outline#details
 
@@ -57,6 +61,19 @@ block content
             i.fa.fa-star
 
       .clj-drafting-started-wrapper
+
+      .clj-latest-draft-wrapper
+        .latest-draft.clj-latest-draft
+          h2.latest-draft-title(data-l8n="content:objective-view/latest-draft") !Latest draft
+          .draft-item-list
+            .draft-item
+              a.draft-item-link.clj-latest-draft-link.func--latest-draft-link(href="/drafts/latest")
+                .draft-item-icon
+                  i.fa.fa-file-text-o.draft-item-icon-fa
+                .draft-item-text
+                  span.draft-item-writer.clj-latest-draft-writer !Prof Barry
+                  = ", "
+                  span.draft-item-time.clj-latest-draft-time !2 days ago
 
       h2(data-l8n="content:objective-view/details") !Details
       .objective-detail.clj-objective-detail

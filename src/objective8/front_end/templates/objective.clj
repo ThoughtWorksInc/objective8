@@ -106,6 +106,7 @@
 ;; PROGRESS INDICATOR
 
 (def progress-snippet (html/select objective-template [:.clj-objective-progress-indicator]))
+(def latest-draft-wrapper-snippet (html/select objective-template [:.clj-latest-draft]))
 
 (defn progress-indicator [{:keys [data] :as context}]
   (let [objective (:objective data)]
@@ -113,7 +114,16 @@
              [:.clj-progress-objective-link] (html/set-attr :href 
                                                             (url/url (utils/path-for :fe/objective :id (:_id objective)))) 
              [:.clj-progress-drafts-link] (html/set-attr :href
-                                                         (url/url (utils/path-for :fe/draft-list :id (:_id objective)))))))
+                                                         (url/url (utils/path-for :fe/draft-list :id (:_id objective))))
+             [:.clj-progress-draft-count] (html/content (str "(" (get-in objective [:meta :drafts-count]) ")")))))
+
+(defn latest-draft [draft]
+  (html/at latest-draft-wrapper-snippet 
+           [:.clj-latest-draft-link] (html/set-attr :href (url/url (utils/path-for :fe/draft 
+                                                                                   :id (:objective-id draft) 
+                                                                                   :d-id "latest")))
+           [:.clj-latest-draft-writer] (html/content (:username draft))
+           [:.clj-latest-draft-time] (html/content (utils/iso-time-string->pretty-time (:_created_at draft)))))
 
 ;; DRAFTING HAS STARTED MESSAGE
 
@@ -241,6 +251,8 @@
                                   (drafting-begins objective))
               [:.clj-drafting-started-wrapper] (when (and (domain/in-drafting? objective) config/two-phase?) 
                                                  (html/substitute (drafting-message context)))
+              [:.clj-latest-draft-wrapper] (when (and (:latest-draft data) (not config/two-phase?))
+                                             (html/substitute (latest-draft (:latest-draft data))))
               [:.clj-objective-detail] (html/content (tf/text->p-nodes (:description objective)))
 
               [:.clj-writer-item-list] (html/content (pf/writer-list context))

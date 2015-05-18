@@ -18,7 +18,7 @@
 (def OBJECTIVE {:title "Objective Title 1"
                 :description "An objective"
                 :end-date (utils/string->date-time "2015-12-12")
-                :uri (str "/objectives/" OBJECTIVE_ID) })
+                :uri (str "/objectives/" OBJECTIVE_ID)})
 (def WRITER_ROLE_FOR_OBJECTIVE (keyword (str "writer-for-" OBJECTIVE_ID)))
 (def WRITER_INVITER_ROLE_FOR_OBJECTIVE (keyword (str "writer-inviter-for-" OBJECTIVE_ID)))
 (def OBJECTIVE_TITLE "some title")

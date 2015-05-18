@@ -27,7 +27,8 @@
              [:.clj-progress-objective-link] (html/set-attr :href 
                                                             (url/url (utils/path-for :fe/objective :id (:_id objective)))) 
              [:.clj-progress-drafts-link] (html/set-attr :href
-                                                         (url/url (utils/path-for :fe/draft-list :id (:_id objective)))))))
+                                                         (url/url (utils/path-for :fe/draft-list :id (:_id objective))))
+             [:.clj-progress-draft-count] (html/content (str "(" (get-in objective [:meta :drafts-count]) ")")))))
 
 (defn- local-draft-path
   ([draft] (local-draft-path draft false))

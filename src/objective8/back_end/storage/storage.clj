@@ -234,7 +234,7 @@ LIMIT 50" [user-id]] :results)))))
 (defn pg-get-objective [objective-id]
   (let [unmap-objective (first (get mappings/objective :transforms))]
     (apply vector (map unmap-objective (korma/exec-raw ["
-SELECT objectives.*, users.username, stars_meta.number AS stars_count, comments_meta.number AS comments_count
+SELECT objectives.*, users.username, stars_meta.number AS stars_count, comments_meta.number AS comments_count, drafts_meta.number AS drafts_count
 FROM objective8.objectives AS objectives
 JOIN objective8.users AS users
 ON objectives.created_by_id = users._id
@@ -247,6 +247,10 @@ LEFT JOIN (SELECT comments.comment_on_id, COUNT(comments.*) AS number
            FROM objective8.comments AS comments
            GROUP BY comments.comment_on_id) AS comments_meta
 ON comments_meta.comment_on_id = objectives.global_id
+LEFT JOIN (SELECT drafts.objective_id, COUNT(drafts.*) AS number
+           FROM objective8.drafts AS drafts
+           GROUP BY drafts.objective_id) AS drafts_meta
+ON drafts_meta.objective_id = objectives._id
 WHERE objectives._id = ?" [objective-id]] :results)))))
 
 (defn pg-get-objectives-for-writer [user-id]
@@ -281,7 +285,7 @@ LIMIT 50" [user-id]] :results)))))
   (let [unmap-objective (first (get mappings/objective :transforms))]
     (first (map unmap-objective
                 (korma/exec-raw ["
-SELECT objectives.*, users.username, user_stars.active, stars_meta.number AS stars_count, comments_meta.number AS comments_count
+SELECT objectives.*, users.username, user_stars.active, stars_meta.number AS stars_count, comments_meta.number AS comments_count, drafts_meta.number AS drafts_count
 FROM objective8.objectives AS objectives
 LEFT JOIN (SELECT active, objective_id
            FROM objective8.stars
@@ -295,6 +299,10 @@ LEFT JOIN (SELECT comments.comment_on_id, COUNT(comments.*) AS number
            FROM objective8.comments AS comments
            GROUP BY comments.comment_on_id) AS comments_meta
 ON comments_meta.comment_on_id = objectives.global_id
+LEFT JOIN (SELECT drafts.objective_id, COUNT(drafts.*) AS number
+           FROM objective8.drafts AS drafts
+           GROUP BY drafts.objective_id) AS drafts_meta
+ON drafts_meta.objective_id = objectives._id
 JOIN objective8.users AS users
 ON objectives.created_by_id = users._id
 WHERE objectives._id=? AND objectives.removed_by_admin=false" [user-id objective-id]] :results)))))

@@ -164,7 +164,9 @@
         {comments-status :status comments :result} (http-api/get-comments (:uri objective))]
     (cond
       (every? #(= ::http-api/success %) [objective-status writers-status questions-status comments-status])
-      (let [formatted-objective (format-objective objective)]
+      (let [formatted-objective (format-objective objective)
+            {drafts-status :status latest-draft :result} (when (> (get-in objective [:meta :drafts-count] 0) 0)
+                                                           (http-api/get-draft objective-id "latest"))]
         {:status 200
          :headers {"Content-Type" "text/html"}
          :body
@@ -174,6 +176,7 @@
                                       :writers writers
                                       :questions questions
                                       :comments comments
+                                      :latest-draft latest-draft
                                       :doc (let [details (str (:title objective) " | Objective[8]")]
                                              {:title details
                                               :description details}))})

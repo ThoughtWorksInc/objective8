@@ -40,7 +40,7 @@
   ([objective-id]
    (get-objective objective-id false)) 
   ([objective-id include-removed?]
-   (some-> (storage/pg-get-objective objective-id) 
+   (some-> (storage/pg-get-objective objective-id)
            (include-removed-objective? include-removed?)
            first
            (dissoc :global-id)
