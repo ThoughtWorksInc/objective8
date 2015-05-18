@@ -24,6 +24,7 @@
                 :objective-id (Integer/parseInt (:objective-id route-params))}
 
         :section {:entity :section
+                  :objective-id (Integer/parseInt (:objective-id route-params)) 
                   :draft-id (Integer/parseInt (:draft-id route-params))
                   :section-label (:section-label route-params)}
 
@@ -36,6 +37,8 @@
                    :_id (Integer/parseInt (:question-id route-params))}
 
         :answer {:entity :answer
+                 :objective-id (Integer/parseInt (:objective-id route-params))
+                 :question-id (Integer/parseInt (:question-id route-params))
                  :_id (Integer/parseInt (:answer-id route-params))}
 
         :comment {:entity :comment

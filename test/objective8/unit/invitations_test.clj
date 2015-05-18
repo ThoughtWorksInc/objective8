@@ -2,8 +2,8 @@
   (:require [midje.sweet :refer :all]
             [objective8.back-end.domain.invitations :as invitations]
             [objective8.back-end.storage.storage :as storage]
-            [objective8.config :as config]
             [objective8.back-end.domain.objectives :as objectives]
+            [objective8.config :as config]
             [objective8.utils :as utils]))
 
 (def OBJECTIVE_ID 1)
