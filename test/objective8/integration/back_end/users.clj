@@ -1,4 +1,4 @@
-(ns objective8.integration.api.users
+(ns objective8.integration.back-end.users
   (:require [midje.sweet :refer :all]
             [peridot.core :as p]
             [oauth.client :as oauth]

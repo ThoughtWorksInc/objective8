@@ -1,4 +1,4 @@
-(ns objective8.integration.api.stars
+(ns objective8.integration.back-end.stars
   (:require [midje.sweet :refer :all]
             [peridot.core :as p]
             [cheshire.core :as json]

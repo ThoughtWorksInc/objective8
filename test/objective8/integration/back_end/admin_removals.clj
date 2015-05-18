@@ -1,4 +1,4 @@
-(ns objective8.integration.api.admin-removals 
+(ns objective8.integration.back-end.admin-removals 
   (:require [midje.sweet :refer :all]
             [peridot.core :as p]
             [cheshire.core :as json]

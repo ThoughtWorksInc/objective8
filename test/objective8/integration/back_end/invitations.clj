@@ -1,4 +1,4 @@
-(ns objective8.integration.api.invitations
+(ns objective8.integration.back-end.invitations
   (:require [peridot.core :as p]
             [midje.sweet :refer :all]
             [cheshire.core :as json]
