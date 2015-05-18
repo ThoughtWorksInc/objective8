@@ -3,7 +3,7 @@
             [clojure.string :as s]
             [endophile.core :as ec]
             [endophile.hiccup :as eh]
-            [objective8.front-end-requests :refer :all]
+            [objective8.front-end.front-end-requests :refer :all]
             [objective8.utils :as utils]))
 
 (def USER_ID 1)
@@ -53,13 +53,13 @@
 
                (:data user-sign-up-data) => {:username "validUsername"
                                              :email-address "abc@def.com"}
-               (:status user-sign-up-data) => ::objective8.front-end-requests/valid
+               (:status user-sign-up-data) => ::objective8.front-end.front-end-requests/valid
                (:report user-sign-up-data) => {}))
 
        (fact "reports validation errors correctly when parameters are missing"
              (let [user-sign-up-data (request->user-sign-up-data {:params {}})]
                (:data user-sign-up-data) => {:username "" :email-address ""}
-               (:status user-sign-up-data) => ::objective8.front-end-requests/invalid
+               (:status user-sign-up-data) => ::objective8.front-end.front-end-requests/invalid
                (:report user-sign-up-data) => {:username #{:invalid}
                                                :email-address #{:empty}}))
 
@@ -69,7 +69,7 @@
                                                                            :email-address ?email-address}})]
                (:data user-sign-up-data) => {:username (s/trim ?username) 
                                              :email-address (s/trim ?email-address)}
-               (:status user-sign-up-data) => ::objective8.front-end-requests/invalid
+               (:status user-sign-up-data) => ::objective8.front-end.front-end-requests/invalid
                (:report user-sign-up-data) => ?report))
          ?username               ?email-address          ?report
          ""                      "abc@def.com"           {:username #{:invalid}}
@@ -83,7 +83,7 @@
              (let [test-objective {:title "My Objective" :description "I like cake"} 
                    objective-data (request->objective-data {:params test-objective} USER_ID date)]
                (:data objective-data) => (assoc test-objective :created-by-id USER_ID :end-date date-plus-30-days)
-               (:status objective-data) => ::objective8.front-end-requests/valid
+               (:status objective-data) => ::objective8.front-end.front-end-requests/valid
                (:report objective-data) => {}))
 
        (fact "reports validation errors correctly when parameters are missing"
@@ -92,7 +92,7 @@
                                             :description ""
                                             :created-by-id USER_ID
                                             :end-date date-plus-30-days}
-                 (:status objective-data) => ::objective8.front-end-requests/invalid
+                 (:status objective-data) => ::objective8.front-end.front-end-requests/invalid
                  (:report objective-data) => {:title #{:length}
                                               :description #{:empty}}))
 
@@ -104,7 +104,7 @@
                                             :description (s/trim ?description)
                                             :created-by-id USER_ID
                                             :end-date date-plus-30-days}
-                 (:status objective-data) => ::objective8.front-end-requests/invalid
+                 (:status objective-data) => ::objective8.front-end.front-end-requests/invalid
                  (:report objective-data) => ?report))
          ?title                    ?description                ?report
          ""                        "I like CAKE!"              {:title #{:length}}
@@ -123,7 +123,7 @@
                (:data question-data) => {:question "The question"
                                          :created-by-id USER_ID
                                          :objective-id OBJECTIVE_ID}
-               (:status question-data) => ::objective8.front-end-requests/valid
+               (:status question-data) => ::objective8.front-end.front-end-requests/valid
                (:report question-data) => {}))
        
        (fact "reports validation errors correctly when parameters are missing"
@@ -133,7 +133,7 @@
                (:data question-data) => {:question ""
                                          :created-by-id USER_ID
                                          :objective-id OBJECTIVE_ID}
-               (:status question-data) => ::objective8.front-end-requests/invalid
+               (:status question-data) => ::objective8.front-end.front-end-requests/invalid
                (:report question-data) => {:question #{:length}})) 
 
        (fact "reports validation errors"
@@ -143,7 +143,7 @@
                (:data question-data) => {:question "Why?"
                                          :created-by-id USER_ID
                                          :objective-id OBJECTIVE_ID}
-               (:status question-data) => ::objective8.front-end-requests/invalid
+               (:status question-data) => ::objective8.front-end.front-end-requests/invalid
                (:report question-data) => {:question #{:length}})))
 
 (fact "about transforming requests to answer-data"
@@ -156,7 +156,7 @@
                                       :question-id QUESTION_ID
                                       :objective-id OBJECTIVE_ID
                                       :created-by-id USER_ID}
-              (:status answer-data) => ::objective8.front-end-requests/valid
+              (:status answer-data) => ::objective8.front-end.front-end-requests/valid
               (:report answer-data) => {}))
 
       (fact "reports validation errors correctly when parameters are missing"
@@ -168,7 +168,7 @@
                                       :question-id QUESTION_ID
                                       :objective-id OBJECTIVE_ID
                                       :created-by-id USER_ID}
-              (:status answer-data) => ::objective8.front-end-requests/invalid
+              (:status answer-data) => ::objective8.front-end.front-end-requests/invalid
               (:report answer-data) => {:answer #{:empty}})) 
 
       (tabular
@@ -181,7 +181,7 @@
                                         :question-id QUESTION_ID
                                         :objective-id OBJECTIVE_ID
                                         :created-by-id USER_ID}
-                (:status answer-data) => ::objective8.front-end-requests/invalid
+                (:status answer-data) => ::objective8.front-end.front-end-requests/invalid
                 (:report answer-data) => ?report))
         ?answer                 ?report
         ""                      {:answer #{:empty}}
@@ -196,7 +196,7 @@
               (:data comment-data) => {:comment "the comment"
                                        :comment-on-uri "/some/uri"
                                        :created-by-id USER_ID}
-              (:status comment-data) => ::objective8.front-end-requests/valid
+              (:status comment-data) => ::objective8.front-end.front-end-requests/valid
               (:report comment-data) => {}))
 
        (fact "reports validation errors correctly when parameters are missing"
@@ -206,7 +206,7 @@
                (:data comment-data) => {:comment ""
                                         :comment-on-uri "/some/uri"
                                         :created-by-id USER_ID}
-               (:status comment-data) => ::objective8.front-end-requests/invalid
+               (:status comment-data) => ::objective8.front-end.front-end-requests/invalid
                (:report comment-data) => {:comment #{:empty}})) 
 
       (tabular
@@ -217,7 +217,7 @@
                (:data comment-data) => {:comment (s/trim ?comment) 
                                         :comment-on-uri "/some/uri"
                                         :created-by-id USER_ID}
-               (:status comment-data) => ::objective8.front-end-requests/invalid
+               (:status comment-data) => ::objective8.front-end.front-end-requests/invalid
                (:report comment-data) => {:comment ?error-type}))
        ?comment                 ?error-type
        ""                       #{:empty}
@@ -234,7 +234,7 @@
                                              :comment "comment"
                                              :comment-on-uri "some-uri"
                                              :created-by-id USER_ID}
-                 (:status annotation-data) => ::objective8.front-end-requests/valid
+                 (:status annotation-data) => ::objective8.front-end.front-end-requests/valid
                  (:report annotation-data) => {}))
          ?reason "general" "unclear" "expand" "suggestion" "language") 
 
@@ -246,7 +246,7 @@
                                            :comment ""
                                            :comment-on-uri "some-uri"
                                            :created-by-id USER_ID}
-               (:status annotation-data) => ::objective8.front-end-requests/invalid
+               (:status annotation-data) => ::objective8.front-end.front-end-requests/invalid
                (:report annotation-data) => {:reason #{:incorrect-type}
                                              :comment #{:empty}})) 
        (tabular
@@ -258,7 +258,7 @@
                                              :comment (s/trim ?comment)
                                              :comment-on-uri "some-uri"
                                              :created-by-id USER_ID}
-                 (:status annotation-data) => ::objective8.front-end-requests/invalid
+                 (:status annotation-data) => ::objective8.front-end.front-end-requests/invalid
                  (:report annotation-data) => ?report))
          ?reason             ?comment                ?report
          ""                  "comment"               {:reason #{:incorrect-type}}
@@ -279,7 +279,7 @@
                                            :writer-email "writer@email.com"
                                            :objective-id OBJECTIVE_ID
                                            :invited-by-id USER_ID}
-               (:status invitation-data) => ::objective8.front-end-requests/valid
+               (:status invitation-data) => ::objective8.front-end.front-end-requests/valid
                (:report invitation-data) => {}))
 
         (fact "reports validation errors when parameters are missing"
@@ -291,7 +291,7 @@
                                             :writer-email ""
                                             :objective-id OBJECTIVE_ID
                                             :invited-by-id USER_ID}
-                (:status invitation-data) => ::objective8.front-end-requests/invalid
+                (:status invitation-data) => ::objective8.front-end.front-end-requests/invalid
                 (:report invitation-data) => {:writer-name #{:empty}
                                               :reason #{:empty}
                                               :writer-email #{:empty}}))
@@ -308,7 +308,7 @@
                                             :writer-email (s/trim ?writer-email)
                                             :objective-id OBJECTIVE_ID
                                             :invited-by-id USER_ID}
-                (:status invitation-data) => ::objective8.front-end-requests/invalid
+                (:status invitation-data) => ::objective8.front-end.front-end-requests/invalid
                 (:report invitation-data) => ?report))
         ?writer-name           ?reason                 ?writer-email    ?report
         ""                     "a reason"              "a@b.com"        {:writer-name #{:empty}}
@@ -330,7 +330,7 @@
                (:data note-data) => {:note "the note"
                                      :note-on-uri "/some/uri"
                                      :created-by-id USER_ID}
-               (:status note-data) => ::objective8.front-end-requests/valid
+               (:status note-data) => ::objective8.front-end.front-end-requests/valid
                (:report note-data) => {}))
 
        (fact "reports validation errors when parameters are missing"
@@ -341,7 +341,7 @@
                (:data note-data) => {:note ""
                                      :note-on-uri "/some/uri"
                                      :created-by-id USER_ID}
-               (:status note-data) => ::objective8.front-end-requests/invalid
+               (:status note-data) => ::objective8.front-end.front-end-requests/invalid
                (:report note-data) => {:note #{:empty}}))
 
        (fact "reports validation errors"
@@ -351,7 +351,7 @@
                (:data note-data) => {:note ""
                                      :note-on-uri "/some/uri"
                                      :created-by-id USER_ID}
-               (:status note-data) => ::objective8.front-end-requests/invalid
+               (:status note-data) => ::objective8.front-end.front-end-requests/invalid
                (:report note-data) => {:note #{:empty}})))
 
 (facts "about transforming requests to profile data"
@@ -360,7 +360,7 @@
                (:data profile-data) => {:name "Name" 
                                         :biog "Biog" 
                                         :user-uri (str "/users/" USER_ID)}
-               (:status profile-data) => ::objective8.front-end-requests/valid
+               (:status profile-data) => ::objective8.front-end.front-end-requests/valid
                (:report profile-data) => {}))
 
        (fact "reports validation errors when parameters are missing"
@@ -368,7 +368,7 @@
                 (:data profile-data) => {:name ""
                                          :biog ""
                                          :user-uri (str "/users/" USER_ID)}
-                (:status profile-data) => ::objective8.front-end-requests/invalid
+                (:status profile-data) => ::objective8.front-end.front-end-requests/invalid
                 (:report profile-data) => {:name #{:empty} :biog #{:empty}}))
 
        (tabular
@@ -377,7 +377,7 @@
                 (:data profile-data) => {:name (s/trim ?name)
                                          :biog (s/trim ?biog)
                                          :user-uri (str "/users/" USER_ID)}
-                (:status profile-data) => ::objective8.front-end-requests/invalid
+                (:status profile-data) => ::objective8.front-end.front-end-requests/invalid
                 (:report profile-data) => ?report))
         ?name                  ?biog                   ?report
         ""                     "biography"             {:name #{:empty}}
@@ -396,7 +396,7 @@
               (:data imported-draft-data) => {:submitter-id USER_ID
                                               :objective-id OBJECTIVE_ID
                                               :content (utils/html->hiccup html-string)}
-              (:status imported-draft-data) => ::objective8.front-end-requests/valid
+              (:status imported-draft-data) => ::objective8.front-end.front-end-requests/valid
               (:report imported-draft-data) => {}))
 
       (fact "reports validation errors when params are missing"
@@ -405,7 +405,7 @@
               (:data imported-draft-data) => {:submitter-id USER_ID
                                               :objective-id OBJECTIVE_ID
                                               :content (utils/html->hiccup "")}
-              (:status imported-draft-data) => ::objective8.front-end-requests/invalid
+              (:status imported-draft-data) => ::objective8.front-end.front-end-requests/invalid
               (:report imported-draft-data) => {:content #{:empty}}))
 
       (fact "reports validation errors"
@@ -415,7 +415,7 @@
               (:data imported-draft-data) => {:submitter-id USER_ID
                                               :objective-id OBJECTIVE_ID
                                               :content (utils/html->hiccup html-string)}
-              (:status imported-draft-data) => ::objective8.front-end-requests/invalid
+              (:status imported-draft-data) => ::objective8.front-end.front-end-requests/invalid
               (:report imported-draft-data) => {:content #{:empty}})))
 
 (def SOME_MARKDOWN  "A heading\n===\nSome content")
@@ -430,7 +430,7 @@
                                          :objective-id OBJECTIVE_ID
                                          :markdown SOME_MARKDOWN
                                          :hiccup SOME_HICCUP}
-              (:status add-draft-data) => ::objective8.front-end-requests/valid
+              (:status add-draft-data) => ::objective8.front-end.front-end-requests/valid
               (:report add-draft-data) => {}))
 
       (tabular
@@ -442,7 +442,7 @@
                                           :objective-id OBJECTIVE_ID
                                           :markdown ?expected-markdown
                                           :hiccup '()}
-               (:status add-draft-data) => ::objective8.front-end-requests/invalid
+               (:status add-draft-data) => ::objective8.front-end.front-end-requests/invalid
                (:report add-draft-data) => ?report))
        ?params        ?expected-markdown   ?report
        {:content ""}  ""                   {:markdown #{:empty}}

@@ -1,4 +1,4 @@
-(ns objective8.front-end-requests
+(ns objective8.front-end.front-end-requests
   (:require [cemerick.friend :as friend]
             [clojure.string :as s]
             [objective8.utils :as utils]

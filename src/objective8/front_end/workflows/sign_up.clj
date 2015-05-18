@@ -8,7 +8,7 @@
             [objective8.config :as config]
             [objective8.front-end.api.http :as http-api]
             [objective8.utils :as utils]
-            [objective8.front-end-requests :as fr]
+            [objective8.front-end.front-end-requests :as fr]
             [objective8.permissions :as permissions]
             [objective8.front-end.views :as views]))
 

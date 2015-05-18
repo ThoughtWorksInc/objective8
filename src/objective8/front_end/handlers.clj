@@ -6,7 +6,7 @@
             [org.httpkit.client :as http]
             [objective8.front-end.api.http :as http-api]
             [objective8.front-end.api.domain :as domain]
-            [objective8.front-end-requests :as fr]
+            [objective8.front-end.front-end-requests :as fr]
             [objective8.utils :as utils]
             [objective8.permissions :as permissions]
             [objective8.draft-diffs :as diffs]
