@@ -17,18 +17,6 @@
 
 (def no-drafts-snippet (html/select pf/library-html-resource [:.clj-no-drafts-yet]))
 
-;; PROGRESS INDICATOR
-
-(def progress-snippet (html/select draft-list-template [:.clj-objective-progress-indicator]))
-
-(defn progress-indicator [{:keys [data] :as context}]
-  (let [objective (:objective data)]
-    (html/at progress-snippet
-             [:.clj-progress-objective-link] (html/set-attr :href 
-                                                            (url/url (utils/path-for :fe/objective :id (:_id objective)))) 
-             [:.clj-progress-drafts-link] (html/set-attr :href
-                                                         (url/url (utils/path-for :fe/draft-list :id (:_id objective))))
-             [:.clj-progress-draft-count] (html/content (str "(" (get-in objective [:meta :drafts-count]) ")")))))
 
 (defn- local-draft-path
   ([draft] (local-draft-path draft false))
@@ -85,7 +73,8 @@
                                       [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
                                       [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
                                       [:.clj-objective-progress-indicator] (when (not config/two-phase?)
-                                                                             (html/substitute (progress-indicator context)))
+                                                                             (html/substitute (pf/progress-indicator context)))
+                                      [:.clj-progress-drafts-item] (html/add-class "on")
                                       [:.clj-guidance-buttons] nil
 
                                       [:.clj-guidance-heading] (html/content (translations :draft-guidance/heading))

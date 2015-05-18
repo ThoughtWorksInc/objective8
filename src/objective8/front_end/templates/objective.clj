@@ -103,31 +103,11 @@
                              [:.clj-objective-text] (html/content objective-text)
                              [:.clj-share-objective-modal] (configure-social-network-links objective-url sharing-text))))))
 
-;; PROGRESS INDICATOR
-
-(def progress-snippet (html/select objective-template [:.clj-objective-progress-indicator]))
-(def latest-draft-wrapper-snippet (html/select objective-template [:.clj-latest-draft]))
-
-(defn progress-indicator [{:keys [data] :as context}]
-  (let [objective (:objective data)]
-    (html/at progress-snippet
-             [:.clj-progress-objective-link] (html/set-attr :href 
-                                                            (url/url (utils/path-for :fe/objective :id (:_id objective)))) 
-             [:.clj-progress-drafts-link] (html/set-attr :href
-                                                         (url/url (utils/path-for :fe/draft-list :id (:_id objective))))
-             [:.clj-progress-draft-count] (html/content (str "(" (get-in objective [:meta :drafts-count]) ")")))))
-
-(defn latest-draft [draft]
-  (html/at latest-draft-wrapper-snippet 
-           [:.clj-latest-draft-link] (html/set-attr :href (url/url (utils/path-for :fe/draft 
-                                                                                   :id (:objective-id draft) 
-                                                                                   :d-id "latest")))
-           [:.clj-latest-draft-writer] (html/content (:username draft))
-           [:.clj-latest-draft-time] (html/content (utils/iso-time-string->pretty-time (:_created_at draft)))))
 
 ;; DRAFTING HAS STARTED MESSAGE
 
 (def drafting-message-snippet (html/select pf/library-html-resource [:.clj-drafting-message]))
+(def latest-draft-wrapper-snippet (html/select objective-template [:.clj-latest-draft]))
 
 (defn drafting-message [{:keys [data] :as context}]
   (let [objective (:objective data)]
@@ -140,6 +120,14 @@
     [:.clj-days-left-day] (html/do->
                             (html/set-attr :drafting-begins-date (:end-date objective))
                             (html/content (str (:days-until-drafting-begins objective))))))
+
+(defn latest-draft [draft]
+  (html/at latest-draft-wrapper-snippet 
+           [:.clj-latest-draft-link] (html/set-attr :href (url/url (utils/path-for :fe/draft 
+                                                                                   :id (:objective-id draft) 
+                                                                                   :d-id "latest")))
+           [:.clj-latest-draft-writer] (html/content (:username draft))
+           [:.clj-latest-draft-time] (html/content (utils/iso-time-string->pretty-time (:_created_at draft)))))
 
 (defn invitation-rsvp-for-objective? [objective invitation-rsvp]
   (let [objective-id (:_id objective)
@@ -237,7 +225,9 @@
                   (invitation-rsvp-modal context)))
 
               [:.clj-objective-progress-indicator] (when (not config/two-phase?)
-                                                     (html/substitute (progress-indicator context)))
+                                                     (html/substitute (pf/progress-indicator context)))
+
+              [:.clj-progress-objective-item] (html/add-class "on")
               [:.clj-guidance-buttons] nil
               [:.clj-guidance-heading] (html/content (translations :objective-guidance/heading))
 

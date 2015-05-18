@@ -69,6 +69,8 @@ html.no-js(lang="en")
         li
           a(href="#guidance-assets") Guidance assets
         li
+          a(href="#navigation-assets") Navigation assets
+        li
           a(href="#objective-list-assets") Objective list assets
         li
           a(href="#objective-assets") Objective assets
@@ -119,6 +121,14 @@ html.no-js(lang="en")
           p Generated with flashMessageSuccessBar() mixin
         +flashMessageSuccessBar
           | !Success! It worked.
+
+      h2#navigation-assets Navigation assets
+
+      .example
+        .documentation
+          h3 Progress indicator
+          p Generated with progressIndicator(numberOfDrafts) mixin
+        +progressIndicator(3)
 
       h2#button-assets Buttons assets
 

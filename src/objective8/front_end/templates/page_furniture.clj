@@ -2,6 +2,7 @@
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
+            [cemerick.url :as url]
             [objective8.config :as config]
             [objective8.utils :as utils]
             [objective8.front-end.permissions :as permissions]
@@ -72,6 +73,19 @@
       (= type :flash-message) (flash-bar (translations message)) 
       invitation-rsvp (flash-bar (invitation-response-banner context))
       :else status-bar-snippet)))
+
+;; PROGRESS INDICATOR
+
+(def progress-snippet (html/select library-html-resource [:.clj-objective-progress-indicator]))
+
+(defn progress-indicator [{:keys [data] :as context}]
+  (let [objective (:objective data)]
+    (html/at progress-snippet
+             [:.clj-progress-objective-link] (html/set-attr :href 
+                                                            (url/url (utils/path-for :fe/objective :id (:_id objective)))) 
+             [:.clj-progress-drafts-link] (html/set-attr :href
+                                                         (url/url (utils/path-for :fe/draft-list :id (:_id objective))))
+             [:.clj-progress-draft-count] (html/content (str "(" (get-in objective [:meta :drafts-count]) ")")))))
 
 ;; WRITER LIST
 

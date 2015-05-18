@@ -1,0 +1,12 @@
+mixin progressIndicator(numberOfDrafts)
+  .clj-objective-progress-indicator
+    ul.progress-indicator
+      li.clj-progress-objective-item
+        a.clj-progress-objective-link(href="/objective", data-l8n="content:objective-nav/objective") !Objective
+      li.clj-progress-drafts-item
+        a.clj-progress-drafts-link.func--drafting-message-link(href="/draft")
+          span(data-l8n="content:objective-nav/drafts") !Drafts
+          =" "
+          span.clj-progress-draft-count (#{numberOfDrafts})
+    //-  li
+    //-    a(href="#") Policy
