@@ -157,6 +157,7 @@ writer-dashboard,no-annotations-message,There are no annotations associated with
 writer-dashboard,link-button,Dashboard
 writer-dashboard,writer-note-placeholder,Add a reply to the community
 writer-dashboard,writer-note-empty-validation-message,Your response cannot be empty
+writer-dashboard,writer-note-length-validation-message,Your response cannot be more than 500 characters
 dashboard-questions,doc-title,Writer dashboard | Objective[8]
 dashboard-questions,doc-description,A summary of engagement with questions and answers for this objective
 dashboard-annotations,doc-title,Writer dashboard | Objective[8]

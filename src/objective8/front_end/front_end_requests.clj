@@ -182,7 +182,8 @@
 (defn note-validator [request]
   (let [note (s/trim (get-in request [:params :note] ""))]
     (cond-> (initialise-field-validation note)
-      (empty? note) (report-error :empty))))
+      (empty? note) (report-error :empty)
+      (longer? note 500) (report-error :length))))
 
 (defn note-on-uri-validator [request]
   (when-let [note-on-uri (get-in request [:params :note-on-uri])]

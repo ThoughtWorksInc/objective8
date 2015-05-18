@@ -35,9 +35,11 @@
     (if is-relevant-answer
       (html/at nodes
                [:.clj-writer-note-empty-error] (when (contains? (:note validation-report) :empty) identity)
+               [:.clj-writer-note-length-error] (when (contains? (:note validation-report) :length) identity)
                [:.clj-writer-note-item-field] (html/set-attr :value (:note previous-inputs)))
       (html/at nodes
-               [:.clj-writer-note-empty-error] nil))))
+               [:.clj-writer-note-empty-error] nil    
+               [:.clj-writer-note-length-error] nil))))
 
 (defn render-answer-without-note [{:keys [ring-request] :as context} answer]
   (->> (html/at no-writer-note-snippet

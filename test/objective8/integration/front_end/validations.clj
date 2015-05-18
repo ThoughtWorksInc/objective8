@@ -481,5 +481,6 @@
                                                 :body)]
                          dashboard-html =not=> (contains ?error-tag))))))
 
- ?note     ?error-tag
- ""        "clj-writer-note-empty-error")
+ ?note                       ?error-tag
+ ""                          "clj-writer-note-empty-error"
+ (ih/string-of-length 501)   "clj-writer-note-length-error")

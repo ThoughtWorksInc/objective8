@@ -344,15 +344,19 @@
                (:status note-data) => ::objective8.front-end.front-end-requests/invalid
                (:report note-data) => {:note #{:empty}}))
 
-       (fact "reports validation errors"
-             (let [note-data (request->writer-note-data {:params {:note ""
-                                                                  :note-on-uri "/some/uri"}}
-                                                        USER_ID)]
-               (:data note-data) => {:note ""
-                                     :note-on-uri "/some/uri"
-                                     :created-by-id USER_ID}
-               (:status note-data) => ::objective8.front-end.front-end-requests/invalid
-               (:report note-data) => {:note #{:empty}})))
+       (tabular
+         (fact "reports validation errors"
+               (let [note-data (request->writer-note-data {:params {:note ?note
+                                                                    :note-on-uri "/some/uri"}}
+                                                          USER_ID)]
+                 (:data note-data) => {:note ?note
+                                       :note-on-uri "/some/uri"
+                                       :created-by-id USER_ID}
+                 (:status note-data) => ::objective8.front-end.front-end-requests/invalid
+                 (:report note-data) => ?report))
+         ?note                      ?report
+         ""                         {:note #{:empty}}
+         (string-of-length 501)     {:note #{:length}}))
 
 (facts "about transforming requests to profile data"
        (fact "extracts the relevant data"

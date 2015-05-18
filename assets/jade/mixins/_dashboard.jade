@@ -38,6 +38,7 @@ mixin dashboardNoteItem(withWriterNote)
           span.form-field-label-title.visuallyhidden Note
           input.dashboard-writer-note-item-field.clj-writer-note-item-field.func--dashboard-writer-note-item-field(name="note", type="text", placeholder="!Add a reply to the community.", data-l8n="attr/placeholder:writer-dashboard/writer-note-placeholder")
           span.user-input-error-message.clj-writer-note-empty-error(data-l8n="content:writer-dashboard/writer-note-empty-validation-message") !Your response cannot be empty
+          span.user-input-error-message.clj-writer-note-length-error(data-l8n="content:writer-dashboard/writer-note-length-validation-message") !Your response cannot be more than 500 characters
         button.dashboard-writer-note-item-save-button(type='submit')
           i.fa.fa-paperclip
 
