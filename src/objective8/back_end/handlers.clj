@@ -15,7 +15,7 @@
             [objective8.back-end.requests :as br]
             [objective8.back-end.storage.domain.stars :as stars]
             [objective8.back-end.storage.domain.admin-removals :as admin-removals]
-            [objective8.back-end.actions :as actions]))
+            [objective8.back-end.storage.actions :as actions]))
 
 (defn error-response [status message]
   {:status status

@@ -2,7 +2,7 @@
   (:require [midje.sweet :refer :all]
             [objective8.back-end.storage.domain.comments :as comments]
             [objective8.utils :as utils]
-            [objective8.back-end.actions :as actions]
+            [objective8.back-end.storage.actions :as actions]
             [objective8.integration.integration-helpers :as ih]
             [objective8.integration.storage-helpers :as sh]))
 

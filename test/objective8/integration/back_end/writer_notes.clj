@@ -3,7 +3,7 @@
             [peridot.core :as p]
             [cheshire.core :as json]
             [objective8.utils :as utils]
-            [objective8.back-end.actions :as actions]
+            [objective8.back-end.storage.actions :as actions]
             [objective8.core :as core]
             [objective8.back-end.storage.domain.writers :as writers]
             [objective8.back-end.storage.domain.writer-notes :as writer-notes]
