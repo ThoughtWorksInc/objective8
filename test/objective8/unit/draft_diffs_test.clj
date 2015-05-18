@@ -2,7 +2,7 @@
   (:require [midje.sweet :refer :all]
             [clojure.tools.logging :as log]
             [objective8.utils :as utils]  
-            [objective8.draft-diffs :as diffs]))
+            [objective8.front-end.draft-diffs :as diffs]))
 
 (def HICCUP_1 [["p" nil ""] ["p" nil "First paragraph."] ["ul" ["li" "List item 1."] ["li" "List item 2."] ["li" "List item 3."]] ["p" {} "Last paragraph."]])
 (def HICCUP_2 [["p" {} "First paragraph."] ["p" {} "Second paragraph."] ["p" {} "Third paragraph."]])

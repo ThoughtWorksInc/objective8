@@ -9,7 +9,7 @@
             [objective8.front-end.front-end-requests :as fr]
             [objective8.utils :as utils]
             [objective8.permissions :as permissions]
-            [objective8.draft-diffs :as diffs]
+            [objective8.front-end.draft-diffs :as diffs]
             [objective8.front-end.views :as views]))
 
 (declare accept-invitation)

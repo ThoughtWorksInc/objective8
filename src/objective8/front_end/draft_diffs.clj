@@ -1,8 +1,7 @@
-(ns objective8.draft-diffs
+(ns objective8.front-end.draft-diffs
   (:require [diff-match-patch-clj.core :as dmp]
             [clojure.tools.logging :as log]
-            [objective8.utils :as utils]
-            [objective8.back-end.drafts :as drafts]))
+            [objective8.utils :as utils]))
 
 (declare replacement-element-and-updated-diffs)
 
