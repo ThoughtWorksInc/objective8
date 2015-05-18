@@ -242,7 +242,7 @@
       (if-let [stored-question (-> params
                                    (select-keys [:question :created-by-id])
                                    (assoc :objective-id id)
-                                   actions/create-question!)]
+                                   questions/create-question)]
         (resource-created-response (str utils/host-url
                                        "/api/v1/objectives/" (:objective-id stored-question)
                                        "/questions/" (:_id stored-question))
