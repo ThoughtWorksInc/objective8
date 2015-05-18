@@ -7,8 +7,8 @@
             [clojure.data.json :as cl-json]
             [ring.middleware.session.store :as rss]
             [objective8.core :as core]
-            [objective8.workflows.twitter :as twitter]
-            [objective8.workflows.sign-up :as sign-up]
+            [objective8.front-end.workflows.twitter :as twitter]
+            [objective8.front-end.workflows.sign-up :as sign-up]
             [objective8.back-end.storage.mappings :as m]
             [objective8.back-end.storage.database :as db]))
 

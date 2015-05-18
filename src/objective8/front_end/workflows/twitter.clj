@@ -1,4 +1,4 @@
-(ns objective8.workflows.twitter
+(ns objective8.front-end.workflows.twitter
     (:require [clojure.tools.logging :as log]
               [oauth.client :as oauth]
               [ring.util.response :as response]

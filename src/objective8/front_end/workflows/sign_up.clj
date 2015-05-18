@@ -1,4 +1,4 @@
-(ns objective8.workflows.sign-up
+(ns objective8.front-end.workflows.sign-up
   (:require [cemerick.friend.workflows :as workflows]
             [cemerick.friend :as friend]
             [ring.util.response :as response]
@@ -34,7 +34,7 @@
 
 (defn auth-map [user]
   (workflows/make-auth {:identity (:_id user) :roles (roles-for-user user) :username (:username user)}
-                       {::friend/workflow :objective8.workflows.sign-up/sign-up-workflow}))
+                       {::friend/workflow :objective8.front-end.workflows.sign-up/sign-up-workflow}))
 
 (defn authorise [response user]
   (friend/merge-authentication response (auth-map user)))

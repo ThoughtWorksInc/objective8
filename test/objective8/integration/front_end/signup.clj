@@ -10,7 +10,7 @@
             [objective8.integration.integration-helpers :as helpers]
             [objective8.front-end.api.http :as http-api]
             [objective8.utils :as utils]
-            [objective8.workflows.sign-up :as sign-up]))
+            [objective8.front-end.workflows.sign-up :as sign-up]))
 
 (def test-session (helpers/test-context))
 

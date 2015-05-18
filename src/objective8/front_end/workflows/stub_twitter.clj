@@ -1,7 +1,7 @@
-(ns objective8.workflows.stub-twitter
+(ns objective8.front-end.workflows.stub-twitter
   (:require [bidi.ring :refer [make-handler]]
             [ring.util.response :as response]
-            [objective8.workflows.sign-up :refer [sign-up-workflow]]
+            [objective8.front-end.workflows.sign-up :refer [sign-up-workflow]]
             [objective8.utils :as utils]))
 
 ;; Stub out twitter authentication workflow

@@ -5,7 +5,7 @@
             [cemerick.friend :as friend]
             [cemerick.friend.workflows :as workflows]
             [objective8.integration.integration-helpers :as ih]
-            [objective8.workflows.twitter :refer :all]))
+            [objective8.front-end.workflows.twitter :refer :all]))
 
 (def consumer (oauth/make-consumer "FAKE_TOKEN"
                                    "FAKE_SECRET"
