@@ -23,7 +23,7 @@
                  (let [{voting-user-id :_id} (sh/store-a-user)
                        {o-id :objective-id q-id :question-id a-id :_id} (sh/store-an-answer)
                        uri (str "/objectives/" o-id "/questions/" q-id "/answers/" a-id)
-                       {response :response} (p/request app (utils/path-for :be/post-up-down-vote)
+                       {response :response} (p/request app (utils/path-for :api/post-up-down-vote)
                                                        :request-method :post
                                                        :content-type "application/json"
                                                        :body (json/generate-string {:created-by-id voting-user-id
@@ -37,13 +37,13 @@
                        {o-id :objective-id q-id :question-id a-id :_id} (sh/store-an-answer)
                        uri (str "/objectives/" o-id "/questions/" q-id "/answers/" a-id)
                        {response :response} (-> app
-                                                (p/request (utils/path-for :be/post-up-down-vote)
+                                                (p/request (utils/path-for :api/post-up-down-vote)
                                                            :request-method :post
                                                            :content-type "application/json"
                                                            :body (json/generate-string {:created-by-id voting-user-id
                                                                                         :vote-on-uri uri
                                                                                         :vote-type :up}))
-                                                (p/request (utils/path-for :be/post-up-down-vote)
+                                                (p/request (utils/path-for :api/post-up-down-vote)
                                                            :request-method :post
                                                            :content-type "application/json"
                                                            :body (json/generate-string {:created-by-id voting-user-id
@@ -57,7 +57,7 @@
                        the-comment (sh/store-a-comment {:entity draft})
 
                        uri (str "/comments/" (:_id the-comment))
-                       {response :response} (p/request app (utils/path-for :be/post-up-down-vote)
+                       {response :response} (p/request app (utils/path-for :api/post-up-down-vote)
                                                        :request-method :post
                                                        :content-type "application/json"
                                                        :body (json/generate-string {:created-by-id voting-user-id
@@ -71,7 +71,7 @@
                        the-comment (sh/store-a-comment {:entity objective})
 
                        uri (str "/comments/" (:_id the-comment))
-                       {response :response} (p/request app (utils/path-for :be/post-up-down-vote)
+                       {response :response} (p/request app (utils/path-for :api/post-up-down-vote)
                                                        :request-method :post
                                                        :content-type "application/json"
                                                        :body (json/generate-string {:created-by-id voting-user-id
@@ -87,7 +87,7 @@
                        _ (sh/start-drafting! o-id)
 
                        uri (str "/comments/" (:_id the-comment))
-                       {response :response} (p/request app (utils/path-for :be/post-up-down-vote)
+                       {response :response} (p/request app (utils/path-for :api/post-up-down-vote)
                                                        :request-method :post
                                                        :content-type "application/json"
                                                        :body (json/generate-string {:created-by-id voting-user-id

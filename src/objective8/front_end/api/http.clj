@@ -130,21 +130,21 @@
 
 (defn get-objectives-for-writer [user-id]
  (let [api-result (default-get-call
-                    (utils/path-for :be/get-objectives-for-writer :id user-id))]
+                    (utils/path-for :api/get-objectives-for-writer :id user-id))]
      (if (= ::success (:status api-result))
        (update-in api-result [:result] #(map parse-objective %))
        api-result)))
 
 ;; COMMENTS
 (defn post-comment [comment-data]
-  (default-post-call (utils/path-for :be/post-comment) comment-data))
+  (default-post-call (utils/path-for :api/post-comment) comment-data))
 
 (defn get-comments 
   ([entity-uri]
    (get-comments entity-uri {}))
 
   ([entity-uri options]
-   (default-get-call (utils/path-for :be/get-comments) {:query-params (merge {:uri entity-uri} options)})))
+   (default-get-call (utils/path-for :api/get-comments) {:query-params (merge {:uri entity-uri} options)})))
 
 ;; QUESTIONS
 
@@ -165,7 +165,7 @@
      {:query-params options})))
 
 (defn post-mark [mark-data]
-  (default-post-call (utils/path-for :be/post-mark) mark-data))
+  (default-post-call (utils/path-for :api/post-mark) mark-data))
 
 ;; ANSWERS
 
@@ -210,21 +210,21 @@
                           "/writers") writer))
 
 (defn post-profile [profile-data]
-  (default-put-call (utils/path-for :be/put-writer-profile) profile-data))
+  (default-put-call (utils/path-for :api/put-writer-profile) profile-data))
 
 (defn post-writer-note [note-data]
-  (default-post-call (utils/path-for :be/post-writer-note) note-data))
+  (default-post-call (utils/path-for :api/post-writer-note) note-data))
 
 ;; DRAFTS
 
 (defn get-draft [objective-id draft-id]
-  (default-get-call (utils/path-for :be/get-draft :id objective-id :d-id draft-id)))
+  (default-get-call (utils/path-for :api/get-draft :id objective-id :d-id draft-id)))
 
 (defn post-draft [{objective-id :objective-id :as draft}]
-  (default-post-call (utils/path-for :be/post-draft :id objective-id) draft))
+  (default-post-call (utils/path-for :api/post-draft :id objective-id) draft))
 
 (defn get-all-drafts [objective-id]
-  (default-get-call (utils/path-for :be/get-drafts-for-objective :id objective-id)))
+  (default-get-call (utils/path-for :api/get-drafts-for-objective :id objective-id)))
 
 (defn get-draft-section [section-uri]
   (default-get-call (str utils/host-url "/api/v1" section-uri)))
@@ -235,17 +235,17 @@
 ;; VOTES
 
 (defn create-up-down-vote [vote]
-  (default-post-call (utils/path-for :be/post-up-down-vote) vote))
+  (default-post-call (utils/path-for :api/post-up-down-vote) vote))
 
 ;; STARS
 
 (defn post-star [star-data]
-  (default-post-call (utils/path-for :be/post-star) star-data))
+  (default-post-call (utils/path-for :api/post-star) star-data))
 
 ;; ADMIN REMOVALS 
 
 (defn post-admin-removal [admin-removal-data]
-  (default-post-call (utils/path-for :be/post-admin-removal) admin-removal-data))  
+  (default-post-call (utils/path-for :api/post-admin-removal) admin-removal-data))  
 
 (defn get-admin-removals []
-  (default-get-call (utils/path-for :be/get-admin-removals)))
+  (default-get-call (utils/path-for :api/get-admin-removals)))

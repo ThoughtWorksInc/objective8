@@ -102,7 +102,7 @@
       (let [{status :status user :result} (actions/update-user-with-profile! profile-data)]
         (cond
           (= status ::actions/success)
-          (resource-updated-response (utils/path-for :be/get-user :id (:_id user)) user)
+          (resource-updated-response (utils/path-for :api/get-user :id (:_id user)) user)
 
           (= status ::actions/entity-not-found)  
           (not-found-response "User does not exist with that user-uri") 
@@ -426,7 +426,7 @@
 (defn post-draft [{{objective-id :id} :route-params :as request}]
   (let [draft-data (br/request->draft-data request)] 
     (if-let [draft (actions/submit-draft! draft-data)]
-      (resource-created-response (utils/path-for :be/get-draft :id objective-id :d-id (str (:_id draft)))
+      (resource-created-response (utils/path-for :api/get-draft :id objective-id :d-id (str (:_id draft)))
                                  draft)
       (response/not-found (str "No writer found with submitter-id " (:submitter-id draft-data) " for objective " objective-id)))))
 

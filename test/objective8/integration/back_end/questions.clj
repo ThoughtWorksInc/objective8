@@ -144,7 +144,7 @@
 
                      unmarked-question (sh/store-a-question {:objective objective})
 
-                     {response :response} (p/request app (utils/path-for :be/get-questions-for-objective :id (:_id objective)))]
+                     {response :response} (p/request app (utils/path-for :api/get-questions-for-objective :id (:_id objective)))]
                  (:body response) => (helpers/json-contains [(contains {:_id (:_id marked-question)
                                                                         :meta {:marked true
                                                                                :marked-by marked-by}})

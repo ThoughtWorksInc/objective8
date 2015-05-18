@@ -29,7 +29,7 @@
                        draft-data {:objective-id objective-id
                                    :submitter-id submitter-id
                                    :content some-hiccup}
-                       {response :response :as peridot-response} (p/request app (utils/path-for :be/post-draft :id objective-id)
+                       {response :response :as peridot-response} (p/request app (utils/path-for :api/post-draft :id objective-id)
                                                                             :request-method :post
                                                                             :content-type "application/json"
                                                                             :body (json/generate-string draft-data))]
@@ -44,7 +44,7 @@
                        the-draft {:objective-id objective-id
                                   :submitter-id submitter-id
                                   :content "Some content"}
-                       {response :response} (p/request app (utils/path-for :be/post-draft :id objective-id)
+                       {response :response} (p/request app (utils/path-for :api/post-draft :id objective-id)
                                                        :request-method :post
                                                        :content-type "application/json"
                                                        :body (json/generate-string the-draft))]
@@ -56,7 +56,7 @@
                        the-draft {:objective-id objective-id
                                   :submitter-id submitter-id 
                                   :content "Some content"}
-                       {response :response} (p/request app (utils/path-for :be/post-draft :id objective-id)
+                       {response :response} (p/request app (utils/path-for :api/post-draft :id objective-id)
                                                        :request-method :post
                                                        :content-type "application/json"
                                                        :body (json/generate-string the-draft))]
@@ -71,7 +71,7 @@
          (fact "gets a draft for an objective"
                (let [{objective-id :objective-id draft-id :_id} (sh/store-a-draft)
                      draft (drafts/retrieve-draft draft-id)
-                     {response :response} (p/request app (utils/path-for :be/get-draft :id objective-id 
+                     {response :response} (p/request app (utils/path-for :api/get-draft :id objective-id 
                                                                          :d-id draft-id))]
                  (:status response) => 200
                  (:body response) => (helpers/json-contains draft)))))
@@ -89,13 +89,13 @@
                                                  (take 5)
                                                  (map sh/store-a-draft)
                                                  (map #(dissoc % :_created_at_sql_time))))
-                       {response :response} (p/request app (utils/path-for :be/get-drafts-for-objective :id (:_id objective)))]
+                       {response :response} (p/request app (utils/path-for :api/get-drafts-for-objective :id (:_id objective)))]
                    (:status response) => 200
                    (:body response) => (helpers/json-contains (map contains (-> stored-drafts :_id reverse)))))
 
            (fact "returns 404 if objective not in drafting"
                  (let [objective (sh/store-an-open-objective)]
-                   (get-in (p/request app (utils/path-for :be/get-drafts-for-objective :id (:_id objective)))
+                   (get-in (p/request app (utils/path-for :api/get-drafts-for-objective :id (:_id objective)))
                            [:response :status]) => 404))))) 
 
 (facts "GET /api/v1/objectives/:id/drafts/latest"
@@ -112,7 +112,7 @@
 
                      latest-draft (drafts/retrieve-draft second-draft-id)
                      
-                     {response :response} (p/request app (utils/path-for :be/get-draft :id objective-id
+                     {response :response} (p/request app (utils/path-for :api/get-draft :id objective-id
                                                                          :d-id "latest"))]
                  (:status response) => 200
                  (:body response) => (helpers/json-contains latest-draft)))
@@ -122,7 +122,7 @@
                      {first-draft-id :_id} (sh/store-a-draft {:objective objective})
                      {second-draft-id :_id :as second-draft} (sh/store-a-draft {:objective objective})]
                  
-                 (get-in (p/request app (utils/path-for :be/get-draft
+                 (get-in (p/request app (utils/path-for :api/get-draft
                                                         :id (:_id objective)
                                                         :d-id "latest"))
                          [:response :body]) => (helpers/json-contains {:previous-draft-id first-draft-id})))))
@@ -139,7 +139,7 @@
          
          (fact "gets section of draft"
                (let [{draft-id :_id objective-id :objective-id :as draft} (sh/store-a-draft {:content draft-content})] 
-                 (get-in (p/request app (utils/path-for :be/get-section
+                 (get-in (p/request app (utils/path-for :api/get-section
                                                         :id objective-id
                                                         :d-id draft-id
                                                         :section-label section-label))
@@ -162,7 +162,7 @@
                                    :section-label section-label} 
                      comment-for-this-section {:comment "section comment" :reason "general" :created-by-id (:submitter-id draft)}
                      _ (actions/create-section-comment! section-data comment-for-this-section)] 
-                 (get-in (p/request app (utils/path-for :be/get-annotations
+                 (get-in (p/request app (utils/path-for :api/get-annotations
                                                         :id objective-id
                                                         :d-id draft-id))
                          [:response :body]) => (helpers/json-contains 

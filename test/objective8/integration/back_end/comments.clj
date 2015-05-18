@@ -138,7 +138,7 @@
                     _ (sh/store-an-up-down-vote (:global-id comment-with-some-votes) :up)
 
                     escaped-objective-uri (str "%2Fobjectives%2F" (:_id objective))
-                    {body :body} (:response (p/request app (str (utils/path-for :be/get-comments)
+                    {body :body} (:response (p/request app (str (utils/path-for :api/get-comments)
                                                                 "?uri=" escaped-objective-uri
                                                                 "&sorted-by=up-votes")))]
                 body => (helpers/json-contains [(contains {:_id (:_id comment-with-most-votes)})
@@ -161,7 +161,7 @@
                                                      sh/with-note)
 
                      escaped-objective-uri (str "%2Fobjectives%2F" (:_id objective))
-                     {body :body} (:response (p/request app (str (utils/path-for :be/get-comments)
+                     {body :body} (:response (p/request app (str (utils/path-for :api/get-comments)
                                                                  "?uri=" escaped-objective-uri
                                                                  "&filter-type=has-writer-note")))]
                  body => (helpers/json-contains [(contains {:_id comment-with-note-id})])
