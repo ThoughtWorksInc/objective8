@@ -54,7 +54,7 @@
 
 (defn validate-filter-type [query filter-type]
   (if filter-type
-    (when (#{:has-writer-note} filter-type)
+    (when (#{:has-writer-note :none} filter-type)
       (assoc query :filter-type filter-type))
     query))
 

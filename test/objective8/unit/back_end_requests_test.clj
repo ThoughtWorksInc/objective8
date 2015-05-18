@@ -44,6 +44,7 @@
          {:sorted-by "up-votes"}           {:uri OBJECTIVE_URI :sorted-by :up-votes}
          {:sorted-by "down-votes"}         {:uri OBJECTIVE_URI :sorted-by :down-votes}
          {:filter-type "has-writer-note"}  {:uri OBJECTIVE_URI :filter-type :has-writer-note}
+         {:filter-type "none"}             {:uri OBJECTIVE_URI :filter-type :none}
          {:limit "10"}                     {:uri OBJECTIVE_URI :limit 10}
          {:sorted-by "created-at"
           :limit "10"
