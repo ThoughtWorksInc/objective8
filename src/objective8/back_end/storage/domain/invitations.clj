@@ -1,4 +1,4 @@
-(ns objective8.back-end.invitations
+(ns objective8.back-end.storage.domain.invitations
   (:require [objective8.back-end.storage.storage :as storage]
             [objective8.back-end.storage.mappings :as mappings]
             [objective8.back-end.objectives :as objectives]

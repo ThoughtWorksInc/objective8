@@ -1,4 +1,4 @@
-(ns objective8.back-end.drafts
+(ns objective8.back-end.storage.domain.drafts
   (:require [crypto.random :as random] 
             [objective8.back-end.storage.storage :as storage] 
             [objective8.back-end.storage.uris :as uris]

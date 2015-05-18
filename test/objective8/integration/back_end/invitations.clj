@@ -6,7 +6,7 @@
             [objective8.integration.integration-helpers :as helpers]
             [objective8.integration.storage-helpers :as sh]
             [objective8.back-end.writers :as writers]
-            [objective8.back-end.invitations :as invitations]
+            [objective8.back-end.storage.domain.invitations :as invitations]
             [objective8.back-end.users :as users]
             [objective8.back-end.objectives :as objectives]
             [objective8.middleware :as m])) 

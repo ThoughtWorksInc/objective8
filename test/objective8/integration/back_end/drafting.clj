@@ -6,7 +6,7 @@
             [objective8.config :as config]
             [objective8.integration.integration-helpers :as helpers]
             [objective8.integration.storage-helpers :as sh]
-            [objective8.back-end.drafts :as drafts]
+            [objective8.back-end.storage.domain.drafts :as drafts]
             [objective8.back-end.actions :as actions]
             [objective8.middleware :as m]))
 

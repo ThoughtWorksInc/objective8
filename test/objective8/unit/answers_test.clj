@@ -1,6 +1,6 @@
 (ns objective8.unit.answers-test
   (:require [midje.sweet :refer :all]
-            [objective8.back-end.answers :as answers]
+            [objective8.back-end.storage.domain.answers :as answers]
             [objective8.back-end.objectives :as objectives]
             [objective8.back-end.storage.storage :as storage]
             [objective8.config :as config]))

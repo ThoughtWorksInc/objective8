@@ -1,6 +1,6 @@
 (ns objective8.unit.invitations-test
   (:require [midje.sweet :refer :all]
-            [objective8.back-end.invitations :as invitations]
+            [objective8.back-end.storage.domain.invitations :as invitations]
             [objective8.back-end.storage.storage :as storage]
             [objective8.config :as config]
             [objective8.back-end.objectives :as objectives]

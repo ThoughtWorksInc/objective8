@@ -1,6 +1,6 @@
 (ns objective8.integration.db.drafts
   (:require [midje.sweet :refer :all]
-            [objective8.back-end.drafts :as drafts]
+            [objective8.back-end.storage.domain.drafts :as drafts]
             [objective8.integration.integration-helpers :as ih]
             [objective8.integration.storage-helpers :as sh]))
 

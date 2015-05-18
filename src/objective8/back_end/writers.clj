@@ -1,7 +1,7 @@
 (ns objective8.back-end.writers
   (:require [clojure.tools.logging :as log]
             [objective8.utils :as utils]
-            [objective8.back-end.invitations :as i]
+            [objective8.back-end.storage.domain.invitations :as i]
             [objective8.back-end.storage.storage :as storage]))  
 
 
