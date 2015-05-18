@@ -218,13 +218,14 @@
                :created-by-uri user-uri })
 
 (facts "about creating questions"
-(def question {:objective-id OBJECTIVE_ID})
+(def question {:objective-id OBJECTIVE_ID :created-by-id USER_ID})
 
        (binding [config/two-phase? true]
          (fact "A question can be created when the associated objective is not in drafting"
                (actions/create-question! question) => :stored-question
                (provided
                  (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
+                 (writers/retrieve-writer-for-objective USER_ID OBJECTIVE_ID) => nil
                  (questions/store-question! question) => :stored-question))
 
          (fact "Attempting to create a question against an objective that is in drafting returns nil"
