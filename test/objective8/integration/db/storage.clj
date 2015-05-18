@@ -342,7 +342,10 @@
                (let [{comment-on-id :comment-on-id :as comment} (sh/store-a-comment)
                      _ (sh/store-a-note {:note-on-entity comment :note "a real note"})]
 
-                 (storage/pg-retrieve-comments-with-votes {:global-id comment-on-id :sorted-by :created-at :filter-type :none})
+                 (storage/pg-retrieve-comments-with-votes {:global-id comment-on-id
+                                                           :sorted-by :created-at
+                                                           :filter-type :none
+                                                           :limit 50})
                  => (contains [(contains (assoc comment :note "a real note"))])))
 
         (fact "retrieving a draft returns _created_at_sql_time for accurate time comparison between drafts"

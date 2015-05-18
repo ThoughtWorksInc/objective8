@@ -26,9 +26,16 @@
             (utils/update-in-self [:uri] uri-for-comment)
             (replace-comment-on-id comment-on-uri))))
 
+(def default-comment-query
+  {:sorted-by :created-at
+   :filter-type :none
+   :limit 50})
+
 (defn get-comments [entity-uri query-params]
   (when-let [{:keys [global-id]} (storage/pg-retrieve-entity-by-uri entity-uri :with-global-id)]
-    (let [query {:global-id global-id :sorted-by (:sorted-by query-params) :filter-type (:filter-type query-params)}]
+    (let [query (-> default-comment-query
+                    (merge query-params)
+                    (assoc :global-id global-id))]
       (->> (storage/pg-retrieve-comments-with-votes query)
            (map #(dissoc % :global-id))
            (map #(utils/update-in-self % [:uri] uri-for-comment))

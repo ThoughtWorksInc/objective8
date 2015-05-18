@@ -46,24 +46,36 @@
       true (utils/select-all-or-nothing [:comment :created-by-id :comment-on-uri])
       reason (assoc :reason reason))))
 
-(defn get-sorted-by [params]
-  (if-let [sorted-by (keyword (:sorted-by params))]
-    (if (#{:up-votes :down-votes} sorted-by)
-      sorted-by
-      :created-at)
-    :created-at))
+(defn validate-sorted-by [query sorted-by]
+  (if sorted-by
+    (when (#{:up-votes :down-votes :created-at} sorted-by)
+      (assoc query :sorted-by sorted-by))
+    query))
 
-(defn get-filter-type [params]
-  (if-let [filter-type (keyword (:filter-type params))]
-    (if (#{:has-writer-note} filter-type)
-      filter-type
-      :none)
-    :none))
+(defn validate-filter-type [query filter-type]
+  (if filter-type
+    (when (#{:has-writer-note} filter-type)
+      (assoc query :filter-type filter-type))
+    query))
+
+(defn validate-limit [query limit-string]
+  (if limit-string
+    (try
+      (let [limit (Integer/parseInt limit-string)]
+        (when (> limit 0)
+          (assoc query :limit limit)))
+      (catch Exception e
+        nil))
+    query))
 
 (defn request->comments-query [{params :params :as request}]
+  (let [sorted-by (keyword (:sorted-by params)) 
+        filter-type (keyword (:filter-type params)) 
+        limit (:limit params)]
   (some-> (utils/select-all-or-nothing params [:uri])
-          (assoc :sorted-by (get-sorted-by params))
-          (assoc :filter-type (get-filter-type params))))
+          (validate-sorted-by sorted-by)
+          (validate-filter-type filter-type)
+          (validate-limit limit))))
 
 (defn request->star-data [{params :params :as request}]
   (utils/select-all-or-nothing params [:objective-uri :created-by-id]))

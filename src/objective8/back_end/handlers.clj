@@ -223,8 +223,8 @@
 
 (defn get-comments [{:keys [params] :as request}]
   (try
-    (if-let [{uri :uri sorted-by :sorted-by filter-type :filter-type} (br/request->comments-query request)]
-      (if-let [comments (comments/get-comments uri {:sorted-by sorted-by :filter-type filter-type})]
+    (if-let [{uri :uri :as query} (br/request->comments-query request)]
+      (if-let [comments (comments/get-comments uri (dissoc query :uri))]
         (-> comments
             response/response
             (response/content-type "application/json"))
