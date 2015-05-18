@@ -193,7 +193,7 @@
   ([app-config] 
    (let [port (Integer/parseInt (config/get-var "APP_PORT" "8080"))]
      (db/connect! (:db-spec app-config)) 
-     (start-scheduler)
+     (when config/two-phase? (start-scheduler)) 
      (initialise-api)
      (log/info (str "Starting objective8 on port " port))
      (reset! server (run-server (app app-config) {:port port})))))
