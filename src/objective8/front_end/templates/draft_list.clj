@@ -4,10 +4,10 @@
             [objective8.front-end.api.domain :as domain]
             [cemerick.url :as url]
             [objective8.config :as config]
+            [objective8.utils :as utils]
             [objective8.front-end.templates.template-functions :as tf]
             [objective8.front-end.templates.page-furniture :as pf]
-            [objective8.utils :as utils]
-            [objective8.permissions :as permissions]))
+            [objective8.front-end.permissions :as permissions]))
 
 (def library-html "templates/jade/library.html")
 (def draft-list-template (html/html-resource "templates/jade/draft-list.html" {:parser jsoup/parser}))

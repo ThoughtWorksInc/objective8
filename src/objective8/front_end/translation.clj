@@ -1,4 +1,4 @@
-(ns objective8.translation
+(ns objective8.front-end.translation
   (:require [clojure.tools.logging :as log]
             [clojure.java.io :as io]
             [clojure.string :as string]

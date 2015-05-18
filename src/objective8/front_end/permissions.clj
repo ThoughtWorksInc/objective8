@@ -1,4 +1,4 @@
-(ns objective8.permissions
+(ns objective8.front-end.permissions
   (:require [cemerick.friend :as friend]))
 
 (defn writer-inviter-for [objective-id]

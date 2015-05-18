@@ -5,7 +5,7 @@
             [objective8.front-end.api.domain :as domain]
             [objective8.front-end.templates.page-furniture :as pf]
             [objective8.utils :as utils]
-            [objective8.permissions :as permissions]))
+            [objective8.front-end.permissions :as permissions]))
 
 (def draft-template (html/html-resource "templates/jade/draft.html" {:parser jsoup/parser}))
 

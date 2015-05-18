@@ -2,7 +2,7 @@
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [ring.util.anti-forgery :refer [anti-forgery-field]]  
-            [objective8.permissions :as permissions]
+            [objective8.front-end.permissions :as permissions]
             [objective8.config :as config]
             [objective8.front-end.templates.page-furniture :as pf]
             [objective8.front-end.api.domain :as domain]

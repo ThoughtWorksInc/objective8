@@ -2,7 +2,7 @@
   (:require [midje.sweet :refer :all]
             [cemerick.friend :as friend]
             [cemerick.friend.workflows :as workflows]
-            [objective8.permissions :refer :all]))
+            [objective8.front-end.permissions :refer :all]))
 
 (facts "about add-authorisation-role"
        (fact "adds a new role to an already-authenticated user's roles"

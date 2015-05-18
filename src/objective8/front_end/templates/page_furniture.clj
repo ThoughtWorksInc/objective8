@@ -4,7 +4,7 @@
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [objective8.config :as config]
             [objective8.utils :as utils]
-            [objective8.permissions :as permissions]
+            [objective8.front-end.permissions :as permissions]
             [objective8.front-end.templates.template-functions :as tf]))
 
 (def library-html "templates/jade/library.html")

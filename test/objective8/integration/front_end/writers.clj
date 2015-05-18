@@ -7,8 +7,8 @@
             [objective8.config :as config]
             [objective8.integration.integration-helpers :as helpers]
             [objective8.utils :as utils]
-            [objective8.permissions :as permissions]
             [objective8.core :as core]
+            [objective8.front-end.permissions :as permissions]
             [objective8.front-end.handlers :as front-end]
             [objective8.front-end.api.http :as http-api]))
 

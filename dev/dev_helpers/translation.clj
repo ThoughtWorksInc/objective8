@@ -2,7 +2,7 @@
   (:require [clojure-csv.core :as csv]
             [clojure.string :as string]
             [taoensso.tower :as tower]
-            [objective8.translation :as translation]))
+            [objective8.front-end.translation :as translation]))
 
 (def get-path first)
 (def get-content second)

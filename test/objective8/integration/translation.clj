@@ -2,7 +2,7 @@
   (:import [java.io File])
   (:require [midje.sweet :refer :all]
             [clojure.java.io :as io]
-            [objective8.translation :as tr]))
+            [objective8.front-end.translation :as tr]))
 
 (defn test-resource-locator [locale-keyword resource-file]
   (fn [] {:resource-name locale-keyword

@@ -1,7 +1,7 @@
 (ns objective8.front-end.templates.profile
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
-            [objective8.permissions :as permissions]
+            [objective8.front-end.permissions :as permissions]
             [objective8.front-end.api.domain :as domain]
             [objective8.utils :as utils]
             [objective8.front-end.templates.page-furniture :as pf]

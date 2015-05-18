@@ -2,7 +2,7 @@
   (:require [clojure.string :as s]
             [clojure.tools.logging :as log]
             [cemerick.friend :as friend]
-            [objective8.permissions :as permissions]))
+            [objective8.front-end.permissions :as permissions]))
 
 (defn- keywordize [m]
   (into {} (for [[k v] m] [(keyword k) v])))

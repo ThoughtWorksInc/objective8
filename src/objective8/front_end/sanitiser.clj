@@ -1,13 +1,9 @@
-(ns objective8.sanitiser
+(ns objective8.front-end.sanitiser
   (:require [clojure.string :as string])
-  (:import [org.owasp.html HtmlSanitizer
-                        AttributePolicy
-                        ElementPolicy
-                        HtmlPolicyBuilder
-                        HtmlSanitizer$Policy
-                        PolicyFactory
-                        Sanitizers]
-                           ))
+  (:import [org.owasp.html 
+            HtmlSanitizer AttributePolicy ElementPolicy
+            HtmlPolicyBuilder HtmlSanitizer$Policy PolicyFactory Sanitizers]))
+
 (defn sanitise-html [html]
   (let [policy 
         ;(-> (HtmlPolicyBuilder.) (.allowCommonBlockElements) (.allowCommonInlineFormattingElements) (.allowStyling) (.toFactory))

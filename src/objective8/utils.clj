@@ -9,7 +9,7 @@
             [hickory.core :as hickory]
             [objective8.routes :as routes]
             [objective8.config :as config]
-            [objective8.permissions :as permissions])
+            [objective8.front-end.permissions :as permissions])
   (:import  [org.pegdown PegDownProcessor Extensions]))
 
 (def host-url

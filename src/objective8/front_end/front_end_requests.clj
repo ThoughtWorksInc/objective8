@@ -2,7 +2,7 @@
   (:require [cemerick.friend :as friend]
             [clojure.string :as s]
             [objective8.utils :as utils]
-            [objective8.sanitiser :as sanitiser]))
+            [objective8.front-end.sanitiser :as sanitiser]))
 
 (defn validate [{:keys [request] :as validation-state} field validator]
   (when-let [{valid :valid reason :reason value :value} (validator request)]
