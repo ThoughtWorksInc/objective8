@@ -1,6 +1,6 @@
 (ns objective8.integration.db.up-down-votes
   (:require [midje.sweet :refer :all]
-            [objective8.back-end.storage.domain.up-down-votes :as votes]
+            [objective8.back-end.domain.up-down-votes :as votes]
             [objective8.integration.integration-helpers :as ih]
             [objective8.integration.storage-helpers :as sh]))
 

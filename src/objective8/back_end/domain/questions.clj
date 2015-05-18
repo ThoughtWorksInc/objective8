@@ -1,5 +1,5 @@
-(ns objective8.back-end.storage.domain.questions
-  (:require [objective8.back-end.storage.domain.objectives :as objectives]
+(ns objective8.back-end.domain.questions
+  (:require [objective8.back-end.domain.objectives :as objectives]
             [objective8.back-end.storage.uris :as uris]
             [objective8.utils :as utils]
             [objective8.back-end.storage.storage :as storage]))

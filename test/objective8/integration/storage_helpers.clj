@@ -1,7 +1,7 @@
 (ns objective8.integration.storage-helpers
   (:require [clj-time.core :as tc]
-            [objective8.back-end.storage.domain.objectives :as objectives]
-            [objective8.back-end.storage.domain.users :as users]
+            [objective8.back-end.domain.objectives :as objectives]
+            [objective8.back-end.domain.users :as users]
             [objective8.back-end.storage.storage :as storage]
             [objective8.back-end.storage.actions :as actions]))
 

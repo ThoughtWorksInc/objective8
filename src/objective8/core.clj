@@ -22,12 +22,12 @@
             [objective8.front-end.workflows.stub-twitter :refer [stub-twitter-workflow]]
             [objective8.front-end.workflows.sign-up :refer [sign-up-workflow]]
             [objective8.front-end.handlers :as front-end-handlers]
-            [objective8.back-end.storage.domain.users :as users]
+            [objective8.back-end.domain.users :as users]
             [objective8.back-end.handlers :as back-end-handlers]
             [objective8.back-end.scheduler :as scheduler]
             [objective8.back-end.storage.storage :as storage]
             [objective8.back-end.storage.database :as db]
-            [objective8.back-end.storage.domain.bearer-tokens :as bt])
+            [objective8.back-end.domain.bearer-tokens :as bt])
  ; (:gen-class)
   
   )

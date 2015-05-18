@@ -7,7 +7,7 @@
             [objective8.integration.storage-helpers :as sh]
             [objective8.core :as core]
             [objective8.middleware :as m]
-            [objective8.back-end.storage.domain.writers :as writers]))
+            [objective8.back-end.domain.writers :as writers]))
 
 (def app (helpers/test-context))
 

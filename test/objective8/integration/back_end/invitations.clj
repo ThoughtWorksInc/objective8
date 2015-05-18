@@ -5,10 +5,10 @@
             [objective8.config :as config]
             [objective8.integration.integration-helpers :as helpers]
             [objective8.integration.storage-helpers :as sh]
-            [objective8.back-end.storage.domain.writers :as writers]
-            [objective8.back-end.storage.domain.invitations :as invitations]
-            [objective8.back-end.storage.domain.users :as users]
-            [objective8.back-end.storage.domain.objectives :as objectives]
+            [objective8.back-end.domain.writers :as writers]
+            [objective8.back-end.domain.invitations :as invitations]
+            [objective8.back-end.domain.users :as users]
+            [objective8.back-end.domain.objectives :as objectives]
             [objective8.middleware :as m])) 
 
 (def app (helpers/test-context))

@@ -1,6 +1,6 @@
 (ns objective8.integration.db.comments
   (:require [midje.sweet :refer :all]
-            [objective8.back-end.storage.domain.comments :as comments]
+            [objective8.back-end.domain.comments :as comments]
             [objective8.utils :as utils]
             [objective8.back-end.storage.actions :as actions]
             [objective8.integration.integration-helpers :as ih]

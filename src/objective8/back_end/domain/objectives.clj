@@ -1,4 +1,4 @@
-(ns objective8.back-end.storage.domain.objectives
+(ns objective8.back-end.domain.objectives
   (:require [objective8.back-end.storage.mappings :as mappings]
             [objective8.back-end.storage.storage :as storage]
             [objective8.back-end.storage.uris :as uris]

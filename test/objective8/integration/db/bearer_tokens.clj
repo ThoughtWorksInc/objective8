@@ -1,6 +1,6 @@
 (ns objective8.integration.db.bearer_tokens
   (:require [midje.sweet :refer :all]
-            [objective8.back-end.storage.domain.bearer-tokens :as bt]
+            [objective8.back-end.domain.bearer-tokens :as bt]
             [objective8.back-end.storage.storage :as s]
             [objective8.back-end.storage.database :as db]
             [objective8.integration.integration-helpers :as helpers]))

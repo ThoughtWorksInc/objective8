@@ -1,6 +1,6 @@
 (ns objective8.integration.db.writer-notes 
   (:require [midje.sweet :refer :all]
-            [objective8.back-end.storage.domain.writer-notes :as writer-notes]
+            [objective8.back-end.domain.writer-notes :as writer-notes]
             [objective8.integration.integration-helpers :as ih]
             [objective8.integration.storage-helpers :as sh]))
 
