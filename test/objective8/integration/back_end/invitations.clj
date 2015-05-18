@@ -8,7 +8,7 @@
             [objective8.back-end.writers :as writers]
             [objective8.back-end.storage.domain.invitations :as invitations]
             [objective8.back-end.users :as users]
-            [objective8.back-end.objectives :as objectives]
+            [objective8.back-end.storage.domain.objectives :as objectives]
             [objective8.middleware :as m])) 
 
 (def app (helpers/test-context))

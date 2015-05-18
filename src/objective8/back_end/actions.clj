@@ -1,5 +1,5 @@
 (ns objective8.back-end.actions
-  (:require [objective8.back-end.objectives :as objectives]
+  (:require [objective8.back-end.storage.domain.objectives :as objectives]
             [objective8.back-end.storage.domain.invitations :as invitations]
             [objective8.back-end.writers :as writers]
             [objective8.back-end.storage.domain.drafts :as drafts]
@@ -7,8 +7,8 @@
             [objective8.back-end.storage.domain.comments :as comments]
             [objective8.back-end.stars :as stars]
             [objective8.back-end.users :as users]
-            [objective8.back-end.questions :as questions]
-            [objective8.back-end.marks :as marks]
+            [objective8.back-end.storage.domain.questions :as questions]
+            [objective8.back-end.storage.domain.marks :as marks]
             [objective8.back-end.writer-notes :as writer-notes]
             [objective8.back-end.storage.domain.admin-removals :as admin-removals]
             [objective8.back-end.storage.uris :as uris]

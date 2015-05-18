@@ -1,7 +1,7 @@
 (ns objective8.integration.db.objectives
   (:require [midje.sweet :refer :all]
             [clj-time.core :as tc]
-            [objective8.back-end.objectives :as objectives]
+            [objective8.back-end.storage.domain.objectives :as objectives]
             [objective8.integration.integration-helpers :as ih]
             [objective8.integration.storage-helpers :as sh]))
 
