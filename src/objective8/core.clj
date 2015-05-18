@@ -90,37 +90,37 @@
 
                
                ;; API Handlers
-               :api/post-user-profile (m/wrap-bearer-token back-end-handlers/post-user-profile bt/token-provider)
-               :api/get-user-by-query (m/wrap-bearer-token back-end-handlers/find-user-by-query bt/token-provider)
-               :api/get-user (m/wrap-bearer-token back-end-handlers/get-user bt/token-provider)
-               :api/put-writer-profile (m/wrap-bearer-token back-end-handlers/put-writer-profile bt/token-provider)
-               :api/post-objective (m/wrap-bearer-token back-end-handlers/post-objective bt/token-provider)
-               :api/get-objective (m/wrap-bearer-token back-end-handlers/get-objective bt/token-provider) 
-               :api/get-objectives (m/wrap-bearer-token back-end-handlers/get-objectives bt/token-provider) 
-               :api/post-comment (m/wrap-bearer-token back-end-handlers/post-comment bt/token-provider)
-               :api/get-comments back-end-handlers/get-comments
-               :api/post-question (m/wrap-bearer-token back-end-handlers/post-question bt/token-provider)
-               :api/get-question back-end-handlers/get-question
-               :api/get-questions-for-objective back-end-handlers/retrieve-questions
-               :api/get-answers-for-question back-end-handlers/get-answers
-               :api/post-answer (m/wrap-bearer-token back-end-handlers/post-answer bt/token-provider)
-               :api/post-invitation (m/wrap-bearer-token back-end-handlers/post-invitation bt/token-provider)
-               :api/get-invitation back-end-handlers/get-invitation
-               :api/post-writer (m/wrap-bearer-token back-end-handlers/post-writer bt/token-provider)
-               :api/put-invitation-declination (m/wrap-bearer-token back-end-handlers/put-invitation-declination bt/token-provider)
-               :api/get-writers-for-objective back-end-handlers/retrieve-writers
-               :api/get-objectives-for-writer back-end-handlers/get-objectives-for-writer
-               :api/post-draft (m/wrap-bearer-token back-end-handlers/post-draft bt/token-provider)
-               :api/get-draft back-end-handlers/get-draft
-               :api/get-drafts-for-objective back-end-handlers/retrieve-drafts
-               :api/get-section back-end-handlers/get-section
-               :api/get-annotations back-end-handlers/get-annotations
-               :api/post-admin-removal (m/wrap-bearer-token back-end-handlers/post-admin-removal bt/token-provider)
-               :api/get-admin-removals back-end-handlers/get-admin-removals
-               :api/post-up-down-vote (m/wrap-bearer-token back-end-handlers/post-up-down-vote bt/token-provider)
-               :api/post-star (m/wrap-bearer-token back-end-handlers/post-star bt/token-provider)
-               :api/post-mark (m/wrap-bearer-token back-end-handlers/post-mark bt/token-provider)
-               :api/post-writer-note (m/wrap-bearer-token back-end-handlers/post-writer-note bt/token-provider)})
+               :be/post-user-profile (m/wrap-bearer-token back-end-handlers/post-user-profile bt/token-provider)
+               :be/get-user-by-query (m/wrap-bearer-token back-end-handlers/find-user-by-query bt/token-provider)
+               :be/get-user (m/wrap-bearer-token back-end-handlers/get-user bt/token-provider)
+               :be/put-writer-profile (m/wrap-bearer-token back-end-handlers/put-writer-profile bt/token-provider)
+               :be/post-objective (m/wrap-bearer-token back-end-handlers/post-objective bt/token-provider)
+               :be/get-objective (m/wrap-bearer-token back-end-handlers/get-objective bt/token-provider) 
+               :be/get-objectives (m/wrap-bearer-token back-end-handlers/get-objectives bt/token-provider) 
+               :be/post-comment (m/wrap-bearer-token back-end-handlers/post-comment bt/token-provider)
+               :be/get-comments back-end-handlers/get-comments
+               :be/post-question (m/wrap-bearer-token back-end-handlers/post-question bt/token-provider)
+               :be/get-question back-end-handlers/get-question
+               :be/get-questions-for-objective back-end-handlers/retrieve-questions
+               :be/get-answers-for-question back-end-handlers/get-answers
+               :be/post-answer (m/wrap-bearer-token back-end-handlers/post-answer bt/token-provider)
+               :be/post-invitation (m/wrap-bearer-token back-end-handlers/post-invitation bt/token-provider)
+               :be/get-invitation back-end-handlers/get-invitation
+               :be/post-writer (m/wrap-bearer-token back-end-handlers/post-writer bt/token-provider)
+               :be/put-invitation-declination (m/wrap-bearer-token back-end-handlers/put-invitation-declination bt/token-provider)
+               :be/get-writers-for-objective back-end-handlers/retrieve-writers
+               :be/get-objectives-for-writer back-end-handlers/get-objectives-for-writer
+               :be/post-draft (m/wrap-bearer-token back-end-handlers/post-draft bt/token-provider)
+               :be/get-draft back-end-handlers/get-draft
+               :be/get-drafts-for-objective back-end-handlers/retrieve-drafts
+               :be/get-section back-end-handlers/get-section
+               :be/get-annotations back-end-handlers/get-annotations
+               :be/post-admin-removal (m/wrap-bearer-token back-end-handlers/post-admin-removal bt/token-provider)
+               :be/get-admin-removals back-end-handlers/get-admin-removals
+               :be/post-up-down-vote (m/wrap-bearer-token back-end-handlers/post-up-down-vote bt/token-provider)
+               :be/post-star (m/wrap-bearer-token back-end-handlers/post-star bt/token-provider)
+               :be/post-mark (m/wrap-bearer-token back-end-handlers/post-mark bt/token-provider)
+               :be/post-writer-note (m/wrap-bearer-token back-end-handlers/post-writer-note bt/token-provider)})
   
 (defn app [app-config]
   (-> (make-handler routes/routes (some-fn handlers #(when (fn? %) %)))

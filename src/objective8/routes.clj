@@ -57,37 +57,37 @@
     "error"             {"/configuration" {:get :fe/error-configuration}}
 
     ;; API
-    "api/v1"            {"/users" {:post :api/post-user-profile
-                                   :get :api/get-user-by-query
-                                   "/writer-profiles" {:put :api/put-writer-profile}
-                                   ["/" [#"\d+" :id]] :api/get-user}
+    "api/v1"            {"/users" {:post :be/post-user-profile
+                                   :get :be/get-user-by-query
+                                   "/writer-profiles" {:put :be/put-writer-profile}
+                                   ["/" [#"\d+" :id]] :be/get-user}
 
-                         "/objectives" {:get :api/get-objectives
-                                        :post :api/post-objective
-                                        ["/" [#"\d+" :id]] {:get :api/get-objective
-                                                            "/questions" {:post :api/post-question
-                                                                          :get :api/get-questions-for-objective
-                                                                          ["/" [#"\d+" :q-id]] {:get :api/get-question
-                                                                                                "/answers" {:get :api/get-answers-for-question
-                                                                                                            :post :api/post-answer}}}
-                                                            "/writers" {:get :api/get-writers-for-objective
-                                                                        :post :api/post-writer}
-                                                            "/writer-invitations" {:post :api/post-invitation
-                                                                                   ["/" [#"\d+" :i-id]] {:put :api/put-invitation-declination}}
-                                                            "/drafts" {:post :api/post-draft
-                                                                       :get :api/get-drafts-for-objective
-                                                                       ["/" [#"\d+|latest" :d-id]] {:get :api/get-draft
-                                                                                                    "/annotations" {:get :api/get-annotations}
-                                                                                                    ["/sections/" [#"[0-9a-f]{8}" :section-label]] {:get :api/get-section}}}}}
+                         "/objectives" {:get :be/get-objectives
+                                        :post :be/post-objective
+                                        ["/" [#"\d+" :id]] {:get :be/get-objective
+                                                            "/questions" {:post :be/post-question
+                                                                          :get :be/get-questions-for-objective
+                                                                          ["/" [#"\d+" :q-id]] {:get :be/get-question
+                                                                                                "/answers" {:get :be/get-answers-for-question
+                                                                                                            :post :be/post-answer}}}
+                                                            "/writers" {:get :be/get-writers-for-objective
+                                                                        :post :be/post-writer}
+                                                            "/writer-invitations" {:post :be/post-invitation
+                                                                                   ["/" [#"\d+" :i-id]] {:put :be/put-invitation-declination}}
+                                                            "/drafts" {:post :be/post-draft
+                                                                       :get :be/get-drafts-for-objective
+                                                                       ["/" [#"\d+|latest" :d-id]] {:get :be/get-draft
+                                                                                                    "/annotations" {:get :be/get-annotations}
+                                                                                                    ["/sections/" [#"[0-9a-f]{8}" :section-label]] {:get :be/get-section}}}}}
                          "/writers" {["/" [#"\d+" :id]] {
-                                     "/objectives" {:get :api/get-objectives-for-writer}}} 
+                                     "/objectives" {:get :be/get-objectives-for-writer}}} 
 
-                         "/meta" {"/comments" {:post :api/post-comment
-                                               :get :api/get-comments}
-                                  "/stars" {:post :api/post-star}
-                                  "/marks" {:post :api/post-mark}
-                                  "/writer-notes" {:post :api/post-writer-note}
-                                  "/admin-removals" {:post :api/post-admin-removal
-                                                     :get :api/get-admin-removals}}
-                         "/up-down-votes" {:post :api/post-up-down-vote}
-                         "/invitations" {:get :api/get-invitation}}}])
+                         "/meta" {"/comments" {:post :be/post-comment
+                                               :get :be/get-comments}
+                                  "/stars" {:post :be/post-star}
+                                  "/marks" {:post :be/post-mark}
+                                  "/writer-notes" {:post :be/post-writer-note}
+                                  "/admin-removals" {:post :be/post-admin-removal
+                                                     :get :be/get-admin-removals}}
+                         "/up-down-votes" {:post :be/post-up-down-vote}
+                         "/invitations" {:get :be/get-invitation}}}])

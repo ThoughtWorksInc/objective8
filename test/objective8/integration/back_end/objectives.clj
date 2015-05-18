@@ -100,7 +100,7 @@
                      _ (sh/store-a-star {:objective stored-objective})
 
                      objective-uri (str "/objectives/" (:_id stored-objective))
-                     {body :body} (-> (p/request app (utils/path-for :api/get-objective
+                     {body :body} (-> (p/request app (utils/path-for :be/get-objective
                                                                      :id (:_id stored-objective)))
                                       :response)]
                  body => (helpers/json-contains (dissoc stored-objective :global-id :meta))
@@ -142,7 +142,7 @@
              (let [{username :username :as user} (sh/store-a-user) 
                    stored-objective (sh/store-an-admin-removed-objective {:user user}) 
                    objective-uri (str "/objectives/" (:_id stored-objective))
-                   {body :body} (-> (p/request app (str (utils/path-for :api/get-objective
+                   {body :body} (-> (p/request app (str (utils/path-for :be/get-objective
                                                                         :id (:_id stored-objective)) 
                                                         "?include-removed=true"))
                                     :response)]
@@ -152,7 +152,7 @@
              (let [{username :username :as user} (sh/store-a-user) 
                    stored-objective (sh/store-an-admin-removed-objective {:user user}) 
                    objective-uri (str "/objectives/" (:_id stored-objective))
-                   {status :status} (-> (p/request app (utils/path-for :api/get-objective
+                   {status :status} (-> (p/request app (utils/path-for :be/get-objective
                                                                        :id (:_id stored-objective)))
                                         :response)]
                status => 404)))

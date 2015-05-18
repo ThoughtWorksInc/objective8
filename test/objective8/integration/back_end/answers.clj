@@ -121,7 +121,7 @@
                      {global-id :global-id} (sh/store-an-answer {:question question})
                      up-votes (doall (for [_ (range 5)] (sh/store-an-up-down-vote global-id :up)))
                      down-votes (doall (for [_ (range 3)] (sh/store-an-up-down-vote global-id :down)))
-                     {response :response} (p/request app (utils/path-for :api/get-answers-for-question
+                     {response :response} (p/request app (utils/path-for :be/get-answers-for-question
                                                                          :id objective-id
                                                                          :q-id q-id))]
                  (:body response) => (helpers/json-contains [(contains {:votes {:up 5 :down 3}})])))
@@ -148,7 +148,7 @@
                  (sh/store-an-up-down-vote most-up-votes-g-id :up) 
                  (sh/store-an-up-down-vote least-up-votes-g-id :up) 
 
-                 (-> (p/request app (str (utils/path-for :api/get-answers-for-question
+                 (-> (p/request app (str (utils/path-for :be/get-answers-for-question
                                                          :id objective-id
                                                          :q-id question-id) "?sorted-by=up-votes"))
                      (get-in [:response :body])) => (helpers/json-contains [(contains {:_id most-up-votes-id})
@@ -170,7 +170,7 @@
                  (sh/store-an-up-down-vote most-down-votes-g-id :down) 
                  (sh/store-an-up-down-vote least-down-votes-g-id :down) 
 
-                 (-> (p/request app (str (utils/path-for :api/get-answers-for-question
+                 (-> (p/request app (str (utils/path-for :be/get-answers-for-question
                                                          :id objective-id
                                                          :q-id question-id) "?sorted-by=down-votes"))
                      (get-in [:response :body])) => (helpers/json-contains [(contains {:_id most-down-votes-id})
@@ -187,7 +187,7 @@
                     answer-without-note (sh/store-an-answer {:question question :answer-text "without note"})
                     answer-with-note (-> (sh/store-an-answer {:question question :answer-text "with note"})
                                          sh/with-note)
-                    {response :response} (p/request app (str (utils/path-for :api/get-answers-for-question
+                    {response :response} (p/request app (str (utils/path-for :be/get-answers-for-question
                                                                              :id objective-id
                                                                              :q-id question-id) "?filter-type=has-writer-note"))]
                 (:body response) => (helpers/json-contains [(contains {:_id (:_id answer-with-note)})])
