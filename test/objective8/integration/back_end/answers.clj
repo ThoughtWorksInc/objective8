@@ -60,7 +60,7 @@
                                                        :body (json/generate-string answer))]
                    (:status response) => 403))
 
-           (fact "returns a 400 status if a PSQLException is raised"
+           (fact "returns a 404 status if a PSQLException is raised"
                  (against-background
                    (answers/store-answer! anything) =throws=> (org.postgresql.util.PSQLException.
                                                                 (org.postgresql.util.ServerErrorMessage. "" 0)))
@@ -68,14 +68,14 @@
                                     :request-method :post
                                     :content-type "application/json"
                                     :body (json/generate-string the-answer))
-                         [:response :status]) => 400)
+                         [:response :status]) => 404)
 
-           (fact "returns a 400 status if a map->answer exception is raised"
+           (fact "returns a 404 status if a map->answer exception is raised"
                  (get-in (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers")
                                     :request-method :post
                                     :content-type "application/json"
                                     :body (json/generate-string the-invalid-answer))
-                         [:response :status]) => 400)
+                         [:response :status]) => 404)
 
            (tabular
              (fact "returns an error if the objective and question ids are not integers"
@@ -90,14 +90,14 @@
              OBJECTIVE_ID   INVALID_ID
              INVALID_ID     INVALID_ID)
 
-           (fact "returns a 400 status if the question does not belong to the objective"
+           (fact "returns a 404 status if the question does not belong to the objective"
                  (let [{q-id :_id o-id :objective-id} (sh/store-a-question)
                        {response :response} (p/request app (str "/api/v1/objectives/" (inc o-id) 
                                                                 "/questions/" q-id "/answers")
                                                        :request-method :post
                                                        :content-type "application/json"
                                                        :body "")]
-                   (:status response) => 400))))) 
+                   (:status response) => 404))))) 
 
 (facts "GET /api/v1/objectives/:id/questions/:id/answers"
        (against-background

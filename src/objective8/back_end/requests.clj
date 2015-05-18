@@ -24,6 +24,12 @@
   (some-> (utils/select-all-or-nothing params [:vote-on-uri :created-by-id :vote-type])
           (update-in [:vote-type] keyword)))
 
+(defn request->answer-data [{:keys [route-params params] :as request}]
+  {:answer (:answer params)
+   :created-by-id (:created-by-id params)
+   :objective-id (Integer/parseInt (:id route-params)) 
+   :question-id (Integer/parseInt (:q-id route-params))})
+
 (defn request->answers-query [{:keys [params route-params] :as request}]
   (let [question-uri (str "/objectives/" (:id route-params) "/questions/" (:q-id route-params))
         sorted-by (keyword (get params :sorted-by :created-at))

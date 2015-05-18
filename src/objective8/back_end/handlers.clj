@@ -286,26 +286,25 @@
 ;;ANSWERS
 (defn post-answer [{:keys [route-params params] :as request}]
   (try
-    (let [q-id (-> (:q-id route-params)
-                   Integer/parseInt)
-          objective-id (-> (:id route-params)
-                           Integer/parseInt)
-          question-uri (str "/objectives/" objective-id "/questions/" q-id)] 
-      (if (-> (questions/get-question question-uri)
-              :objective-id
-              (= objective-id))
-        (let [answer (-> params
-                         (select-keys [:answer :created-by-id])
-                         (assoc :objective-id objective-id)
-                         (assoc :question-id q-id))]
-          (if-let [stored-answer (answers/create-answer! answer)]
-            (resource-created-response (str utils/host-url
-                                            "/api/v1/objectives/" (:objective-id stored-answer)
-                                            "/questions/" (:question-id stored-answer)
-                                            "/answers/" (:_id stored-answer))
-                                       stored-answer)
-            (forbidden-response "New content cannot be posted against this objective as it is now in drafting.")))
-        (invalid-response "Invalid answer post request")))
+    (if-let [answer-data (br/request->answer-data request)] 
+      (let [ {status :status answer :result} (actions/create-answer! answer-data)]
+        (case status
+          ::actions/success 
+          (resource-created-response (str utils/host-url
+                                          "/api/v1/objectives/" (:objective-id answer)
+                                          "/questions/" (:question-id answer)
+                                          "/answers/" (:_id answer))
+                                     answer)
+
+          ::actions/objective-drafting-started 
+          (forbidden-response "New content cannot be posted against this objective as it is now in drafting.")
+
+          ::actions/entity-not-found
+          (not-found-response "Question does not exist")  
+
+          ;; default
+          (internal-server-error "Error when posting comment")))
+      (invalid-response "Invalid answer post request")) 
     (catch Exception e
       (log/info "Error when posting answer: " e)
       (invalid-response "Invalid answer post request"))))

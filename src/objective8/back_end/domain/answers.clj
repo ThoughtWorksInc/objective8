@@ -1,8 +1,6 @@
 (ns objective8.back-end.domain.answers
   (:require [objective8.back-end.storage.storage :as storage]
             [objective8.back-end.storage.uris :as uris]
-            [objective8.back-end.domain.objectives :as objectives]
-            [objective8.back-end.domain.writer-notes :as notes]
             [objective8.utils :as utils]))
 
 (defn uri-for-answer [answer]
@@ -16,10 +14,6 @@
           storage/pg-store!
           (dissoc :global-id)
           (utils/update-in-self [:uri] uri-for-answer)))
-
-(defn create-answer! [{objective-id :objective-id :as answer}]
-  (when (objectives/open? (objectives/get-objective objective-id))
-    (store-answer! answer)))
 
 (defn get-answers [question-uri query-params]
   (let [query (-> (uris/uri->query question-uri)

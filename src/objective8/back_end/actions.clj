@@ -8,6 +8,7 @@
             [objective8.back-end.domain.stars :as stars]
             [objective8.back-end.domain.users :as users]
             [objective8.back-end.domain.questions :as questions]
+            [objective8.back-end.domain.answers :as answers]
             [objective8.back-end.domain.marks :as marks]
             [objective8.back-end.domain.writer-notes :as writer-notes]
             [objective8.back-end.domain.admin-removals :as admin-removals]
@@ -141,6 +142,16 @@
            :active
            (assoc-in stored-question [:meta :marked]))
        stored-question))))
+
+(defn create-answer! [{:keys [objective-id question-id] :as answer}]
+  (let [question-uri (str "/objectives/" objective-id "/questions/" question-id)]
+    (if (questions/get-question question-uri)
+      (if (objectives/open? (objectives/get-objective objective-id))
+        (if-let [stored-answer (answers/store-answer! answer)]
+          {:status ::success :result stored-answer}
+          {:status ::failure})
+        {:status ::objective-drafting-started}) 
+      {:status ::entity-not-found})))
 
 (defn toggle-star! [{:keys [objective-uri created-by-id] :as star-data}]
   (if-let [{objective-id :_id} (storage/pg-retrieve-entity-by-uri objective-uri)]

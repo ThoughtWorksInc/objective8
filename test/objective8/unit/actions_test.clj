@@ -11,6 +11,7 @@
             [objective8.back-end.domain.invitations :as invitations]
             [objective8.back-end.domain.stars :as stars]
             [objective8.back-end.domain.questions :as questions]
+            [objective8.back-end.domain.answers :as answers]
             [objective8.back-end.domain.marks :as marks]
             [objective8.back-end.domain.admin-removals :as admin-removals]
             [objective8.back-end.domain.writer-notes :as writer-notes]
@@ -22,6 +23,7 @@
 (def VOTE_ID 5)
 (def OBJECTIVE_ID 1)
 (def QUESTION_ID 2)
+(def QUESTION_URI (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))
 (def ANSWER_ID 3)
 (def ANSWER_URI (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers/" ANSWER_ID))
 (def INVITATION_ID 7)
@@ -210,11 +212,7 @@
               (stars/get-star objective-uri user-uri) => :star
               (stars/toggle-star! :star) => :the-toggled-star)))
 
-(def QUESTION_ID 3)
-
-(def question-uri (str "/questions/" QUESTION_ID))
-
-(def mark-data {:question-uri question-uri
+(def mark-data {:question-uri QUESTION_URI
                :created-by-uri user-uri })
 
 (facts "about creating questions"
@@ -238,22 +236,22 @@
              (actions/mark-question! mark-data) => {:status ::actions/success
                                                     :result :the-new-mark}
              (provided
-              (questions/get-question question-uri) => :a-question
-              (marks/get-mark-for-question question-uri) => nil
+              (questions/get-question QUESTION_URI) => :a-question
+              (marks/get-mark-for-question QUESTION_URI) => nil
               (marks/store-mark! (contains (assoc mark-data :active true))) => :the-new-mark))
 
        (fact "the state of the mark is toggled if a mark already exists for the question"
              (actions/mark-question! mark-data) => {:status ::actions/success
                                                     :result :the-new-mark}
              (provided
-              (questions/get-question question-uri) => :a-question
-              (marks/get-mark-for-question question-uri) => {:active true}
+              (questions/get-question QUESTION_URI) => :a-question
+              (marks/get-mark-for-question QUESTION_URI) => {:active true}
               (marks/store-mark! (contains (assoc mark-data :active false))) => :the-new-mark))
 
        (fact "a question with the given uri must exist in order to be marked"
              (actions/mark-question! mark-data) => {:status ::actions/entity-not-found}
              (provided
-              (questions/get-question question-uri) => nil)))
+              (questions/get-question QUESTION_URI) => nil)))
 
 (facts "about getting users"
        (fact "gets user with writer records, owned objectives and admin role if they exist"
@@ -282,6 +280,36 @@
              (provided
                (users/retrieve-user user-uri) => {:entity :user :_id USER_ID}
                (users/update-user! updated-user) => :the-updated-user)))
+
+(def answer {:objective-id OBJECTIVE_ID :question-id QUESTION_ID})
+
+(binding [config/two-phase? true]
+  (facts "about creating an answer"
+         (fact "succeeds when the associated objective is not in drafting and the question exists" 
+               (actions/create-answer! answer) => {:status ::actions/success
+                                                   :result :stored-answer} 
+               (provided
+                 (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
+                 (questions/get-question QUESTION_URI) => :a-question
+                 (answers/store-answer! answer) => :stored-answer))
+
+         (fact "returns objective-drafting-started status when the associated objective is in drafting"
+               (actions/create-answer! answer) => {:status ::actions/objective-drafting-started} 
+               (provided
+                 (questions/get-question QUESTION_URI) => :a-question
+                 (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"}))
+
+         (fact "returns entity-not-found status when the associated question doesn't exist" 
+               (actions/create-answer! answer) => {:status ::actions/entity-not-found} 
+               (provided
+                 (questions/get-question QUESTION_URI) => nil))))
+
+         (fact "returns failure status when storing the answer fails"
+               (actions/create-answer! answer) => {:status ::actions/failure} 
+               (provided
+                 (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
+                 (questions/get-question QUESTION_URI) => :a-question
+                 (answers/store-answer! answer) => nil))
 
 (def invitation {:objective-id OBJECTIVE_ID
                  :invited-by-id USER_ID})
