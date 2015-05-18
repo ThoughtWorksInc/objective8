@@ -1,7 +1,7 @@
 (ns objective8.unit.actions-test
   (:require [midje.sweet :refer :all]
             [objective8.config :as config]
-            [objective8.back-end.storage.actions :as actions]
+            [objective8.back-end.actions :as actions]
             [objective8.back-end.domain.up-down-votes :as up-down-votes]
             [objective8.back-end.domain.drafts :as drafts]
             [objective8.back-end.domain.objectives :as objectives]

@@ -1,4 +1,4 @@
-(ns objective8.back-end.storage.actions
+(ns objective8.back-end.actions
   (:require [objective8.back-end.domain.objectives :as objectives]
             [objective8.back-end.domain.invitations :as invitations]
             [objective8.back-end.domain.writers :as writers]
