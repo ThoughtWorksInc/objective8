@@ -15,7 +15,6 @@
             [objective8.back-end.storage.storage :as storage]
             [objective8.config :as config]))
 
-
 (defn create-writer-for-objective! [{:keys [created-by-id] :as objective}]
   (let
     [objective-id (:_id objective)
@@ -131,6 +130,17 @@
     (if-let [section-data (uris/uri->section-data comment-on-uri)]
       (create-section-comment! section-data comment-data)
       {:status ::entity-not-found})))
+
+(defn create-question! [{:keys [created-by-id objective-id] :as question}]
+  (when (objectives/open? (objectives/get-objective objective-id))
+    (when-let [stored-question (questions/store-question! question)]
+     (if (writers/retrieve-writer-for-objective created-by-id objective-id)
+      (->> (marks/store-mark! {:question-uri (:uri stored-question)
+                          :created-by-uri (str "/users/" created-by-id)
+                          :active true})
+           :active
+           (assoc-in stored-question [:meta :marked]))
+       stored-question))))
 
 (defn toggle-star! [{:keys [objective-uri created-by-id] :as star-data}]
   (if-let [{objective-id :_id} (storage/pg-retrieve-entity-by-uri objective-uri)]
