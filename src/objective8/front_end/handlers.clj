@@ -667,40 +667,47 @@
       ::fr/invalid (-> (response/redirect (utils/path-for :fe/import-draft-get :id (:id route-params))) 
                        (assoc :flash {:validation (dissoc draft-data :status)})))))
 
-(defn draft [{{:keys [d-id id]} :route-params :as request}]
-  (let [objective-id (Integer/parseInt id)
-        draft-id (if (= d-id "latest")
-                   d-id
-                   (Integer/parseInt d-id))
-        {objective-status :status objective :result} (http-api/get-objective objective-id)
-        {draft-status :status draft :result} (http-api/get-draft objective-id draft-id)
-        {comments-status :status comments :result} (http-api/get-comments (:uri draft))
-        {writers-status :status writers :result} (http-api/retrieve-writers objective-id)]
-    (cond
-      (every? #(= ::http-api/success %) [objective-status draft-status writers-status comments-status])
-      (let [draft-content (utils/hiccup->html (:content draft))]
-        {:status 200
-         :body (views/draft "draft" request
-                            :objective objective
-                            :writers writers
-                            :comments comments
-                            :draft-content draft-content
-                            :draft draft)
-         :headers {"Content-Type" "text/html"}})
+(defn draft [{:keys [route-params params] :as request}]
+  (try
+    (let [objective-id (Integer/parseInt (:id route-params))
+          latest? (= (:d-id route-params) "latest")
+          draft-id (if latest?
+                     "latest"
+                     (Integer/parseInt (:d-id route-params)))
+          comment-query (cond-> {}
+                          (:comments params) (assoc :limit (Integer/parseInt (:comments params))))
+          {objective-status :status objective :result} (http-api/get-objective objective-id)
+          {draft-status :status draft :result} (http-api/get-draft objective-id draft-id)
+          {comments-status :status comments :result} (http-api/get-comments (:uri draft) comment-query)
+          {writers-status :status writers :result} (http-api/retrieve-writers objective-id)]
+      (cond
+        (every? #(= ::http-api/success %) [objective-status draft-status writers-status comments-status])
+        (let [draft-content (utils/hiccup->html (:content draft))]
+          {:status 200
+           :body (views/draft "draft" request
+                              :objective objective
+                              :writers writers
+                              :comments comments
+                              :draft-content draft-content
+                              :draft draft)
+           :headers {"Content-Type" "text/html"}})
 
-      (= objective-status ::http-api/not-found)
-      (error-404-response request)
+        (= objective-status ::http-api/not-found)
+        (error-404-response request)
 
-      (or (= draft-status ::http-api/forbidden) (= draft-status ::http-api/not-found))
-      (if (= d-id "latest")
-        {:status 200
-         :body (views/draft "draft" request
-                            :writers writers
-                            :objective (format-objective objective))
-         :headers {"Content-Type" "text/html"}}
-        (error-404-response request))
+        (or (= draft-status ::http-api/forbidden) (= draft-status ::http-api/not-found))
+        (if latest?
+          {:status 200
+           :body (views/draft "draft" request
+                              :writers writers
+                              :objective (format-objective objective))
+           :headers {"Content-Type" "text/html"}}
+          (error-404-response request))
 
-      :else {:status 500})))
+        :else {:status 500}))
+    (catch Exception e
+      (log/info "Invalid query string: " e)
+      {:status 400})))
 
 (defn draft-diff [{{:keys [d-id id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)

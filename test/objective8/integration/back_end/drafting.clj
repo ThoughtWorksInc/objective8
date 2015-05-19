@@ -68,13 +68,16 @@
                                (helpers/truncate-tables)))
          (after :facts (helpers/truncate-tables))]
 
-         (fact "gets a draft for an objective"
-               (let [{objective-id :objective-id draft-id :_id} (sh/store-a-draft)
+         (fact "gets a draft for an objective with comment count included"
+               (let [{objective-id :objective-id draft-id :_id :as stored-draft} (sh/store-a-draft)
                      draft (drafts/retrieve-draft draft-id)
+                     _ (sh/store-a-comment {:entity stored-draft})
                      {response :response} (p/request app (utils/path-for :api/get-draft :id objective-id 
                                                                          :d-id draft-id))]
                  (:status response) => 200
-                 (:body response) => (helpers/json-contains draft)))))
+                 (:body response) => (helpers/json-contains 
+                                       (assoc draft :meta {:comments-count 1
+                                                           :annotations-count 0}))))))
 
 (binding [config/two-phase? true]
   (facts "GET /api/v1/objectives/:id/drafts"
@@ -104,18 +107,21 @@
                                 (helpers/truncate-tables)))
           (after :facts (helpers/truncate-tables))]
 
-         (fact "gets the latest draft for an objective"
+         (fact "gets the latest draft for an objective with comment count included"
                (let [{objective-id :_id :as objective} (sh/store-an-objective-in-draft)
 
                      first-draft (sh/store-a-draft {:objective objective})
-                     {second-draft-id :draft-id} (sh/store-a-draft {:objective objective})
+                     {second-draft-id :draft-id :as stored-draft} (sh/store-a-draft {:objective objective})
 
                      latest-draft (drafts/retrieve-draft second-draft-id)
+                     _ (sh/store-a-comment {:entity stored-draft})
                      
                      {response :response} (p/request app (utils/path-for :api/get-draft :id objective-id
                                                                          :d-id "latest"))]
                  (:status response) => 200
-                 (:body response) => (helpers/json-contains latest-draft)))
+                 (:body response) => (helpers/json-contains 
+                                       (assoc latest-draft :meta {:comments-count 1
+                                                                  :annotations-count 0}))))
          
          (fact "returns draft-id for previous draft"
                (let [objective (sh/store-an-objective-in-draft)

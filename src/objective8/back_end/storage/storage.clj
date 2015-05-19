@@ -402,3 +402,16 @@ ON drafts._id = annotations_meta.draft_id
 WHERE drafts.objective_id = ?
 ORDER BY _created_at DESC
 LIMIT 50" [objective-id]] :results)))))
+
+(defn pg-get-draft-with-comment-count [draft-id]
+  (let [unmap-draft (first (get mappings/draft :transforms))]
+    (apply vector (map unmap-draft (korma/exec-raw ["
+SELECT drafts.*, users.username, comments_meta.number AS comments_count 
+FROM objective8.drafts AS drafts
+JOIN objective8.users AS users
+ON drafts.submitter_id = users._id
+LEFT JOIN (SELECT comments.comment_on_id, COUNT(comments.*) AS number
+           FROM objective8.comments AS comments
+           GROUP BY comments.comment_on_id) AS comments_meta
+ON comments_meta.comment_on_id = drafts.global_id
+WHERE drafts._id = ?" [draft-id]] :results)))))

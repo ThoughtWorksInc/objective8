@@ -448,7 +448,7 @@
           :else
           (response/not-found "")))
 
-      (if-let [draft (drafts/retrieve-draft (Integer/parseInt d-id))]
+      (if-let [draft (drafts/retrieve-draft-with-comment-count (Integer/parseInt d-id))]
         (-> draft
             response/response
             (response/content-type "application/json"))

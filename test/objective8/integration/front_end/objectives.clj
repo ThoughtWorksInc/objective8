@@ -112,7 +112,7 @@
                         ;;(:body response) => (contains "987654321")
                         ))
 
-                (fact "N number of comments can be requested"
+                (fact "a maximum number of comments can be requested"
                       (-> (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID "?comments=50"))
                           :response
                           :status) => 200

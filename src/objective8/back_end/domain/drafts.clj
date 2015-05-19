@@ -46,6 +46,11 @@
           (utils/update-in-self [:uri] uri-for-draft)
           (dissoc :global-id)))
 
+(defn retrieve-drafts [objective-id]
+  (->> (storage/pg-get-drafts objective-id)
+       (map #(dissoc % :created_at_sql_time :global-id))
+       (map #(utils/update-in-self % [:uri] uri-for-draft))))
+
 (defn retrieve-previous-draft [draft]
   (-> (storage/pg-retrieve {:entity :draft
                             :objective-id (:objective-id draft) 
@@ -72,6 +77,16 @@
           (utils/update-in-self [:uri] uri-for-draft)
           (assoc :previous-draft-id previous-draft-id :next-draft-id next-draft-id)))))
 
+(defn retrieve-draft-with-comment-count [draft-id]
+  (when-let [draft (-> (storage/pg-get-draft-with-comment-count draft-id)
+                       first)]
+    (let [previous-draft-id (:_id (retrieve-previous-draft draft))
+          next-draft-id (:_id (retrieve-next-draft draft))]
+      (-> draft
+          (dissoc :_created_at_sql_time :global-id)
+          (utils/update-in-self [:uri] uri-for-draft)
+          (assoc :previous-draft-id previous-draft-id :next-draft-id next-draft-id)))))
+
 (defn retrieve-draft-by-uri [draft-uri]
   (when-let [draft (-> (storage/pg-retrieve (uris/uri->query draft-uri))
                        :result
@@ -84,20 +99,13 @@
           (assoc :previous-draft-id previous-draft-id :next-draft-id next-draft-id)))))
 
 (defn retrieve-latest-draft [objective-id]
-  (when-let [latest-draft (-> (storage/pg-retrieve {:entity :draft :objective-id objective-id}
-                                                   {:sort {:field :_created_at :ordering :DESC}})
-                              :result
+  (when-let [latest-draft (-> (storage/pg-get-drafts objective-id)
                               first)]
     (let [previous-draft-id (:_id (retrieve-previous-draft latest-draft))]
       (-> latest-draft
           (dissoc :_created_at_sql_time :global-id)
           (utils/update-in-self [:uri] uri-for-draft)
           (assoc :previous-draft-id previous-draft-id)))))
-
-(defn retrieve-drafts [objective-id]
-  (->> (storage/pg-get-drafts objective-id)
-       (map #(dissoc % :created_at_sql_time :global-id))
-       (map #(utils/update-in-self % [:uri] uri-for-draft))))
 
 (defn get-ordered-section-labels-for-draft-hiccup [hiccup]
   (map get-section-label hiccup))
