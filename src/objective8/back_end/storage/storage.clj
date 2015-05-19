@@ -153,7 +153,7 @@ SELECT _id, 'section' AS entity FROM objective8.sections WHERE global_id=?
       with-aggregate-votes))
 
 (defn pg-retrieve-answers [query-map]
-  (when-let [sanitised-query (utils/select-all-or-nothing query-map [:question-id :objective-id :sorted-by :entity])]
+  (when-let [sanitised-query (utils/select-all-or-nothing query-map [:question-id :objective-id :sorted-by :entity :limit])]
     (let [question-id (:question-id sanitised-query)
           objective-id (:objective-id sanitised-query)
           sorted-by (:sorted-by sanitised-query)
@@ -161,7 +161,9 @@ SELECT _id, 'section' AS entity FROM objective8.sections WHERE global_id=?
                             :up-votes "ORDER BY up_votes DESC NULLS LAST"
                             :down-votes "ORDER BY down_votes DESC NULLS LAST"}
           filter-type (:filter-type query-map)
-          filter-clause {:has-writer-note "AND notes.note IS NOT NULL"}]
+          filter-clause {:has-writer-note "AND notes.note IS NOT NULL"}
+          limit (:limit sanitised-query)
+          limit-clause (str "LIMIT " limit)]
       (apply vector (map unmap-answer-with-votes
                          (korma/exec-raw [ (string/join " " ["
 SELECT answers.*, up_votes, down_votes, users.username, notes.note FROM objective8.answers AS answers
@@ -178,7 +180,7 @@ ON agg2.global_id = answers.global_id
 WHERE answers.objective_id = ? AND answers.question_id = ?
 " (get filter-clause filter-type)
 (get sorted-by-clause sorted-by (:created-at sorted-by-clause))
-"LIMIT 50"]) [objective-id question-id]] :results))))))
+limit-clause]) [objective-id question-id]] :results))))))
 
 (def unmap-comments-with-votes
   (-> (mappings/unmap :comment)

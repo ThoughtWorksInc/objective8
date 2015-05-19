@@ -311,9 +311,12 @@
 
 (defn get-answers [{:keys [route-params params] :as request}]
   (try
-    (if-let [{question-uri :question-uri sorted-by :sorted-by filter-type :filter-type} (br/request->answers-query request)]
+    (if-let [{question-uri :question-uri sorted-by :sorted-by filter-type :filter-type :as query-params} (br/request->answers-query request)]
       (if (questions/get-question question-uri)
-        (let [answers (answers/get-answers question-uri {:sorted-by sorted-by :filter-type filter-type})]
+        (let [answers-query {:sorted-by sorted-by
+                             :filter-type filter-type 
+                             :limit (get query-params :limit 50)}
+              answers (answers/get-answers question-uri answers-query)]
           (-> answers
               response/response
               (response/content-type "application/json"))) 

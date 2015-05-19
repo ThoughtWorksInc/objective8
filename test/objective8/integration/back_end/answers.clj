@@ -192,3 +192,21 @@
                                                                              :q-id question-id) "?filter-type=has-writer-note"))]
                 (:body response) => (helpers/json-contains [(contains {:_id (:_id answer-with-note)})])
                 (:body response) =not=> (helpers/json-contains [(contains {:_id (:_id answer-without-note)})])))))
+
+(facts "GET /api/v1/objectives/:id/questions/:id/answers?limit=<n>"
+       (against-background
+         [(before :contents (do (helpers/db-connection)
+                                (helpers/truncate-tables)))
+          (after :facts (helpers/truncate-tables))]
+
+         (fact "retrieves the first n answers"
+               (let [{o-id :objective-id q-id :_id :as question} (sh/store-a-question)
+                     stored-answers (doall (->> (repeat {:question question})
+                                                (take 10)
+                                                (map sh/store-an-answer)))
+                     p-response (p/request app (str (utils/path-for :api/get-answers-for-question
+                                                                    :id o-id
+                                                                    :q-id q-id)
+                                                    "?limit=5"))]
+
+                 (count (helpers/peridot-response-json-body->map p-response)) => 5))))

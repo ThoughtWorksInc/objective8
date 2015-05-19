@@ -15,6 +15,7 @@
 (def INVALID_ID "not-an-int-id")
 (def QUESTION_URI (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))
 (def question-view-get-request (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID)))
+(def question-view-get-request-with-limit (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID) {:answers 100}))
 (defn invalid-question-get-request [objective-id question-id]
   (mock/request :get (str utils/host-url "/objectives/" objective-id "/questions/" question-id)))
 (def questions-view-get-request (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/questions")))
@@ -54,7 +55,7 @@
                                                                              :uri QUESTION_URI
                                                                              :objective-id OBJECTIVE_ID
                                                                              :_id QUESTION_ID}}
-               (http-api/retrieve-answers QUESTION_URI) => {:status ::http-api/success
+               (http-api/retrieve-answers QUESTION_URI anything) => {:status ::http-api/success
                                                                         :result []} 
                (http-api/get-objective OBJECTIVE_ID)=> {:status ::http-api/success 
                                                         :result {:title "some title"}})
@@ -69,7 +70,7 @@
                                                                              :uri QUESTION_URI
                                                                              :objective-id OBJECTIVE_ID
                                                                              :_id QUESTION_ID}}
-               (http-api/retrieve-answers QUESTION_URI) => {:status ::http-api/success
+               (http-api/retrieve-answers QUESTION_URI anything) => {:status ::http-api/success
                                                                         :result [{:_id 12
                                                                                   :objective-id OBJECTIVE_ID
                                                                                   :question-id QUESTION_ID
@@ -91,6 +92,16 @@
              (default-app question-view-get-request) => (contains {:body (contains "1237")})
              (default-app question-view-get-request) => (contains {:body (contains "6601")})
              (helpers/count-matches (:body (default-app question-view-get-request)) "clj-writer-note-item-container") => 1)
+
+       (fact "N number of answers can be requested"
+             (against-background
+               (http-api/get-objective anything) => {:status ::http-api/success}
+               (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success})
+             (-> (default-app question-view-get-request-with-limit)
+                 :status) => 200
+             (provided
+               (http-api/retrieve-answers anything {:limit 100}) => {:status ::http-api/success
+                                                                :result []}))
 
        (fact "A user should receive a 404 if a question doesn't exist"
              (against-background
@@ -123,17 +134,17 @@
        (binding [config/enable-csrf false]
          (fact "objective owners and writers can mark questions to enhance visibility"
                (against-background
-                (oauth/access-token anything anything anything) => {:user_id USER_ID}
-                (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                                :result user-owning-objective}
-                (http-api/get-user anything) => {:result user-owning-objective})
+                 (oauth/access-token anything anything anything) => {:user_id USER_ID}
+                 (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                                 :result user-owning-objective}
+                 (http-api/get-user anything) => {:result user-owning-objective})
                (against-background
-                (http-api/post-mark {:created-by-uri USER_URI
-                                     :question-uri QUESTION_URI}) => {:status ::http-api/success
-                                                                      :result {:created-by-uri USER_URI
-                                                                               :question-uri QUESTION_URI
-                                                                               :uri MARK_URI
-                                                                               :active true}})
+                 (http-api/post-mark {:created-by-uri USER_URI
+                                      :question-uri QUESTION_URI}) => {:status ::http-api/success
+                                                                       :result {:created-by-uri USER_URI
+                                                                                :question-uri QUESTION_URI
+                                                                                :uri MARK_URI
+                                                                                :active true}})
 
                (let [params {:refer OBJECTIVE_URL
                              :question-uri QUESTION_URI}

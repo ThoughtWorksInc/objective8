@@ -381,13 +381,15 @@
                                                           :id (:id route-params)))
                        (assoc :flash {:validation (dissoc question-data :status)})))))
 
-(defn question-detail [{:keys [route-params uri t' locale] :as request}]
+(defn question-detail [{:keys [route-params uri t' locale params] :as request}]
   (let [q-id (-> (:q-id route-params) Integer/parseInt)
         o-id (-> (:id route-params) Integer/parseInt)
+        answer-query (cond-> {}
+                        (:answers params) (assoc :limit (Integer/parseInt (get params :answers)))) 
         {question-status :status question :result} (http-api/get-question o-id q-id)]
     (cond
       (= ::http-api/success question-status)
-      (let [{answer-status :status answers :result} (http-api/retrieve-answers (:uri question))
+      (let [{answer-status :status answers :result} (http-api/retrieve-answers (:uri question) answer-query)
             {objective-status :status objective :result} (http-api/get-objective (:objective-id question))]
         (if (every? #(= ::http-api/success %) [answer-status objective-status])
           {:status 200

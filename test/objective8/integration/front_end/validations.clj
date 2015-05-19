@@ -51,7 +51,7 @@
                                                     :result the-objective}
  (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success
                                                       :result question}
- (http-api/retrieve-answers anything) => {:status ::http-api/success :result []}
+ (http-api/retrieve-answers anything anything) => {:status ::http-api/success :result []}
  (http-api/get-comments anything) => {:status ::http-api/success :result []}
  (http-api/get-comments anything anything) => {:status ::http-api/success :result []}
  (http-api/retrieve-invitation-by-uuid INVITATION_UUID) => {:status ::http-api/success :result the-invitation}

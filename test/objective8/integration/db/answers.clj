@@ -60,6 +60,14 @@
                                                                    (contains {:_id answer-without-note-id})]
                                                                   :in-any-order)))
 
+       (fact "limits the number of answers retrieved"
+             (let [{o-id :objective-id q-id :_id :as question} (sh/store-a-question)
+                   question-url (str "/objectives/" o-id "/questions/" q-id)
+                   stored-answers (doall (->> (repeat {:question question})
+                                              (take 10)
+                                              (map sh/store-an-answer)))]
+             (count (answers/get-answers question-url {:limit 5})) => 5))
+
        (fact "gets answers with aggregate votes"
              (let [{o-id :objective-id q-id :_id :as question} (sh/store-a-question)
                    question-uri (str "/objectives/" o-id "/questions/" q-id)

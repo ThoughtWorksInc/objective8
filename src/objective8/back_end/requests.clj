@@ -24,22 +24,6 @@
   (some-> (utils/select-all-or-nothing params [:vote-on-uri :created-by-id :vote-type])
           (update-in [:vote-type] keyword)))
 
-(defn request->answer-data [{:keys [route-params params] :as request}]
-  {:answer (:answer params)
-   :created-by-id (:created-by-id params)
-   :objective-id (Integer/parseInt (:id route-params)) 
-   :question-id (Integer/parseInt (:q-id route-params))})
-
-(defn request->answers-query [{:keys [params route-params] :as request}]
-  (let [question-uri (str "/objectives/" (:id route-params) "/questions/" (:q-id route-params))
-        sorted-by (keyword (get params :sorted-by :created-at))
-        filter-type (keyword (get params :filter-type :none))]
-    (when (and (#{:up-votes :down-votes :created-at} sorted-by)
-               (#{:has-writer-note :none} filter-type))
-      {:question-uri question-uri
-       :sorted-by sorted-by
-       :filter-type filter-type})))
-
 (defn request->comment-data [{params :params :as request}]
   (let [reason (:reason params)]
     (cond-> params 
@@ -67,6 +51,22 @@
       (catch Exception e
         nil))
     query))
+
+(defn request->answer-data [{:keys [route-params params] :as request}]
+  {:answer (:answer params)
+   :created-by-id (:created-by-id params)
+   :objective-id (Integer/parseInt (:id route-params)) 
+   :question-id (Integer/parseInt (:q-id route-params))})
+
+(defn request->answers-query [{:keys [params route-params] :as request}]
+  (let [question-uri (str "/objectives/" (:id route-params) "/questions/" (:q-id route-params))
+        sorted-by (keyword (get params :sorted-by :created-at))
+        filter-type (keyword (get params :filter-type :none))
+        limit (:limit params)]
+    (some-> {:question-uri question-uri}
+            (validate-sorted-by sorted-by)
+            (validate-filter-type filter-type)
+            (validate-limit limit))))
 
 (defn request->comments-query [{params :params :as request}]
   (let [sorted-by (keyword (:sorted-by params)) 

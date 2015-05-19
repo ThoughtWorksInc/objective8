@@ -18,9 +18,11 @@
         {:sorted-by "created-at"}        {:sorted-by :created-at :filter-type :none :question-uri QUESTION_URI}
         {:sorted-by "up-votes"}          {:sorted-by :up-votes   :filter-type :none :question-uri QUESTION_URI}
         {:sorted-by "down-votes"}        {:sorted-by :down-votes :filter-type :none :question-uri QUESTION_URI}
+        {:limit "10"}                    {:sorted-by :created-at :filter-type :none :limit 10 :question-uri QUESTION_URI}
         {:filter-type "has-writer-note"} {:sorted-by :created-at :filter-type :has-writer-note :question-uri QUESTION_URI}
         {:filter-type "has-writer-note"
-         :sorted-by "up-votes"}          {:sorted-by :up-votes :filter-type :has-writer-note :question-uri QUESTION_URI})
+         :limit "10"
+         :sorted-by "up-votes"}          {:sorted-by :up-votes :filter-type :has-writer-note :limit 10 :question-uri QUESTION_URI})
 
        (tabular
         (fact "returns nil when the request is invalid"
@@ -29,8 +31,9 @@
               => nil)
         ?params
         {:sorted-by "invalid"}
+        {:limit "-1"}
         {:filter-type "invalid"}
-        {:sorted-by "invalid" :filter-type "invalid"}))
+        {:sorted-by "invalid" :filter-type "invalid" :limit "invalid"}))
 
 (facts "request->comments-query"
        (tabular

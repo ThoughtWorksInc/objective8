@@ -123,7 +123,7 @@
                                                          :result open-objective}
                (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success 
                                                                     :result a-question}
-               (http-api/retrieve-answers QUESTION_URI) => {:status ::http-api/success
+               (http-api/retrieve-answers QUESTION_URI anything) => {:status ::http-api/success
                                                             :result []})
              (let [{status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/question 

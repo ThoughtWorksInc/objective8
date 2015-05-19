@@ -19,7 +19,8 @@
   (let [query (-> (uris/uri->query question-uri)
                   (utils/ressoc :_id :question-id)
                   (assoc :sorted-by (:sorted-by query-params))
-                  (assoc :filter-type (:filter-type query-params)))]
+                  (assoc :filter-type (:filter-type query-params))
+                  (assoc :limit (get query-params :limit 50)))]
     (->> (storage/pg-retrieve-answers query)
          (map #(dissoc % :global-id))
          (map #(utils/update-in-self % [:uri] uri-for-answer)))))
