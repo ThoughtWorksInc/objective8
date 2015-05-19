@@ -11,4 +11,3 @@ export DB_PORT=$SNAP_DB_PG_PORT
 export DB_NAME=$SNAP_DB_PG_NAME
 export DB_JDBC_URL=$SNAP_DB_PG_JDBC_URL
 export JAVA_OPTS="-Dlog4j.configuration=log4j.snap"
-

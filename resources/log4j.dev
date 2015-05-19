@@ -1,8 +1,7 @@
 # Root logger option
 log4j.rootLogger=INFO, stdout
-log4j.logger.objective8.config=OFF, stdout
-log4j.logger.clj-webdriver.core=OFF, stdout
-log4j.logger.objective8.back-end.storage=WARN, stdout
+log4j.logger.objective8.config=WARN, stdout
+log4j.logger.objective8.back-end.storage=INFO, stdout
 
  # Direct log messages to stdout
  log4j.appender.stdout=org.apache.log4j.ConsoleAppender
