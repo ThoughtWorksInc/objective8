@@ -75,6 +75,7 @@
                                       [:.clj-objective-progress-indicator] (when (not config/two-phase?)
                                                                              (html/substitute (pf/progress-indicator context)))
                                       [:.clj-progress-drafts-item] (html/add-class "on")
+                                      [:.clj-progress-objective-item] (html/remove-class "on")
                                       [:.clj-guidance-buttons] nil
 
                                       [:.clj-guidance-heading] (html/content (translations :draft-guidance/heading))
