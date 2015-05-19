@@ -29,7 +29,6 @@
             [objective8.back-end.storage.database :as db]
             [objective8.back-end.domain.bearer-tokens :as bt])
  ; (:gen-class)
-  
   )
 
 (def handlers {;; Front End Handlers
@@ -180,12 +179,12 @@
 (defn start-scheduler []
   (reset! scheduler 
           (scheduler/start-chime (Integer/parseInt (config/get-var "SCHEDULER_INTERVAL_MINUTES" "10"))))
-  (prn "Starting scheduler"))
+  (log/info "Starting scheduler"))
 
 (defn stop-scheduler []
   (when @scheduler
     (do (@scheduler)
-        (prn "Stopping scheduler"))))
+        (log/info "Stopping scheduler"))))
 
 (defn start-server 
   ([]

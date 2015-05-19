@@ -10,6 +10,7 @@
                  [org.clojure/core.cache "0.6.4"]
                  [http-kit "2.1.16"]
                  [org.clojure/tools.logging "0.3.1"]
+                 [log4j/log4j "1.2.16" :exclusions  [javax.mail/mail javax.jms/jms com.sun.jdmk/jmxtools com.sun.jmx/jmxri]]
                  [bidi "1.12.0"]
                  [ring "1.3.2"]
                  [ring/ring-json "0.3.1"]

@@ -1,5 +1,6 @@
 (ns dev-helpers.stub-twitter
   (:require [bidi.ring :refer [make-handler]]
+            [clojure.tools.logging :as log]
             [ring.util.response :as response]
             [objective8.front-end.workflows.sign-up :refer [sign-up-workflow]]
             [objective8.utils :as utils]))
@@ -10,7 +11,7 @@
 
 (defn stub-twitter-handler [request]
   (let [session (:session request)]
-    (prn "Stubbing twitter with fake twitter id: " @twitter-id)
+    (log/info "Stubbing twitter with fake twitter id: " @twitter-id)
     (-> (response/redirect (str utils/host-url "/sign-up"))
         (assoc :session (assoc session 
                                :twitter-id @twitter-id

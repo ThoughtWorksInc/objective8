@@ -42,6 +42,7 @@
 (def screenshot-directory "test/objective8/functional/screenshots")
 (def screenshot-number (atom 0))
 (defn screenshot [filename]
+  (prn (str "Screenshot: " filename))
   (wd/take-screenshot :file (str screenshot-directory "/"
                                  (format "%02d" (swap! screenshot-number + 1))
                                  "_" filename ".png")))

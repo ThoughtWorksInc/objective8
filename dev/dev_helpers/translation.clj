@@ -1,5 +1,6 @@
 (ns dev-helpers.translation
   (:require [clojure-csv.core :as csv]
+            [clojure.tools.logging :as log]
             [clojure.string :as string]
             [taoensso.tower :as tower]
             [objective8.front-end.translation :as translation]))
@@ -47,5 +48,5 @@
     (spit target-file (csv/write-csv content))))
 
 (defn main [& locales]
-  (prn (apply str "Generating locale translation templates for: " (interpose ", " locales)))
+  (log/info (apply str "Generating locale translation templates for: " (interpose ", " locales)))
   (doall (map (comp update-template-for-locale keyword) locales)))

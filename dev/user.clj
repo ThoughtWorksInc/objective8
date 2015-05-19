@@ -1,5 +1,6 @@
 (ns user
   (:require [clojure.tools.namespace.repl :as tnr]
+            [clojure.tools.logging :as log]
             [org.httpkit.server :as server]
             [clojure.set :as s]
             [korma.db :as kdb]
@@ -31,7 +32,7 @@
   (let [post-reset-hook (get launchers config-key (:default launchers))]
     (stop)
     (tnr/refresh :after post-reset-hook)
-    (prn "Reset")
+    (log/info "Reset")
     config-key))
 
 ;; Useful helpers

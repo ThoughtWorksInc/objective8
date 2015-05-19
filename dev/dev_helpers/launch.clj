@@ -1,5 +1,6 @@
 (ns dev-helpers.launch
   (:require [org.httpkit.server :as server]
+            [clojure.tools.logging :as log]
             [objective8.core :as core]
             [objective8.config :as config]
             [objective8.back-end.storage.database :as db]))
@@ -36,15 +37,15 @@
   (fn []
     (init launcher-config)
     (alter-var-root #'the-system (constantly (start-server)))
-    (prn (str "Objective8 server started on port: " (:port the-system)
-              " in configuration " config-name))))
+    (log/info (str "Objective8 server started on port: " (:port the-system)
+                   " in configuration " config-name))))
 
 
 
 (defn stop []
   (alter-var-root #'the-system stop-server)
   (core/stop-scheduler)
-  (prn "Objective8 server stopped."))
+  (log/info "Objective8 server stopped."))
 
 (defn make-launcher-map [configs]
   (doall 

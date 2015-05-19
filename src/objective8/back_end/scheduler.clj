@@ -2,10 +2,11 @@
   (:require [chime :as chime]
             [clj-time.core :as time-core]
             [clj-time.periodic :as time-periodic]
+            [clojure.tools.logging :as log]
             [objective8.back-end.actions :as actions]))
 
 (defn update-objectives [time]
-  (prn (str "Scheduler is updating objectives due for drafting at time:" time)) 
+  (log/info (str "Scheduler is updating objectives due for drafting at time:" time)) 
   (actions/update-objectives-due-for-drafting!)) 
 
 (defn time-sequence [start-time time-interval]
