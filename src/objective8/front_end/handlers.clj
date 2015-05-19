@@ -152,39 +152,43 @@
         (remove-invitation-from-session request)))
     request))
 
-(defn objective-detail [{{:keys [id]} :route-params :as request}]
-  (let [objective-id (Integer/parseInt id)
-        updated-request (update-session-invitation request)
-        signed-in-id (get (friend/current-authentication) :identity)
-        {objective-status :status objective :result} (if signed-in-id
-                                                       (http-api/get-objective objective-id {:signed-in-id signed-in-id})
-                                                       (http-api/get-objective objective-id))
-        {writers-status :status writers :result} (http-api/retrieve-writers objective-id)
-        {questions-status :status questions :result} (http-api/retrieve-questions objective-id)
-        {comments-status :status comments :result} (http-api/get-comments (:uri objective))]
-    (cond
-      (every? #(= ::http-api/success %) [objective-status writers-status questions-status comments-status])
-      (let [formatted-objective (format-objective objective)
-            {drafts-status :status latest-draft :result} (when (> (get-in objective [:meta :drafts-count] 0) 0)
-                                                           (http-api/get-draft objective-id "latest"))]
-        {:status 200
-         :headers {"Content-Type" "text/html"}
-         :body
-         (views/objective-detail-page "objective-view"
-                                      updated-request
-                                      :objective formatted-objective
-                                      :writers writers
-                                      :questions questions
-                                      :comments comments
-                                      :latest-draft latest-draft
-                                      :doc (let [details (str (:title objective) " | Objective[8]")]
-                                             {:title details
-                                              :description details}))})
-      (= objective-status ::http-api/not-found) (error-404-response updated-request)
+(defn objective-detail [{:keys [params route-params] :as request}]
+  (try (let [objective-id (Integer/parseInt (:id route-params))
+             updated-request (update-session-invitation request)
+             signed-in-id (get (friend/current-authentication) :identity)
+             comment-limit (Integer/parseInt (get params :comments "50")) 
+             {objective-status :status objective :result} (if signed-in-id
+                                                            (http-api/get-objective objective-id {:signed-in-id signed-in-id})
+                                                            (http-api/get-objective objective-id))
+             {writers-status :status writers :result} (http-api/retrieve-writers objective-id)
+             {questions-status :status questions :result} (http-api/retrieve-questions objective-id)
+             {comments-status :status comments :result} (http-api/get-comments (:uri objective) {:limit comment-limit})]
+         (cond
+           (every? #(= ::http-api/success %) [objective-status writers-status questions-status comments-status])
+           (let [formatted-objective (format-objective objective)
+                 {drafts-status :status latest-draft :result} (when (> (get-in objective [:meta :drafts-count] 0) 0)
+                                                                (http-api/get-draft objective-id "latest"))]
+             {:status 200
+              :headers {"Content-Type" "text/html"}
+              :body
+              (views/objective-detail-page "objective-view"
+                                           updated-request
+                                           :objective formatted-objective
+                                           :writers writers
+                                           :questions questions
+                                           :comments comments
+                                           :latest-draft latest-draft
+                                           :doc (let [details (str (:title objective) " | Objective[8]")]
+                                                  {:title details
+                                                   :description details}))})
+           (= objective-status ::http-api/not-found) (error-404-response updated-request)
 
-      (= objective-status ::http-api/invalid-input) {:status 400}
+           (= objective-status ::http-api/invalid-input) {:status 400}
 
-      :else {:status 500})))
+           :else {:status 500}))
+       (catch Exception e
+         (log/info "Invalid query string: " e)
+         {:status 400})))
 
 (def dashboard-questions-answer-view-query-params
   {:up-votes {:sorted-by "up-votes" :filter-type "none"}
@@ -238,15 +242,15 @@
                                                                           comment-query-params)]
     (cond
       (every? #(= ::http-api/success %) [objective-status comments-status])
-        {:status 200
-         :headers {"Content-Type" "text/html"}
-         :body (views/dashboard-comments-page "dashboard-comments"
-                                              request
-                                              :objective (format-objective objective) 
-                                              :drafts drafts
-                                              :comments comments
-                                              :comment-view-type comment-view-type
-                                              :selected-comment-target-uri selected-comment-target-uri)})))
+      {:status 200
+       :headers {"Content-Type" "text/html"}
+       :body (views/dashboard-comments-page "dashboard-comments"
+                                            request
+                                            :objective (format-objective objective) 
+                                            :drafts drafts
+                                            :comments comments
+                                            :comment-view-type comment-view-type
+                                            :selected-comment-target-uri selected-comment-target-uri)})))
 
 (defn dashboard-annotations [{:keys [route-params params] :as request}]
   (let [objective-id (Integer/parseInt (:id route-params))
@@ -266,16 +270,16 @@
                                                :drafts drafts
                                                :annotations annotations
                                                :selected-draft-uri selected-draft-uri)}
-      
+
       (and (= objective-status ::http-api/success) (= annotations-status ::http-api/not-found))
       {:status 200
        :headers {"Content-Type" "text/html"}
        :body (views/dashboard-annotations-page "dashboard-annotations"
-               request
-               :objective (format-objective objective)
-               :drafts drafts
-               :annotations nil
-               :selected-draft-uri selected-draft-uri)})))
+                                               request
+                                               :objective (format-objective objective)
+                                               :drafts drafts
+                                               :annotations nil
+                                               :selected-draft-uri selected-draft-uri)})))
 
 (defn post-writer-note [{:keys [route-params params] :as request}]
   (if-let [writer-note-data (fr/request->writer-note-data request (get (friend/current-authentication) :identity))]
@@ -529,16 +533,16 @@
 (defn edit-profile-post [request]
   (if (permissions/writer? (friend/current-authentication))
     (let [profile-data (fr/request->profile-data request (get (friend/current-authentication) :identity))]
-     (case (:status profile-data)
-       ::fr/valid (let [{status :status} (http-api/post-profile (:data profile-data))]
-                    (cond
-                      (= status ::http-api/success)
-                      (-> (utils/path-for :fe/profile :username (get (friend/current-authentication) :username))
-                          response/redirect)
+      (case (:status profile-data)
+        ::fr/valid (let [{status :status} (http-api/post-profile (:data profile-data))]
+                     (cond
+                       (= status ::http-api/success)
+                       (-> (utils/path-for :fe/profile :username (get (friend/current-authentication) :username))
+                           response/redirect)
 
-                      :else {:status 500})) 
-       ::fr/invalid (-> (response/redirect (utils/path-for :fe/edit-profile-get)) 
-                        (assoc :flash {:validation (dissoc profile-data :status)}))))
+                       :else {:status 500})) 
+        ::fr/invalid (-> (response/redirect (utils/path-for :fe/edit-profile-get)) 
+                         (assoc :flash {:validation (dissoc profile-data :status)}))))
     {:status 401}))
 
 (defn decline-invitation [{session :session :as request}]

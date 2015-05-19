@@ -53,6 +53,7 @@
                                                       :result question}
  (http-api/retrieve-answers anything) => {:status ::http-api/success :result []}
  (http-api/get-comments anything) => {:status ::http-api/success :result []}
+ (http-api/get-comments anything anything) => {:status ::http-api/success :result []}
  (http-api/retrieve-invitation-by-uuid INVITATION_UUID) => {:status ::http-api/success :result the-invitation}
  (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
  (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}

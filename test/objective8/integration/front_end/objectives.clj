@@ -63,7 +63,7 @@
                (against-background
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                            :result basic-objective}
-                 (http-api/get-comments anything)=> {:status ::http-api/success :result []}
+                 (http-api/get-comments anything anything)=> {:status ::http-api/success :result []}
                  (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
                  (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []})
                (default-app objective-view-get-request) => (contains {:status 200})
@@ -73,7 +73,7 @@
          
            (fact "When a signed in user views an objective, the objective contains user specific information"
                  (against-background
-                   (http-api/get-comments anything)=> {:status ::http-api/success :result []}
+                   (http-api/get-comments anything anything)=> {:status ::http-api/success :result []}
                    (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
                    (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []})
                  (-> user-session
@@ -94,11 +94,11 @@
                                                             :result basic-objective}
                   (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
                   (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}
-                  (http-api/get-comments anything) => {:status ::http-api/success :result []})
+                  )
 
                 (fact "Any user can view comments with votes on an objective"
                       (against-background
-                        (http-api/get-comments anything) => {:status ::http-api/success
+                        (http-api/get-comments anything anything) => {:status ::http-api/success
                                                              :result [{:_id 1
                                                                        :_created_at "2015-02-12T16:46:18.838Z"
                                                                        :objective-id OBJECTIVE_ID
@@ -112,25 +112,34 @@
                         ;;(:body response) => (contains "987654321")
                         ))
 
+                (fact "N number of comments can be requested"
+                      (-> (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID "?comments=50"))
+                          :response
+                          :status) => 200
+                      (provided
+                        (http-api/get-comments anything {:limit 50}) => {:status ::http-api/success
+                                                                         :result []}))
+
                 (fact "An objective that is in drafting cannot be commented on"
                       (against-background
                         (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                                  :result (assoc basic-objective :status "drafting")})
+                                                                  :result (assoc basic-objective :status "drafting")}
+
+                        (http-api/get-comments anything anything) => {:status ::http-api/success :result []})
                       (let [{response :response} (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))]
                         (:body response) =not=> (contains "clj-comment-create"))))
 
          (fact "A user should see an error page when they attempt to access an objective with a non-integer ID"
                (default-app invalid-objective-view-get-request) => (contains {:status 404})))) 
 
-
 (facts "About viewing the list of objectives"
        (against-background
-        ;; Twitter authentication background
-        (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
-        (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                        :result {:_id USER_ID
-                                                                 :username "username"}})
-       
+         ;; Twitter authentication background
+         (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
+         (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                         :result {:_id USER_ID
+                                                                  :username "username"}})
+
        (fact "when the viewing user is not signed in, the get-objectives query is made with no user information"
              (p/request user-session "http://localhost:8080/objectives") => anything
              (provided 
