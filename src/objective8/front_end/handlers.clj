@@ -156,13 +156,14 @@
   (try (let [objective-id (Integer/parseInt (:id route-params))
              updated-request (update-session-invitation request)
              signed-in-id (get (friend/current-authentication) :identity)
-             comment-limit (Integer/parseInt (get params :comments "50")) 
+             comment-query (cond-> {}
+                             (:comments params) (assoc :limit (Integer/parseInt (:comments params))))
              {objective-status :status objective :result} (if signed-in-id
                                                             (http-api/get-objective objective-id {:signed-in-id signed-in-id})
                                                             (http-api/get-objective objective-id))
              {writers-status :status writers :result} (http-api/retrieve-writers objective-id)
              {questions-status :status questions :result} (http-api/retrieve-questions objective-id)
-             {comments-status :status comments :result} (http-api/get-comments (:uri objective) {:limit comment-limit})]
+             {comments-status :status comments :result} (http-api/get-comments (:uri objective) comment-query)]
          (cond
            (every? #(= ::http-api/success %) [objective-status writers-status questions-status comments-status])
            (let [formatted-objective (format-objective objective)
@@ -315,7 +316,7 @@
           :else {:status 502}))
 
       ::fr/invalid
-      (-> (redirect-to-params-referer request "comments")
+      (-> (redirect-to-params-referer request "add-comment-form")
           (assoc :flash {:validation (dissoc comment-data :status)})))
     {:status 400}))
 

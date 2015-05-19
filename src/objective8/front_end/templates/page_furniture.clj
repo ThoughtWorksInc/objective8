@@ -113,19 +113,33 @@
 
 ;; COMMENT LIST
 
+(defn limit-query-string [request]
+  (when-let [limit (get-in request [:params :comments])]
+                       (str "?comments=" limit)))
+
+(defn comments-refer-uri [request]
+  (str (:uri request)
+       (limit-query-string request)
+       "%23comments"))
+
+(defn comment-refer-uri [request comment]
+  (str (:uri request)
+       (limit-query-string request)
+       "#comment-" (:_id comment)))
+
 (defn voting-actions-when-signed-in [{:keys [data ring-request] :as context} comment]
   (html/transformation
-   [:.clj-up-down-vote-form] (html/prepend (html/html-snippet (anti-forgery-field)))
-   [:.clj-vote-on-uri] (html/set-attr "value" (:uri comment))
-   [:.clj-refer] (html/set-attr "value" (str (:uri ring-request) "#comments"))
-   [:.clj-up-vote-count] (html/content (str (get-in comment [:votes :up])))
-   [:.clj-down-vote-count] (html/content (str (get-in comment [:votes :down])))))
+    [:.clj-up-down-vote-form] (html/prepend (html/html-snippet (anti-forgery-field)))
+    [:.clj-vote-on-uri] (html/set-attr "value" (:uri comment))
+    [:.clj-refer] (html/set-attr "value" (comment-refer-uri ring-request comment))
+    [:.clj-up-vote-count] (html/content (str (get-in comment [:votes :up])))
+    [:.clj-down-vote-count] (html/content (str (get-in comment [:votes :down])))))
 
 (defn voting-actions-when-not-signed-in [{:keys [data ring-request] :as context} comment]
   (html/transformation
    [:.clj-up-down-vote-form] (html/set-attr "method" "get")
    [:.clj-up-down-vote-form] (html/set-attr "action" "/sign-in")
-   [:.clj-refer] (html/set-attr "value" (str (:uri ring-request) "#comments"))
+   [:.clj-refer] (html/set-attr "value" (comment-refer-uri ring-request comment))
    [:.clj-vote-on-uri] nil
    [:.clj-up-vote-count] (html/content (str (get-in comment [:votes :up])))
    [:.clj-down-vote-count] (html/content (str (get-in comment [:votes :down])))))
@@ -146,6 +160,7 @@
     (html/at comment-list-item-snippet
              [:.clj-comment-item] 
              (html/clone-for [comment comments]
+                             [:.clj-comment-item] (html/set-attr :id (str "comment-" (:_id comment)))
                              [:.clj-comment-author] (html/content (:username comment))
                              [:.clj-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
                              [:.clj-comment-text] (html/content (:comment comment))
@@ -187,7 +202,7 @@
                                              (html/set-attr :action (str (get-in data [comment-target :uri]) "/annotations"))
                                              identity)
                   [:.clj-reason] (when (= :section comment-target) identity)
-                  [:.clj-refer] (html/set-attr :value (:uri ring-request)) 
+                  [:.clj-refer] (html/set-attr :value (str (:uri ring-request) (limit-query-string ring-request))) 
                   [:.clj-comment-on-uri] (html/set-attr :value (get-in data [comment-target :uri]))
                   [:.clj-comment-form-label-title] (html/content (translations (keyword page-name "comment-box-label-title") ))
                   [:.clj-comment-form-label-helper] (html/content (translations (keyword page-name "comment-box-label-helper")))
@@ -199,7 +214,7 @@
 (defn sign-in-to-comment [{:keys [ring-request] :as context}]
   (html/at sign-in-to-comment-snippet 
            [:.clj-to-comment-sign-in-link] 
-           (html/set-attr :href (str "/sign-in?refer=" (:uri ring-request) "%23comments"))))
+           (html/set-attr :href (str "/sign-in?refer=" (comments-refer-uri ring-request)))))
 
 
 (defn comment-create [{user :user :as context} comment-target]

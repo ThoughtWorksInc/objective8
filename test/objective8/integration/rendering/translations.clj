@@ -64,7 +64,8 @@
                          :end-date (utils/string->date-time "2012-12-12")
                          :username "Barry"
                          :uri (str "/objectives/" OBJECTIVE_ID)
-                         :status "drafting"})
+                         :status "drafting"
+                         :meta {:comments-count 0}})
 
 (def open-objective (assoc drafting-objective :status "open" 
                            :end-date (utils/date-time->date-time-plus-30-days (utils/current-time))))

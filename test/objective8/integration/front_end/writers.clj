@@ -161,7 +161,8 @@
                                                                           :status "active"}}
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                            :result {:title OBJECTIVE_TITLE
-                                                                    :uri :objective-uri}}
+                                                                    :uri :objective-uri
+                                                                    :meta {:comments-count 0}}}
                  (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []} 
                  (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []} 
                  (http-api/get-comments anything anything) => {:status ::http-api/success
@@ -199,7 +200,8 @@
                                                                  :result EXPIRED_INVITATION}
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                            :result {:title OBJECTIVE_TITLE
-                                                                    :uri :objective-uri}}
+                                                                    :uri :objective-uri
+                                                                    :meta {:comments-count 0}}}
                  (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
                  (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}
                  (http-api/get-comments anything anything) => {:status ::http-api/success

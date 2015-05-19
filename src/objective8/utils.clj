@@ -94,6 +94,7 @@
       ((regex-checker #"/") target)
       ((regex-checker #"/objectives") target)
       ((regex-checker #"/objectives/\d+") target)
+      ((regex-checker #"/objectives/\d+\?comments=\d+") target)
       ((regex-checker #"/objectives/\d+/add-question") target)
       ((regex-checker #"/objectives/\d+/questions") target)
       ((regex-checker #"/objectives/\d+/questions/\d+") target)
@@ -111,6 +112,8 @@
 
 (defn safen-fragment [fragment]
   (or ((regex-checker #"comments") fragment)
+      ((regex-checker #"comment-\d+") fragment)
+      ((regex-checker #"add-comment-form") fragment)
       ((regex-checker #"questions") fragment)
       ((regex-checker #"answer-\d+") fragment)))
 

@@ -204,13 +204,22 @@
                                     (html/add-class "starred")
                                     identity)))
 
+(def load-more-comments-snippet (html/select objective-template [:.clj-more-comments-item]))
+
 (defn objective-page [{:keys [translations data doc invitation-rsvp ring-request user] :as context}]
   (let [objective (:objective data)
         objective-id (:_id objective)
         flash (:flash doc)
         optionally-disable-voting (if (domain/open? objective)
                                     identity
-                                    (pf/disable-voting-actions translations))]
+                                    (pf/disable-voting-actions translations))
+        comments (:comments data)
+        number-of-comments-shown (count comments)
+        comment-anchor (when (last comments)
+                         (str "#comment-" (:_id (last comments))))
+        more-comments-link (str (:uri objective)
+                                "?comments=" (+ number-of-comments-shown 50)
+                                comment-anchor)] 
     (->>
      (html/at objective-template
               [:title] (html/content (:title doc))
@@ -264,6 +273,13 @@
               [:.clj-comment-list] (html/content
                                     (optionally-disable-voting
                                      (pf/comment-list context)))
+
+              [:.clj-comment-list] (if (< number-of-comments-shown (get-in objective [:meta :comments-count]))
+                                     (html/append load-more-comments-snippet)
+                                     identity)
+
+              [:.clj-more-comments-link] (html/set-attr :href more-comments-link)
+
               [:.clj-comment-create] (when (domain/open? objective)
                                        (html/content (pf/comment-create context :objective))))
      pf/add-google-analytics

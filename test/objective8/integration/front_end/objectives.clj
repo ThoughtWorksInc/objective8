@@ -27,7 +27,7 @@
                       :description "my objective description"
                       :end-date (utils/string->date-time "2012-12-12")
                       :uri (str "/objectives/" OBJECTIVE_ID)
-                      :meta {:drafts-count 0}})
+                      :meta {:drafts-count 0 :comments-count 0}})
 
 (binding [config/two-phase? true]
   (facts "objectives"
