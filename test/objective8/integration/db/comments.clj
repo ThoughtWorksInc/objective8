@@ -99,6 +99,17 @@
                                                  (map sh/store-a-comment)))]
                  (count (comments/get-comments objective-uri {:limit 5})) => 5))
 
+         (fact "returns a specified offset and limit of comments"
+               (let [objective (sh/store-an-open-objective)
+                     objective-uri (str "/objectives/" (:_id objective))
+                     first-comment (sh/store-a-comment {:entity objective})
+                     oldest-comment-to-retrieve (sh/store-a-comment {:entity objective})
+                     newest-comment-to-retrieve (sh/store-a-comment {:entity objective})
+                     last-comment (sh/store-a-comment {:entity objective})]
+                 (count (comments/get-comments objective-uri {:limit 2 :offset 1})) => 2
+                 (comments/get-comments objective-uri {:limit 2 :offset 1}) => (just [(contains {:_id (:_id newest-comment-to-retrieve)}) 
+                                                                                      (contains {:_id (:_id oldest-comment-to-retrieve)})])))
+
          (tabular
            (fact "gets comments with aggregate votes"
                  (let [objective (sh/store-an-open-objective)

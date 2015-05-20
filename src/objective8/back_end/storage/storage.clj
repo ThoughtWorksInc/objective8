@@ -191,7 +191,7 @@ limit-clause]) [objective-id question-id]] :results))))))
       with-aggregate-votes))
 
 (defn pg-retrieve-comments-with-votes [query]
-  (when-let [sanitised-query (utils/select-all-or-nothing query [:global-id :sorted-by :filter-type :limit])]
+  (when-let [sanitised-query (utils/select-all-or-nothing query [:global-id :sorted-by :filter-type :limit :offset])]
     (let [global-id (:global-id sanitised-query)
           sorted-by (:sorted-by sanitised-query)
           sorted-by-clause {:created-at "ORDER BY comments._created_at DESC"
@@ -200,7 +200,9 @@ limit-clause]) [objective-id question-id]] :results))))))
           filter-type (:filter-type sanitised-query)
           filter-clause {:has-writer-note "AND notes.note IS NOT NULL"}
           limit (:limit sanitised-query)
-          limit-clause (str "LIMIT " limit)]
+          limit-clause (str "LIMIT " limit)
+          offset (:offset sanitised-query)
+          offset-clause (str "OFFSET " offset)]
       (apply vector (map unmap-comments-with-votes
                          (korma/exec-raw [(string/join " " ["
 SELECT comments.*, up_votes, down_votes, users.username, notes.note, reasons.reason
@@ -219,7 +221,8 @@ ON agg2.global_id = comments.global_id
 WHERE comments.comment_on_id = ?
 " (get filter-clause filter-type) 
 (get sorted-by-clause sorted-by (:created-at sorted-by-clause))
-limit-clause]) [global-id]] :results))))))
+limit-clause
+offset-clause]) [global-id]] :results))))))
 
 (defn pg-retrieve-starred-objectives [user-id]
   (let [unmap-objective (first (get mappings/objective :transforms))]

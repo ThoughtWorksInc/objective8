@@ -29,7 +29,8 @@
 (def default-comment-query
   {:sorted-by :created-at
    :filter-type :none
-   :limit 50})
+   :limit 50
+   :offset 0})
 
 (defn get-comments [entity-uri query-params]
   (when-let [{:keys [global-id]} (storage/pg-retrieve-entity-by-uri entity-uri :with-global-id)]

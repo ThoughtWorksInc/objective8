@@ -347,7 +347,8 @@
                  (storage/pg-retrieve-comments-with-votes {:global-id comment-on-id
                                                            :sorted-by :created-at
                                                            :filter-type :none
-                                                           :limit 50})
+                                                           :limit 50
+                                                           :offset 0})
                  => (contains [(contains (assoc comment :note "a real note"))])))
 
         (fact "retrieving a draft returns _created_at_sql_time for accurate time comparison between drafts"
