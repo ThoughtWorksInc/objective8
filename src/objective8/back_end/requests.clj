@@ -52,6 +52,16 @@
         nil))
     query))
 
+(defn validate-offset [query offset-string]
+  (if offset-string
+    (try
+      (let [offset (Integer/parseInt offset-string)]
+        (when (> offset 0)
+          (assoc query :offset offset)))
+      (catch Exception e
+        nil))
+    query))
+
 (defn request->answer-data [{:keys [route-params params] :as request}]
   {:answer (:answer params)
    :created-by-id (:created-by-id params)
@@ -71,11 +81,13 @@
 (defn request->comments-query [{params :params :as request}]
   (let [sorted-by (keyword (:sorted-by params)) 
         filter-type (keyword (:filter-type params)) 
-        limit (:limit params)]
+        limit (:limit params)
+        offset (:offset params)]
   (some-> (utils/select-all-or-nothing params [:uri])
           (validate-sorted-by sorted-by)
           (validate-filter-type filter-type)
-          (validate-limit limit))))
+          (validate-limit limit)
+          (validate-offset offset))))
 
 (defn request->star-data [{params :params :as request}]
   (utils/select-all-or-nothing params [:objective-uri :created-by-id]))

@@ -49,9 +49,11 @@
          {:filter-type "has-writer-note"}  {:uri OBJECTIVE_URI :filter-type :has-writer-note}
          {:filter-type "none"}             {:uri OBJECTIVE_URI :filter-type :none}
          {:limit "10"}                     {:uri OBJECTIVE_URI :limit 10}
+         {:offset "5"}                     {:uri OBJECTIVE_URI :offset 5}
          {:sorted-by "created-at"
           :limit "10"
-          :filter-type "has-writer-note"}  {:uri OBJECTIVE_URI :filter-type :has-writer-note :sorted-by :created-at :limit 10})
+          :offset "5"
+          :filter-type "has-writer-note"}  {:uri OBJECTIVE_URI :filter-type :has-writer-note :sorted-by :created-at :limit 10 :offset 5})
        
        (fact "returns nil when the uri is missing from the request parameters"
              (br/request->comments-query {:params {}}) => nil)
@@ -65,4 +67,5 @@
          {:sorted-by "not-valid"}
          {:filter-type "not-valid"}
          {:limit "not-valid"}
-         {:limit "-10"}))
+         {:limit "-10"}
+         {:offset "-5"}))
