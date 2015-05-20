@@ -16,5 +16,8 @@
   ([var-name default] 
   (if-let [variable (get (System/getenv) var-name)]
     variable
-    (do (log/error (str "Failed to look up environment variable \"" var-name "\""))
-        default))))
+    (do
+      (if default
+          (log/info (str "Failed to look up environment variable \"" var-name "\" - using provided default"))
+          (log/error (str "Failed to look up environment variable \"" var-name "\" - no default provided"))) 
+      default))))
