@@ -24,11 +24,7 @@
 
 .question-text-inner {
   @include word_wrap;
-  color: $green1;
   text-decoration: none;
-  &:visited, & {
-    color: $green1;
-  }
 }
 
 .question-actions {
