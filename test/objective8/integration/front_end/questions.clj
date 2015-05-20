@@ -15,7 +15,7 @@
 (def INVALID_ID "not-an-int-id")
 (def QUESTION_URI (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))
 (def question-view-get-request (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID)))
-(def question-view-get-request-with-limit (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID) {:answers 100}))
+(def question-view-get-request-with-offset (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID) {:offset 10}))
 (defn invalid-question-get-request [objective-id question-id]
   (mock/request :get (str utils/host-url "/objectives/" objective-id "/questions/" question-id)))
 (def questions-view-get-request (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/questions")))
@@ -69,7 +69,9 @@
                                                                              :created-by-id USER_ID
                                                                              :uri QUESTION_URI
                                                                              :objective-id OBJECTIVE_ID
-                                                                             :_id QUESTION_ID}}
+                                                                             :_id QUESTION_ID
+                                                                             :answer-count 2
+                                                                             }}
                (http-api/retrieve-answers QUESTION_URI anything) => {:status ::http-api/success
                                                                         :result [{:_id 12
                                                                                   :objective-id OBJECTIVE_ID
@@ -93,14 +95,14 @@
              (default-app question-view-get-request) => (contains {:body (contains "6601")})
              (helpers/count-matches (:body (default-app question-view-get-request)) "clj-writer-note-item-container") => 1)
 
-       (fact "N number of answers can be requested"
+       (fact "Answers retrieval can be offset by number"
              (against-background
                (http-api/get-objective anything) => {:status ::http-api/success}
                (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success})
-             (-> (default-app question-view-get-request-with-limit)
+             (-> (default-app question-view-get-request-with-offset)
                  :status) => 200
              (provided
-               (http-api/retrieve-answers anything {:limit 100}) => {:status ::http-api/success
+               (http-api/retrieve-answers anything {:offset 10}) => {:status ::http-api/success
                                                                 :result []}))
 
        (fact "A user should receive a 404 if a question doesn't exist"

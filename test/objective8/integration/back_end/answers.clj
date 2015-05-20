@@ -201,7 +201,7 @@
                                 (helpers/truncate-tables)))
           (after :facts (helpers/truncate-tables))]
 
-         (fact "retrieves the first n answers"
+         (fact "retrieves answers offset as indicated"
                (let [{o-id :objective-id q-id :_id :as question} (sh/store-a-question)
                      stored-answers (doall (->> (repeat {:question question})
                                                 (take 10)
@@ -209,6 +209,6 @@
                      p-response (p/request app (str (utils/path-for :api/get-answers-for-question
                                                                     :id o-id
                                                                     :q-id q-id)
-                                                    "?limit=5"))]
+                                                    "?offset=7"))]
 
-                 (count (helpers/peridot-response-json-body->map p-response)) => 5))))
+                 (count (helpers/peridot-response-json-body->map p-response)) => 3))))

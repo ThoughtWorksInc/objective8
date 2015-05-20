@@ -64,6 +64,9 @@
   (let [question (:question data)
         answers (:answers data)
         objective (:objective data)
+        offset (:offset data)
+        limit 50
+        answer-count (:answer-count data)
         tl8 (tf/translator context)
         optionally-disable-voting (if (domain/open? (:objective data))
                                     identity
@@ -89,6 +92,13 @@
                                                                           (voting-actions-when-signed-out context answer)))
                                                  [:.clj-writer-note-item-container] (when (:note answer)
                                                                                       (display-writer-note answer)))
+                  [:.clj-previous-page] (when (> offset 0)
+                                          (html/set-attr :href (str "/objectives/" (:_id objective)
+                                                                    "/questions/" (:_id question) "?offset=" (- offset limit)))) 
+                  [:.clj-next-page] (when (> answer-count (+ offset limit))
+                                      (html/set-attr :href (str "/objectives/" (:_id objective)
+                                         "/questions/" (:_id question) "?offset=" (+ offset limit)))) 
+
                   [:.clj-jump-to-answer] (when (and (domain/open? objective) user) identity)
 
                   [:.clj-answer-new] (when (domain/open? objective) identity)

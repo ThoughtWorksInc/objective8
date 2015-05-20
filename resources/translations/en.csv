@@ -198,6 +198,8 @@ question-actions,promote-question,promote
 question-actions,demote-question,demote
 question-page,guidance-heading,What is a question?
 question-page,guidance-text-1,Questions are how Objective[8] gathers community ideas for use in drafting policy
+question-page,previous-page,Previous 50 answers
+question-page,next-page,Next 50 answers
 question-page,answers-for,Answers for
 question-page,suggested-answers,Suggested answers
 question-page,answer-title,Answers are a maximum length of 500 characters

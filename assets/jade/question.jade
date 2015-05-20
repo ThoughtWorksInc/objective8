@@ -29,6 +29,15 @@ block content
     h2(data-l8n="content:question-page/suggested-answers") !Suggested answers
     ul.answer-list#answers
       +answerItem()
+      li.page-links
+        a.previous-page-link.clj-previous-page
+          i.fa.fa-arrow-left
+          =" "
+          span(data-l8n="content:question-page/previous-page") !Previous 50 answers
+        a.next-page-link.clj-next-page
+          span(data-l8n="content:question-page/next-page") !Next 50 answers
+          =" "
+          i.fa.fa-arrow-right
 
     .answer-new.clj-answer-new
       form(action="!add-answer-action", method="POST").clj-answer-form

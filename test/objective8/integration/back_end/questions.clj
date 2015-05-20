@@ -114,7 +114,13 @@
               (let [{question-id :_id objective-id :objective-id :as question} (sh/store-a-question)
                     wrong-objective-id (inc objective-id)
                     {response :response} (p/request app (str "/api/v1/objectives/" wrong-objective-id "/questions/" question-id))]
-                (:status response) => 404))))
+                (:status response) => 404))
+
+         (fact "can retrieve a question with answer count"
+               (let [{question-id :_id objective-id :objective-id :as question} (sh/store-a-question)
+                     _ (sh/store-an-answer {:question question})
+                     {response :response} (p/request app (str "/api/v1/objectives/" objective-id "/questions/" question-id))]
+                 (:body response) => (helpers/json-contains {:answer-count 1})))))
 
 (facts "GET /api/v1/objectives/:id/questions"
        (against-background

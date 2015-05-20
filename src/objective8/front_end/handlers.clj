@@ -413,7 +413,7 @@
   (let [q-id (-> (:q-id route-params) Integer/parseInt)
         o-id (-> (:id route-params) Integer/parseInt)
         answer-query (cond-> {}
-                        (:answers params) (assoc :limit (Integer/parseInt (get params :answers)))) 
+                        (:offset params) (assoc :offset (Integer/parseInt (get params :offset)))) 
         {question-status :status question :result} (http-api/get-question o-id q-id)]
     (cond
       (= ::http-api/success question-status)
@@ -425,7 +425,9 @@
            :body (views/question-page "question-page" request
                                       :objective (format-objective objective)
                                       :question question
+                                      :answer-count (get question :answer-count 0)
                                       :answers answers
+                                      :offset (Integer/parseInt (get params :offset "0"))
                                       :doc {:title (:question question)
                                             :description (:question question)})}
           {:status 500}))

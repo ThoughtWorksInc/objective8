@@ -315,7 +315,7 @@
       (if (questions/get-question question-uri)
         (let [answers-query {:sorted-by sorted-by
                              :filter-type filter-type 
-                             :limit (get query-params :limit 50)}
+                             :offset (get query-params :offset 0)}
               answers (answers/get-answers question-uri answers-query)]
           (-> answers
               response/response

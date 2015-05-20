@@ -23,6 +23,7 @@
                                                           :_id (:_id stored-question)
                                                           :question "A question"
                                                           :username creator-name
+                                                          :answer-count 0
                                                           :objective-id objective-id
                                                           :created-by-id created-by-id
                                                           :uri question-uri
@@ -90,4 +91,12 @@
                                                           :marked-by string?})})
                               (contains {:_id (:_id unmarked-question)
                                          :meta (contains {:marked false})})]
-                             :in-any-order)))))
+                             :in-any-order))))
+       
+       (fact "can get quesiton by objective uri with the total number of answers"
+             (let [{objective-id :objective-id question-id :_id :as question} (sh/store-a-question)
+                   question-uri (str "/objectives/" objective-id "/questions/" question-id)]
+               (sh/store-an-answer {:question question})
+               (sh/store-an-answer {:question question})
+               
+               (questions/get-question question-uri) => (contains {:answer-count 2}))))

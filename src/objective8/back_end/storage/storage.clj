@@ -153,7 +153,7 @@ SELECT _id, 'section' AS entity FROM objective8.sections WHERE global_id=?
       with-aggregate-votes))
 
 (defn pg-retrieve-answers [query-map]
-  (when-let [sanitised-query (utils/select-all-or-nothing query-map [:question-id :objective-id :sorted-by :entity :limit])]
+  (when-let [sanitised-query (utils/select-all-or-nothing query-map [:question-id :objective-id :sorted-by :entity :offset])]
     (let [question-id (:question-id sanitised-query)
           objective-id (:objective-id sanitised-query)
           sorted-by (:sorted-by sanitised-query)
@@ -162,8 +162,8 @@ SELECT _id, 'section' AS entity FROM objective8.sections WHERE global_id=?
                             :down-votes "ORDER BY down_votes DESC NULLS LAST"}
           filter-type (:filter-type query-map)
           filter-clause {:has-writer-note "AND notes.note IS NOT NULL"}
-          limit (:limit sanitised-query)
-          limit-clause (str "LIMIT " limit)]
+          offset (:offset sanitised-query)
+          offset-clause (str "OFFSET " offset)]
       (apply vector (map unmap-answer-with-votes
                          (korma/exec-raw [ (string/join " " ["
 SELECT answers.*, up_votes, down_votes, users.username, notes.note FROM objective8.answers AS answers
@@ -180,7 +180,7 @@ ON agg2.global_id = answers.global_id
 WHERE answers.objective_id = ? AND answers.question_id = ?
 " (get filter-clause filter-type)
 (get sorted-by-clause sorted-by (:created-at sorted-by-clause))
-limit-clause]) [objective-id question-id]] :results))))))
+"LIMIT 50" offset-clause]) [objective-id question-id]] :results))))))
 
 (def unmap-comments-with-votes
   (-> (mappings/unmap :comment)
@@ -314,15 +314,29 @@ JOIN objective8.users AS users
 ON objectives.created_by_id = users._id
 WHERE objectives._id=? AND objectives.removed_by_admin=false" [user-id objective-id]] :results)))))
 
+(defn with-answer-count [unmap-fn]
+ (fn [m]
+   (-> (unmap-fn m)
+             (assoc :answer-count (:answer_count m)))))
+
+(def unmap-questions-with-answer-count
+  (-> (mappings/unmap :question)
+      (mappings/with-columns [:created-by-id :objective-id])
+      mappings/with-username-if-present
+      mappings/with-question-meta
+      with-answer-count))
+
 (defn pg-retrieve-question-by-query-map [query-map]
   (when-let [sanitised-query (utils/select-all-or-nothing query-map [:_id :objective-id :entity])]
     (let [unmap-question (first (get mappings/question :transforms))
           question-id (:_id sanitised-query)
           objective-id (:objective-id sanitised-query)]
-      (first (map unmap-question
+      (first (apply vector (map unmap-questions-with-answer-count
                   (korma/exec-raw ["
-SELECT questions.*, users.username, marks.active AS marked, marks.username AS marked_by
+SELECT questions.*, users.username, marks.active AS marked, marks.username AS marked_by, COUNT (answers.*) AS answer_count
 FROM objective8.questions AS questions
+LEFT JOIN objective8.answers AS answers 
+          ON questions._id = answers.question_id 
 LEFT JOIN (SELECT active, question_id, marking_users.username
            FROM objective8.marks
            JOIN objective8.users AS marking_users
@@ -332,7 +346,9 @@ LEFT JOIN (SELECT active, question_id, marking_users.username
 ON marks.question_id = questions._id
 JOIN objective8.users AS users
 ON users._id = questions.created_by_id
-WHERE questions._id = ? AND questions.objective_id = ?" [question-id objective-id]] :results))))))
+WHERE questions._id = ? AND questions.objective_id = ?
+GROUP BY questions._id, users.username, marks.active, marks.username
+" [question-id objective-id]] :results)))))))
 
 (defn pg-retrieve-questions-for-objective [objective-id]
   (let [unmap-question (first (get mappings/question :transforms))]
@@ -350,18 +366,6 @@ ON latest_marks.question_id = questions._id
 JOIN objective8.users AS users
 ON users._id = questions.created_by_id
 WHERE questions.objective_id = ?" [objective-id]] :results))))
-
-(defn with-answer-count [unmap-fn]
- (fn [m]
-   (-> (unmap-fn m)
-             (assoc :answer-count (:answer_count m)))))
-
-(def unmap-questions-with-answer-count
-  (-> (mappings/unmap :question)
-      (mappings/with-columns [:created-by-id :objective-id])
-      mappings/with-username-if-present
-      mappings/with-question-meta
-      with-answer-count))
 
 (defn pg-retrieve-questions-for-objective-by-most-answered [query-map]
  (when-let [sanitised-query (utils/select-all-or-nothing query-map [:entity :objective_id])]

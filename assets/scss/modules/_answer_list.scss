@@ -120,3 +120,12 @@
   @include word_wrap;
 }
 
+.previous-page-link {
+  margin-left: 2em;	
+  text-decoration: none;
+}
+
+.next-page-link {
+  float: right;
+  text-decoration: none;
+}

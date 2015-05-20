@@ -321,7 +321,7 @@
                                :objective-id (:objective-id question)
                                :sorted-by :created-at
                                :filter-type :none
-                               :limit 50}]
+                               :offset 0}]
 
                 (storage/pg-retrieve-answers query-map)
                 => (contains [(contains (assoc answer-1 :votes {:up 2 :down 3}))
@@ -335,7 +335,7 @@
                                 :question-id (:_id question)
                                 :objective-id (:objective-id question)
                                 :sorted-by :created-at
-                                :limit 50}]
+                                :offset 0}]
 
                  (storage/pg-retrieve-answers query-map)
                  => (contains [(contains (assoc answer :note "a real note"))])))
