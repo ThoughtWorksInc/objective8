@@ -14,3 +14,4 @@ export DB_PORT=`echo $DB_URL | cut -d/ -f1 | cut -d: -f2`
 export DB_NAME=`echo $DB_URL | cut -d/ -f2`
 export DB_JDBC_URL="jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?user=${DB_USER}&password=${DB_PASSWORD}"
 export JAVA_OPTS="-Dlog4j.configuration=log4j.heroku" 
+echo "Inside heroku.env.sh" $JAVA_OPTS
