@@ -158,13 +158,14 @@
                      
                      {comment-without-note-id :_id} (sh/store-a-comment {:entity objective :comment-text "without note"})
                      {comment-with-note-id :_id} (-> (sh/store-a-comment {:entity objective :comment-text "with note"})
-                                                     sh/with-note)
-
+                                                     (sh/with-note "writer note content"))
                      escaped-objective-uri (str "%2Fobjectives%2F" (:_id objective))
                      {body :body} (:response (p/request app (str (utils/path-for :api/get-comments)
                                                                  "?uri=" escaped-objective-uri
                                                                  "&filter-type=has-writer-note")))]
-                 body => (helpers/json-contains [(contains {:_id comment-with-note-id})])
+                 body => (helpers/json-contains [(contains {:_id comment-with-note-id
+                                                            :comment "with note"
+                                                            :note "writer note content"})])
                  body =not=> (helpers/json-contains [(contains {:_id comment-without-note-id})])))))
 
 (facts "GET /api/v1/meta/comments?uri=<uri>&limit=<n>"

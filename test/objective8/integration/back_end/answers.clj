@@ -186,11 +186,13 @@
               (let [{objective-id :objective-id question-id :_id :as question} (sh/store-a-question)
                     answer-without-note (sh/store-an-answer {:question question :answer-text "without note"})
                     answer-with-note (-> (sh/store-an-answer {:question question :answer-text "with note"})
-                                         sh/with-note)
+                                         (sh/with-note "writer note content"))
                     {response :response} (p/request app (str (utils/path-for :api/get-answers-for-question
                                                                              :id objective-id
                                                                              :q-id question-id) "?filter-type=has-writer-note"))]
-                (:body response) => (helpers/json-contains [(contains {:_id (:_id answer-with-note)})])
+                (:body response) => (helpers/json-contains [(contains {:_id (:_id answer-with-note)
+                                                                       :answer "with note"
+                                                                       :note "writer note content"})])
                 (:body response) =not=> (helpers/json-contains [(contains {:_id (:_id answer-without-note)})])))))
 
 (facts "GET /api/v1/objectives/:id/questions/:id/answers?limit=<n>"
