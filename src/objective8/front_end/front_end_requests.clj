@@ -1,11 +1,15 @@
 (ns objective8.front-end.front-end-requests
   (:require [cemerick.friend :as friend]
             [clojure.string :as s]
+            [clojure.tools.logging :as log]
             [objective8.utils :as utils]
             [objective8.front-end.sanitiser :as sanitiser]))
 
 (defn validate [{:keys [request] :as validation-state} field validator]
   (when-let [{valid :valid reason :reason value :value} (validator request)]
+    (when-not valid
+      (log/info (str "Invalid front-end request. Validator: " (last (s/split (str validator) #"\$")) 
+                     ", Field: " field ", Reason: " reason "")))
     (cond-> validation-state
       true        (assoc-in [:data field] value)
       (not valid) (assoc-in [:report field] reason)

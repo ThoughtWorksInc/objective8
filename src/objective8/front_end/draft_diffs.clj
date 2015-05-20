@@ -11,7 +11,7 @@
   ([n diffs replacement]
    (if (and (> n 0) (empty? diffs))
      (do
-       (log/info "Error when finding diffs for n chars. Should never see this.")
+       (log/error "Error when finding diffs for n chars. Should never see this.")
        {:replacement replacement
         :updated-diffs diffs}) 
      (let [diff-element (first diffs)

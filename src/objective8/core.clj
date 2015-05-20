@@ -138,8 +138,7 @@
       (wrap-frame-options :sameorigin)
       ((if (:https app-config)
          (comp wrap-forwarded-scheme wrap-ssl-redirect)
-         identity))
-      ))
+         identity))))
 
 (defonce server (atom nil))
 (defonce scheduler (atom nil))
@@ -165,13 +164,16 @@
 
 (defn store-admin [twitter-id]
   (when-not (users/get-admin-by-twitter-id twitter-id)
+    (log/info "Storing an admin")
     (users/store-admin! {:twitter-id twitter-id})))
 
 (defn initialise-api []
   (when-let [bearer-token-details (get-bearer-token-details)]
     (if (bt/get-token (bearer-token-details :bearer-name))
       (bt/update-token! bearer-token-details)
-      (bt/store-token! bearer-token-details)))
+      (do 
+        (log/info "Storing bearer token details")
+        (bt/store-token! bearer-token-details))))
   (when-let [admins-var (config/get-var "ADMINS")]
     (let [admins (clojure.string/split admins-var #" ")]
         (doall (map store-admin admins)))))
