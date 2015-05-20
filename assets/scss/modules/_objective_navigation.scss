@@ -46,6 +46,11 @@ $objective_navigation_height: 80px;
       margin-right: 2em;
     }
   }
+  .objective-nav-top-link {
+    a {
+      border-color: transparent;
+    }
+  }
   a {
     display: block;
     height: $objective_navigation_height/2;
