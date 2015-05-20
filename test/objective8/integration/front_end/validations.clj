@@ -25,7 +25,8 @@
 (def question {:_id QUESTION_ID :objective-id OBJECTIVE_ID :question "Why?"})
 (def draft {:_id DRAFT_ID
             :objective-id OBJECTIVE_ID
-            :_created_at "2015-02-12T16:46:18.838Z"})
+            :_created_at "2015-02-12T16:46:18.838Z"
+            :meta {:comments-count 0}})
 (def draft-section {:section '()
                     :uri (str "/objective/" OBJECTIVE_ID "/drafts/" DRAFT_ID "/sections/" SECTION_LABEL)})
 (def the-invitation {:uuid INVITATION_UUID

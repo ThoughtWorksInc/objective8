@@ -15,6 +15,7 @@
 (def OBJECTIVE_ID 2)
 (def WRONG_OBJECTIVE_ID (+ OBJECTIVE_ID 100))
 (def DRAFT_ID 3)
+(def DRAFT_URI (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID))
 (def SECTION_LABEL "abcdef12")
 (def SECTION_LABEL_2 "12abcdef")
 
@@ -127,12 +128,14 @@
                  (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
                                                                 :result {:_id DRAFT_ID
                                                                          :_created_at "2015-03-24T17:06:37.714Z"
+                                                                         :uri DRAFT_URI
                                                                          :content SOME_HICCUP
                                                                          :objective-id OBJECTIVE_ID
                                                                          :submitter-id USER_ID
                                                                          :username "username"
                                                                          :next-draft-id 4
-                                                                         :previous-draft-id 2}}
+                                                                         :previous-draft-id 2
+                                                                         :meta {:comments-count 0}}}
                  (http-api/get-comments anything anything) => {:status ::http-api/success :result []})
 
                (let [{response :response} (p/request user-session (utils/path-for :fe/draft :id OBJECTIVE_ID 
@@ -151,9 +154,11 @@
                  (http-api/get-draft OBJECTIVE_ID "latest") => {:status ::http-api/success
                                                                 :result {:_id DRAFT_ID
                                                                          :_created_at "2015-03-24T17:06:37.714Z"
+                                                                         :uri DRAFT_URI
                                                                          :content SOME_HICCUP
                                                                          :objective-id OBJECTIVE_ID
-                                                                         :submitter-id USER_ID}} 
+                                                                         :submitter-id USER_ID
+                                                                         :meta {:comments-count 0}}} 
                  (http-api/get-comments anything anything) => {:status ::http-api/success :result []}) 
                (let [{response :response} (p/request user-session latest-draft-url)]
                  (:status response) => 200
@@ -287,7 +292,8 @@
                                                                        :submitter-id USER_ID
                                                                        :_created_at "2015-02-12T16:46:18.838Z"
                                                                        :uri :draft-uri 
-                                                                       :username "UserName"}}
+                                                                       :username "UserName"
+                                                                       :meta {:comments-count 0}}}
                (http-api/get-comments :draft-uri {}) => {:status ::http-api/success 
                                                          :result []} 
                (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success 
@@ -335,10 +341,12 @@
         (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success}
         (http-api/get-draft OBJECTIVE_ID "latest") => {:status ::http-api/success
                                                        :result {:_id DRAFT_ID
+                                                                :uri DRAFT_URI
                                                                 :_created_at "2015-03-24T17:06:37.714Z"
                                                                 :content SOME_HICCUP
                                                                 :objective-id OBJECTIVE_ID
-                                                                :submitter-id USER_ID}}
+                                                                :submitter-id USER_ID
+                                                                :meta {:comments-count 0}}}
         (http-api/get-comments anything anything) => {:status ::http-api/success :result []})
       (-> user-session
           ih/sign-in-as-existing-user 

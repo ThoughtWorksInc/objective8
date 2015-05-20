@@ -199,7 +199,8 @@
                                                                        :submitter-id USER_ID
                                                                        :_created_at "2015-02-12T16:46:18.838Z"
                                                                        :uri :draft-uri 
-                                                                       :username "UserName"}}
+                                                                       :username "UserName"
+                                                                       :meta {:comments-count 0}}}
                (http-api/get-comments :draft-uri {}) => {:status ::http-api/success 
                                                          :result []} 
                (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success 

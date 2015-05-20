@@ -102,6 +102,7 @@ draft,annotation-link-title,Annotations
 draft,comment-box-label-title,Want to discuss this draft?
 draft,comment-box-label-helper,You can leave a comment here.
 draft,comment-post-button,Add a comment
+draft,load-more-comments,More comments
 draft-list,doc-title,Drafts | Objective[8]
 draft-list,doc-description,
 draft-list,objective,Objective

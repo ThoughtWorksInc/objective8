@@ -60,13 +60,22 @@
 
 (def draft-wrapper-snippet (html/select draft-template [:.clj-draft-wrapper]))
 
+(def load-more-comments-snippet (html/select draft-template [:.clj-more-comments-item]))
+
 (defn draft-wrapper [{:keys [data user] :as context}]
   (let [draft (:draft data)
         objective (:objective data)
         {objective-id :_id objective-status :status} objective
         optionally-disable-voting (if (domain/in-drafting? objective) 
                                     identity
-                                    pf/disable-voting-actions)]
+                                    pf/disable-voting-actions)
+        comments (:comments data)
+        number-of-comments-shown (count comments)
+        comment-anchor (when (last comments)
+                         (str "#comment-" (:_id (last comments))))
+        more-comments-link (str (:uri draft)
+                                "?comments=" (+ number-of-comments-shown 50)
+                                comment-anchor)]
     (html/at draft-wrapper-snippet
              [:.clj-draft-version-navigation] (if draft
                                                 (html/substitute (draft-version-navigation context))
@@ -96,6 +105,11 @@
              [:.clj-draft-comments] (when draft
                                       (html/transformation
                                         [:.clj-comment-list] (html/content (optionally-disable-voting (pf/comment-list context)))
+                                        [:.clj-comment-list] (if (< number-of-comments-shown (get-in draft [:meta :comments-count]))
+                                                               (html/append load-more-comments-snippet)
+                                                               identity)
+
+                                        [:.clj-more-comments-link] (html/set-attr :href more-comments-link)
                                         [:.clj-comment-create] (html/content (pf/comment-create context :draft)))))))
 
 (def drafting-begins-in-snippet (html/select pf/library-html-resource [:.clj-drafting-begins-in]))
