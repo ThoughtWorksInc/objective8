@@ -4,6 +4,7 @@
             [clj-webdriver.taxi :as wd]
             [clj-webdriver.core :as wc]
             [clojure.java.io :as io]
+            [clojure.tools.logging :as log]
             [clojure.string :as string]
             [objective8.core :as core]
             [objective8.utils :as utils]
@@ -18,9 +19,9 @@
   (try 
     (wd/wait-until #(= (wd/title) title) 5000)
     (catch Exception e
-      (prn (str ">>>>>>>>>>> Title never appeared:"))
-      (prn (str "Expected: " title))
-      (prn (str "Actual: " (wd/title)))
+      (log/info (str ">>>>>>>>>>> Title never appeared:"))
+      (log/info (str "Expected: " title))
+      (log/info (str "Actual: " (wd/title)))
       (throw e))))
 
 (def not-empty? (comp not empty?))
@@ -29,20 +30,20 @@
   (try
     (wd/wait-until #(not-empty? (wd/elements q)) 5000)
     (catch Exception e
-      (prn (str "Could not find element: " q))
+      (log/info (str "Could not find element: " q))
       (throw e))))
 
 (defn wait-for [pred]
   (try
     (wd/wait-until pred 5000)
     (catch Exception e
-      (prn (str "Waiting for predicate failed"))
+      (log/info (str "Waiting for predicate failed"))
       (throw e))))
 
 (def screenshot-directory "test/objective8/functional/screenshots")
 (def screenshot-number (atom 0))
 (defn screenshot [filename]
-  (prn (str "Screenshot: " filename))
+  (log/info (str "Screenshot: " filename))
   (wd/take-screenshot :file (str screenshot-directory "/"
                                  (format "%02d" (swap! screenshot-number + 1))
                                  "_" filename ".png")))

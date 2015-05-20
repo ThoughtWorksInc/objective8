@@ -93,5 +93,6 @@
   {:dictionary (load-translations (find-translation-resources translations-directory))
    :dev-mode? false
    :fallback-locale :en
-   :log-missing-translations-function (fn [{:keys [locale ks scope]}]
-                                        (log/warn (str "Missing translations! " locale ks scope)))})
+   :log-missing-translation-fn (fn [{:keys [locales ks ns] :as args}]
+                                 (log/warn (str "Missing translation! locales: " locales 
+                                                ", keys: " ks ", namespace: " ns)))})

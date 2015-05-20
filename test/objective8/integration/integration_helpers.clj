@@ -5,6 +5,7 @@
             [peridot.core :as p]
             [cheshire.core :as json]
             [clojure.data.json :as cl-json]
+            [clojure.tools.logging :as log]
             [ring.middleware.session.store :as rss]
             [objective8.core :as core]
             [objective8.front-end.workflows.twitter :as twitter]
@@ -66,15 +67,15 @@
 (deftype TestSessionStore [session-atom]
   rss/SessionStore
   (read-session [_ key]
-    (prn "read-session" @session-atom key)
+    (log/info "read-session" @session-atom key)
     (@session-atom key))
   (write-session [_ key data]
     (let [key (or key "dummy-key")]
-    (prn "write-session" @session-atom key data) 
+    (log/info "write-session" @session-atom key data) 
     (swap! session-atom assoc key data) 
     key))
   (delete-session [_ key]
-    (prn "delete-session" @session-atom)
+    (log/info "delete-session" @session-atom)
     (swap! session-atom dissoc key)
     nil))
 

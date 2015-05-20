@@ -40,7 +40,7 @@
   ([v] (print-and-pass-through v ""))
   
   ([v tag]
-   (prn (str tag v))
+   (log/info (str tag v))
    v))
 
 (defn diff-maps [map-1 map-2 & tags]
