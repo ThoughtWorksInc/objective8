@@ -251,8 +251,10 @@ objective-view,comment-box-label-title,Want to discuss the objective?
 objective-view,comment-box-label-helper,You can leave a comment here.
 objective-view,comment-post-button,Add a comment
 objective-view,load-more-comments,More comments
+objective-comments,doc-description,Comment history for objective
 objective-comments,comments,Comments
 objective-comments,of,of
+objective-comments,breadcrumb-text,Comment history
 question-list,question-list-heading,Recently asked questions
 question-list,page-intro,"Gather background information such as opinions and experiences by suggesting a question for the community to answer.  Your question should be focussed and specific, as the answers will influence the policy drafting process."
 question-list,no-questions,There are no community questions yet.
@@ -288,6 +290,8 @@ error-configuration,page-intro,There is a problem with the way this instance of 
 answer-view,created-message,Your answer has been posted!
 answer-view,no-answers,No one has answered this question yet.
 answer-view,answer-title,Answers
+comments-navigation,previous,Previous
+comments-navigation,next,Next
 comment-view,no-comments,There are no comments yet.
 comment-view,created-message,Your comment has been added!
 comment-view,comment-title,Comments

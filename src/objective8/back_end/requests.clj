@@ -56,7 +56,7 @@
   (if offset-string
     (try
       (let [offset (Integer/parseInt offset-string)]
-        (when (> offset 0)
+        (when (>= offset 0)
           (assoc query :offset offset)))
       (catch Exception e
         nil))

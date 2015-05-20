@@ -65,7 +65,7 @@
                          :username "Barry"
                          :uri (str "/objectives/" OBJECTIVE_ID)
                          :status "drafting"
-                         :meta {:comments-count 0}})
+                         :meta {:comments-count 100}})
 
 (def open-objective (assoc drafting-objective :status "open" 
                            :end-date (utils/date-time->date-time-plus-30-days (utils/current-time))))
@@ -106,6 +106,20 @@
                (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}) 
              (let [{status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/objective :id OBJECTIVE_ID))
+                                                   :response)]
+               status => 200
+               body => helpers/no-untranslated-strings)))
+
+(facts "about rendering comments page"
+       (fact "there are no untranslated strings"
+             (against-background 
+               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                         :result open-objective}
+               (http-api/get-comments (:uri open-objective) anything) => {:status ::http-api/success 
+                                                                          :result []})
+             (let [{status :status body :body} (-> user-session
+                                                   (p/request (utils/path-for :fe/get-comments-for-objective 
+                                                                              :id OBJECTIVE_ID))
                                                    :response)]
                status => 200
                body => helpers/no-untranslated-strings)))

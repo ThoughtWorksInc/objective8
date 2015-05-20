@@ -50,22 +50,24 @@
                (against-background
                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                           :result {:uri OBJECTIVE_URI
+                                                                   :_id OBJECTIVE_ID
                                                                    :meta {:comments-count 5}}})
                (-> user-session
                    (p/request (str (utils/path-for :fe/get-comments-for-objective
                                                    :id OBJECTIVE_ID)
-                                   "?offset=50"))
+                                   "?offset=3"))
                    :response
                    :status)
                => 200
                (provided
-                (http-api/get-comments OBJECTIVE_URI {:offset 50}) => {:status ::http-api/success
+                (http-api/get-comments OBJECTIVE_URI {:offset 3}) => {:status ::http-api/success
                                                                        :result []}))
 
          (fact "anyone can view comments for an objective"
                (against-background
                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                           :result {:uri OBJECTIVE_URI
+                                                                   :_id OBJECTIVE_ID
                                                                    :meta {:comments-count 5}}}
                 (http-api/get-comments anything anything) => {:status ::http-api/success
                                                               :result [{:_id 1
@@ -84,6 +86,7 @@
                (against-background
                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                           :result {:uri OBJECTIVE_URI
+                                                                   :_id OBJECTIVE_ID
                                                                    :meta {:comments-count 75}}}
                 (http-api/get-comments OBJECTIVE_URI anything) => {:status ::http-api/success
                                                                    :result []})
@@ -98,4 +101,24 @@
                                                    :id OBJECTIVE_ID)
                                    "?offset=50"))
                    :response
-                   :body) => (contains #"51.+-.+75.+of.+75"))))
+                   :body) => (contains #"51.+-.+75.+of.+75"))
+
+         (tabular
+          (fact "redirects to sensible offset when offset out of range"
+                (against-background
+                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                           :result {:uri OBJECTIVE_URI
+                                                                    :_id OBJECTIVE_ID
+                                                                    :meta {:comments-count ?total-comments}}}
+                 (http-api/get-comments OBJECTIVE_URI anything) => {:status ::http-api/success
+                                                                    :result []})
+                (let [response (-> user-session
+                                   (p/request (str (utils/path-for :fe/get-comments-for-objective
+                                                                   :id OBJECTIVE_ID)
+                                                   "?offset=" ?offset))
+                                   :response)]
+                  (:status response) => 302
+                  (:headers response) => (helpers/location-contains (str "offset=" ?redirect-offset))))
+          ?total-comments    ?offset    ?redirect-offset
+          30                 35         0
+          80                 85         30)))

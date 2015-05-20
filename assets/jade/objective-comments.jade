@@ -8,22 +8,39 @@ block vars
 block content
 
   .middle-container
-    .objective-outline
-      .objective-outline-header
-        h1.objective-title.clj-objective-title !Build safer cycling networks in the streets of Madrid.
+    .objective-navigation-wrapper
+      .objective-navigation
+        .objective-navigation-breadcrumb
+          span.breadcrumb-ellipsis
+            a.clj-objective-link(href="!objective") !Objective title
+            =" "
+            | >
+            =" "
+            span(data-l8n="content:objective-comments/breadcrumb-text") !Comment history
+
     .objective-comments#comments
-      h2(data-l8n="content:objective-comments/comments") !Comments
-      .comment-navigation
-        span.clj-comments-start-index
-        span -
-        span.clj-comments-end-index
-        span(data-l8n="content:objective-comments/of") !of
-        span.clj-comments-total-count
+      .comments-navigation
+        .comments-navigation-location
+          span.clj-comments-start-index 1
+          =" "
+          span -
+          =" "
+          span.clj-comments-end-index 50
+          =" "
+          span(data-l8n="content:objective-comments/of") !of
+          =" "
+          span.clj-comments-total-count 105
+        ul.comments-navigation-controls
+          li.comments-navigation-item.comments-navigation-previous.disabled.clj-comments-previous
+            a.comments-navigation-link.clj-comments-previous-link(href="!previous-link")
+              i.fa.fa-angle-left
+              span.comments-navigation-text(data-l8n="content:comments-navigation/previous") !Previous
+          li.comments-navigation-item.comments-navigation-next.disabled.clj-comments-next
+            a.comments-navigation-link.clj-comments-next-link(href="!next-link")
+              span.comments-navigation-text(data-l8n="content:comments-navigation/next") !Next 
+              i.fa.fa-angle-right
       ol.comment-list.clj-comment-list
         +commentItem('Phil Smith', '2 September 2015 07:41')
           p !Oooh Paseo del Prado.
         +commentItem('Jen Bloggs', '1 September 2015 07:41')
           p !Paseo del Prado.
-
-      .clj-comment-create
-        +addCommentForm()

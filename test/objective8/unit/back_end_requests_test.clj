@@ -49,7 +49,7 @@
          {:filter-type "has-writer-note"}  {:uri OBJECTIVE_URI :filter-type :has-writer-note}
          {:filter-type "none"}             {:uri OBJECTIVE_URI :filter-type :none}
          {:limit "10"}                     {:uri OBJECTIVE_URI :limit 10}
-         {:offset "5"}                     {:uri OBJECTIVE_URI :offset 5}
+         {:offset "0"}                     {:uri OBJECTIVE_URI :offset 0}
          {:sorted-by "created-at"
           :limit "10"
           :offset "5"

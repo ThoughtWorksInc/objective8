@@ -94,7 +94,7 @@
       ((regex-checker #"/") target)
       ((regex-checker #"/objectives") target)
       ((regex-checker #"/objectives/\d+") target)
-      ((regex-checker #"/objectives/\d+\?comments=\d+") target)
+      ((regex-checker #"/objectives/\d+/comments") target)
       ((regex-checker #"/objectives/\d+/add-question") target)
       ((regex-checker #"/objectives/\d+/questions") target)
       ((regex-checker #"/objectives/\d+/questions/\d+") target)
