@@ -16,6 +16,7 @@
 (def USER_ID 1)
 (def OBJECTIVE_ID 2)
 (def OBJECTIVE {:title "Objective Title 1"
+                :_id OBJECTIVE_ID
                 :description "An objective"
                 :end-date (utils/string->date-time "2015-12-12")
                 :uri (str "/objectives/" OBJECTIVE_ID)})
@@ -161,11 +162,12 @@
                                                                           :status "active"}}
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                            :result {:title OBJECTIVE_TITLE
+                                                                    :_id OBJECTIVE_ID
                                                                     :uri :objective-uri
                                                                     :meta {:comments-count 0}}}
                  (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []} 
                  (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []} 
-                 (http-api/get-comments anything anything) => {:status ::http-api/success
+                 (http-api/get-comments anything) => {:status ::http-api/success
                                                       :result []}) 
                (let [peridot-response (-> user-session
                                           (p/request INVITATION_URL)
@@ -186,8 +188,8 @@
                                                                     :uri :objective-uri}}
                  (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []} 
                  (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []} 
-                 (http-api/get-comments anything anything) => {:status ::http-api/success
-                                                      :result []}) 
+                 (http-api/get-comments anything) => {:status ::http-api/success
+                                                      :result []})
                (let [peridot-response (-> user-session
                                           (p/request INVITATION_URL)
                                           p/follow-redirect
@@ -200,11 +202,12 @@
                                                                  :result EXPIRED_INVITATION}
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                            :result {:title OBJECTIVE_TITLE
+                                                                    :_id OBJECTIVE_ID
                                                                     :uri :objective-uri
                                                                     :meta {:comments-count 0}}}
                  (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
                  (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}
-                 (http-api/get-comments anything anything) => {:status ::http-api/success
+                 (http-api/get-comments anything) => {:status ::http-api/success
                                                       :result []})
                (let [{request :request response :response} (-> user-session
                                                                (p/request INVITATION_URL)

@@ -55,6 +55,7 @@
               (map io/delete-file))))
 
 (def journey-state (atom nil))
+(def test-data-collector (atom {}))
 
 (def FIRST_DRAFT_MARKDOWN  "First draft heading\n===\n\n- Some content")
 (def SECOND_DRAFT_MARKDOWN  "Second draft heading\n===\n\n- Some content\n- Some more content")
@@ -71,6 +72,7 @@
                          (users/store-admin! {:twitter-id ADMIN_AND_WRITER_TWITTER_ID})  
                          (reset! journey-state {})
                          (clear-screenshots)))
+   (before :facts (reset! test-data-collector {}))
    (after :contents (do (wd/quit)
                         (integration-helpers/truncate-tables)
                         (core/stop-server)))]
@@ -157,12 +159,38 @@
           (wait-for-title "Functional test headline | Objective[8]")
           (screenshot "objective_with_comment")
 
+          (wait-for-title "Functional test headline | Objective[8]")
+          (wd/input-text ".func--comment-form-text-area" "Functional test second comment text")
+          (wd/click ".func--comment-form-submit")
+          (wait-for-title "Functional test headline | Objective[8]")
+          (screenshot "objective_with_two_comments")
+          
           (wd/page-source)
 
           (catch Exception e
             (screenshot "ERROR-Can-comment-on-an-objective")
             (throw e)))
         => (contains "Functional test comment text"))
+
+  (fact "Can view and navigate comment history for an objective"
+        (try
+          (wd/to (str (:objective-url @journey-state) "/comments?offset=1"))
+          (wait-for-title "Comments for Functional test headline | Objective[8]")
+          (screenshot "objective_comment_history_offset_1")
+          (swap! test-data-collector assoc :offset-equals-1-comment-count (count (wd/elements ".func--comment-text")))
+          
+          (wd/click ".func--previous-comments")
+
+          (wait-for-title "Comments for Functional test headline | Objective[8]")
+          (screenshot "objective_comment_history_offset_0")
+          (swap! test-data-collector assoc :offset-equals-0-comment-count (count (wd/elements ".func--comment-text")))
+
+          @test-data-collector
+          (catch Exception e
+            (screenshot "ERROR-Can-view-comment-history-for-an-objective")
+            (throw e)))
+        ) => {:offset-equals-1-comment-count 1
+              :offset-equals-0-comment-count 2}
 
   (fact "Can add a question"
         (try (wd/to "localhost:8080/objectives")

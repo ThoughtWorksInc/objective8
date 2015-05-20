@@ -41,11 +41,11 @@
   @extend %list-item-reply-button;
 }
 
-.more-comments-item {
+.comment-history-item {
   padding-top: 1em;
   padding-bottom: 1em;
 }
-.more-comments-item-link {
+.comment-history-item-link {
   &:visited, & {
     color: $green1;
     text-decoration: none;

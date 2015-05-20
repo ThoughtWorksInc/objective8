@@ -24,6 +24,7 @@
 (def user-session (helpers/test-context))
 
 (def basic-objective {:title "my objective title"
+                      :_id OBJECTIVE_ID
                       :description "my objective description"
                       :end-date (utils/string->date-time "2012-12-12")
                       :uri (str "/objectives/" OBJECTIVE_ID)
@@ -63,7 +64,7 @@
                (against-background
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                            :result basic-objective}
-                 (http-api/get-comments anything anything)=> {:status ::http-api/success :result []}
+                 (http-api/get-comments anything)=> {:status ::http-api/success :result []}
                  (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
                  (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []})
                (default-app objective-view-get-request) => (contains {:status 200})
@@ -73,9 +74,9 @@
          
            (fact "When a signed in user views an objective, the objective contains user specific information"
                  (against-background
-                   (http-api/get-comments anything anything)=> {:status ::http-api/success :result []}
-                   (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
-                   (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []})
+                  (http-api/get-comments anything)=> {:status ::http-api/success :result []}
+                  (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
+                  (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []})
                  (-> user-session
                      helpers/sign-in-as-existing-user
                      (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID))) => anything
@@ -98,34 +99,26 @@
 
                 (fact "Any user can view comments with votes on an objective"
                       (against-background
-                        (http-api/get-comments anything anything) => {:status ::http-api/success
-                                                             :result [{:_id 1
-                                                                       :_created_at "2015-02-12T16:46:18.838Z"
-                                                                       :objective-id OBJECTIVE_ID
-                                                                       :created-by-id USER_ID
-                                                                       :comment "Comment 1"
-                                                                       :uri "/comments/1"
-                                                                       :votes {:up 123456789 :down 987654321}}]})
+                       (http-api/get-comments anything) => {:status ::http-api/success
+                                                            :result [{:_id 1
+                                                                      :_created_at "2015-02-12T16:46:18.838Z"
+                                                                      :objective-id OBJECTIVE_ID
+                                                                      :created-by-id USER_ID
+                                                                      :comment "Comment 1"
+                                                                      :uri "/comments/1"
+                                                                      :votes {:up 123456789 :down 987654321}}]})
                       (let [{response :response} (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))]
                         (:body response) => (contains "Comment 1")
                         ;;(:body response) => (contains "123456789")
                         ;;(:body response) => (contains "987654321")
                         ))
 
-                (fact "a maximum number of comments can be requested"
-                      (-> (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID "?comments=50"))
-                          :response
-                          :status) => 200
-                      (provided
-                        (http-api/get-comments anything {:limit 50}) => {:status ::http-api/success
-                                                                         :result []}))
-
                 (fact "An objective that is in drafting cannot be commented on"
                       (against-background
                         (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                                   :result (assoc basic-objective :status "drafting")}
 
-                        (http-api/get-comments anything anything) => {:status ::http-api/success :result []})
+                        (http-api/get-comments anything) => {:status ::http-api/success :result []})
                       (let [{response :response} (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))]
                         (:body response) =not=> (contains "clj-comment-create"))))
 

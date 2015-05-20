@@ -204,7 +204,7 @@
                                     (html/add-class "starred")
                                     identity)))
 
-(def load-more-comments-snippet (html/select objective-template [:.clj-more-comments-item]))
+(def comment-history-snippet (html/select objective-template [:.clj-comment-history-item]))
 
 (defn objective-page [{:keys [translations data doc invitation-rsvp ring-request user] :as context}]
   (let [objective (:objective data)
@@ -215,11 +215,9 @@
                                     (pf/disable-voting-actions translations))
         comments (:comments data)
         number-of-comments-shown (count comments)
-        comment-anchor (when (last comments)
-                         (str "#comment-" (:_id (last comments))))
-        more-comments-link (str (:uri objective)
-                                "?comments=" (+ number-of-comments-shown 50)
-                                comment-anchor)] 
+        comment-history-link (str (utils/path-for :fe/get-comments-for-objective
+                                                  :id objective-id)
+                                  "?offset=" 50)]
     (->>
      (html/at objective-template
               [:title] (html/content (:title doc))
@@ -275,10 +273,10 @@
                                      (pf/comment-list context)))
 
               [:.clj-comment-list] (if (< number-of-comments-shown (get-in objective [:meta :comments-count]))
-                                     (html/append load-more-comments-snippet)
+                                     (html/append comment-history-snippet)
                                      identity)
 
-              [:.clj-more-comments-link] (html/set-attr :href more-comments-link)
+              [:.clj-comment-history-link] (html/set-attr :href comment-history-link)
 
               [:.clj-comment-create] (when (domain/open? objective)
                                        (html/content (pf/comment-create context :objective))))

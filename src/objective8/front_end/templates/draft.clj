@@ -60,7 +60,7 @@
 
 (def draft-wrapper-snippet (html/select draft-template [:.clj-draft-wrapper]))
 
-(def load-more-comments-snippet (html/select draft-template [:.clj-more-comments-item]))
+(def load-more-comments-snippet (html/select draft-template [:.clj-comment-history-item]))
 
 (defn draft-wrapper [{:keys [data user] :as context}]
   (let [draft (:draft data)
@@ -109,7 +109,7 @@
                                                                (html/append load-more-comments-snippet)
                                                                identity)
 
-                                        [:.clj-more-comments-link] (html/set-attr :href more-comments-link)
+                                        [:.clj-comment-history-link] (html/set-attr :href more-comments-link)
                                         [:.clj-comment-create] (html/content (pf/comment-create context :draft)))))))
 
 (def drafting-begins-in-snippet (html/select pf/library-html-resource [:.clj-drafting-begins-in]))

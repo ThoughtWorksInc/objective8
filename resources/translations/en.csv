@@ -247,11 +247,11 @@ objective-view,community-questions-title,Questions from the community
 objective-view,community-questions-helper-text,These questions have been suggested by the community. The answers may be useful for drafting the policy.
 objective-view,answer-link,Answers
 objective-view,ask-a-question,Suggest a question
-objective-view,comments,Comments for this objective
+objective-view,comments,Recent comments for this objective
 objective-view,comment-box-label-title,Want to discuss the objective?
 objective-view,comment-box-label-helper,You can leave a comment here.
 objective-view,comment-post-button,Add a comment
-objective-view,load-more-comments,More comments
+objective-view,comment-history,More comments
 objective-comments,doc-description,Comment history for objective
 objective-comments,comments,Comments
 objective-comments,of,of
