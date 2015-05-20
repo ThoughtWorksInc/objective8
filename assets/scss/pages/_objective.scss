@@ -5,10 +5,19 @@
   }
 }
 
+.objective-intro-middle-container-wrapper {
+  border-top: 1px solid rgba(white,0.1);
+  background: #5a6673;
+  margin: -1em -1em 0 -1em;
+  padding-top: 3em;
+  padding-bottom: 2em;
+  color: $white;
+}
+
 .objective-outline {
   @extend %objective-section;
   position: relative;
-  color: $default_text_color;
+  color: $white;;
 }
 
 .objective-title {
@@ -24,6 +33,7 @@
 
 .objective-detail {
   @include word_wrap;
+  font-size: 120%;
 }
 
 .objective-title-label {
@@ -94,6 +104,7 @@
   line-height: 34px;
   border: none;
   background: transparent;
+  color: $white;
   @include mq(768) {
     font-size: 2em;
   }

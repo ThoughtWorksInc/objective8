@@ -25,7 +25,11 @@ $draft_icon_size_beta: 60px;
   text-decoration: none;
   display: block;
   padding: 0.5em 3em 0.5em 0;
-  color: $default_text_color;
+  color: inherit;
+  &:hover {
+    color: inherit;
+    opacity: 0.7;
+  }
 }
 
 .draft-item-text {
@@ -53,7 +57,7 @@ $draft_icon_size_beta: 60px;
   line-height: ($draft_icon_size_alpha - 3px);
   font-size: 1em;
   text-align: center;
-  color: rgba($grey-15,1);
+  color: inherit;
   @include mq(480) {
     height: $draft_icon_size_beta;
     line-height: ($draft_icon_size_beta  - 3px);

@@ -16,42 +16,36 @@ block content
       label.send-invite-label(for="copy-invite", data-l8n="content:invitation-modal/guidance-text-line-3") !Alternatively send the writer this link:
       input.invite-input-url.clj-invitation-url.func--invitation-url(id="copy-invite", type="text", value="!http://invitation/uuid/really/long/uuid")
 
-  .middle-container
+  .objective-intro-middle-container-wrapper
+    .middle-container
 
-    .clj-objective-progress-indicator
+      .clj-objective-progress-indicator
+        +progressIndicator(2)
 
-    .objective-navigation
-      .objective-navigation-list-wrapper
-        ul.objective-navigation-list.js-objective-nav
-          li
-            a(href="#details", data-l8n="content:objective-nav/details") !Details
-          li
-            a(href="#writers", data-l8n="content:objective-nav/writers") !Writers
-          li
-            a(href="#questions", data-l8n="content:objective-nav/questions") !Questions
-          li
-            a(href="#comments", data-l8n="content:objective-nav/comments") !Comments
+      .objective-outline#details
 
+        //p.days-left.clj-days-left
+        //  span.days-left-head(data-l8n="content:objective-view/drafting-begins") !Drafting begins in
+        //  =" "
+        //  span.days-left-day.clj-days-left-day !29
+        //  =" "
+        //  span.days-left-foot(data-l8n="content:objective-view/days") !days
 
-    .objective-outline#details
+        .objective-outline-header
+          h1.objective-title.clj-objective-title.func--objective-page !Build safer cycling networks in the streets of Madrid.
+          form.objective-star-container.clj-star-form(action="/meta/stars", method="post")
+            input.clj-refer(type="hidden", value="!current-url", name="refer")
+            input.clj-star-on-uri(type="hidden", value="!current-url", name="objective-uri")
+            button.objective-star.clj-objective-star.func--objective-star(type="submit")
+              i.fa.fa-star-o
+              i.fa.fa-star
 
-      p.days-left.clj-days-left
-        span.days-left-head(data-l8n="content:objective-view/drafting-begins") !Drafting begins in
-        =" "
-        span.days-left-day.clj-days-left-day !29
-        =" "
-        span.days-left-foot(data-l8n="content:objective-view/days") !days
+        .clj-drafting-started-wrapper
 
-      .objective-outline-header
-        h1.objective-title.clj-objective-title.func--objective-page !Build safer cycling networks in the streets of Madrid.
-        form.objective-star-container.clj-star-form(action="/meta/stars", method="post")
-          input.clj-refer(type="hidden", value="!current-url", name="refer")
-          input.clj-star-on-uri(type="hidden", value="!current-url", name="objective-uri")
-          button.objective-star.clj-objective-star.func--objective-star(type="submit")
-            i.fa.fa-star-o
-            i.fa.fa-star
-
-      .clj-drafting-started-wrapper
+        h2(data-l8n="content:objective-view/details") !Details
+        .objective-detail.clj-objective-detail
+          p !London and Paris are two prime examples of cycle super highway heaven.  We need to show the world that madrid too can be the pinnacle in cycling and safety.
+          p !Street art bitters pour-over, Portland pork belly master cleanse lumbersexual. Aesthetic 90's Shoreditch PBR. Austin sustainable Carles American Apparel, banh mi High Life selvage XOXO plaid stumptown fashion axe skateboard butcher McSweeney's. Master cleanse polaroid Shoreditch DIY, Godard salvia gastropub heirloom Kickstarter fap before they sold out chia. Disrupt Neutra tofu Godard kitsch. Chambray Helvetica plaid chia salvia. Cronut asymmetrical messenger bag, cornhole listicle selvage yr beard Godard stumptown meh sustainable.
 
       .clj-latest-draft-wrapper
         .latest-draft.clj-latest-draft
@@ -66,10 +60,20 @@ block content
                   = ", "
                   span.draft-item-time.clj-latest-draft-time !2 days ago
 
-      h2(data-l8n="content:objective-view/details") !Details
-      .objective-detail.clj-objective-detail
-        p !London and Paris are two prime examples of cycle super highway heaven.  We need to show the world that madrid too can be the pinnacle in cycling and safety.
-        p !Street art bitters pour-over, Portland pork belly master cleanse lumbersexual. Aesthetic 90's Shoreditch PBR. Austin sustainable Carles American Apparel, banh mi High Life selvage XOXO plaid stumptown fashion axe skateboard butcher McSweeney's. Master cleanse polaroid Shoreditch DIY, Godard salvia gastropub heirloom Kickstarter fap before they sold out chia. Disrupt Neutra tofu Godard kitsch. Chambray Helvetica plaid chia salvia. Cronut asymmetrical messenger bag, cornhole listicle selvage yr beard Godard stumptown meh sustainable.
+  .middle-container
+
+    .objective-navigation
+      .objective-navigation-list-wrapper
+        ul.objective-navigation-list.js-objective-nav
+          //li
+          //  a(href="#details", data-l8n="content:objective-nav/details") !Details
+          li
+            a(href="#writers", data-l8n="content:objective-nav/writers") !Writers
+          li
+            a(href="#questions", data-l8n="content:objective-nav/questions") !Questions
+          li
+            a(href="#comments", data-l8n="content:objective-nav/comments") !Comments
+
 
     .objective-writers#writers
       h2(data-l8n="content:objective-view/writers") !Candidate writers
