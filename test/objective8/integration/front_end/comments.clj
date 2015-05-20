@@ -17,7 +17,7 @@
 
 (def user-session (helpers/test-context))
 
-(facts "comments"
+(facts "about posting comments"
        (binding [config/enable-csrf false]
          (fact "authorised user can post and retrieve comment against an objective"
               (against-background
@@ -43,3 +43,59 @@
                  (:flash response) => (contains {:type :flash-message :message :comment-view/created-message})
                  (:headers response) => (helpers/location-contains (str "/objectives/" OBJECTIVE_ID))
                  (:status response) => 302))))
+
+(facts "about viewing comments"
+       (binding [config/enable-csrf false]
+         (fact "gets comments starting from the requested offset"
+               (against-background
+                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                          :result {:uri OBJECTIVE_URI
+                                                                   :meta {:comments-count 5}}})
+               (-> user-session
+                   (p/request (str (utils/path-for :fe/get-comments-for-objective
+                                                   :id OBJECTIVE_ID)
+                                   "?offset=50"))
+                   :response
+                   :status)
+               => 200
+               (provided
+                (http-api/get-comments OBJECTIVE_URI {:offset 50}) => {:status ::http-api/success
+                                                                       :result []}))
+
+         (fact "anyone can view comments for an objective"
+               (against-background
+                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                          :result {:uri OBJECTIVE_URI
+                                                                   :meta {:comments-count 5}}}
+                (http-api/get-comments anything anything) => {:status ::http-api/success
+                                                              :result [{:_id 1
+                                                                        :_created_at "2015-02-12T16:46:18.838Z"
+                                                                        :objective-id OBJECTIVE_ID
+                                                                        :created-by-id USER_ID
+                                                                        :comment "Comment 1"
+                                                                        :uri "/comments/1"
+                                                                        :votes {:up 123456789 :down 987654321}}]})
+               (-> (p/request user-session (utils/path-for :fe/get-comments-for-objective
+                                                           :id OBJECTIVE_ID))
+                   :response
+                   :body) => (contains "Comment 1"))
+
+         (fact "user can see the range of comments currently being viewed"
+               (against-background
+                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                          :result {:uri OBJECTIVE_URI
+                                                                   :meta {:comments-count 75}}}
+                (http-api/get-comments OBJECTIVE_URI anything) => {:status ::http-api/success
+                                                                   :result []})
+               (-> user-session
+                   (p/request (utils/path-for :fe/get-comments-for-objective
+                                              :id OBJECTIVE_ID))
+                   :response
+                   :body) => (contains #"1.+-.+50.+of.+75")
+
+               (-> user-session
+                   (p/request (str (utils/path-for :fe/get-comments-for-objective
+                                                   :id OBJECTIVE_ID)
+                                   "?offset=50"))
+                   :response
+                   :body) => (contains #"51.+-.+75.+of.+75"))))

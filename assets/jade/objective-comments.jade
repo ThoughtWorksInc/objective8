@@ -1,0 +1,29 @@
+extends layouts/base
+include mixins/_view_helpers
+
+block vars
+  //- bodyClass = "objective"
+  - pageTitle = "!Comments on objective"
+
+block content
+
+  .middle-container
+    .objective-outline
+      .objective-outline-header
+        h1.objective-title.clj-objective-title !Build safer cycling networks in the streets of Madrid.
+    .objective-comments#comments
+      h2(data-l8n="content:objective-comments/comments") !Comments
+      .comment-navigation
+        span.clj-comments-start-index
+        span -
+        span.clj-comments-end-index
+        span(data-l8n="content:objective-comments/of") !of
+        span.clj-comments-total-count
+      ol.comment-list.clj-comment-list
+        +commentItem('Phil Smith', '2 September 2015 07:41')
+          p !Oooh Paseo del Prado.
+        +commentItem('Jen Bloggs', '1 September 2015 07:41')
+          p !Paseo del Prado.
+
+      .clj-comment-create
+        +addCommentForm()

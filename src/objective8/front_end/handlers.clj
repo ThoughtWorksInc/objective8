@@ -300,6 +300,24 @@
 
 ;; COMMENTS
 
+(defn get-comments-for-objective [{:keys [route-params params] :as request}]
+  (try (let [objective-id (Integer/parseInt (:id route-params))
+             {objective-status :status objective :result} (http-api/get-objective objective-id)
+             offset (Integer/parseInt (get params :offset "0"))
+             {comments-status :status comments :result} (http-api/get-comments (:uri objective) {:offset offset})]
+         (if (every? #(= % ::http-api/success) [objective-status comments-status])
+           {:status 200
+            :headers {"Content-Type" "text/html"}
+            :body (views/objective-comments-view "objective-comments-view"
+                                                 request
+                                                 :objective (format-objective objective)
+                                                 :comments comments
+                                                 :offset offset)}
+           {:status 500}))
+       (catch Exception e
+         (log/info "Invalid query string: " e)
+         {:status 400})))
+
 (defn post-comment [request]
   (if-let [comment-data (fr/request->comment-data request (get (friend/current-authentication) :identity))]
     (case (:status comment-data)

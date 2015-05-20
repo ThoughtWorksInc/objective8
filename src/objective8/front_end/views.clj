@@ -5,6 +5,7 @@
             [objective8.front-end.templates.project-status :as project-status]
             [objective8.front-end.templates.create-objective :as create-objective]
             [objective8.front-end.templates.objective :as objective]
+            [objective8.front-end.templates.objective-comments :as objective-comments]
             [objective8.front-end.templates.objective-list :as objective-list]
             [objective8.front-end.templates.question :as question]
             [objective8.front-end.templates.add-question :as add-question]
@@ -74,6 +75,7 @@
 (def objective-list (view objective-list/objective-list-page))
 (def create-objective (view create-objective/create-objective-page))
 (def objective-detail-page (view objective/objective-page))
+(def objective-comments-view (view objective-comments/objective-comments-page))
 (def question-page (view question/question-page))
 (def add-question-page (view add-question/add-question-page))
 (def invite-writer-page (view invite-writer/invite-writer-page))

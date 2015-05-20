@@ -168,18 +168,37 @@
                                                             :note "writer note content"})])
                  body =not=> (helpers/json-contains [(contains {:_id comment-without-note-id})])))))
 
+(facts "GET /api/v1/meta/comments?uri=<uri>&offset=<n>"
+       (against-background
+         [(before :contents (do (helpers/db-connection)
+                               (helpers/truncate-tables)))
+          (after :facts (helpers/truncate-tables))]
+
+         (fact "retrieves the first 50 comments for the entity at <uri>, starting from the <n+1>th comment"
+               (let [objective (sh/store-an-open-objective)
+
+                     stored-comments (doall (->> (repeat {:entity objective})
+                                                 (take 10)
+                                                 (map sh/store-a-comment)))
+
+                     escaped-objective-uri (str "%2Fobjectives%2F" (:_id objective))
+                     p-response  (p/request app (str (utils/path-for :api/get-comments)
+                                                     "?uri=" escaped-objective-uri
+                                                     "&offset=5"))]
+                 (count (helpers/peridot-response-json-body->map p-response)) => 5))))
+
 (facts "GET /api/v1/meta/comments?uri=<uri>&limit=<n>"
        (against-background
          [(before :contents (do (helpers/db-connection)
                                (helpers/truncate-tables)))
           (after :facts (helpers/truncate-tables))]
 
-         (fact "retrieves the first n comments for the entity at <uri>"
+         (fact "retrieves the first 50 comments for the entity at <uri>, starting from the <n+1>th comment"
                (let [objective (sh/store-an-open-objective)
                      
                      stored-comments (doall (->> (repeat {:entity objective})
-                                                (take 10)
-                                                (map sh/store-a-comment)))
+                                                 (take 10)
+                                                 (map sh/store-a-comment)))
 
                      escaped-objective-uri (str "%2Fobjectives%2F" (:_id objective))
                      p-response  (p/request app (str (utils/path-for :api/get-comments)

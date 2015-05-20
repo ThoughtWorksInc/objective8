@@ -25,6 +25,7 @@
                          :post :fe/create-objective-form-post
                          "/create" {:get :fe/create-objective-form} 
                          ["/" [#"\d+" :id]] {:get :fe/objective
+                                             "/comments" {:get :fe/get-comments-for-objective}
                                              "/invite-writer" {:get :fe/invite-writer}
                                              "/writer-invitations" {:post :fe/invitation-form-post
                                                                     ["/" [#"\d+" :i-id]] {"/accept" {:post :fe/accept-invitation}
