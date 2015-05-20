@@ -17,10 +17,9 @@ mixin questionDemoteForm()
 mixin questionItem()
   li.question-item.clj-question-item
     .question-text
-      p.clj-question-text.question-text-inner
+      a.question-text-inner.clj-question-text.clj-answer-link.func--answer-link(href="#")
         block
     .question-actions
-      a.question-reply.clj-answer-link.func--answer-link(href="#", data-l8n="content:objective-view/answer-link") !Answers
       if blocks.buttonList
         - blocks.buttonList()
 
@@ -28,13 +27,13 @@ mixin questionItemWithPromoteForm()
   +questionItem()
     block
     +set('buttonList')
-    +questionPromoteForm()
+      +questionPromoteForm()
 
 mixin questionItemWithDemoteForm()
   +questionItem()
     block
     +set('buttonList')
-    +questionDemoteForm()
+      +questionDemoteForm()
 
 mixin objectiveQuestionsBlank()
   li.question-item.clj-empty-objective-questions(data-l8n="content:objective-view/no-objective-questions")
