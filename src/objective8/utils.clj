@@ -89,7 +89,7 @@
   [fragment-regex]
     (fn [fragment] (when fragment (re-matches fragment-regex fragment))))
 
-(defn safen-route [target]
+(defn safen-path [target]
   (or ((regex-checker #"/learn-more") target)
       ((regex-checker #"/") target)
       ((regex-checker #"/objectives") target)
@@ -109,22 +109,36 @@
       ((regex-checker #"/objectives/\d+/writers") target)
       ((regex-checker #"/objectives/\d+/writers/invitation") target)
       ((regex-checker #"/objectives/\d+/writer-invitations/\d+") target)
-      ((regex-checker #"/objectives/\d+/dashboard/questions(?:\?(?:(?:(?:[a-zA-Z-]*=[a-zA-Z0-9-|%2F]*)&?)+)?)?") target)
-      ((regex-checker #"/objectives/\d+/dashboard/comments(?:\?(?:(?:(?:[a-zA-Z-]*=[a-zA-Z0-9-|%2F]*)&?)+)?)?") target)))
+      ((regex-checker #"/objectives/\d+/dashboard/questions") target)
+      ((regex-checker #"/objectives/\d+/dashboard/comments") target)))
+
+(defn safen-query [query] 
+  (when query
+    ((regex-checker #"(?:(?:(?:[a-zA-Z-]*=[a-zA-Z0-9-|\/]*)&?)+)") query))) 
 
 (defn safen-fragment [fragment]
-  (or ((regex-checker #"comments") fragment)
-      ((regex-checker #"comment-\d+") fragment)
-      ((regex-checker #"add-comment-form") fragment)
-      ((regex-checker #"questions") fragment)
-      ((regex-checker #"answer-\d+") fragment)))
+  (when fragment
+    (or ((regex-checker #"comments") fragment)
+        ((regex-checker #"comment-\d+") fragment)
+        ((regex-checker #"add-comment-form") fragment)
+        ((regex-checker #"questions") fragment)
+        ((regex-checker #"answer-\d+") fragment))))
+
+(defn url->url-map [url]
+   (let [[url-without-fragment fragment] (s/split url #"#" 2)
+         [path query] (s/split url-without-fragment #"\?" 2)]
+     {:path path
+      :query query
+      :fragment fragment}))
 
 (defn safen-url [target]
-  (when target
-    (let [[route fragment] (s/split target #"#" 2)]
-      (when-let [safe-route (safen-route route)]
-        (str safe-route (when fragment
-                          (str "#" (safen-fragment fragment))))))))
+  (let [{:keys [path query fragment] :as url-map} (url->url-map target)
+        safe-path (safen-path path)
+        safe-query (safen-query query)
+        safe-fragment (safen-fragment fragment)]
+    (cond-> safe-path
+      safe-query (str "?" safe-query)
+      safe-fragment (str "#" safe-fragment))))
 
 (defn referer-url [{:keys [uri query-string] :as ring-request}]
   (str uri (when query-string

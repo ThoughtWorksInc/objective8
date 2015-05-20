@@ -19,10 +19,10 @@
 (def QUESTION_ID 5)
 (def NOTE_ID 42)
 (def COMMENT_ID 543)
+(def ANNOTATION_ID 789)
 (def QUESTION_URI (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))
-(def QUESTION_QUERY_URI (str "%2Fobjectives%2F" OBJECTIVE_ID "%2Fquestions%2F" QUESTION_ID))
 (def COMMENT_URI (str "/comments/" COMMENT_ID))
-(def COMMENT_QUERY_URI (str "%2Fcomments%2F" COMMENT_ID))
+(def ANNOTATION_URI (str "/comments/" ANNOTATION_ID))
 (def NO_ANSWER_MESSAGE "No answers were provided for this question.")
 (def NO_QUESTION_MESSAGE "No questions have been asked for this objective")
 
@@ -149,7 +149,7 @@
 (facts "notes"
        (binding [config/enable-csrf false]
          (fact "authorised writer can post note against question"
-               (let [params {:refer (str "/objectives/" OBJECTIVE_ID "/dashboard/questions?selected=" QUESTION_QUERY_URI)
+               (let [params {:refer (str "/objectives/" OBJECTIVE_ID "/dashboard/questions?selected=" QUESTION_URI)
                              :note "Test note"
                              :note-on-uri QUESTION_URI}
                      {response :response} (-> user-session
@@ -158,7 +158,7 @@
                                                          :request-method :post
                                                          :params params))]
                  {:headers (:headers response)
-                  :status (:status response)}) => (just {:headers (ih/location-contains (str "/objectives/" OBJECTIVE_ID "/dashboard/questions?selected=" QUESTION_QUERY_URI))
+                  :status (:status response)}) => (just {:headers (ih/location-contains (str "/objectives/" OBJECTIVE_ID "/dashboard/questions?selected=" QUESTION_URI))
                                                          :status 302})
 
                (provided
@@ -168,7 +168,7 @@
                                                                           :result []}))
 
          (fact "authorised writer can post note against comment"
-               (let [params {:refer (str "/objectives/" OBJECTIVE_ID "/dashboard/comments?selected=" COMMENT_QUERY_URI)
+               (let [params {:refer (str "/objectives/" OBJECTIVE_ID "/dashboard/comments?selected=" COMMENT_URI)
                              :note "Test note"
                              :note-on-uri COMMENT_URI}
                      {response :response} (-> user-session
@@ -177,12 +177,31 @@
                                                          :request-method :post
                                                          :params params))]
                  {:headers (:headers response)
-                  :status (:status response)}) => (just {:headers (ih/location-contains (str "/objectives/" OBJECTIVE_ID "/dashboard/comments?selected=" COMMENT_QUERY_URI))
+                  :status (:status response)}) => (just {:headers (ih/location-contains (str "/objectives/" OBJECTIVE_ID "/dashboard/comments?selected=" COMMENT_URI))
                                                          :status 302})
 
                (provided
                  (http-api/post-writer-note {:note "Test note"
                                              :note-on-uri COMMENT_URI
+                                             :created-by-id USER_ID}) => {:status ::http-api/success
+                                                                          :result []}))
+
+         (future-fact "authorised writer can post note against annotation"
+               (let [params {:refer (str "/objectives/" OBJECTIVE_ID "/dashboard/annotations?selected=" ANNOTATION_URI)
+                             :note "Test note"
+                             :note-on-uri ANNOTATION_URI}
+                     {response :response} (-> user-session
+                                              ih/sign-in-as-existing-user
+                                              (p/request (utils/path-for :fe/post-writer-note)
+                                                         :request-method :post
+                                                         :params params))]
+                 {:headers (:headers response)
+                  :status (:status response)}) => (just {:headers (ih/location-contains (str "/objectives/" OBJECTIVE_ID "/dashboard/annotations?selected=" ANNOTATION_URI))
+                                                         :status 302})
+
+               (provided
+                 (http-api/post-writer-note {:note "Test note"
+                                             :note-on-uri ANNOTATION_URI
                                              :created-by-id USER_ID}) => {:status ::http-api/success
                                                                           :result []}))
 
@@ -311,9 +330,4 @@
                                             ih/sign-in-as-existing-user
                                             (p/request (utils/path-for :fe/dashboard-annotations :id OBJECTIVE_ID)))]
                (:status response) => 200
-               (:body response) => (contains "There are no annotations associated with this draft.")))
-
-
-
-
-  )
+               (:body response) => (contains "There are no annotations associated with this draft."))))
