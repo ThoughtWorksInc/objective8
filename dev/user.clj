@@ -6,6 +6,7 @@
             [korma.db :as kdb]
             [objective8.core :as core]
             [objective8.config :as config]
+            [objective8.integration.storage-helpers :as sh]
             [objective8.back-end.storage.database :as db]
             [objective8.utils :as utils]
             [dev-helpers.stub-twitter :refer [stub-twitter-auth-config]]
@@ -56,3 +57,29 @@
                        (into {}))
      in-1-but-not-2-key (select-keys map-1 (s/difference map-1-keys map-2-keys))
      in-2-but-not-1-key (select-keys map-2 (s/difference map-2-keys map-1-keys))}))
+
+;; Seed Data
+
+(defn seed-answers []
+  (let [question (sh/store-a-question)
+        user (sh/store-a-user)]
+    (loop [i 0]
+      (when (< i 120)
+        (sh/store-an-answer {:question question
+                             :user user
+                             :answer-text (str i " seed answer")})  
+        (recur (inc i))))))
+
+(defn seed-comments []
+  (let [objective (sh/store-an-open-objective)
+        user (sh/store-a-user)]
+    (loop [i 0]
+      (when (< i 120)
+        (sh/store-a-comment {:user user
+                             :entity objective
+                             :comment-text (str i " seed comment")})
+        (recur (inc i))))))
+
+(defn seed-data []
+  (seed-answers)
+  (seed-comments))
