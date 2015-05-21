@@ -1,0 +1,15 @@
+mixin profileObjectiveListItem(objectiveTitle)
+  li.profile-objective-list-item.clj-profile-objective-list-item
+    .profile-objective-list-item-removal-container.clj-profile-objective-list-item-removal-container
+      form.profile-objective-list-item-removal.clj-profile-objective-removal-form(action="/meta/admin-removals", method="post")
+        input.clj-removal-uri(type="hidden", value="!removal-uri", name="removal-uri")
+        input.clj-removal-sample(type="hidden", value="!removal-sample", name="removal-sample")
+        button.objective-list-item-removal-button.func--remove-objective(type="submit")
+          i.fa.fa-trash-o.fa-lg
+    .profile-objective-list-item-star-container.clj-star-container
+      .profile-objective-list-item-star.clj-profile-objective-list-item-star
+        i.fa.fa-star
+    a.profile-objective-list-item-link.clj-profile-objective-list-item-link.func--objective-list-item-link(href="/objectives/[id]")
+      h3.profile-objective-list-item-title.clj-profile-objective-list-item-title.func--objective-title #{objectiveTitle}
+    .profile-objective-list-dashboard-container.clj-profile-objective-list-dashboard-container
+      a.button.clj-profile-objective-list-dashboard-link.func--dashboard-link(data-l8n="content:profile/dashboard-link") !Dashboard

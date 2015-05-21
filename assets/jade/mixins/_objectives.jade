@@ -9,15 +9,11 @@ mixin objectiveListItem(objectiveTitle, numberOfDays)
         input.clj-removal-sample(type="hidden", value="!removal-sample", name="removal-sample")
         button.objective-list-item-removal-button.func--remove-objective(type="submit")
           i.fa.fa-trash-o.fa-lg
-    .objective-list-dashboard-container.clj-objective-list-dashboard-container
-      a.clj-objective-list-dashboard-link.func--dashboard-link
-        i.fa.fa-tachometer.fa-lg 
     a.objective-list-item-link.clj-objective-list-item-link.func--objective-list-item-link(href="/objectives/[id]")
       h3.objective-list-item-title.clj-objective-list-item-title.func--objective-title #{objectiveTitle}
-      p.objective-list-item-draft-begins.clj-objective-drafting-begins
-        span.l8n-drafting-begins !Drafting begins in
-        =" "
-        span.objective-list-item-date.clj-objective-drafting-begins-date !#{numberOfDays} days
+      //-p.objective-list-item-draft-begins.clj-objective-drafting-begins
+      //-  span.l8n-drafting-begins !Drafting begins in
+      //-  =" "
+      //-  span.objective-list-item-date.clj-objective-drafting-begins-date !#{numberOfDays} days
       p.objective-list-item-preview-text.clj-objective-brief-description
         block
-      i.objective-list-item-arrow.fa.fa-angle-right

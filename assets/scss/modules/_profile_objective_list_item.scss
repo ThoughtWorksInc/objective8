@@ -1,28 +1,27 @@
-.objective-list-item {
+.profile-objective-list-item {
   position: relative;
   border-bottom: 1px solid $grey-3;
+  padding-bottom: 1em;
   margin-bottom: 24px;
   &:last-child {
     border-bottom: none;
   }
 }
 
-.objective-list-item-link {
+.profile-objective-list-item-link {
   position: relative;
   text-decoration: none;
-  display: inline-block;
-  margin-right: 3em;
-  padding-bottom: 1.5em;
-  border-bottom: 3px solid transparent;
+  display: block;
+  padding-bottom: 1em;
+  padding-right: 3em;
   color: $default_text_color;
   &:focus {
     background-color: transparent;
-    border-bottom-color: $yellow;
     outline: none;
   }
   &:hover {
     text-decoration: none;
-    .objective-list-item-title {
+    .profile-objective-list-item-title {
       text-decoration: underline;
     }
     .fa {
@@ -35,7 +34,7 @@
 }
 
 
-.objective-list-item-star-container {
+.profile-objective-list-item-star-container {
   margin-bottom: 2px;
   @include mq(768) {
     position: absolute;
@@ -43,26 +42,25 @@
     left: -38px;
   }
 }
-.objective-list-item-star {
+.profile-objective-list-item-star {
   $hover: false;
   @include star(22px, 1.3em, $hover);
 }
 
-.objective-list-item-removal-container {
+.profile-objective-list-item-removal-container {
   position: absolute;
   top: 0;
   right: 0;
 }
 
-.objective-list-item-removal-button {
+.profile-objective-list-item-removal-button {
   border: none;
   background: none;
-  &:hover {
-    color: $dark_pink;
-  }
 }
 
-.objective-list-item-title {
+.profile-objective-list-dashboard-container {
+}
+.profile-objective-list-item-title {
   margin: 0 0 0.2em;
   font-size: 1.3em;
   line-height: 1.2;
@@ -70,18 +68,19 @@
   @include word_wrap;
 }
 
-.objective-list-item-draft-begins {
+.profile-objective-list-item-draft-begins {
   color: $grey-1;
   font-size: 90%;
 }
-.objective-list-item-date {
+.profile-objective-list-item-date {
   font-weight: 700;
 }
 
-.objective-list-item-preview-text {
+.profile-objective-list-item-preview-text {
   margin-bottom: 0;
   word-wrap: break-word;
   &:empty {
     display: none;
   }
 }
+

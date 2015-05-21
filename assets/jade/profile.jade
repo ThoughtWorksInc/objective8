@@ -15,6 +15,7 @@ block content
           i.writer-profile-no-image-icon.fa.fa-user.fa-3x
         else
           img(src="#{photo}")
+
       .writer-profile-head
         h1(data-l8n="content:profile/page-title") !Writer profile
         a.button.profile-edit-button.clj-edit-profile-button.func--edit-profile(href="!edit-profile", data-l8n="content:profile/edit-profile") !Edit profile
@@ -23,17 +24,21 @@ block content
           span(data-l8n="content:profile/joined") !Joined
           =" "
           span.clj-writer-joined-date !24 March 2015
+
       .writer-profile-biog
         p.clj-writer-biog.func--writer-biog !Before they sold out pop-up listicle typewriter, Brooklyn Austin semiotics locavore chillwave flexitarian sriracha. Hella Truffaut disrupt trust fund four loko, VHS tofu flexitarian blog. Drinking vinegar Williamsburg kogi, gluten-free viral fingerstache Kickstarter disrupt iPhone retro forage hella migas Pinterest cliche.
+
       .writer-profile-links.clj-writer-links
         a.writer-profile-link(href="http://www.website.com", rel="nofollow")
           i.writer-profile-link-icon.fa.fa-link
           span.writer-profile-link-text !www.website.com
+
       .writer-profile-objective-list
         h2
           span.clj-writer-name !Chris Cheshire
           =" "
           span(data-l8n="content:profile/objective-list") !is a writer for these Objectives
-        ol.unstyled-list.clj-objective-list
-          +objectiveListItem('!Build safer cycling networks in the streets of Madrid.', 30)
-            | !London and Pairs are two prime examples of cycle super highway heaven.
+        ol.unstyled-list.clj-profile-objective-list
+          +profileObjectiveListItem('!Build safer cycling networks in the streets of Madrid.')
+          //-+profileObjectiveListItem('!Increase housing benefits in urban areas.')
+          //-+profileObjectiveListItem('!Provide more public transport in rural areas.')

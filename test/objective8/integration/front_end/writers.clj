@@ -489,5 +489,5 @@
                                                                      :profile {:name "Test User"}
                                                                      :_created_at "2015-02-12T16:46:18.838Z"}})
              (let [{response :response} (p/request user-session (utils/path-for :fe/profile :username "username"))]
-               (:body response) => (contains "Test Objective 1") 
-               (:body response)  => (contains "1 day"))))
+               (:body response) => (contains "Test Objective 1")
+               )))

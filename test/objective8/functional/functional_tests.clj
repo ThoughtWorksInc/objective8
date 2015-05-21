@@ -597,8 +597,8 @@
           (throw e))))
 
 (fact "Can view questions dashboard"
-      (try (wd/to "localhost:8080/objectives")
-           (wait-for-title "Objectives | Objective[8]")
+      (try (wd/to "localhost:8080/users/funcTestUser123")
+           (wait-for-title "funcTestUser123 | Objective[8]")
            (screenshot "objectives_list_as_a_writer_with_an_objective")
 
            (wd/click ".func--dashboard-link")
