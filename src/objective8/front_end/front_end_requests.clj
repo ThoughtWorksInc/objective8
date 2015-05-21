@@ -239,12 +239,24 @@
     (when (valid-draft-id? draft-id)
       (initialise-field-validation draft-id))))
 
+(defn offset-validator [request]
+  (let [offset (get-in request [:params :offset] "0")]
+    (cond-> (initialise-field-validation offset)
+      (not (integer-string? offset)) (report-error :invalid))))
+
 ;;; Retrieving drafts
 
 (defn request->draft-query [request]
   (some-> (initialise-request-validation request)
           (validate :objective-id id-validator)
           (validate :draft-id draft-id-validator)
+          (dissoc :request)))
+
+(defn request->draft-comments-query [request]
+  (some-> (initialise-request-validation request)
+          (validate :objective-id id-validator)
+          (validate :draft-id draft-id-validator)
+          (validate :offset offset-validator)
           (dissoc :request)))
 
 ;;; Adding drafts

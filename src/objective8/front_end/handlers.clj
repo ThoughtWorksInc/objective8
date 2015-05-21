@@ -338,41 +338,48 @@
       {:status 400})))
 
 (defn get-comments-for-draft [{:keys [params t'] :as request}]
-  (if-let [draft-query (fr/request->draft-query request)]
-    (let [objective-id (get-in draft-query [:data :objective-id])
-          draft-id (get-in draft-query [:data :draft-id])
-          {objective-status :status objective :result} (http-api/get-objective objective-id)
-          {draft-status :status draft :result} (http-api/get-draft objective-id draft-id)
-          offset (Integer/parseInt (get params :offset "0"))
-          total-count (get-in draft [:meta :comments-count])]
-      (if (every? #(= % ::http-api/success) [objective-status draft-status])
-        (if (or (< offset total-count)
-                (and (= offset 0) (= total-count 0))) 
-          (let [comments-query-params {:offset offset
-                                       :limit fe-config/comments-pagination}
-                {comments-status :status comments :result} (http-api/get-comments 
-                                                             (:uri draft) 
-                                                             comments-query-params)]
-            (if (= comments-status ::http-api/success)
-              {:status 200
-               :headers {"Content-Type" "text/html"}
-               :body (views/draft-comments-view
-                       "draft-comments"
-                       request
-                       :draft draft
-                       :comments comments
-                       :objective (format-objective objective)
-                       :offset offset
-                       :doc (let [details (str (t' :draft-comments/title-prefix) " "
-                                               (utils/iso-time-string->pretty-time (:_created_at draft)) " | Objective[8]")]
-                              {:title details
-                               :description details}))}
-              {:status 500}))
-          (response/redirect (str (utils/path-for :fe/get-comments-for-draft
-                                                  :id objective-id
-                                                  :d-id draft-id)
-                                  "?offset=" (max 0 (- total-count fe-config/comments-pagination)))))
-        (error-404-response request)))
+  (if-let [draft-comments-query (fr/request->draft-comments-query request)]
+    (let [objective-id (get-in draft-comments-query [:data :objective-id])
+          draft-id (get-in draft-comments-query [:data :draft-id])]
+      (case (:status draft-comments-query)
+        ::fr/valid
+        (let [{objective-status :status objective :result} (http-api/get-objective objective-id)
+              {draft-status :status draft :result} (http-api/get-draft objective-id draft-id)
+              offset (Integer/parseInt (get-in draft-comments-query [:data :offset]))
+              total-count (get-in draft [:meta :comments-count])]
+          (if (every? #(= % ::http-api/success) [objective-status draft-status])
+            (if (or (< offset total-count)
+                    (and (= offset 0) (= total-count 0))) 
+              (let [comments-query-params {:offset offset
+                                           :limit fe-config/comments-pagination}
+                    {comments-status :status comments :result} (http-api/get-comments 
+                                                                 (:uri draft) 
+                                                                 comments-query-params)]
+                (if (= comments-status ::http-api/success)
+                  {:status 200
+                   :headers {"Content-Type" "text/html"}
+                   :body (views/draft-comments-view
+                           "draft-comments"
+                           request
+                           :draft draft
+                           :comments comments
+                           :objective (format-objective objective)
+                           :offset offset
+                           :doc (let [details (str (t' :draft-comments/title-prefix) " "
+                                                   (utils/iso-time-string->pretty-time (:_created_at draft)) " | Objective[8]")]
+                                  {:title details
+                                   :description details}))}
+                  {:status 500}))
+              (response/redirect (str (utils/path-for :fe/get-comments-for-draft
+                                                      :id objective-id
+                                                      :d-id draft-id)
+                                      "?offset=" (max 0 (- total-count fe-config/comments-pagination)))))
+            (error-404-response request)))
+
+        ::fr/invalid
+        (response/redirect (str (utils/path-for :fe/get-comments-for-draft
+                                                :id objective-id
+                                                :d-id draft-id)))))
     (do
       (log/info "Invalid draft query: " (select-keys request [:route-params :params]))
       {:status 400})))
