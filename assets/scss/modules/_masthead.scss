@@ -11,7 +11,7 @@
   background: $border_color;
   color: $default_text_color;
   padding: 0.4em 1em 0.6em;
-  border-bottom: 5px solid $dark_pink;
+  box-shadow: 0 2px 7px rgba(0,0,0,.15);
   a {
     color: inherit;
     text-decoration: none;
