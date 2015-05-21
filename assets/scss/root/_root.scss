@@ -9,8 +9,14 @@
   width: device-width;
 }
 
+html,
+body {
+  min-height: 100%;
+}
+
 html {
   font-size: #{$doc-font-size + px};
+  position: relative;
 }
 
 body {

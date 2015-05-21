@@ -1,6 +1,4 @@
 .main-content {
-  padding: $alpha_body_vertical_spacing 1em;
-  @include mq(640) {
-    padding-bottom: $gamma_body_vertical_spacing;
-  }
+  min-height: 100%;
+  padding: $alpha_body_vertical_spacing 1em $footer_height $alpha_body_vertical_spacing;
 }
