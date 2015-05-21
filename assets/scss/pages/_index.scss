@@ -29,9 +29,6 @@
   margin: 0 auto;
   padding: 0 1em 1em 1em;
   text-align: center;
-  @include mq(768) {
-    padding-top: 1em;
-  }
 }
 .index-welcome {
   position: relative;
@@ -72,9 +69,9 @@
   margin-left: -1em;
   margin-right: -1em;
   margin-bottom: 2em;
-  padding-top: 1.5em;
+  padding-top: 1em;
   @include mq(768) {
-    padding-top: 2.5em;
+    padding-top: 1.5em;
   }
   .grid-container {
     position: relative;
