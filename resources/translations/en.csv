@@ -414,3 +414,7 @@ admin-activity,doc-description,View what the admins have been doing
 admin-activity,page-title,Admin activity
 admin-activity,subtitle,The following content has been removed
 admin-activity,no-admin-removals,No content has been removed
+footer,about-link,About
+footer,delete-link,"Deleted Content"
+footer,dcent-link,"DCENT"
+footer,alpha-warning,"ALPHA: this is a testing version of Objective8 data and content may change several times a day"
