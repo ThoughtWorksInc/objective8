@@ -49,6 +49,10 @@ $objective_navigation_height: 80px;
   .objective-nav-top-link {
     a {
       border-color: transparent;
+      &:hover {
+        color: $green2;
+        border-color: transparent;
+      }
     }
   }
   a {
