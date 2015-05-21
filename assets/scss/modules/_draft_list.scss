@@ -12,6 +12,77 @@ $draft_icon_size_beta: 60px;
   margin-bottom: 2em;
   padding: 0;
 }
+
+// latest called out doc
+
+.latest-draft-item-item {
+  margin-bottom: 0;
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.latest-draft-item-link {
+  @include cf;
+  position: relative;
+  text-decoration: none;
+  display: block;
+  padding: 0.5em 3em 0.5em 0;
+  color: $white;
+  &:hover {
+    color: $white;
+    .latest-draft-item-icon {
+      color: $green1;
+    }
+  }
+}
+
+.latest-draft-item-text {
+  line-height: ($draft_icon_size_alpha - 3px);
+  padding-left: #{$draft_icon_size_alpha + 15px};
+  color: $white;
+  font-size: 120%;
+  @include mq(480) {
+    line-height: ($draft_icon_size_beta  - 3px);
+    padding-left: ($draft_icon_size_beta + 15px);
+  }
+}
+
+.latest-draft-item-icon {
+  @include circle($draft_icon_size_alpha);
+  border: 2px solid $grey-4;
+  overflow: hidden;
+  float: left;
+  background-color: $white;
+  color: $intro_grey;
+  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+  @include mq(480) {
+    @include circle($draft_icon_size_beta);
+  }
+}
+.latest-draft-item-icon-fa {
+  display: block;
+  height: $draft_icon_size_alpha;
+  line-height: ($draft_icon_size_alpha - 3px);
+  font-size: 1em;
+  text-align: center;
+  color: inherit;
+  @include mq(480) {
+    height: $draft_icon_size_beta;
+    line-height: ($draft_icon_size_beta  - 3px);
+    font-size: 2em;
+  }
+}
+
+.latest-draft-item-time {
+  font-size: 90%;
+}
+
+
+
+// main list
+
+
 .draft-item-item {
   margin-bottom: 0;
   &:last-child {
@@ -25,17 +96,19 @@ $draft_icon_size_beta: 60px;
   text-decoration: none;
   display: block;
   padding: 0.5em 3em 0.5em 0;
-  color: inherit;
+  color: $link-colour;
   &:hover {
-    color: inherit;
-    opacity: 0.7;
+    .draft-item-icon {
+      background-color: $link-colour;
+      color: $white;
+    }
   }
 }
 
 .draft-item-text {
   line-height: ($draft_icon_size_alpha - 3px);
   padding-left: #{$draft_icon_size_alpha + 15px};
-  color: inherit;
+  color: $link-colour;
   @include mq(480) {
     line-height: ($draft_icon_size_beta  - 3px);
     padding-left: ($draft_icon_size_beta + 15px);
@@ -44,9 +117,11 @@ $draft_icon_size_beta: 60px;
 
 .draft-item-icon {
   @include circle($draft_icon_size_alpha);
-  border: 2px solid $grey-4;
+  border: 2px solid $link-colour;
   overflow: hidden;
   float: left;
+  color: $link-colour;
+  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
   @include mq(480) {
     @include circle($draft_icon_size_beta);
   }

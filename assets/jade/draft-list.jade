@@ -22,14 +22,14 @@ block content
           .latest-draft.clj-latest-draft
             h2.latest-draft-title(data-l8n="content:draft-list/latest-draft") !Latest draft
             .draft-item-list
-              .draft-item
-                a.draft-item-link.clj-latest-draft-link.func--latest-draft-link(href="/drafts/latest")
-                  .draft-item-icon
+              .latest-draft-item
+                a.latest-draft-item-link.clj-latest-draft-link.func--latest-draft-link(href="/drafts/latest")
+                  .latest-draft-item-icon
                     i.fa.fa-file-text-o.draft-item-icon-fa
-                  .draft-item-text
-                    span.draft-item-writer.clj-latest-draft-writer !Prof Barry
+                  .latest-draft-item-text
+                    span.latest-draft-item-writer.clj-latest-draft-writer !Prof Barry
                     = ", "
-                    span.draft-item-time.clj-latest-draft-time !2 days ago
+                    span.latest-draft-item-time.clj-latest-draft-time !2 days ago
 
           a.button-white.add-a-draft.clj-add-a-draft.func--add-a-draft(href="/drafts/add-draft", data-l8n="content:draft-list/add-a-draft") !Add a draft
           a.button-white.js-import-draft-link.js-hidden.clj-import-draft-link.func--import-draft-link(href="/objectives/:id/import-draft", data-l8n="content:draft-list/import") !Import draft from Google Drive
