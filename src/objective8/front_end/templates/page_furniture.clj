@@ -113,18 +113,12 @@
 
 ;; COMMENT LIST
 
-(defn limit-query-string [request]
-  (when-let [limit (get-in request [:params :comments])]
-                       (str "?comments=" limit)))
-
 (defn comments-refer-uri [request]
   (str (:uri request)
-       (limit-query-string request)
        "%23comments"))
 
 (defn comment-refer-uri [request comment]
   (str (:uri request)
-       (limit-query-string request)
        "#comment-" (:_id comment)))
 
 (defn voting-actions-when-signed-in [{:keys [data ring-request] :as context} comment]
@@ -202,7 +196,7 @@
                                              (html/set-attr :action (str (get-in data [comment-target :uri]) "/annotations"))
                                              identity)
                   [:.clj-reason] (when (= :section comment-target) identity)
-                  [:.clj-refer] (html/set-attr :value (str (:uri ring-request) (limit-query-string ring-request))) 
+                  [:.clj-refer] (html/set-attr :value (:uri ring-request)) 
                   [:.clj-comment-on-uri] (html/set-attr :value (get-in data [comment-target :uri]))
                   [:.clj-comment-form-label-title] (html/content (translations (keyword page-name "comment-box-label-title") ))
                   [:.clj-comment-form-label-helper] (html/content (translations (keyword page-name "comment-box-label-helper")))
