@@ -298,14 +298,15 @@
 
 ;; COMMENTS
 
-(defn get-comments-for-objective [{:keys [route-params params] :as request}]
+(defn get-comments-for-objective [{:keys [route-params params t'] :as request}]
   (try
     (let [objective-id (Integer/parseInt (:id route-params))
           {objective-status :status objective :result} (http-api/get-objective objective-id)
           total-count (get-in objective [:meta :comments-count])
           offset (Integer/parseInt (get params :offset "0"))]
       (if (= objective-status ::http-api/success)
-        (if (< offset total-count)
+        (if (or (< offset total-count)
+                (and (= offset 0) (= total-count 0)))
           (let [{comments-status :status comments :result} (http-api/get-comments (:uri objective) {:offset offset})]
             (if (= comments-status ::http-api/success)
               {:status 200
@@ -316,12 +317,50 @@
                       :objective (format-objective objective)
                       :comments comments
                       :offset offset
-                      :doc (let [details (str "Comments for "(:title objective) " | Objective[8]")]
+                      :doc (let [details (str (t' :objective-comments/title-prefix) " " 
+                                              (:title objective) " | Objective[8]")]
                              {:title details
                               :description details}))}
               {:status 500}))
           (response/redirect (str (utils/path-for :fe/get-comments-for-objective
                                                   :id objective-id)
+                                  "?offset=" (max 0 (- total-count 50)))))
+        (error-404-response request)))
+    (catch Exception e
+      (log/info "Invalid query string: " e)
+      {:status 400})))
+
+(defn get-comments-for-draft [{:keys [route-params params t'] :as request}]
+  (try
+    (let [objective-id (Integer/parseInt (:id route-params))
+          draft-id (:d-id route-params)
+          draft-uri (str "/objectives/" objective-id "/drafts/" draft-id)
+          {objective-status :status objective :result} (http-api/get-objective objective-id)
+          {draft-status :status draft :result} (http-api/get-draft objective-id draft-id)
+          offset (Integer/parseInt (get params :offset "0"))
+          total-count (get-in draft [:meta :comments-count])]
+      (if (every? #(= % ::http-api/success) [objective-status draft-status])
+        (if (or (< offset total-count)
+                (and (= offset 0) (= total-count 0))) 
+          (let [{comments-status :status comments :result} (http-api/get-comments (:uri draft) {:offset offset})]
+            (if (= comments-status ::http-api/success)
+              {:status 200
+               :headers {"Content-Type" "text/html"}
+               :body (views/draft-comments-view
+                       "draft-comments"
+                       request
+                       :draft draft
+                       :comments comments
+                       :objective (format-objective objective)
+                       :offset offset
+                       :doc (let [details (str (t' :draft-comments/title-prefix) " "
+                                               (utils/iso-time-string->pretty-time (:_created_at draft)) " | Objective[8]")]
+                              {:title details
+                               :description details}))}
+              {:status 500}))
+          (response/redirect (str (utils/path-for :fe/get-comments-for-draft
+                                                  :id objective-id
+                                                  :d-id draft-id)
                                   "?offset=" (max 0 (- total-count 50)))))
         (error-404-response request)))
     (catch Exception e
@@ -704,11 +743,9 @@
           draft-id (if latest?
                      "latest"
                      (Integer/parseInt (:d-id route-params)))
-          comment-query (cond-> {}
-                          (:comments params) (assoc :limit (Integer/parseInt (:comments params))))
           {objective-status :status objective :result} (http-api/get-objective objective-id)
           {draft-status :status draft :result} (http-api/get-draft objective-id draft-id)
-          {comments-status :status comments :result} (http-api/get-comments (:uri draft) comment-query)
+          {comments-status :status comments :result} (http-api/get-comments (:uri draft))
           {writers-status :status writers :result} (http-api/retrieve-writers objective-id)]
       (cond
         (every? #(= ::http-api/success %) [objective-status draft-status writers-status comments-status])

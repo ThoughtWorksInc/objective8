@@ -206,6 +206,8 @@
 
 (def comment-history-snippet (html/select objective-template [:.clj-comment-history-item]))
 
+(def comments-pagination 50)
+
 (defn objective-page [{:keys [translations data doc invitation-rsvp ring-request user] :as context}]
   (let [objective (:objective data)
         objective-id (:_id objective)
@@ -217,7 +219,7 @@
         number-of-comments-shown (count comments)
         comment-history-link (str (utils/path-for :fe/get-comments-for-objective
                                                   :id objective-id)
-                                  "?offset=" 50)]
+                                  "?offset=" comments-pagination)]
     (->>
      (html/at objective-template
               [:title] (html/content (:title doc))

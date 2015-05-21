@@ -14,6 +14,7 @@
 (def QUESTION_URI (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))
 (def USER_ID 3)
 (def DRAFT_ID 4)
+(def DRAFT_ID_AS_STRING (str DRAFT_ID))
 (def UUID "random-uuid")
 (def INVITATION_ID 3)
 (def OBJECTIVE_TITLE "some title")
@@ -111,7 +112,7 @@
                body => helpers/no-untranslated-strings)))
 
 (facts "about rendering comments page"
-       (fact "there are no untranslated strings"
+       (fact "there are no untranslated strings for viewing all comments on an objective"
              (against-background 
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result open-objective}
@@ -120,6 +121,24 @@
              (let [{status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/get-comments-for-objective 
                                                                               :id OBJECTIVE_ID))
+                                                   :response)]
+               status => 200
+               body => helpers/no-untranslated-strings))
+       
+       (fact "there are no untranslated strings for viewing all comments on a draft"
+             (against-background
+               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                         :result {:_id OBJECTIVE_ID}}
+               (http-api/get-draft OBJECTIVE_ID DRAFT_ID_AS_STRING) => {:status ::http-api/success
+                                                                        :result {:_id DRAFT_ID
+                                                                                 :_created_at "2015-02-12T16:46:18.838Z"
+                                                                                 :meta {:comments-count 5}}}
+               (http-api/get-comments anything anything) => {:status ::http-api/success
+                                                              :result []})
+             (let [{status :status body :body} (-> user-session
+                                                   (p/request (utils/path-for :fe/get-comments-for-draft
+                                                                              :id OBJECTIVE_ID
+                                                                              :d-id DRAFT_ID))
                                                    :response)]
                status => 200
                body => helpers/no-untranslated-strings)))
@@ -215,8 +234,8 @@
                                                                        :uri :draft-uri 
                                                                        :username "UserName"
                                                                        :meta {:comments-count 0}}}
-               (http-api/get-comments :draft-uri {}) => {:status ::http-api/success 
-                                                         :result []} 
+               (http-api/get-comments :draft-uri) => {:status ::http-api/success 
+                                                      :result []} 
                (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success 
                                                             :result []}) 
 

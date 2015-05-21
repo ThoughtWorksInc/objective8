@@ -65,6 +65,7 @@
                :fe/add-draft-post (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/add-draft-post)
                                                                 permissions/request->writer-roles)
                :fe/draft (utils/anti-forgery-hook front-end-handlers/draft)
+               :fe/get-comments-for-draft (utils/anti-forgery-hook front-end-handlers/get-comments-for-draft)
                :fe/draft-diff front-end-handlers/draft-diff
                :fe/draft-section (utils/anti-forgery-hook front-end-handlers/draft-section) 
                :fe/draft-list front-end-handlers/draft-list

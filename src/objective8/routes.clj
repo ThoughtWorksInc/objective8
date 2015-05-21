@@ -39,6 +39,7 @@
                                                                                  "/answers" {:post :fe/add-answer-form-post}}}
                                              "/drafts" {:get :fe/draft-list
                                                         ["/" [#"\d+|latest" :d-id]] {:get :fe/draft
+                                                                                     "/comments" {:get :fe/get-comments-for-draft}
                                                                                      "/diff" {:get :fe/draft-diff}
                                                                                      ["/sections/" [#"[0-9a-f]{8}" :section-label]] {:get :fe/draft-section
                                                                                                                                      "/annotations" {:post :fe/post-annotation}}}}

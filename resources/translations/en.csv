@@ -103,6 +103,10 @@ draft,comment-box-label-title,Want to discuss this draft?
 draft,comment-box-label-helper,You can leave a comment here.
 draft,comment-post-button,Add a comment
 draft,load-more-comments,More comments
+draft-comments,title-prefix,Comments for draft
+draft-comments,breadcrumb-prefix,Draft
+draft-comments,breadcrumb-text,Comment history
+draft-comments,of,of
 draft-list,doc-title,Drafts | Objective[8]
 draft-list,doc-description,
 draft-list,objective,Objective
@@ -254,6 +258,7 @@ objective-view,comment-box-label-title,Want to discuss the objective?
 objective-view,comment-box-label-helper,You can leave a comment here.
 objective-view,comment-post-button,Add a comment
 objective-view,comment-history,More comments
+objective-comments,title-prefix,Comments for
 objective-comments,doc-description,Comment history for objective
 objective-comments,comments,Comments
 objective-comments,of,of
