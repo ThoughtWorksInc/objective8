@@ -80,6 +80,15 @@
                              :comment-text (str i " seed comment")})
         (recur (inc i))))))
 
+(defn seed-questions []
+  (let [objective (sh/store-an-open-objective)
+        user (sh/store-a-user)]
+    (loop [i 0]
+      (when (< i 120)
+        (sh/store-a-question {:user user
+                             :objective objective})
+        (recur (inc i))))))
+
 (defn seed-data []
   (seed-answers)
   (seed-comments))
