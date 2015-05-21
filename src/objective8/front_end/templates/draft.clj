@@ -73,12 +73,10 @@
                                     pf/disable-voting-actions)
         comments (:comments data)
         number-of-comments-shown (count comments)
-        comment-anchor (when (last comments)
-                         (str "#comment-" (:_id (last comments))))
-        comment-history-link (str (utils/path-for :fe/get-comments-for-draft
-                                                  :id objective-id
-                                                  :d-id draft-id)
-                                  "?offset=" comments-pagination)]
+        comment-history-link (when draft-id (str (utils/path-for :fe/get-comments-for-draft
+                                                                 :id objective-id
+                                                                 :d-id draft-id)
+                                                 "?offset=" comments-pagination))]
     (html/at draft-wrapper-snippet
              [:.clj-draft-version-navigation] (if draft
                                                 (html/substitute (draft-version-navigation context))

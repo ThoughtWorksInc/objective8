@@ -53,16 +53,11 @@
              [:.clj-import-draft-link] (when (permissions/writer-for? user (:_id objective))
                                    (html/set-attr :href
                                                   (utils/local-path-for :fe/import-draft-get
-                                                                        :id (:_id objective))))
-             
-             [:.clj-previous-drafts-list] (if (empty? (rest drafts))
-                                            (html/substitute (translations :draft-list/no-previous-versions))
-                                            (html/content (previous-drafts (rest drafts))))
-
-             [:.clj-writer-item-list] (html/content (pf/writer-list context)))))
+                                                                        :id (:_id objective)))))))
 
 (defn draft-list-page [{:keys [translations data doc] :as context}]
-  (let [objective (:objective data)]
+  (let [objective (:objective data)
+        drafts (:drafts data)]
     (apply str
            (html/emit*
              (tf/translate context
@@ -89,4 +84,10 @@
                                                                                 (:end-date objective))
                                                                  (html/content (str (translations :draft-list/drafting-begins)
                                                                                     " " (:days-until-drafting-begins objective)
-                                                                                    " " (translations :draft-list/days)))))))))))) 
+                                                                                    " " (translations :draft-list/days)))))
+                                      
+                                      [:.clj-previous-drafts-list] (if (empty? (rest drafts))
+                                                                     (html/substitute (translations :draft-list/no-previous-versions))
+                                                                     (html/content (previous-drafts (rest drafts))))
+
+                                      [:.clj-writer-item-list] (html/content (pf/writer-list context))))))))) 
