@@ -12,8 +12,12 @@
 (def USER_ID 1)
 (def COMMENT_ID 123)
 (def OBJECTIVE_ID 234)
+(def OBJECTIVE_ID_AS_STRING "234")
+(def DRAFT_ID 2)
+(def DRAFT_ID_AS_STRING (str DRAFT_ID))
 (def GLOBAL_ID 223)
 (def OBJECTIVE_URI (str "/objectives/" OBJECTIVE_ID))
+(def DRAFT_URI (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID))
 
 (def user-session (helpers/test-context))
 
@@ -123,23 +127,21 @@
           30                 35         0
           80                 85         30)))
 
-(def DRAFT_ID 2)
-(def DRAFT_ID_AS_STRING (str DRAFT_ID))
-(def DRAFT_URI (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID))
-
 (facts "about viewing comments for a draft"
        (binding [config/enable-csrf false]
          (fact "gets comments starting from the requested offset"
                (against-background
-                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                           :result {:uri OBJECTIVE_URI
-                                                                    :_id OBJECTIVE_ID
-                                                                    :status "drafting"}}
-                 (http-api/get-draft OBJECTIVE_ID DRAFT_ID_AS_STRING) => {:status ::http-api/success
-                                                                          :result {:uri DRAFT_URI
-                                                                                   :_created_at "2015-02-12T16:46:18.838Z"
-                                                                                   :_id DRAFT_ID
-                                                                                   :meta {:comments-count 5}}})
+                 (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
+                                                                     :result {:uri OBJECTIVE_URI
+                                                                              :_id OBJECTIVE_ID
+                                                                              :status "drafting"}}
+                 (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING)
+                 => {:status ::http-api/success
+                     :result {:uri DRAFT_URI
+                              :_created_at "2015-02-12T16:46:18.838Z"
+                              :_id DRAFT_ID
+                              :meta {:comments-count 5}}})
+
                (-> user-session
                    (p/request (str (utils/path-for :fe/get-comments-for-draft
                                                    :id OBJECTIVE_ID :d-id DRAFT_ID)
@@ -153,15 +155,16 @@
 
          (fact "anyone can view comments for a draft"
                (against-background
-                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                           :result {:uri OBJECTIVE_URI
-                                                                    :_id OBJECTIVE_ID
-                                                                    :status "drafting"}}
-                 (http-api/get-draft OBJECTIVE_ID DRAFT_ID_AS_STRING) => {:status ::http-api/success
-                                                                          :result {:uri DRAFT_URI
-                                                                                   :_id DRAFT_ID
-                                                                                   :_created_at "2015-02-12T16:46:18.838Z"
-                                                                                   :meta {:comments-count 5}}}
+                 (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
+                                                                     :result {:uri OBJECTIVE_URI
+                                                                              :_id OBJECTIVE_ID
+                                                                              :status "drafting"}}
+                 (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING)
+                 => {:status ::http-api/success
+                     :result {:uri DRAFT_URI
+                              :_id DRAFT_ID
+                              :_created_at "2015-02-12T16:46:18.838Z"
+                              :meta {:comments-count 5}}}
                 (http-api/get-comments anything anything) => {:status ::http-api/success
                                                               :result [{:_id 1
                                                                         :_created_at "2015-02-12T16:46:18.838Z"
@@ -178,15 +181,16 @@
          (tabular
            (fact "user can see the range of comments currently being viewed"
                  (against-background
-                   (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                             :result {:uri OBJECTIVE_URI
-                                                                      :_id OBJECTIVE_ID
-                                                                      :status "drafting"}}
-                   (http-api/get-draft OBJECTIVE_ID DRAFT_ID_AS_STRING) => {:status ::http-api/success
-                                                                            :result {:uri DRAFT_URI
-                                                                                     :_id DRAFT_ID
-                                                                                     :_created_at "2015-02-12T16:46:18.838Z"
-                                                                                     :meta {:comments-count ?comments-count}}}
+                   (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
+                                                                       :result {:uri OBJECTIVE_URI
+                                                                                :_id OBJECTIVE_ID
+                                                                                :status "drafting"}}
+                   (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING)
+                   => {:status ::http-api/success
+                       :result {:uri DRAFT_URI
+                                :_id DRAFT_ID
+                                :_created_at "2015-02-12T16:46:18.838Z"
+                                :meta {:comments-count ?comments-count}}}
                    (http-api/get-comments DRAFT_URI anything) => {:status ::http-api/success
                                                                   :result []})
                  (-> user-session
@@ -204,14 +208,15 @@
          (tabular
           (fact "redirects to sensible offset when offset out of range"
                 (against-background
-                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                           :result {:uri OBJECTIVE_URI
-                                                                    :_id OBJECTIVE_ID}}
-                 (http-api/get-draft OBJECTIVE_ID DRAFT_ID_AS_STRING) => {:status ::http-api/success
-                                                                          :result {:uri DRAFT_URI
-                                                                                   :_id DRAFT_ID
-                                                                                   :_created_at "2015-02-12T16:46:18.838Z"
-                                                                                   :meta {:comments-count ?total-comments}}}
+                  (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
+                                                                      :result {:uri OBJECTIVE_URI
+                                                                               :_id OBJECTIVE_ID}}
+                 (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING)
+                  => {:status ::http-api/success
+                      :result {:uri DRAFT_URI
+                               :_id DRAFT_ID
+                               :_created_at "2015-02-12T16:46:18.838Z"
+                               :meta {:comments-count ?total-comments}}}
                  (http-api/get-comments DRAFT_URI anything) => {:status ::http-api/success
                                                                 :result []})
                 (let [response (-> user-session

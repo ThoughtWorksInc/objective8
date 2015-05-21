@@ -337,10 +337,10 @@
       (log/info "Invalid query string: " e)
       {:status 400})))
 
-(defn get-comments-for-draft [{:keys [route-params params t'] :as request}]
-  (try
-    (let [objective-id (Integer/parseInt (:id route-params))
-          draft-id (:d-id route-params)
+(defn get-comments-for-draft [{:keys [params t'] :as request}]
+  (if-let [draft-query (fr/request->draft-query request)]
+    (let [objective-id (get-in draft-query [:data :objective-id])
+          draft-id (get-in draft-query [:data :draft-id])
           {objective-status :status objective :result} (http-api/get-objective objective-id)
           {draft-status :status draft :result} (http-api/get-draft objective-id draft-id)
           offset (Integer/parseInt (get params :offset "0"))
@@ -373,8 +373,8 @@
                                                   :d-id draft-id)
                                   "?offset=" (max 0 (- total-count fe-config/comments-pagination)))))
         (error-404-response request)))
-    (catch Exception e
-      (log/info "Invalid query string: " e)
+    (do
+      (log/info "Invalid draft query: " (select-keys request [:route-params :params]))
       {:status 400})))
 
 (defn post-comment [request]
@@ -746,13 +746,10 @@
       ::fr/invalid (-> (response/redirect (utils/path-for :fe/import-draft-get :id (:id route-params))) 
                        (assoc :flash {:validation (dissoc draft-data :status)})))))
 
-(defn draft [{:keys [route-params params] :as request}]
-  (try
-    (let [objective-id (Integer/parseInt (:id route-params))
-          latest? (= (:d-id route-params) "latest")
-          draft-id (if latest?
-                     "latest"
-                     (Integer/parseInt (:d-id route-params)))
+(defn draft [request]
+  (if-let [draft-query-data (fr/request->draft-query request)]
+    (let [objective-id (get-in draft-query-data [:data :objective-id])
+          draft-id (get-in draft-query-data [:data :draft-id])
           {objective-status :status objective :result} (http-api/get-objective objective-id)
           {draft-status :status draft :result} (http-api/get-draft objective-id draft-id)
           {comments-status :status comments :result} (http-api/get-comments (:uri draft) {:limit fe-config/comments-pagination})
@@ -773,7 +770,7 @@
         (error-404-response request)
 
         (or (= draft-status ::http-api/forbidden) (= draft-status ::http-api/not-found))
-        (if latest?
+        (if (= draft-id "latest")
           {:status 200
            :body (views/draft "draft" request
                               :writers writers
@@ -782,31 +779,33 @@
           (error-404-response request))
 
         :else {:status 500}))
-    (catch Exception e
-      (log/info "Invalid query string: " e)
-      {:status 400})))
+    (do (log/info "Invalid draft query" (select-keys request [:route-params :params]))
+        {:status 400})))
 
-(defn draft-diff [{{:keys [d-id id]} :route-params :as request}]
-  (let [objective-id (Integer/parseInt id)
-        draft-id (Integer/parseInt d-id)
-        {objective-status :status objective :result} (http-api/get-objective objective-id)
-        {draft-status :status draft :result} (http-api/get-draft objective-id draft-id)] 
-    (if-let [previous-draft-id (:previous-draft-id draft)]
-      (let [{previous-draft-status :status previous-draft :result} (http-api/get-draft objective-id (:previous-draft-id draft))]
-        (if 
-          (every? #(= ::http-api/success %) [objective-status draft-status previous-draft-status])
-          (let [diffs (diffs/get-diffs-between-drafts draft previous-draft)]
-            {:status 200
-             :body (views/draft-diff "draft-diff" request
-                                     :current-draft draft
-                                     :previous-draft-diffs (-> diffs
-                                                               :previous-draft-diffs
-                                                               utils/hiccup->html) 
-                                     :current-draft-diffs (-> diffs 
-                                                              :current-draft-diffs
-                                                              utils/hiccup->html))
-             :headers {"Content-Type" "text/html"}})))
-      (error-404-response request))))
+(defn draft-diff [request]
+  (if-let [draft-query (fr/request->draft-query request)]
+    (let [objective-id (get-in draft-query [:data :objective-id ]) 
+          draft-id (get-in draft-query [:data :draft-id])
+          {objective-status :status objective :result} (http-api/get-objective objective-id)
+          {draft-status :status draft :result} (http-api/get-draft objective-id draft-id)] 
+      (if-let [previous-draft-id (:previous-draft-id draft)]
+        (let [{previous-draft-status :status previous-draft :result} (http-api/get-draft objective-id (:previous-draft-id draft))]
+          (if 
+            (every? #(= ::http-api/success %) [objective-status draft-status previous-draft-status])
+            (let [diffs (diffs/get-diffs-between-drafts draft previous-draft)]
+              {:status 200
+               :body (views/draft-diff "draft-diff" request
+                                       :current-draft draft
+                                       :previous-draft-diffs (-> diffs
+                                                                 :previous-draft-diffs
+                                                                 utils/hiccup->html) 
+                                       :current-draft-diffs (-> diffs 
+                                                                :current-draft-diffs
+                                                                utils/hiccup->html))
+               :headers {"Content-Type" "text/html"}})))
+        (error-404-response request)))
+    (do (log/info "invalid draft query: " (select-keys request [:route-params]))
+        {:status 400})))
 
 (defn draft-list [{{:keys [id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)

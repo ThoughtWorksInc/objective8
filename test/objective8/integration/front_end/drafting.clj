@@ -13,8 +13,10 @@
 (def TWITTER_ID "twitter-ID")
 (def USER_ID 1)
 (def OBJECTIVE_ID 2)
+(def OBJECTIVE_ID_AS_STRING "2")
 (def WRONG_OBJECTIVE_ID (+ OBJECTIVE_ID 100))
 (def DRAFT_ID 3)
+(def DRAFT_ID_AS_STRING "3")
 (def DRAFT_URI (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID))
 (def SECTION_LABEL "abcdef12")
 (def SECTION_LABEL_2 "12abcdef")
@@ -121,21 +123,22 @@
   (facts "about viewing drafts"
          (fact "anyone can view a particular draft"
                (against-background
-                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                           :result {:status "drafting"
-                                                                    :_id OBJECTIVE_ID}}
-                 (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success}
-                 (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
-                                                                :result {:_id DRAFT_ID
-                                                                         :_created_at "2015-03-24T17:06:37.714Z"
-                                                                         :uri DRAFT_URI
-                                                                         :content SOME_HICCUP
-                                                                         :objective-id OBJECTIVE_ID
-                                                                         :submitter-id USER_ID
-                                                                         :username "username"
-                                                                         :next-draft-id 4
-                                                                         :previous-draft-id 2
-                                                                         :meta {:comments-count 0}}}
+                 (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
+                                                                     :result {:status "drafting"
+                                                                              :_id OBJECTIVE_ID}}
+                 (http-api/retrieve-writers OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success}
+                 (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING) 
+                 => {:status ::http-api/success
+                     :result {:_id DRAFT_ID
+                              :_created_at "2015-03-24T17:06:37.714Z"
+                              :uri DRAFT_URI
+                              :content SOME_HICCUP
+                              :objective-id OBJECTIVE_ID
+                              :submitter-id USER_ID
+                              :username "username"
+                              :next-draft-id 4
+                              :previous-draft-id 2
+                              :meta {:comments-count 0}}}
                  (http-api/get-comments anything anything) => {:status ::http-api/success :result []})
 
                (let [{response :response} (p/request user-session (utils/path-for :fe/draft :id OBJECTIVE_ID 
@@ -147,18 +150,19 @@
 
          (fact "anyone can view latest draft"
                (against-background
-                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                           :result {:status "drafting"
-                                                                    :_id OBJECTIVE_ID}}
-                 (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success}
-                 (http-api/get-draft OBJECTIVE_ID "latest") => {:status ::http-api/success
-                                                                :result {:_id DRAFT_ID
-                                                                         :_created_at "2015-03-24T17:06:37.714Z"
-                                                                         :uri DRAFT_URI
-                                                                         :content SOME_HICCUP
-                                                                         :objective-id OBJECTIVE_ID
-                                                                         :submitter-id USER_ID
-                                                                         :meta {:comments-count 0}}} 
+                 (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
+                                                                     :result {:status "drafting"
+                                                                              :_id OBJECTIVE_ID}}
+                 (http-api/retrieve-writers OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success}
+                 (http-api/get-draft OBJECTIVE_ID_AS_STRING "latest")
+                 => {:status ::http-api/success
+                     :result {:_id DRAFT_ID
+                              :_created_at "2015-03-24T17:06:37.714Z"
+                              :uri DRAFT_URI
+                              :content SOME_HICCUP
+                              :objective-id OBJECTIVE_ID
+                              :submitter-id USER_ID
+                              :meta {:comments-count 0}}} 
                  (http-api/get-comments anything anything) => {:status ::http-api/success :result []}) 
                (let [{response :response} (p/request user-session latest-draft-url)]
                  (:status response) => 200
@@ -166,12 +170,12 @@
 
          (fact "viewing latest draft when drafting hasn't started displays message"
                (against-background
-                 (http-api/get-objective OBJECTIVE_ID) =>
+                 (http-api/get-objective OBJECTIVE_ID_AS_STRING) =>
                  {:status ::http-api/success
                   :result {:status "open"
                            :_id OBJECTIVE_ID
                            :end-date (utils/date-time->date-time-plus-30-days (utils/current-time))}}
-                 (http-api/get-draft OBJECTIVE_ID "latest") => {:status ::http-api/forbidden})
+                 (http-api/get-draft OBJECTIVE_ID_AS_STRING "latest") => {:status ::http-api/forbidden})
                (get-in (p/request user-session latest-draft-url)
                        [:response :body]) => (contains "29"))
 
@@ -209,28 +213,30 @@
 
          (fact "anyone can view difference between drafts"
                (against-background
-                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                           :result {:status "drafting"
-                                                                    :_id OBJECTIVE_ID}}
-                 (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
-                                                                :result {:_id DRAFT_ID
-                                                                         :_created_at "2015-03-24T17:06:37.714Z"
-                                                                         :content SOME_DIFFERENT_HICCUP
-                                                                         :objective-id OBJECTIVE_ID
-                                                                         :submitter-id USER_ID
-                                                                         :username "username"
-                                                                         :next-draft-id 4
-                                                                         :previous-draft-id 2}}
+                 (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
+                                                                     :result {:status "drafting"
+                                                                              :_id OBJECTIVE_ID}}
+                 (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING) 
+                 => {:status ::http-api/success
+                     :result {:_id DRAFT_ID
+                              :_created_at "2015-03-24T17:06:37.714Z"
+                              :content SOME_DIFFERENT_HICCUP
+                              :objective-id OBJECTIVE_ID
+                              :submitter-id USER_ID
+                              :username "username"
+                              :next-draft-id 4
+                              :previous-draft-id 2}}
 
-                 (http-api/get-draft OBJECTIVE_ID 2) => { :status ::http-api/success 
-                                                         :result {:_id 2
-                                                                  :_created_at "2015-02-24T17:06:37.714Z"
-                                                                  :content SOME_HICCUP
-                                                                  :objective-id OBJECTIVE_ID
-                                                                  :submitter-id USER_ID
-                                                                  :username "username"
-                                                                  :next-draft-id DRAFT_ID
-                                                                  :previous-draft-id 1}})
+                 (http-api/get-draft OBJECTIVE_ID_AS_STRING (dec DRAFT_ID)) 
+                                     => {:status ::http-api/success 
+                                         :result {:_id 2
+                                                  :_created_at "2015-02-24T17:06:37.714Z"
+                                                  :content SOME_HICCUP
+                                                  :objective-id OBJECTIVE_ID
+                                                  :submitter-id USER_ID
+                                                  :username "username"
+                                                  :next-draft-id DRAFT_ID
+                                                  :previous-draft-id 1}})
 
                (let [{response :response} (p/request user-session draft-diff-url)]
                  (:status response) => 200
@@ -238,18 +244,19 @@
 
 (fact "viewing diff page for the first draft returns 404 page"
       (against-background
-        (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                  :result {:status "drafting"
+        (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
+                                                            :result {:status "drafting"
                                                            :_id OBJECTIVE_ID}}
-        (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
-                                                       :result {:_id DRAFT_ID
-                                                                :_created_at "2015-03-24T17:06:37.714Z"
-                                                                :content SOME_HICCUP
-                                                                :objective-id OBJECTIVE_ID
-                                                                :submitter-id USER_ID
-                                                                :username "username"
-                                                                :next-draft-id 4
-                                                                :previous-draft-id nil}})
+        (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING) 
+        => {:status ::http-api/success
+            :result {:_id DRAFT_ID
+                     :_created_at "2015-03-24T17:06:37.714Z"
+                     :content SOME_HICCUP
+                     :objective-id OBJECTIVE_ID
+                     :submitter-id USER_ID
+                     :username "username"
+                     :next-draft-id 4
+                     :previous-draft-id nil}})
 
       (let [{response :response} (p/request user-session draft-diff-url)]
         (:status response) => 404)))) 
@@ -257,21 +264,22 @@
 (facts "about rendering draft page"
        (fact "adds section links before elements with section labels"
              (against-background
-               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                         :result drafting-objective} 
-               (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
-                                                              :result {:_id DRAFT_ID
-                                                                       :content SOME_HICCUP_WITH_LABELS
-                                                                       :objective-id OBJECTIVE_ID
-                                                                       :submitter-id USER_ID
-                                                                       :_created_at "2015-02-12T16:46:18.838Z"
-                                                                       :uri :draft-uri 
-                                                                       :username "UserName"
-                                                                       :meta {:comments-count 0}}}
+               (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
+                                                                   :result drafting-objective} 
+               (http-api/get-draft OBJECTIVE_ID_AS_STRING
+                                   DRAFT_ID_AS_STRING) => {:status ::http-api/success
+                                                           :result {:_id DRAFT_ID
+                                                                    :content SOME_HICCUP_WITH_LABELS
+                                                                    :objective-id OBJECTIVE_ID
+                                                                    :submitter-id USER_ID
+                                                                    :_created_at "2015-02-12T16:46:18.838Z"
+                                                                    :uri :draft-uri 
+                                                                    :username "UserName"
+                                                                    :meta {:comments-count 0}}}
                (http-api/get-comments :draft-uri anything) => {:status ::http-api/success 
                                                       :result []} 
-               (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success 
-                                                            :result []}) 
+               (http-api/retrieve-writers OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success 
+                                                                      :result []}) 
 
              (let [user-session (ih/test-context)
                    {status :status body :body} (-> user-session
@@ -308,19 +316,19 @@
                                                         :result {:_id USER_ID
                                                                  :username "username"}}
         (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}} 
-        (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                  :result {:_id OBJECTIVE_ID
-                                                           :end-date (utils/string->date-time "2012-12-12")
-                                                           :status "drafting"}}
-        (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success}
-        (http-api/get-draft OBJECTIVE_ID "latest") => {:status ::http-api/success
-                                                       :result {:_id DRAFT_ID
-                                                                :uri DRAFT_URI
-                                                                :_created_at "2015-03-24T17:06:37.714Z"
-                                                                :content SOME_HICCUP
-                                                                :objective-id OBJECTIVE_ID
-                                                                :submitter-id USER_ID
-                                                                :meta {:comments-count 0}}}
+        (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
+                                                            :result {:_id OBJECTIVE_ID
+                                                                     :end-date (utils/string->date-time "2012-12-12")
+                                                                     :status "drafting"}}
+        (http-api/retrieve-writers OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success}
+        (http-api/get-draft OBJECTIVE_ID_AS_STRING "latest") => {:status ::http-api/success
+                                                                 :result {:_id DRAFT_ID
+                                                                          :uri DRAFT_URI
+                                                                          :_created_at "2015-03-24T17:06:37.714Z"
+                                                                          :content SOME_HICCUP
+                                                                          :objective-id OBJECTIVE_ID
+                                                                          :submitter-id USER_ID
+                                                                          :meta {:comments-count 0}}}
         (http-api/get-comments anything anything) => {:status ::http-api/success :result []})
       (-> user-session
           ih/sign-in-as-existing-user 

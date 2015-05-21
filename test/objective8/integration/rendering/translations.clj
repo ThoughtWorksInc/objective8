@@ -10,6 +10,7 @@
             [objective8.integration.integration-helpers :as helpers]))
 
 (def OBJECTIVE_ID 1)
+(def OBJECTIVE_ID_AS_STRING "1")
 (def QUESTION_ID 2)
 (def QUESTION_URI (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))
 (def USER_ID 3)
@@ -127,12 +128,13 @@
        
        (fact "there are no untranslated strings for viewing all comments on a draft"
              (against-background
-               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                         :result {:_id OBJECTIVE_ID}}
-               (http-api/get-draft OBJECTIVE_ID DRAFT_ID_AS_STRING) => {:status ::http-api/success
-                                                                        :result {:_id DRAFT_ID
-                                                                                 :_created_at "2015-02-12T16:46:18.838Z"
-                                                                                 :meta {:comments-count 5}}}
+               (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
+                                                                   :result {:_id OBJECTIVE_ID}}
+               (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING)
+               => {:status ::http-api/success
+                   :result {:_id DRAFT_ID
+                            :_created_at "2015-02-12T16:46:18.838Z"
+                            :meta {:comments-count 5}}}
                (http-api/get-comments anything anything) => {:status ::http-api/success
                                                               :result []})
              (let [{status :status body :body} (-> user-session
@@ -223,21 +225,21 @@
 (facts "about rendering draft page"
        (fact "there are no untranslated strings"
              (against-background
-               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                         :result drafting-objective} 
-               (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
-                                                              :result {:_id DRAFT_ID
-                                                                       :content SOME_HICCUP_WITH_LABELS
-                                                                       :objective-id OBJECTIVE_ID
-                                                                       :submitter-id USER_ID
-                                                                       :_created_at "2015-02-12T16:46:18.838Z"
-                                                                       :uri :draft-uri 
-                                                                       :username "UserName"
-                                                                       :meta {:comments-count 0}}}
+               (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
+                                                                   :result drafting-objective} 
+               (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING) => {:status ::http-api/success
+                                                                                  :result {:_id DRAFT_ID
+                                                                                           :content SOME_HICCUP_WITH_LABELS
+                                                                                           :objective-id OBJECTIVE_ID
+                                                                                           :submitter-id USER_ID
+                                                                                           :_created_at "2015-02-12T16:46:18.838Z"
+                                                                                           :uri :draft-uri 
+                                                                                           :username "UserName"
+                                                                                           :meta {:comments-count 0}}}
                (http-api/get-comments :draft-uri anything) => {:status ::http-api/success 
                                                                :result []} 
-               (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success 
-                                                            :result []}) 
+               (http-api/retrieve-writers OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success 
+                                                                      :result []}) 
 
              (let [user-session (helpers/test-context)
                    {status :status body :body} (-> user-session
@@ -249,25 +251,27 @@
 (facts "about rendering draft diff page"
        (fact "there are no untranslated strings"
              (against-background
-               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                         :result drafting-objective} 
-               (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
-                                                              :result {:_id DRAFT_ID
-                                                                       :previous-draft-id (dec DRAFT_ID) 
-                                                                       :content SOME_HICCUP
-                                                                       :objective-id OBJECTIVE_ID
-                                                                       :submitter-id USER_ID
-                                                                       :_created_at "2015-02-12T16:46:18.838Z"
-                                                                       :uri :draft-uri 
-                                                                       :username "UserName"}}
-               (http-api/get-draft OBJECTIVE_ID (dec DRAFT_ID)) => {:status ::http-api/success
-                                                                    :result {:_id DRAFT_ID
-                                                                       :content SOME_HICCUP
-                                                                       :objective-id OBJECTIVE_ID
-                                                                       :submitter-id USER_ID
-                                                                       :_created_at "2015-02-12T16:46:18.838Z"
-                                                                       :uri :draft-uri 
-                                                                       :username "UserName"}})
+               (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
+                                                                   :result drafting-objective} 
+               (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING) 
+               => {:status ::http-api/success
+                   :result {:_id DRAFT_ID
+                            :previous-draft-id (dec DRAFT_ID) 
+                            :content SOME_HICCUP
+                            :objective-id OBJECTIVE_ID
+                            :submitter-id USER_ID
+                            :_created_at "2015-02-12T16:46:18.838Z"
+                            :uri :draft-uri 
+                            :username "UserName"}}
+               (http-api/get-draft OBJECTIVE_ID_AS_STRING (dec DRAFT_ID)) 
+               => {:status ::http-api/success
+                   :result {:_id DRAFT_ID
+                            :content SOME_HICCUP
+                            :objective-id OBJECTIVE_ID
+                            :submitter-id USER_ID
+                            :_created_at "2015-02-12T16:46:18.838Z"
+                            :uri :draft-uri 
+                            :username "UserName"}})
              (let [user-session (helpers/test-context)
                    {status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/draft-diff :id OBJECTIVE_ID :d-id DRAFT_ID))

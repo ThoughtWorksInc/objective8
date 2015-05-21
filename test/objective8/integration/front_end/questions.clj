@@ -20,6 +20,12 @@
   (mock/request :get (str utils/host-url "/objectives/" objective-id "/questions/" question-id)))
 (def questions-view-get-request (mock/request :get (str utils/host-url "/objectives/" OBJECTIVE_ID "/questions")))
 
+(def basic-question {:question "The meaning of life?"
+                     :created-by-id USER_ID
+                     :uri QUESTION_URI
+                     :objective-id OBJECTIVE_ID
+                     :_id QUESTION_ID})
+
 (def default-app (core/app helpers/test-config))
 
 (def user-session (helpers/test-context))
@@ -50,11 +56,7 @@
        (fact "Any user can view a question against an objective"
              (against-background
                (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success
-                                                                    :result {:question "The meaning of life?"
-                                                                             :created-by-id USER_ID
-                                                                             :uri QUESTION_URI
-                                                                             :objective-id OBJECTIVE_ID
-                                                                             :_id QUESTION_ID}}
+                                                                    :result basic-question}
                (http-api/retrieve-answers QUESTION_URI anything) => {:status ::http-api/success
                                                                         :result []} 
                (http-api/get-objective OBJECTIVE_ID)=> {:status ::http-api/success 
@@ -65,13 +67,7 @@
        (fact "Answers are displayed when viewing a question, including writer notes when present"
              (against-background
                (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success
-                                                                    :result {:question "The meaning of life?"
-                                                                             :created-by-id USER_ID
-                                                                             :uri QUESTION_URI
-                                                                             :objective-id OBJECTIVE_ID
-                                                                             :_id QUESTION_ID
-                                                                             :answer-count 2
-                                                                             }}
+                                                                    :result (assoc basic-question :answer-count 2)}
                (http-api/retrieve-answers QUESTION_URI anything) => {:status ::http-api/success
                                                                         :result [{:_id 12
                                                                                   :objective-id OBJECTIVE_ID
@@ -98,7 +94,8 @@
        (fact "Answers retrieval can be offset by number"
              (against-background
                (http-api/get-objective anything) => {:status ::http-api/success}
-               (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success})
+               (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success
+                                                                    :result basic-question})
              (-> (default-app question-view-get-request-with-offset)
                  :status) => 200
              (provided

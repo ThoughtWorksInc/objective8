@@ -9,8 +9,10 @@
 
 (def USER_ID 1)
 (def OBJECTIVE_ID 2)
+(def OBJECTIVE_ID_AS_STRING (str OBJECTIVE_ID))
 (def QUESTION_ID 3)
 (def DRAFT_ID 4)
+(def DRAFT_ID_AS_STRING (str DRAFT_ID))
 (def INVITATION_ID 5)
 (def INVITATION_UUID "SOME_UUID")
 (def SECTION_LABEL "abcdef12")
@@ -46,6 +48,8 @@
                                   :result the-user}
 
  ;; Test data background
+ (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
+                                                     :result the-objective}
  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                            :result the-objective}
  (http-api/get-objective OBJECTIVE_ID anything) => {:status ::http-api/success
@@ -57,7 +61,10 @@
  (http-api/get-comments anything anything) => {:status ::http-api/success :result []}
  (http-api/retrieve-invitation-by-uuid INVITATION_UUID) => {:status ::http-api/success :result the-invitation}
  (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
+ (http-api/retrieve-writers OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success :result []}
  (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}
+ (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING) => {:status ::http-api/success
+                                                                    :result draft}
  (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => {:status ::http-api/success
                                                 :result draft}
  (http-api/get-draft-section anything) => {:status ::http-api/success :result draft-section})

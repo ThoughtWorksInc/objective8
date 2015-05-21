@@ -31,11 +31,19 @@
 (defn shorter? [value min]
   (< (count value) min))
 
+(defn integer-string? [id]
+ (re-matches #"\d+" id))
+
 (defn valid-email? [email-address]
   (and (re-matches #"[^ @]+@[^ @]+$" email-address) (shorter? email-address 257)))
 
 (defn valid-username? [username]
   (re-matches #"[a-zA-Z0-9]{1,16}" username))
+
+(defn id-validator [request]
+  (let [id (get-in request [:route-params :id])]
+    (when (integer-string? id)
+      (initialise-field-validation id))))
 
 ;; User sign-up
 
@@ -222,6 +230,22 @@
           (dissoc :request)))
 
 ;; Drafts
+
+(defn valid-draft-id? [draft-id]
+  (or (= "latest" draft-id) (integer-string? draft-id)))
+
+(defn draft-id-validator [request]
+  (let [draft-id (get-in request [:route-params :d-id])]
+    (when (valid-draft-id? draft-id)
+      (initialise-field-validation draft-id))))
+
+;;; Retrieving drafts
+
+(defn request->draft-query [request]
+  (some-> (initialise-request-validation request)
+          (validate :objective-id id-validator)
+          (validate :draft-id draft-id-validator)
+          (dissoc :request)))
 
 ;;; Adding drafts
 (defn add-draft-markdown-validator [request]
