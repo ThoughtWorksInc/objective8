@@ -28,7 +28,9 @@ $draft_icon_size_beta: 60px;
   text-decoration: none;
   display: block;
   padding: 0.5em 3em 0.5em 0;
-  color: $white;
+  &:visited, & {
+    color: $white;
+  }
   &:hover {
     color: $white;
     .latest-draft-item-icon {

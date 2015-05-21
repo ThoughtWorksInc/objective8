@@ -1,12 +1,15 @@
 .intro-middle-container-wrapper {
   border-top: 1px solid rgba(white,0.1);
   background: $intro_grey;
-  margin: -1em -1em 1em -1em;
+  margin: -2em -1em 1em -1em;
   padding: 1.5em 1em 1em 1em;
   color: $white;
   @include mq(640) {
     margin-bottom: 3em;
     padding-top: 3em;
     padding-bottom: 2em;
+  }
+  @include mq(768) {
+    margin-top: -3.5em;
   }
 }
