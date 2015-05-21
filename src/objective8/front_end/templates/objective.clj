@@ -4,6 +4,7 @@
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [cemerick.url :as url]
             [objective8.config :as config]
+            [objective8.front-end.config :as fe-config]
             [objective8.utils :as utils]
             [objective8.front-end.permissions :as permissions]
             [objective8.front-end.api.domain :as domain]
@@ -206,8 +207,6 @@
 
 (def comment-history-snippet (html/select objective-template [:.clj-comment-history-item]))
 
-(def comments-pagination 50)
-
 (defn objective-page [{:keys [translations data doc invitation-rsvp ring-request user] :as context}]
   (let [objective (:objective data)
         objective-id (:_id objective)
@@ -219,7 +218,7 @@
         number-of-comments-shown (count comments)
         comment-history-link (str (utils/path-for :fe/get-comments-for-objective
                                                   :id objective-id)
-                                  "?offset=" comments-pagination)]
+                                  "?offset=" fe-config/comments-pagination)]
     (->>
      (html/at objective-template
               [:title] (html/content (:title doc))

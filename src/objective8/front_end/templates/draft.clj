@@ -1,6 +1,7 @@
 (ns objective8.front-end.templates.draft
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
+            [objective8.front-end.config :as fe-config]
             [objective8.front-end.templates.template-functions :as tf]
             [objective8.front-end.api.domain :as domain]
             [objective8.front-end.templates.page-furniture :as pf]
@@ -62,8 +63,6 @@
 
 (def comment-history-snippet (html/select draft-template [:.clj-comment-history-item]))
 
-(def comments-pagination 50)
-
 (defn draft-wrapper [{:keys [data user] :as context}]
   (let [{draft-id :_id :as draft} (:draft data)
         objective (:objective data)
@@ -76,7 +75,7 @@
         comment-history-link (when draft-id (str (utils/path-for :fe/get-comments-for-draft
                                                                  :id objective-id
                                                                  :d-id draft-id)
-                                                 "?offset=" comments-pagination))]
+                                                 "?offset=" fe-config/comments-pagination))]
     (html/at draft-wrapper-snippet
              [:.clj-draft-version-navigation] (if draft
                                                 (html/substitute (draft-version-navigation context))

@@ -4,6 +4,7 @@
             [ring.util.response :as response]
             [cheshire.core :as json]
             [org.httpkit.client :as http]
+            [objective8.front-end.config :as fe-config]
             [objective8.front-end.api.http :as http-api]
             [objective8.front-end.api.domain :as domain]
             [objective8.front-end.front-end-requests :as fr]
@@ -324,7 +325,7 @@
               {:status 500}))
           (response/redirect (str (utils/path-for :fe/get-comments-for-objective
                                                   :id objective-id)
-                                  "?offset=" (max 0 (- total-count 50)))))
+                                  "?offset=" (max 0 (- total-count fe-config/comments-pagination)))))
         (error-404-response request)))
     (catch Exception e
       (log/info "Invalid query string: " e)
@@ -361,7 +362,7 @@
           (response/redirect (str (utils/path-for :fe/get-comments-for-draft
                                                   :id objective-id
                                                   :d-id draft-id)
-                                  "?offset=" (max 0 (- total-count 50)))))
+                                  "?offset=" (max 0 (- total-count fe-config/comments-pagination)))))
         (error-404-response request)))
     (catch Exception e
       (log/info "Invalid query string: " e)

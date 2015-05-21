@@ -3,14 +3,13 @@
             [net.cgrand.jsoup :as jsoup]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [cemerick.url :as url]
+            [objective8.front-end.config :as fe-config]
             [objective8.utils :as utils]
             [objective8.front-end.api.domain :as domain]
             [objective8.front-end.templates.page-furniture :as pf]
             [objective8.front-end.templates.template-functions :as tf]))
 
 (def draft-comments-template (html/html-resource "templates/jade/draft-comments.html" {:parser jsoup/parser}))
-
-(def comments-pagination 50)
 
 (def enable-link
   (html/remove-class "disabled"))
@@ -35,18 +34,18 @@
                                                           (utils/iso-time-string->pretty-time (:_created_at draft))))
                                        (html/set-attr :href (utils/path-for :fe/draft :id objective-id :d-id draft-id)))
                   [:.clj-comments-start-index] (html/content (str (min (inc offset) total-comments)))
-                  [:.clj-comments-end-index] (html/content (str (min (+ offset comments-pagination)
+                  [:.clj-comments-end-index] (html/content (str (min (+ offset fe-config/comments-pagination)
                                                                      total-comments)))
                   [:.clj-comments-total-count] (html/content (str total-comments))
                   [:.clj-comments-previous] (if (> offset 0) enable-link identity)
                   [:.clj-comments-previous-link] (html/set-attr :href 
                                                                 (-> comments-url
-                                                                    (assoc :query {:offset (max 0 (- offset comments-pagination))})
+                                                                    (assoc :query {:offset (max 0 (- offset fe-config/comments-pagination))})
                                                                     str))
-                  [:.clj-comments-next] (if (> total-comments (+ offset comments-pagination)) enable-link identity)
+                  [:.clj-comments-next] (if (> total-comments (+ offset fe-config/comments-pagination)) enable-link identity)
                   [:.clj-comments-next-link] (html/set-attr :href 
                                                             (-> comments-url
-                                                                (assoc :query {:offset (+ offset comments-pagination)})
+                                                                (assoc :query {:offset (+ offset fe-config/comments-pagination)})
                                                                 str))
                   [:.clj-comment-list] (html/content
                                         (optionally-disable-voting
