@@ -30,7 +30,7 @@
                                            (html/content (:title objective))
                                            (html/set-attr :href (utils/path-for :fe/objective :id objective-id)))
                   [:.clj-draft-link] (html/do->
-                                       (html/content (str (translations :draft-comments/breadcrumb-prefix) " : " 
+                                       (html/content (str (translations :breadcrumb/draft-prefix) " : " 
                                                           (utils/iso-time-string->pretty-time (:_created_at draft))))
                                        (html/set-attr :href (utils/path-for :fe/draft :id objective-id :d-id draft-id)))
                   [:.clj-comments-start-index] (html/content (str (min (inc offset) total-comments)))

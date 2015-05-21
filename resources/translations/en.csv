@@ -24,6 +24,9 @@ sign-up,email-label,Email
 sign-up,email-empty-validation-message,You must enter an email address
 sign-up,email-invalid-validation-message,The email address you have entered is invalid
 sign-up,button,Create account
+breadcrumb,objective-comments-text,Comment history
+breadcrumb,draft-prefix,Draft
+breadcrumb,draft-comments-text,Comment history
 objective-guidance,heading,What is an Objective?
 objective-guidance,text-line-1,A policy starts with an idea.
 objective-guidance,text-line-2,These are catalysts for change.
@@ -104,8 +107,6 @@ draft,comment-box-label-helper,You can leave a comment here.
 draft,comment-post-button,Add a comment
 draft,load-more-comments,More comments
 draft-comments,title-prefix,Comments for draft
-draft-comments,breadcrumb-prefix,Draft
-draft-comments,breadcrumb-text,Comment history
 draft-comments,of,of
 draft-list,doc-title,Drafts | Objective[8]
 draft-list,doc-description,
@@ -262,7 +263,6 @@ objective-comments,title-prefix,Comments for
 objective-comments,doc-description,Comment history for objective
 objective-comments,comments,Comments
 objective-comments,of,of
-objective-comments,breadcrumb-text,Comment history
 question-list,question-list-heading,Recently asked questions
 question-list,page-intro,"Gather background information such as opinions and experiences by suggesting a question for the community to answer.  Your question should be focussed and specific, as the answers will influence the policy drafting process."
 question-list,no-questions,There are no community questions yet.
