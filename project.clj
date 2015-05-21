@@ -69,6 +69,9 @@
                                            "-Xms256M"
                                            "-Xmx512M"
                                            "-XX:MaxPermSize=128M"]}}
-             :heroku {:ragtime {:migrations ragtime.sql.files/migrations
+             :heroku {:source-paths ["dev"]
+                      :repl-options {:init-ns user
+                                     :timeout 120000}
+                      :ragtime {:migrations ragtime.sql.files/migrations
                                 :database ~database-connection-url}
                       :jvm-opts ["-Dlog4j.configuration=log4j.heroku"]}})
