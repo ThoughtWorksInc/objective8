@@ -1,11 +1,11 @@
-@mixin default-button($color: $green1) {
+@mixin default-button($text_color: $green1, $bg_color: $white, $hover_color: $green1, $text_hover_color: $white) {
   position: relative;
   display: inline-block;
   max-width: 18em;
   margin-right: 0.5em;
   margin-bottom: 0.8em;
   padding: 0.55em 1.35em 0.65em 1.35em;
-  border: 1px solid $color;
+  border: 1px solid $text_color;
   border-radius: 2em;
   transition: background 0.2s ease-in-out, color 0.2s ease-in-out, border 0.2s ease-in-out;
   outline-color: transparent;
@@ -23,15 +23,15 @@
     border-radius: inherit;
   }
   &:visited, &:focus, & {
-    background-color: $white;
+    background-color: $bg_color;
     text-decoration: none;
-    color: $color;
+    color: $text_color;
     outline-width: 0;
   }
   &:hover {
-    background-color: $color;
+    background-color: $hover_color;
     text-decoration: none;
-    color: $white;
+    color: $text_hover_color;
     cursor: pointer;
   }
   &:focus {
@@ -56,6 +56,9 @@ button {
 
 .button {
   @include default-button();
+}
+.button-white {
+  @include default-button($white, transparent, $white, $green1);
 }
 
 .pink-button {
