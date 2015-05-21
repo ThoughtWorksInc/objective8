@@ -265,11 +265,11 @@
                                                 :result [{:meta {:comments-count 1}
                                                           :_created_at "2015-04-04T12:00:00.000Z"}]}
 
-         (http-api/get-comments anything) => {:status ::http-api/success
-                                              :result [{:comment "A comment"
-                                                        :_created_at "2015-01-01T01:01:00.000Z"
-                                                        :username "A User"
-                                                        :votes {:up 5 :down 3}}]})
+         (http-api/get-comments anything anything) => {:status ::http-api/success
+                                                       :result [{:comment "A comment"
+                                                                 :_created_at "2015-01-01T01:01:00.000Z"
+                                                                 :username "A User"
+                                                                 :votes {:up 5 :down 3}}]})
 
        (fact "can get comments sorted by number of up votes"
              (-> user-session
@@ -279,8 +279,9 @@
                  :status) => 200
              (provided
                (http-api/get-comments anything {:sorted-by "up-votes"
-                                                :filter-type "none"}) => {:status ::http-api/success
-                                                                            :result []}))
+                                                :filter-type "none"
+                                                :limit 50}) => {:status ::http-api/success
+                                                                :result []}))
 
        (fact "can filter comments by writer note presence"
              (-> user-session
@@ -290,8 +291,9 @@
                  :status) => 200
              (provided
                (http-api/get-comments anything {:sorted-by "up-votes"
-                                                :filter-type "has-writer-note"}) => {:status ::http-api/success
-                                                                                     :result []})))
+                                                :filter-type "has-writer-note"
+                                                :limit 50}) => {:status ::http-api/success
+                                                                :result []})))
 (def section [["h1" {:data-section-label "1234abcd"} "A Heading"]])
 
 (facts "about the annotations dashboard for writers"

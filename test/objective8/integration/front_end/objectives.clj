@@ -64,7 +64,7 @@
                (against-background
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                            :result basic-objective}
-                 (http-api/get-comments anything)=> {:status ::http-api/success :result []}
+                 (http-api/get-comments anything anything) => {:status ::http-api/success :result []}
                  (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
                  (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []})
                (default-app objective-view-get-request) => (contains {:status 200})
@@ -74,7 +74,7 @@
          
            (fact "When a signed in user views an objective, the objective contains user specific information"
                  (against-background
-                  (http-api/get-comments anything)=> {:status ::http-api/success :result []}
+                  (http-api/get-comments anything anything)=> {:status ::http-api/success :result []}
                   (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
                   (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []})
                  (-> user-session
@@ -99,7 +99,7 @@
 
                 (fact "Any user can view comments with votes on an objective"
                       (against-background
-                       (http-api/get-comments anything) => {:status ::http-api/success
+                       (http-api/get-comments anything anything) => {:status ::http-api/success
                                                             :result [{:_id 1
                                                                       :_created_at "2015-02-12T16:46:18.838Z"
                                                                       :objective-id OBJECTIVE_ID
@@ -118,7 +118,7 @@
                         (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                                   :result (assoc basic-objective :status "drafting")}
 
-                        (http-api/get-comments anything) => {:status ::http-api/success :result []})
+                        (http-api/get-comments anything anything) => {:status ::http-api/success :result []})
                       (let [{response :response} (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))]
                         (:body response) =not=> (contains "clj-comment-create"))))
 

@@ -162,7 +162,8 @@
                                                             (http-api/get-objective objective-id))
              {writers-status :status writers :result} (http-api/retrieve-writers objective-id)
              {questions-status :status questions :result} (http-api/retrieve-questions objective-id)
-             {comments-status :status comments :result} (http-api/get-comments (:uri objective))]
+             {comments-status :status comments :result} (http-api/get-comments (:uri objective)
+                                                                               {:limit fe-config/comments-pagination})]
          (cond
            (every? #(= ::http-api/success %) [objective-status writers-status questions-status comments-status])
            (let [formatted-objective (format-objective objective)
@@ -234,9 +235,10 @@
 
         selected-comment-target-uri (get params :selected (:uri objective))
         comment-view-type (keyword (get params :comment-view "up-votes"))
-        comment-query-params (get dashboard-comments-query-params
+        comment-query-params (-> (get dashboard-comments-query-params
                                   comment-view-type
                                   {:sorted-by "up-votes" :filter-type "none"})
+                                 (assoc :limit fe-config/comments-pagination)) 
 
         {comments-status :status comments :result} (http-api/get-comments selected-comment-target-uri
                                                                           comment-query-params)]
@@ -304,11 +306,15 @@
     (let [objective-id (Integer/parseInt (:id route-params))
           {objective-status :status objective :result} (http-api/get-objective objective-id)
           total-count (get-in objective [:meta :comments-count])
-          offset (Integer/parseInt (get params :offset "0"))]
+          offset (Integer/parseInt (get params :offset "0"))
+          comments-query-params {:offset offset
+                                 :limit fe-config/comments-pagination}]
       (if (= objective-status ::http-api/success)
         (if (or (< offset total-count)
                 (and (= offset 0) (= total-count 0)))
-          (let [{comments-status :status comments :result} (http-api/get-comments (:uri objective) {:offset offset})]
+          (let [{comments-status :status comments :result} (http-api/get-comments 
+                                                             (:uri objective)
+                                                             comments-query-params)]
             (if (= comments-status ::http-api/success)
               {:status 200
                :headers {"Content-Type" "text/html"}
@@ -335,7 +341,6 @@
   (try
     (let [objective-id (Integer/parseInt (:id route-params))
           draft-id (:d-id route-params)
-          draft-uri (str "/objectives/" objective-id "/drafts/" draft-id)
           {objective-status :status objective :result} (http-api/get-objective objective-id)
           {draft-status :status draft :result} (http-api/get-draft objective-id draft-id)
           offset (Integer/parseInt (get params :offset "0"))
@@ -343,7 +348,11 @@
       (if (every? #(= % ::http-api/success) [objective-status draft-status])
         (if (or (< offset total-count)
                 (and (= offset 0) (= total-count 0))) 
-          (let [{comments-status :status comments :result} (http-api/get-comments (:uri draft) {:offset offset})]
+          (let [comments-query-params {:offset offset
+                                       :limit fe-config/comments-pagination}
+                {comments-status :status comments :result} (http-api/get-comments 
+                                                             (:uri draft) 
+                                                             comments-query-params)]
             (if (= comments-status ::http-api/success)
               {:status 200
                :headers {"Content-Type" "text/html"}
@@ -746,7 +755,7 @@
                      (Integer/parseInt (:d-id route-params)))
           {objective-status :status objective :result} (http-api/get-objective objective-id)
           {draft-status :status draft :result} (http-api/get-draft objective-id draft-id)
-          {comments-status :status comments :result} (http-api/get-comments (:uri draft))
+          {comments-status :status comments :result} (http-api/get-comments (:uri draft) {:limit fe-config/comments-pagination})
           {writers-status :status writers :result} (http-api/retrieve-writers objective-id)]
       (cond
         (every? #(= ::http-api/success %) [objective-status draft-status writers-status comments-status])
@@ -825,7 +834,7 @@
 
 (defn draft-section [{:keys [uri] :as request}]
   (let [{section-status :status section :result} (http-api/get-draft-section uri)
-        {comments :result} (http-api/get-comments uri)] 
+        {comments :result} (http-api/get-comments uri {:limit fe-config/comments-pagination})] 
     (cond 
       (= ::http-api/success section-status)
       {:status 200

@@ -102,7 +102,7 @@
              (against-background 
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result open-objective}
-               (http-api/get-comments anything)=> {:status ::http-api/success :result []}
+               (http-api/get-comments anything anything)=> {:status ::http-api/success :result []}
                (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
                (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}) 
              (let [{status :status body :body} (-> user-session
@@ -234,8 +234,8 @@
                                                                        :uri :draft-uri 
                                                                        :username "UserName"
                                                                        :meta {:comments-count 0}}}
-               (http-api/get-comments :draft-uri) => {:status ::http-api/success 
-                                                      :result []} 
+               (http-api/get-comments :draft-uri anything) => {:status ::http-api/success 
+                                                               :result []} 
                (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success 
                                                             :result []}) 
 

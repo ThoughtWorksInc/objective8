@@ -60,8 +60,9 @@
                    :status)
                => 200
                (provided
-                (http-api/get-comments OBJECTIVE_URI {:offset 3}) => {:status ::http-api/success
-                                                                       :result []}))
+                (http-api/get-comments OBJECTIVE_URI {:offset 3
+                                                      :limit 50}) => {:status ::http-api/success
+                                                                      :result []}))
 
          (fact "anyone can view comments for an objective"
                (against-background
@@ -147,8 +148,8 @@
                    :status)
                => 200
                (provided
-                (http-api/get-comments DRAFT_URI {:offset 3}) => {:status ::http-api/success
-                                                                  :result []}))
+                (http-api/get-comments DRAFT_URI {:offset 3 :limit 50}) => {:status ::http-api/success
+                                                                            :result []}))
 
          (fact "anyone can view comments for a draft"
                (against-background

@@ -167,8 +167,8 @@
                                                                     :meta {:comments-count 0}}}
                  (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []} 
                  (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []} 
-                 (http-api/get-comments anything) => {:status ::http-api/success
-                                                      :result []}) 
+                 (http-api/get-comments anything anything) => {:status ::http-api/success
+                                                               :result []}) 
                (let [peridot-response (-> user-session
                                           (p/request INVITATION_URL)
                                           p/follow-redirect)]
@@ -188,8 +188,8 @@
                                                                     :uri :objective-uri}}
                  (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []} 
                  (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []} 
-                 (http-api/get-comments anything) => {:status ::http-api/success
-                                                      :result []})
+                 (http-api/get-comments anything anything) => {:status ::http-api/success
+                                                               :result []})
                (let [peridot-response (-> user-session
                                           (p/request INVITATION_URL)
                                           p/follow-redirect
@@ -207,8 +207,8 @@
                                                                     :meta {:comments-count 0}}}
                  (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
                  (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}
-                 (http-api/get-comments anything) => {:status ::http-api/success
-                                                      :result []})
+                 (http-api/get-comments anything anything) => {:status ::http-api/success
+                                                               :result []})
                (let [{request :request response :response} (-> user-session
                                                                (p/request INVITATION_URL)
                                                                p/follow-redirect)]
