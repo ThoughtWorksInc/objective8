@@ -5,6 +5,7 @@ include ../mixins/_view_helpers
 - var htmlClass = ""
 - var bodyClass = ""
 - var googleFontsUrl = "https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700"
+- var hasFooter = true
 block vars
 
 doctype
@@ -74,23 +75,23 @@ html.no-js(lang="en", class="#{htmlClass}")
             a(href="/objectives/create", title="!Create an Objective", data-l8n="attr/title:masthead/create-link-title-attr content:masthead/create-link") !Create an Objective
           li
             a(href="/learn-more", title="!Learn more about Objective[8]", data-l8n="attr/title:masthead/about-link-title-attr content:masthead/about-link") !About
-
-    footer
-      .footer-container
-        .footer 
-          .footer-row
-            ul.footer-content-links
-              li
-                a.footer-link(href="/learn-more", data-l8n="content:footer/about-link") !About
-              li
-                a.footer-link(href="/admin-activity", data-l8n="content:footer/deleted-link") !Deleted Content
-              li
-                a.footer-link(href="https://github.com/ThoughtWorksInc/objective8")
-                  |Github 
-                  i.fa.fa-github
-            .footer-content-text.footer-alpha-warning(data-l8n="content:footer/alpha-warning") !ALPHA: this is a testing version of Objective8 data and content may change several times a day
-          .footer-footer
-            a.footer-link(data-l8n="content:footer/dcent-link", href="http://dcentproject.eu/") !DCENT
+    if hasFooter
+      footer
+        .footer-container
+          .footer
+            .footer-row
+              ul.footer-content-links
+                li
+                  a.footer-link(href="/learn-more", data-l8n="content:footer/about-link") !About
+                li
+                  a.footer-link(href="/admin-activity", data-l8n="content:footer/deleted-link") !Deleted Content
+                li
+                  a.footer-link(href="https://github.com/ThoughtWorksInc/objective8")
+                    |Github
+                    i.fa.fa-github
+              .footer-content-text.footer-alpha-warning(data-l8n="content:footer/alpha-warning") !ALPHA: this is a testing version of Objective8 data and content may change several times a day
+            .footer-footer
+              a.footer-link(data-l8n="content:footer/dcent-link", href="http://dcentproject.eu/") !DCENT
 
     .js-modal.js-hidden.js-close-target
       .js-modal-container
