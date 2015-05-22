@@ -7,6 +7,7 @@
             [endophile.hiccup :as eh]
             [hiccup.core :as hiccup]
             [hickory.core :as hickory]
+            [clojure.tools.logging :as log]
             [objective8.routes :as routes]
             [objective8.config :as config]
             [objective8.front-end.permissions :as permissions])
@@ -135,10 +136,13 @@
   (let [{:keys [path query fragment] :as url-map} (url->url-map target)
         safe-path (safen-path path)
         safe-query (safen-query query)
-        safe-fragment (safen-fragment fragment)]
-    (cond-> safe-path
-      safe-query (str "?" safe-query)
-      safe-fragment (str "#" safe-fragment))))
+        safe-fragment (safen-fragment fragment)
+        safe-url (cond-> safe-path
+                   safe-query (str "?" safe-query)
+                   safe-fragment (str "#" safe-fragment))]
+    (when-not (= target safe-url)
+      (log/warn (str "Unsafe-url safened: \"" target "\" became \"" safe-url "\"")))
+    safe-url))
 
 (defn referer-url [{:keys [uri query-string] :as ring-request}]
   (str uri (when query-string
