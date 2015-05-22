@@ -36,9 +36,10 @@
                    {first-answer-id :_id} (sh/with-votes (sh/store-an-answer {:question question}) {:up 2 :down 1})
                    {second-answer-id :_id} (sh/with-votes (sh/store-an-answer {:question question}) {})
                    {third-answer-id :_id} (sh/with-votes (sh/store-an-answer {:question question}) {:up 1 :down 2})]
-               (answers/get-answers question-uri {:sorted-by :created-at}) => (contains [(contains {:_id first-answer-id})
+               (answers/get-answers question-uri {:sorted-by :created-at}) => (contains [(contains {:_id third-answer-id})
                                                                                          (contains {:_id second-answer-id})
-                                                                                         (contains {:_id third-answer-id})])
+                                                                                         (contains {:_id first-answer-id})
+                                                                                         ])
                
                (answers/get-answers question-uri {:sorted-by :up-votes}) => (contains [(contains {:_id first-answer-id})
                                                                                        (contains {:_id third-answer-id})

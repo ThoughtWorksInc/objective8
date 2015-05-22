@@ -157,7 +157,7 @@ SELECT _id, 'section' AS entity FROM objective8.sections WHERE global_id=?
     (let [question-id (:question-id sanitised-query)
           objective-id (:objective-id sanitised-query)
           sorted-by (:sorted-by sanitised-query)
-          sorted-by-clause {:created-at "ORDER BY answers._created_at ASC"
+          sorted-by-clause {:created-at "ORDER BY answers._created_at DESC"
                             :up-votes "ORDER BY up_votes DESC NULLS LAST"
                             :down-votes "ORDER BY down_votes DESC NULLS LAST"}
           filter-type (:filter-type query-map)

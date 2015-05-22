@@ -324,8 +324,8 @@
                                :offset 0}]
 
                 (storage/pg-retrieve-answers query-map)
-                => (contains [(contains (assoc answer-1 :votes {:up 2 :down 3}))
-                              (contains (assoc answer-2 :votes {:up 2 :down 0}))])))
+                => (contains [(contains (assoc answer-2 :votes {:up 2 :down 0}))
+                              (contains (assoc answer-1 :votes {:up 2 :down 3}))])))
 
          (fact "retrieving answers for a question also returns writer notes"
                (let [question (sh/store-a-question)

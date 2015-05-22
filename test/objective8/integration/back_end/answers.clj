@@ -113,6 +113,7 @@
                      answer-uri (str "/objectives/" objective-id "/questions/" q-id "/answers/")
                      {response :response} (p/request app (str "/api/v1/objectives/" objective-id "/questions/" q-id "/answers"))]
                  (:body response) => (helpers/json-contains (map contains (->> stored-answers
+                                                                               reverse
                                                                                (map #(dissoc % :global-id))
                                                                                (map #(assoc % :uri (contains answer-uri))))))))
 
