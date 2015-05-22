@@ -5,7 +5,6 @@ block vars
   - htmlClass = "html-writer-dashboard"
   - bodyClass = ""
   - pageTitle = "! Writer dashboard"
-  - hasFooter = false
 
 block content
   .writer-dashboard
@@ -87,5 +86,8 @@ block content
             +dashboardAnswerItem(true)
             +dashboardAnswerItem()
             +dashboardAnswerItem()
+
+block pageFooter
+  //- This kills the footer
 
 block footerScripts

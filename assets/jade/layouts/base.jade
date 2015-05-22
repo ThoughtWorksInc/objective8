@@ -5,7 +5,6 @@ include ../mixins/_view_helpers
 - var htmlClass = ""
 - var bodyClass = ""
 - var googleFontsUrl = "https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700"
-- var hasFooter = true
 block vars
 
 doctype
@@ -56,10 +55,11 @@ html.no-js(lang="en", class="#{htmlClass}")
       to improve your experience.
     <![endif]-->
 
-    header#top(role="banner")
-      .header-content
-        +mastheadSignedOut
-        +statusBar
+    block pageHeader
+      header#top(role="banner")
+        .header-content
+          +mastheadSignedOut
+          +statusBar
 
     block guidance
 
@@ -76,7 +76,8 @@ html.no-js(lang="en", class="#{htmlClass}")
             a(href="/objectives/create", title="!Create an Objective", data-l8n="attr/title:masthead/create-link-title-attr content:masthead/create-link") !Create an Objective
           li
             a(href="/learn-more", title="!Learn more about Objective[8]", data-l8n="attr/title:masthead/about-link-title-attr content:masthead/about-link") !About
-    if hasFooter
+
+    block pageFooter
       footer
         .footer-container
           .footer
