@@ -639,6 +639,7 @@
            (wait-for-title "Writer dashboard | Objective[8]")
            (wd/click ".func--comment-dashboard-link")
 
+           (wait-for-title "Writer dashboard | Objective[8]")
            (screenshot "comments_dashboard")
 
            {:page-title (wd/title)
@@ -681,8 +682,9 @@
            (wait-for-title "Functional test headline | Objective[8]")
            (wd/click ".func--writer-dashboard-link")
            (wait-for-title "Writer dashboard | Objective[8]")
-           (wd/click ".func--annotaion-dashboard-link")
+           (wd/click ".func--annotation-dashboard-link")
 
+           (wait-for-title "Writer dashboard | Objective[8]")
            (screenshot "annotations_dashboard")
 
            {:page-title (wd/title)
