@@ -711,6 +711,16 @@
              (throw e)))
       => "Functional test writer note on annotation")
 
+(fact "Annotation writer note appears alongside the annotation"
+      (try (wd/to (str (:draft-url @journey-state) "/sections/" (:section-label @journey-state)))
+           (wait-for-title "Draft section | Objective[8]")
+           (screenshot "draft_section_with_annotation_with_writer_note")
+           (wd/page-source)
+        (catch Exception e
+          (screenshot "ERROR-annotation-writer-note-appears-alongside-the-annotation")
+          (throw e)))
+      => (contains "Functional test writer note on annotation"))
+
 (fact "User with admin credentials can remove an objective"
       (let [result (try
                      (wd/click ".func--objectives")
