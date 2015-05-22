@@ -24,6 +24,7 @@
                      :created-by-id USER_ID
                      :uri QUESTION_URI
                      :objective-id OBJECTIVE_ID
+                     :answer-count 16
                      :_id QUESTION_ID})
 
 (def default-app (core/app helpers/test-config))
@@ -99,7 +100,8 @@
              (-> (default-app question-view-get-request-with-offset)
                  :status) => 200
              (provided
-               (http-api/retrieve-answers anything {:offset 10}) => {:status ::http-api/success
+               (http-api/retrieve-answers anything {:offset 10
+                                                    :limit 50}) => {:status ::http-api/success
                                                                 :result []}))
 
        (fact "A user should receive a 404 if a question doesn't exist"

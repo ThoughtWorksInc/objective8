@@ -305,16 +305,16 @@
   (try
     (let [objective-id (Integer/parseInt (:id route-params))
           {objective-status :status objective :result} (http-api/get-objective objective-id)
-          total-count (get-in objective [:meta :comments-count])
+          comment-count (get-in objective [:meta :comments-count])
           offset (Integer/parseInt (get params :offset "0"))
           comments-query-params {:offset offset
                                  :limit fe-config/comments-pagination}]
       (if (= objective-status ::http-api/success)
         (if (< offset 0)
-          (response/redirect (str (utils/path-for :fe/get-comments-for-objective
-                                                  :id objective-id)))
-          (if (or (< offset total-count)
-                  (and (= offset 0) (= total-count 0))) 
+          (response/redirect (utils/path-for :fe/get-comments-for-objective
+                                                  :id objective-id))
+          (if (or (< offset comment-count)
+                  (and (= offset 0) (= comment-count 0))) 
             (let [{comments-status :status comments :result} (http-api/get-comments 
                                                                (:uri objective)
                                                                comments-query-params)]
@@ -334,7 +334,7 @@
                 {:status 500}))
             (response/redirect (str (utils/path-for :fe/get-comments-for-objective
                                                     :id objective-id)
-                                    "?offset=" (max 0 (- total-count fe-config/comments-pagination)))))) 
+                                    "?offset=" (max 0 (- comment-count fe-config/comments-pagination)))))) 
         (error-404-response request)))
     (catch Exception e
       (log/info "Invalid query string: " e)
@@ -349,10 +349,10 @@
         (let [{objective-status :status objective :result} (http-api/get-objective objective-id)
               {draft-status :status draft :result} (http-api/get-draft objective-id draft-id)
               offset (Integer/parseInt (get-in draft-comments-query [:data :offset]))
-              total-count (get-in draft [:meta :comments-count])]
+              comment-count (get-in draft [:meta :comments-count])]
           (if (every? #(= % ::http-api/success) [objective-status draft-status])
-            (if (or (< offset total-count)
-                    (and (= offset 0) (= total-count 0)))
+            (if (or (< offset comment-count)
+                    (and (= offset 0) (= comment-count 0)))
               (let [comments-query-params {:offset offset
                                            :limit fe-config/comments-pagination}
                     {comments-status :status comments :result} (http-api/get-comments
@@ -376,7 +376,7 @@
               (response/redirect (str (utils/path-for :fe/get-comments-for-draft
                                                       :id objective-id
                                                       :d-id draft-id)
-                                      "?offset=" (max 0 (- total-count fe-config/comments-pagination)))))
+                                      "?offset=" (max 0 (- comment-count fe-config/comments-pagination)))))
             (error-404-response request)))
 
         ::fr/invalid
@@ -472,33 +472,50 @@
                        (assoc :flash {:validation (dissoc question-data :status)})))))
 
 (defn question-detail [{:keys [route-params uri t' locale params] :as request}]
-  (let [q-id (-> (:q-id route-params) Integer/parseInt)
-        o-id (-> (:id route-params) Integer/parseInt)
-        answer-query (cond-> {}
-                        (:offset params) (assoc :offset (Integer/parseInt (get params :offset)))) 
-        {question-status :status question :result} (http-api/get-question o-id q-id)]
-    (cond
-      (= ::http-api/success question-status)
-      (let [{answer-status :status answers :result} (http-api/retrieve-answers (:uri question) answer-query)
-            {objective-status :status objective :result} (http-api/get-objective (:objective-id question))]
-        (if (every? #(= ::http-api/success %) [answer-status objective-status])
-          {:status 200
-           :headers {"Content-Type" "text/html"}
-           :body (views/question-page "question-page" request
-                                      :objective (format-objective objective)
-                                      :question question
-                                      :answer-count (get question :answer-count 0)
-                                      :answers answers
-                                      :offset (Integer/parseInt (get params :offset "0"))
-                                      :doc {:title (:question question)
-                                            :description (:question question)})}
-          {:status 500}))
+  (try
+    (let [q-id (-> (:q-id route-params) Integer/parseInt)
+          o-id (-> (:id route-params) Integer/parseInt)
+          offset (Integer/parseInt (get params :offset "0"))
+          answer-query (cond-> {}
+                         (:offset params) (assoc :offset offset 
+                                                 :limit fe-config/answers-pagination)) 
+          {question-status :status question :result} (http-api/get-question o-id q-id)
+          answer-count (get question :answer-count 0)]
+      (cond
+        (= ::http-api/success question-status)
+        (if (< offset 0)
+          (response/redirect (utils/path-for :fe/question
+                                             :q-id q-id
+                                             :id o-id))
+          (if (or (< offset answer-count)
+                  (and (= offset 0) (= answer-count 0))) 
+            (let [{answer-status :status answers :result} (http-api/retrieve-answers (:uri question) answer-query)
+                  {objective-status :status objective :result} (http-api/get-objective (:objective-id question))]
+              (if (every? #(= ::http-api/success %) [answer-status objective-status])
+                {:status 200
+                 :headers {"Content-Type" "text/html"}
+                 :body (views/question-page "question-page" request
+                                            :objective (format-objective objective)
+                                            :question question
+                                            :answer-count answer-count 
+                                            :answers answers
+                                            :offset offset 
+                                            :doc {:title (:question question)
+                                                  :description (:question question)})}
+                {:status 500})) 
+            (response/redirect (str (utils/path-for :fe/question
+                                                    :q-id q-id
+                                                    :id o-id)
+                                    "?offset=" (max 0 (- answer-count fe-config/answers-pagination)))))) 
 
-      (= question-status ::http-api/not-found) (error-404-response request)
+        (= question-status ::http-api/not-found) (error-404-response request)
 
-      (= question-status ::http-api/invalid-input) {:status 400}
+        (= question-status ::http-api/invalid-input) {:status 400}
 
-      :else {:status 500})))
+        :else {:status 500}))
+    (catch Exception e
+      (log/info "Invalid query string: " e)
+      (error-404-response request))))
 
 
 ;; ANSWERS

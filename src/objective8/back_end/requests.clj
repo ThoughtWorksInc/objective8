@@ -62,16 +62,6 @@
         nil))
     query))
 
-(defn validate-offset [query offset-string]
-  (if offset-string
-    (try
-      (let [offset (Integer/parseInt offset-string)]
-        (when (>= offset  0)
-          (assoc query :offset offset)))
-      (catch Exception e
-        nil))
-    query))
-
 (defn request->answer-data [{:keys [route-params params] :as request}]
   {:answer (:answer params)
    :created-by-id (:created-by-id params)
