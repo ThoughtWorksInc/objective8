@@ -32,7 +32,7 @@
   (< (count value) min))
 
 (defn integer-string? [id]
- (re-matches #"\d+" id))
+ (re-matches #"-?\d+" id))
 
 (defn valid-email? [email-address]
   (and (re-matches #"[^ @]+@[^ @]+$" email-address) (shorter? email-address 257)))
@@ -243,7 +243,8 @@
   (let [offset (get-in request [:params :offset] "0")]
     (cond-> (initialise-field-validation offset)
       (or (not (integer-string? offset))
-          (< (Integer/parseInt offset) 0)) (report-error :invalid))))
+          (< (Integer/parseInt offset) 0)) (report-error :negative)
+      (not (integer-string? offset)) (report-error :non-int))))
 
 ;;; Retrieving drafts
 

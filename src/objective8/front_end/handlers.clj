@@ -310,33 +310,35 @@
           comments-query-params {:offset offset
                                  :limit fe-config/comments-pagination}]
       (if (= objective-status ::http-api/success)
-        (if (and (>= offset 0) 
-                 (or (< offset total-count)
-                     (and (= offset 0) (= total-count 0)))) 
-          (let [{comments-status :status comments :result} (http-api/get-comments 
-                                                             (:uri objective)
-                                                             comments-query-params)]
-            (if (= comments-status ::http-api/success)
-              {:status 200
-               :headers {"Content-Type" "text/html"}
-               :body (views/objective-comments-view
-                      "objective-comments"
-                      request
-                      :objective (format-objective objective)
-                      :comments comments
-                      :offset offset
-                      :doc (let [details (str (t' :objective-comments/title-prefix) " " 
-                                              (:title objective) " | Objective[8]")]
-                             {:title details
-                              :description details}))}
-              {:status 500}))
+        (if (< offset 0)
           (response/redirect (str (utils/path-for :fe/get-comments-for-objective
-                                                  :id objective-id)
-                                  "?offset=" (max 0 (- total-count fe-config/comments-pagination)))))
+                                                  :id objective-id)))
+          (if (or (< offset total-count)
+                  (and (= offset 0) (= total-count 0))) 
+            (let [{comments-status :status comments :result} (http-api/get-comments 
+                                                               (:uri objective)
+                                                               comments-query-params)]
+              (if (= comments-status ::http-api/success)
+                {:status 200
+                 :headers {"Content-Type" "text/html"}
+                 :body (views/objective-comments-view
+                         "objective-comments"
+                         request
+                         :objective (format-objective objective)
+                         :comments comments
+                         :offset offset
+                         :doc (let [details (str (t' :objective-comments/title-prefix) " " 
+                                                 (:title objective) " | Objective[8]")]
+                                {:title details
+                                 :description details}))}
+                {:status 500}))
+            (response/redirect (str (utils/path-for :fe/get-comments-for-objective
+                                                    :id objective-id)
+                                    "?offset=" (max 0 (- total-count fe-config/comments-pagination)))))) 
         (error-404-response request)))
     (catch Exception e
       (log/info "Invalid query string: " e)
-      {:status 400})))
+      (error-404-response request))))
 
 (defn get-comments-for-draft [{:keys [params t'] :as request}]
   (if-let [draft-comments-query (fr/request->draft-comments-query request)]
@@ -378,12 +380,15 @@
             (error-404-response request)))
 
         ::fr/invalid
-        (response/redirect (str (utils/path-for :fe/get-comments-for-draft
-                                                :id objective-id
-                                                :d-id draft-id)))))
+        (let [reason (get-in draft-comments-query [:report :offset])]
+          (if (some #{:non-int} reason)
+            (error-404-response request)
+            (response/redirect (str (utils/path-for :fe/get-comments-for-draft
+                                                    :id objective-id
+                                                    :d-id draft-id)))))))
     (do
       (log/info "Invalid draft query: " (select-keys request [:route-params :params]))
-      {:status 400})))
+      (error-404-response request))))
 
 (defn post-comment [request]
   (if-let [comment-data (fr/request->comment-data request (get (friend/current-authentication) :identity))]
