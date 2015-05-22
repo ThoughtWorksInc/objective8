@@ -677,24 +677,39 @@
       => (contains "Functional test writer note on comment"))
 
 (fact "Can view annotations dashboard"
-  (try (wd/to (:objective-url @journey-state))
-    (wait-for-title "Functional test headline | Objective[8]")
-    (wd/click ".func--writer-dashboard-link")
-    (wait-for-title "Writer dashboard | Objective[8]")
-    (wd/click ".func--annotaion-dashboard-link")
+      (try (wd/to (:objective-url @journey-state))
+           (wait-for-title "Functional test headline | Objective[8]")
+           (wd/click ".func--writer-dashboard-link")
+           (wait-for-title "Writer dashboard | Objective[8]")
+           (wd/click ".func--annotaion-dashboard-link")
 
-    (screenshot "annotations_dashboard")
+           (screenshot "annotations_dashboard")
 
-    {:page-title (wd/title)
-     :page-source (wd/page-source)
-     :annotation-count (wd/text ".func--item-count")}
+           {:page-title (wd/title)
+            :page-source (wd/page-source)
+            :annotation-count (wd/text ".func--item-count")}
 
-    (catch Exception e
-      (screenshot "ERROR-can-view-annotations-dashboard")
-      (throw e)))
-  => (contains {:page-title "Writer dashboard | Objective[8]"
-                :page-source (contains "my draft section annotation")
-                :annotation-count (contains "1")}))
+           (catch Exception e
+             (screenshot "ERROR-can-view-annotations-dashboard")
+             (throw e)))
+      => (contains {:page-title "Writer dashboard | Objective[8]"
+                    :page-source (contains "my draft section annotation")
+                    :annotation-count (contains "1")}))
+
+(fact "Can add a writer note to an annotation"
+      (try (-> ".func--dashboard-writer-note-item-field"
+               (wd/input-text "Functional test writer note on annotation")
+               wd/submit)
+
+           (wait-for-title "Writer dashboard | Objective[8]")
+           (screenshot "annotation_dashboard_with_writer_note")
+
+           (wd/text ".func--writer-note-text")
+
+           (catch Exception e
+             (screenshot "ERROR-can-add-a-writer-note-to-an-annotation")
+             (throw e)))
+      => "Functional test writer note on annotation")
 
 (fact "User with admin credentials can remove an objective"
       (let [result (try

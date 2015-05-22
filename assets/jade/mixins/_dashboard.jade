@@ -63,7 +63,7 @@ mixin dashboardCommentItem(author, date, withWriterNote)
       +voteUpDownView
     +dashboardNoteItem(withWriterNote)
 
-mixin dashboardAnnotationItem(author, date)
+mixin dashboardAnnotationItem(author, date, withWriterNote)
   li.dashboard-annotation-item.clj-dashboard-annotation-item
     .dashboard-annotation-meta
       span.dashboard-annotation-author.clj-dashboard-annotation-author #{author}
@@ -72,6 +72,7 @@ mixin dashboardAnnotationItem(author, date)
       block
     .dashboard-annotation-actions
       +voteUpDownView
+    +dashboardNoteItem(withWriterNote)
 
 mixin dashboardAnswerBlank()
   li.dashboard-answer-item.clj-dashboard-no-answer-item

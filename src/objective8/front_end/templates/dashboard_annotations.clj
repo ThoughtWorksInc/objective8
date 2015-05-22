@@ -11,25 +11,61 @@
 
 (def annotations-list-snippet (html/select dashboard-annotations-template [[:.clj-dashboard-annotation-section-list-item html/first-of-type]]))
 
-(def comments-snippet (html/select annotations-list-snippet [[:.clj-dashboard-annotation-item html/first-of-type]]))
+(def comments-without-writer-note-snippet (html/select pf/library-html-resource [:.clj-library-key--dashboard-comment-without-writer-note]))
+
+(def comments-with-writer-note-snippet (html/select pf/library-html-resource [:.clj-library-key--dashboard-comment-with-writer-note]))
+
+(def writer-note-snippet (html/select comments-with-writer-note-snippet [:.clj-dashboard-comment-item]))
+
+(def no-writer-note-snippet (html/select comments-without-writer-note-snippet [:.clj-dashboard-comment-item]))
 
 (def dashboard-annotations-no-annotations-snippet (html/select pf/library-html-resource
                                                          [:.clj-library-key--dashboard-no-annotation-item]))
 
-(defn render-comment [comment]
-  (html/at comments-snippet
-    [:.clj-dashboard-annotation-text] (html/content (:comment comment))
-    [:.clj-dashboard-annotation-author] (html/content (:username comment))
-    [:.clj-dashboard-annotation-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
-    [:.clj-dashboard-comment-up-count] (html/content (str (get-in comment [:votes :up])))
-    [:.clj-dashboard-comment-down-count] (html/content (str (get-in comment [:votes :down])))))
+(defn apply-writer-note-form-validations [{:keys [doc] :as context} comment nodes]
+  (let [validation-data (get-in doc [:flash :validation])
+        validation-report (:report validation-data)
+        previous-inputs (:data validation-data)
+        is-relevant-comment (= (:uri comment)
+                               (:note-on-uri previous-inputs))]
+    (if is-relevant-comment
+      (html/at nodes
+               [:.clj-writer-note-empty-error] (when (contains? (:note validation-report) :empty) identity)
+               [:.clj-writer-note-length-error] (when (contains? (:note validation-report) :length) identity)
+               [:.clj-writer-note-item-field] (html/set-attr :value (:note previous-inputs)))
+      (html/at nodes
+               [:.clj-writer-note-empty-error] nil
+               [:.clj-writer-note-length-error] nil))))
 
-(defn comment-list [annotation]
+(defn render-comment-with-note [context comment]
+ (html/at writer-note-snippet
+          [:.clj-dashboard-comment-text] (html/content (:comment comment))
+          [:.clj-dashboard-comment-author] (html/content (:username comment))
+          [:.clj-dashboard-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
+          [:.clj-dashboard-comment-up-count] (html/content (str (get-in comment [:votes :up])))
+          [:.clj-dashboard-comment-down-count] (html/content (str (get-in comment [:votes :down])))
+          [:.clj-dashboard-writer-note-text] (html/content (:note comment))))
+
+(defn render-comment-without-note [{:keys [ring-request] :as context} comment]
+  (->> (html/at no-writer-note-snippet
+                [:.clj-dashboard-comment-text] (html/content (:comment comment))
+                [:.clj-dashboard-comment-author] (html/content (:username comment))
+                [:.clj-dashboard-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
+                [:.clj-dashboard-comment-up-count] (html/content (str (get-in comment [:votes :up])))
+                [:.clj-dashboard-comment-down-count] (html/content (str (get-in comment [:votes :down])) )
+                [:.clj-refer] (html/set-attr :value (utils/referer-url ring-request))
+                [:.clj-note-on-uri] (html/set-attr :value (:uri comment))
+                [:.clj-dashboard-writer-note-form] (html/prepend (html/html-snippet (anti-forgery-field))))
+       (apply-writer-note-form-validations context comment)))
+
+(defn comment-list [context annotation]
   (let [comments (:comments annotation)]
-    (html/at comments-snippet
-      [:.clj-dashboard-annotation-item]
+    (html/at comments-without-writer-note-snippet
+      [:.clj-dashboard-comment-item]
       (html/clone-for [comment comments]
-        [:.clj-dashboard-annotation-item] (html/substitute (render-comment comment))))))
+        [:.clj-dashboard-comment-item] (if (:note comment)
+                                            (html/substitute (render-comment-with-note context comment))
+                                            (html/substitute (render-comment-without-note context comment)))))))
 
 (def annotation-snippet (html/select dashboard-annotations-template [[:.clj-dashboard-annotation-section-list-item html/first-of-type]]))
 
@@ -40,7 +76,7 @@
 (defn render-annotation [context annotation]
   (html/at annotation-snippet
     [:.clj-dashboard-annotation-section] (html/html-content (utils/hiccup->html (:section annotation)))
-    [:.clj-dashboard-annotation-section-list] (html/content (comment-list annotation))))
+    [:.clj-dashboard-annotation-section-list] (html/content (comment-list context annotation))))
 
 (defn annotation-list-items [{:keys [data] :as context}]
   (let [annotations (:annotations data)]
@@ -114,8 +150,7 @@
                   [:.clj-writer-dashboard-navigation-annotations-link] (html/set-attr :href (utils/path-for :fe/dashboard-annotations :id (:_id objective)))
                   [:.clj-dashboard-navigation-list] (html/content (navigation-list context))
 
-                  [:.clj-dashboard-annotation-list] (html/content (annotation-list context))
-                  [:.clj-dashboard-filter-list] nil)
+                  [:.clj-dashboard-annotation-list] (html/content (annotation-list context)))
          pf/add-google-analytics
          (tf/translate context)
          html/emit*

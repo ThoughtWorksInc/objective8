@@ -68,16 +68,6 @@ block content
             | !2015-05-01
 
       .writer-dashboard-content-container#dashboard-content
-        ul.writer-dashboard-filter-list.clj-dashboard-filter-list
-          li.writer-dashboard-filter-list-item
-            a.writer-dashboard-filter-list-item-button.clj-dashboard-filter-up-votes(href="#")
-              i.fa.fa-angle-up
-          li.writer-dashboard-filter-list-item
-            a.writer-dashboard-filter-list-item-button.clj-dashboard-filter-down-votes(href="#")
-              i.fa.fa-angle-down
-          li.writer-dashboard-filter-list-item
-            a.writer-dashboard-filter-list-item-button.clj-dashboard-filter-paper-clip(href="#")
-              i.fa.fa-paperclip
 
         .writer-dashboard-content.clj-dashboard-content
           ul.dashboard-annotation-list.clj-dashboard-annotation-list
@@ -99,7 +89,7 @@ block content
               ul.dashboard-annotation-section-list
                 +dashboardAnnotationItem('Chris Linseman', '28 April 2015 07:41')
                   | This is a one line commment about the content
-                +dashboardAnnotationItem('Chris Linseman', '28 April 2015 07:41')
+                +dashboardAnnotationItem('Chris Linseman', '28 April 2015 07:41', true)
                   | This is a one line commment about the content
                 +dashboardAnnotationItem('Chris Linseman', '28 April 2015 07:41')
                   | This is a one line commment about the content
