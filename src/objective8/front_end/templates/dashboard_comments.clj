@@ -50,6 +50,7 @@
                 [:.clj-dashboard-comment-text] (html/content (:comment comment))
                 [:.clj-dashboard-comment-author] (html/content (:username comment))
                 [:.clj-dashboard-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
+                [:.clj-annotation-reason-text] nil
                 [:.clj-dashboard-comment-up-count] (html/content (str (get-in comment [:votes :up])))
                 [:.clj-dashboard-comment-down-count] (html/content (str (get-in comment [:votes :down])) )
                 [:.clj-refer] (html/set-attr :value (utils/referer-url ring-request))
@@ -62,6 +63,7 @@
           [:.clj-dashboard-comment-text] (html/content (:comment comment))
           [:.clj-dashboard-comment-author] (html/content (:username comment))
           [:.clj-dashboard-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
+          [:.clj-annotation-reason-text] nil
           [:.clj-dashboard-comment-up-count] (html/content (str (get-in comment [:votes :up])))
           [:.clj-dashboard-comment-down-count] (html/content (str (get-in comment [:votes :down])))
           [:.clj-dashboard-writer-note-text] (html/content (:note comment))))

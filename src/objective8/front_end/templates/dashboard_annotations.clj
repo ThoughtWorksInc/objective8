@@ -37,20 +37,26 @@
                [:.clj-writer-note-empty-error] nil
                [:.clj-writer-note-length-error] nil))))
 
-(defn render-comment-with-note [context comment]
- (html/at writer-note-snippet
-          [:.clj-dashboard-comment-text] (html/content (:comment comment))
-          [:.clj-dashboard-comment-author] (html/content (:username comment))
-          [:.clj-dashboard-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
-          [:.clj-dashboard-comment-up-count] (html/content (str (get-in comment [:votes :up])))
-          [:.clj-dashboard-comment-down-count] (html/content (str (get-in comment [:votes :down])))
-          [:.clj-dashboard-writer-note-text] (html/content (:note comment))))
+(defn render-comment-with-note [{:keys [translations] :as context} comment]
+  (html/at writer-note-snippet
+           [:.clj-dashboard-comment-text] (html/content (:comment comment))
+           [:.clj-dashboard-comment-author] (html/content (:username comment))
+           [:.clj-dashboard-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
+           [:.clj-annotation-reason-text] (when (:reason comment)
+                                            (html/content 
+                                              (translations (keyword "add-comment-form" (str "comment-reason-" (:reason comment))))))
+           [:.clj-dashboard-comment-up-count] (html/content (str (get-in comment [:votes :up])))
+           [:.clj-dashboard-comment-down-count] (html/content (str (get-in comment [:votes :down])))
+           [:.clj-dashboard-writer-note-text] (html/content (:note comment))))
 
-(defn render-comment-without-note [{:keys [ring-request] :as context} comment]
+(defn render-comment-without-note [{:keys [ring-request translations] :as context} comment]
   (->> (html/at no-writer-note-snippet
                 [:.clj-dashboard-comment-text] (html/content (:comment comment))
                 [:.clj-dashboard-comment-author] (html/content (:username comment))
                 [:.clj-dashboard-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
+                [:.clj-annotation-reason-text] (when (:reason comment)
+                                                 (html/content 
+                                                   (translations (keyword "add-comment-form" (str "comment-reason-" (:reason comment))))))
                 [:.clj-dashboard-comment-up-count] (html/content (str (get-in comment [:votes :up])))
                 [:.clj-dashboard-comment-down-count] (html/content (str (get-in comment [:votes :down])) )
                 [:.clj-refer] (html/set-attr :value (utils/referer-url ring-request))

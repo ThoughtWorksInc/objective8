@@ -58,19 +58,9 @@ mixin dashboardCommentItem(author, date, withWriterNote)
       span.dashboard-comment-author.clj-dashboard-comment-author #{author}
       span.dashboard-comment-date.clj-dashboard-comment-date #{date}
     .dashboard-comment-text.clj-dashboard-comment-text
+    .comment-reason-text.clj-annotation-reason-text
       block
     .dashboard-comment-actions
-      +voteUpDownView
-    +dashboardNoteItem(withWriterNote)
-
-mixin dashboardAnnotationItem(author, date, withWriterNote)
-  li.dashboard-annotation-item.clj-dashboard-annotation-item
-    .dashboard-annotation-meta
-      span.dashboard-annotation-author.clj-dashboard-annotation-author #{author}
-      span.dashboard-annotation-date.clj-dashboard-annotation-date #{date}
-    .dashboard-annotation-text.clj-dashboard-annotation-text
-      block
-    .dashboard-annotation-actions
       +voteUpDownView
     +dashboardNoteItem(withWriterNote)
 
