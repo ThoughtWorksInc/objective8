@@ -6,6 +6,11 @@ block vars
   - bodyClass = ""
   - pageTitle = "! Writer dashboard"
 
+block pageHeader
+  header#top(role="banner")
+    .header-content
+      +mastheadSignedOut
+
 block content
 
   .writer-dashboard
