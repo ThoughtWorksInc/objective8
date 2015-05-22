@@ -149,7 +149,8 @@
                  :created-by-id USER_ID
                  :uri QUESTION_URI
                  :objective-id OBJECTIVE_ID
-                 :_id QUESTION_ID})
+                 :_id QUESTION_ID
+                 :answer-count 0})
 
 (facts "about rendering question page"
        (fact "there are no untranslated strings"

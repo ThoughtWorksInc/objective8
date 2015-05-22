@@ -86,27 +86,7 @@
                                                            :id OBJECTIVE_ID))
                    :response
                    :body) => (contains "Comment 1"))
-         (tabular
-           (fact "user can see the range of comments currently being viewed"
-                 (against-background
-                   (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                             :result {:uri OBJECTIVE_URI
-                                                                      :_id OBJECTIVE_ID
-                                                                      :status "drafting"
-                                                                      :meta {:comments-count ?comments-count}  }}
-                   (http-api/get-comments OBJECTIVE_URI anything) => {:status ::http-api/success
-                                                                      :result []})
-                 (-> user-session
-                     (p/request (str (utils/path-for :fe/get-comments-for-objective
-                                                     :id OBJECTIVE_ID)
-                                     "?offset=" ?offset))
-                     :response
-                     :body) => (contains ?comment-index-regex))
-           ?offset   ?comments-count        ?comment-index-regex
-           0         75                     #"1.+-.+50.+of.+75"
-           50        75                     #"51.+-.+75.+of.+75"
-           0         0                      #"0.+-.+0.+of.+0")
-
+         
          (tabular
           (fact "redirects to sensible offset when offset out of range"
                 (against-background
