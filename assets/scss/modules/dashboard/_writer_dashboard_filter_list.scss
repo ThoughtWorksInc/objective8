@@ -49,7 +49,9 @@
   }
   &.on, &:active {
     cursor: pointer;
-    pointer-events: none;
     border-bottom-color: $pink;
+  }
+  &.on {
+    pointer-events: none;
   }
 }
