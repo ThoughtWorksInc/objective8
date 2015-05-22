@@ -293,7 +293,30 @@
                (http-api/get-comments anything {:sorted-by "up-votes"
                                                 :filter-type "has-writer-note"
                                                 :limit 50}) => {:status ::http-api/success
-                                                                :result []})))
+                                                                :result []}))
+
+       (fact "can see form if comment has no note"
+             (let [{response :response} (-> user-session
+                                            ih/sign-in-as-existing-user
+                                            (p/request (utils/path-for :fe/dashboard-comments :id OBJECTIVE_ID)))]
+               (:status response) => 200
+               (:body response) => (contains "note-on-uri")))
+
+
+       (fact "can see note text if the comment has a note"
+             (against-background
+               (http-api/get-comments anything anything) => {:status ::http-api/success
+                                                       :result [{:comment "A comment"
+                                                                 :_created_at "2015-01-01T01:01:00.000Z"
+                                                                 :username "A User"
+                                                                 :note "test note"    
+                                                                 :votes {:up 5 :down 3}}]})
+             (let [{response :response} (-> user-session
+                                            ih/sign-in-as-existing-user
+                                            (p/request (utils/path-for :fe/dashboard-comments :id OBJECTIVE_ID)))]
+               (:status response) => 200
+               (:body response) => (contains "test note"))))
+
 (def section [["h1" {:data-section-label "1234abcd"} "A Heading"]])
 
 (facts "about the annotations dashboard for writers"
@@ -314,19 +337,42 @@
                                                                        :username "A User"
                                                                        :votes {:up 5 :down 3}}]}]})
 
-  (fact "can view annotations on dashboard"
-    (let [{response :response} (-> user-session
-                                 ih/sign-in-as-existing-user
-                                 (p/request (utils/path-for :fe/dashboard-annotations :id OBJECTIVE_ID)))]
-      (:status response) => 200
-      (:body response) => (contains "Objective title")
-      (:body response) => (contains "A Heading")
-      (:body response) => (contains "A section comment")))
+       (fact "can view annotations on dashboard"
+             (let [{response :response} (-> user-session
+                                            ih/sign-in-as-existing-user
+                                            (p/request (utils/path-for :fe/dashboard-annotations :id OBJECTIVE_ID)))]
+               (:status response) => 200
+               (:body response) => (contains "Objective title")
+               (:body response) => (contains "A Heading")
+               (:body response) => (contains "A section comment")))
 
-  (fact "can view drafting warning message when annotaions api returns not-found"
-         (against-background
-           (http-api/get-annotations anything) => {:status ::http-api/not-found
-                                                   :result []})
+       (fact "can see form if annotation has no note"
+             (let [{response :response} (-> user-session
+                                            ih/sign-in-as-existing-user
+                                            (p/request (utils/path-for :fe/dashboard-annotations :id OBJECTIVE_ID)))]
+               (:status response) => 200
+               (:body response) => (contains "note-on-uri")))
+
+
+       (fact "can see note text if the annotations has a note"
+             (against-background
+               (http-api/get-annotations anything) => {:status ::http-api/success
+                                                 :result [{:section section
+                                                           :comments [{:comment "A section comment"
+                                                                       :_created_at "2015-01-01T01:01:00.000Z"
+                                                                       :username "A User"
+                                                                       :note "test note"
+                                                                       :votes {:up 5 :down 3}}]}]})
+             (let [{response :response} (-> user-session
+                                            ih/sign-in-as-existing-user
+                                            (p/request (utils/path-for :fe/dashboard-annotations :id OBJECTIVE_ID)))]
+               (:status response) => 200
+               (:body response) => (contains "test note")))
+
+       (fact "can view drafting warning message when annotaions api returns not-found"
+             (against-background
+               (http-api/get-annotations anything) => {:status ::http-api/not-found
+                                                       :result []})
 
              (let [{response :response} (-> user-session
                                             ih/sign-in-as-existing-user
