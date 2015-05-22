@@ -111,7 +111,8 @@
       ((regex-checker #"/objectives/\d+/writers/invitation") target)
       ((regex-checker #"/objectives/\d+/writer-invitations/\d+") target)
       ((regex-checker #"/objectives/\d+/dashboard/questions") target)
-      ((regex-checker #"/objectives/\d+/dashboard/comments") target)))
+      ((regex-checker #"/objectives/\d+/dashboard/comments") target)
+      ((regex-checker #"/objectives/\d+/dashboard/annotations") target)))
 
 (defn safen-query [query] 
   (when query

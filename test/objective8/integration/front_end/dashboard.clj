@@ -186,7 +186,7 @@
                                              :created-by-id USER_ID}) => {:status ::http-api/success
                                                                           :result []}))
 
-         (future-fact "authorised writer can post note against annotation"
+         (fact "authorised writer can post note against annotation"
                (let [params {:refer (str "/objectives/" OBJECTIVE_ID "/dashboard/annotations?selected=" ANNOTATION_URI)
                              :note "Test note"
                              :note-on-uri ANNOTATION_URI}
