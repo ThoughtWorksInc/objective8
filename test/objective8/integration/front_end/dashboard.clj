@@ -257,6 +257,7 @@
          (http-api/get-objective anything) => {:status ::http-api/success
                                                :result {:entity :objective
                                                         :title "Objective title"
+                                                        :uri OBJECTIVE_URI
                                                         :_id OBJECTIVE_ID
                                                         :meta {:stars-count STARS_COUNT
                                                                :comments-count 1}}}
@@ -280,7 +281,8 @@
              (provided
                (http-api/get-comments anything {:sorted-by "up-votes"
                                                 :filter-type "none"
-                                                :limit 50}) => {:status ::http-api/success
+                                                :limit 50
+                                                :offset 0}) => {:status ::http-api/success
                                                                 :result []}))
 
        (fact "can filter comments by writer note presence"
@@ -292,7 +294,8 @@
              (provided
                (http-api/get-comments anything {:sorted-by "up-votes"
                                                 :filter-type "has-writer-note"
-                                                :limit 50}) => {:status ::http-api/success
+                                                :limit 50
+                                                :offset 0}) => {:status ::http-api/success
                                                                 :result []}))
 
        (fact "can see form if comment has no note"
@@ -306,16 +309,58 @@
        (fact "can see note text if the comment has a note"
              (against-background
                (http-api/get-comments anything anything) => {:status ::http-api/success
-                                                       :result [{:comment "A comment"
-                                                                 :_created_at "2015-01-01T01:01:00.000Z"
-                                                                 :username "A User"
-                                                                 :note "test note"    
-                                                                 :votes {:up 5 :down 3}}]})
+                                                             :result [{:comment "A comment"
+                                                                       :_created_at "2015-01-01T01:01:00.000Z"
+                                                                       :username "A User"
+                                                                       :note "test note"    
+                                                                       :votes {:up 5 :down 3}}]})
              (let [{response :response} (-> user-session
                                             ih/sign-in-as-existing-user
                                             (p/request (utils/path-for :fe/dashboard-comments :id OBJECTIVE_ID)))]
                (:status response) => 200
-               (:body response) => (contains "test note"))))
+               (:body response) => (contains "test note")))
+
+       (tabular
+        (facts "about pagination"
+               (fact "comments are retrieved starting from the requested offset"
+                     (-> user-session
+                         ih/sign-in-as-existing-user
+                         (p/request (str (utils/path-for :fe/dashboard-comments :id OBJECTIVE_ID)
+                                         "?offset=10"
+                                         "&comment-view=" ?view-type))
+                         :response
+                         :status)
+                     => 200
+                     (provided
+                      (http-api/get-comments OBJECTIVE_URI
+                                             (contains {:offset 10 :limit 50}))
+                      => {:status ::http-api/success
+                          :result []}))
+
+               (tabular
+                (fact "user can see the range of comments currently being viewed"
+                             (against-background
+                              (http-api/get-objective OBJECTIVE_ID)
+                              => {:status ::http-api/success
+                                  :result {:uri OBJECTIVE_URI
+                                           :_id OBJECTIVE_ID
+                                           :meta {:comments-count ?comments-count}}})
+                             (-> user-session
+                                 ih/sign-in-as-existing-user
+                                 (p/request (str (utils/path-for :fe/dashboard-comments :id OBJECTIVE_ID)
+                                                 "?offset=10"
+                                                 "&comment-view=" ?view-type))
+                                 :response
+                                 :body)
+                             => (contains ?comment-index-regex))
+                ?offset   ?comments-count        ?comment-index-regex
+                0         75                     #"1.+-.+50.+of.+75"
+                50        75                     #"51.+-.+75.+of.+75"
+                0         0                      #"0.+-.+0.+of.+0"))
+        
+        ?view-type
+        "up-votes"
+        "down-votes"))
 
 (def section [["h1" {:data-section-label "1234abcd"} "A Heading"]])
 

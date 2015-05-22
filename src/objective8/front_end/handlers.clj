@@ -230,15 +230,17 @@
 
 (defn dashboard-comments [{:keys [route-params params] :as request}]
   (let [objective-id (Integer/parseInt (:id route-params))
+        offset (Integer/parseInt (get params :offset "0"))
         {objective-status :status objective :result} (http-api/get-objective objective-id)
         {drafts-status :status drafts :result} (http-api/get-all-drafts objective-id)
 
         selected-comment-target-uri (get params :selected (:uri objective))
         comment-view-type (keyword (get params :comment-view "up-votes"))
         comment-query-params (-> (get dashboard-comments-query-params
-                                  comment-view-type
-                                  {:sorted-by "up-votes" :filter-type "none"})
-                                 (assoc :limit fe-config/comments-pagination)) 
+                                          comment-view-type
+                                          {:sorted-by "up-votes" :filter-type "none"})
+                                 (assoc :limit fe-config/comments-pagination
+                                        :offset offset))
 
         {comments-status :status comments :result} (http-api/get-comments selected-comment-target-uri
                                                                           comment-query-params)]

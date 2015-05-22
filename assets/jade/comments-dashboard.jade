@@ -81,7 +81,23 @@ block content
 
         .writer-dashboard-content.clj-dashboard-content
           .writer-dashboard-content-stats.clj-dashboard-content-stats
-            p 1827 answers from 970 people:
+            p 1827 comments from 970 people
+          .writer-dashboard-comments-pagination
+            .comments-pagination-location
+              span.clj-comments-start-index 1
+              =" "
+              span -
+              =" "
+              span.clj-comments-end-index 50
+            ul.comments-navigation-controls
+              li.comments-navigation-item.comments-navigation-previous.disabled.clj-comments-previous
+                a.comments-navigation-link.clj-comments-previous-link(href="!previous-link")
+                  i.fa.fa-angle-left
+                  span.comments-navigation-text(data-l8n="content:comments-navigation/previous") !Previous
+              li.comments-navigation-item.comments-navigation-next.disabled.clj-comments-next
+                a.comments-navigation-link.clj-comments-next-link(href="!next-link")
+                  span.comments-navigation-text(data-l8n="content:comments-navigation/next") !Next 
+                  i.fa.fa-angle-right
           ul.dashboard-comment-list.clj-dashboard-comment-list
             +dashboardCommentItem('Chris Linseman', '28 April 2015 07:41')
               | This is a one line commment about the content
