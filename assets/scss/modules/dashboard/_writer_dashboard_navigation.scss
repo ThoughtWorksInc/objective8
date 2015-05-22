@@ -1,3 +1,13 @@
+.writer-dashboard-navigation-title {
+  height: 60px;
+  font-weight: 400;
+  line-height: 60px;
+  margin-top: 0;
+  margin-bottom: 1em;
+  padding-left: 16px;
+  border-bottom: 5px solid $pink;
+}
+
 .writer-dashboard-navigation-list {
   list-style: none;
   padding: 0;
@@ -97,6 +107,7 @@
     float: left;
   }
   &.on {
+    box-shadow: inset 0 3px 0 $pink;
     border-bottom: 1px solid $white;
     a {
       color: $pink;

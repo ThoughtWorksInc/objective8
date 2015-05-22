@@ -2,23 +2,39 @@
   display: table;
   width: 100%;
   border: 1px solid $grey-3;
-  height: 60px;
   list-style: none;
   margin: 0;
   padding: 0;
+  @include mq(640) {
+    border: none;
+  }
 }
 .writer-dashboard-filter-list-item {
+  position: relative;
   display: table-cell;
-  border-right: 1px solid $grey-3;
-  &:last-child {
-    border-right: none;
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 1px;
+    height: 100%;
+    background: $grey-3;
+    @include mq(640) {
+      height: 75%;
+    }
+  }
+  &:last-child:after {
+    display: none;
   }
 }
 .writer-dashboard-filter-list-item-button {
   display: block;
+  height: 60px;
   padding: 1em;
   text-align: center;
-  border-bottom: 5px solid transparent;
+  border-bottom: 5px solid $grey-3;
   &:visited, & {
     color: $default_text_color;
   }
@@ -27,7 +43,11 @@
     color: $pink;
     border-color: rgba($pink,0.1);
   }
-  &.on {
+  &:focus {
+    outline: none;
+    border-bottom-color: $yellow;
+  }
+  &.on, &:active {
     cursor: pointer;
     pointer-events: none;
     border-bottom-color: $pink;
