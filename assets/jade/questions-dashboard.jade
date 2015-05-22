@@ -6,18 +6,14 @@ block vars
   - bodyClass = ""
   - pageTitle = "! Writer dashboard"
 
+block pageHeader
+  header#top(role="banner")
+    .header-content
+      +mastheadSignedOut
+
 block content
   .writer-dashboard
-    .writer-dashboard-header
-      h1.writer-dashboard-title.clj-dashboard-title
-        a.writer-dashboard-title-link.clj-dashboard-title-link(href="/objectives/o_id") !We need more bike lanes in soho
-      .writer-dashboard-stats.clj-dashboard-stats
-        p.dashboard-stat.clj-dashboard-stat-participant
-          span.dashboard-stat-amount.clj-dashboard-stat-participant-amount 5432
-          span.dashboard-stat-title(data-l8n="content:writer-dashboard/participants-stat-title") !Participants
-        p.dashboard-stat.clj-dashboard-stat-starred
-          span.dashboard-stat-amount.clj-dashboard-stat-starred-amount 3210
-          span.dashboard-stat-title(data-l8n="content:writer-dashboard/starred-stat-title") !Starred
+    +writerDashboardHeader
 
     .writer-dashboard-body
       .writer-dashboard-navigation-menu
