@@ -4,6 +4,11 @@
 .question-item {
   @extend %list-item;
   position: relative;
+  font-size: 120%;
+}
+.question-item-icon {
+  line-height: 1.4;
+  float: left;
 }
 .question-meta {
   @extend %list-item-meta;
@@ -16,15 +21,19 @@
 }
 .question-text {
   @extend %list-item-text;
+  color: $link-colour;
   padding-right: 2em;
   @include mq(768) {
     padding-right: 7em;
   }
 }
 
+
 .question-text-inner {
   @include word_wrap;
   text-decoration: none;
+  display: block;
+  margin-left: 1.35em;
 }
 
 .question-actions {
@@ -38,14 +47,21 @@
 .demote-question-button {
   @extend .normalise-button;
   position: absolute;
-  top: 16px;
+  top: 22px;
   right: 10px;
   &:hover {
-    color: $green2;
+    opacity: 0.7;
   }
 }
+.promote-question-button {
+  color: $green1;
+}
+.demote-question-button{
+  color: $dark_pink;
+}
 
-.promote-text, .demote-text {
+.promote-text,
+.demote-text {
   display: none;
   @include mq(768) {
     display: inline;
