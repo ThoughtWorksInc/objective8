@@ -242,7 +242,8 @@
 (defn offset-validator [request]
   (let [offset (get-in request [:params :offset] "0")]
     (cond-> (initialise-field-validation offset)
-      (not (integer-string? offset)) (report-error :invalid))))
+      (or (not (integer-string? offset))
+          (< (Integer/parseInt offset) 0)) (report-error :invalid))))
 
 ;;; Retrieving drafts
 

@@ -310,8 +310,9 @@
           comments-query-params {:offset offset
                                  :limit fe-config/comments-pagination}]
       (if (= objective-status ::http-api/success)
-        (if (or (< offset total-count)
-                (and (= offset 0) (= total-count 0)))
+        (if (and (>= offset 0) 
+                 (or (< offset total-count)
+                     (and (= offset 0) (= total-count 0)))) 
           (let [{comments-status :status comments :result} (http-api/get-comments 
                                                              (:uri objective)
                                                              comments-query-params)]
@@ -349,11 +350,11 @@
               total-count (get-in draft [:meta :comments-count])]
           (if (every? #(= % ::http-api/success) [objective-status draft-status])
             (if (or (< offset total-count)
-                    (and (= offset 0) (= total-count 0))) 
+                    (and (= offset 0) (= total-count 0)))
               (let [comments-query-params {:offset offset
                                            :limit fe-config/comments-pagination}
-                    {comments-status :status comments :result} (http-api/get-comments 
-                                                                 (:uri draft) 
+                    {comments-status :status comments :result} (http-api/get-comments
+                                                                 (:uri draft)
                                                                  comments-query-params)]
                 (if (= comments-status ::http-api/success)
                   {:status 200
