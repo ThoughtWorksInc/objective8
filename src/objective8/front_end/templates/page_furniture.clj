@@ -114,11 +114,11 @@
 ;; COMMENT LIST
 
 (defn comments-refer-uri [request]
-  (str (:uri request)
+  (str (utils/referer-url request)
        "%23comments"))
 
 (defn comment-refer-uri [request comment]
-  (str (:uri request)
+  (str (utils/referer-url request)
        "#comment-" (:_id comment)))
 
 (defn voting-actions-when-signed-in [{:keys [data ring-request] :as context} comment]

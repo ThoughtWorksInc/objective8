@@ -114,9 +114,13 @@
       ((regex-checker #"/objectives/\d+/dashboard/comments") target)
       ((regex-checker #"/objectives/\d+/dashboard/annotations") target)))
 
+(def valid-query-string-regex
+  (let [query-term "(?:[a-zA-Z-]+=[a-zA-Z0-9-|/%]*)"]
+    (re-pattern (str query-term "(?:&" query-term ")*"))))
+
 (defn safen-query [query] 
   (when query
-    ((regex-checker #"(?:(?:(?:[a-zA-Z-]*=[a-zA-Z0-9-|\/]*)&?)+)") query))) 
+    ((regex-checker valid-query-string-regex) query)))
 
 (defn safen-fragment [fragment]
   (when fragment

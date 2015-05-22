@@ -50,13 +50,27 @@
 (def RING_REQUEST {:uri URI :query-string nil})
 (def RING_REQUEST_WITH_QUERY {:uri URI :query-string QUERY})
 
+(facts "about sanitising url query strings"
+       (tabular
+        (fact "safen-query returns valid query unchanged"
+              (safen-query ?query) => ?query)
+        ?query "a=b" "a=b&c=d" "a=b&c=%2fd")
+
+       (tabular
+        (fact "safen-query returns nil for invalid query strings"
+              (safen-query ?query) => nil)
+        ?query "1=2" "%2f=3" "a=2&b=3&" "a" "=a"))
+
 (facts "about sanitising referrals"
        (fact "when a referral route is not safe, safen-url returns nil"
              (safen-url "/unsafe-route") => nil)
+
+       (fact "when the query string for a referral route is not safe or invalid, safen-url returns just the safe route"
+             (safen-url "/objectives/1?") => "/objectives/1")
 
        (fact "when there is a query string referer-url returns the query string appended to the uri"
              (referer-url RING_REQUEST_WITH_QUERY) => URI_WITH_QUERY)
 
        (fact "when there is no query string referer-url returns just the uri"
-            (referer-url RING_REQUEST) => URI))
+             (referer-url RING_REQUEST) => URI))
 
