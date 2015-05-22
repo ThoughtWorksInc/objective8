@@ -79,3 +79,7 @@ mixin answerItem()
             span.clj-down-score.func--down-score !10
             span.visuallyhidden )
     +writerNote
+
+mixin answerItemBlank()
+  li.answer-item.empty-answer-list-item.clj-empty-answer-list-item(data-l8n="content:question-page/no-answers")
+    | !No answers have been given yet

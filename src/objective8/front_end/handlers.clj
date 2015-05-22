@@ -497,7 +497,6 @@
                  :body (views/question-page "question-page" request
                                             :objective (format-objective objective)
                                             :question question
-                                            :answer-count answer-count 
                                             :answers answers
                                             :offset offset 
                                             :doc {:title (:question question)

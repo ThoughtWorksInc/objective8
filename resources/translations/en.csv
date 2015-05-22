@@ -206,6 +206,7 @@ question-page,guidance-text-1,Questions are how Objective[8] gathers community i
 question-page,previous-page,Previous
 question-page,next-page,Next
 question-page,answers-for,Answers for
+question-page,no-answers,No answers have been given yet
 question-page,suggested-answers,Suggested answers
 question-page,answer-title,Answers are a maximum length of 500 characters
 question-page,jump-to-answer-button,Add a new answer

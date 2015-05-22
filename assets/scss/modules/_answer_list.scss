@@ -10,6 +10,13 @@
     padding: 2em;
   }
 }
+
+.empty-answer-list-item {
+  background: none;
+  min-height: 0;
+  margin-bottom: 0;
+}
+
 .answer-meta {
   @extend %list-item-meta;
 }

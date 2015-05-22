@@ -128,6 +128,7 @@
         ((regex-checker #"comment-\d+") fragment)
         ((regex-checker #"add-comment-form") fragment)
         ((regex-checker #"questions") fragment)
+        ((regex-checker #"add-an-answer") fragment)
         ((regex-checker #"answer-\d+") fragment))))
 
 (defn url->url-map [url]

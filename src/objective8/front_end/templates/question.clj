@@ -5,7 +5,8 @@
             [objective8.utils :as utils]
             [objective8.front-end.api.domain :as domain]
             [objective8.front-end.templates.page-furniture :as pf]
-            [objective8.front-end.templates.template-functions :as tf]))
+            [objective8.front-end.templates.template-functions :as tf]
+            [objective8.front-end.config :as fe-config]))
 
 (def question-template (html/html-resource "templates/jade/question.html" {:parser jsoup/parser}))
 
@@ -21,7 +22,7 @@
   (html/transformation
     [:.clj-approval-form] (html/prepend (html/html-snippet (anti-forgery-field)))
     [:.clj-vote-on-uri] (html/set-attr :value (:uri answer))
-    [:.clj-refer] (html/set-attr :value (str (:uri ring-request) "#answer-" (:_id answer)))
+    [:.clj-refer] (html/set-attr :value (str (:uri ring-request) "?offset=" (get-in context [:data :offset]) "#answer-" (:_id answer)))
     [:.clj-up-score] (html/content (str (get-in answer [:votes :up])))
     [:.clj-down-score] (html/content (str (get-in answer [:votes :down])))))
 
@@ -30,7 +31,7 @@
     [:.clj-approval-form] (html/set-attr :method "get")
     [:.clj-approval-form] (html/set-attr :action "/sign-in")
     [:.clj-vote-on-uri] nil
-    [:.clj-refer] (html/set-attr :value (str (:uri ring-request) "#answer-" (:_id answer)))
+    [:.clj-refer] (html/set-attr :value (str (:uri ring-request) "?offset=" (get-in context [:data :offset]) "#answer-" (:_id answer)))
     [:.clj-up-score] (html/content (str (get-in answer [:votes :up])))
     [:.clj-down-score] (html/content (str (get-in answer [:votes :down])))))
 
@@ -49,7 +50,7 @@
 (defn sign-in-to-add-answer [{:keys [ring-request] :as context}]
   (html/at sign-in-to-add-answer-snippet  
            [:.clj-to-add-answer-sign-in-link] 
-           (html/set-attr :href (str "/sign-in?refer=" (:uri ring-request)))))
+           (html/set-attr :href (str "/sign-in?refer=" (:uri ring-request) "?offset=" (get-in context [:data :offset]) "%23add-an-answer"))))
 
 (defn apply-validations [{:keys [doc] :as context} nodes]
   (let [validation-data (get-in doc [:flash :validation])
@@ -65,8 +66,9 @@
         answers (:answers data)
         objective (:objective data)
         offset (:offset data)
-        limit 50
-        answer-count (:answer-count data)
+        limit fe-config/answers-pagination 
+        answer-count (:answer-count question)
+        more-answers? (> answer-count (+ offset limit))
         tl8 (tf/translator context)
         optionally-disable-voting (if (domain/open? (:objective data))
                                     identity
@@ -82,6 +84,7 @@
                   [:.clj-question-breadcrumb] (html/content (:question question))
 
                   [:.clj-question] (html/content (:question question))
+                  [:.clj-empty-answer-list-item] (when (= answer-count 0) identity)
                   [:.clj-answer] (html/clone-for [answer answers]
                                                  [:.clj-answer] (html/set-attr :id (str "answer-" (:_id answer)))
                                                  [:.clj-answer-text] (html/content (:answer answer))
@@ -95,22 +98,21 @@
                   [:.clj-previous-page] (when (> offset 0)
                                           (html/set-attr :href (str "/objectives/" (:_id objective)
                                                                     "/questions/" (:_id question) "?offset=" (- offset limit)))) 
-                  [:.clj-next-page] (when (> answer-count (+ offset limit))
+                  [:.clj-next-page] (when more-answers? 
                                       (html/set-attr :href (str "/objectives/" (:_id objective)
                                          "/questions/" (:_id question) "?offset=" (+ offset limit)))) 
 
                   [:.clj-jump-to-answer] (when (and (domain/open? objective) user) identity)
 
-                  [:.clj-answer-new] (when (domain/open? objective) identity)
-                  
-                  [:.clj-answer-form]
-                  (if user
-                    (html/do->
-                     (html/set-attr :action
-                                    (str "/objectives/" (:_id objective)
-                                         "/questions/" (:_id question) "/answers"))
-                     (html/prepend (html/html-snippet (anti-forgery-field))))
-                    (html/substitute (sign-in-to-add-answer context)))
+                  [:.clj-answer-new] (when (and (domain/open? objective) (not more-answers?)) identity)
+
+                  [:.clj-answer-form] (if user
+                                        (html/do->
+                                          (html/set-attr :action
+                                                         (str "/objectives/" (:_id objective)
+                                                              "/questions/" (:_id question) "/answers"))
+                                          (html/prepend (html/html-snippet (anti-forgery-field))))
+                                        (html/substitute (sign-in-to-add-answer context))) 
 
                   [:.l8n-guidance-heading] (tl8 :question-page/guidance-heading))
          (apply-validations context)
