@@ -309,32 +309,6 @@
          (fact "the form action is set correctly"
                body => (contains (str "action=\"/objectives/" OBJECTIVE_ID "/import-draft\"")))))
 
-(fact "writer can reach add-draft page from a draft page"
-      (against-background
-        (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
-        (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                        :result {:_id USER_ID
-                                                                 :username "username"}}
-        (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}} 
-        (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
-                                                            :result {:_id OBJECTIVE_ID
-                                                                     :end-date (utils/string->date-time "2012-12-12")
-                                                                     :status "drafting"}}
-        (http-api/retrieve-writers OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success}
-        (http-api/get-draft OBJECTIVE_ID_AS_STRING "latest") => {:status ::http-api/success
-                                                                 :result {:_id DRAFT_ID
-                                                                          :uri DRAFT_URI
-                                                                          :_created_at "2015-03-24T17:06:37.714Z"
-                                                                          :content SOME_HICCUP
-                                                                          :objective-id OBJECTIVE_ID
-                                                                          :submitter-id USER_ID
-                                                                          :meta {:comments-count 0}}}
-        (http-api/get-comments anything anything) => {:status ::http-api/success :result []})
-      (-> user-session
-          ih/sign-in-as-existing-user 
-          (p/request latest-draft-url)
-          (get-in [:response :body])) => (contains (str "/objectives/" OBJECTIVE_ID "/add-draft")))
-
 (facts "about rendering draft section page"
        (fact "links back to the draft"
              (against-background

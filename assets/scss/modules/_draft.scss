@@ -23,3 +23,27 @@
 .draft-comments {
   @extend %draft-section;
 }
+
+.draft-info-wrapper {
+  @include cf
+}
+
+.draft-info-links {
+  @include mq(768) {
+    float: right;
+  }
+}
+
+.draft-info-link {
+  font-size: 1.1em;
+  display: block;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+.draft-writer-container {
+  @include mq(768) {
+    float: left;
+    width: 50%;
+  }
+}

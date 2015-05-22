@@ -409,9 +409,9 @@
                          actions/start-drafting!))]
   (fact "Can submit a draft"
         (try
-          (wd/to (str (:objective-url @journey-state) "/drafts/latest"))
-          (wait-for-title "Policy draft | Objective[8]")
-          (screenshot "latest_draft_no_draft")
+          (wd/to (str (:objective-url @journey-state) "/drafts"))
+          (wait-for-title "Drafts | Objective[8]")
+          (screenshot "drafts_list_no_drafts")
 
           (wd/click ".func--add-a-draft")
           (wait-for-title "Add draft | Objective[8]")
@@ -505,6 +505,9 @@
           (wd/click ".func--submit-action")
           (wait-for-title "Policy draft | Objective[8]")
           (screenshot "second_draft")
+
+          (wd/click ".func--all-drafts-link")
+          (wait-for-title "Drafts | Objective[8]")
 
           (wd/click ".func--add-a-draft")
           (wait-for-title "Add draft | Objective[8]")
