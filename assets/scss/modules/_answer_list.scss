@@ -120,6 +120,11 @@
   @include word_wrap;
 }
 
+.page-links {
+  display: inline-block;
+  width: 100%;
+}
+
 .previous-page-link {
   margin-left: 2em;	
   text-decoration: none;
