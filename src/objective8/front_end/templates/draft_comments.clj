@@ -11,6 +11,8 @@
 
 (def draft-comments-template (html/html-resource "templates/jade/draft-comments.html" {:parser jsoup/parser}))
 
+(def navigation-snippet (html/select draft-comments-template [:.clj-comments-navigation]))
+
 (def enable-link
   (html/remove-class "disabled"))
 
@@ -33,23 +35,22 @@
                                        (html/content (str (translations :breadcrumb/draft-prefix) " : " 
                                                           (utils/iso-time-string->pretty-time (:_created_at draft))))
                                        (html/set-attr :href (utils/path-for :fe/draft :id objective-id :d-id draft-id)))
-                  [:.clj-comments-start-index] (html/content (str (min (inc offset) total-comments)))
-                  [:.clj-comments-end-index] (html/content (str (min (+ offset fe-config/comments-pagination)
-                                                                     total-comments)))
-                  [:.clj-comments-total-count] (html/content (str total-comments))
-                  [:.clj-comments-previous] (if (> offset 0) enable-link identity)
-                  [:.clj-comments-previous-link] (html/set-attr :href 
-                                                                (-> comments-url
-                                                                    (assoc :query {:offset (max 0 (- offset fe-config/comments-pagination))})
-                                                                    str))
-                  [:.clj-comments-next] (if (> total-comments (+ offset fe-config/comments-pagination)) enable-link identity)
-                  [:.clj-comments-next-link] (html/set-attr :href 
-                                                            (-> comments-url
-                                                                (assoc :query {:offset (+ offset fe-config/comments-pagination)})
-                                                                str))
                   [:.clj-comment-list] (html/content
-                                        (optionally-disable-voting
-                                         (pf/comment-list context))))
+                                         (optionally-disable-voting
+                                           (pf/comment-list context)))
+
+                  [:.clj-comment-list] (html/append navigation-snippet)
+
+                  [:.clj-previous-page] (when (> offset 0) 
+                                          (html/set-attr :href 
+                                                         (-> comments-url
+                                                             (assoc :query {:offset (max 0 (- offset fe-config/comments-pagination))})
+                                                             str)))
+                  [:.clj-next-page] (when (> total-comments (+ offset fe-config/comments-pagination)) 
+                                      (html/set-attr :href 
+                                                     (-> comments-url
+                                                         (assoc :query {:offset (+ offset fe-config/comments-pagination)})
+                                                         str))))
          pf/add-google-analytics
          (tf/translate context)
          html/emit*

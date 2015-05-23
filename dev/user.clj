@@ -70,6 +70,16 @@
                              :answer-text (str i " seed answer")})  
         (recur (inc i))))))
 
+(defn seed-draft-comments []
+  (let [draft (sh/store-a-draft)
+        user (sh/store-a-user)]
+    (loop [i 0]
+      (when (< i 120)
+        (sh/store-a-comment {:user user
+                             :entity draft
+                             :comment-text (str i " seed comment")})
+        (recur (inc i))))))
+
 (defn seed-comments []
   (let [objective (sh/store-an-open-objective)
         user (sh/store-a-user)]
@@ -91,4 +101,5 @@
 
 (defn seed-data []
   (seed-answers)
-  (seed-comments))
+  (seed-comments)
+  (seed-draft-comments))

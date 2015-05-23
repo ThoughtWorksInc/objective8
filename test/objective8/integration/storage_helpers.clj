@@ -72,6 +72,8 @@
   (let [{user-id :_id} (store-a-user)]
     (storage/pg-store! {:entity :objective
                         :created-by-id user-id
+                        :title "test title"
+                        :description "teset description"
                         :end-date (str (tc/ago (tc/days 1))) 
                         :removed-by-admin false
                         :status "drafting"})))
