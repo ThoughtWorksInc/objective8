@@ -98,9 +98,12 @@ SELECT _id, 'section' AS entity FROM objective8.sections WHERE global_id=?
         first)))
 
 (defn update [entity new-fields where]
-  (korma/update entity 
-                (korma/set-fields new-fields) 
-                (korma/where where)))
+  (let [update-result (korma/update entity
+                                    (korma/set-fields new-fields)
+                                    (korma/where where))]
+    (when (= update-result 1)
+       (-> (korma/select entity (korma/where where))
+           first))))
 
 (defn pg-update-user! [user]
   (update (mappings/get-mapping {:entity :user}) user {:_id (:_id user)}))
