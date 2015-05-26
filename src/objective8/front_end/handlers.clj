@@ -480,15 +480,15 @@
                          (:offset params) (assoc :offset offset 
                                                  :limit fe-config/answers-pagination)) 
           {question-status :status question :result} (http-api/get-question o-id q-id)
-          answer-count (get question :answer-count 0)]
+          answers-count (get-in question [:meta :answers-count] 0)]
       (cond
         (= ::http-api/success question-status)
         (if (< offset 0)
           (response/redirect (utils/path-for :fe/question
                                              :q-id q-id
                                              :id o-id))
-          (if (or (< offset answer-count)
-                  (and (= offset 0) (= answer-count 0))) 
+          (if (or (< offset answers-count)
+                  (and (= offset 0) (= answers-count 0))) 
             (let [{answer-status :status answers :result} (http-api/retrieve-answers (:uri question) answer-query)
                   {objective-status :status objective :result} (http-api/get-objective (:objective-id question))]
               (if (every? #(= ::http-api/success %) [answer-status objective-status])
@@ -505,7 +505,7 @@
             (response/redirect (str (utils/path-for :fe/question
                                                     :q-id q-id
                                                     :id o-id)
-                                    "?offset=" (max 0 (- answer-count fe-config/answers-pagination)))))) 
+                                    "?offset=" (max 0 (- answers-count fe-config/answers-pagination)))))) 
 
         (= question-status ::http-api/not-found) (error-404-response request)
 

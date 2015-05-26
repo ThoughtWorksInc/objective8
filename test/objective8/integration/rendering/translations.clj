@@ -150,7 +150,7 @@
                  :uri QUESTION_URI
                  :objective-id OBJECTIVE_ID
                  :_id QUESTION_ID
-                 :answer-count 0})
+                 :meta {:answers-count 0}})
 
 (facts "about rendering question page"
        (fact "there are no untranslated strings"

@@ -96,7 +96,7 @@
                                             (str (assoc dashboard-url
                                                         :query {:selected (:uri question)}
                                                         :anchor "dashboard-content")))
-                             [:.clj-dashboard-navigation-item-link-count] (html/content (str "(" (:answer-count question) ")" ))))))
+                             [:.clj-dashboard-navigation-item-link-count] (html/content (str "(" (get-in question [:meta :answers-count]) ")" ))))))
 
 (defn navigation-list [{:keys [data] :as context}]
   (let [questions (:questions data)]

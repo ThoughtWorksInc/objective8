@@ -47,7 +47,7 @@
              :result [{:entity :question
                        :uri QUESTION_URI
                        :question "test question"
-                       :answer-count ANSWERS_COUNT}]}
+                       :meta {:answers-count ANSWERS_COUNT}}]}
 
          (http-api/retrieve-answers QUESTION_URI {:sorted-by "up-votes"
                                                   :filter-type "none"}) => {:status ::http-api/success

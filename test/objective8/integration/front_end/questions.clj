@@ -24,8 +24,8 @@
                      :created-by-id USER_ID
                      :uri QUESTION_URI
                      :objective-id OBJECTIVE_ID
-                     :answer-count 16
-                     :_id QUESTION_ID})
+                     :_id QUESTION_ID
+                     :meta {:answers-count 16}})
 
 (def default-app (core/app helpers/test-config))
 
@@ -68,7 +68,7 @@
        (fact "Answers are displayed when viewing a question, including writer notes when present"
              (against-background
                (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success
-                                                                    :result (assoc basic-question :answer-count 2)}
+                                                                    :result (assoc-in basic-question [:meta :answer-count] 2)}
                (http-api/retrieve-answers QUESTION_URI anything) => {:status ::http-api/success
                                                                         :result [{:_id 12
                                                                                   :objective-id OBJECTIVE_ID

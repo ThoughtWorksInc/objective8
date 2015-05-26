@@ -67,8 +67,8 @@
         objective (:objective data)
         offset (:offset data)
         limit fe-config/answers-pagination 
-        answer-count (:answer-count question)
-        more-answers? (> answer-count (+ offset limit))
+        answers-count (get-in question [:meta :answers-count])
+        more-answers? (> answers-count (+ offset limit))
         tl8 (tf/translator context)
         optionally-disable-voting (if (domain/open? (:objective data))
                                     identity
@@ -84,7 +84,7 @@
                   [:.clj-question-breadcrumb] (html/content (:question question))
 
                   [:.clj-question] (html/content (:question question))
-                  [:.clj-empty-answer-list-item] (when (= answer-count 0) identity)
+                  [:.clj-empty-answer-list-item] (when (= answers-count 0) identity)
                   [:.clj-answer] (html/clone-for [answer answers]
                                                  [:.clj-answer] (html/set-attr :id (str "answer-" (:_id answer)))
                                                  [:.clj-answer-text] (html/content (:answer answer))

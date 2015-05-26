@@ -71,7 +71,7 @@
 
                    (:body response) => (helpers/json-contains {:objective-id objective-id
                                                                :created-by-id writer-id
-                                                               :meta {:marked true}})))
+                                                               :meta (contains {:marked true})})))
 
            (fact "a 400 status is returned if a PSQLException is raised"
                  (against-background
@@ -118,9 +118,11 @@
 
          (fact "can retrieve a question with answer count"
                (let [{question-id :_id objective-id :objective-id :as question} (sh/store-a-question)
-                     _ (sh/store-an-answer {:question question})
-                     {response :response} (p/request app (str "/api/v1/objectives/" objective-id "/questions/" question-id))]
-                 (:body response) => (helpers/json-contains {:answer-count 1})))))
+                     _ (sh/store-an-answer {:question question})]
+                 (-> app
+                     (p/request (str "/api/v1/objectives/" objective-id "/questions/" question-id))
+                     (get-in [:response :body])) => (helpers/json-contains
+                                                      {:meta (contains {:answers-count 1})})))))
 
 (facts "GET /api/v1/objectives/:id/questions"
        (against-background
@@ -165,10 +167,10 @@
 
                      {response :response} (p/request app (utils/path-for :api/get-questions-for-objective :id (:_id objective)))]
                  (:body response) => (helpers/json-contains [(contains {:_id (:_id marked-question)
-                                                                        :meta {:marked true
-                                                                               :marked-by marked-by}})
+                                                                        :meta (contains {:marked true
+                                                                               :marked-by marked-by})})
                                                              (contains {:_id (:_id unmarked-question)
-                                                                        :meta {:marked false}})]
+                                                                        :meta (contains {:marked false})})]
                                                             :in-any-order)))))
 
 (facts "POST /api/v1/meta/marks"

@@ -317,26 +317,15 @@ JOIN objective8.users AS users
 ON objectives.created_by_id = users._id
 WHERE objectives._id=? AND objectives.removed_by_admin=false" [user-id objective-id]] :results)))))
 
-(defn with-answer-count [unmap-fn]
- (fn [m]
-   (-> (unmap-fn m)
-             (assoc :answer-count (:answer_count m)))))
-
-(def unmap-questions-with-answer-count
-  (-> (mappings/unmap :question)
-      (mappings/with-columns [:created-by-id :objective-id])
-      mappings/with-username-if-present
-      mappings/with-question-meta
-      with-answer-count))
 
 (defn pg-retrieve-question-by-query-map [query-map]
   (when-let [sanitised-query (utils/select-all-or-nothing query-map [:_id :objective-id :entity])]
     (let [unmap-question (first (get mappings/question :transforms))
           question-id (:_id sanitised-query)
           objective-id (:objective-id sanitised-query)]
-      (first (apply vector (map unmap-questions-with-answer-count
+      (first (apply vector (map unmap-question
                   (korma/exec-raw ["
-SELECT questions.*, users.username, marks.active AS marked, marks.username AS marked_by, COUNT (answers.*) AS answer_count
+SELECT questions.*, users.username, marks.active AS marked, marks.username AS marked_by, COUNT (answers.*) AS answers_count
 FROM objective8.questions AS questions
 LEFT JOIN objective8.answers AS answers 
           ON questions._id = answers.question_id 
@@ -372,12 +361,13 @@ WHERE questions.objective_id = ?" [objective-id]] :results))))
 
 (defn pg-retrieve-questions-for-objective-by-most-answered [query-map]
  (when-let [sanitised-query (utils/select-all-or-nothing query-map [:entity :objective_id])]
-   (let [objective-id (:objective_id sanitised-query)]
-    (apply vector (map unmap-questions-with-answer-count
+   (let [objective-id (:objective_id sanitised-query)
+         unmap-question (first (get mappings/question :transforms))]
+    (apply vector (map unmap-question
           (korma/exec-raw ["
-SELECT questions.*, answer_count.answer_count, answer_count.username
+SELECT questions.*, answers_count.answers_count, answers_count.username
 FROM objective8.questions AS questions
-JOIN (SELECT questions._id, COUNT(answers.*) AS answer_count, questions.username
+JOIN (SELECT questions._id, COUNT(answers.*) AS answers_count, questions.username
       FROM (SELECT questions.*, users.username
             FROM objective8.questions AS questions
             JOIN objective8.users AS users
@@ -385,9 +375,9 @@ JOIN (SELECT questions._id, COUNT(answers.*) AS answer_count, questions.username
             WHERE objective_id=?) AS questions
       LEFT JOIN objective8.answers AS answers 
       ON answers.question_id = questions._id
-      GROUP BY questions._id, questions.username) AS answer_count
-ON questions._id = answer_count._id
-ORDER BY answer_count DESC" [objective-id]] :results))))))
+      GROUP BY questions._id, questions.username) AS answers_count
+ON questions._id = answers_count._id
+ORDER BY answers_count DESC" [objective-id]] :results))))))
 
 (defn pg-get-drafts [objective-id]
   (let [unmap-draft (first (get mappings/draft :transforms))]

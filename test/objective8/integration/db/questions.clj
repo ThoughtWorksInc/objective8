@@ -23,11 +23,11 @@
                                                           :_id (:_id stored-question)
                                                           :question "A question"
                                                           :username creator-name
-                                                          :answer-count 0
                                                           :objective-id objective-id
                                                           :created-by-id created-by-id
                                                           :uri question-uri
-                                                          :meta {:marked false}}))
+                                                          :meta {:marked false
+                                                                 :answers-count 0}}))
 
         (fact "attempting to get a question by a bad uri gives no result"
               (let [{objective-id :_id} (sh/store-an-open-objective)
@@ -74,7 +74,7 @@
                     old-mark (sh/store-a-mark {:question question})
                     new-mark (sh/store-a-mark {:question question :active false})
                     question-uri (str "/objectives/" objective-id "/questions/" question-id)]
-                (questions/get-question question-uri) => (contains {:meta {:marked false}})))
+                (questions/get-question question-uri) => (contains {:meta (contains {:marked false})})))
 
         (fact "can get questions for an objective along with marking information"
               (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
@@ -99,4 +99,4 @@
                (sh/store-an-answer {:question question})
                (sh/store-an-answer {:question question})
                
-               (questions/get-question question-uri) => (contains {:answer-count 2}))))
+               (questions/get-question question-uri) => (contains {:meta (contains {:answers-count 2})}))))

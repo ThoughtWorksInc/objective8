@@ -244,9 +244,9 @@
 
 (defn with-question-meta [unmap-fn]
   (fn [m] (-> (unmap-fn m)
-              (assoc :meta (if (:marked m)
-                             {:marked true :marked-by (:marked_by m)}
-                             {:marked false})))))
+              (assoc :meta (cond-> {:marked (if (:marked m) true false) 
+                                    :answers-count (get m :answers_count 0)}
+                             (:marked m) (assoc :marked-by (:marked_by m)))))))
 
 (defn with-draft-meta [unmap-fn]
   (fn [m] (-> (unmap-fn m)

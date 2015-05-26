@@ -134,9 +134,12 @@
 
                        (storage/pg-retrieve-questions-for-objective-by-most-answered
                          {:entity :question :objective_id objective-id})
-                       => [(assoc question-with-three-answers :username username :answer-count 3)
-                           (assoc question-with-two-answers :username username :answer-count 2)
-                           (assoc question-with-one-answer :username username :answer-count 1)]))
+                       => [(assoc question-with-three-answers :username username :meta {:answers-count 3
+                                                                                        :marked false})
+                           (assoc question-with-two-answers :username username :meta {:answers-count 2
+                                                                                      :marked false})
+                           (assoc question-with-one-answer :username username :meta {:answers-count 1
+                                                                                     :marked false})]))
 
                ;;ANSWERS
                (fact "an answer entity can be stored in the database"
