@@ -36,6 +36,11 @@
   margin-left: 1.35em;
 }
 
+.question-answer-count {
+  margin-left: 1.80em;
+  font-size: 0.75em;
+  color: $grey-15;
+}
 .question-actions {
   @extend .list-item-actions;
 }

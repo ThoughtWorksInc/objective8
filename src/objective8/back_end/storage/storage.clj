@@ -346,18 +346,27 @@ GROUP BY questions._id, users.username, marks.active, marks.username
   (let [unmap-question (first (get mappings/question :transforms))]
     (map unmap-question
          (korma/exec-raw ["
-SELECT questions.*, users.username, latest_marks.active AS marked, latest_marks.username AS marked_by
+SELECT questions.*, users.username, latest_marks.active AS marked, latest_marks.username AS marked_by, answers_count.answers_count
 FROM objective8.questions AS questions
-LEFT JOIN (SELECT DISTINCT ON (question_id)
-                  active, created_by_id, question_id, username
-           FROM objective8.marks AS marks
-           JOIN objective8.users AS marking_users
-           ON marking_users._id = created_by_id
-           ORDER BY question_id, marks._created_at DESC) AS latest_marks
+LEFT JOIN  (SELECT DISTINCT ON  (question_id)
+                          active, created_by_id, question_id, username
+                          FROM objective8.marks AS marks
+                          JOIN objective8.users AS marking_users
+                          ON marking_users._id = created_by_id
+                          ORDER BY question_id, marks._created_at DESC) AS latest_marks
 ON latest_marks.question_id = questions._id
+JOIN  (SELECT questions._id, COUNT (answers.*) AS answers_count
+                    FROM  (SELECT questions.*
+                          FROM objective8.questions AS questions
+                          WHERE objective_id=?) AS questions
+                    LEFT JOIN objective8.answers AS answers
+                    ON answers.question_id = questions._id
+                    GROUP BY questions._id) AS answers_count
+ON questions._id = answers_count._id
 JOIN objective8.users AS users
 ON users._id = questions.created_by_id
-WHERE questions.objective_id = ?" [objective-id]] :results))))
+WHERE questions.objective_id = ?" [objective-id objective-id]] :results))))
+
 
 (defn pg-retrieve-questions-for-objective-by-most-answered [query-map]
  (when-let [sanitised-query (utils/select-all-or-nothing query-map [:entity :objective_id])]

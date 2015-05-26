@@ -144,11 +144,19 @@
 (def question-list-item-with-promote-form-snippet (html/select pf/library-html-resource [:.clj-library-key--question-list-item-with-promote-form]))
 (def question-list-item-with-demote-form-snippet (html/select pf/library-html-resource [:.clj-library-key--question-list-item-with-demote-form]))
 
-(defn question-list-items [list-item-snippet questions]
+(defn answer-count-text [answer-count translations]
+  (str answer-count " "
+       (if (= 1 answer-count)
+         (translations :question-actions/answer) 
+         (translations :question-actions/answers))))
+
+(defn question-list-items [list-item-snippet questions translations]
+  (prn "question-list" questions)
   (html/at list-item-snippet
            [:.clj-question-item] 
            (html/clone-for [question questions]
                            [:.clj-question-text] (html/content (:question question))
+                           [:.clj-question-answer-count] (html/content (answer-count-text (get-in question [:meta :answers-count]) translations))
                            [:.clj-answer-link] (html/set-attr :href (str "/objectives/" (:objective-id question)
                                                                          "/questions/" (:_id question)))
                            [:.clj-promote-question-form] (html/prepend (html/html-snippet (anti-forgery-field)))
@@ -157,23 +165,23 @@
                            [:.clj-question-uri] (html/set-attr :value (str "/objectives/" (:objective-id question)
                                                                            "/questions/" (:_id question))))))
 
-(defn objective-question-list [{:keys [data user] :as context}]
+(defn objective-question-list [{:keys [data user translations] :as context}]
   (let [objective-questions (filter domain/marked? (:questions data))
         list-item-snippet (if (permissions/can-mark-questions? (:objective data) user)
                             question-list-item-with-demote-form-snippet
                             question-list-item-snippet)]
     (if (empty? objective-questions)
       empty-objective-question-list-item-snippet
-      (question-list-items list-item-snippet objective-questions))))
+      (question-list-items list-item-snippet objective-questions translations))))
 
-(defn community-question-list [{:keys [data user] :as context}]
+(defn community-question-list [{:keys [data user translations] :as context}]
   (let [community-questions (filter (complement domain/marked?) (:questions data))
         list-item-snippet (if (permissions/can-mark-questions? (:objective data) user)
                             question-list-item-with-promote-form-snippet
                             question-list-item-snippet)]
     (if (empty? community-questions)
       empty-community-question-list-item-snippet
-      (question-list-items list-item-snippet community-questions))))
+      (question-list-items list-item-snippet community-questions translations))))
 
 
 ;; STAR FORM

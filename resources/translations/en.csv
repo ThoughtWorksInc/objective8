@@ -201,6 +201,8 @@ answer-sign-in,sign-in,sign-in
 answer-sign-in,to,to add an answer
 question-actions,promote-question,promote
 question-actions,demote-question,demote
+question-actions,answer,answer
+question-actions,answers,answers
 question-page,guidance-heading,What is a question?
 question-page,guidance-text-1,Questions are how Objective[8] gathers community ideas for use in drafting policy
 question-page,previous-page,Previous
