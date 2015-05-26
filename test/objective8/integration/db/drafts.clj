@@ -110,3 +110,16 @@
               (let [{:keys [_id objective-id]} (sh/store-a-draft)]
                 (drafts/store-section! {:section-label "12abcdef" 
                                         :draft-id _id :objective-id objective-id}) => (contains {:global-id anything})))))
+
+(facts "about retrieving sections"
+       (against-background
+         [(before :contents (do (ih/db-connection)
+                                (ih/truncate-tables)))
+          (after :facts (ih/truncate-tables))]
+
+         (fact "draft sections can be retrieved with their annotation count"
+               (let [draft (sh/store-a-draft)
+
+                     {section-label :section-label :as section} (-> (sh/store-a-section {:draft draft})
+                                                                    (sh/with-annotations ["general" "general"]))]
+                 (first (drafts/get-draft-sections-with-annotation-count (uri-for-draft draft))) => (contains {:meta {:annotations-count 2}})))))

@@ -80,7 +80,8 @@
                                                                        :get :api/get-drafts-for-objective
                                                                        ["/" [#"\d+|latest" :d-id]] {:get :api/get-draft
                                                                                                     "/annotations" {:get :api/get-annotations}
-                                                                                                    ["/sections/" [#"[0-9a-f]{8}" :section-label]] {:get :api/get-section}}}}}
+                                                                                                    "/sections" {:get :api/get-sections 
+                                                                                                                 ["/" [#"[0-9a-f]{8}" :section-label]] {:get :api/get-section}}}}}}
                          "/writers" {["/" [#"\d+" :id]] {
                                      "/objectives" {:get :api/get-objectives-for-writer}}} 
 

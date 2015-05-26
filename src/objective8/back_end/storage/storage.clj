@@ -424,3 +424,18 @@ LEFT JOIN (SELECT comments.comment_on_id, COUNT(comments.*) AS number
            GROUP BY comments.comment_on_id) AS comments_meta
 ON comments_meta.comment_on_id = drafts.global_id
 WHERE drafts._id = ?" [draft-id]] :results)))))
+
+(def unmap-sections-with-annotation-count
+  (-> (first (get mappings/section :transforms))
+      mappings/with-section-meta))
+
+(defn pg-get-draft-sections-with-annotation-count [draft-id objective-id]
+    (apply vector (map unmap-sections-with-annotation-count (korma/exec-raw ["
+SELECT sections.*, comments_meta.number AS annotations_count 
+FROM objective8.sections AS sections
+LEFT JOIN (SELECT comments.comment_on_id, COUNT(comments.*) AS number
+           FROM objective8.comments AS comments
+           GROUP BY comments.comment_on_id) AS comments_meta
+ON comments_meta.comment_on_id = sections.global_id
+WHERE sections.draft_id = ?
+AND sections.objective_id = ?" [draft-id objective-id]] :results))))

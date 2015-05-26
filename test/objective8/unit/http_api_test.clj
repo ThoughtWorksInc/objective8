@@ -362,6 +362,11 @@
       (provided
         (http-api/default-get-call (contains (utils/path-for :api/get-section :id OBJECTIVE_ID :d-id DRAFT_ID :section-label SECTION_LABEL))) => :api-call-result))
 
+(fact "getting draft sections hits the correct API endpoint"
+      (http-api/get-draft-sections draft-uri) => :api-call-result
+      (provided
+        (http-api/default-get-call (contains (utils/path-for :api/get-sections :id OBJECTIVE_ID :d-id DRAFT_ID))) => :api-call-result))
+
 (fact "getting annotations hits the correct API endpoint"
       (http-api/get-annotations draft-uri) => :api-call-result
       (provided

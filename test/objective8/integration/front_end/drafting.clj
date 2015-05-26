@@ -62,7 +62,7 @@
                    (get-in [:response :status])) => 200
                (provided
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                           :result {:_id 6273 :status "drafting" :entity "objective"}})) 
+                                                           :result {:_id 6273 :status "drafting" :entity "objective"}}))
 
          (fact "user who is not a writer for an objective can not view add-draft page"
                (-> user-session
@@ -81,7 +81,7 @@
                                                                   :content SOME_MARKDOWN}))]
                  (:status response) => 200
                  (:body response) => (contains SOME_HTML)
-                 (:body response) => (contains SOME_MARKDOWN)))
+                 (:body response) => (contains SOME_MARKDOWN))) 
 
          (fact "writer can submit a draft"
                (against-background
@@ -96,7 +96,7 @@
                                                          :params {:action "submit"
                                                                   :content SOME_MARKDOWN}))]
                  (:headers response) => (ih/location-contains (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID))
-                 (:status response) => 302))
+                 (:status response) => 302)) 
 
          (fact "posting a draft to an objective that's not in drafting returns a 404 response"
                (against-background
@@ -107,7 +107,7 @@
                                                          :request-method :post
                                                          :params {:action "submit"
                                                                   :content SOME_MARKDOWN}))]
-                 (:status response) => 404)))) 
+                 (:status response) => 404))))
 
 (facts "about viewing drafts"
        (fact "anyone can view a particular draft"

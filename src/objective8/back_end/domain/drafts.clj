@@ -155,3 +155,10 @@
                                        (get-section-label-from-uri (:uri %))) 
                                      annotated-sections)]
     (map #(merge-section-content-with-section draft-content %) ordered-annotated-sections)))
+
+(defn get-draft-sections-with-annotation-count [draft-uri]
+  (let [{:keys [entity _id objective-id] :as query} (uris/uri->query draft-uri)]
+    (when (= :draft entity)
+      (->> (storage/pg-get-draft-sections-with-annotation-count _id objective-id)
+           (map #(dissoc % :global-id :_id :_created_at :entity))
+           (map #(utils/update-in-self % [:uri] uri-for-section))))))

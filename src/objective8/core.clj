@@ -114,6 +114,7 @@
                :api/post-draft (m/wrap-bearer-token back-end-handlers/post-draft bt/token-provider)
                :api/get-draft back-end-handlers/get-draft
                :api/get-drafts-for-objective back-end-handlers/retrieve-drafts
+               :api/get-sections back-end-handlers/get-sections
                :api/get-section back-end-handlers/get-section
                :api/get-annotations back-end-handlers/get-annotations
                :api/post-admin-removal (m/wrap-bearer-token back-end-handlers/post-admin-removal bt/token-provider)

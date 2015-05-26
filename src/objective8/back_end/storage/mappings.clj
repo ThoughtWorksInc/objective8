@@ -253,6 +253,10 @@
               (assoc :meta {:comments-count (if (:comments_count m) (:comments_count m) 0)
                             :annotations-count (if (:annotations_count m) (:annotations_count m) 0)}))))
 
+(defn with-section-meta [unmap-fn]
+  (fn [m] (-> (unmap-fn m)
+              (assoc :meta {:annotations-count (if (:annotations_count m) (:annotations_count m) 0)}))))
+
 (defn unmap-up-down-vote [{vote :vote :as m}]
   (-> m
       (utils/ressoc :global_id :global-id)

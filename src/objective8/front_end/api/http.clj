@@ -229,6 +229,9 @@
 (defn get-draft-section [section-uri]
   (default-get-call (str utils/host-url "/api/v1" section-uri)))
 
+(defn get-draft-sections [draft-uri]
+  (default-get-call (str utils/host-url "/api/v1" draft-uri "/sections")))
+
 (defn get-annotations [draft-uri]
   (default-get-call (str utils/host-url "/api/v1" draft-uri "/annotations")))
 

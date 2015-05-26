@@ -489,6 +489,11 @@
       (log/info "Invalid route: " e)
       (invalid-response "Invalid section request for this draft"))))
 
+(defn get-sections [{:keys [route-params] :as request}]
+   (-> (str "/objectives/" (:id route-params) "/drafts/" (:d-id route-params))
+       drafts/get-draft-sections-with-annotation-count
+       response/response
+       (response/content-type "application/json")))
 
 (defn get-annotations [{:keys [route-params] :as request}]
   (let [draft-uri (str "/objectives/" (:id route-params) "/drafts/" (:d-id route-params))

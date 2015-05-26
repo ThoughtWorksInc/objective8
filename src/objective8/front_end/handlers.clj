@@ -788,14 +788,16 @@
           {writers-status :status writers :result} (http-api/retrieve-writers objective-id)]
       (cond
         (every? #(= ::http-api/success %) [objective-status draft-status writers-status comments-status])
-        (let [draft-content (utils/hiccup->html (:content draft))]
+        (let [draft-content (utils/hiccup->html (:content draft))
+              {sections :result} (http-api/get-draft-sections (:uri draft))]
           {:status 200
            :body (views/draft "draft" request
                               :objective objective
                               :writers writers
                               :comments (:comments comments-data)
                               :draft-content draft-content
-                              :draft draft)
+                              :draft draft
+                              :sections sections)
            :headers {"Content-Type" "text/html"}})
 
         (= objective-status ::http-api/not-found)

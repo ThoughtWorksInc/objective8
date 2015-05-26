@@ -139,6 +139,26 @@
                                                                                  "/sections/" section-label)
                                                                        :objective-id objective-id})))))
 
+(facts "GET /api/v1/objectives/:id/drafts/:d-id/sections"
+       (against-background
+         [(before :contents (do (helpers/db-connection)
+                                (helpers/truncate-tables)))
+          (after :facts (helpers/truncate-tables))]
+
+         (fact "gets sections of draft with annotation counts"
+               (let [{draft-id :_id objective-id :objective-id :as draft} (sh/store-a-draft {:content draft-content}) 
+                     section-data {:objective-id objective-id
+                                   :draft-id draft-id
+                                   :section-label section-label} 
+                     comment-for-this-section {:comment "section comment" :reason "general" :created-by-id (:submitter-id draft)}] 
+                 (actions/create-section-comment! section-data comment-for-this-section)
+                 
+                 (get-in (p/request app (utils/path-for :api/get-sections
+                                                        :id objective-id
+                                                        :d-id draft-id))
+                         [:response :body]) => (helpers/json-contains [(contains {:section-label section-label
+                                                                                  :meta {:annotations-count 1}})])))))
+
 (facts "GET /api/v1/objectives/:id/drafts/:d-id/annotations" 
        (against-background
          [(before :contents (do (helpers/db-connection)
