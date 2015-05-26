@@ -162,8 +162,9 @@
                                                             (http-api/get-objective objective-id))
              {writers-status :status writers :result} (http-api/retrieve-writers objective-id)
              {questions-status :status questions :result} (http-api/retrieve-questions objective-id)
-             {comments-status :status comments :result} (http-api/get-comments (:uri objective)
-                                                                               {:limit fe-config/comments-pagination})]
+             {comments-status :status comments-data :result} (http-api/get-comments
+                                                              (:uri objective)
+                                                              {:limit fe-config/comments-pagination})]
          (cond
            (every? #(= ::http-api/success %) [objective-status writers-status questions-status comments-status])
            (let [formatted-objective (format-objective objective)
@@ -177,7 +178,7 @@
                                            :objective formatted-objective
                                            :writers writers
                                            :questions questions
-                                           :comments comments
+                                           :comments (:comments comments-data)
                                            :latest-draft latest-draft
                                            :doc (let [details (str (:title objective) " | Objective[8]")]
                                                   {:title details
@@ -242,8 +243,8 @@
                                  (assoc :limit fe-config/comments-pagination
                                         :offset offset))
 
-        {comments-status :status comments :result} (http-api/get-comments selected-comment-target-uri
-                                                                          comment-query-params)]
+        {comments-status :status comments-data :result} (http-api/get-comments selected-comment-target-uri
+                                                                               comment-query-params)]
     (cond
       (every? #(= ::http-api/success %) [objective-status comments-status])
       {:status 200
@@ -252,8 +253,9 @@
                                             request
                                             :objective (format-objective objective) 
                                             :drafts drafts
-                                            :comments comments
+                                            :comments (:comments comments-data)
                                             :comment-view-type comment-view-type
+                                            :offset offset
                                             :selected-comment-target-uri selected-comment-target-uri)})))
 
 (defn dashboard-annotations [{:keys [route-params params] :as request}]
@@ -314,31 +316,31 @@
       (if (= objective-status ::http-api/success)
         (if (< offset 0)
           (response/redirect (utils/path-for :fe/get-comments-for-objective
-                                                  :id objective-id))
+                                             :id objective-id))
           (if (or (< offset comment-count)
-                  (and (= offset 0) (= comment-count 0))) 
-            (let [{comments-status :status comments :result} (http-api/get-comments 
-                                                               (:uri objective)
-                                                               comments-query-params)]
+                  (and (= offset 0) (= comment-count 0)))
+            (let [{comments-status :status comments-data :result} (http-api/get-comments
+                                                                   (:uri objective)
+                                                                   comments-query-params)]
               (if (= comments-status ::http-api/success)
                 {:status 200
                  :headers {"Content-Type" "text/html"}
                  :body (views/objective-comments-view
-                         "objective-comments"
-                         request
-                         :objective (format-objective objective)
-                         :comments comments
-                         :offset offset
-                         :doc (let [details (str (t' :objective-comments/title-prefix) " " 
-                                                 (:title objective) " | Objective[8]")]
-                                {:title details
-                                 :description details}))}
+                        "objective-comments"
+                        request
+                        :objective (format-objective objective)
+                        :comments (:comments comments-data)
+                        :offset offset
+                        :doc (let [details (str (t' :objective-comments/title-prefix) " " 
+                                                (:title objective) " | Objective[8]")]
+                               {:title details
+                                :description details}))}
                 {:status 500}))
             (response/redirect (str (utils/path-for :fe/get-comments-for-objective
                                                     :id objective-id)
                                     "?offset=" (max 0 (- comment-count fe-config/comments-pagination)))))) 
         (error-404-response request)))
-    (catch Exception e
+    (catch java.lang.NumberFormatException e
       (log/info "Invalid query string: " e)
       (error-404-response request))))
 
@@ -357,9 +359,9 @@
                     (and (= offset 0) (= comment-count 0)))
               (let [comments-query-params {:offset offset
                                            :limit fe-config/comments-pagination}
-                    {comments-status :status comments :result} (http-api/get-comments
-                                                                 (:uri draft)
-                                                                 comments-query-params)]
+                    {comments-status :status comments-data :result} (http-api/get-comments
+                                                                     (:uri draft)
+                                                                     comments-query-params)]
                 (if (= comments-status ::http-api/success)
                   {:status 200
                    :headers {"Content-Type" "text/html"}
@@ -367,7 +369,7 @@
                            "draft-comments"
                            request
                            :draft draft
-                           :comments comments
+                           :comments (:comments comments-data)
                            :objective (format-objective objective)
                            :offset offset
                            :doc (let [details (str (t' :draft-comments/title-prefix) " "
@@ -783,7 +785,7 @@
           draft-id (get-in draft-query-data [:data :draft-id])
           {objective-status :status objective :result} (http-api/get-objective objective-id)
           {draft-status :status draft :result} (http-api/get-draft objective-id draft-id)
-          {comments-status :status comments :result} (http-api/get-comments (:uri draft) {:limit fe-config/comments-pagination})
+          {comments-status :status comments-data :result} (http-api/get-comments (:uri draft) {:limit fe-config/comments-pagination})
           {writers-status :status writers :result} (http-api/retrieve-writers objective-id)]
       (cond
         (every? #(= ::http-api/success %) [objective-status draft-status writers-status comments-status])
@@ -792,7 +794,7 @@
            :body (views/draft "draft" request
                               :objective objective
                               :writers writers
-                              :comments comments
+                              :comments (:comments comments-data)
                               :draft-content draft-content
                               :draft draft)
            :headers {"Content-Type" "text/html"}})
@@ -864,13 +866,13 @@
 
 (defn draft-section [{:keys [uri] :as request}]
   (let [{section-status :status section :result} (http-api/get-draft-section uri)
-        {comments :result} (http-api/get-comments uri {:limit fe-config/comments-pagination})] 
+        {comments-data :result} (http-api/get-comments uri {:limit fe-config/comments-pagination})] 
     (cond 
       (= ::http-api/success section-status)
       {:status 200
        :body (views/draft-section "draft-section" request 
                                   :section (update-in section [:section] utils/hiccup->html)
-                                  :comments comments)
+                                  :comments (:comments comments-data))
        :headers {"Content-Type" "text/html"}}
 
       :else {:status 500})))

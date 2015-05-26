@@ -112,7 +112,8 @@
                                                              :uri (str "/comments/" (:_id %))))))
                     escaped-draft-uri (str "%2fobjectives%2f" objective-id "%2fdrafts%2f" draft-id)
                     {response :response} (p/request app (str "/api/v1/meta/comments?uri=" escaped-draft-uri))]
-                (:body response) => (helpers/json-contains (map contains (reverse stored-comments)))))
+                (:body response) => (helpers/json-contains
+                                     {:comments (contains (map contains (reverse stored-comments)))})))
 
         (fact "returns 404 if the entity to retrieve comments for does not exist"
               (let [{response :response} (p/request app (str "/api/v1/meta/comments?uri=" "%2fnonexistent%2furi"))]
@@ -141,9 +142,10 @@
                     {body :body} (:response (p/request app (str (utils/path-for :api/get-comments)
                                                                 "?uri=" escaped-objective-uri
                                                                 "&sorted-by=up-votes")))]
-                body => (helpers/json-contains [(contains {:_id (:_id comment-with-most-votes)})
-                                                (contains {:_id (:_id comment-with-some-votes)})
-                                                (contains {:_id (:_id comment-with-least-votes)})])))
+                body => (helpers/json-contains {:comments
+                                                (contains [(contains {:_id (:_id comment-with-most-votes)})
+                                                           (contains {:_id (:_id comment-with-some-votes)})
+                                                           (contains {:_id (:_id comment-with-least-votes)})])})))
 
         (fact "retrieves comments sorted by number of down-votes when sorting type is 'down-votes'")))
 
@@ -163,10 +165,12 @@
                      {body :body} (:response (p/request app (str (utils/path-for :api/get-comments)
                                                                  "?uri=" escaped-objective-uri
                                                                  "&filter-type=has-writer-note")))]
-                 body => (helpers/json-contains [(contains {:_id comment-with-note-id
-                                                            :comment "with note"
-                                                            :note "writer note content"})])
-                 body =not=> (helpers/json-contains [(contains {:_id comment-without-note-id})])))))
+                 body => (helpers/json-contains
+                          {:comments (contains [(contains {:_id comment-with-note-id
+                                                         :comment "with note"
+                                                         :note "writer note content"})])})
+                 body =not=> (helpers/json-contains
+                              {:comments (contains [(contains {:_id comment-without-note-id})])})))))
 
 (facts "GET /api/v1/meta/comments?uri=<uri>&offset=<n>"
        (against-background
@@ -185,7 +189,7 @@
                      p-response  (p/request app (str (utils/path-for :api/get-comments)
                                                      "?uri=" escaped-objective-uri
                                                      "&offset=5"))]
-                 (count (helpers/peridot-response-json-body->map p-response)) => 5))))
+                 (count (:comments (helpers/peridot-response-json-body->map p-response))) => 5))))
 
 (facts "GET /api/v1/meta/comments?uri=<uri>&limit=<n>"
        (against-background
@@ -204,7 +208,7 @@
                      p-response  (p/request app (str (utils/path-for :api/get-comments)
                                                      "?uri=" escaped-objective-uri
                                                      "&limit=5"))]
-                 (count (helpers/peridot-response-json-body->map p-response)) => 5))))
+                 (count (:comments (helpers/peridot-response-json-body->map p-response))) => 5))))
 
 (facts "About posting comments on draft sections AKA 'annotations'"
        (against-background

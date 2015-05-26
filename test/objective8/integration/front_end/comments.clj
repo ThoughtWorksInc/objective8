@@ -66,7 +66,7 @@
                (provided
                 (http-api/get-comments OBJECTIVE_URI {:offset 3
                                                       :limit 50}) => {:status ::http-api/success
-                                                                      :result []}))
+                                                                      :result {:comments []}}))
 
          (fact "anyone can view comments for an objective"
                (against-background
@@ -75,18 +75,19 @@
                                                                    :_id OBJECTIVE_ID
                                                                    :meta {:comments-count 5}}}
                 (http-api/get-comments anything anything) => {:status ::http-api/success
-                                                              :result [{:_id 1
-                                                                        :_created_at "2015-02-12T16:46:18.838Z"
-                                                                        :objective-id OBJECTIVE_ID
-                                                                        :created-by-id USER_ID
-                                                                        :comment "Comment 1"
-                                                                        :uri "/comments/1"
-                                                                        :votes {:up 123456789 :down 987654321}}]})
+                                                              :result
+                                                              {:comments [{:_id 1
+                                                                         :_created_at "2015-02-12T16:46:18.838Z"
+                                                                         :objective-id OBJECTIVE_ID
+                                                                         :created-by-id USER_ID
+                                                                         :comment "Comment 1"
+                                                                         :uri "/comments/1"
+                                                                         :votes {:up 123456789 :down 987654321}}]}})
                (-> (p/request user-session (utils/path-for :fe/get-comments-for-objective
                                                            :id OBJECTIVE_ID))
                    :response
                    :body) => (contains "Comment 1"))
-         
+
          (tabular
           (fact "redirects to sensible offset when offset out of range"
                 (against-background
@@ -95,7 +96,7 @@
                                                                     :_id OBJECTIVE_ID
                                                                     :meta {:comments-count ?total-comments}}}
                  (http-api/get-comments OBJECTIVE_URI anything) => {:status ::http-api/success
-                                                                    :result []})
+                                                                    :result {:comments []}})
                 (let [response (-> user-session
                                    (p/request (str (utils/path-for :fe/get-comments-for-objective
                                                                    :id OBJECTIVE_ID)
@@ -131,7 +132,7 @@
                => 200
                (provided
                 (http-api/get-comments DRAFT_URI {:offset 3 :limit 50}) => {:status ::http-api/success
-                                                                            :result []}))
+                                                                            :result {:comments []}}))
 
          (fact "anyone can view comments for a draft"
                (against-background
@@ -146,13 +147,15 @@
                               :_created_at "2015-02-12T16:46:18.838Z"
                               :meta {:comments-count 5}}}
                 (http-api/get-comments anything anything) => {:status ::http-api/success
-                                                              :result [{:_id 1
-                                                                        :_created_at "2015-02-12T16:46:18.838Z"
-                                                                        :objective-id OBJECTIVE_ID
-                                                                        :created-by-id USER_ID
-                                                                        :comment "Comment 1"
-                                                                        :uri "/comments/1"
-                                                                        :votes {:up 123456789 :down 987654321}}]})
+                                                              :result
+                                                              {:comments [{:_id 1
+                                                                         :_created_at "2015-02-12T16:46:18.838Z"
+                                                                         :objective-id OBJECTIVE_ID
+                                                                         :created-by-id USER_ID
+                                                                         :comment "Comment 1"
+                                                                         :uri "/comments/1"
+                                                                         :votes {:up 123456789 :down 987654321}}]}})
+               
                (-> (p/request user-session (utils/path-for :fe/get-comments-for-draft
                                                            :id OBJECTIVE_ID :d-id DRAFT_ID))
                    :response
@@ -171,7 +174,7 @@
                                :_created_at "2015-02-12T16:46:18.838Z"
                                :meta {:comments-count ?total-comments}}}
                  (http-api/get-comments DRAFT_URI anything) => {:status ::http-api/success
-                                                                :result []})
+                                                                :result {:data []}})
                 (let [response (-> user-session
                                    (p/request (str (utils/path-for :fe/get-comments-for-draft
                                                                    :id OBJECTIVE_ID

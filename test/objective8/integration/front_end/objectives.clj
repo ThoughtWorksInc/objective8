@@ -64,7 +64,7 @@
                (against-background
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                            :result basic-objective}
-                 (http-api/get-comments anything anything) => {:status ::http-api/success :result []}
+                 (http-api/get-comments anything anything) => {:status ::http-api/success :result {:comments []}}
                  (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
                  (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []})
                (default-app objective-view-get-request) => (contains {:status 200})
@@ -74,7 +74,7 @@
          
            (fact "When a signed in user views an objective, the objective contains user specific information"
                  (against-background
-                  (http-api/get-comments anything anything)=> {:status ::http-api/success :result []}
+                  (http-api/get-comments anything anything)=> {:status ::http-api/success :result {:comments []}}
                   (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
                   (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []})
                  (-> user-session
@@ -100,13 +100,13 @@
                 (fact "Any user can view comments with votes on an objective"
                       (against-background
                        (http-api/get-comments anything anything) => {:status ::http-api/success
-                                                            :result [{:_id 1
-                                                                      :_created_at "2015-02-12T16:46:18.838Z"
-                                                                      :objective-id OBJECTIVE_ID
-                                                                      :created-by-id USER_ID
-                                                                      :comment "Comment 1"
-                                                                      :uri "/comments/1"
-                                                                      :votes {:up 123456789 :down 987654321}}]})
+                                                                     :result {:comments [{:_id 1
+                                                                                          :_created_at "2015-02-12T16:46:18.838Z"
+                                                                                          :objective-id OBJECTIVE_ID
+                                                                                          :created-by-id USER_ID
+                                                                                          :comment "Comment 1"
+                                                                                          :uri "/comments/1"
+                                                                                          :votes {:up 123456789 :down 987654321}}]}})
                       (let [{response :response} (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))]
                         (:body response) => (contains "Comment 1")
                         ;;(:body response) => (contains "123456789")
@@ -118,7 +118,7 @@
                         (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                                   :result (assoc basic-objective :status "drafting")}
 
-                        (http-api/get-comments anything anything) => {:status ::http-api/success :result []})
+                        (http-api/get-comments anything anything) => {:status ::http-api/success :result {:comments []}})
                       (let [{response :response} (p/request user-session (str "http://localhost:8080/objectives/" OBJECTIVE_ID))]
                         (:body response) =not=> (contains "clj-comment-create"))))
 

@@ -139,7 +139,7 @@
                               :next-draft-id 4
                               :previous-draft-id 2
                               :meta {:comments-count 0}}}
-                 (http-api/get-comments anything anything) => {:status ::http-api/success :result []})
+                 (http-api/get-comments anything anything) => {:status ::http-api/success :result {:comments []}})
 
                (let [{response :response} (p/request user-session (utils/path-for :fe/draft :id OBJECTIVE_ID 
                                                                                   :d-id DRAFT_ID))]
@@ -163,7 +163,7 @@
                               :objective-id OBJECTIVE_ID
                               :submitter-id USER_ID
                               :meta {:comments-count 0}}} 
-                 (http-api/get-comments anything anything) => {:status ::http-api/success :result []}) 
+                 (http-api/get-comments anything anything) => {:status ::http-api/success :result {:comments []}}) 
                (let [{response :response} (p/request user-session latest-draft-url)]
                  (:status response) => 200
                  (:body response) => (contains SOME_HTML)))
@@ -277,7 +277,7 @@
                                                                     :username "UserName"
                                                                     :meta {:comments-count 0}}}
                (http-api/get-comments :draft-uri anything) => {:status ::http-api/success 
-                                                      :result []} 
+                                                               :result {:comments []}} 
                (http-api/retrieve-writers OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success 
                                                                       :result []}) 
 

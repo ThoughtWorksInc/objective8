@@ -168,7 +168,7 @@
                  (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []} 
                  (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []} 
                  (http-api/get-comments anything anything) => {:status ::http-api/success
-                                                               :result []}) 
+                                                               :result {:comments []}}) 
                (let [peridot-response (-> user-session
                                           (p/request INVITATION_URL)
                                           p/follow-redirect)]
@@ -189,7 +189,7 @@
                  (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []} 
                  (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []} 
                  (http-api/get-comments anything anything) => {:status ::http-api/success
-                                                               :result []})
+                                                               :result {:comments []}})
                (let [peridot-response (-> user-session
                                           (p/request INVITATION_URL)
                                           p/follow-redirect
@@ -208,7 +208,7 @@
                  (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
                  (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}
                  (http-api/get-comments anything anything) => {:status ::http-api/success
-                                                               :result []})
+                                                               :result {:comments []}})
                (let [{request :request response :response} (-> user-session
                                                                (p/request INVITATION_URL)
                                                                p/follow-redirect)]

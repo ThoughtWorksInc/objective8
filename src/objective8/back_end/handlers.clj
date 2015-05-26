@@ -225,7 +225,7 @@
   (try
     (if-let [{uri :uri :as query} (br/request->comments-query request)]
       (if-let [comments (comments/get-comments uri (dissoc query :uri))]
-        (-> comments
+        (-> {:comments comments}
             response/response
             (response/content-type "application/json"))
         (not-found-response "Entity does not exist"))

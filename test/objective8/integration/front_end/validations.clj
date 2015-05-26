@@ -57,8 +57,8 @@
  (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success
                                                       :result question}
  (http-api/retrieve-answers anything anything) => {:status ::http-api/success :result []}
- (http-api/get-comments anything) => {:status ::http-api/success :result []}
- (http-api/get-comments anything anything) => {:status ::http-api/success :result []}
+ (http-api/get-comments anything) => {:status ::http-api/success :result {:comments []}}
+ (http-api/get-comments anything anything) => {:status ::http-api/success :result {:comments []}}
  (http-api/retrieve-invitation-by-uuid INVITATION_UUID) => {:status ::http-api/success :result the-invitation}
  (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
  (http-api/retrieve-writers OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success :result []}
@@ -468,8 +468,8 @@
                    (http-api/get-all-drafts anything) => {:status ::http-api/success
                                                           :result [{:_created_at "2015-04-04T12:00:00.000Z"}]}
                    (http-api/get-comments anything anything) => {:status ::http-api/success
-                                                                 :result [{:uri "/comment/uri"
-                                                                           :_created_at "2015-01-01T01:01:00.000Z"}]})
+                                                                 :result {:comments [{:uri "/comment/uri"
+                                                                                      :_created_at "2015-01-01T01:01:00.000Z"}]}})
                  (fact "validation errors are reported"
                        (-> user-session
                            ih/sign-in-as-existing-user
