@@ -99,12 +99,19 @@
   }
 }
 
+.writer-dashboard-annotation-content-container {
+  @extend .writer-dashboard-content-container;
+  @include mq(640) {
+    margin-top: 60px;
+  }
+}
+
 // content area
 
 .writer-dashboard-content {
   padding: 1em;
   @include mq(640) {
-    height: 480px;
+    height: 504px;
     overflow-y: auto;
     padding-left: 2em;
     padding-right: 2em;
