@@ -240,7 +240,9 @@
                (http-api/get-comments :draft-uri anything) => {:status ::http-api/success 
                                                                :result []} 
                (http-api/retrieve-writers OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success 
-                                                                      :result []}) 
+                                                                      :result []}
+               (http-api/get-draft-sections :draft-uri) => {:status ::http-api/success
+                                                            :result []}) 
 
              (let [user-session (helpers/test-context)
                    {status :status body :body} (-> user-session

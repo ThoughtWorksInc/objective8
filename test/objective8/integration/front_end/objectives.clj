@@ -93,8 +93,7 @@
                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                           :result basic-objective}
                 (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
-                (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}
-                )
+                (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []})
 
               (fact "Any user can view comments with votes on an objective"
                     (against-background
@@ -112,7 +111,7 @@
                       (:body response) => (contains "987654321"))))
 
        (fact "A user should see an error page when they attempt to access an objective with a non-integer ID"
-             (default-app invalid-objective-view-get-request) => (contains {:status 404}))) 
+             (default-app invalid-objective-view-get-request) => (contains {:status 404})))
 
 (facts "About viewing the list of objectives"
        (against-background

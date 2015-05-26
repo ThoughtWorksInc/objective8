@@ -167,11 +167,14 @@
          
          (fact "answer-counts for questions are included when questions are retrieved for an objective"
                (let [objective (sh/store-an-open-objective)
-                     question (sh/store-a-question {:objective objective})
-                     _ (sh/store-an-answer {:question question})
-                     {response :response} (p/request app (utils/path-for :api/get-questions-for-objective :id (:_id objective)))]
-                 (:body response) => (helpers/json-contains [(contains {:_id (:_id question)
-                                                                        :meta (contains {:answers-count 1})})])))))
+                     question (sh/store-a-question {:objective objective})] 
+
+                     (sh/store-an-answer {:question question}) 
+                 (-> app
+                     (p/request (utils/path-for :api/get-questions-for-objective :id (:_id objective)))
+                     :response
+                     :body)  => (helpers/json-contains [(contains {:_id (:_id question)
+                                                                   :meta (contains {:answers-count 1})})])))))
 
 (facts "POST /api/v1/meta/marks"
        (against-background

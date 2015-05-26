@@ -93,10 +93,23 @@
                                          :meta (contains {:marked false})})]
                              :in-any-order))))
        
-       (fact "can get quesiton by objective uri with the total number of answers"
+       (fact "can get quesiton by question uri with the total number of answers"
              (let [{objective-id :objective-id question-id :_id :as question} (sh/store-a-question)
                    question-uri (str "/objectives/" objective-id "/questions/" question-id)]
                (sh/store-an-answer {:question question})
                (sh/store-an-answer {:question question})
                
-               (questions/get-question question-uri) => (contains {:meta (contains {:answers-count 2})}))))
+               (questions/get-question question-uri) => (contains {:meta (contains {:answers-count 2})})))
+       
+       (fact "can get questions for an objective with number of answers included"
+            (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+                  objective-uri (str "/objectives/" objective-id)
+                  question-1 (sh/store-a-question {:objective objective})
+                  question-2 (sh/store-a-question {:objective objective})]
+              (sh/store-an-answer {:question question-1})
+
+              (questions/get-questions-for-objective objective-uri) 
+              => (just [(contains {:_id (:_id question-1)
+                                   :meta (contains {:answers-count 1})})
+                        (contains {:_id (:_id question-2)
+                                   :meta (contains {:answers-count 0})})] :in-any-order))))
