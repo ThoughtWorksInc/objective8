@@ -27,7 +27,6 @@
    (let [port (Integer/parseInt (config/get-var "APP_PORT" "8080"))
          db-connection (db/connect!)]
      (core/initialise-api)
-     (when config/two-phase? (core/start-scheduler)) 
      (alter-var-root #'the-system
                      (constantly {:config conf
                                   :port port

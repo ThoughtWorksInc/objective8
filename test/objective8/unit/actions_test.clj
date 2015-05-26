@@ -66,59 +66,31 @@
 (def objective-not-in-drafting {:entity :objective
                                 :status "open"})
 
-(binding [config/two-phase? true]
-  (facts "about allowing or disallowing voting"
-         (against-background
-           (up-down-votes/get-vote anything anything) => nil
-           (objectives/get-objective anything) => objective-not-in-drafting
-           (objectives/get-objective :objective-in-drafting) => objective-in-drafting
-           (objectives/get-objective :objective-not-in-drafting) => objective-not-in-drafting
-           (storage/pg-retrieve-entity-by-global-id :objective-in-drafting-global-id) => objective-in-drafting)
+(facts "about allowing or disallowing voting"
+       (against-background
+         (up-down-votes/get-vote anything anything) => nil
+         (objectives/get-objective anything) => objective-not-in-drafting
+         (objectives/get-objective :objective-in-drafting) => objective-in-drafting
+         (objectives/get-objective :objective-not-in-drafting) => objective-not-in-drafting
+         (storage/pg-retrieve-entity-by-global-id :objective-in-drafting-global-id) => objective-in-drafting)
 
-         (fact "the same user cannot vote twice on the same entity"
-               (actions/allowed-to-vote? objective-not-in-drafting :vote-data) => falsey
-               (provided
-                 (up-down-votes/get-vote anything anything) => :a-vote))
+       (fact "the same user cannot vote twice on the same entity"
+             (actions/allowed-to-vote? objective-not-in-drafting :vote-data) => falsey
+             (provided
+               (up-down-votes/get-vote anything anything) => :a-vote))) 
 
-         (fact "a comment attached to an objective can not be voted on when the objective is in drafting"
-               (actions/allowed-to-vote? {:entity :comment
-                                          :objective-id :objective-in-drafting
-                                          :comment-on-id :objective-in-drafting-global-id} :vote-data) => falsey)
+(facts "about retrieving drafts"
+       (fact "retrieves drafts for an objective that is in drafting"
+             (actions/retrieve-drafts OBJECTIVE_ID) => {:status ::actions/success :result :drafts}
+             (provided
+               (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"}
+               (drafts/retrieve-drafts OBJECTIVE_ID) => :drafts))
 
-         (fact "a comment attached to a draft can not be voted on when the associated objective is not in drafting"
-               (against-background
-                 (storage/pg-retrieve-entity-by-global-id :draft-global-id) => {:entity :draft
-                                                                                :objective-id :objective-not-in-drafting})
-               (actions/allowed-to-vote? {:entity :comment
-                                          :comment-on-id :draft-global-id} :vote-data) => falsey)
-
-         (fact "an answer can not be voted on when the associated objective is in drafting"
-               (actions/allowed-to-vote? {:entity :answer
-                                          :objective-id :objective-in-drafting} :vote-data) => falsey))) 
-
-(binding [config/two-phase? true]
-  (facts "about retrieving drafts"
-         (fact "can only retrieve drafts for an objective in drafting"
-               (actions/retrieve-drafts OBJECTIVE_ID) => {:status ::actions/objective-drafting-not-started}
-               (provided
-                 (objectives/get-objective OBJECTIVE_ID) => {:status "open"}))
-
-         (fact "retrieves drafts for an objective that is in drafting"
-               (actions/retrieve-drafts OBJECTIVE_ID) => {:status ::actions/success :result :drafts}
-               (provided
-                 (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"}
-                 (drafts/retrieve-drafts OBJECTIVE_ID) => :drafts))
-
-         (fact "can only retrieve latest draft for an objective in drafting"
-               (actions/retrieve-latest-draft OBJECTIVE_ID) => {:status ::actions/objective-drafting-not-started}
-               (provided
-                 (objectives/get-objective OBJECTIVE_ID) => {:status "open"}))
-
-         (fact "retrieves latest draft for an objective that is in drafting"
-               (actions/retrieve-latest-draft OBJECTIVE_ID) => {:status ::actions/success :result :draft}
-               (provided
-                 (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"} 
-                 (drafts/retrieve-latest-draft OBJECTIVE_ID) => :draft)))) 
+       (fact "retrieves latest draft for an objective that is in drafting"
+             (actions/retrieve-latest-draft OBJECTIVE_ID) => {:status ::actions/success :result :draft}
+             (provided
+               (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"} 
+               (drafts/retrieve-latest-draft OBJECTIVE_ID) => :draft)))
 
 (def a-draft {:entity :draft})
 (def a-section {:entity :section :objective-id OBJECTIVE_ID})
@@ -130,46 +102,41 @@
 (def reason-type "expand")
 (def section-comment-data {:comment-on-uri section-uri :reason reason-type}) 
 
-(binding [config/two-phase? true]
-  (facts "about creating comments"
-         (fact "can comment on an objective that is not in drafting"
-               (actions/create-comment! comment-data) => {:status ::actions/success :result :the-stored-comment}
-               (provided
-                 (storage/pg-retrieve-entity-by-uri "/entity-uri" :with-global-id) => objective-not-in-drafting
-                 (comments/store-comment-for! objective-not-in-drafting comment-data) => :the-stored-comment))
 
-         (fact "cannot comment on an objective that is in drafting"
-               (actions/create-comment! comment-data) => {:status ::actions/objective-drafting-started}
-               (provided
-                 (storage/pg-retrieve-entity-by-uri "/entity-uri" :with-global-id) => objective-in-drafting))
+(facts "about creating comments"
+       (fact "can comment on an objective that is not in drafting"
+             (actions/create-comment! comment-data) => {:status ::actions/success :result :the-stored-comment}
+             (provided
+               (storage/pg-retrieve-entity-by-uri "/entity-uri" :with-global-id) => objective-not-in-drafting
+               (comments/store-comment-for! objective-not-in-drafting comment-data) => :the-stored-comment))
 
-         (fact "can comment on a draft"
-               (actions/create-comment! comment-data) => {:status ::actions/success :result :the-stored-comment}
-               (provided
-                 (storage/pg-retrieve-entity-by-uri "/entity-uri" :with-global-id) => a-draft
-                 (comments/store-comment-for! a-draft comment-data) => :the-stored-comment))
+       (fact "can comment on a draft"
+             (actions/create-comment! comment-data) => {:status ::actions/success :result :the-stored-comment}
+             (provided
+               (storage/pg-retrieve-entity-by-uri "/entity-uri" :with-global-id) => a-draft
+               (comments/store-comment-for! a-draft comment-data) => :the-stored-comment))
 
-         (fact "can comment on a draft section with existing comments"
-               (actions/create-comment! section-comment-data) => {:status ::actions/success :result {:_id COMMENT_ID :reason reason-type}} 
-               (provided
-                 (storage/pg-retrieve-entity-by-uri section-uri :with-global-id) => a-section 
-                 (comments/store-comment-for! a-section section-comment-data) => {:_id COMMENT_ID} 
-                 (comments/store-reason! {:reason reason-type :comment-id COMMENT_ID}) => {:reason reason-type}))
+       (fact "can comment on a draft section with existing comments"
+             (actions/create-comment! section-comment-data) => {:status ::actions/success :result {:_id COMMENT_ID :reason reason-type}} 
+             (provided
+               (storage/pg-retrieve-entity-by-uri section-uri :with-global-id) => a-section 
+               (comments/store-comment-for! a-section section-comment-data) => {:_id COMMENT_ID} 
+               (comments/store-reason! {:reason reason-type :comment-id COMMENT_ID}) => {:reason reason-type}))
 
-         (fact "can comment on a draft section with no previous comments"
-               (actions/create-comment! section-comment-data) => {:status ::actions/success :result {:_id COMMENT_ID :reason reason-type}}
-               (provided
-                 (storage/pg-retrieve-entity-by-uri section-uri :with-global-id) => nil 
-                 (drafts/get-section-labels-for-draft-uri DRAFT_URI) => [SECTION_LABEL]
-                 (drafts/store-section! {:entity :section :draft-id DRAFT_ID :objective-id OBJECTIVE_ID
-                                         :section-label SECTION_LABEL}) => a-section
-                 (comments/store-comment-for! a-section section-comment-data) => {:_id COMMENT_ID}
-                 (comments/store-reason! {:reason reason-type :comment-id COMMENT_ID}) => {:reason reason-type}))
+       (fact "can comment on a draft section with no previous comments"
+             (actions/create-comment! section-comment-data) => {:status ::actions/success :result {:_id COMMENT_ID :reason reason-type}}
+             (provided
+               (storage/pg-retrieve-entity-by-uri section-uri :with-global-id) => nil 
+               (drafts/get-section-labels-for-draft-uri DRAFT_URI) => [SECTION_LABEL]
+               (drafts/store-section! {:entity :section :draft-id DRAFT_ID :objective-id OBJECTIVE_ID
+                                       :section-label SECTION_LABEL}) => a-section
+               (comments/store-comment-for! a-section section-comment-data) => {:_id COMMENT_ID}
+               (comments/store-reason! {:reason reason-type :comment-id COMMENT_ID}) => {:reason reason-type}))
 
-         (fact "reports an error when the entity to comment on cannot be found"
-               (actions/create-comment! comment-data) => {:status ::actions/entity-not-found}
-               (provided
-                 (storage/pg-retrieve-entity-by-uri anything anything) => nil)))) 
+       (fact "reports an error when the entity to comment on cannot be found"
+             (actions/create-comment! comment-data) => {:status ::actions/entity-not-found}
+             (provided
+               (storage/pg-retrieve-entity-by-uri anything anything) => nil)))
 
 (facts "about retrieving annotations for a draft"
        (fact "annotations are retrieved with the annotated section"
@@ -215,21 +182,15 @@
 (def mark-data {:question-uri QUESTION_URI
                :created-by-uri user-uri })
 
-(facts "about creating questions"
 (def question {:objective-id OBJECTIVE_ID :created-by-id USER_ID})
 
-       (binding [config/two-phase? true]
-         (fact "A question can be created when the associated objective is not in drafting"
-               (actions/create-question! question) => :stored-question
-               (provided
-                 (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
-                 (writers/retrieve-writer-for-objective USER_ID OBJECTIVE_ID) => nil
-                 (questions/store-question! question) => :stored-question))
-
-         (fact "Attempting to create a question against an objective that is in drafting returns nil"
-               (actions/create-question! question) => nil
-               (provided
-                 (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"}))))
+(facts "about creating questions"
+       (fact "A question can be created when the associated objective is not in drafting"
+             (actions/create-question! question) => :stored-question
+             (provided
+               (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
+               (writers/retrieve-writer-for-objective USER_ID OBJECTIVE_ID) => nil
+               (questions/store-question! question) => :stored-question)))
 
 (facts "about marking questions"
        (fact "a mark is created if none already exists"
@@ -283,76 +244,65 @@
 
 (def answer {:objective-id OBJECTIVE_ID :question-id QUESTION_ID})
 
-(binding [config/two-phase? true]
-  (facts "about creating an answer"
-         (fact "succeeds when the associated objective is not in drafting and the question exists" 
-               (actions/create-answer! answer) => {:status ::actions/success
-                                                   :result :stored-answer} 
-               (provided
-                 (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
-                 (questions/get-question QUESTION_URI) => :a-question
-                 (answers/store-answer! answer) => :stored-answer))
 
-         (fact "returns objective-drafting-started status when the associated objective is in drafting"
-               (actions/create-answer! answer) => {:status ::actions/objective-drafting-started} 
-               (provided
-                 (questions/get-question QUESTION_URI) => :a-question
-                 (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"}))
+(facts "about creating an answer"
+       (fact "succeeds when the associated objective is not in drafting and the question exists" 
+             (actions/create-answer! answer) => {:status ::actions/success
+                                                 :result :stored-answer} 
+             (provided
+               (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
+               (questions/get-question QUESTION_URI) => :a-question
+               (answers/store-answer! answer) => :stored-answer))
 
-         (fact "returns entity-not-found status when the associated question doesn't exist" 
-               (actions/create-answer! answer) => {:status ::actions/entity-not-found} 
-               (provided
-                 (questions/get-question QUESTION_URI) => nil))))
+       (fact "returns entity-not-found status when the associated question doesn't exist" 
+             (actions/create-answer! answer) => {:status ::actions/entity-not-found} 
+             (provided
+               (questions/get-question QUESTION_URI) => nil))
 
-         (fact "returns failure status when storing the answer fails"
-               (actions/create-answer! answer) => {:status ::actions/failure} 
-               (provided
-                 (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
-                 (questions/get-question QUESTION_URI) => :a-question
-                 (answers/store-answer! answer) => nil))
+       (fact "returns failure status when storing the answer fails"
+             (actions/create-answer! answer) => {:status ::actions/failure} 
+             (provided
+               (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
+               (questions/get-question QUESTION_URI) => :a-question
+               (answers/store-answer! answer) => nil))) 
 
 (def invitation {:objective-id OBJECTIVE_ID
                  :invited-by-id USER_ID})
 
-(binding [config/two-phase? true]
-  (facts "about creating an invitation"
-         (fact "succeeds when the associated objective is not in drafting and the inviter is an existing writer"
-               (against-background
-                 (objectives/get-objectives-owned-by-user-id USER_ID) => [])
-               (actions/create-invitation! invitation) => {:status ::actions/success
-                                                           :result :stored-invitation} 
-               (provided
-                 (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
-                 (writers/retrieve-writers-by-user-id USER_ID) => [{:objective-id OBJECTIVE_ID}]
-                 (invitations/store-invitation! invitation) => :stored-invitation))
 
-         (fact "succeeds when the associated objective is not in drafting and the inviter is the objective owner"
-               (against-background
-                 (writers/retrieve-writers-by-user-id USER_ID) => [])
-               (actions/create-invitation! invitation) => {:status ::actions/success
-                                                           :result :stored-invitation} 
-               (provided
-                 (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
-                 (objectives/get-objectives-owned-by-user-id USER_ID) => [{:_id OBJECTIVE_ID}]
-                 (invitations/store-invitation! invitation) => :stored-invitation))
+(facts "about creating an invitation"
+       (fact "succeeds when the associated objective is not in drafting and the inviter is an existing writer"
+             (against-background
+               (objectives/get-objectives-owned-by-user-id USER_ID) => [])
+             (actions/create-invitation! invitation) => {:status ::actions/success
+                                                         :result :stored-invitation} 
+             (provided
+               (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
+               (writers/retrieve-writers-by-user-id USER_ID) => [{:objective-id OBJECTIVE_ID}]
+               (invitations/store-invitation! invitation) => :stored-invitation))
 
-         (fact "returns objective-drafting-started status when the associated objective is in drafting"
-               (actions/create-invitation! invitation) => {:status ::actions/objective-drafting-started} 
-               (provided
-                 (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"}))
+       (fact "succeeds when the associated objective is not in drafting and the inviter is the objective owner"
+             (against-background
+               (writers/retrieve-writers-by-user-id USER_ID) => [])
+             (actions/create-invitation! invitation) => {:status ::actions/success
+                                                         :result :stored-invitation} 
+             (provided
+               (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
+               (objectives/get-objectives-owned-by-user-id USER_ID) => [{:_id OBJECTIVE_ID}]
+               (invitations/store-invitation! invitation) => :stored-invitation))
 
-         (fact "returns failure status when the inviter is not authorised"
-               (actions/create-invitation! invitation) => {:status ::actions/failure}
-               (provided
-                 (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
-                 (objectives/get-objectives-owned-by-user-id USER_ID) => []
-                 (writers/retrieve-writers-by-user-id USER_ID) => []))
+       (fact "returns failure status when the inviter is not authorised"
+             (actions/create-invitation! invitation) => {:status ::actions/failure}
+             (provided
+               (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
+               (objectives/get-objectives-owned-by-user-id USER_ID) => []
+               (writers/retrieve-writers-by-user-id USER_ID) => []))
 
-         (fact "returns a list of objective-ids a user is writer-inviter for"
-               (actions/authorised-objectives-for-inviter USER_ID) => '(1 2 3 4)
-               (provided
-                 (writers/retrieve-writers-by-user-id USER_ID) => [{:objective-id 1} {:objective-id 2}]
-                 (objectives/get-objectives-owned-by-user-id USER_ID) => [{:_id 3} {:_id 4}])))) 
+       (fact "returns a list of objective-ids a user is writer-inviter for"
+             (actions/authorised-objectives-for-inviter USER_ID) => '(1 2 3 4)
+             (provided
+               (writers/retrieve-writers-by-user-id USER_ID) => [{:objective-id 1} {:objective-id 2}]
+               (objectives/get-objectives-owned-by-user-id USER_ID) => [{:_id 3} {:_id 4}])))
 
 (def objective {:created-by-id USER_ID :title "SOME TITLE"})
 (def stored-objective (assoc objective :_id OBJECTIVE_ID))

@@ -7,7 +7,7 @@
 
 (defn open? [objective]
   (if config/two-phase?
-    (= "open" (:status objective)) 
+    (= "open" (:status objective))
     true))
 
 (defn in-drafting? [objective]

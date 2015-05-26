@@ -46,207 +46,173 @@
                          :uri (str "/objectives/" OBJECTIVE_ID)
                          :status "drafting"})
 
-(binding [config/two-phase? true]
-  (facts "about writing drafts"
-         (against-background
-           (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
-           (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                           :result {:_id USER_ID
-                                                                    :username "username"}}
-           (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}})
+(facts "about writing drafts"
+       (against-background
+         (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
+         (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
+                                                         :result {:_id USER_ID
+                                                                  :username "username"}}
+         (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}})
 
-         (binding [config/enable-csrf false]
-           (fact "writer for objective can view add-draft page"
-                 (-> user-session
-                     ih/sign-in-as-existing-user 
-                     (p/request add-draft-url)
-                     (get-in [:response :status])) => 200
-                 (provided
-                   (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                             :result {:_id 6273 :status "drafting" :entity "objective"}})) 
+       (binding [config/enable-csrf false]
+         (fact "writer for objective can view add-draft page"
+               (-> user-session
+                   ih/sign-in-as-existing-user 
+                   (p/request add-draft-url)
+                   (get-in [:response :status])) => 200
+               (provided
+                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                           :result {:_id 6273 :status "drafting" :entity "objective"}})) 
 
-           (fact "add-draft page can not be reached when objective is not in drafting"
-                 (-> user-session
-                     ih/sign-in-as-existing-user 
-                     (p/request add-draft-url)
-                     (get-in [:response :status])) => 401
-                 (provided
-                   (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                             :result {:_id 6273 :entity "objective" :status "open"}})) 
+         (fact "user who is not a writer for an objective can not view add-draft page"
+               (-> user-session
+                   ih/sign-in-as-existing-user 
+                   (p/request add-draft-url)
+                   (get-in [:response :status])) => 403
+               (provided
+                 (http-api/get-user anything) => {:result {:writer-records [{:objective-id WRONG_OBJECTIVE_ID}]}})) 
 
-           (fact "user who is not a writer for an objective can not view add-draft page"
-                 (-> user-session
-                     ih/sign-in-as-existing-user 
-                     (p/request add-draft-url)
-                     (get-in [:response :status])) => 403
-                 (provided
-                   (http-api/get-user anything) => {:result {:writer-records [{:objective-id WRONG_OBJECTIVE_ID}]}})) 
-
-           (fact "writer can preview a draft"
-                 (let [{response :response} (-> user-session
-                                                ih/sign-in-as-existing-user
-                                                (p/request add-draft-url
-                                                           :request-method :post
-                                                           :params {:action "preview"
-                                                                    :content SOME_MARKDOWN}))]
-                   (:status response) => 200
-                   (:body response) => (contains SOME_HTML)
-                   (:body response) => (contains SOME_MARKDOWN)))
-
-           (fact "writer can submit a draft"
-                 (against-background
-                   (http-api/post-draft {:objective-id OBJECTIVE_ID
-                                         :submitter-id USER_ID
-                                         :content SOME_HICCUP}) => {:status ::http-api/success
-                                                                    :result {:_id DRAFT_ID}})
-                 (let [{response :response} (-> user-session
-                                                ih/sign-in-as-existing-user
-                                                (p/request (utils/path-for :fe/add-draft-post :id OBJECTIVE_ID)
-                                                           :request-method :post
-                                                           :params {:action "submit"
-                                                                    :content SOME_MARKDOWN}))]
-                   (:headers response) => (ih/location-contains (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID))
-                   (:status response) => 302))
-
-           (fact "posting a draft to an objective that's not in drafting returns a 404 response"
-                 (against-background
-                   (http-api/post-draft anything) => {:status ::http-api/not-found})
-                 (let [{response :response} (-> user-session
-                                                ih/sign-in-as-existing-user
-                                                (p/request (utils/path-for :fe/add-draft-post :id OBJECTIVE_ID)
-                                                           :request-method :post
-                                                           :params {:action "submit"
-                                                                    :content SOME_MARKDOWN}))]
-                   (:status response) => 404))))) 
-
-(binding [config/two-phase? true]
-  (facts "about viewing drafts"
-         (fact "anyone can view a particular draft"
-               (against-background
-                 (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
-                                                                     :result {:status "drafting"
-                                                                              :_id OBJECTIVE_ID}}
-                 (http-api/retrieve-writers OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success}
-                 (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING) 
-                 => {:status ::http-api/success
-                     :result {:_id DRAFT_ID
-                              :_created_at "2015-03-24T17:06:37.714Z"
-                              :uri DRAFT_URI
-                              :content SOME_HICCUP
-                              :objective-id OBJECTIVE_ID
-                              :submitter-id USER_ID
-                              :username "username"
-                              :next-draft-id 4
-                              :previous-draft-id 2
-                              :meta {:comments-count 0}}}
-                 (http-api/get-comments anything anything) => {:status ::http-api/success :result {:comments []}})
-
-               (let [{response :response} (p/request user-session (utils/path-for :fe/draft :id OBJECTIVE_ID 
-                                                                                  :d-id DRAFT_ID))]
+         (fact "writer can preview a draft"
+               (let [{response :response} (-> user-session
+                                              ih/sign-in-as-existing-user
+                                              (p/request add-draft-url
+                                                         :request-method :post
+                                                         :params {:action "preview"
+                                                                  :content SOME_MARKDOWN}))]
                  (:status response) => 200
                  (:body response) => (contains SOME_HTML)
-                 (:body response) => (contains (utils/local-path-for :fe/draft :id OBJECTIVE_ID :d-id 2))
-                 (:body response) => (contains (utils/local-path-for :fe/draft :id OBJECTIVE_ID :d-id 4))))
+                 (:body response) => (contains SOME_MARKDOWN)))
 
-         (fact "anyone can view latest draft"
+         (fact "writer can submit a draft"
                (against-background
-                 (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
-                                                                     :result {:status "drafting"
-                                                                              :_id OBJECTIVE_ID}}
-                 (http-api/retrieve-writers OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success}
-                 (http-api/get-draft OBJECTIVE_ID_AS_STRING "latest")
-                 => {:status ::http-api/success
-                     :result {:_id DRAFT_ID
-                              :_created_at "2015-03-24T17:06:37.714Z"
-                              :uri DRAFT_URI
-                              :content SOME_HICCUP
-                              :objective-id OBJECTIVE_ID
-                              :submitter-id USER_ID
-                              :meta {:comments-count 0}}} 
-                 (http-api/get-comments anything anything) => {:status ::http-api/success :result {:comments []}}) 
-               (let [{response :response} (p/request user-session latest-draft-url)]
-                 (:status response) => 200
-                 (:body response) => (contains SOME_HTML)))
+                 (http-api/post-draft {:objective-id OBJECTIVE_ID
+                                       :submitter-id USER_ID
+                                       :content SOME_HICCUP}) => {:status ::http-api/success
+                                                                  :result {:_id DRAFT_ID}})
+               (let [{response :response} (-> user-session
+                                              ih/sign-in-as-existing-user
+                                              (p/request (utils/path-for :fe/add-draft-post :id OBJECTIVE_ID)
+                                                         :request-method :post
+                                                         :params {:action "submit"
+                                                                  :content SOME_MARKDOWN}))]
+                 (:headers response) => (ih/location-contains (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID))
+                 (:status response) => 302))
 
-         (fact "viewing latest draft when drafting hasn't started displays message"
+         (fact "posting a draft to an objective that's not in drafting returns a 404 response"
                (against-background
-                 (http-api/get-objective OBJECTIVE_ID_AS_STRING) =>
-                 {:status ::http-api/success
-                  :result {:status "open"
-                           :_id OBJECTIVE_ID
-                           :end-date (utils/date-time->date-time-plus-30-days (utils/current-time))}}
-                 (http-api/get-draft OBJECTIVE_ID_AS_STRING "latest") => {:status ::http-api/forbidden})
-               (get-in (p/request user-session latest-draft-url)
-                       [:response :body]) => (contains "29"))
+                 (http-api/post-draft anything) => {:status ::http-api/not-found})
+               (let [{response :response} (-> user-session
+                                              ih/sign-in-as-existing-user
+                                              (p/request (utils/path-for :fe/add-draft-post :id OBJECTIVE_ID)
+                                                         :request-method :post
+                                                         :params {:action "submit"
+                                                                  :content SOME_MARKDOWN}))]
+                 (:status response) => 404)))) 
 
-         (fact "viewing draft list when drafting hasn't started displays message"
-               (against-background
-                 (http-api/get-all-drafts OBJECTIVE_ID) => {:status ::http-api/forbidden}
-                 (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success}
-                 (http-api/get-objective OBJECTIVE_ID) => 
-                 {:status ::http-api/success
-                  :result {:end-date (utils/date-time->date-time-plus-30-days (utils/current-time))
-                           :status "open"}})
+(facts "about viewing drafts"
+       (fact "anyone can view a particular draft"
+             (against-background
+               (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
+                                                                   :result {:status "drafting"
+                                                                            :_id OBJECTIVE_ID}}
+               (http-api/retrieve-writers OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success}
+               (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING) 
+               => {:status ::http-api/success
+                   :result {:_id DRAFT_ID
+                            :_created_at "2015-03-24T17:06:37.714Z"
+                            :uri DRAFT_URI
+                            :content SOME_HICCUP
+                            :objective-id OBJECTIVE_ID
+                            :submitter-id USER_ID
+                            :username "username"
+                            :next-draft-id 4
+                            :previous-draft-id 2
+                            :meta {:comments-count 0}}}
+               (http-api/get-comments anything anything) => {:status ::http-api/success :result {:comments []}})
 
-               (get-in (p/request user-session draft-list-url)
-                       [:response :body]) => (contains "29 days"))
+             (let [{response :response} (p/request user-session (utils/path-for :fe/draft :id OBJECTIVE_ID 
+                                                                                :d-id DRAFT_ID))]
+               (:status response) => 200
+               (:body response) => (contains SOME_HTML)
+               (:body response) => (contains (utils/local-path-for :fe/draft :id OBJECTIVE_ID :d-id 2))
+               (:body response) => (contains (utils/local-path-for :fe/draft :id OBJECTIVE_ID :d-id 4))))
 
-         (fact "anyone can view list of drafts"
-               (against-background
-                 (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                           :result {:_id OBJECTIVE_ID
-                                                                    :end-date (utils/string->date-time "2012-12-12")
-                                                                    :status "drafting"}}
-                 (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success}
-                 (http-api/get-all-drafts OBJECTIVE_ID) => {:status ::http-api/success
-                                                            :result [{:_id DRAFT_ID
-                                                                      :content SOME_HICCUP
-                                                                      :objective-id OBJECTIVE_ID
-                                                                      :submitter-id USER_ID
-                                                                      :_created_at "2015-02-12T16:46:18.838Z"
-                                                                      :username "UserName"}]})
+       (fact "anyone can view latest draft"
+             (against-background
+               (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
+                                                                   :result {:status "drafting"
+                                                                            :_id OBJECTIVE_ID}}
+               (http-api/retrieve-writers OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success}
+               (http-api/get-draft OBJECTIVE_ID_AS_STRING "latest")
+               => {:status ::http-api/success
+                   :result {:_id DRAFT_ID
+                            :_created_at "2015-03-24T17:06:37.714Z"
+                            :uri DRAFT_URI
+                            :content SOME_HICCUP
+                            :objective-id OBJECTIVE_ID
+                            :submitter-id USER_ID
+                            :meta {:comments-count 0}}} 
+               (http-api/get-comments anything anything) => {:status ::http-api/success :result {:comments []}}) 
+             (let [{response :response} (p/request user-session latest-draft-url)]
+               (:status response) => 200
+               (:body response) => (contains SOME_HTML)))
 
-               (let [{response :response} (p/request user-session draft-list-url)]
-                 (:status response) => 200
-                 (:body response) => (contains "12-02-2015 16:46")
-                 (:body response) => (contains "UserName")))
+       (fact "anyone can view list of drafts"
+             (against-background
+               (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
+                                                         :result {:_id OBJECTIVE_ID
+                                                                  :end-date (utils/string->date-time "2012-12-12")
+                                                                  :status "drafting"}}
+               (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success}
+               (http-api/get-all-drafts OBJECTIVE_ID) => {:status ::http-api/success
+                                                          :result [{:_id DRAFT_ID
+                                                                    :content SOME_HICCUP
+                                                                    :objective-id OBJECTIVE_ID
+                                                                    :submitter-id USER_ID
+                                                                    :_created_at "2015-02-12T16:46:18.838Z"
+                                                                    :username "UserName"}]})
 
-         (fact "anyone can view difference between drafts"
-               (against-background
-                 (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
-                                                                     :result {:status "drafting"
-                                                                              :_id OBJECTIVE_ID}}
-                 (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING) 
-                 => {:status ::http-api/success
-                     :result {:_id DRAFT_ID
-                              :_created_at "2015-03-24T17:06:37.714Z"
-                              :content SOME_DIFFERENT_HICCUP
-                              :objective-id OBJECTIVE_ID
-                              :submitter-id USER_ID
-                              :username "username"
-                              :next-draft-id 4
-                              :previous-draft-id 2}}
+             (let [{response :response} (p/request user-session draft-list-url)]
+               (:status response) => 200
+               (:body response) => (contains "12-02-2015 16:46")
+               (:body response) => (contains "UserName")))
 
-                 (http-api/get-draft OBJECTIVE_ID_AS_STRING (dec DRAFT_ID)) 
-                                     => {:status ::http-api/success 
-                                         :result {:_id 2
-                                                  :_created_at "2015-02-24T17:06:37.714Z"
-                                                  :content SOME_HICCUP
-                                                  :objective-id OBJECTIVE_ID
-                                                  :submitter-id USER_ID
-                                                  :username "username"
-                                                  :next-draft-id DRAFT_ID
-                                                  :previous-draft-id 1}})
+       (fact "anyone can view difference between drafts"
+             (against-background
+               (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
+                                                                   :result {:status "drafting"
+                                                                            :_id OBJECTIVE_ID}}
+               (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING) 
+               => {:status ::http-api/success
+                   :result {:_id DRAFT_ID
+                            :_created_at "2015-03-24T17:06:37.714Z"
+                            :content SOME_DIFFERENT_HICCUP
+                            :objective-id OBJECTIVE_ID
+                            :submitter-id USER_ID
+                            :username "username"
+                            :next-draft-id 4
+                            :previous-draft-id 2}}
 
-               (let [{response :response} (p/request user-session draft-diff-url)]
-                 (:status response) => 200
-                 (:body response) => (contains "<span>eading</span>")))
+               (http-api/get-draft OBJECTIVE_ID_AS_STRING (dec DRAFT_ID)) 
+               => {:status ::http-api/success 
+                   :result {:_id 2
+                            :_created_at "2015-02-24T17:06:37.714Z"
+                            :content SOME_HICCUP
+                            :objective-id OBJECTIVE_ID
+                            :submitter-id USER_ID
+                            :username "username"
+                            :next-draft-id DRAFT_ID
+                            :previous-draft-id 1}})
+
+             (let [{response :response} (p/request user-session draft-diff-url)]
+               (:status response) => 200
+               (:body response) => (contains "<span>eading</span>")))
 
 (fact "viewing diff page for the first draft returns 404 page"
       (against-background
         (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
                                                             :result {:status "drafting"
-                                                           :_id OBJECTIVE_ID}}
+                                                                     :_id OBJECTIVE_ID}}
         (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING) 
         => {:status ::http-api/success
             :result {:_id DRAFT_ID
@@ -259,7 +225,7 @@
                      :previous-draft-id nil}})
 
       (let [{response :response} (p/request user-session draft-diff-url)]
-        (:status response) => 404)))) 
+        (:status response) => 404))) 
 
 (facts "about rendering draft page"
        (fact "adds section links before elements with section labels"

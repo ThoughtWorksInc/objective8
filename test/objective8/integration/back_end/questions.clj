@@ -38,64 +38,56 @@
   ([objective-id user-id] (json/generate-string (a-question objective-id user-id)))
   ([] (the-question-as-json OBJECTIVE_ID USER_ID)))
 
-(binding [config/two-phase? true]
-  (facts "POST /api/v1/objective/:id/questions"
-         (against-background
-           (m/valid-credentials? anything anything anything) => true)
-         (against-background
-           [(before :contents (do
-                                (helpers/db-connection)
-                                (helpers/truncate-tables)))
-            (after :facts (helpers/truncate-tables))]
+(facts "POST /api/v1/objective/:id/questions"
+       (against-background
+         (m/valid-credentials? anything anything anything) => true)
+       (against-background
+         [(before :contents (do
+                              (helpers/db-connection)
+                              (helpers/truncate-tables)))
+          (after :facts (helpers/truncate-tables))]
 
-           (fact "the posted question is stored, and the resource location is reported"
-                 (let [{obj-id :_id user-id :created-by-id} (sh/store-an-open-objective)
-                       question (a-question obj-id user-id)
-                       {response :response} (p/request app (str "/api/v1/objectives/" obj-id "/questions")
-                                                       :request-method :post
-                                                       :content-type "application/json"
-                                                       :body (json/generate-string question))]
-                   (:body response) => (helpers/json-contains (assoc question :_id integer?))
-                   (:status response) => 201
-                   (:headers response) => (helpers/location-contains (str "/api/v1/objectives/" obj-id
-                                                                          "/questions/"))))
+         (fact "the posted question is stored, and the resource location is reported"
+               (let [{obj-id :_id user-id :created-by-id} (sh/store-an-open-objective)
+                     question (a-question obj-id user-id)
+                     {response :response} (p/request app (str "/api/v1/objectives/" obj-id "/questions")
+                                                     :request-method :post
+                                                     :content-type "application/json"
+                                                     :body (json/generate-string question))]
+                 (:body response) => (helpers/json-contains (assoc question :_id integer?))
+                 (:status response) => 201
+                 (:headers response) => (helpers/location-contains (str "/api/v1/objectives/" obj-id
+                                                                        "/questions/"))))
 
-           (fact "a question posted by a writer is automatically marked"
-                 (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
-                       {writer-id :user-id} (sh/store-a-writer {:objective objective})
-                       question (a-question objective-id writer-id)
-                       {response :response} (p/request app (str "/api/v1/objectives/" objective-id "/questions")
-                                                       :request-method :post
-                                                       :content-type "application/json"
-                                                       :body (json/generate-string question))]
+         (fact "a question posted by a writer is automatically marked"
+               (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+                     {writer-id :user-id} (sh/store-a-writer {:objective objective})
+                     question (a-question objective-id writer-id)
+                     {response :response} (p/request app (str "/api/v1/objectives/" objective-id "/questions")
+                                                     :request-method :post
+                                                     :content-type "application/json"
+                                                     :body (json/generate-string question))]
 
-                   (:body response) => (helpers/json-contains {:objective-id objective-id
-                                                               :created-by-id writer-id
-                                                               :meta (contains {:marked true})})))
+                 (:body response) => (helpers/json-contains {:objective-id objective-id
+                                                             :created-by-id writer-id
+                                                             :meta (contains {:marked true})})))
 
-           (fact "a 400 status is returned if a PSQLException is raised"
-                 (against-background
-                   (questions/store-question! anything) =throws=> (org.postgresql.util.PSQLException.
-                                                                    (org.postgresql.util.ServerErrorMessage. "" 0)))
-                 (let [{obj-id :_id} (sh/store-an-open-objective)]
-                   (:response (p/request app (str "/api/v1/objectives/" obj-id "/questions")
-                                         :request-method :post
-                                         :content-type "application/json"
-                                         :body (the-question-as-json)))) => (contains {:status 400}))
+         (fact "a 400 status is returned if a PSQLException is raised"
+               (against-background
+                 (questions/store-question! anything) =throws=> (org.postgresql.util.PSQLException.
+                                                                  (org.postgresql.util.ServerErrorMessage. "" 0)))
+               (let [{obj-id :_id} (sh/store-an-open-objective)]
+                 (:response (p/request app (str "/api/v1/objectives/" obj-id "/questions")
+                                       :request-method :post
+                                       :content-type "application/json"
+                                       :body (the-question-as-json)))) => (contains {:status 400}))
 
-           (fact "a 400 status is returned if a map->question exception is raised"
-                 (let [{obj-id :_id} (sh/store-an-open-objective)]
-                   (:response (p/request app (str "/api/v1/objectives/" obj-id "/questions")
-                                         :request-method :post
-                                         :content-type "application/json"
-                                         :body (json/generate-string the-invalid-question)))) => (contains {:status 400}))
-
-           (fact "a 403 (forbidden) status is returned when trying to post a question to an objective that has status=drafting"
-                 (let [{objective-id :_id user-id :created-by-id} (sh/store-an-objective-in-draft)]
-                   (:response (p/request app (str "/api/v1/objectives/" objective-id "/questions")
-                                         :request-method :post
-                                         :content-type "application/json"
-                                         :body (the-question-as-json objective-id user-id))) => (contains {:status 403})))))) 
+         (fact "a 400 status is returned if a map->question exception is raised"
+               (let [{obj-id :_id} (sh/store-an-open-objective)]
+                 (:response (p/request app (str "/api/v1/objectives/" obj-id "/questions")
+                                       :request-method :post
+                                       :content-type "application/json"
+                                       :body (json/generate-string the-invalid-question)))) => (contains {:status 400})))) 
 
 
 (facts "GET /api/v1/objectives/:id/questions/:q-id"

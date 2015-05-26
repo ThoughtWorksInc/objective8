@@ -72,19 +72,18 @@
                        (dissoc :global-id)
                        (assoc :uri objective-uri))))
 
-         (binding [config/two-phase? false]
-           (fact "the objective can be retrieved with draft count"
-                 (let [{user-id :_id username :username} (sh/store-a-user)
-                       objective-data {:created-by-id user-id
-                                       :end-date "2015-01-01T00:00:00.000Z"
-                                       :description "description"
-                                       :title "title"}
-                       {objective-id :_id :as stored-objective} (objectives/store-objective! objective-data)]
-                   (sh/store-a-draft {:objective stored-objective})
-                   (objectives/get-objective objective-id) => (-> stored-objective
-                                                                  (assoc :username username)
-                                                                  (assoc-in [:meta :drafts-count] 1)) 
-                   (objectives/get-objective objective-id) =not=> (contains {:global-id anything}))))
+         (fact "the objective can be retrieved with draft count"
+               (let [{user-id :_id username :username} (sh/store-a-user)
+                     objective-data {:created-by-id user-id
+                                     :end-date "2015-01-01T00:00:00.000Z"
+                                     :description "description"
+                                     :title "title"}
+                     {objective-id :_id :as stored-objective} (objectives/store-objective! objective-data)]
+                 (sh/store-a-draft {:objective stored-objective})
+                 (objectives/get-objective objective-id) => (-> stored-objective
+                                                                (assoc :username username)
+                                                                (assoc-in [:meta :drafts-count] 1)) 
+                 (objectives/get-objective objective-id) =not=> (contains {:global-id anything})))
 
         (fact "can retrieve a list of objectives"
               (let [{user-id :_id username :username} (sh/store-a-user)
