@@ -5,15 +5,6 @@
             [objective8.config :as config]
             [objective8.utils :as utils]))
 
-(defn open? [objective]
-  (if config/two-phase?
-    (= "open" (:status objective))
-    true))
-
-(defn in-drafting? [objective]
-  (not (and (open? objective)
-            config/two-phase?)))
-
 (defn uri-for-objective [{:keys [_id] :as objective}]
   (str "/objectives/" _id))
 

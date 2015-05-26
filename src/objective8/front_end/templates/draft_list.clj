@@ -67,8 +67,7 @@
                                       [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
                                       [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
                                       [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
-                                      [:.clj-objective-progress-indicator] (when (not config/two-phase?)
-                                                                             (html/substitute (pf/progress-indicator context)))
+                                      [:.clj-objective-progress-indicator] (html/substitute (pf/progress-indicator context))
                                       [:.clj-progress-drafts-item] (html/add-class "on")
                                       [:.clj-progress-objective-item] (html/remove-class "on")
                                       [:.clj-guidance-buttons] nil
@@ -77,14 +76,7 @@
 
                                       [:.clj-draft-list-title] (html/content (:title objective))
 
-                                      [:.clj-drafts-wrapper] (if (domain/in-drafting? objective)
-                                                               (html/substitute (drafts-wrapper context)) 
-                                                               (html/do->
-                                                                 (html/set-attr :drafting-begins-date
-                                                                                (:end-date objective))
-                                                                 (html/content (str (translations :draft-list/drafting-begins)
-                                                                                    " " (:days-until-drafting-begins objective)
-                                                                                    " " (translations :draft-list/days)))))
+                                      [:.clj-drafts-wrapper] (html/substitute (drafts-wrapper context)) 
                                       
                                       [:.clj-previous-drafts-list] (if (empty? (rest drafts))
                                                                      (html/substitute (translations :draft-list/no-previous-versions))

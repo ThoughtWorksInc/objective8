@@ -238,16 +238,21 @@
 (defn post-question [{:keys [route-params params] :as request}]
   (try
     (let [id (-> (:id route-params)
-                 Integer/parseInt)]
-      (if-let [stored-question (-> params
-                                   (select-keys [:question :created-by-id])
-                                   (assoc :objective-id id)
-                                   actions/create-question!)]
+                 Integer/parseInt)
+          {:keys [status result] :as stored-question} (-> params
+                                                          (select-keys [:question :created-by-id])
+                                                          (assoc :objective-id id)
+                                                          actions/create-question!)]
+      (case status
+        ::actions/success
         (resource-created-response (str utils/host-url
-                                       "/api/v1/objectives/" (:objective-id stored-question)
-                                       "/questions/" (:_id stored-question))
-                                  stored-question)
-        (forbidden-response "New content cannot be posted against this objective as it is now in drafting.")))
+                                        "/api/v1/objectives/" (:objective-id result)
+                                        "/questions/" (:_id result))
+                                   result)
+        ::actions/entity-not-found
+        (not-found-response "The objective does not exist")
+
+        (internal-server-error "Error when posting question")))
     (catch Exception e
       (log/info "Error when posting question: " e)
       (invalid-response "Invalid question post request"))))

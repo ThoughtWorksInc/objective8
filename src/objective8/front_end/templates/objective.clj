@@ -107,20 +107,7 @@
 
 ;; DRAFTING HAS STARTED MESSAGE
 
-(def drafting-message-snippet (html/select pf/library-html-resource [:.clj-drafting-message]))
 (def latest-draft-wrapper-snippet (html/select objective-template [:.clj-latest-draft]))
-
-(defn drafting-message [{:keys [data] :as context}]
-  (let [objective (:objective data)]
-    (html/at drafting-message-snippet
-      [:.clj-drafting-message-link] (html/set-attr :href (str "/objectives/" (:_id objective) 
-                                                              "/drafts")))))
-
-(defn drafting-begins [objective]
-  (html/transformation
-    [:.clj-days-left-day] (html/do->
-                            (html/set-attr :drafting-begins-date (:end-date objective))
-                            (html/content (str (:days-until-drafting-begins objective))))))
 
 (defn latest-draft [draft]
   (html/at latest-draft-wrapper-snippet 
@@ -219,9 +206,6 @@
   (let [objective (:objective data)
         objective-id (:_id objective)
         flash (:flash doc)
-        optionally-disable-voting (if (domain/open? objective)
-                                    identity
-                                    (pf/disable-voting-actions translations))
         comments (:comments data)
         number-of-comments-shown (count comments)
         comment-history-link (str (utils/path-for :fe/get-comments-for-objective
@@ -240,8 +224,7 @@
                 (when (invitation-rsvp-for-objective? objective invitation-rsvp)
                   (invitation-rsvp-modal context)))
 
-              [:.clj-objective-progress-indicator] (when (not config/two-phase?)
-                                                     (html/substitute (pf/progress-indicator context)))
+              [:.clj-objective-progress-indicator] (html/substitute (pf/progress-indicator context))
 
               [:.clj-guidance-buttons] nil
               [:.clj-guidance-heading] (html/content (translations :objective-guidance/heading))
@@ -252,20 +235,15 @@
 
               [:.clj-objective-title] (html/content (:title objective))
 
-              [:.clj-days-left] (when (and (domain/open? objective) config/two-phase?) 
-                                  (drafting-begins objective))
-              [:.clj-drafting-started-wrapper] (when (and (domain/in-drafting? objective) config/two-phase?) 
-                                                 (html/substitute (drafting-message context)))
-              [:.clj-latest-draft-wrapper] (when (and (:latest-draft data) (not config/two-phase?))
+              [:.clj-days-left] nil
+              [:.clj-drafting-started-wrapper] nil
+              [:.clj-latest-draft-wrapper] (when (:latest-draft data)
                                              (html/substitute (latest-draft (:latest-draft data))))
               [:.clj-objective-detail] (html/content (tf/text->p-nodes (:description objective)))
 
               [:.clj-writer-item-list] (html/content (pf/writer-list context))
-              [:.clj-invite-writer-link] (when (and 
-                                                (permissions/writer-inviter-for? user objective-id)
-                                                (domain/open? objective))
-                                           (html/set-attr
-                                            :href (str "/objectives/" (:_id objective) "/invite-writer")))
+              [:.clj-invite-writer-link] (when (permissions/writer-inviter-for? user objective-id)
+                                           (html/set-attr :href (str "/objectives/" (:_id objective) "/invite-writer")))
 
               [:.clj-writer-dashboard-link] (when (permissions/writer-for? user objective-id)
                                               (html/set-attr
@@ -273,13 +251,9 @@
 
               [:.clj-objective-question-list] (html/content (objective-question-list context))
               [:.clj-community-question-list] (html/content (community-question-list context))
-              [:.clj-ask-question-link] (when (domain/open? objective)
-                                          (html/set-attr
-                                           "href" (str "/objectives/" (:_id objective) "/add-question")))
+              [:.clj-ask-question-link] (html/set-attr "href" (str "/objectives/" (:_id objective) "/add-question"))
 
-              [:.clj-comment-list] (html/content
-                                    (optionally-disable-voting
-                                     (pf/comment-list context)))
+              [:.clj-comment-list] (html/content (pf/comment-list context))
 
               [:.clj-comment-list] (if (< number-of-comments-shown (get-in objective [:meta :comments-count]))
                                      (html/append comment-history-snippet)
@@ -287,8 +261,7 @@
 
               [:.clj-comment-history-link] (html/set-attr :href comment-history-link)
 
-              [:.clj-comment-create] (when (domain/open? objective)
-                                       (html/content (pf/comment-create context :objective))))
+              [:.clj-comment-create] (html/content (pf/comment-create context :objective)))
      pf/add-google-analytics
      (tf/translate context)
      html/emit*

@@ -14,7 +14,6 @@
        (fact "returns the accepted invitation when the associated objective is not in drafting"
              (invitations/accept-invitation! invitation) => :accepted-invitation
              (provided
-               (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
                (storage/pg-update-invitation-status! invitation "accepted") => :accepted-invitation)))
 
 
@@ -22,7 +21,6 @@
        (fact "returns the declined invitation when the associated objective is not in drafting"
              (invitations/decline-invitation! invitation) => :declined-invitation
              (provided
-               (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
                (storage/pg-update-invitation-status! invitation "declined") => :declined-invitation)))
 
 (fact "Postgresql exceptions are not caught"

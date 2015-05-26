@@ -83,13 +83,11 @@
        (fact "retrieves drafts for an objective that is in drafting"
              (actions/retrieve-drafts OBJECTIVE_ID) => {:status ::actions/success :result :drafts}
              (provided
-               (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"}
                (drafts/retrieve-drafts OBJECTIVE_ID) => :drafts))
 
        (fact "retrieves latest draft for an objective that is in drafting"
              (actions/retrieve-latest-draft OBJECTIVE_ID) => {:status ::actions/success :result :draft}
              (provided
-               (objectives/get-objective OBJECTIVE_ID) => {:status "drafting"} 
                (drafts/retrieve-latest-draft OBJECTIVE_ID) => :draft)))
 
 (def a-draft {:entity :draft})
@@ -186,7 +184,7 @@
 
 (facts "about creating questions"
        (fact "A question can be created when the associated objective is not in drafting"
-             (actions/create-question! question) => :stored-question
+             (actions/create-question! question) => {:status ::actions/success :result :stored-question} 
              (provided
                (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
                (writers/retrieve-writer-for-objective USER_ID OBJECTIVE_ID) => nil
@@ -250,7 +248,6 @@
              (actions/create-answer! answer) => {:status ::actions/success
                                                  :result :stored-answer} 
              (provided
-               (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
                (questions/get-question QUESTION_URI) => :a-question
                (answers/store-answer! answer) => :stored-answer))
 
@@ -262,7 +259,6 @@
        (fact "returns failure status when storing the answer fails"
              (actions/create-answer! answer) => {:status ::actions/failure} 
              (provided
-               (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
                (questions/get-question QUESTION_URI) => :a-question
                (answers/store-answer! answer) => nil))) 
 

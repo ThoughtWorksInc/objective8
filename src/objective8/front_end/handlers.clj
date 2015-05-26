@@ -711,15 +711,14 @@
 
 (defn add-draft-get [{{objective-id :id} :route-params :as request}]
   (let [{objective-status :status objective :result} (http-api/get-objective (Integer/parseInt objective-id))]
-    (cond
-      (= objective-status ::http-api/success)
-      (if (domain/in-drafting? objective)
-        {:status 200
-         :headers {"Content-Type" "text/html"}      
-         :body (views/add-draft "add-draft" request :objective-id objective-id)} 
-        {:status 401}) 
-      (= objective-status ::http-api/not-found) (error-404-response request)
-      :else {:status 500}))) 
+    (case objective-status
+      ::http-api/success {:status 200
+                          :headers {"Content-Type" "text/html"}      
+                          :body (views/add-draft "add-draft" request :objective-id objective-id)} 
+
+      ::http-api/not-found (error-404-response request)
+
+      {:status 500}))) 
 
 (defn add-draft-post [{:keys [params route-params] :as request}]
   (let [draft-data (fr/request->add-draft-data request (get (friend/current-authentication) :identity))]
@@ -854,7 +853,7 @@
                                :drafts drafts)
        :headers {"Content-Type" "text/html"}} 
 
-      (and (= objective-status ::http-api/success) (not (domain/in-drafting? objective))) 
+      (= objective-status ::http-api/success)
       {:status 200
        :body (views/draft-list "draft-list" request
                                :objective (format-objective objective))

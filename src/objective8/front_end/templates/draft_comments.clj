@@ -19,9 +19,6 @@
 (defn draft-comments-page [{:keys [data doc translations] :as context}]
   (let [{draft-id :_id :as draft} (:draft data)
         {objective-id :_id :as objective} (:objective data)
-        optionally-disable-voting (if (domain/in-drafting? objective)
-                                    identity
-                                    (pf/disable-voting-actions translations))
         comments (:comments data)
         offset (:offset data)
         total-comments (get-in draft [:meta :comments-count])
@@ -35,9 +32,7 @@
                                        (html/content (str (translations :breadcrumb/draft-prefix) " : " 
                                                           (utils/iso-time-string->pretty-time (:_created_at draft))))
                                        (html/set-attr :href (utils/path-for :fe/draft :id objective-id :d-id draft-id)))
-                  [:.clj-comment-list] (html/content
-                                         (optionally-disable-voting
-                                           (pf/comment-list context)))
+                  [:.clj-comment-list] (html/content (pf/comment-list context))
 
                   [:.clj-comment-list] (html/append navigation-snippet)
 

@@ -26,12 +26,10 @@
       first))
 
 (defn accept-invitation! [{objective-id :objective-id :as invitation}]
-  (when (objectives/open? (objectives/get-objective objective-id))
-    (storage/pg-update-invitation-status! invitation "accepted")))
+  (storage/pg-update-invitation-status! invitation "accepted"))
 
 (defn decline-invitation! [{objective-id :objective-id :as invitation}]
-  (when (objectives/open? (objectives/get-objective objective-id))
-    (storage/pg-update-invitation-status! invitation "declined")))
+  (storage/pg-update-invitation-status! invitation "declined"))
 
 (defn decline-invitation-by-uuid [uuid]
   (some-> (get-active-invitation uuid)

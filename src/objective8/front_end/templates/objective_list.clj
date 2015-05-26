@@ -31,21 +31,6 @@
 (defn brief-description [objective]
   (shorten-content (:description objective)))
 
-(defn drafting-begins [objective translations]
- (html/at objective-list-item-drafting-begins
-          [:.l8n-drafting-begins] 
-          (html/content (if (domain/in-drafting? objective)
-                          (translations :objective-list/drafting-started)
-                          (translations :objective-list/drafting-begins)))
-
-          [:.clj-objective-drafting-begins-date] 
-          (when (domain/open? objective) 
-            (html/do->
-              (html/set-attr :drafting-begins-date (:end-date objective)) 
-              (html/content (str (:days-until-drafting-begins objective)
-                                 " " 
-                                 (translations :objective-list/days)))))))
-
 (defn objective-list-items [{:keys [translations data user] :as context}]
   (let [objectives (:objectives data)]
     (html/at objective-list-item-resource [:.clj-objective-list-item] 
@@ -61,8 +46,7 @@
                              [:.clj-objective-list-dashboard-link]  (when (permissions/writer-for? user objective-id)
                                                                       (html/set-attr :href (utils/path-for :fe/dashboard-questions :id objective-id))) 
 
-                             [:.clj-objective-drafting-begins] (when config/two-phase?
-                                                                 (html/substitute (drafting-begins objective translations)))
+                             [:.clj-objective-drafting-begins] nil 
 
                              [:.clj-objective-list-item-link] (html/set-attr :href (str "/objectives/" 
                                                                                         objective-id))

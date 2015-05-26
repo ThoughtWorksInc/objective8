@@ -49,25 +49,18 @@
               (map #(start-drafting! (:_id %))))))
 
 (defn submit-draft! [{:keys [submitter-id objective-id] :as draft-data}]
-  (when (objectives/in-drafting? (objectives/get-objective objective-id)) 
-    (when (writers/retrieve-writer-for-objective submitter-id objective-id)
-      (drafts/store-draft! draft-data))))
+  (when (writers/retrieve-writer-for-objective submitter-id objective-id)
+    (drafts/store-draft! draft-data)))
 
 (defn retrieve-drafts [objective-id]
-  (if-let [objective (objectives/get-objective objective-id)]
-    (if (objectives/in-drafting? objective)
-      {:status ::success :result (drafts/retrieve-drafts objective-id)} 
-      {:status ::objective-drafting-not-started})
-    {:status ::not-found}))
+  {:status ::success :result (drafts/retrieve-drafts objective-id)} )
 
 (defn retrieve-latest-draft [objective-id]
-  (if (objectives/in-drafting? (objectives/get-objective objective-id))
-    {:status ::success :result (drafts/retrieve-latest-draft objective-id)}
-    {:status ::objective-drafting-not-started}))
+  {:status ::success :result (drafts/retrieve-latest-draft objective-id)})
 
 (defn can-comment-on? [{:keys [entity] :as entity-to-post-to}]
   (case entity
-    :objective (objectives/open? entity-to-post-to)
+    :objective true
     :draft true
     :section true
     false))
@@ -78,10 +71,10 @@
                                       (storage/pg-retrieve-entity-by-global-id (:comment-on-id entity-to-vote-on))
                                       entity-to-vote-on)]
     (and (case owner-entity-type
-           :draft (objectives/in-drafting? objective)
-           :section (objectives/in-drafting? objective)
-           :objective (objectives/open? objective)
-           :answer (objectives/open? objective)
+           :draft true
+           :section true
+           :objective true
+           :answer true
            false)
          (not (up-down-votes/get-vote global-id created-by-id)))))
 
@@ -133,24 +126,24 @@
       {:status ::entity-not-found})))
 
 (defn create-question! [{:keys [created-by-id objective-id] :as question}]
-  (when (objectives/open? (objectives/get-objective objective-id))
-    (when-let [stored-question (questions/store-question! question)]
-     (if (writers/retrieve-writer-for-objective created-by-id objective-id)
-      (->> (marks/store-mark! {:question-uri (:uri stored-question)
-                          :created-by-uri (str "/users/" created-by-id)
-                          :active true})
-           :active
-           (assoc-in stored-question [:meta :marked]))
-       stored-question))))
+  (if (objectives/get-objective objective-id) 
+    (if-let [stored-question (questions/store-question! question)]
+      (if (writers/retrieve-writer-for-objective created-by-id objective-id)
+        {:status ::success :result (->> (marks/store-mark! {:question-uri (:uri stored-question)
+                                                            :created-by-uri (str "/users/" created-by-id)
+                                                            :active true})
+                                        :active
+                                        (assoc-in stored-question [:meta :marked]))} 
+        {:status ::success :result stored-question})
+      {:status ::failure})
+    {:status ::entity-not-found}))
 
 (defn create-answer! [{:keys [objective-id question-id] :as answer}]
   (let [question-uri (str "/objectives/" objective-id "/questions/" question-id)]
     (if (questions/get-question question-uri)
-      (if (objectives/open? (objectives/get-objective objective-id))
-        (if-let [stored-answer (answers/store-answer! answer)]
-          {:status ::success :result stored-answer}
-          {:status ::failure})
-        {:status ::objective-drafting-started}) 
+      (if-let [stored-answer (answers/store-answer! answer)]
+        {:status ::success :result stored-answer}
+        {:status ::failure})
       {:status ::entity-not-found})))
 
 (defn toggle-star! [{:keys [objective-uri created-by-id] :as star-data}]
@@ -197,11 +190,9 @@
 
 (defn create-invitation! [{:keys [invited-by-id objective-id] :as invitation-data}]
   (if-let [objective (objectives/get-objective objective-id)]
-    (if (objectives/open? objective)
-      (if (some #{objective-id} (authorised-objectives-for-inviter invited-by-id))
-        {:status ::success :result (invitations/store-invitation! invitation-data)}
-        {:status ::failure})
-      {:status ::objective-drafting-started})
+    (if (some #{objective-id} (authorised-objectives-for-inviter invited-by-id))
+      {:status ::success :result (invitations/store-invitation! invitation-data)}
+      {:status ::failure})
     {:status ::entity-not-found}))
 
 (defn authorised-objectives-for-note-writer [user-id]

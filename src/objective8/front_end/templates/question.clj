@@ -69,10 +69,7 @@
         limit fe-config/answers-pagination 
         answers-count (get-in question [:meta :answers-count])
         more-answers? (> answers-count (+ offset limit))
-        tl8 (tf/translator context)
-        optionally-disable-voting (if (domain/open? (:objective data))
-                                    identity
-                                    (disable-voting context))]
+        tl8 (tf/translator context)]
     (->> (html/at question-template
                   [:title] (html/content (:title doc))
                   [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
@@ -88,11 +85,9 @@
                   [:.clj-answer] (html/clone-for [answer answers]
                                                  [:.clj-answer] (html/set-attr :id (str "answer-" (:_id answer)))
                                                  [:.clj-answer-text] (html/content (:answer answer))
-                                                 [:.clj-approval-form] (comp
-                                                                        optionally-disable-voting
-                                                                        (if user
-                                                                          (voting-actions-when-signed-in context answer)
-                                                                          (voting-actions-when-signed-out context answer)))
+                                                 [:.clj-approval-form] (if user
+                                                                         (voting-actions-when-signed-in context answer)
+                                                                         (voting-actions-when-signed-out context answer))
                                                  [:.clj-writer-note-item-container] (when (:note answer)
                                                                                       (display-writer-note answer)))
                   [:.clj-previous-page] (when (> offset 0)
@@ -102,9 +97,7 @@
                                       (html/set-attr :href (str "/objectives/" (:_id objective)
                                          "/questions/" (:_id question) "?offset=" (+ offset limit)))) 
 
-                  [:.clj-jump-to-answer] (when (and (domain/open? objective) user) identity)
-
-                  [:.clj-answer-new] (when (and (domain/open? objective) (not more-answers?)) identity)
+                  [:.clj-answer-new] (when-not more-answers? identity)
 
                   [:.clj-answer-form] (if user
                                         (html/do->

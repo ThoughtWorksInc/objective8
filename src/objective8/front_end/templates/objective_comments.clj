@@ -19,9 +19,6 @@
 (defn objective-comments-page [{:keys [data doc translations] :as context}]
   (let [objective (:objective data)
         objective-id (:_id objective)
-        optionally-disable-voting (if (domain/open? objective)
-                                    identity
-                                    (pf/disable-voting-actions translations))
         comments (:comments data)
         offset (:offset data)
         total-comments (get-in objective [:meta :comments-count])
@@ -32,9 +29,7 @@
                                            (html/content (:title objective))
                                            (html/set-attr :href (utils/path-for :fe/objective :id objective-id)))
  
-                  [:.clj-comment-list] (html/content
-                                         (optionally-disable-voting
-                                           (pf/comment-list context)))
+                  [:.clj-comment-list] (html/content (pf/comment-list context))
 
                   [:.clj-comment-list] (html/append navigation-snippet)
 

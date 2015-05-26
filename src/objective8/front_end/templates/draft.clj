@@ -67,9 +67,6 @@
   (let [{draft-id :_id :as draft} (:draft data)
         objective (:objective data)
         {objective-id :_id objective-status :status} objective
-        optionally-disable-voting (if (domain/in-drafting? objective) 
-                                    identity
-                                    pf/disable-voting-actions)
         comments (:comments data)
         number-of-comments-shown (count comments)
         comment-history-link (when draft-id (str (utils/path-for :fe/get-comments-for-draft
@@ -96,7 +93,7 @@
              [:.clj-writer-item-list] (html/content (pf/writer-list context))
              [:.clj-draft-comments] (when draft
                                       (html/transformation
-                                        [:.clj-comment-list] (html/content (optionally-disable-voting (pf/comment-list context)))
+                                        [:.clj-comment-list] (html/content (pf/comment-list context))
                                         [:.clj-comment-list] (if (< number-of-comments-shown (get-in draft [:meta :comments-count]))
                                                                (html/append comment-history-snippet)
                                                                identity)
@@ -128,6 +125,4 @@
                                       [:.clj-guidance-buttons] nil
                                       [:.clj-guidance-heading] (html/content (translations :draft-guidance/heading))
 
-                                      [:.clj-draft-wrapper] (if (domain/in-drafting? objective)
-                                                              (html/substitute (draft-wrapper context))
-                                                              (html/content (drafting-begins-in context))))))))))
+                                      [:.clj-draft-wrapper] (html/substitute (draft-wrapper context)))))))))
