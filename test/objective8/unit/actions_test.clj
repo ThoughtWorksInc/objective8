@@ -73,17 +73,6 @@
              (provided
                (up-down-votes/get-vote anything anything) => :a-vote))) 
 
-(facts "about retrieving drafts"
-       (fact "retrieves drafts for an objective"
-             (actions/retrieve-drafts OBJECTIVE_ID) => {:status ::actions/success :result :drafts}
-             (provided
-               (drafts/retrieve-drafts OBJECTIVE_ID) => :drafts))
-
-       (fact "retrieves latest draft for an objective"
-             (actions/retrieve-latest-draft OBJECTIVE_ID) => {:status ::actions/success :result :draft}
-             (provided
-               (drafts/retrieve-latest-draft OBJECTIVE_ID) => :draft)))
-
 (def a-draft {:entity :draft})
 (def a-section {:entity :section :objective-id OBJECTIVE_ID})
 (def comment-data {:comment-on-uri "/entity-uri" 

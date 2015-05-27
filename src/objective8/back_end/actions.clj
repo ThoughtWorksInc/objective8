@@ -42,12 +42,6 @@
   (when (writers/retrieve-writer-for-objective submitter-id objective-id)
     (drafts/store-draft! draft-data)))
 
-(defn retrieve-drafts [objective-id]
-  {:status ::success :result (drafts/retrieve-drafts objective-id)} )
-
-(defn retrieve-latest-draft [objective-id]
-  {:status ::success :result (drafts/retrieve-latest-draft objective-id)})
-
 (defn can-comment-on? [{:keys [entity] :as entity-to-post-to}]
   (case entity
     :objective true

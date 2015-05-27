@@ -430,15 +430,11 @@
 (defn get-draft [{{:keys [id d-id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)]
     (if (= d-id "latest")
-      (let [{status :status draft :result} (actions/retrieve-latest-draft objective-id)]
-        (cond
-          (and (= status ::actions/success) draft)
-          (-> draft
-              response/response
-              (response/content-type "application/json"))
-
-          :else
-          (response/not-found "")))
+      (if-let [draft (drafts/retrieve-latest-draft objective-id)]
+        (-> draft
+            response/response
+            (response/content-type "application/json"))
+        (response/not-found ""))
 
       (if-let [draft (drafts/retrieve-draft-with-comment-count (Integer/parseInt d-id))]
         (-> draft
@@ -447,12 +443,11 @@
         (response/not-found "")))))
 
 (defn retrieve-drafts [{{:keys [id]} :route-params :as request}]
-  (let [objective-id (Integer/parseInt id)
-        {status :status drafts :result} (actions/retrieve-drafts objective-id)]
-    (if (= status ::actions/success)
+  (let [objective-id (Integer/parseInt id)]
+    (if-let [drafts (drafts/retrieve-drafts objective-id)] 
       (-> drafts
           response/response
-          (response/content-type "application/json"))
+          (response/content-type "application/json")) 
       (response/not-found ""))))
 
 ;;SECTION

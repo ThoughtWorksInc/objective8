@@ -834,26 +834,19 @@
 (defn draft-list [{{:keys [id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)
         {objective-status :status objective :result} (http-api/get-objective objective-id)
-        {drafts-status :status drafts :result} (http-api/get-all-drafts objective-id)
-        {writers-status :status writers :result} (http-api/retrieve-writers objective-id)]
-    (cond
-      (every? #(= ::http-api/success %) [drafts-status objective-status writers-status])
-      {:status 200
-       :body (views/draft-list "draft-list" request
-                               :objective objective
-                               :writers writers
-                               :drafts drafts)
-       :headers {"Content-Type" "text/html"}} 
+        drafts (:result (http-api/get-all-drafts objective-id)) 
+        writers (:result (http-api/retrieve-writers objective-id))]
+    (case objective-status
+      ::http-api/success {:status 200
+                          :body (views/draft-list "draft-list" request
+                                                  :objective objective
+                                                  :writers writers
+                                                  :drafts drafts)
+                          :headers {"Content-Type" "text/html"}} 
 
-      (= objective-status ::http-api/success)
-      {:status 200
-       :body (views/draft-list "draft-list" request
-                               :objective objective)
-       :headers {"Content-Type" "text/html"}}
+      ::http-api/not-found (error-404-response request)
 
-      (= objective-status ::http-api/not-found)
-      (error-404-response request)
-      :else {:status 500})))
+      {:status 500})))
 
 (defn draft-section [{:keys [uri] :as request}]
   (let [{section-status :status section :result} (http-api/get-draft-section uri)
