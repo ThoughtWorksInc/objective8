@@ -1,0 +1,6 @@
+---
+ - hosts: dob
+   roles:
+    - common
+    - postgres
+    - nginx

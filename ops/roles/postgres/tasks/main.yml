@@ -10,4 +10,3 @@
 
  - name: install python-psycopg2 (for ansible postgres config)
    apt: name="python-psycopg2" state=present
-

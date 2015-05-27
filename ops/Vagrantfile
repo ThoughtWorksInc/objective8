@@ -25,17 +25,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
-  config.vm.define "dokku" do |dokku|
-    dokku.vm.network "private_network", ip: "192.168.50.51"
-    dokku.vm.network :forwarded_port, guest: 22, host: 2223, id: "ssh", auto_correct: false
+  config.vm.define "dob" do |dob|
+    dob.vm.network "private_network", ip: "192.168.50.51"
+    dob.vm.network :forwarded_port, guest: 22, host: 2223, id: "ssh", auto_correct: false
 
-    dokku.vm.provider :virtualbox do |vbox|
-      vbox.customize ["modifyvm", :id, "--memory", digital_ocean_memory] 
+    dob.vm.provider "virtualbox" do |vbox|
+      vbox.customize ["modifyvm", :id, "--memory", digital_ocean_memory, "--cpus", 1] 
     end
 
-    dokku.vm.provision "ansible" do |ansible|
-      ansible.playbook = "dokku_playbook.yml"
-      ansible.inventory_path = "dokku.inventory"
+    dob.vm.provision "ansible" do |ansible|
+      ansible.playbook = "dob_playbook.yml"
+      ansible.inventory_path = "dob.inventory"
       ansible.sudo = true
     end
   end

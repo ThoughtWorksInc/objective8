@@ -1,9 +1,0 @@
----
- - hosts: dokku
-   roles:
-    - common
-    - dokku
-    - insecure_dev_key
-    - objective8_dokku
-
-

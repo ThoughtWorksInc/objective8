@@ -1,7 +1,0 @@
----
- - name: add key to dokku
-   shell: echo "{{ item }}" | sudo sshcommand acl-add dokku devkey
-   sudo: true
-   with_file:
-     - insecure_dev_key.pub
-
