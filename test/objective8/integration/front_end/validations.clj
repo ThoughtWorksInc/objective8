@@ -22,8 +22,8 @@
 (def participant {:_id USER_ID :username "username" :writer-records []})
 (def writer-for-objective {:_id USER_ID :username "username" :writer-records [{:objective-id OBJECTIVE_ID}]})
 
-(def objective {:_id OBJECTIVE_ID :status "open" :meta {:drafts-count 0 :comments-count 0}})
-(def objective-in-drafting {:_id OBJECTIVE_ID :status "drafting"})
+(def objective {:_id OBJECTIVE_ID :meta {:drafts-count 0 :comments-count 0}})
+(def objective-in-drafting {:_id OBJECTIVE_ID})
 (def question {:_id QUESTION_ID :objective-id OBJECTIVE_ID :question "Why?" :meta {:answers-count 0}})
 (def draft {:_id DRAFT_ID
             :objective-id OBJECTIVE_ID

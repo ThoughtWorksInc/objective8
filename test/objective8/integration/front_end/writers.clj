@@ -472,12 +472,11 @@
                   (:status response) => 401))))
 (facts "about viewing the writer profile"
        (fact "a writer can view their profile with a list of objectives that they are writer for"
-            (against-background 
-              (http-api/get-objectives-for-writer USER_ID) => {:status ::http-api/success 
-                                                               :result [{:_id OBJECTIVE_ID 
-                                                                         :title "Test Objective 1" 
-                                                                         :end-date (-> 25 tc/hours tc/from-now) 
-                                                                         :status "open"}]}   
+            (against-background
+              (http-api/get-objectives-for-writer USER_ID) => {:status ::http-api/success
+                                                               :result [{:_id OBJECTIVE_ID
+                                                                         :title "Test Objective 1"
+                                                                         :end-date (-> 25 tc/hours tc/from-now)}]}
 
               (http-api/find-user-by-username anything) => {:status ::http-api/success
                                                             :result {:_id USER_ID

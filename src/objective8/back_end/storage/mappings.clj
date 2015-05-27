@@ -102,9 +102,8 @@
 (def map->objective
   (db-insertion-mapper "objective"
                        :objective
-                       [:created-by-id :global-id :status :end-date :removed-by-admin]
-                       {:status (partial string->postgres-type "objective_status")
-                        :end-date tc/to-timestamp}))
+                       [:created-by-id :global-id :end-date :removed-by-admin]
+                       {:end-date tc/to-timestamp}))
 
 (def map->comment
   (db-insertion-mapper "comment"

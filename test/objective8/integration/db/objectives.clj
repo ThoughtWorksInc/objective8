@@ -184,18 +184,7 @@
                                           :meta (contains {:starred false})}) 
                                (contains {:_id (:_id starred-objective)
                                           :meta (contains {:starred true})})]
-                              :in-any-order)))
-         
-         (fact "objectives due to start drafting can be retrieved"
-               (let [{username :username :as user} (sh/store-a-user)
-                     {o-id :_id :as past-objective} (sh/store-an-objective-due-for-drafting {:user user})
-                     uri (str "/objectives/" o-id)]
-                 (sh/store-an-objective-in-draft) 
-                 (sh/store-an-open-objective)
-                 (objectives/retrieve-objectives-due-for-drafting) => [(-> past-objective 
-                                                                           (assoc :username username 
-                                                                                  :uri uri)
-                                                                           (dissoc :global-id))]))))
+                              :in-any-order)))))
 
 (facts "about removed-by-admin status"
        (fact "can set objective 'removed-by-admin' to true"

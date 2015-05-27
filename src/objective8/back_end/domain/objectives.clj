@@ -11,7 +11,6 @@
 (defn store-objective! [objective-data]
   (some-> objective-data
           (assoc :entity :objective
-                 :status "open"
                  :removed-by-admin false)
           storage/pg-store!
           (utils/update-in-self [:uri] uri-for-objective)

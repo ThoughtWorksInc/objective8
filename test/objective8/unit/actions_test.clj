@@ -60,11 +60,9 @@
               (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => nil)
              (actions/cast-up-down-vote! vote-data) => {:status ::actions/entity-not-found}))
 
-(def objective-in-drafting {:entity :objective
-                            :status "drafting"})
+(def objective-in-drafting {:entity :objective})
 
-(def objective-not-in-drafting {:entity :objective
-                                :status "open"})
+(def objective-not-in-drafting {:entity :objective})
 
 (facts "about allowing or disallowing voting"
        (against-background
@@ -186,7 +184,7 @@
        (fact "A question can be created when the associated objective is not in drafting"
              (actions/create-question! question) => {:status ::actions/success :result :stored-question} 
              (provided
-               (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
+               (objectives/get-objective OBJECTIVE_ID) => :an-objective
                (writers/retrieve-writer-for-objective USER_ID OBJECTIVE_ID) => nil
                (questions/store-question! question) => :stored-question)))
 
@@ -271,7 +269,7 @@
              (against-background
                (objectives/get-objectives-owned-by-user-id USER_ID) => [])
              (actions/create-invitation! invitation) => {:status ::actions/success
-                                                         :result :stored-invitation} 
+                                                         :result :stored-invitation}
              (provided
                (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
                (writers/retrieve-writers-by-user-id USER_ID) => [{:objective-id OBJECTIVE_ID}]
@@ -283,14 +281,14 @@
              (actions/create-invitation! invitation) => {:status ::actions/success
                                                          :result :stored-invitation} 
              (provided
-               (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
+               (objectives/get-objective OBJECTIVE_ID) => :an-objective
                (objectives/get-objectives-owned-by-user-id USER_ID) => [{:_id OBJECTIVE_ID}]
                (invitations/store-invitation! invitation) => :stored-invitation))
 
        (fact "returns failure status when the inviter is not authorised"
              (actions/create-invitation! invitation) => {:status ::actions/failure}
              (provided
-               (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
+               (objectives/get-objective OBJECTIVE_ID) => :an-objective
                (objectives/get-objectives-owned-by-user-id USER_ID) => []
                (writers/retrieve-writers-by-user-id USER_ID) => []))
 

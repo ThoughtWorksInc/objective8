@@ -35,7 +35,6 @@
   ([entities]
    (let [{user-id :_id} (l-get entities :user (store-a-user))]
      (storage/pg-store! {:entity :objective
-                         :status "open"
                          :removed-by-admin false
                          :title "test title"
                          :description "test description"
@@ -50,7 +49,6 @@
   ([entities]
    (let [{user-id :_id} (l-get entities :user (store-a-user))]
      (storage/pg-store! {:entity :objective
-                         :status "open"
                          :removed-by-admin true
                          :title "test title"
                          :description "test description"
@@ -64,7 +62,6 @@
   (let [{user-id :_id} (l-get required-entities :user (store-a-user))]
     (storage/pg-store! {:entity :objective
                         :created-by-id user-id
-                        :status "open"
                         :removed-by-admin false
                         :end-date (str (tc/ago (tc/days 1)))}))))
 
@@ -75,8 +72,7 @@
                         :title "test title"
                         :description "teset description"
                         :end-date (str (tc/ago (tc/days 1))) 
-                        :removed-by-admin false
-                        :status "drafting"})))
+                        :removed-by-admin false})))
 
 (defn store-an-invitation
   ([] (store-an-invitation {}))

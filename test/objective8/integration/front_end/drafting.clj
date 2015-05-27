@@ -43,8 +43,7 @@
                          :description "my objective description"
                          :end-date (utils/string->date-time "2012-12-12")
                          :username "Barry"
-                         :uri (str "/objectives/" OBJECTIVE_ID)
-                         :status "drafting"})
+                         :uri (str "/objectives/" OBJECTIVE_ID)})
 
 (facts "about writing drafts"
        (against-background
@@ -62,7 +61,7 @@
                    (get-in [:response :status])) => 200
                (provided
                  (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                           :result {:_id 6273 :status "drafting" :entity "objective"}}))
+                                                           :result {:_id 6273 :entity "objective"}}))
 
          (fact "user who is not a writer for an objective can not view add-draft page"
                (-> user-session
@@ -113,8 +112,7 @@
        (fact "anyone can view a particular draft"
              (against-background
                (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
-                                                                   :result {:status "drafting"
-                                                                            :_id OBJECTIVE_ID}}
+                                                                   :result {:_id OBJECTIVE_ID}}
                (http-api/retrieve-writers OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success}
                (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING) 
                => {:status ::http-api/success
@@ -140,8 +138,7 @@
        (fact "anyone can view latest draft"
              (against-background
                (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
-                                                                   :result {:status "drafting"
-                                                                            :_id OBJECTIVE_ID}}
+                                                                   :result {:_id OBJECTIVE_ID}}
                (http-api/retrieve-writers OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success}
                (http-api/get-draft OBJECTIVE_ID_AS_STRING "latest")
                => {:status ::http-api/success
@@ -161,8 +158,7 @@
              (against-background
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result {:_id OBJECTIVE_ID
-                                                                  :end-date (utils/string->date-time "2012-12-12")
-                                                                  :status "drafting"}}
+                                                                  :end-date (utils/string->date-time "2012-12-12")}}
                (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success}
                (http-api/get-all-drafts OBJECTIVE_ID) => {:status ::http-api/success
                                                           :result [{:_id DRAFT_ID
@@ -180,8 +176,7 @@
        (fact "anyone can view difference between drafts"
              (against-background
                (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
-                                                                   :result {:status "drafting"
-                                                                            :_id OBJECTIVE_ID}}
+                                                                   :result {:_id OBJECTIVE_ID}}
                (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING) 
                => {:status ::http-api/success
                    :result {:_id DRAFT_ID
@@ -211,8 +206,7 @@
 (fact "viewing diff page for the first draft returns 404 page"
       (against-background
         (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
-                                                            :result {:status "drafting"
-                                                                     :_id OBJECTIVE_ID}}
+                                                            :result {:_id OBJECTIVE_ID}}
         (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING) 
         => {:status ::http-api/success
             :result {:_id DRAFT_ID

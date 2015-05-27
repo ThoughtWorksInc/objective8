@@ -114,8 +114,7 @@
                (against-background
                  (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
                                                                      :result {:uri OBJECTIVE_URI
-                                                                              :_id OBJECTIVE_ID
-                                                                              :status "drafting"}}
+                                                                              :_id OBJECTIVE_ID}}
                  (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING)
                  => {:status ::http-api/success
                      :result {:uri DRAFT_URI
@@ -138,8 +137,7 @@
                (against-background
                  (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
                                                                      :result {:uri OBJECTIVE_URI
-                                                                              :_id OBJECTIVE_ID
-                                                                              :status "drafting"}}
+                                                                              :_id OBJECTIVE_ID}}
                  (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING)
                  => {:status ::http-api/success
                      :result {:uri DRAFT_URI

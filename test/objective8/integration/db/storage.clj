@@ -18,7 +18,6 @@
                (fact "pg-store! throws org.postgresql.util.PSQLException when insert fails"
                      (let [NOT-EXISTENT-USER-ID 1
                            objective {:entity :objective
-                                      :status "open"
                                       :removed-by-admin false
                                       :created-by-id NOT-EXISTENT-USER-ID
                                       :end-date "2015-01-01T00:00:00Z"
@@ -52,7 +51,6 @@
                ;;OBJECTIVES
                (defn store-an-objective-by [created-by-id]
                   (let [objective {:entity :objective
-                                   :status "open"
                                    :removed-by-admin false
                                    :created-by-id created-by-id
                                    :end-date "2015-01-01T00:00:00Z"
@@ -68,10 +66,6 @@
                                                                        :username username
                                                                        :end-date "2015-01-01T00:00:00.000Z"
                                                                        :title "title"})))
-
-               (fact "the status of an objective can be updated"
-                     (let [objective (sh/store-an-open-objective)]
-                      (:status (storage/pg-update-objective! objective :status "drafting")) => "drafting")) 
 
                ;;COMMENTS
                (fact "a comment entity can be stored in the database"
@@ -192,7 +186,6 @@
                (fact "an invitation can be retrieved by uuid"
                      (let [user-id (:_id (sh/store-a-user))
                            objective-id (:_id (storage/pg-store! {:entity :objective
-                                                                  :status "open"
                                                                   :removed-by-admin false
                                                                   :created-by-id user-id
                                                                   :end-date "2015-01-01"}))
