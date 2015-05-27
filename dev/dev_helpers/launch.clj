@@ -43,7 +43,6 @@
 
 (defn stop []
   (alter-var-root #'the-system stop-server)
-  (core/stop-scheduler)
   (log/info "Objective8 server stopped."))
 
 (defn make-launcher-map [configs]

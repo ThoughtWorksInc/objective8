@@ -24,7 +24,6 @@
             [objective8.front-end.handlers :as front-end-handlers]
             [objective8.back-end.domain.users :as users]
             [objective8.back-end.handlers :as back-end-handlers]
-            [objective8.back-end.scheduler :as scheduler]
             [objective8.back-end.storage.storage :as storage]
             [objective8.back-end.storage.database :as db]
             [objective8.back-end.domain.bearer-tokens :as bt])
@@ -144,7 +143,6 @@
          identity))))
 
 (defonce server (atom nil))
-(defonce scheduler (atom nil))
 
 (def app-config
   {:authentication {:allow-anon? true
@@ -181,16 +179,6 @@
     (let [admins (clojure.string/split admins-var #" ")]
         (doall (map store-admin admins)))))
 
-(defn start-scheduler []
-  (reset! scheduler 
-          (scheduler/start-chime (Integer/parseInt (config/get-var "SCHEDULER_INTERVAL_MINUTES" "10"))))
-  (log/info "Starting scheduler"))
-
-(defn stop-scheduler []
-  (when @scheduler
-    (do (@scheduler)
-        (log/info "Stopping scheduler"))))
-
 (defn start-server 
   ([]
    (start-server app-config)) 
@@ -207,7 +195,6 @@
 (defn stop-server []
   (when-not (nil? @server)
     (log/info "Stopping objective8")
-    (stop-scheduler)
     (@server)
     (reset! server nil)))
 

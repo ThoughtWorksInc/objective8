@@ -25,7 +25,6 @@
 
          (fact "creates a draft when submitter id is a writer for the objective and drafting has started"
                (let [{objective-id :objective-id submitter-id :user-id} (sh/store-a-writer)
-                     _ (sh/start-drafting! objective-id)
                      draft-data {:objective-id objective-id
                                  :submitter-id submitter-id
                                  :content some-hiccup}

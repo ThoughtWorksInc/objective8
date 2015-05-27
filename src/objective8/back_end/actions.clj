@@ -38,11 +38,7 @@
          :status ::success})
     {:status ::failure}))
 
-(defn start-drafting! [objective-id]
-  (let [objective (storage/pg-retrieve-entity-by-uri (str "/objectives/" objective-id) :with-global-id)]
-    (doall (->> (invitations/retrieve-active-invitations objective-id)
-                (map invitations/expire-invitation!)))
-    (storage/pg-update-objective! objective :status "drafting")))
+(defn start-drafting! [] nil)
 
 (defn update-objectives-due-for-drafting! []
   (doall (->> (objectives/retrieve-objectives-due-for-drafting)
