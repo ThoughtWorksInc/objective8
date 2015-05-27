@@ -138,7 +138,6 @@
          (translations :question-actions/answers))))
 
 (defn question-list-items [list-item-snippet questions translations]
-  (prn "question-list" questions)
   (html/at list-item-snippet
            [:.clj-question-item] 
            (html/clone-for [question questions]

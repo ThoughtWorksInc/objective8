@@ -876,6 +876,9 @@
                                   :comments (:comments comments-data))
        :headers {"Content-Type" "text/html"}}
 
+      (= ::http-api/not-found)
+      (error-404-response request)
+
       :else {:status 500})))
 
 (defn post-up-vote [request]
