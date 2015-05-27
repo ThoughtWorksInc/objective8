@@ -232,7 +232,7 @@
                    {status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/draft :id OBJECTIVE_ID :d-id DRAFT_ID))
                                                    :response)]
-               (count (re-seq #"draft-add-inline-comment" body)) => 2
+               (count (re-seq #"\"draft-add-inline-comment" body)) => 2
                body => (contains (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID "/sections/" SECTION_LABEL))
                body => (contains (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID "/sections/" SECTION_LABEL_2)))))
 

@@ -1,5 +1,9 @@
-mixin addCommentButton()
-  .draft-add-inline-comment
-    a.clj-annotation-link.func--annotation-link(href="/draft-annotation", title="!Annotations", data-l8n="attr/title:draft/annotation-link-title", data="!3")
-      i.fa.fa-plus-square-o.fa-lg
+mixin addCommentButton(count)
+  .draft-add-inline-comment.clj-draft-add-inline-comment
+    a.clj-annotation-link.func--annotation-link(href="/draft-annotation", title="!Annotations", data-l8n="attr/title:draft/annotation-link-title")
+      if count > 0
+        i.fa.fa-comment-o.fa-lg
+        span.draft-add-inline-comment-count.clj-draft-add-inline-comment-count.func--annotation-count #{count}
+      else
+        i.fa.fa-comment-o.fa-lg
   block

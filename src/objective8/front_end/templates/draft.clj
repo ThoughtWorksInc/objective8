@@ -35,25 +35,25 @@
                                 (utils/local-path-for :fe/draft :id objective-id
                                                       :d-id next-id)))))))
 
-(def section-link-snippet (first (html/select draft-template [:.draft-add-inline-comment])))
+(def section-link-snippet (first (html/select draft-template [:.clj-draft-add-inline-comment])))
 
 (defn annotation-count-for-section [section-label sections]
-  (if-let [section-index (->> sections 
+  (when-let [section-index (->> sections 
                               (keep-indexed #(when (= section-label (:section-label %2)) %1))
                               first)]
     (-> sections
         (nth section-index)
-        (get-in [:meta :annotations-count]))
-   0))
+        (get-in [:meta :annotations-count]))))
 
 (defn update-section-link-with-label [label {:keys [data] :as context}]
   (let [draft-id  (get-in data [:draft :_id]) 
         objective-id (get-in data [:draft :objective-id])
-        sections (:sections data)]
+        sections (:sections data)
+        annotation-count (annotation-count-for-section label sections)]
     (html/at section-link-snippet
-             [:.clj-annotation-link] (html/do-> 
-                                       (html/set-attr :href (utils/path-for :fe/draft-section :id objective-id :d-id draft-id :section-label label))
-                                       (html/set-attr :data (annotation-count-for-section label sections))))))
+             [:.clj-annotation-link] (html/set-attr :href (utils/path-for :fe/draft-section :id objective-id :d-id draft-id :section-label label))
+                                       
+             [:.clj-draft-add-inline-comment-count] (when annotation-count (html/content (str annotation-count))))))
 
 (defn add-section-link [context node]
   (let [section-label (get-in node [:attrs :data-section-label])]

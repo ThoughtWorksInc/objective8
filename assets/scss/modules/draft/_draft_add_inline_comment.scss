@@ -4,14 +4,18 @@
   position: absolute;
   right: 0;
   a {
+    @include mq(768) {
+      width: $comment_icon_size;
+    }
     position: relative;
     display: inline-block;
-    @include size($comment_icon_size);
-    @include hide-icon-text;
+    width: 2.2em;
+    height: $comment_icon_size;
     font-size: 16px;
-    opacity: 0.25;
+    opacity: 0.35;
     color: currentColor;
     transition: opacity 250ms ease;
+    text-decoration: none;
     &:hover {
       opacity: 1;
     }
@@ -34,3 +38,8 @@
     }
   }
 }
+
+.draft-add-inline-comment-count {
+  margin-left: 2em;
+}
+

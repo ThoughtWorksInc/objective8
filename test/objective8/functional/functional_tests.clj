@@ -576,6 +576,18 @@
       => {:annotation "my draft section annotation"
           :annotation-reason  "Section is difficult to understand"})
 
+(fact "Can view number of annotations on a section"
+     (try
+       (wd/click ".func--back-to-draft")
+       (wait-for-title "Policy draft | Objective[8]")
+       (screenshot "draft_with_one_annotation")
+
+       (wd/text ".func--annotation-count")
+       (catch Exception e
+         (screenshot "ERROR-Can-view-number-of-annotations-on-a-section")  
+         (throw e))) 
+      => "1")
+
 (fact "Can navigate to import from Google Drive"
       (try
         (wd/to (str (:objective-url @journey-state) "/drafts"))
