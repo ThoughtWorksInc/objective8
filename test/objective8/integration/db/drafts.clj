@@ -28,7 +28,7 @@
           (after :facts (ih/truncate-tables))]
 
          (fact "a draft can be retrieved by id"
-               (let [objective (sh/store-an-open-objective)
+               (let [objective (sh/store-an-objective)
 
                      first-draft (sh/store-a-draft {:objective objective})
                      {second-draft-id :_id :as second-draft} (sh/store-a-draft {:objective objective})
@@ -87,7 +87,7 @@
                  (first (drafts/retrieve-drafts objective-id)) => (contains {:meta (contains {:annotations-count 3})})))
 
          (fact "the latest draft can be retrieved"
-               (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+               (let [{objective-id :_id :as objective} (sh/store-an-objective)
                      first-draft (sh/store-a-draft {:objective objective})
                      latest-draft (sh/store-a-draft {:objective objective})
                      latest-draft-uri (uri-for-draft latest-draft)]

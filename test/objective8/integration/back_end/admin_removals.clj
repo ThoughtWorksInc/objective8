@@ -21,7 +21,7 @@
               (let [admin-uri (->> (sh/store-an-admin)
                                   :_id
                                   (str "/users/"))
-                    objective-uri (->> (sh/store-an-open-objective)
+                    objective-uri (->> (sh/store-an-objective)
                                        :_id
                                        (str "/objectives/"))
                     removal-data {:removal-uri objective-uri
@@ -69,7 +69,7 @@
                (let [user-uri (->> (sh/store-a-user)
                                    :_id
                                    (str "/users/"))
-                     objective-uri (->> (sh/store-an-open-objective)
+                     objective-uri (->> (sh/store-an-objective)
                                         :_id
                                         (str "/objectives/"))
                      removal-data {:removal-uri objective-uri

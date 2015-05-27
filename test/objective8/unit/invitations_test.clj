@@ -11,14 +11,14 @@
 
 
 (facts "about accepting an invitation"
-       (fact "returns the accepted invitation when the associated objective is not in drafting"
+       (fact "returns the accepted invitation"
              (invitations/accept-invitation! invitation) => :accepted-invitation
              (provided
                (storage/pg-update-invitation-status! invitation "accepted") => :accepted-invitation)))
 
 
 (facts "about declining an invitation"
-       (fact "returns the declined invitation when the associated objective is not in drafting"
+       (fact "returns the declined invitation"
              (invitations/decline-invitation! invitation) => :declined-invitation
              (provided
                (storage/pg-update-invitation-status! invitation "declined") => :declined-invitation)))

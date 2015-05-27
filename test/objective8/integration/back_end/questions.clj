@@ -48,7 +48,7 @@
           (after :facts (helpers/truncate-tables))]
 
          (fact "the posted question is stored, and the resource location is reported"
-               (let [{obj-id :_id user-id :created-by-id} (sh/store-an-open-objective)
+               (let [{obj-id :_id user-id :created-by-id} (sh/store-an-objective)
                      question (a-question obj-id user-id)
                      {response :response} (p/request app (str "/api/v1/objectives/" obj-id "/questions")
                                                      :request-method :post
@@ -60,7 +60,7 @@
                                                                         "/questions/"))))
 
          (fact "a question posted by a writer is automatically marked"
-               (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+               (let [{objective-id :_id :as objective} (sh/store-an-objective)
                      {writer-id :user-id} (sh/store-a-writer {:objective objective})
                      question (a-question objective-id writer-id)
                      {response :response} (p/request app (str "/api/v1/objectives/" objective-id "/questions")
@@ -76,14 +76,14 @@
                (against-background
                  (questions/store-question! anything) =throws=> (org.postgresql.util.PSQLException.
                                                                   (org.postgresql.util.ServerErrorMessage. "" 0)))
-               (let [{obj-id :_id} (sh/store-an-open-objective)]
+               (let [{obj-id :_id} (sh/store-an-objective)]
                  (:response (p/request app (str "/api/v1/objectives/" obj-id "/questions")
                                        :request-method :post
                                        :content-type "application/json"
                                        :body (the-question-as-json)))) => (contains {:status 400}))
 
          (fact "a 400 status is returned if a map->question exception is raised"
-               (let [{obj-id :_id} (sh/store-an-open-objective)]
+               (let [{obj-id :_id} (sh/store-an-objective)]
                  (:response (p/request app (str "/api/v1/objectives/" obj-id "/questions")
                                        :request-method :post
                                        :content-type "application/json"
@@ -124,7 +124,7 @@
          (after :facts (helpers/truncate-tables))]
 
         (fact "questions can be retrieved for an objective"
-             (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+             (let [{objective-id :_id :as objective} (sh/store-an-objective)
                    question-1 (sh/store-a-question {:objective objective})
                    question-2 (sh/store-a-question {:objective objective})
                    {response :response} (p/request app (str "/api/v1/objectives/" objective-id "/questions"))
@@ -133,7 +133,7 @@
                (:body response) => (helpers/json-contains (map contains expected-result) :in-any-order)))
 
          (fact "questions for an objective can be retrieved sorted by answer counts"
-               (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+               (let [{objective-id :_id :as objective} (sh/store-an-objective)
                     {one-answer-q-id  :_id :as question-with-one-answer} (sh/store-a-question {:objective objective})
                     {two-answer-q-id :_id :as question-with-two-answers} (sh/store-a-question {:objective objective})]
                     (sh/store-an-answer {:question question-with-one-answer})
@@ -147,7 +147,7 @@
                                                                             (contains {:_id one-answer-q-id})])))
 
          (fact "marks on questions are included when questions are retrieved for an objective"
-               (let [objective (sh/store-an-open-objective)
+               (let [objective (sh/store-an-objective)
                      {marked-by :username :as marking-user} (sh/store-a-user)
                      marking-writer (sh/store-a-writer {:invitation (sh/store-an-invitation {:objective objective})
                                                         :user marking-user})
@@ -166,7 +166,7 @@
                                                             :in-any-order)))
          
          (fact "answer-counts for questions are included when questions are retrieved for an objective"
-               (let [objective (sh/store-an-open-objective)
+               (let [objective (sh/store-an-objective)
                      question (sh/store-a-question {:objective objective})] 
 
                      (sh/store-an-answer {:question question}) 
@@ -185,7 +185,7 @@
           (after :facts (helpers/truncate-tables))]
 
          (fact "the posted mark is stored"
-             (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+             (let [{objective-id :_id :as objective} (sh/store-an-objective)
                    invitation (sh/store-an-invitation {:objective objective})
                    {question-id :_id} (sh/store-a-question {:objective objective})
                    {user-id :user-id} (sh/store-a-writer {:invitation invitation})
@@ -208,7 +208,7 @@
                (:headers response) => (helpers/location-contains "/api/v1/meta/marks/")))
 
          (fact "posting a mark referring to a marked question toggles the existing mark"
-               (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+               (let [{objective-id :_id :as objective} (sh/store-an-objective)
                      invitation (sh/store-an-invitation {:objective objective})
                      {question-id :_id :as question} (sh/store-a-question {:objective objective})
                      {user-id :user-id} (sh/store-a-writer {:invitation invitation})

@@ -11,7 +11,7 @@
           (after :facts (ih/truncate-tables))]
          
          (fact "stars on an objective can be stored"
-               (let [{objective-id :_id user-id :created-by-id} (sh/store-an-open-objective)
+               (let [{objective-id :_id user-id :created-by-id} (sh/store-an-objective)
                      star-data {:created-by-id user-id :objective-id objective-id}]
                  (stars/store-star! star-data) => (contains {:_id integer?
                                                              :objective-id objective-id

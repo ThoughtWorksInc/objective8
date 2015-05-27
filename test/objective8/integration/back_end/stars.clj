@@ -18,7 +18,7 @@
           (after :facts (helpers/truncate-tables))]
 
         (fact "the posted star is stored"
-              (let [{user-id :created-by-id objective-id :_id} (sh/store-an-open-objective)
+              (let [{user-id :created-by-id objective-id :_id} (sh/store-an-objective)
                     objective-uri (str "/objectives/" objective-id)
                     data {:objective-uri objective-uri
                           :created-by-id user-id}
@@ -36,7 +36,7 @@
         (tabular
          (fact "posting a star to an objective that has been starred by the posting user toggles the star state"
                (let [{user-id :_id :as user} (sh/store-a-user)
-                     {objective-id :_id :as starred-objective} (sh/store-an-open-objective)
+                     {objective-id :_id :as starred-objective} (sh/store-an-objective)
                      _ (sh/store-a-star {:user user :objective starred-objective :active ?active})
 
                      objective-uri (str "/objectives/" objective-id)

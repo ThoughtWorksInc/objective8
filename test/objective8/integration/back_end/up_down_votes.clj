@@ -64,11 +64,10 @@
                                                                                   :vote-type :up}))]
                  (:status response) => 200))
 
-         (fact "A vote can be cast against a comment on an open objective"
+         (fact "A vote can be cast against a comment on an objective"
                (let [{voting-user-id :_id} (sh/store-a-user)
-                     objective (sh/store-an-open-objective)
+                     objective (sh/store-an-objective)
                      the-comment (sh/store-a-comment {:entity objective})
-
                      uri (str "/comments/" (:_id the-comment))
                      {response :response} (p/request app (utils/path-for :api/post-up-down-vote)
                                                      :request-method :post

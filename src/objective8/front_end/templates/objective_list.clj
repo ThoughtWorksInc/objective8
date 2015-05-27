@@ -14,7 +14,6 @@
 (def objective-list-item-resource (html/select pf/library-html-resource [:.clj-objective-list-item]))
 (def objective-list-item-removal-container (html/select objective-list-resource 
                                                         [:.clj-objective-list-item-removal-container]))
-(def objective-list-item-drafting-begins (html/select objective-list-resource [:.clj-objective-drafting-begins]))
 
 (defn removal-container [{:keys [title uri] :as objective}]
   (html/at objective-list-item-removal-container

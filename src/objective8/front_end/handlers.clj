@@ -36,7 +36,6 @@
 
 (defn format-objective [objective]
   (-> objective
-      (assoc :days-until-drafting-begins (utils/days-until (:end-date objective)))
       (update-in [:end-date] utils/date-time->pretty-date)))
 
 ;; HANDLERS

@@ -434,7 +434,7 @@
         (try
           (wd/to (:objective-url @journey-state))
           (wait-for-title "Functional test headline | Objective[8]")
-          (screenshot "drafting_started_objective")
+          (screenshot "objective_with_a_draft")
 
           (wd/click ".func--drafting-message-link")
           (wait-for-title "Drafts | Objective[8]")

@@ -11,7 +11,7 @@
          (after :facts (ih/truncate-tables))]
 
         (fact "can get a stored question by its uri"
-              (let [{objective-id :_id} (sh/store-an-open-objective)
+              (let [{objective-id :_id} (sh/store-an-objective)
                     {created-by-id :_id creator-name :username :as question-creator} (sh/store-a-user)
                     question-data {:created-by-id created-by-id
                                    :objective-id objective-id
@@ -30,7 +30,7 @@
                                                                  :answers-count 0}}))
 
         (fact "attempting to get a question by a bad uri gives no result"
-              (let [{objective-id :_id} (sh/store-an-open-objective)
+              (let [{objective-id :_id} (sh/store-an-objective)
                     {created-by-id :_id creator-name :username :as question-creator} (sh/store-a-user)
                     question-data {:created-by-id created-by-id
                                    :objective-id objective-id
@@ -40,7 +40,7 @@
                 (questions/get-question bad-question-uri) => nil))
 
         (fact "questions can be sorted by numbers of answers"
-              (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+              (let [{objective-id :_id :as objective} (sh/store-an-objective)
 
                     {three-answer-question-id  :_id :as question-with-three-answers} (sh/store-a-question {:objective objective})
                     {one-answer-question-id  :_id :as question-with-one-answer} (sh/store-a-question {:objective objective})
@@ -77,7 +77,7 @@
                 (questions/get-question question-uri) => (contains {:meta (contains {:marked false})})))
 
         (fact "can get questions for an objective along with marking information"
-              (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+              (let [{objective-id :_id :as objective} (sh/store-an-objective)
                     
                     marked-question (sh/store-a-question {:objective objective})
                     _ (sh/store-a-mark {:question marked-question})
@@ -102,7 +102,7 @@
                (questions/get-question question-uri) => (contains {:meta (contains {:answers-count 2})})))
        
        (fact "can get questions for an objective with number of answers included"
-            (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+            (let [{objective-id :_id :as objective} (sh/store-an-objective)
                   objective-uri (str "/objectives/" objective-id)
                   question-1 (sh/store-a-question {:objective objective})
                   question-2 (sh/store-a-question {:objective objective})]

@@ -127,7 +127,7 @@
          (after :facts (helpers/truncate-tables))]
 
         (fact "retrieves comments sorted by number of up-votes when sorting type is 'up-votes'"
-              (let [objective (sh/store-an-open-objective)
+              (let [objective (sh/store-an-objective)
                     
                     comment-with-most-votes (sh/store-a-comment {:entity objective})
                     _ (sh/store-an-up-down-vote (:global-id comment-with-most-votes) :up)
@@ -156,7 +156,7 @@
           (after :facts (helpers/truncate-tables))]
 
          (fact "retrieves only those comments for the entity at <uri> that have writer-notes attached"
-               (let [objective (sh/store-an-open-objective)
+               (let [objective (sh/store-an-objective)
                      
                      {comment-without-note-id :_id} (sh/store-a-comment {:entity objective :comment-text "without note"})
                      {comment-with-note-id :_id} (-> (sh/store-a-comment {:entity objective :comment-text "with note"})
@@ -179,7 +179,7 @@
           (after :facts (helpers/truncate-tables))]
 
          (fact "retrieves the first 50 comments for the entity at <uri>, starting from the <n+1>th comment"
-               (let [objective (sh/store-an-open-objective)
+               (let [objective (sh/store-an-objective)
 
                      stored-comments (doall (->> (repeat {:entity objective})
                                                  (take 10)
@@ -198,7 +198,7 @@
           (after :facts (helpers/truncate-tables))]
 
          (fact "retrieves the first 50 comments for the entity at <uri>, starting from the <n+1>th comment"
-               (let [objective (sh/store-an-open-objective)
+               (let [objective (sh/store-an-objective)
                      
                      stored-comments (doall (->> (repeat {:entity objective})
                                                  (take 10)

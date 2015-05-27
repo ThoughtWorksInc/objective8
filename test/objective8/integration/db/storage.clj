@@ -70,7 +70,7 @@
                ;;COMMENTS
                (fact "a comment entity can be stored in the database"
                      (let [{user-id :_id username :username} (sh/store-a-user)
-                           {objective-id :_id comment-on-id :global-id} (sh/store-an-open-objective)
+                           {objective-id :_id comment-on-id :global-id} (sh/store-an-objective)
                            comment {:entity :comment
                                     :created-by-id user-id
                                     :objective-id objective-id
@@ -85,7 +85,7 @@
                ;;QUESTIONS
                (fact "a question entity can be stored in the database"
                      (let [{user-id :_id username :username} (sh/store-a-user)
-                           {objective-id :_id} (sh/store-an-open-objective)
+                           {objective-id :_id} (sh/store-an-objective)
                            question {:entity :question
                                      :created-by-id user-id
                                      :objective-id objective-id
@@ -97,8 +97,8 @@
                                                                        :objective-id objective-id})))
                (fact "questions can be retrieved by objective ID"
                      (let [{user-id :_id username :username} (sh/store-a-user)
-                           {an-objective-id :_id} (sh/store-an-open-objective)
-                           {another-objective-id :_id} (sh/store-an-open-objective)
+                           {an-objective-id :_id} (sh/store-an-objective)
+                           {another-objective-id :_id} (sh/store-an-objective)
                            question-1 {:entity :question :created-by-id user-id :objective-id an-objective-id :question "A question"}
                            question-2 {:entity :question :created-by-id user-id :objective-id an-objective-id :question "A question"}
                            question-3 {:entity :question :created-by-id user-id :objective-id another-objective-id :question "Another question"}
@@ -110,7 +110,7 @@
                                                      (assoc stored-question-2 :username username)]))
 
                (fact "quesitons can be retrieved ordered by most answered"
-                     (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+                     (let [{objective-id :_id :as objective} (sh/store-an-objective)
                            {username :username :as user} (sh/store-a-user)
 
                            question-with-three-answers (sh/store-a-question {:objective objective :user user})
@@ -168,7 +168,7 @@
                ;;INVITATIONS
                (fact "an invitation entity can be stored in the database"
                      (let [{user-id :_id} (sh/store-a-user)
-                           {objective-id :_id} (sh/store-an-open-objective)
+                           {objective-id :_id} (sh/store-an-objective)
                            invitation {:entity :invitation
                                        :invited-by-id user-id
                                        :objective-id objective-id
@@ -199,7 +199,7 @@
                ;;WRITERS
                (fact "a writer entity can be stored in the database"
                      (let [{user-id :_id} (sh/store-a-user)
-                           {objective-id :_id} (sh/store-an-open-objective)
+                           {objective-id :_id} (sh/store-an-objective)
                            {invitation-id :_id} (sh/store-an-invitation)
                            writer {:entity :writer
                                    :user-id user-id
@@ -254,7 +254,7 @@
               ;;STARS
               (facts "about stars"
                      (fact "a star can be stored in the database"
-                           (let [{objective-id :_id user-id :created-by-id} (sh/store-an-open-objective)
+                           (let [{objective-id :_id user-id :created-by-id} (sh/store-an-objective)
                                  star {:entity :star
                                        :objective-id objective-id
                                        :created-by-id user-id
@@ -359,7 +359,7 @@
           (after :facts (truncate-tables))]
 
          (fact "can retrieve objectives by global id"
-               (let [{global-id :global-id :as objective} (sh/store-an-open-objective)]
+               (let [{global-id :global-id :as objective} (sh/store-an-objective)]
                  (storage/pg-retrieve-entity-by-global-id global-id) => (contains objective)))
 
          (fact "can retrieve drafts by global id"
@@ -376,23 +376,23 @@
               (storage/pg-retrieve-entity-by-uri "/some/nonsense") => nil)
 
         (fact "by default, entities are retrieved without global id"
-              (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+              (let [{objective-id :_id :as objective} (sh/store-an-objective)
                     uri (str "/objectives/" objective-id)]
                 (storage/pg-retrieve-entity-by-uri uri) => (contains (dissoc objective :global-id))
                 (storage/pg-retrieve-entity-by-uri uri) =not=> (contains {:global-id anything})))
 
         (fact "global id can be optionally included"
-              (let [{objective-id :_id global-id :global-id :as objective} (sh/store-an-open-objective)
+              (let [{objective-id :_id global-id :global-id :as objective} (sh/store-an-objective)
                     uri (str "/objectives/" objective-id)]
                 (storage/pg-retrieve-entity-by-uri uri :with-global-id) => (contains {:global-id global-id})))
 
         (fact "uri is included in the retrieved entity"
-              (let [{objective-id :_id global-id :global-id :as objective} (sh/store-an-open-objective)
+              (let [{objective-id :_id global-id :global-id :as objective} (sh/store-an-objective)
                     uri (str "/objectives/" objective-id)]
                 (storage/pg-retrieve-entity-by-uri uri) => (contains {:uri uri})))
 
         (fact "objectives can be retrieved by uri"
-              (let [{o-id :_id :as objective} (sh/store-an-open-objective)
+              (let [{o-id :_id :as objective} (sh/store-an-objective)
                     objective-uri (str "/objectives/" o-id)]
                 (storage/pg-retrieve-entity-by-uri objective-uri :with-global-id) => (contains objective)))
         

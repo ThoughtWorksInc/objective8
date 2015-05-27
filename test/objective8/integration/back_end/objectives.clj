@@ -40,7 +40,7 @@
 
   (facts "GET /api/v1/objectives returns a list of non-removed objectives in reverse chronological order"
          (fact "objectives are returned as a list"
-               (let [stored-objectives (doall (repeatedly 5 sh/store-an-open-objective))
+               (let [stored-objectives (doall (repeatedly 5 sh/store-an-objective))
                      {response :response} (p/request app "/api/v1/objectives")]
                  (:body response) => (helpers/json-contains (map contains (->> stored-objectives
                                                                                (map #(dissoc % :global-id))
@@ -54,7 +54,7 @@
 
   (facts "GET /api/v1/objectives?include-removed=true returns a list of all objectives, including removed"
          (fact "all objectives are returned as a list"
-               (let [stored-objectives (doall (repeatedly 2 sh/store-an-open-objective))
+               (let [stored-objectives (doall (repeatedly 2 sh/store-an-objective))
                      stored-removed-objectives (doall (repeatedly 2 sh/store-an-admin-removed-objective))
                      {response :response} (p/request app "/api/v1/objectives?include-removed=true")
                      default-response (p/request app "/api/v1/objectives")]
@@ -68,9 +68,9 @@
 
   (facts "GET /api/v1/objectives?user-id=<user-id>"
          (fact "returns a list of objectives with meta information for signed-in user"
-               (let [unstarred-objective (sh/store-an-open-objective)
+               (let [unstarred-objective (sh/store-an-objective)
                      {user-id :_id :as user} (sh/store-a-user)
-                     starred-objective (sh/store-an-open-objective)
+                     starred-objective (sh/store-an-objective)
                      stored-star (sh/store-a-star {:user user :objective starred-objective})
                      {response :response} (p/request app (str "/api/v1/objectives?user-id=" user-id))] 
                  (:body response) => (helpers/json-contains [(contains {:meta (contains {:starred true})})
@@ -79,9 +79,9 @@
   (facts "GET /api/v1/objectives?starred=true&user-id=<user-id>"
          (fact "retrieves objectives in reverse chronological order that have been starred by user with given user-id"
                (let [{user-id :_id :as user} (sh/store-a-user)
-                     starred-objectives [(sh/store-an-open-objective)
+                     starred-objectives [(sh/store-an-objective)
                                          (sh/store-an-objective-in-draft)]
-                     unstarred-objective (sh/store-an-open-objective)
+                     unstarred-objective (sh/store-an-objective)
 
                      stored-stars (doall (map sh/store-a-star
                                               [{:user user :objective (first starred-objectives)}
@@ -94,7 +94,7 @@
   (facts "GET /api/v1/objectives/:id"
          (fact "gets an objective along with its meta information"
                (let [{username :username :as user} (sh/store-a-user) 
-                     stored-objective (sh/store-an-open-objective {:user user})
+                     stored-objective (sh/store-an-objective {:user user})
 
                      _ (sh/store-a-comment {:entity stored-objective})
                      _ (sh/store-a-star {:objective stored-objective})
@@ -121,7 +121,7 @@
   (facts "GET /api/v1/objectives/:id?signed-in-id=<user-id>"
          (fact "retrieves the objective by its id, along with meta-information relevant for the signed in user"
                (let [objective-creator (sh/store-a-user)
-                     {o-id :_id :as starred-objective} (sh/store-an-open-objective {:user objective-creator})
+                     {o-id :_id :as starred-objective} (sh/store-an-objective {:user objective-creator})
                      {user-id :_id :as user} (sh/store-a-user)
                      _ (sh/store-a-star {:user user :objective starred-objective})
 

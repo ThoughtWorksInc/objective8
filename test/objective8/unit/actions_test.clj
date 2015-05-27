@@ -60,30 +60,26 @@
               (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => nil)
              (actions/cast-up-down-vote! vote-data) => {:status ::actions/entity-not-found}))
 
-(def objective-in-drafting {:entity :objective})
-
-(def objective-not-in-drafting {:entity :objective})
+(def an-objective {:entity :objective})
 
 (facts "about allowing or disallowing voting"
        (against-background
          (up-down-votes/get-vote anything anything) => nil
-         (objectives/get-objective anything) => objective-not-in-drafting
-         (objectives/get-objective :objective-in-drafting) => objective-in-drafting
-         (objectives/get-objective :objective-not-in-drafting) => objective-not-in-drafting
-         (storage/pg-retrieve-entity-by-global-id :objective-in-drafting-global-id) => objective-in-drafting)
+         (objectives/get-objective anything) => an-objective
+         (storage/pg-retrieve-entity-by-global-id :an-objective-global-id) => an-objective)
 
        (fact "the same user cannot vote twice on the same entity"
-             (actions/allowed-to-vote? objective-not-in-drafting :vote-data) => falsey
+             (actions/allowed-to-vote? an-objective :vote-data) => falsey
              (provided
                (up-down-votes/get-vote anything anything) => :a-vote))) 
 
 (facts "about retrieving drafts"
-       (fact "retrieves drafts for an objective that is in drafting"
+       (fact "retrieves drafts for an objective"
              (actions/retrieve-drafts OBJECTIVE_ID) => {:status ::actions/success :result :drafts}
              (provided
                (drafts/retrieve-drafts OBJECTIVE_ID) => :drafts))
 
-       (fact "retrieves latest draft for an objective that is in drafting"
+       (fact "retrieves latest draft for an objective"
              (actions/retrieve-latest-draft OBJECTIVE_ID) => {:status ::actions/success :result :draft}
              (provided
                (drafts/retrieve-latest-draft OBJECTIVE_ID) => :draft)))
@@ -100,11 +96,11 @@
 
 
 (facts "about creating comments"
-       (fact "can comment on an objective that is not in drafting"
+       (fact "can comment on an objective"
              (actions/create-comment! comment-data) => {:status ::actions/success :result :the-stored-comment}
              (provided
-               (storage/pg-retrieve-entity-by-uri "/entity-uri" :with-global-id) => objective-not-in-drafting
-               (comments/store-comment-for! objective-not-in-drafting comment-data) => :the-stored-comment))
+               (storage/pg-retrieve-entity-by-uri "/entity-uri" :with-global-id) => an-objective
+               (comments/store-comment-for! an-objective comment-data) => :the-stored-comment))
 
        (fact "can comment on a draft"
              (actions/create-comment! comment-data) => {:status ::actions/success :result :the-stored-comment}
@@ -181,7 +177,7 @@
 (def question {:objective-id OBJECTIVE_ID :created-by-id USER_ID})
 
 (facts "about creating questions"
-       (fact "A question can be created when the associated objective is not in drafting"
+       (fact "A question can be created"
              (actions/create-question! question) => {:status ::actions/success :result :stored-question} 
              (provided
                (objectives/get-objective OBJECTIVE_ID) => :an-objective
@@ -242,7 +238,7 @@
 
 
 (facts "about creating an answer"
-       (fact "succeeds when the associated objective is not in drafting and the question exists" 
+       (fact "succeeds when the question exists" 
              (actions/create-answer! answer) => {:status ::actions/success
                                                  :result :stored-answer} 
              (provided
@@ -265,21 +261,21 @@
 
 
 (facts "about creating an invitation"
-       (fact "succeeds when the associated objective is not in drafting and the inviter is an existing writer"
+       (fact "succeeds when the inviter is an existing writer"
              (against-background
                (objectives/get-objectives-owned-by-user-id USER_ID) => [])
              (actions/create-invitation! invitation) => {:status ::actions/success
                                                          :result :stored-invitation}
              (provided
-               (objectives/get-objective OBJECTIVE_ID) => {:status "open"}
+               (objectives/get-objective OBJECTIVE_ID) => :an-objective
                (writers/retrieve-writers-by-user-id USER_ID) => [{:objective-id OBJECTIVE_ID}]
                (invitations/store-invitation! invitation) => :stored-invitation))
 
-       (fact "succeeds when the associated objective is not in drafting and the inviter is the objective owner"
+       (fact "succeeds when the inviter is the objective owner"
              (against-background
                (writers/retrieve-writers-by-user-id USER_ID) => [])
              (actions/create-invitation! invitation) => {:status ::actions/success
-                                                         :result :stored-invitation} 
+                                                         :result :stored-invitation}
              (provided
                (objectives/get-objective OBJECTIVE_ID) => :an-objective
                (objectives/get-objectives-owned-by-user-id USER_ID) => [{:_id OBJECTIVE_ID}]

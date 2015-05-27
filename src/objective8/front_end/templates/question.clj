@@ -35,12 +35,6 @@
     [:.clj-up-score] (html/content (str (get-in answer [:votes :up])))
     [:.clj-down-score] (html/content (str (get-in answer [:votes :down])))))
 
-(defn disable-voting [{:keys [translations] :as context}]
-  (html/transformation
-   [:.clj-approval-button] (comp
-                            (html/set-attr :disabled "disabled")
-                            (html/set-attr :title (translations :answer-votes/drafting-started)))))
-
 (defn display-writer-note [answer]
   (html/transformation
     [:.clj-writer-note-item-content] (html/content (:note answer))))

@@ -314,8 +314,6 @@ add-comment-form,comment-reason-expand,Section needs more information
 add-comment-form,comment-reason-suggestion,Suggestion for consideration
 add-comment-form,comment-reason-language,"Grammar, spelling, or structure"
 add-comment-form,comment-reason-general,General feedback
-comment-votes,drafting-started,Voting has been frozen for this objective as it is now in drafting.
-answer-votes,drafting-started,Voting has been frozen for this objective as it is now in drafting.
 invite-writer,doc-title,"Invite a writer -"
 invite-writer,doc-description,Invite a writer to draft policy
 invite-writer,section-title,Invite a policy writer for:

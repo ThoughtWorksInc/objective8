@@ -113,15 +113,6 @@
                                         [:.clj-comment-history-link] (html/set-attr :href comment-history-link)
                                         [:.clj-comment-create] (html/content (pf/comment-create context :draft)))))))
 
-(def drafting-begins-in-snippet (html/select pf/library-html-resource [:.clj-drafting-begins-in]))
-
-(defn drafting-begins-in [{:keys [data] :as context}]
-  (let [end-date (get-in data [:objective :end-date])
-        drafting-begins-in-days (get-in data [:objective :days-until-drafting-begins])]
-    (html/at drafting-begins-in-snippet
-             [:.clj-drafting-begins-in] (html/set-attr :drafting-begins-date end-date)
-             [:.clj-drafting-begins-in-days] (html/content (str drafting-begins-in-days)))))
-
 (defn draft-page [{:keys [translations data doc] :as context}]
   (let [objective (:objective data)]
     (apply str

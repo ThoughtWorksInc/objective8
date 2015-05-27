@@ -23,7 +23,7 @@
                                 (helpers/truncate-tables)))
           (after :facts (helpers/truncate-tables))]
 
-         (fact "creates a draft when submitter id is a writer for the objective and drafting has started"
+         (fact "creates a draft when submitter id is a writer for the objective"
                (let [{objective-id :objective-id submitter-id :user-id} (sh/store-a-writer)
                      draft-data {:objective-id objective-id
                                  :submitter-id submitter-id
@@ -39,7 +39,7 @@
                  (:status response) => 201))
 
          (fact "a draft is not created when submitter id is not a writer for the objective"
-               (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+               (let [{objective-id :_id :as objective} (sh/store-an-objective)
                      {submitter-id :_id} (sh/store-a-user)
                      the-draft {:objective-id objective-id
                                 :submitter-id submitter-id 

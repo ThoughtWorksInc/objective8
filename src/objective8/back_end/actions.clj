@@ -110,7 +110,7 @@
           (create-reason-for-comment! reason stored-comment)
           {:status ::success :result stored-comment})
         {:status ::failure})
-      {:status ::objective-drafting-started})
+      {:status ::failure})
     (if-let [section-data (uris/uri->section-data comment-on-uri)]
       (create-section-comment! section-data comment-data)
       {:status ::entity-not-found})))

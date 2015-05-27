@@ -81,7 +81,7 @@
         (recur (inc i))))))
 
 (defn seed-comments []
-  (let [objective (sh/store-an-open-objective)
+  (let [objective (sh/store-an-objective)
         user (sh/store-a-user)]
     (loop [i 0]
       (when (< i 120)
@@ -91,7 +91,7 @@
         (recur (inc i))))))
 
 (defn seed-questions []
-  (let [objective (sh/store-an-open-objective)
+  (let [objective (sh/store-an-objective)
         user (sh/store-a-user)]
     (loop [i 0]
       (when (< i 120)

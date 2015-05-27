@@ -29,7 +29,7 @@
 
         (fact "comments can be stored against an objective"
               (let [{user-id :_id :as user} (sh/store-a-user)
-                    {o-id :_id :as objective} (sh/store-an-open-objective)
+                    {o-id :_id :as objective} (sh/store-an-objective)
                     uri-for-objective (str "/objectives/" o-id)
                     comment-data {:comment-on-uri uri-for-objective
                                   :comment "A comment"
@@ -61,7 +61,7 @@
           (after :facts (ih/truncate-tables))]
 
          (fact "gets the comments in the requested order"
-               (let [objective (sh/store-an-open-objective)
+               (let [objective (sh/store-an-objective)
                      objective-uri (str "/objectives/" (:_id objective))
 
                      {first-comment-id :_id} (-> (sh/store-a-comment {:entity objective}) (sh/with-votes {:up 2 :down 1}))
@@ -81,7 +81,7 @@
 
 
          (fact "filters comments according to filter type"
-               (let [objective (sh/store-an-open-objective)
+               (let [objective (sh/store-an-objective)
                      objective-uri (str "/objectives/" (:_id objective))
                      {comment-without-note-id :_id} (sh/store-a-comment {:entity objective :comment-text "without note"})
                      {comment-with-note-id :_id} (-> (sh/store-a-comment {:entity objective :comment-text "with note"})
@@ -92,7 +92,7 @@
                                                                                          :in-any-order)))
 
          (fact "limits the number of comments retrieved"
-               (let [objective (sh/store-an-open-objective)
+               (let [objective (sh/store-an-objective)
                      objective-uri (str "/objectives/" (:_id objective))
                      stored-comments (doall (->> (repeat {:entity objective})
                                                  (take 10)
@@ -100,7 +100,7 @@
                  (count (comments/get-comments objective-uri {:limit 5})) => 5))
 
          (fact "returns a specified offset and limit of comments"
-               (let [objective (sh/store-an-open-objective)
+               (let [objective (sh/store-an-objective)
                      objective-uri (str "/objectives/" (:_id objective))
                      first-comment (sh/store-a-comment {:entity objective})
                      oldest-comment-to-retrieve (sh/store-a-comment {:entity objective})
@@ -112,7 +112,7 @@
 
          (tabular
            (fact "gets comments with aggregate votes"
-                 (let [objective (sh/store-an-open-objective)
+                 (let [objective (sh/store-an-objective)
                        objective-uri (str "/objectives/" (:_id objective))
 
                        comment (-> (sh/store-a-comment {:entity objective}) (sh/with-votes {:up 2 :down 10}))]
@@ -142,7 +142,7 @@
 
          (tabular
            (fact "gets comments with user name"
-                 (let [objective (sh/store-an-open-objective)
+                 (let [objective (sh/store-an-objective)
                        objective-uri (str "/objectives/" (:_id objective))
 
                        user (sh/store-a-user)
@@ -154,7 +154,7 @@
 
          (tabular
            (fact "gets comments with uris rather than global ids"
-                 (let [objective (sh/store-an-open-objective)
+                 (let [objective (sh/store-an-objective)
                        objective-uri (str "/objectives/" (:_id objective))
 
                        comment (sh/store-a-comment {:entity objective})

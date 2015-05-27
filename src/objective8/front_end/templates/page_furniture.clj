@@ -138,13 +138,6 @@
    [:.clj-up-vote-count] (html/content (str (get-in comment [:votes :up])))
    [:.clj-down-vote-count] (html/content (str (get-in comment [:votes :down])))))
 
-(defn disable-voting-actions [translations]
-  (html/transformation
-    [:.clj-actions-vote-button] 
-    (comp
-      (html/set-attr :disabled "disabled")
-      (html/set-attr :title (translations :comment-votes/drafting-started)))))
-
 (def empty-comment-list-item-snippet (html/select library-html-resource [:.clj-empty-comment-list-item]))
 
 (def comment-list-item-snippet (html/select library-html-resource [:.clj-comment-item])) 

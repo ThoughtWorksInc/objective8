@@ -38,12 +38,12 @@
 
 (def user-session (ih/test-context))
 
-(def drafting-objective {:_id OBJECTIVE_ID
-                         :title "my objective title"
-                         :description "my objective description"
-                         :end-date (utils/string->date-time "2012-12-12")
-                         :username "Barry"
-                         :uri (str "/objectives/" OBJECTIVE_ID)})
+(def an-objective {:_id OBJECTIVE_ID
+                   :title "my objective title"
+                   :description "my objective description"
+                   :end-date (utils/string->date-time "2012-12-12")
+                   :username "Barry"
+                   :uri (str "/objectives/" OBJECTIVE_ID)})
 
 (facts "about writing drafts"
        (against-background
@@ -95,18 +95,7 @@
                                                          :params {:action "submit"
                                                                   :content SOME_MARKDOWN}))]
                  (:headers response) => (ih/location-contains (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID))
-                 (:status response) => 302)) 
-
-         (fact "posting a draft to an objective that's not in drafting returns a 404 response"
-               (against-background
-                 (http-api/post-draft anything) => {:status ::http-api/not-found})
-               (let [{response :response} (-> user-session
-                                              ih/sign-in-as-existing-user
-                                              (p/request (utils/path-for :fe/add-draft-post :id OBJECTIVE_ID)
-                                                         :request-method :post
-                                                         :params {:action "submit"
-                                                                  :content SOME_MARKDOWN}))]
-                 (:status response) => 404))))
+                 (:status response) => 302))))
 
 (facts "about viewing drafts"
        (fact "anyone can view a particular draft"
@@ -203,29 +192,29 @@
                (:status response) => 200
                (:body response) => (contains "<span>eading</span>")))
 
-(fact "viewing diff page for the first draft returns 404 page"
-      (against-background
-        (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
-                                                            :result {:_id OBJECTIVE_ID}}
-        (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING) 
-        => {:status ::http-api/success
-            :result {:_id DRAFT_ID
-                     :_created_at "2015-03-24T17:06:37.714Z"
-                     :content SOME_HICCUP
-                     :objective-id OBJECTIVE_ID
-                     :submitter-id USER_ID
-                     :username "username"
-                     :next-draft-id 4
-                     :previous-draft-id nil}})
+       (fact "viewing diff page for the first draft returns 404 page"
+             (against-background
+               (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
+                                                                   :result {:_id OBJECTIVE_ID}}
+               (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING) 
+               => {:status ::http-api/success
+                   :result {:_id DRAFT_ID
+                            :_created_at "2015-03-24T17:06:37.714Z"
+                            :content SOME_HICCUP
+                            :objective-id OBJECTIVE_ID
+                            :submitter-id USER_ID
+                            :username "username"
+                            :next-draft-id 4
+                            :previous-draft-id nil}})
 
-      (let [{response :response} (p/request user-session draft-diff-url)]
-        (:status response) => 404))) 
+             (let [{response :response} (p/request user-session draft-diff-url)]
+               (:status response) => 404))) 
 
 (facts "about rendering draft page"
        (fact "adds section links before elements with section labels"
              (against-background
                (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
-                                                                   :result drafting-objective} 
+                                                                   :result an-objective} 
                (http-api/get-draft OBJECTIVE_ID_AS_STRING
                                    DRAFT_ID_AS_STRING) => {:status ::http-api/success
                                                            :result {:_id DRAFT_ID
@@ -257,13 +246,13 @@
                                                                   :username "username"}}
          (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}} 
          (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                   :result drafting-objective})
+                                                   :result an-objective})
        (let [{status :status body :body} (-> user-session
                                              (ih/sign-in-as-existing-user)
                                              (p/request (utils/path-for :fe/import-draft-get
                                                                         :id OBJECTIVE_ID))
                                              :response)]
-         
+
          (fact "the cancel link is set correctly" 
                body => (contains (str "href=\"/objectives/" OBJECTIVE_ID "/drafts\"")))
          (fact "the form action is set correctly"

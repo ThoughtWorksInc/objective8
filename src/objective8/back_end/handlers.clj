@@ -301,11 +301,8 @@
                                           "/answers/" (:_id answer))
                                      answer)
 
-          ::actions/objective-drafting-started 
-          (forbidden-response "New content cannot be posted against this objective as it is now in drafting.")
-
           ::actions/entity-not-found
-          (not-found-response "Question does not exist")  
+          (not-found-response "Question does not exist")
 
           ;; default
           (internal-server-error "Error when posting comment")))
@@ -353,20 +350,14 @@
   (try
     (let [invitation-data (br/request->invitation-data request)
           {status :status stored-invitation :result} (actions/create-invitation! invitation-data)]
-      (cond
-        (= status ::actions/success)
+      (case status 
+        ::actions/success (resource-created-response 
+                            (str utils/host-url
+                                 "/api/v1/objectives/" (:objective-id stored-invitation)
+                                 "/writer-invitations/" (:_id stored-invitation)) stored-invitation)
 
-        (resource-created-response (str utils/host-url
-                                        "/api/v1/objectives/" (:objective-id stored-invitation)
-                                        "/writer-invitations/" (:_id stored-invitation)) stored-invitation)
+        ::actions/entity-not-found (not-found-response "Entity does not exist")
 
-        (= status ::actions/objective-drafting-started)
-        (forbidden-response "New content cannot be posted against this objective as it is now in drafting.")
-
-        (= status ::actions/entity-not-found)
-        (not-found-response "Entity does not exist")
-
-        :else
         (internal-server-error "Error when posting invitation")))
     (catch Exception e
       (log/info "Error when posting an invitation: " e)
@@ -446,9 +437,6 @@
           (-> draft
               response/response
               (response/content-type "application/json"))
-
-          (= status ::actions/objective-drafting-not-started)
-          {:status 403}
 
           :else
           (response/not-found "")))

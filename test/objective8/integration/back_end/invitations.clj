@@ -36,7 +36,7 @@
           (after :facts (helpers/truncate-tables))]
 
          (fact "the invitation is stored when the inviter is authorised"
-               (let [{obj-id :_id created-by-id :created-by-id} (sh/store-an-open-objective)
+               (let [{obj-id :_id created-by-id :created-by-id} (sh/store-an-objective)
                      invitation (an-invitation obj-id created-by-id)
                      {response :response} (p/request app (str "/api/v1/objectives/" obj-id "/writer-invitations")
                                                      :request-method :post
@@ -50,7 +50,7 @@
                (against-background
                  (invitations/store-invitation! anything) =throws=> (org.postgresql.util.PSQLException.
                                                                       (org.postgresql.util.ServerErrorMessage. "" 0)))
-               (let [{obj-id :_id user-id :created-by-id} (sh/store-an-open-objective)]
+               (let [{obj-id :_id user-id :created-by-id} (sh/store-an-objective)]
                  (get-in (p/request app (str "/api/v1/objectives/" obj-id "/writer-invitations")
                                     :request-method :post
                                     :content-type "application/json"

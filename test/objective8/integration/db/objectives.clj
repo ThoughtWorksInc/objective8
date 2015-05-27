@@ -43,20 +43,20 @@
                 (objectives/get-objective objective-id) =not=> (contains {:global-id anything})))
 
         (fact "the objective is retrieved along with the number of times it has been starred"
-              (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+              (let [{objective-id :_id :as objective} (sh/store-an-objective)
                     _ (sh/store-a-star {:objective objective}) 
                     _ (sh/store-a-star {:objective objective})]
                 (objectives/get-objective objective-id) => (contains {:meta (contains {:stars-count 2})})))
 
         (fact "the objective is retrieved along with the number of comments posted against it"
-              (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+              (let [{objective-id :_id :as objective} (sh/store-an-objective)
                     _ (sh/store-a-comment {:entity objective})
                     _ (sh/store-a-comment {:entity objective})]
                 (objectives/get-objective objective-id) => (contains {:meta (contains {:comments-count 2})})))
         
         (fact "can retrieve a stored objective with meta information relevant to a signed in user"
               (let [objective-creator (sh/store-a-user)
-                    {o-id :_id :as starred-objective} (sh/store-an-open-objective {:user objective-creator})
+                    {o-id :_id :as starred-objective} (sh/store-an-objective {:user objective-creator})
 
                     {signed-in-user-id :_id :as user} (sh/store-a-user)
                     _ (sh/store-a-star {:objective starred-objective :user user})
@@ -97,7 +97,7 @@
          
          (fact "the retrieved list of objectives does not include removed objectives"
                (let [{username :username :as user} (sh/store-a-user) 
-                     stored-objective  (sh/store-an-open-objective {:user user})
+                     stored-objective  (sh/store-an-objective {:user user})
                      expected-retrieved-objective (-> stored-objective
                                                       (assoc :username username)
                                                       (assoc :uri (str "/objectives/" (:_id stored-objective)))
@@ -107,7 +107,7 @@
 
          (fact "can retrieve objectives with removed objectives if specified"
                (let [{username :username :as user} (sh/store-a-user) 
-                     stored-objective  (sh/store-an-open-objective {:user user})
+                     stored-objective  (sh/store-an-objective {:user user})
                      removed-objective (sh/store-an-admin-removed-objective {:user user}) 
                      expected-retrieved-objective (-> stored-objective
                                                       (assoc :username username)
@@ -122,9 +122,9 @@
 
          (fact "can retrieve a list of objectives created by a given user"
                (let [{user-id :_id :as user} (sh/store-a-user)
-                     {first-objective-id :_id} (sh/store-an-open-objective {:user user})
-                     {second-objective-id :_id} (sh/store-an-open-objective {:user user})
-                     non-owned-objective (sh/store-an-open-objective)]
+                     {first-objective-id :_id} (sh/store-an-objective {:user user})
+                     {second-objective-id :_id} (sh/store-an-objective {:user user})
+                     non-owned-objective (sh/store-an-objective)]
                  (objectives/get-objectives-owned-by-user-id user-id) 
                  => (contains [(contains {:_id first-objective-id})
                                (contains {:_id second-objective-id})] 
@@ -132,17 +132,17 @@
 
          (fact "can retrieve a list of writer objectives for a given user"
                (let [{user-id :_id username :username :as user} (sh/store-a-user)
-                     stored-objective (sh/store-an-open-objective {:user user})
+                     stored-objective (sh/store-an-objective {:user user})
                      retrieved-objective (-> stored-objective
                                              (assoc :username username
                                                     :uri (str "/objectives/" (:_id stored-objective)))
                                              (dissoc :global-id))
-                     second-stored-objective (sh/store-an-open-objective {:user user})
+                     second-stored-objective (sh/store-an-objective {:user user})
                      second-retrieved-objective (-> second-stored-objective
                                                     (assoc :username username
                                                            :uri (str "/objectives/" (:_id second-stored-objective)))
                                                     (dissoc :global-id))
-                     objective-for-another-user (sh/store-an-open-objective)]
+                     objective-for-another-user (sh/store-an-objective)]
 
                  (sh/store-a-writer {:objective stored-objective :user user})
                  (sh/store-a-writer {:objective second-stored-objective :user user})
@@ -153,13 +153,13 @@
                                                                          :in-any-order)))
 
          (fact "can retrieve a list of starred objectives for a given user"
-               (let [non-starred-objective (sh/store-an-open-objective)
+               (let [non-starred-objective (sh/store-an-objective)
 
-                     starred-objective-for-a-different-user (sh/store-an-open-objective)
+                     starred-objective-for-a-different-user (sh/store-an-objective)
                      _ (sh/store-a-star {:objective starred-objective-for-a-different-user})
 
                      {username :username :as objective-creator} (sh/store-a-user)
-                     {starred-objective-id :_id :as starred-objective} (sh/store-an-open-objective {:user objective-creator})
+                     {starred-objective-id :_id :as starred-objective} (sh/store-an-objective {:user objective-creator})
                      starred-objective-uri (str "/objectives/" starred-objective-id)
                      {user-id :created-by-id} (sh/store-a-star {:objective starred-objective})]
                  (objectives/retrieve-starred-objectives user-id) => [(-> starred-objective
@@ -168,13 +168,13 @@
                                                                           (dissoc :global-id))]))
 
          (fact "can retrieve objectives with the meta information relevant for a signed in user"
-               (let [non-starred-objective (sh/store-an-open-objective)
+               (let [non-starred-objective (sh/store-an-objective)
 
-                     starred-objective-for-a-different-user (sh/store-an-open-objective)
+                     starred-objective-for-a-different-user (sh/store-an-objective)
                      _ (sh/store-a-star {:objective starred-objective-for-a-different-user})
 
                      {username :username :as objective-creator} (sh/store-a-user)
-                     starred-objective (sh/store-an-open-objective {:user objective-creator})
+                     starred-objective (sh/store-an-objective {:user objective-creator})
 
                      {user-id :created-by-id} (sh/store-a-star {:objective starred-objective})]
                  (objectives/get-objectives-as-signed-in-user user-id)
@@ -188,7 +188,7 @@
 
 (facts "about removed-by-admin status"
        (fact "can set objective 'removed-by-admin' to true"
-             (let [{o-id :_id :as objective} (sh/store-an-open-objective)
+             (let [{o-id :_id :as objective} (sh/store-an-objective)
                    uri (str "/objectives/" o-id)]
                (:removed-by-admin objective) => false
                (objectives/admin-remove-objective! objective) => (-> (dissoc objective :global-id) 

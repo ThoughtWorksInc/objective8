@@ -60,23 +60,19 @@
                status => 200
                body => helpers/no-untranslated-strings)))
 
-(def drafting-objective {:_id OBJECTIVE_ID
-                         :title "my objective title"
-                         :description "my objective description"
-                         :end-date (utils/string->date-time "2012-12-12")
-                         :username "Barry"
-                         :uri (str "/objectives/" OBJECTIVE_ID)
-                         :meta {:comments-count 100}})
-
-(def open-objective (assoc drafting-objective
-                           :end-date (utils/date-time->date-time-plus-30-days (utils/current-time))))
-
+(def an-objective {:_id OBJECTIVE_ID
+                   :title "my objective title"
+                   :description "my objective description"
+                   :end-date (utils/string->date-time "2012-12-12")
+                   :username "Barry"
+                   :uri (str "/objectives/" OBJECTIVE_ID)
+                   :meta {:comments-count 100}})
 
 (facts "about rendering objective-list page"
        (fact "there are no untranslated strings"
              (against-background
                (http-api/get-objectives) => {:status ::http-api/success 
-                                             :result [drafting-objective open-objective]})
+                                             :result [an-objective an-objective]})
              (let [{status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/objective-list))
                                                    :response)]
@@ -101,7 +97,7 @@
        (fact "there are no untranslated strings"
              (against-background 
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                         :result open-objective}
+                                                         :result an-objective}
                (http-api/get-comments anything anything)=> {:status ::http-api/success :result []}
                (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success :result []}
                (http-api/retrieve-questions OBJECTIVE_ID) => {:status ::http-api/success :result []}) 
@@ -115,8 +111,8 @@
        (fact "there are no untranslated strings for viewing all comments on an objective"
              (against-background 
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                         :result open-objective}
-               (http-api/get-comments (:uri open-objective) anything) => {:status ::http-api/success 
+                                                         :result an-objective}
+               (http-api/get-comments (:uri an-objective) anything) => {:status ::http-api/success 
                                                                           :result []})
              (let [{status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/get-comments-for-objective 
@@ -155,7 +151,7 @@
        (fact "there are no untranslated strings"
              (against-background 
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                         :result open-objective}
+                                                         :result an-objective}
                (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success 
                                                                     :result a-question}
                (http-api/retrieve-answers QUESTION_URI anything) => {:status ::http-api/success
@@ -176,7 +172,7 @@
                                                                :result {:_id USER_ID
                                                                         :username "username"}}
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                        :result open-objective})
+                                                        :result an-objective})
              (let [{status :status body :body} (-> user-session
                                                    (helpers/sign-in-as-existing-user)
                                                    (p/request (utils/path-for :fe/add-a-question :id OBJECTIVE_ID))
@@ -193,7 +189,7 @@
                                                                         :username "username"}}
                (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}}
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                        :result open-objective})
+                                                        :result an-objective})
              (let [{status :status body :body} (-> user-session
                                                    (helpers/sign-in-as-existing-user)
                                                    (p/request (utils/path-for :fe/invite-writer :id OBJECTIVE_ID))
@@ -205,7 +201,7 @@
        (fact "there are no untranslated strings"
              (against-background
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                         :result drafting-objective} 
+                                                         :result an-objective} 
                (http-api/get-all-drafts OBJECTIVE_ID) => {:status ::http-api/success
                                                           :result [{:_id DRAFT_ID
                                                                     :content SOME_HICCUP
@@ -226,7 +222,7 @@
        (fact "there are no untranslated strings"
              (against-background
                (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
-                                                                   :result drafting-objective} 
+                                                                   :result an-objective} 
                (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING) => {:status ::http-api/success
                                                                                   :result {:_id DRAFT_ID
                                                                                            :content SOME_HICCUP_WITH_LABELS
@@ -254,7 +250,7 @@
        (fact "there are no untranslated strings"
              (against-background
                (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
-                                                                   :result drafting-objective} 
+                                                                   :result an-objective} 
                (http-api/get-draft OBJECTIVE_ID_AS_STRING DRAFT_ID_AS_STRING) 
                => {:status ::http-api/success
                    :result {:_id DRAFT_ID
@@ -290,7 +286,7 @@
                                                                         :username "username"}}
                (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}} 
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                         :result drafting-objective})
+                                                         :result an-objective})
              (let [user-session (helpers/test-context)
                    {status :status body :body} (-> user-session
                                                    (helpers/sign-in-as-existing-user)
@@ -309,7 +305,7 @@
                                                                         :username "username"}}
                (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}} 
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                         :result drafting-objective})
+                                                         :result an-objective})
              (let [{status :status body :body} (-> user-session
                                                    (helpers/sign-in-as-existing-user)
                                                    (p/request (utils/path-for :fe/import-draft-get
@@ -385,7 +381,7 @@
               (fact "there are no untranslated strings"
                     (against-background
                      (http-api/get-objective anything) => {:status ::http-api/success
-                                                                    :result (assoc open-objective :meta {:stars 1})}
+                                                                    :result (assoc an-objective :meta {:stars 1})}
                      (http-api/retrieve-questions anything anything) => {:status ::http-api/success
                                                                          :result []}
                      (http-api/retrieve-answers anything anything) => {:status ::http-api/success
@@ -401,7 +397,7 @@
               (fact "there are no untranslated strings"
                     (against-background
                      (http-api/get-objective anything) => {:status ::http-api/success
-                                                                    :result (assoc open-objective :meta {:stars 1})}
+                                                                    :result (assoc an-objective :meta {:stars 1})}
                      (http-api/get-all-drafts anything) => {:status ::http-api/success
                                                             :result []}
                      (http-api/get-comments anything anything) => {:status ::http-api/success

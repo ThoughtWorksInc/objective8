@@ -11,7 +11,7 @@
          (after :facts (ih/truncate-tables))]
 
         (facts "a mark can be stored for a question"
-               (let [{objective-id :_id :as objective} (sh/store-an-open-objective)
+               (let [{objective-id :_id :as objective} (sh/store-an-objective)
 
                      {question-id :_id} (sh/store-a-question {:objective objective})
                      {user-id :user-id} (sh/store-a-writer {:invitation (sh/store-an-invitation {:objective objective})})

@@ -48,7 +48,7 @@
 
          (fact "returns 403 status when no active invitation exists with given uuid"
                (let [{invitee-id :_id} (sh/store-a-user)
-                     {objective-id :_id} (sh/store-an-open-objective)
+                     {objective-id :_id} (sh/store-an-objective)
                      writer-data {:invitation-uuid "nonexistent uuid"
                                   :invitee-id invitee-id
                                   :objective-id objective-id
@@ -85,9 +85,9 @@
        
        (fact "retrieves list of objectives that belongs to the writer"
              (let [{user-id :_id :as user} (sh/store-a-user)
-                   objective (sh/store-an-open-objective)
-                   second-objective (sh/store-an-open-objective)
-                   objective-for-another-user (sh/store-an-open-objective)
+                   objective (sh/store-an-objective)
+                   second-objective (sh/store-an-objective)
+                   objective-for-another-user (sh/store-an-objective)
                    _ (sh/store-a-writer {:objective objective :user user})
                    _ (sh/store-a-writer {:objective second-objective :user user})
                    _ (sh/store-a-writer {:objective objective-for-another-user})

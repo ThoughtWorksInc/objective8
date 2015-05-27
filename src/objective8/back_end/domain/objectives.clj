@@ -72,14 +72,6 @@
       (get-objectives-as-signed-in-user signed-in-id))
     (retrieve-objectives include-removed?)))
 
-(defn retrieve-objectives-due-for-drafting []
-  (->> (storage/pg-retrieve {:entity :objective 
-                             :end-date ['< (mappings/iso-date-time->sql-time (utils/current-time))]
-                             :status (mappings/string->postgres-type "objective_status" "open")}) 
-       :result
-       (map #(dissoc % :global-id))
-       (map #(utils/update-in-self % [:uri] uri-for-objective))))
-
 (defn get-objectives-owned-by-user-id [user-id]
  (->> (storage/pg-retrieve {:entity :objective
                             :created-by-id user-id})
