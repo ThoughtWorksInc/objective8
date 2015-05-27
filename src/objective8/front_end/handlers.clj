@@ -750,15 +750,14 @@
 
 (defn import-draft-get [{{objective-id :id} :route-params :as request}]
   (let [{objective-status :status objective :result} (http-api/get-objective (Integer/parseInt objective-id))]
-    (cond
-      (= objective-status ::http-api/success)
-      (if (= "drafting" (:status objective))
-        {:status 200
-         :headers {"Content-Type" "text/html"}      
-         :body (views/import-draft "import-draft" request :objective-id objective-id)} 
-        {:status 401}) 
-      (= objective-status ::http-api/not-found) (error-404-response request)
-      :else {:status 500})))
+    (case objective-status
+      ::http-api/success {:status 200
+                          :headers {"Content-Type" "text/html"}
+                          :body (views/import-draft "import-draft" request :objective-id objective-id)}
+
+      ::http-api/not-found (error-404-response request)
+
+      {:status 500})))
 
 (defn import-draft-post [{:keys [params route-params] :as request}]
   (let [draft-data (fr/request->imported-draft-data request (get (friend/current-authentication) :identity))]

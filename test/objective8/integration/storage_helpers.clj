@@ -231,9 +231,6 @@
     (store-an-annotation {:section section-entity :reason reason}))
   section-entity)
 
-(defn start-drafting! [objective-id]
-  (actions/start-drafting! objective-id)) 
-
 (defn retrieve-invitation [invitation-id]
   (-> (storage/pg-retrieve {:entity :invitation :_id invitation-id}) 
       :result

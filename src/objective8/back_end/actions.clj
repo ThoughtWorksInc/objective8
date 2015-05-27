@@ -38,12 +38,6 @@
          :status ::success})
     {:status ::failure}))
 
-(defn start-drafting! [] nil)
-
-(defn update-objectives-due-for-drafting! []
-  (doall (->> (objectives/retrieve-objectives-due-for-drafting)
-              (map #(start-drafting! (:_id %))))))
-
 (defn submit-draft! [{:keys [submitter-id objective-id] :as draft-data}]
   (when (writers/retrieve-writer-for-objective submitter-id objective-id)
     (drafts/store-draft! draft-data)))

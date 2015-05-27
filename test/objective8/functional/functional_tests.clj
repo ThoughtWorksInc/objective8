@@ -398,15 +398,9 @@
         (catch Exception e
           (screenshot "ERROR-can-access-dashboard-from-profile-page")
           (throw e)))
-      => (contains (str (:objective-url @journey-state) "/dashboard/questions"))
-      )
+      => (contains (str (:objective-url @journey-state) "/dashboard/questions")))
 
-(against-background
-  [(before :contents (-> (:objective-url @journey-state)
-                         (string/split #"/")
-                         last
-                         Integer/parseInt
-                         actions/start-drafting!))]
+
   (fact "Can submit a draft"
         (try
           (wd/to (str (:objective-url @journey-state) "/drafts"))
@@ -763,4 +757,4 @@
           (catch Exception e
             (screenshot "ERROR-Can-view-the-removed-objective-on-the-admin-activity-page") 
             (throw e)))
-        => (contains objective-uri)))))
+        => (contains objective-uri))))
