@@ -56,11 +56,6 @@
 (defn current-time []
   (time-core/now))
 
-(defn days-until [date-time]
-  (if (time-core/after? (current-time) date-time)
-    0
-    (time-core/in-days (time-core/interval (current-time) date-time))))
-
 (defn string->date-time [date-string]
   (time-format/parse (time-format/formatters :year-month-day) date-string))
 
@@ -82,9 +77,6 @@
 
 (defn iso-time-string->pretty-time [iso-time-string]
   (time-format/unparse pretty-date-time (time-string->date-time iso-time-string)))
-
-(defn date-time->date-time-plus-30-days [date-time]
-  (time-core/plus date-time (time-core/days 30)))
 
 (defn- regex-checker
   [fragment-regex]

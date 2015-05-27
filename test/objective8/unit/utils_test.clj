@@ -3,13 +3,6 @@
             [clj-time.core :as time-core] 
             [objective8.utils :refer :all])) 
 
-(fact "should add 30 days to given time"
-      (date-time->date-time-plus-30-days (time-core/date-time 2015 10 01 4 3 27 456)) => 
-      (time-core/date-time 2015 10 31 4 3 27 456))
-
-(fact "should return number of days until given time"
-      (days-until (time-core/plus (time-core/now) (time-core/hours 36))) => 1)
-
 (fact "generate-random-uuid returns a long random string"
       (let [uuid1 (generate-random-uuid)
             uuid2 (generate-random-uuid)]

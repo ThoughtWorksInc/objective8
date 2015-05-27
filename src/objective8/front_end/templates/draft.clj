@@ -79,7 +79,7 @@
 (defn draft-wrapper [{:keys [data user] :as context}]
   (let [{draft-id :_id :as draft} (:draft data)
         objective (:objective data)
-        {objective-id :_id objective-status :status} objective
+        {objective-id :_id} objective
         comments (:comments data)
         number-of-comments-shown (count comments)
         comment-history-link (when draft-id (str (utils/path-for :fe/get-comments-for-draft
