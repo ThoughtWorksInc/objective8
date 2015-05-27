@@ -80,7 +80,7 @@
          (fact "retrieves objectives in reverse chronological order that have been starred by user with given user-id"
                (let [{user-id :_id :as user} (sh/store-a-user)
                      starred-objectives [(sh/store-an-objective)
-                                         (sh/store-an-objective-in-draft)]
+                                         (sh/store-an-objective)]
                      unstarred-objective (sh/store-an-objective)
 
                      stored-stars (doall (map sh/store-a-star

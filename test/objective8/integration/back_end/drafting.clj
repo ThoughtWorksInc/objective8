@@ -75,7 +75,7 @@
           (after :facts (helpers/truncate-tables))]
 
          (fact "gets drafts for an objective"
-               (let [objective (sh/store-an-objective-in-draft)
+               (let [objective (sh/store-an-objective)
                      stored-drafts (doall (->> (repeat {:objective objective})
                                                (take 5)
                                                (map sh/store-a-draft)
@@ -91,7 +91,7 @@
           (after :facts (helpers/truncate-tables))]
 
          (fact "gets the latest draft for an objective with comment count included"
-               (let [{objective-id :_id :as objective} (sh/store-an-objective-in-draft)
+               (let [{objective-id :_id :as objective} (sh/store-an-objective)
 
                      first-draft (sh/store-a-draft {:objective objective})
                      {second-draft-id :draft-id :as stored-draft} (sh/store-a-draft {:objective objective})
@@ -107,7 +107,7 @@
                                                                   :annotations-count 0}))))
          
          (fact "returns draft-id for previous draft"
-               (let [objective (sh/store-an-objective-in-draft)
+               (let [objective (sh/store-an-objective)
                      {first-draft-id :_id} (sh/store-a-draft {:objective objective})
                      {second-draft-id :_id :as second-draft} (sh/store-a-draft {:objective objective})]
                  

@@ -55,15 +55,6 @@
                          :created-by-id user-id
                          :end-date (str (tc/from-now (tc/days 1)))}))))
 
-(defn store-an-objective-in-draft []
-  (let [{user-id :_id} (store-a-user)]
-    (storage/pg-store! {:entity :objective
-                        :created-by-id user-id
-                        :title "test title"
-                        :description "teset description"
-                        :end-date (str (tc/ago (tc/days 1))) 
-                        :removed-by-admin false})))
-
 (defn store-an-invitation
   ([] (store-an-invitation {}))
 
@@ -164,7 +155,7 @@
    (store-a-draft {}))
 
   ([required-entities]
-   (let [{objective-id :_id} (l-get required-entities :objective (store-an-objective-in-draft))
+   (let [{objective-id :_id} (l-get required-entities :objective (store-an-objective))
          ;; NB: Writer id not required, but for consistency, the submitter should be authorised to draft documents for this objective
          {submitter-id :user-id} (l-get required-entities :submitter (store-a-writer))
          content (get required-entities :content some-hiccup)]

@@ -46,14 +46,14 @@
                                                                                   :global-id)))))
 
          (fact "a draft can be retrieved with the number of comments"
-               (let [{objective-id :_id :as objective} (sh/store-an-objective-in-draft)
+               (let [{objective-id :_id :as objective} (sh/store-an-objective)
                      {draft-id :_id :as draft} (sh/store-a-draft {:objective objective})
                      _ (sh/store-a-comment {:entity draft})]
                  (drafts/retrieve-draft-with-comment-count draft-id) => (contains {:meta (contains {:comments-count 1})})
                  (drafts/retrieve-draft-with-comment-count draft-id) => (contains {:uri (uri-for-draft draft)})))
 
          (fact "The first 50 drafts can be retrieved for an objective in reverse chronological order"
-               (let [{objective-id :_id :as objective} (sh/store-an-objective-in-draft)
+               (let [{objective-id :_id :as objective} (sh/store-an-objective)
                      stored-drafts (doall (->> (repeat {:objective objective})
                                                (take 51)
                                                (map sh/store-a-draft)))
@@ -69,13 +69,13 @@
                                                                                         :global-id)))))
 
          (fact "drafts are retrieved with a count of the number of comments"
-               (let [{objective-id :_id :as objective} (sh/store-an-objective-in-draft)
+               (let [{objective-id :_id :as objective} (sh/store-an-objective)
                      draft (sh/store-a-draft {:objective objective})
                      _ (sh/store-a-comment {:entity draft})]
                  (first (drafts/retrieve-drafts objective-id)) => (contains {:meta (contains {:comments-count 1})})))
 
          (fact "drafts are retrieved with a count of all annotations"
-               (let [{objective-id :_id :as objective} (sh/store-an-objective-in-draft)
+               (let [{objective-id :_id :as objective} (sh/store-an-objective)
 
                      draft (sh/store-a-draft {:objective objective})
 
