@@ -11,25 +11,7 @@ block content
 
     .clj-draft-wrapper
 
-      .draft-version-navigation.clj-draft-version-navigation
-        .draft-version-navigation-content-wrapper
-          .draft-version-navigation-content
-            ul.draft-objective-navigation-controls
-              li.draft-objective-navigation
-                a.clj-all-drafts-link.func--all-drafts-link(href="#")
-                  i.fa.fa-angle-up
-                  span.draft-objective-navigation-text(data-l8n="content:draft/back-to-drafts") !All Drafts
-        
-            ul.draft-version-navigation-content-controls
-              li.draft-version-navigation-previous.clj-draft-version-navigation-previous
-                a.clj-draft-version-previous-link.func--draft-version-previous-link(href="#")
-                  i.fa.fa-angle-left
-                  span.draft-version-navigation-text(data-l8n="content:draft/previous-draft") !Previous
-              li.draft-version-navigation-next.clj-draft-version-navigation-next
-                a.clj-draft-version-next-link.func--draft-version-next-link(href="#")
-                  span.draft-version-navigation-text(data-l8n="content:draft/next-draft") !Next
-                  i.fa.fa-angle-right
-
+      +secondaryNavigation
 
       //-.add-a-draft-wrapper
         a.button.add-a-draft.clj-add-a-draft.func--add-a-draft(href="/objective/:id/add-draft", data-l8n="content:draft/add-a-draft") !Add a draft
@@ -90,17 +72,5 @@ block content
 block footerScripts
   script.
     $('.js-import-draft-link').css('display', 'inline-block');
-    // temp
-    $(document).ready(function () {
-      var pageNav = $('.draft-version-navigation-content-wrapper');
-      console.log(pageNav);
-      var pageNavStickHeight = pageNav.offset().top;
-      $(window).scroll(function () {
-        if ($(this).scrollTop() > pageNavStickHeight) {
-          pageNav.addClass("sticky");
-        }
-        else {
-          pageNav.removeClass("sticky");
-        }
-      });
-    });
+
+  +secondaryNavigationStickyScript

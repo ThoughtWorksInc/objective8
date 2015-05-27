@@ -172,22 +172,3 @@ block content
         +policyContributorItem('Rachel Hazley')
         +policyContributorItem('Derick Whiten')
         +policyContributorItem('Katelynn Paley')
-
-
-block footerScripts
-  script.
-    $('.js-import-draft-link').css('display', 'inline-block');
-    // temp
-    $(document).ready(function () {
-      var pageNav = $('.draft-version-navigation-content-wrapper');
-      console.log(pageNav);
-      var pageNavStickHeight = pageNav.offset().top;
-      $(window).scroll(function () {
-        if ($(this).scrollTop() > pageNavStickHeight) {
-          pageNav.addClass("sticky");
-        }
-        else {
-          pageNav.removeClass("sticky");
-        }
-      });
-    });

@@ -10,26 +10,27 @@
 
 (def draft-template (html/html-resource "templates/jade/draft.html" {:parser jsoup/parser}))
 
-(def draft-version-navigation-snippet (html/select draft-template [:.clj-draft-version-navigation]))
+(def draft-version-navigation-snippet (html/select draft-template [:.clj-secondary-navigation]))
 
-(defn draft-version-navigation [{:keys [data] :as context}]
+(defn draft-version-navigation [{:keys [data translations] :as context}]
   (let [draft (:draft data)
         objective-id (:objective-id draft)
         previous-id (:previous-draft-id draft)
         next-id (:next-draft-id draft)] 
     (html/at draft-version-navigation-snippet
-             [:.clj-all-drafts-link] (html/set-attr :href (utils/path-for :fe/draft-list :id objective-id))
-             [:.clj-draft-version-navigation-previous] 
+             [:.clj-parent-link] (html/set-attr :href (utils/path-for :fe/draft-list :id objective-id))
+             [:.clj-parent-text] (html/content (translations :draft/back-to-drafts))
+             [:.clj-secondary-navigation-previous] 
              (when previous-id
                (html/transformation
-                 [:.clj-draft-version-previous-link] 
+                 [:.clj-secondary-navigation-previous-link] 
                  (html/set-attr :href
                                 (utils/local-path-for :fe/draft :id objective-id
                                                       :d-id previous-id))))
-             [:.clj-draft-version-navigation-next] 
+             [:.clj-secondary-navigation-next] 
              (when next-id
                (html/transformation
-                 [:.clj-draft-version-next-link] 
+                 [:.clj-secondary-navigation-next-link] 
                  (html/set-attr :href
                                 (utils/local-path-for :fe/draft :id objective-id
                                                       :d-id next-id)))))))
@@ -86,7 +87,7 @@
                                                                  :d-id draft-id)
                                                  "?offset=" fe-config/comments-pagination))]
     (html/at draft-wrapper-snippet
-             [:.clj-draft-version-navigation] (if draft
+             [:.clj-secondary-navigation] (if draft
                                                 (html/substitute (draft-version-navigation context))
                                                 (html/content no-drafts-snippet))
              [:.clj-draft-version-writer-author] (when draft (html/content (:username draft)))

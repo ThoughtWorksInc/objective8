@@ -42,8 +42,8 @@
 @import 'modules/browsehappy';
 @import 'modules/masthead';
 @import 'modules/navigation';
+@import 'modules/secondary_navigation';
 @import 'modules/main';
-@import 'modules/breadcrumbs';
 @import 'modules/list_items';
 @import 'modules/actions_vote';
 @import 'modules/comments';
@@ -64,7 +64,6 @@
 @import 'modules/draft/draft_add_inline_comment';
 @import 'modules/draft/draft_preview_document';
 @import 'modules/draft/draft_tabs';
-@import 'modules/draft/draft_version_navigation';
 @import 'modules/draft/draft_version_writer';
 @import 'modules/draft/draft_editor';
 @import 'modules/approval_box';

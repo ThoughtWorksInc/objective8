@@ -61,7 +61,8 @@
                (http-api/retrieve-answers QUESTION_URI anything) => {:status ::http-api/success
                                                                         :result []} 
                (http-api/get-objective OBJECTIVE_ID)=> {:status ::http-api/success 
-                                                        :result {:title "some title"}})
+                                                        :result {:title "some title"
+                                                                 :_id OBJECTIVE_ID}})
              (default-app question-view-get-request) => (contains {:status 200})
              (default-app question-view-get-request) => (contains {:body (contains "The meaning of life?")})) 
 
@@ -85,7 +86,8 @@
                                                                                   :answer "Another answer"
                                                                                   :votes {:up 0 :down 0}}]} 
                (http-api/get-objective OBJECTIVE_ID)=> {:status ::http-api/success 
-                                                        :result {:title "some title"}})
+                                                        :result {:title "some title"
+                                                                 :_id OBJECTIVE_ID}})
              (default-app question-view-get-request) => (contains {:body (contains "The answer")})
              (default-app question-view-get-request) => (contains {:body (contains "The writer note")})
              (default-app question-view-get-request) => (contains {:body (contains "1237")})
@@ -94,7 +96,9 @@
 
        (fact "Answers retrieval can be offset by number"
              (against-background
-               (http-api/get-objective anything) => {:status ::http-api/success}
+               (http-api/get-objective anything) => {:status ::http-api/success
+                                                     :result {:title "Title"
+                                                              :_id OBJECTIVE_ID}}
                (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success
                                                                     :result basic-question})
              (-> (default-app question-view-get-request-with-offset)

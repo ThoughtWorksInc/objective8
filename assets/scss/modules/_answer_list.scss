@@ -84,37 +84,11 @@
 
 }
 
-.question-navigation-wrapper {
-  min-height: 80px;
-  margin-bottom: 1em;
-  @include mq(640) {
-    margin-bottom: 2em;
-  }
-}
-
-.question-navigation {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  border-bottom: 1px solid $grey-3;
-}
-
-.question-navigation-breadcrumb {
-  padding: 1em 1em 2em 1em;
-  max-width: $max_content_width;
-  margin: 0 auto;
-  @include mq(640) {
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
 .breadcrumb-ellipsis {
   width: 100%;
   display: inline-block;
   @include text_truncate;
 }
-
 
 .answer-new-title {
   display: block;

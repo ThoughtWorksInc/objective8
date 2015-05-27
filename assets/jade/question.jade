@@ -7,15 +7,8 @@ block headerMeta
 
 block content
   .middle-container
-    .question-navigation-wrapper
-      .question-navigation
-        .question-navigation-breadcrumb
-          span.breadcrumb-ellipsis
-            a(href="/objective").clj-objective-link !Write policy based on folk music.
-            =" "
-            | >
-            =" "
-            span.clj-question-breadcrumb !How many roads must a man walk...
+
+    +secondaryNavigation
 
     .question-outline#outline
       h1.question-leader.clj-question !How many roads must a man walk down before you can call him a man?
@@ -24,15 +17,6 @@ block content
     ul.answer-list#answers
       +answerItemBlank()
       +answerItem()
-      li.page-links
-        a.previous-page-link.clj-previous-page
-          i.fa.fa-arrow-left
-          =" "
-          span(data-l8n="content:question-page/previous-page") !Previous
-        a.next-page-link.clj-next-page
-          span(data-l8n="content:question-page/next-page") !Next
-          =" "
-          i.fa.fa-arrow-right
 
     .answer-new.clj-answer-new
       form(action="!add-answer-action", method="POST").clj-answer-form
@@ -43,3 +27,6 @@ block content
             span.user-input-error-message.clj-answer-empty-error(data-l8n="content:question-page/answer-empty-validation-message") !Please provide an answer
             span.user-input-error-message.clj-answer-length-error(data-l8n="content:question-page/answer-length-validation-message") !Your answer can have at most 500 characters
         button(type="submit", data-l8n="content:question-page/submit-answer-button").button.answer-reply !Add my answer
+
+block footerScripts
+  +secondaryNavigationStickyScript

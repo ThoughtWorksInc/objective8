@@ -11,38 +11,42 @@
 
 (def objective-comments-template (html/html-resource "templates/jade/objective-comments.html" {:parser jsoup/parser}))
 
-(def navigation-snippet (html/select objective-comments-template [:.clj-comments-navigation]))
+(def objective-comments-navigation-snippet (html/select objective-comments-template [:.clj-secondary-navigation]))
 
-(def enable-link
-  (html/remove-class "disabled"))
-
-(defn objective-comments-page [{:keys [data doc translations] :as context}]
-  (let [objective (:objective data)
+(defn objective-comments-navigation [{:keys [data] :as context}]
+  (let [offset (:offset data) 
+        objective (:objective data)
         objective-id (:_id objective)
-        comments (:comments data)
-        offset (:offset data)
         total-comments (get-in objective [:meta :comments-count])
         comments-url (url/url (utils/path-for :fe/get-comments-for-objective :id objective-id))]
-    (->> (html/at objective-comments-template
-                  [:title] (html/content (:title doc))
-                  [:.clj-objective-link] (html/do->
-                                           (html/content (:title objective))
-                                           (html/set-attr :href (utils/path-for :fe/objective :id objective-id)))
- 
-                  [:.clj-comment-list] (html/content (pf/comment-list context))
+    (html/at objective-comments-navigation-snippet
+             [:.clj-parent-link] (html/set-attr :href (utils/path-for :fe/objective :id objective-id))
+             [:.clj-parent-text] (html/content (:title objective))
+             [:.clj-secondary-navigation-previous] 
+             (when (> offset 0) 
+               (html/transformation
+                 [:.clj-secondary-navigation-previous-link] 
+                 (html/set-attr :href
+                                (-> comments-url
+                                    (assoc :query {:offset (max 0 (- offset fe-config/comments-pagination))})
+                                    str))))
+             [:.clj-secondary-navigation-next] 
+             (when (> total-comments (+ offset fe-config/comments-pagination))
+               (html/transformation
+                 [:.clj-secondary-navigation-next-link] 
+                 (html/set-attr :href
+                                (-> comments-url
+                                    (assoc :query {:offset (+ offset fe-config/comments-pagination)})
+                                    str)))))))
 
-                  [:.clj-comment-list] (html/append navigation-snippet)
+(defn objective-comments-page [{:keys [doc] :as context}]
+  (->> (html/at objective-comments-template
+                [:title] (html/content (:title doc))
 
-                  [:.clj-previous-page] (when (> offset 0)
-                                          (html/set-attr :href (-> comments-url
-                                                                   (assoc :query {:offset (max 0 (- offset fe-config/comments-pagination))})
-                                                                   str)))
-                  [:.clj-next-page] (when (> total-comments (+ offset fe-config/comments-pagination))
-                                      (html/set-attr :href
-                                                     (-> comments-url
-                                                         (assoc :query {:offset (+ offset fe-config/comments-pagination)})
-                                                         str))))
-         pf/add-google-analytics
-         (tf/translate context)
-         html/emit*
-         (apply str))))
+                [:.clj-secondary-navigation] (html/substitute (objective-comments-navigation context))
+
+                [:.clj-comment-list] (html/content (pf/comment-list context)))
+       pf/add-google-analytics
+       (tf/translate context)
+       html/emit*
+       (apply str)))

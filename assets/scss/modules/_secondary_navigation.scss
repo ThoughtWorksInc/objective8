@@ -1,16 +1,16 @@
-$draft_navigation_height: 80px;
+$secondary_navigation_height: 80px;
 
-.draft-version-navigation {
+.secondary-navigation {
   @include cf;
-  min-height: $draft_navigation_height;
+  min-height: $secondary_navigation_height;
   margin: 0 0 2em 0;
   @include mq(480) {
     margin-bottom: 4em;
   }
 }
 
-.draft-version-navigation-content-wrapper {
-  min-height: $draft_navigation_height;
+.secondary-navigation-content-wrapper {
+  min-height: $secondary_navigation_height;
   background: rgba($white, 0.96);
   border-bottom: 1px solid $grey-3;
   padding-bottom: 1.5em;
@@ -27,11 +27,11 @@ $draft_navigation_height: 80px;
   }
 }
 
-.draft-version-navigation-content {
+.secondary-navigation-content {
   position: relative;
   margin: -1px auto;
   @include mq(480) {
-    min-height: $draft_navigation_height;
+    min-height: $secondary_navigation_height;
     max-width: $max_content_width;
     padding: 0.5em;
     font-size: 100%;
@@ -42,9 +42,9 @@ $draft_navigation_height: 80px;
   }
 }
 
-$draft_nav_icon_spacer: 0.4em;
+$secondary_nav_icon_spacer: 0.4em;
 
-%draft-navigation-content-controls {
+%secondary-navigation-content-controls {
   position: absolute;
   top: 23px;
   padding: 0;
@@ -69,17 +69,17 @@ $draft_nav_icon_spacer: 0.4em;
   }
 }
 
-.draft-version-navigation-content-controls {
+.secondary-navigation-content-controls {
   right: 0.5em;
   text-align: right;
-  @extend %draft-navigation-content-controls;
+  @extend %secondary-navigation-content-controls;
   @include mq(768) {
     right: 0;
   }
 }
 
-.draft-objective-navigation-controls {
-  @extend %draft-navigation-content-controls;
+.secondary-parent-navigation-controls {
+  @extend %secondary-navigation-content-controls;
   left: 0.5em;
 
   @include mq(768) {
@@ -87,27 +87,27 @@ $draft_nav_icon_spacer: 0.4em;
   }
 }
 
-.draft-version-navigation-text {
+.secondary-navigation-text {
   @include visuallyhidden;
   @include mq(480) {
     @include revert-visuallyhidden;
   }
 }
-.draft-version-navigation-previous {
+.secondary-navigation-previous {
   margin-right: 1em;
   i {
-    margin-right: $draft_nav_icon_spacer;
+    margin-right: $secondary_nav_icon_spacer;
   }
 }
 
-.draft-version-navigation-next {
+.secondary-navigation-next {
   i {
-    margin-left: $draft_nav_icon_spacer;
+    margin-left: $secondary_nav_icon_spacer;
   }
 }
 
-.draft-objective-navigation {
+.secondary-parent-navigation {
   i {
-    margin-right: $draft_nav_icon_spacer;
+    margin-right: $secondary_nav_icon_spacer;
   }
 }

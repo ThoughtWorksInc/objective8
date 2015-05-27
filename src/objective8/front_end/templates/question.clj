@@ -55,14 +55,38 @@
              [:.clj-answer-empty-error] (when (contains? (:answer validation-report) :empty) identity)
              [:.clj-input-answer] (html/content (:answer previous-inputs)))))
 
+(def navigation-snippet (html/select question-template [:.clj-secondary-navigation]))
+
+(defn answers-navigation [{:keys [data] :as context}]
+  (let [question (:question data)
+        offset (:offset data)
+        {objective-id :_id :as objective} (:objective data)
+        answers-count (get-in question [:meta :answers-count])]
+    (html/at navigation-snippet 
+             [:.clj-parent-link] (html/set-attr :href (utils/path-for :fe/objective :id objective-id))
+             [:.clj-parent-text] (html/content (:title objective))
+             [:.clj-secondary-navigation-previous] 
+             (when (> offset 0) 
+               (html/transformation
+                 [:.clj-secondary-navigation-previous-link] 
+                 (html/set-attr :href
+                                (str "/objectives/" (:_id objective)
+                                     "/questions/" (:_id question) "?offset=" (- offset fe-config/answers-pagination)))))
+             [:.clj-secondary-navigation-next] 
+             (when (> answers-count (+ offset fe-config/answers-pagination))
+               (html/transformation
+                 [:.clj-secondary-navigation-next-link] 
+                 (html/set-attr :href
+                                (str "/objectives/" (:_id objective)
+                                     "/questions/" (:_id question) "?offset=" (+ offset fe-config/answers-pagination))))))))
+
 (defn question-page [{:keys [translations data user doc] :as context}]
   (let [question (:question data)
         answers (:answers data)
         objective (:objective data)
         offset (:offset data)
-        limit fe-config/answers-pagination 
         answers-count (get-in question [:meta :answers-count])
-        more-answers? (> answers-count (+ offset limit))
+        more-answers? (> answers-count (+ offset fe-config/answers-pagination))
         tl8 (tf/translator context)]
     (->> (html/at question-template
                   [:title] (html/content (:title doc))
@@ -70,10 +94,8 @@
                   [:head] (facebook-meta-tags context)
                   [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
                   [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
-                  [:.clj-objective-link] (html/set-attr :href (str "/objectives/" (:_id objective)))
-                  [:.clj-objective-link] (html/content (:title objective)) 
-                  [:.clj-question-breadcrumb] (html/content (:question question))
 
+                  [:.clj-secondary-navigation] (html/substitute (answers-navigation context))
                   [:.clj-question] (html/content (:question question))
                   [:.clj-empty-answer-list-item] (when (= answers-count 0) identity)
                   [:.clj-answer] (html/clone-for [answer answers]
@@ -84,12 +106,6 @@
                                                                          (voting-actions-when-signed-out context answer))
                                                  [:.clj-writer-note-item-container] (when (:note answer)
                                                                                       (display-writer-note answer)))
-                  [:.clj-previous-page] (when (> offset 0)
-                                          (html/set-attr :href (str "/objectives/" (:_id objective)
-                                                                    "/questions/" (:_id question) "?offset=" (- offset limit)))) 
-                  [:.clj-next-page] (when more-answers? 
-                                      (html/set-attr :href (str "/objectives/" (:_id objective)
-                                         "/questions/" (:_id question) "?offset=" (+ offset limit)))) 
 
                   [:.clj-answer-new] (when-not more-answers? identity)
 

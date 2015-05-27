@@ -1,0 +1,35 @@
+mixin secondaryNavigation
+  .secondary-navigation.clj-secondary-navigation
+    .secondary-navigation-content-wrapper
+      .secondary-navigation-content
+        ul.secondary-parent-navigation-controls
+          li.secondary-parent-navigation
+            a.clj-parent-link.func--parent-link(href="#")
+              i.fa.fa-angle-up
+              span.secondary-parent-navigation-text.clj-parent-text !Parent
+
+        ul.secondary-navigation-content-controls
+          li.secondary-navigation-previous.clj-secondary-navigation-previous
+            a.clj-secondary-navigation-previous-link.func--previous-link(href="#")
+              i.fa.fa-angle-left
+              span.secondary-navigation-text(data-l8n="content:secondary-navigation/previous") !Previous
+          li.secondary-navigation-next.clj-secondary-navigation-next
+            a.clj-secondary-navigation-next-link.func--next-link(href="#")
+              span.secondary-navigation-text(data-l8n="content:secondary-navigation/next") !Next
+              i.fa.fa-angle-right
+
+mixin secondaryNavigationStickyScript
+  script.
+    // temp
+    $(document).ready(function () {
+      var pageNav = $('.secondary-navigation-content-wrapper');
+      var pageNavStickHeight = pageNav.offset().top;
+      $(window).scroll(function () {
+        if ($(this).scrollTop() > pageNavStickHeight) {
+          pageNav.addClass("sticky");
+        }
+        else {
+          pageNav.removeClass("sticky");
+        }
+      });
+    });

@@ -179,7 +179,7 @@
           (screenshot "objective_comment_history_offset_1")
           (swap! test-data-collector assoc :offset-equals-1-comment-count (count (wd/elements ".func--comment-text")))
           
-          (wd/click ".func--previous-comments")
+          (wd/click ".func--previous-link")
 
           (wait-for-title "Comments for Functional test headline | Objective[8]")
           (screenshot "objective_comment_history_offset_0")
@@ -500,7 +500,7 @@
           (wait-for-title "Policy draft | Objective[8]")
           (screenshot "second_draft")
 
-          (wd/click ".func--all-drafts-link")
+          (wd/click ".func--parent-link")
           (wait-for-title "Drafts | Objective[8]")
 
           (wd/click ".func--add-a-draft")
@@ -518,11 +518,11 @@
           (wait-for-title "Policy draft | Objective[8]")
           (screenshot "latest_draft_with_previous_button")
 
-          (wd/click ".func--draft-version-previous-link")
+          (wd/click ".func--previous-link")
           (wait-for-title "Policy draft | Objective[8]")
           (screenshot "second_draft_with_next")
 
-          (wd/click ".func--draft-version-next-link")
+          (wd/click ".func--next-link")
           (wait-for-title "Policy draft | Objective[8]")
           (screenshot "third_draft")
 
