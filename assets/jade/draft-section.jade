@@ -8,14 +8,15 @@ block vars
 block content
 
   .middle-container
-    .objective-navigation
-      .objective-navigation-list-wrapper
-        ul.objective-navigation-list
-          li
-            a.clj-back-to-draft-link.func--back-to-draft(href="!draft")
-              i.fa.fa-angle-left
-              = " "
-              span(data-l8n="content:draft-nav/back-to-draft") !Build safer cycling networks in the streets of Madrid draft.
+
+    .secondary-navigation.clj-secondary-navigation
+      .secondary-navigation-content-wrapper
+        .secondary-navigation-content
+          ul.secondary-parent-navigation-controls
+            li.secondary-parent-navigation
+              a.clj-back-to-draft-link.func--back-to-draft(href="#")
+                i.fa.fa-angle-left
+                span.secondary-parent-navigation-text(data-l8n="content:draft-nav/back-to-draft") !Back to draft
 
     .annotate-draft-preview-document
       h1.document-title(data-l8n="content:draft-section/page-title") !Add an annotation to:
@@ -37,7 +38,7 @@ block footerScripts
     $('.js-import-draft-link').css('display', 'inline-block');
     // temp
     $(document).ready(function () {
-      var pageNav = $('.objective-navigation-list-wrapper');
+      var pageNav = $('.secondary-navigation-content-wrapper');
       console.log(pageNav);
       var pageNavStickHeight = pageNav.offset().top;
       $(window).scroll(function () {
