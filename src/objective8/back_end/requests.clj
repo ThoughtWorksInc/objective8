@@ -2,7 +2,7 @@
   (:require [objective8.utils :as utils]))
 
 (defn request->objective-data [{params :params :as request}]
-  (select-keys params [:title :description :end-date :created-by-id]))
+  (select-keys params [:title :description :created-by-id]))
 
 (defn request->invitation-data [{:keys [params route-params] :as request}]
   (when-let [objective-id (some-> (:id route-params)

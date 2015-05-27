@@ -38,8 +38,7 @@
                          :removed-by-admin false
                          :title "test title"
                          :description "test description"
-                         :created-by-id user-id
-                         :end-date (str (tc/from-now (tc/days 1)))}))))
+                         :created-by-id user-id}))))
 
 (defn store-an-admin-removed-objective
 
@@ -52,8 +51,7 @@
                          :removed-by-admin true
                          :title "test title"
                          :description "test description"
-                         :created-by-id user-id
-                         :end-date (str (tc/from-now (tc/days 1)))}))))
+                         :created-by-id user-id}))))
 
 (defn store-an-invitation
   ([] (store-an-invitation {}))

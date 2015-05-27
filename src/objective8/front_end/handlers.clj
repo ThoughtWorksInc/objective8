@@ -34,10 +34,6 @@
          redirect-url (utils/safen-url (str location (when fragment (str "#" fragment))))]
      (response/redirect redirect-url))))
 
-(defn format-objective [objective]
-  (-> objective
-      (update-in [:end-date] utils/date-time->pretty-date)))
-
 ;; HANDLERS
 
 (defn error-404 [request]
@@ -90,8 +86,7 @@
            :body (views/profile "profile" request
                                 :user-profile user-profile
                                 :profile-owner username
-                                :objectives-for-writer (->> objectives-for-writer
-                                                            (map format-objective)) 
+                                :objectives-for-writer objectives-for-writer
                                 :joined-date joined-date
                                 :doc {:title (str (:name user-profile) " | Objective[8]")})}
           (error-404-response request))) 
@@ -111,8 +106,7 @@
       {:status 200
        :header {"Content-Type" "text/html"}  
        :body (views/objective-list "objective-list" request
-                                   :objectives (->> objectives
-                                                    (map format-objective)))} 
+                                   :objectives objectives)} 
       
       (= status ::http-api/error)
       {:status 502})))
@@ -123,7 +117,7 @@
    :body (views/create-objective "create-objective" request)})
 
 (defn create-objective-form-post [{:keys [t' locale session] :as request}]
-  (let [objective-data (fr/request->objective-data request (get (friend/current-authentication) :identity) (utils/current-time))]
+  (let [objective-data (fr/request->objective-data request (get (friend/current-authentication) :identity))]
     (case (:status objective-data)
 
       ::fr/valid (let [{status :status stored-objective :result} (http-api/create-objective (:data objective-data))]
@@ -166,15 +160,14 @@
                                                               {:limit fe-config/comments-pagination})]
          (cond
            (every? #(= ::http-api/success %) [objective-status writers-status questions-status comments-status])
-           (let [formatted-objective (format-objective objective)
-                 {drafts-status :status latest-draft :result} (when (> (get-in objective [:meta :drafts-count] 0) 0)
+           (let [{drafts-status :status latest-draft :result} (when (> (get-in objective [:meta :drafts-count] 0) 0)
                                                                 (http-api/get-draft objective-id "latest"))]
              {:status 200
               :headers {"Content-Type" "text/html"}
               :body
               (views/objective-detail-page "objective-view"
                                            updated-request
-                                           :objective formatted-objective
+                                           :objective objective
                                            :writers writers
                                            :questions questions
                                            :comments (:comments comments-data)
@@ -212,16 +205,15 @@
                                                    (http-api/retrieve-answers selected-question-uri answer-query-params))]
     (cond
       (every? #(= ::http-api/success %) [objective-status questions-status answers-status])
-      (let [formatted-objective (format-objective objective)]
         {:status 200
          :headers {"Content-Type" "text/html"}
          :body (views/dashboard-questions-page "dashboard-questions"
                                                request
-                                               :objective formatted-objective
+                                               :objective objective
                                                :questions questions
                                                :answers answers
                                                :answer-view-type answer-view-type
-                                               :selected-question-uri selected-question-uri)}))))
+                                               :selected-question-uri selected-question-uri)})))
 
 (def dashboard-comments-query-params
   {:up-votes {:sorted-by "up-votes" :filter-type "none"}
@@ -250,7 +242,7 @@
        :headers {"Content-Type" "text/html"}
        :body (views/dashboard-comments-page "dashboard-comments"
                                             request
-                                            :objective (format-objective objective) 
+                                            :objective objective 
                                             :drafts drafts
                                             :comments (:comments comments-data)
                                             :comment-view-type comment-view-type
@@ -271,7 +263,7 @@
        :headers {"Content-Type" "text/html"}
        :body (views/dashboard-annotations-page "dashboard-annotations"
                                                request
-                                               :objective (format-objective objective) 
+                                               :objective objective 
                                                :drafts drafts
                                                :annotations annotations
                                                :selected-draft-uri selected-draft-uri)}
@@ -281,7 +273,7 @@
        :headers {"Content-Type" "text/html"}
        :body (views/dashboard-annotations-page "dashboard-annotations"
                                                request
-                                               :objective (format-objective objective)
+                                               :objective objective
                                                :drafts drafts
                                                :annotations nil
                                                :selected-draft-uri selected-draft-uri)})))
@@ -327,7 +319,7 @@
                  :body (views/objective-comments-view
                         "objective-comments"
                         request
-                        :objective (format-objective objective)
+                        :objective objective
                         :comments (:comments comments-data)
                         :offset offset
                         :doc (let [details (str (t' :objective-comments/title-prefix) " " 
@@ -369,7 +361,7 @@
                            request
                            :draft draft
                            :comments (:comments comments-data)
-                           :objective (format-objective objective)
+                           :objective objective
                            :offset offset
                            :doc (let [details (str (t' :draft-comments/title-prefix) " "
                                                    (utils/iso-time-string->pretty-time (:_created_at draft)) " | Objective[8]")]
@@ -445,7 +437,7 @@
       {:status 200
        :body (views/add-question-page "question-create"
                                       request
-                                      :objective (format-objective objective)
+                                      :objective objective
                                       :doc {:title (str (t' :question-create/doc-title) " to "(:title objective) " | Objective[8]")
                                             :description (str (t' :question-create/doc-description))})
        :headers {"Content-Type" "text/html"}}
@@ -498,7 +490,7 @@
                 {:status 200
                  :headers {"Content-Type" "text/html"}
                  :body (views/question-page "question-page" request
-                                            :objective (format-objective objective)
+                                            :objective objective
                                             :question question
                                             :answers answers
                                             :offset offset 
@@ -555,7 +547,7 @@
       (= status ::http-api/success)
       {:status 200
        :body (views/invite-writer-page "invite-writer" request
-                                       :objective (format-objective objective)
+                                       :objective objective
                                        :doc {:title (str (t' :invite-writer/doc-title) " " (:title objective) " | Objective[8]")})
        :headers {"Content-Type" "text/html"}}
 
@@ -806,7 +798,7 @@
           {:status 200
            :body (views/draft "draft" request
                               :writers writers
-                              :objective (format-objective objective))
+                              :objective objective)
            :headers {"Content-Type" "text/html"}}
           (error-404-response request))
 
@@ -848,7 +840,7 @@
       (every? #(= ::http-api/success %) [drafts-status objective-status writers-status])
       {:status 200
        :body (views/draft-list "draft-list" request
-                               :objective (format-objective objective)
+                               :objective objective
                                :writers writers
                                :drafts drafts)
        :headers {"Content-Type" "text/html"}} 
@@ -856,7 +848,7 @@
       (= objective-status ::http-api/success)
       {:status 200
        :body (views/draft-list "draft-list" request
-                               :objective (format-objective objective))
+                               :objective objective)
        :headers {"Content-Type" "text/html"}}
 
       (= objective-status ::http-api/not-found)

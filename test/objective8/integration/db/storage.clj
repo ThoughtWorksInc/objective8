@@ -20,7 +20,6 @@
                            objective {:entity :objective
                                       :removed-by-admin false
                                       :created-by-id NOT-EXISTENT-USER-ID
-                                      :end-date "2015-01-01T00:00:00Z"
                                       :description "description"
                                       :title "title"}]
                        (storage/pg-store! objective) => (throws org.postgresql.util.PSQLException)))
@@ -53,7 +52,6 @@
                   (let [objective {:entity :objective
                                    :removed-by-admin false
                                    :created-by-id created-by-id
-                                   :end-date "2015-01-01T00:00:00Z"
                                    :description "description"
                                    :title "title"}]
                     (storage/pg-store! objective)))
@@ -64,7 +62,6 @@
                            retrieve-result (storage/pg-retrieve {:entity :objective :_id (:_id store-result)})]
                        (first (:result retrieve-result)) => (contains {:created-by-id user-id
                                                                        :username username
-                                                                       :end-date "2015-01-01T00:00:00.000Z"
                                                                        :title "title"})))
 
                ;;COMMENTS
@@ -185,10 +182,7 @@
 
                (fact "an invitation can be retrieved by uuid"
                      (let [user-id (:_id (sh/store-a-user))
-                           objective-id (:_id (storage/pg-store! {:entity :objective
-                                                                  :removed-by-admin false
-                                                                  :created-by-id user-id
-                                                                  :end-date "2015-01-01"}))
+                           objective-id (:_id (sh/store-an-objective))
                            invitation (storage/pg-store! {:entity :invitation
                                                           :invited-by-id user-id
                                                           :objective-id objective-id

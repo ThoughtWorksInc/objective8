@@ -26,7 +26,6 @@
 (def basic-objective {:title "my objective title"
                       :_id OBJECTIVE_ID
                       :description "my objective description"
-                      :end-date (utils/string->date-time "2012-12-12")
                       :uri (str "/objectives/" OBJECTIVE_ID)
                       :meta {:drafts-count 0 :comments-count 0}})
 
@@ -44,7 +43,6 @@
                (against-background (http-api/create-objective 
                                      (contains {:title "my objective title"
                                                 :description "my objective description"
-                                                :end-date anything
                                                 :created-by-id USER_ID})) => {:status ::http-api/success
                                                                               :result {:_id OBJECTIVE_ID}})
                (let [params {:title "my objective title"

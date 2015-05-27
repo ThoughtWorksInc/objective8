@@ -10,9 +10,6 @@
 (def OBJECTIVE_ID 2)
 (def QUESTION_ID 3)
 
-(def date (utils/string->date-time "2015-01-01"))
-(def date-plus-30-days (utils/string->date-time "2015-01-31"))
-
 (defn string-of-length [l]
   (apply str (repeat l "x")))
 
@@ -81,17 +78,16 @@
 (facts "about transforming requests to objective-data"
        (fact "creates an objective from a request"
              (let [test-objective {:title "My Objective" :description "I like cake"} 
-                   objective-data (request->objective-data {:params test-objective} USER_ID date)]
-               (:data objective-data) => (assoc test-objective :created-by-id USER_ID :end-date date-plus-30-days)
+                   objective-data (request->objective-data {:params test-objective} USER_ID)]
+               (:data objective-data) => (assoc test-objective :created-by-id USER_ID)
                (:status objective-data) => ::objective8.front-end.front-end-requests/valid
                (:report objective-data) => {}))
 
        (fact "reports validation errors correctly when parameters are missing"
-               (let [objective-data (request->objective-data {:params {}} USER_ID date)]
+               (let [objective-data (request->objective-data {:params {}} USER_ID)]
                  (:data objective-data) => {:title ""
                                             :description ""
-                                            :created-by-id USER_ID
-                                            :end-date date-plus-30-days}
+                                            :created-by-id USER_ID}
                  (:status objective-data) => ::objective8.front-end.front-end-requests/invalid
                  (:report objective-data) => {:title #{:length}
                                               :description #{:empty}}))
@@ -99,11 +95,10 @@
        (tabular
          (fact "reports validation errors"
                (let [invalid-test-objective {:title ?title :description ?description}
-                     objective-data (request->objective-data {:params invalid-test-objective} USER_ID date)]
+                     objective-data (request->objective-data {:params invalid-test-objective} USER_ID)]
                  (:data objective-data) => {:title (s/trim ?title)
                                             :description (s/trim ?description)
-                                            :created-by-id USER_ID
-                                            :end-date date-plus-30-days}
+                                            :created-by-id USER_ID}
                  (:status objective-data) => ::objective8.front-end.front-end-requests/invalid
                  (:report objective-data) => ?report))
          ?title                    ?description                ?report

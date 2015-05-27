@@ -102,16 +102,14 @@
 (def OBJECTIVE_ID 234)
 (def OBJECTIVE_URI (str "/objectives/" OBJECTIVE_ID))
 
-(def the-objective {:some :data
-                    :end-date (utils/string->date-time "2015-01-31")})
+(def the-objective {:some :data})
 
 (fact "creating an objective hits the correct API endpoint"
       (http-api/create-objective the-objective) => :api-call-result
       (provided
         (http-api/default-post-call
           (contains "/api/v1/objectives")
-          {:some :data
-           :end-date "2015-01-31T00:00:00.000Z"}) => :api-call-result))
+          {:some :data}) => :api-call-result))
 
 (fact "getting an objective hits the correct API endpoint"
       (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
@@ -121,8 +119,7 @@
           (contains (str "/api/v1/objectives/" OBJECTIVE_ID))
           (contains {:headers (contains {"api-bearer-name" anything
                                          "api-bearer-token" anything})})) => {:status ::http-api/success
-                                                                              :result {:some :data
-                                                                                       :end-date "2015-01-31T00:00:00.000Z" }}))
+                                                                              :result {:some :data}}))
 
 (fact "getting an objective as a signed in user hits the correct API endpoint"
       (http-api/get-objective OBJECTIVE_ID {:signed-in-id USER_ID}) => {:status ::http-api/success
@@ -133,8 +130,7 @@
           (contains {:headers (contains {"api-bearer-name" anything
                                          "api-bearer-token" anything})
                      :query-params (contains {:signed-in-id USER_ID})})) => {:status ::http-api/success
-                                                                             :result {:some :data
-                                                                                      :end-date "2015-01-31T00:00:00.000Z" }}))
+                                                                             :result {:some :data}}))
 
 
 (fact "getting an objective with stars-count hits the correct API endpoint with correct query parameters"
@@ -146,8 +142,7 @@
           (contains {:headers (contains {"api-bearer-name" anything
                                          "api-bearer-token" anything})
                      :query-params (contains {:with-stars-count true})})) => {:status ::http-api/success
-                                                                             :result {:some :data
-                                                                                      :end-date "2015-01-31T00:00:00.000Z" }}))
+                                                                             :result {:some :data}}))
 
 
 (fact "getting objectives hits the correct API endpoint"
@@ -158,8 +153,7 @@
           (contains (utils/path-for :api/get-objectives))
           (contains {:headers (contains {"api-bearer-name" anything
                                          "api-bearer-token" anything})})) => {:status ::http-api/success
-                                                                              :result [{:some :data
-                                                                                        :end-date "2015-01-31T00:00:00.000Z"}]}))
+                                                                              :result [{:some :data}]}))
 
 (fact "getting objectives as a signed-in user provides correct query parameters"
       (http-api/get-objectives {:signed-in-id USER_ID}) => {:status ::http-api/success
@@ -168,8 +162,7 @@
         (http-api/default-get-call
           (contains (utils/path-for :api/get-objectives))
           (contains {:query-params {:user-id USER_ID}})) => {:status ::http-api/success
-                                                             :result [{:some :data
-                                                                       :end-date "2015-01-31T00:00:00.000Z"}]}))
+                                                             :result [{:some :data}]}))
 
 (fact "getting objectives for a writer returns list of objectives when API call is successful"
       (http-api/get-objectives-for-writer USER_ID) => {:status ::http-api/success
@@ -178,8 +171,7 @@
       (provided
         (http-api/default-get-call
           (contains (utils/path-for :api/get-objectives-for-writer :id USER_ID))) => {:status ::http-api/success
-                                                            :result [{:some :data
-                                                                       :end-date "2015-01-31T00:00:00.000Z"}]}))
+                                                            :result [{:some :data}]}))
 
 (fact "getting objectives for a writer returns failure status if api call is unsuccessful"
       (http-api/get-objectives-for-writer USER_ID) => {:status ::http-api/not-found}

@@ -102,8 +102,7 @@
 (def map->objective
   (db-insertion-mapper "objective"
                        :objective
-                       [:created-by-id :global-id :end-date :removed-by-admin]
-                       {:end-date tc/to-timestamp}))
+                       [:created-by-id :global-id :removed-by-admin]))
 
 (def map->comment
   (db-insertion-mapper "comment"
@@ -296,8 +295,7 @@
   (korma/prepare map->objective)
   (korma/transform (-> (unmap :objective)
                        (with-columns
-                         [:global-id :created-by-id :status :end-date :status :removed-by-admin]
-                         {:end-date sql-time->iso-time-string})
+                         [:global-id :created-by-id :removed-by-admin])
                        with-username-if-present
                        with-objective-meta)))
 

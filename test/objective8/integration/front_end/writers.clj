@@ -18,7 +18,6 @@
 (def OBJECTIVE {:title "Objective Title 1"
                 :_id OBJECTIVE_ID
                 :description "An objective"
-                :end-date (utils/string->date-time "2015-12-12")
                 :uri (str "/objectives/" OBJECTIVE_ID)})
 (def WRITER_ROLE_FOR_OBJECTIVE (keyword (str "writer-for-" OBJECTIVE_ID)))
 (def WRITER_INVITER_ROLE_FOR_OBJECTIVE (keyword (str "writer-inviter-for-" OBJECTIVE_ID)))
@@ -475,8 +474,7 @@
             (against-background
               (http-api/get-objectives-for-writer USER_ID) => {:status ::http-api/success
                                                                :result [{:_id OBJECTIVE_ID
-                                                                         :title "Test Objective 1"
-                                                                         :end-date (-> 25 tc/hours tc/from-now)}]}
+                                                                         :title "Test Objective 1"}]}
 
               (http-api/find-user-by-username anything) => {:status ::http-api/success
                                                             :result {:_id USER_ID
@@ -484,5 +482,4 @@
                                                                      :profile {:name "Test User"}
                                                                      :_created_at "2015-02-12T16:46:18.838Z"}})
              (let [{response :response} (p/request user-session (utils/path-for :fe/profile :username "username"))]
-               (:body response) => (contains "Test Objective 1")
-               )))
+               (:body response) => (contains "Test Objective 1"))))

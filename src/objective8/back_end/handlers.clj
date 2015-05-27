@@ -190,7 +190,6 @@
                          :else
                          (objectives/get-objective id include-removed?))]
       (-> objective
-          (update-in [:end-date] utils/date-time->iso-time-string)
           response/response
           (response/content-type "application/json"))
       (response/not-found ""))))

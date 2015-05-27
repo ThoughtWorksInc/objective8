@@ -79,14 +79,12 @@
       (empty? description) (report-error :empty)
       (longer? description 5000) (report-error :length))))
 
-(defn request->objective-data [{:keys [params] :as request} user-id current-time]
-  (let [iso-time (utils/date-time->date-time-plus-30-days current-time)]
-    (-> (initialise-request-validation request)
-        (validate :title objective-title-validator)
-        (validate :description objective-description-validator)
-        (assoc-in [:data :end-date] iso-time)
-        (assoc-in [:data :created-by-id] user-id)
-        (dissoc :request))))
+(defn request->objective-data [{:keys [params] :as request} user-id]
+  (-> (initialise-request-validation request)
+      (validate :title objective-title-validator)
+      (validate :description objective-description-validator)
+      (assoc-in [:data :created-by-id] user-id)
+      (dissoc :request)))
 
 ;; Create Question
 

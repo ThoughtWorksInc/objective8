@@ -29,7 +29,6 @@
 (def objective-data {:created-by-id 1
                      :global-id GLOBAL_ID
                      :removed-by-admin false
-                     :end-date "2015-01-01T00:01:01Z"
                      :description "Objective description"})
 
 (facts "About map->objective"
@@ -38,19 +37,15 @@
                objective => (contains {:created_by_id 1
                                        :global_id GLOBAL_ID
                                        :removed_by_admin false
-                                       :end_date  time-type?
                                        :objective json-type?})
-               (str (:end_date objective)) => (contains "2015-01-01 00:01")
                (json-type->map (:objective objective)) =not=> (contains {:global-id anything})
-               (json-type->map (:objective objective)) =not=> (contains {:end-date anything})
                (json-type->map (:objective objective)) =not=> (contains {:created-by-id anything})
                (json-type->map (:objective objective)) => (contains {:description "Objective description"})))
 
-       (fact "throws exception if :created-by-id, status, removed-by-admin, :end-date, or :global-id are missing"
+       (fact "throws exception if :created-by-id, status, removed-by-admin, or :global-id are missing"
 
              (map->objective (dissoc objective-data :created-by-id)) => (throws Exception)
              (map->objective (dissoc objective-data :removed-by-admin)) => (throws Exception)
-             (map->objective (dissoc objective-data :end-date)) => (throws Exception)
              (map->objective (dissoc objective-data :global-id)) => (throws Exception)))
 
 ;;USER

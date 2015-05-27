@@ -16,12 +16,10 @@
 
 (def the-objective {:title "my objective title"
                     :description "my objective description"
-                    :end-date "2015-01-01"
                     :created-by-id 1})
 
 (def the-invalid-objective {:title "my objective title"
-                            :description "my objective description"
-                            :end-date "2015-01-01"})
+                            :description "my objective description"})
 
 (def stored-objective (assoc the-objective :_id OBJECTIVE_ID))
 
@@ -128,8 +126,7 @@
                      {body :body} (-> (p/request app (str "/api/v1/objectives/" o-id "?signed-in-id=" user-id))
                                       :response)
                      retrieved-objective (-> starred-objective
-                                             (select-keys [:_id :description :_created_at :created-by-id
-                                                           :end-date :entity :status :title])
+                                             (select-keys [:_id :description :_created_at :created-by-id])
                                              (assoc :username (:username objective-creator))
                                              (assoc :uri (str "/objectives/" o-id)))]
                  body => (helpers/json-contains retrieved-objective)
@@ -164,7 +161,6 @@
          (fact "the posted objective is stored"
                (let [{user-id :_id} (sh/store-a-user)
                      the-objective {:title "my objective title"
-                                    :end-date "2015-01-01"
                                     :created-by-id user-id}
                      {response :response} (p/request app "/api/v1/objectives"
                                                      :request-method :post
@@ -172,8 +168,7 @@
                                                      :body (json/generate-string the-objective))]
                  (:body response) => (helpers/json-contains
                                        (assoc the-objective
-                                              :uri (contains "/objectives/")
-                                              :end-date "2015-01-01T00:00:00.000Z"))
+                                              :uri (contains "/objectives/")))
                  (:body response) =not=> (helpers/json-contains {:global-id anything})
                  (:headers response) => (helpers/location-contains (str "/api/v1/objectives/"))
                  (:status response) => 201))

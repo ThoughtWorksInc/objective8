@@ -94,22 +94,15 @@
 
 (defn create-objective [objective]
   (default-post-call
-    (str utils/host-url "/api/v1/objectives")
-    (update-in objective [:end-date] str)))
-
-(defn parse-objective [raw-objective]
-  (update-in raw-objective [:end-date] utils/time-string->date-time))
+    (str utils/host-url "/api/v1/objectives") objective))
 
 (defn get-objective
   ([id] (get-objective id {}))
 
   ([id query]
-   (let [api-result (default-get-call (str utils/host-url "/api/v1/objectives/" id)
-                      (assoc {:headers (get-api-credentials)}
-                             :query-params query))]
-     (if (= ::success (:status api-result))
-       (update-in api-result [:result] parse-objective)
-       api-result))))
+   (default-get-call (str utils/host-url "/api/v1/objectives/" id)
+     (assoc {:headers (get-api-credentials)}
+            :query-params query))))
 
 (defn query->objectives-query-params [query]
   (let [user-id (:signed-in-id query)]
@@ -121,19 +114,12 @@
    (get-objectives {}))
 
   ([query]
-   (let [api-result (default-get-call
-                      (str utils/host-url "/api/v1/objectives")
-                      (query->objectives-query-params query))]
-     (if (= ::success (:status api-result))
-       (update-in api-result [:result] #(map parse-objective %))
-       api-result))))
+   (default-get-call
+     (str utils/host-url "/api/v1/objectives")
+     (query->objectives-query-params query))))
 
 (defn get-objectives-for-writer [user-id]
- (let [api-result (default-get-call
-                    (utils/path-for :api/get-objectives-for-writer :id user-id))]
-     (if (= ::success (:status api-result))
-       (update-in api-result [:result] #(map parse-objective %))
-       api-result)))
+  (default-get-call (utils/path-for :api/get-objectives-for-writer :id user-id)))
 
 ;; COMMENTS
 (defn post-comment [comment-data]

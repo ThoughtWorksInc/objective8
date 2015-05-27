@@ -41,7 +41,6 @@
 (def an-objective {:_id OBJECTIVE_ID
                    :title "my objective title"
                    :description "my objective description"
-                   :end-date (utils/string->date-time "2012-12-12")
                    :username "Barry"
                    :uri (str "/objectives/" OBJECTIVE_ID)})
 
@@ -146,8 +145,7 @@
        (fact "anyone can view list of drafts"
              (against-background
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                         :result {:_id OBJECTIVE_ID
-                                                                  :end-date (utils/string->date-time "2012-12-12")}}
+                                                         :result {:_id OBJECTIVE_ID}}
                (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success}
                (http-api/get-all-drafts OBJECTIVE_ID) => {:status ::http-api/success
                                                           :result [{:_id DRAFT_ID

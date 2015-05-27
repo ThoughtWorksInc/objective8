@@ -66,6 +66,9 @@
              (safen-url "/unsafe-route") => nil)
 
        (fact "when the query string for a referral route is not safe or invalid, safen-url returns just the safe route"
+             (safen-url "/objectives/1?invalid=invalid_value") => "/objectives/1")
+
+       (fact "when the query string for a referral route is empty, safen-url returns just the safe route"
              (safen-url "/objectives/1?") => "/objectives/1")
 
        (fact "when there is a query string referer-url returns the query string appended to the uri"
