@@ -45,8 +45,6 @@
                              [:.clj-objective-list-dashboard-link]  (when (permissions/writer-for? user objective-id)
                                                                       (html/set-attr :href (utils/path-for :fe/dashboard-questions :id objective-id))) 
 
-                             [:.clj-objective-drafting-begins] nil 
-
                              [:.clj-objective-list-item-link] (html/set-attr :href (str "/objectives/" 
                                                                                         objective-id))
                              [:.clj-objective-list-item-title] (html/content (:title objective))

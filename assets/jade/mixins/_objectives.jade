@@ -11,9 +11,5 @@ mixin objectiveListItem(objectiveTitle, numberOfDays)
           i.fa.fa-trash-o.fa-lg
     a.objective-list-item-link.clj-objective-list-item-link.func--objective-list-item-link(href="/objectives/[id]")
       h3.objective-list-item-title.clj-objective-list-item-title.func--objective-title #{objectiveTitle}
-      //-p.objective-list-item-draft-begins.clj-objective-drafting-begins
-      //-  span.l8n-drafting-begins !Drafting begins in
-      //-  =" "
-      //-  span.objective-list-item-date.clj-objective-drafting-begins-date !#{numberOfDays} days
       p.objective-list-item-preview-text.clj-objective-brief-description
         block

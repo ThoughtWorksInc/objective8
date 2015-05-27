@@ -234,8 +234,6 @@
 
               [:.clj-objective-title] (html/content (:title objective))
 
-              [:.clj-days-left] nil
-              [:.clj-drafting-started-wrapper] nil
               [:.clj-latest-draft-wrapper] (when (:latest-draft data)
                                              (html/substitute (latest-draft (:latest-draft data))))
               [:.clj-objective-detail] (html/content (tf/text->p-nodes (:description objective)))
