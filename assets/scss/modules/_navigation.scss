@@ -1,23 +1,11 @@
 .navigation-wrapper {
   background: $grey-5;
+  margin-bottom: $footer_height;
   padding: 1em;
   position: relative;
   z-index: 2;
   @include mq(768) {
     display: none;
-  }
-  &.large-screen-sidebar {
-    @include mq(768) {
-      width: 260px;
-      display: block;
-      position: fixed;
-      z-index: 2;
-      top: 0;
-      left: 0;
-      height: 100%;
-      padding-top: 87px;
-      box-shadow: -3px 10px 8px -1px rgba(0,0,0,0.1) inset;
-    }
   }
 }
 
