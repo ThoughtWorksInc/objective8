@@ -7,8 +7,10 @@
   font-size: 120%;
 }
 .question-item-icon {
-  line-height: 1.4;
-  float: left;
+  position: absolute;
+  top: 0;
+  left: 0;
+  line-height: 1.5;
 }
 .question-meta {
   @extend %list-item-meta;
@@ -21,6 +23,7 @@
 }
 .question-text {
   @extend %list-item-text;
+  position: relative;
   color: $link-colour;
   padding-right: 2em;
   @include mq(768) {
@@ -28,19 +31,30 @@
   }
 }
 
-
-.question-text-inner {
+.question-text-link {
   @include word_wrap;
-  text-decoration: none;
   display: block;
-  margin-left: 1.35em;
+  text-decoration: none;
+  padding-left: 1.35em;
+  &:hover {
+    text-decoration: none;
+    .question-text-link-text {
+      text-decoration: underline;
+    }
+  }
 }
-
+.question-text-link-text {
+  display: block;
+  margin-bottom: 5px;
+  line-height: 1.3;
+}
 .question-answer-count {
-  margin-left: 1.80em;
+  display: block;
   font-size: 0.75em;
   color: $grey-15;
+  text-decoration: none;
 }
+
 .question-actions {
   @extend .list-item-actions;
 }
@@ -52,7 +66,7 @@
 .demote-question-button {
   @extend .normalise-button;
   position: absolute;
-  top: 22px;
+  top: 20px;
   right: 10px;
   &:hover {
     opacity: 0.7;
@@ -74,6 +88,6 @@
   }
 }
 
-.promoted-questions-container .question-text-inner {
+.promoted-questions-container .question-text-link {
   font-size: 130%;
 }

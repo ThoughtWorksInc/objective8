@@ -17,10 +17,11 @@ mixin questionDemoteForm()
 mixin questionItem()
   li.question-item.clj-question-item
     .question-text
-      i.fa.fa-pie-chart.question-item-icon
-      a.question-text-inner.clj-question-text.clj-answer-link.func--answer-link(href="#")
-        block
-      span.question-answer-count.clj-question-answer-count 5 answers
+      a.question-text-link.clj-answer-link.func--answer-link(href="#")
+        i.fa.fa-pie-chart.question-item-icon
+        span.question-text-link-text.clj-question-text
+          block
+        span.question-answer-count.clj-question-answer-count !5 answers
     .question-actions
       if blocks.buttonList
         - blocks.buttonList()
