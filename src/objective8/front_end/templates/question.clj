@@ -2,6 +2,7 @@
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
+            [cemerick.url :as url]
             [objective8.utils :as utils]
             [objective8.front-end.api.domain :as domain]
             [objective8.front-end.templates.page-furniture :as pf]
@@ -58,27 +59,32 @@
 (def navigation-snippet (html/select question-template [:.clj-secondary-navigation]))
 
 (defn answers-navigation [{:keys [data] :as context}]
-  (let [question (:question data)
-        offset (:offset data)
+  (let [{question-id :_id :as question} (:question data)
         {objective-id :_id :as objective} (:objective data)
-        answers-count (get-in question [:meta :answers-count])]
+        offset (:offset data)
+        answers-count (get-in question [:meta :answers-count])
+       question-url (url/url (utils/path-for :fe/question :id objective-id :q-id question-id))]
     (html/at navigation-snippet 
-             [:.clj-parent-link] (html/set-attr :href (utils/path-for :fe/objective :id objective-id))
+             [:.clj-parent-link] (html/set-attr :href (-> (utils/path-for :fe/objective :id objective-id)
+                                                          url/url
+                                                          (assoc :anchor "questions")))
              [:.clj-parent-text] (html/content (:title objective))
+
              [:.clj-secondary-navigation-previous] 
              (when (> offset 0) 
                (html/transformation
                  [:.clj-secondary-navigation-previous-link] 
                  (html/set-attr :href
-                                (str "/objectives/" (:_id objective)
-                                     "/questions/" (:_id question) "?offset=" (- offset fe-config/answers-pagination)))))
+                                (-> question-url
+                                    (assoc :query {:offset (- offset fe-config/answers-pagination)})))))
+
              [:.clj-secondary-navigation-next] 
              (when (> answers-count (+ offset fe-config/answers-pagination))
                (html/transformation
                  [:.clj-secondary-navigation-next-link] 
                  (html/set-attr :href
-                                (str "/objectives/" (:_id objective)
-                                     "/questions/" (:_id question) "?offset=" (+ offset fe-config/answers-pagination))))))))
+                                (-> question-url
+                                    (assoc :query {:offset (+ offset fe-config/answers-pagination)}))))))))
 
 (defn question-page [{:keys [translations data user doc] :as context}]
   (let [question (:question data)

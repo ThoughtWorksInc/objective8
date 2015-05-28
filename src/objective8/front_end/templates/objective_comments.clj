@@ -20,7 +20,9 @@
         total-comments (get-in objective [:meta :comments-count])
         comments-url (url/url (utils/path-for :fe/get-comments-for-objective :id objective-id))]
     (html/at objective-comments-navigation-snippet
-             [:.clj-parent-link] (html/set-attr :href (utils/path-for :fe/objective :id objective-id))
+             [:.clj-parent-link] (html/set-attr :href (-> (utils/path-for :fe/objective :id objective-id)
+                                                          url/url
+                                                          (assoc :anchor "comments")))
              [:.clj-parent-text] (html/content (:title objective))
              [:.clj-secondary-navigation-previous] 
              (when (> offset 0) 

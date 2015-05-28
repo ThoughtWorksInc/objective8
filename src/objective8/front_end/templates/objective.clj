@@ -105,7 +105,7 @@
                              [:.clj-share-objective-modal] (configure-social-network-links objective-url sharing-text))))))
 
 
-;; DRAFTING HAS STARTED MESSAGE
+;; DRAFTING
 
 (def latest-draft-wrapper-snippet (html/select objective-template [:.clj-latest-draft]))
 
@@ -222,6 +222,10 @@
                 :share-objective (share-objective-modal context)
                 (when (invitation-rsvp-for-objective? objective invitation-rsvp)
                   (invitation-rsvp-modal context)))
+
+              [:.clj-modal-close-anchor] (case (:type flash) 
+                                           :share-question (html/set-attr :href "#questions")
+                                           identity) 
 
               [:.clj-objective-progress-indicator] (html/substitute (pf/progress-indicator context))
 

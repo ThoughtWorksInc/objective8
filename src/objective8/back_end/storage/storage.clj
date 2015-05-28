@@ -365,7 +365,9 @@ JOIN  (SELECT questions._id, COUNT (answers.*) AS answers_count
 ON questions._id = answers_count._id
 JOIN objective8.users AS users
 ON users._id = questions.created_by_id
-WHERE questions.objective_id = ?" [objective-id objective-id]] :results))))
+WHERE questions.objective_id = ?
+ORDER BY questions._created_at DESC
+LIMIT 50" [objective-id objective-id]] :results))))
 
 
 (defn pg-retrieve-questions-for-objective-by-most-answered [query-map]

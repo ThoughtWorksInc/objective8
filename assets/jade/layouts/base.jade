@@ -99,8 +99,8 @@ html.no-js(lang="en", class="#{htmlClass}")
     .js-modal.js-hidden.js-close-target
       .js-modal-container
         .js-modal-dismiss
-          a.js-close(href='#')
-            span Close 
+          a.js-close.clj-modal-close-anchor(href='#')
+            span(data-l8n="content:footer/modal-dismiss") !Close 
             i.fa.fa-times
 
     +javascriptIncludeTag("scripts.min")
