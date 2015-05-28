@@ -62,3 +62,17 @@ $guidance_text_top_gutter: 1.45em;
     color: $default_text_color;
   }
 }
+
+.inline-guidance {
+  margin-bottom: 1.5em;
+}
+.inline-guidance-list {
+  padding: 0.5em 0 0 0;
+  list-style: none;
+}
+.inline-guidance-list-item {
+  margin-bottom: 0.75em;
+  &:last-child {
+    margin-bottom: 0;
+  }
+}

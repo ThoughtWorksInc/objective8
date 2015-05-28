@@ -7,14 +7,14 @@ block vars
 
 block content
 
-  +guidanceText('!Creating an objective','content:create-objective-guidance/heading')
-    ul
-      li(data-l8n="content:create-objective-guidance/item-1") !An objective is a change that could be achieved by introducing new policy. For example: improving access to public housing, or increasing the safety of our roads.
-      li(data-l8n="content:create-objective-guidance/item-2") !Share your objective to encourage collaboration.
-
   .middle-container
 
     h1#page-title(data-l8n="content:create-objective/page-title") !Create objective
+    .inline-guidance
+      ul.inline-guidance-list
+        li.inline-guidance-list-item(data-l8n="content:create-objective-guidance/item-1") !An objective is a change that could be achieved by introducing new policy. For example: improving access to public housing, or increasing the safety of our roads.
+        li.inline-guidance-list-item(data-l8n="content:create-objective-guidance/item-2") !Share your objective to encourage collaboration.
+
     form.clj-create-objective-form(method="POST", action="/objectives")
       p.form-field
         label.form-field-label(for="objective-title")
