@@ -4,17 +4,3 @@
 
  - name: install fail2ban
    apt: name=fail2ban state=present
-
-# - name: install sendmail
-#   apt: name=sendmail state=present
-
-## not using as ferm works better and conflicts with this
-# - name: install iptables-persistent
-#   apt: name="iptables-persistent" state=present
-
-# - name: Transfer the script
-#   copy: src=iptables_config.sh dest=~/ mode=0777
-
-# - name: set-up basic firewall
-#   shell: ~/iptables_config.sh
-#   sudo: true
