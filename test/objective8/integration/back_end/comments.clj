@@ -100,7 +100,7 @@
                                (helpers/truncate-tables)))
          (after :facts (helpers/truncate-tables))]
 
-        (fact "retrieves comments for the entity at <uri>"
+        (fact "retrieves comments for the entity at <uri> with default query params"
               (let [user (sh/store-a-user)
                     {draft-id :_id objective-id :objective-id :as draft} (sh/store-a-draft)
                     draft-uri (str "/objectives/" objective-id "/drafts/" draft-id)
@@ -113,7 +113,12 @@
                     escaped-draft-uri (str "%2fobjectives%2f" objective-id "%2fdrafts%2f" draft-id)
                     {response :response} (p/request app (str "/api/v1/meta/comments?uri=" escaped-draft-uri))]
                 (:body response) => (helpers/json-contains
-                                     {:comments (contains (map contains (reverse stored-comments)))})))
+                                     {:comments (contains (map contains (reverse stored-comments)))
+                                      :pagination {}
+                                      :query {:limit 50
+                                              :offset 0
+                                              :sorted-by "created-at" 
+                                              :filter-type "none"}})))
 
         (fact "returns 404 if the entity to retrieve comments for does not exist"
               (let [{response :response} (p/request app (str "/api/v1/meta/comments?uri=" "%2fnonexistent%2furi"))]
@@ -145,9 +150,8 @@
                 body => (helpers/json-contains {:comments
                                                 (contains [(contains {:_id (:_id comment-with-most-votes)})
                                                            (contains {:_id (:_id comment-with-some-votes)})
-                                                           (contains {:_id (:_id comment-with-least-votes)})])})))
-
-        (fact "retrieves comments sorted by number of down-votes when sorting type is 'down-votes'")))
+                                                           (contains {:_id (:_id comment-with-least-votes)})])
+                                                :query (contains {:sorted-by "up-votes"})})))))
 
 (facts "GET /api/v1/meta/comments?uri=<uri>&filter-type=has-writer-note"
        (against-background
@@ -168,7 +172,8 @@
                  body => (helpers/json-contains
                           {:comments (contains [(contains {:_id comment-with-note-id
                                                          :comment "with note"
-                                                         :note "writer note content"})])})
+                                                         :note "writer note content"})])
+                           :query (contains {:filter-type "has-writer-note"})})
                  body =not=> (helpers/json-contains
                               {:comments (contains [(contains {:_id comment-without-note-id})])})))))
 
@@ -189,7 +194,8 @@
                      p-response  (p/request app (str (utils/path-for :api/get-comments)
                                                      "?uri=" escaped-objective-uri
                                                      "&offset=5"))]
-                 (count (:comments (helpers/peridot-response-json-body->map p-response))) => 5))))
+                 (count (:comments (helpers/peridot-response-json-body->map p-response))) => 5
+                 (get-in p-response [:response :body]) => (helpers/json-contains {:query (contains {:offset 5})})))))
 
 (facts "GET /api/v1/meta/comments?uri=<uri>&limit=<n>"
        (against-background
@@ -208,7 +214,8 @@
                      p-response  (p/request app (str (utils/path-for :api/get-comments)
                                                      "?uri=" escaped-objective-uri
                                                      "&limit=5"))]
-                 (count (:comments (helpers/peridot-response-json-body->map p-response))) => 5))))
+                 (count (:comments (helpers/peridot-response-json-body->map p-response))) => 5
+                 (get-in p-response [:response :body]) => (helpers/json-contains {:query (contains {:limit 5})})))))
 
 (facts "About posting comments on draft sections AKA 'annotations'"
        (against-background

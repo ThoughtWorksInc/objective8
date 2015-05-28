@@ -205,11 +205,11 @@
   (let [objective (:objective data)
         objective-id (:_id objective)
         flash (:flash doc)
-        comments (:comments data)
-        number-of-comments-shown (count comments)
-        comment-history-link (str (utils/path-for :fe/get-comments-for-objective
-                                                  :id objective-id)
-                                  "?offset=" fe-config/comments-pagination)]
+        next-comments (get-in data [:comments-data :pagination :next-offset])
+        comment-history-link (-> (utils/path-for :fe/get-comments-for-objective
+                                                 :id objective-id)
+                                 url/url
+                                 (assoc :query {:offset next-comments}))]
     (->>
      (html/at objective-template
               [:title] (html/content (:title doc))
@@ -256,7 +256,7 @@
 
               [:.clj-comment-list] (html/content (pf/comment-list context))
 
-              [:.clj-comment-list] (if (< number-of-comments-shown (get-in objective [:meta :comments-count]))
+              [:.clj-comment-list] (if next-comments
                                      (html/append comment-history-snippet)
                                      identity)
 

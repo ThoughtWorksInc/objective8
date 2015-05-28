@@ -3,7 +3,6 @@
             [net.cgrand.jsoup :as jsoup]
             [objective8.front-end.config :as fe-config]
             [objective8.front-end.templates.template-functions :as tf]
-            [objective8.front-end.api.domain :as domain]
             [objective8.front-end.templates.page-furniture :as pf]
             [objective8.utils :as utils]
             [objective8.front-end.permissions :as permissions]))
@@ -80,12 +79,11 @@
   (let [{draft-id :_id :as draft} (:draft data)
         objective (:objective data)
         {objective-id :_id} objective
-        comments (:comments data)
-        number-of-comments-shown (count comments)
+        next-comments (get-in data [:comments-data :pagination :next-offset])
         comment-history-link (when draft-id (str (utils/path-for :fe/get-comments-for-draft
                                                                  :id objective-id
                                                                  :d-id draft-id)
-                                                 "?offset=" fe-config/comments-pagination))]
+                                                 "?offset=" next-comments))]
     (html/at draft-wrapper-snippet
              [:.clj-secondary-navigation] (if draft
                                                 (html/substitute (draft-version-navigation context))
@@ -107,7 +105,7 @@
              [:.clj-draft-comments] (when draft
                                       (html/transformation
                                         [:.clj-comment-list] (html/content (pf/comment-list context))
-                                        [:.clj-comment-list] (if (< number-of-comments-shown (get-in draft [:meta :comments-count]))
+                                        [:.clj-comment-list] (if next-comments
                                                                (html/append comment-history-snippet)
                                                                identity)
 

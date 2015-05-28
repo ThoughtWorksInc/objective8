@@ -223,8 +223,8 @@
 (defn get-comments [{:keys [params] :as request}]
   (try
     (if-let [{uri :uri :as query} (br/request->comments-query request)]
-      (if-let [comments (comments/get-comments uri (dissoc query :uri))]
-        (-> {:comments comments}
+      (if-let [comments-data (comments/get-comments-with-pagination-data uri (dissoc query :uri))]
+        (-> comments-data
             response/response
             (response/content-type "application/json"))
         (not-found-response "Entity does not exist"))

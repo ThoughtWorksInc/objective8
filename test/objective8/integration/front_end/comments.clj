@@ -66,7 +66,9 @@
                (provided
                 (http-api/get-comments OBJECTIVE_URI {:offset 3
                                                       :limit 50}) => {:status ::http-api/success
-                                                                      :result {:comments []}}))
+                                                                      :result {:comments []
+                                                                               :query {:offset 3
+                                                                                       :limit 50}}}))
 
          (fact "anyone can view comments for an objective"
                (against-background

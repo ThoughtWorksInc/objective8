@@ -1,7 +1,6 @@
 (ns objective8.front-end.templates.draft-list
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
-            [objective8.front-end.api.domain :as domain]
             [cemerick.url :as url]
             [objective8.config :as config]
             [objective8.utils :as utils]

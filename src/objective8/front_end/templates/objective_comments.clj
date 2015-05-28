@@ -1,11 +1,8 @@
 (ns objective8.front-end.templates.objective-comments
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]
             [cemerick.url :as url]
-            [objective8.front-end.config :as fe-config]
             [objective8.utils :as utils]
-            [objective8.front-end.api.domain :as domain]
             [objective8.front-end.templates.page-furniture :as pf]
             [objective8.front-end.templates.template-functions :as tf]))
 
@@ -14,10 +11,9 @@
 (def objective-comments-navigation-snippet (html/select objective-comments-template [:.clj-secondary-navigation]))
 
 (defn objective-comments-navigation [{:keys [data] :as context}]
-  (let [offset (:offset data) 
-        objective (:objective data)
-        objective-id (:_id objective)
-        total-comments (get-in objective [:meta :comments-count])
+  (let [{objective-id :_id :as objective} (:objective data)
+        next-comments (get-in data [:comments-data :pagination :next-offset])
+        previous-comments (get-in data [:comments-data :pagination :previous-offset])
         comments-url (url/url (utils/path-for :fe/get-comments-for-objective :id objective-id))]
     (html/at objective-comments-navigation-snippet
              [:.clj-parent-link] (html/set-attr :href (-> (utils/path-for :fe/objective :id objective-id)
@@ -25,21 +21,17 @@
                                                           (assoc :anchor "comments")))
              [:.clj-parent-text] (html/content (:title objective))
              [:.clj-secondary-navigation-previous] 
-             (when (> offset 0) 
+             (when previous-comments 
                (html/transformation
                  [:.clj-secondary-navigation-previous-link] 
-                 (html/set-attr :href
-                                (-> comments-url
-                                    (assoc :query {:offset (max 0 (- offset fe-config/comments-pagination))})
-                                    str))))
+                 (html/set-attr :href (-> comments-url
+                                          (assoc :query {:offset previous-comments})))))
              [:.clj-secondary-navigation-next] 
-             (when (> total-comments (+ offset fe-config/comments-pagination))
+             (when next-comments
                (html/transformation
                  [:.clj-secondary-navigation-next-link] 
-                 (html/set-attr :href
-                                (-> comments-url
-                                    (assoc :query {:offset (+ offset fe-config/comments-pagination)})
-                                    str)))))))
+                 (html/set-attr :href (-> comments-url
+                                          (assoc :query {:offset next-comments}))))))))
 
 (defn objective-comments-page [{:keys [doc] :as context}]
   (->> (html/at objective-comments-template

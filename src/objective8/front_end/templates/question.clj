@@ -4,7 +4,6 @@
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [cemerick.url :as url]
             [objective8.utils :as utils]
-            [objective8.front-end.api.domain :as domain]
             [objective8.front-end.templates.page-furniture :as pf]
             [objective8.front-end.templates.template-functions :as tf]
             [objective8.front-end.config :as fe-config]))

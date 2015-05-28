@@ -113,10 +113,6 @@
 
 ;; COMMENT LIST
 
-(defn comments-refer-uri [request]
-  (str (utils/referer-url request)
-       "%23comments"))
-
 (defn comment-refer-uri [request comment]
   (str (utils/referer-url request)
        "#comment-" (:_id comment)))
@@ -143,7 +139,7 @@
 (def comment-list-item-snippet (html/select library-html-resource [:.clj-comment-item])) 
 
 (defn comment-list-items [{:keys [data user translations] :as context}]
-  (let [comments (:comments data)]
+  (let [comments (get-in data [:comments-data :comments])]
     (html/at comment-list-item-snippet
              [:.clj-comment-item] 
              (html/clone-for [comment comments]
@@ -163,7 +159,7 @@
                              [:.clj-comment-reply] nil)))) 
 
 (defn comment-list [{:keys [data] :as context}]
-  (let [comments (:comments data)]
+  (let [comments (get-in data [:comments-data :comments])]
     (if (empty? comments)
       empty-comment-list-item-snippet
       (comment-list-items context))))
@@ -201,7 +197,7 @@
 (defn sign-in-to-comment [{:keys [ring-request] :as context}]
   (html/at sign-in-to-comment-snippet 
            [:.clj-to-comment-sign-in-link] 
-           (html/set-attr :href (str "/sign-in?refer=" (comments-refer-uri ring-request)))))
+           (html/set-attr :href (str "/sign-in?refer=" (utils/referer-url ring-request) "%23add-comment-form"))))
 
 
 (defn comment-create [{user :user :as context} comment-target]

@@ -51,7 +51,7 @@
 
 (defn sign-in [{{refer :refer} :params :as request}]
   {:status 200
-   :header {"Content-Type" "text/html"}  
+   :header {"Content-Type" "text/html"}
    :body (views/sign-in "sign-in" request)
    :session (assoc (:session request) :sign-in-referrer refer)})
 
@@ -67,7 +67,7 @@
 
 (defn learn-more [request]
   {:status 200
-   :header {"Content-Type" "text/html"}  
+   :header {"Content-Type" "text/html"}
    :body (views/learn-more-page "learn-more" request)})
 
 ;; USER PROFILE
@@ -80,7 +80,7 @@
       (let [user-profile (:profile user)
             {objective-status :status  objectives-for-writer :result} (http-api/get-objectives-for-writer (:_id user))
             joined-date (utils/iso-time-string->pretty-date (:_created_at user))]
-        (if (= objective-status ::http-api/success) 
+        (if (= objective-status ::http-api/success)
           {:status 200
            :header {"Content-Type" "text/html"}
            :body (views/profile "profile" request
@@ -89,7 +89,7 @@
                                 :objectives-for-writer objectives-for-writer
                                 :joined-date joined-date
                                 :doc {:title (str (:name user-profile) " | Objective[8]")})}
-          (error-404-response request))) 
+          (error-404-response request)))
       (= user-status ::http-api/not-found) (error-404-response request)
 
       :else {:status 500})))
@@ -101,19 +101,19 @@
         {status :status objectives :result} (if signed-in-id
                                               (http-api/get-objectives {:signed-in-id signed-in-id})
                                               (http-api/get-objectives))]
-    (cond 
+    (cond
       (= status ::http-api/success)
       {:status 200
-       :header {"Content-Type" "text/html"}  
+       :header {"Content-Type" "text/html"}
        :body (views/objective-list "objective-list" request
-                                   :objectives objectives)} 
-      
+                                   :objectives objectives)}
+ 
       (= status ::http-api/error)
       {:status 502})))
 
 (defn create-objective-form [request]
   {:status 200
-   :header {"Content-Type" "text/html"}  
+   :header {"Content-Type" "text/html"}
    :body (views/create-objective "create-objective" request)})
 
 (defn create-objective-form-post [{:keys [t' locale session] :as request}]
@@ -170,7 +170,7 @@
                                            :objective objective
                                            :writers writers
                                            :questions questions
-                                           :comments (:comments comments-data)
+                                           :comments-data comments-data
                                            :latest-draft latest-draft
                                            :doc (let [details (str (:title objective) " | Objective[8]")]
                                                   {:title details
@@ -242,7 +242,7 @@
        :headers {"Content-Type" "text/html"}
        :body (views/dashboard-comments-page "dashboard-comments"
                                             request
-                                            :objective objective 
+                                            :objective objective
                                             :drafts drafts
                                             :comments (:comments comments-data)
                                             :comment-view-type comment-view-type
@@ -311,25 +311,24 @@
           (if (or (< offset comment-count)
                   (and (= offset 0) (= comment-count 0)))
             (let [{comments-status :status comments-data :result} (http-api/get-comments
-                                                                   (:uri objective)
-                                                                   comments-query-params)]
+                                                                    (:uri objective)
+                                                                    comments-query-params)]
               (if (= comments-status ::http-api/success)
                 {:status 200
                  :headers {"Content-Type" "text/html"}
                  :body (views/objective-comments-view
-                        "objective-comments"
-                        request
-                        :objective objective
-                        :comments (:comments comments-data)
-                        :offset offset
-                        :doc (let [details (str (t' :objective-comments/title-prefix) " " 
-                                                (:title objective) " | Objective[8]")]
-                               {:title details
-                                :description details}))}
+                         "objective-comments"
+                         request
+                         :objective objective
+                         :comments-data comments-data
+                         :doc (let [details (str (t' :objective-comments/title-prefix) " "
+                                                 (:title objective) " | Objective[8]")]
+                                {:title details
+                                 :description details}))}
                 {:status 500}))
             (response/redirect (str (utils/path-for :fe/get-comments-for-objective
                                                     :id objective-id)
-                                    "?offset=" (max 0 (- comment-count fe-config/comments-pagination)))))) 
+                                    "?offset=" (max 0 (- comment-count fe-config/comments-pagination))))))
         (error-404-response request)))
     (catch java.lang.NumberFormatException e
       (log/info "Invalid query string: " e)
@@ -360,9 +359,8 @@
                            "draft-comments"
                            request
                            :draft draft
-                           :comments (:comments comments-data)
+                           :comments-data comments-data
                            :objective objective
-                           :offset offset
                            :doc (let [details (str (t' :draft-comments/title-prefix) " "
                                                    (utils/iso-time-string->pretty-time (:_created_at draft)) " | Objective[8]")]
                                   {:title details
@@ -453,7 +451,7 @@
   (let [question-data (fr/request->question-data request (get (friend/current-authentication) :identity))]
     (case (:status question-data)
       ::fr/valid (let [{status :status question :result} (http-api/create-question (:data question-data))]
-                   (cond 
+                   (cond
                      (= status ::http-api/success)
                      (let [objective-url (str utils/host-url "/objectives/" (:objective-id question) "#questions")]
                        (assoc (response/redirect objective-url) :flash {:type :share-question
@@ -472,8 +470,8 @@
           o-id (-> (:id route-params) Integer/parseInt)
           offset (Integer/parseInt (get params :offset "0"))
           answer-query (cond-> {}
-                         (:offset params) (assoc :offset offset 
-                                                 :limit fe-config/answers-pagination)) 
+                         (:offset params) (assoc :offset offset
+                                                 :limit fe-config/answers-pagination))
           {question-status :status question :result} (http-api/get-question o-id q-id)
           answers-count (get-in question [:meta :answers-count] 0)]
       (cond
@@ -483,7 +481,7 @@
                                              :q-id q-id
                                              :id o-id))
           (if (or (< offset answers-count)
-                  (and (= offset 0) (= answers-count 0))) 
+                  (and (= offset 0) (= answers-count 0)))
             (let [{answer-status :status answers :result} (http-api/retrieve-answers (:uri question) answer-query)
                   {objective-status :status objective :result} (http-api/get-objective (:objective-id question))]
               (if (every? #(= ::http-api/success %) [answer-status objective-status])
@@ -493,14 +491,14 @@
                                             :objective objective
                                             :question question
                                             :answers answers
-                                            :offset offset 
+                                            :offset offset
                                             :doc {:title (:question question)
                                                   :description (:question question)})}
-                {:status 500})) 
+                {:status 500}))
             (response/redirect (str (utils/path-for :fe/question
                                                     :q-id q-id
                                                     :id o-id)
-                                    "?offset=" (max 0 (- answers-count fe-config/answers-pagination)))))) 
+                                    "?offset=" (max 0 (- answers-count fe-config/answers-pagination))))))
 
         (= question-status ::http-api/not-found) (error-404-response request)
 
@@ -591,10 +589,10 @@
       (= status ::http-api/success)
       (cond
         (= invitation-status "active")
-        (-> (utils/path-for :fe/objective :id objective-id) 
+        (-> (utils/path-for :fe/objective :id objective-id)
             response/redirect
             (assoc :session session)
-            (assoc-in [:session :invitation] {:uuid uuid :objective-id objective-id :invitation-id _id})) 
+            (assoc-in [:session :invitation] {:uuid uuid :objective-id objective-id :invitation-id _id}))
 
         (= invitation-status "expired")
         (-> (str utils/host-url "/objectives/" objective-id)
@@ -609,31 +607,31 @@
 
 (defn create-profile-get [request]
   {:status 200
-   :headers {"Content-Type" "text/html"}      
+   :headers {"Content-Type" "text/html"}
    :body (views/create-profile "create-profile" request)})
 
 (defn create-profile-post [{:keys [session] :as request}]
   (if (:invitation session)
-    (let [profile-data (fr/request->profile-data request (get (friend/current-authentication) :identity))] 
+    (let [profile-data (fr/request->profile-data request (get (friend/current-authentication) :identity))]
       (case (:status profile-data)
-        ::fr/valid (let [{status :status} (http-api/post-profile (:data profile-data))] 
+        ::fr/valid (let [{status :status} (http-api/post-profile (:data profile-data))]
                      (if (= status ::http-api/success)
-                       (accept-invitation request) 
+                       (accept-invitation request)
                        {:status 500}))
-        ::fr/invalid (-> (response/redirect (utils/path-for :fe/create-profile-get)) 
+        ::fr/invalid (-> (response/redirect (utils/path-for :fe/create-profile-get))
                          (assoc :flash {:validation (dissoc profile-data :status)}))))
     {:status 401}))
 
 (defn edit-profile-get [request]
   (if (permissions/writer? (friend/current-authentication))
     (let [{user-status :status user :result} (http-api/get-user (:identity (friend/current-authentication)))]
-      (if (= user-status ::http-api/success) 
+      (if (= user-status ::http-api/success)
         (let [user-profile (:profile user)]
           {:status 200
-           :header {"Content-Type" "text/html"}  
+           :header {"Content-Type" "text/html"}
            :body (views/edit-profile "edit-profile" request :user-profile user-profile)})
 
-        {:status 500}))  
+        {:status 500}))
     {:status 401}))
 
 (defn edit-profile-post [request]
@@ -646,8 +644,8 @@
                        (-> (utils/path-for :fe/profile :username (get (friend/current-authentication) :username))
                            response/redirect)
 
-                       :else {:status 500})) 
-        ::fr/invalid (-> (response/redirect (utils/path-for :fe/edit-profile-get)) 
+                       :else {:status 500}))
+        ::fr/invalid (-> (response/redirect (utils/path-for :fe/edit-profile-get))
                          (assoc :flash {:validation (dissoc profile-data :status)}))))
     {:status 401}))
 
@@ -655,7 +653,7 @@
   (if-let [invitation-credentials (:invitation session)]
     (let [{status :status result :result} (http-api/decline-invitation {:invitation-id (:invitation-id invitation-credentials)
                                                                         :objective-id (:objective-id invitation-credentials)
-                                                                        :invitation-uuid (:uuid invitation-credentials)})] 
+                                                                        :invitation-uuid (:uuid invitation-credentials)})]
       (cond
         (#{::http-api/success ::http-api/invalid-input ::http-api/not-found} status)
         (-> (str utils/host-url)
@@ -670,11 +668,11 @@
 
 (defn create-writer [{:keys [session] :as request}]
   (let [invitation-credentials (:invitation session)
-        objective-id (:objective-id invitation-credentials) 
+        objective-id (:objective-id invitation-credentials)
         writer {:invitee-id (get (friend/current-authentication) :identity)
                 :invitation-uuid (:uuid invitation-credentials)
                 :objective-id objective-id}
-        {status :status} (http-api/post-writer writer) ]
+        {status :status} (http-api/post-writer writer)]
     (cond
       (= status ::http-api/success)
       (-> (str utils/host-url "/objectives/" (:objective-id invitation-credentials) "#writers")
@@ -704,12 +702,12 @@
   (let [{objective-status :status objective :result} (http-api/get-objective (Integer/parseInt objective-id))]
     (case objective-status
       ::http-api/success {:status 200
-                          :headers {"Content-Type" "text/html"}      
-                          :body (views/add-draft "add-draft" request :objective-id objective-id)} 
+                          :headers {"Content-Type" "text/html"}
+                          :body (views/add-draft "add-draft" request :objective-id objective-id)}
 
       ::http-api/not-found (error-404-response request)
 
-      {:status 500}))) 
+      {:status 500})))
 
 (defn add-draft-post [{:keys [params route-params] :as request}]
   (let [draft-data (fr/request->add-draft-data request (get (friend/current-authentication) :identity))]
@@ -730,13 +728,13 @@
                           :content (-> draft-data :data :hiccup)}
               {status :status draft :result} (http-api/post-draft draft-info)]
           (case status
-            ::http-api/success (response/redirect (str "/objectives/" (:id route-params) "/drafts/" (:_id draft)))    
+            ::http-api/success (response/redirect (str "/objectives/" (:id route-params) "/drafts/" (:_id draft)))
 
             ::http-api/not-found (error-404-response request)
 
             {:status 502})))
 
-      ::fr/invalid (-> (response/redirect (utils/path-for :fe/add-draft-get :id (:id route-params))) 
+      ::fr/invalid (-> (response/redirect (utils/path-for :fe/add-draft-get :id (:id route-params)))
                        (assoc :flash {:validation (dissoc draft-data :status)})))))
 
 (defn import-draft-get [{{objective-id :id} :route-params :as request}]
@@ -760,12 +758,12 @@
 
                    "submit" (let [{status :status draft :result} (http-api/post-draft draft-data)]
                               (cond
-                                (= status ::http-api/success) 
+                                (= status ::http-api/success)
                                 (response/redirect (utils/path-for :fe/draft :id (:objective-id draft-data) :d-id (:_id draft)))
                                 (= status ::http-api/not-found) {:status 404}
                                 :else {:status 502})))
 
-      ::fr/invalid (-> (response/redirect (utils/path-for :fe/import-draft-get :id (:id route-params))) 
+      ::fr/invalid (-> (response/redirect (utils/path-for :fe/import-draft-get :id (:id route-params)))
                        (assoc :flash {:validation (dissoc draft-data :status)})))))
 
 (defn draft [request]
@@ -784,7 +782,7 @@
            :body (views/draft "draft" request
                               :objective objective
                               :writers writers
-                              :comments (:comments comments-data)
+                              :comments-data comments-data
                               :draft-content draft-content
                               :draft draft
                               :sections sections)
@@ -808,13 +806,13 @@
 
 (defn draft-diff [request]
   (if-let [draft-query (fr/request->draft-query request)]
-    (let [objective-id (get-in draft-query [:data :objective-id ]) 
+    (let [objective-id (get-in draft-query [:data :objective-id ])
           draft-id (get-in draft-query [:data :draft-id])
           {objective-status :status objective :result} (http-api/get-objective objective-id)
-          {draft-status :status draft :result} (http-api/get-draft objective-id draft-id)] 
+          {draft-status :status draft :result} (http-api/get-draft objective-id draft-id)]
       (if-let [previous-draft-id (:previous-draft-id draft)]
         (let [{previous-draft-status :status previous-draft :result} (http-api/get-draft objective-id (:previous-draft-id draft))]
-          (if 
+          (if
             (every? #(= ::http-api/success %) [objective-status draft-status previous-draft-status])
             (let [diffs (diffs/get-diffs-between-drafts draft previous-draft)]
               {:status 200
@@ -822,8 +820,8 @@
                                        :current-draft draft
                                        :previous-draft-diffs (-> diffs
                                                                  :previous-draft-diffs
-                                                                 utils/hiccup->html) 
-                                       :current-draft-diffs (-> diffs 
+                                                                 utils/hiccup->html)
+                                       :current-draft-diffs (-> diffs
                                                                 :current-draft-diffs
                                                                 utils/hiccup->html))
                :headers {"Content-Type" "text/html"}})))
@@ -834,7 +832,7 @@
 (defn draft-list [{{:keys [id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)
         {objective-status :status objective :result} (http-api/get-objective objective-id)
-        drafts (:result (http-api/get-all-drafts objective-id)) 
+        drafts (:result (http-api/get-all-drafts objective-id))
         writers (:result (http-api/retrieve-writers objective-id))]
     (case objective-status
       ::http-api/success {:status 200
@@ -842,7 +840,7 @@
                                                   :objective objective
                                                   :writers writers
                                                   :drafts drafts)
-                          :headers {"Content-Type" "text/html"}} 
+                          :headers {"Content-Type" "text/html"}}
 
       ::http-api/not-found (error-404-response request)
 
@@ -850,13 +848,13 @@
 
 (defn draft-section [{:keys [uri] :as request}]
   (let [{section-status :status section :result} (http-api/get-draft-section uri)
-        {comments-data :result} (http-api/get-comments uri {:limit fe-config/comments-pagination})] 
-    (cond 
+        {comments-data :result} (http-api/get-comments uri {:limit fe-config/comments-pagination})]
+    (cond
       (= ::http-api/success section-status)
       {:status 200
-       :body (views/draft-section "draft-section" request 
+       :body (views/draft-section "draft-section" request
                                   :section (update-in section [:section] utils/hiccup->html)
-                                  :comments (:comments comments-data))
+                                  :comments-data comments-data)
        :headers {"Content-Type" "text/html"}}
 
       (= ::http-api/not-found)
@@ -882,7 +880,7 @@
 
       (= status ::http-api/invalid-input) {:status 400}
 
-      :else {:status 502}))) 
+      :else {:status 502})))
 
 (defn post-mark [request]
   (if-let [mark-data (fr/request->mark-info request (get (friend/current-authentication) :identity))]
@@ -902,7 +900,7 @@
           updated-session (dissoc (:session request) :removal-data)]
       (case status
         ::http-api/success (-> (response/redirect (utils/path-for :fe/objective-list))
-                               (assoc :session updated-session)) 
+                               (assoc :session updated-session))
         ::http-api/invalid-input {:status 400}
 
         {:status 502}))
@@ -911,7 +909,7 @@
 (defn admin-removal-confirmation [request]
   (if-let [removal-data (fr/request->removal-data request)]
     {:status 200
-     :body (views/admin-removal-confirmation "admin-removal-confirmation" request 
+     :body (views/admin-removal-confirmation "admin-removal-confirmation" request
                                              :removal-data removal-data)
      :headers {"Content-Type" "text/html"}}
     (error-404-response request)))
@@ -920,15 +918,15 @@
   (if-let [admin-removal-data (fr/request->admin-removal-info request)]
     (let [updated-session (assoc (:session request) :removal-data admin-removal-data)]
       (-> (response/redirect (utils/path-for :fe/admin-removal-confirmation-get))
-          (assoc :session updated-session))) 
+          (assoc :session updated-session)))
     {:status 400}))
 
 (defn admin-activity [request]
   (let [{status :status admin-removals :result} (http-api/get-admin-removals)]
-    (cond 
+    (cond
       (= status ::http-api/success)
       {:status 200
-       :header {"Content-Type" "text/html"}  
+       :header {"Content-Type" "text/html"}
        :body (views/admin-activity "admin-activity" request
                                    :admin-removals admin-removals)}
 

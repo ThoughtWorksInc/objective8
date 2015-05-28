@@ -56,6 +56,7 @@
         pagination-map (cond-> {}
                          more-comments? (assoc :next-offset (+ offset limit)) 
                          (> offset 0) (assoc :previous-offset (max (- offset limit) 0)))]
-    {:comments (if more-comments? (drop-last result) result)
-     :pagination pagination-map
-     :query query}))
+    (when result
+      {:comments (if more-comments? (drop-last result) result)
+       :pagination pagination-map
+       :query query})))
