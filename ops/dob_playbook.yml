@@ -5,3 +5,5 @@
     - postgres
     - nginx
     - ferm
+    - jre
+    - objective8_postgres_config

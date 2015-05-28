@@ -60,7 +60,11 @@
                    :ragtime {:migrations ragtime.sql.files/migrations
                              :database ~database-connection-url}
                    :aliases {"translation-template" ["run" "-m" "dev-helpers.translation/main"]}}
-             :uberjar {:aot [objective8.core]}
+             :uberjar {:source-paths ["prod"]
+                       :ragtime {:migrations ragtime.sql.files/migrations
+                                 :database ~database-connection-url}
+                       :main main
+                       :aot [main]}
              :build {:plugins [[org.clojars.strongh/lein-init-script "1.3.1"]]
                      :lis-opts {:name "objective8"
                                 :redirect-output-to "/var/log/objective8d-init.log"

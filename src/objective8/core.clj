@@ -26,9 +26,7 @@
             [objective8.back-end.handlers :as back-end-handlers]
             [objective8.back-end.storage.storage :as storage]
             [objective8.back-end.storage.database :as db]
-            [objective8.back-end.domain.bearer-tokens :as bt])
- ; (:gen-class)
-  )
+            [objective8.back-end.domain.bearer-tokens :as bt]))
 
 (def handlers {;; Front End Handlers
                :fe/index front-end-handlers/index
