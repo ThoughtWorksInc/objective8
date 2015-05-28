@@ -110,6 +110,7 @@
                  (comments/get-comments objective-uri {:limit 2 :offset 1}) => (just [(contains {:_id (:_id newest-comment-to-retrieve)}) 
                                                                                       (contains {:_id (:_id oldest-comment-to-retrieve)})])))
 
+
          (tabular
            (fact "gets comments with aggregate votes"
                  (let [objective (sh/store-an-objective)
@@ -166,4 +167,47 @@
                    (-> (comments/get-comments objective-uri {:sorted-by ?sorted-by :filter-type :none})
                        first) => (contains {:uri comment-uri
                                             :comment-on-uri objective-uri})))
-           ?sorted-by :up-votes :down-votes :created-at)))
+           ?sorted-by :up-votes :down-votes :created-at)
+
+         (fact "returns query map and pagination map with retrieved comments"
+               (let [{username :username :as user} (sh/store-a-user)
+                     objective (sh/store-an-objective)
+                     objective-uri (str "/objectives/" (:_id objective))
+                     objective-with-no-comments (sh/store-an-objective)
+                     older-stored-comments (doall (->> (repeat {:entity objective})
+                                                       (take 5)
+                                                       (map sh/store-a-comment)))
+                     first-comment-to-retrieve (sh/store-a-comment {:entity objective :user user})
+                     first-retrieved-comment (-> first-comment-to-retrieve
+                                                 (assoc :username username
+                                                        :uri (str "/comments/" (:_id first-comment-to-retrieve))
+                                                        :comment-on-uri objective-uri
+                                                        :votes {:down 0 :up 0})
+                                                 (dissoc :global-id :comment-on-id))
+                     second-comment-to-retrieve (sh/store-a-comment {:entity objective :user user})
+                     second-retrieved-comment (-> second-comment-to-retrieve
+                                                  (assoc :username username
+                                                         :uri (str "/comments/" (:_id second-comment-to-retrieve))
+                                                         :comment-on-uri objective-uri
+                                                         :votes {:down 0 :up 0})
+                                                  (dissoc :global-id :comment-on-id))
+                     newer-stored-comments (doall (->> (repeat {:entity objective})
+                                                       (take 3)
+                                                       (map sh/store-a-comment)))]
+                 (comments/get-comments-with-pagination-data objective-uri {:offset 3 :limit 2})
+                 => {:comments [second-retrieved-comment
+                                first-retrieved-comment]
+                     :pagination {:next-offset 5
+                                  :previous-offset 1}
+                     :query {:offset 3
+                             :limit 2
+                             :sorted-by :created-at
+                             :filter-type :none}}
+
+                 (comments/get-comments-with-pagination-data (str "/objectives/" (:_id objective-with-no-comments)) {} )
+                 => {:comments []
+                     :pagination {}
+                     :query {:offset 0
+                             :limit 50
+                             :sorted-by :created-at
+                             :filter-type :none}}))))

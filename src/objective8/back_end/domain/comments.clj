@@ -47,3 +47,15 @@
          (utils/select-all-or-nothing [:comment-id :reason])
          (assoc :entity :reason)
          storage/pg-store!))
+
+(defn get-comments-with-pagination-data [entity-uri query-params]
+  (let [{offset :offset limit :limit :as query} (-> default-comment-query
+                                                    (merge query-params)) 
+        result (get-comments entity-uri (update-in query [:limit] inc))
+        more-comments? (> (count result) limit)
+        pagination-map (cond-> {}
+                         more-comments? (assoc :next-offset (+ offset limit)) 
+                         (> offset 0) (assoc :previous-offset (max (- offset limit) 0)))]
+    {:comments (if more-comments? (drop-last result) result)
+     :pagination pagination-map
+     :query query}))
