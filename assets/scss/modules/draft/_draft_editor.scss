@@ -30,14 +30,16 @@ $editor_min_device_width: 321;
   }
 }
 .draft-editor-console {
-  padding: 1em;
+  padding-left: 1em;
+  padding-right: 1em;
   @include mq($editor_min_device_width) {
     flex: 1;
     height: 100%;
     overflow-y: auto;
   }
   @include mq(640) {
-    padding: 2em;
+    padding-left: 2em;
+    padding-right: 2em;
   }
 }
 .draft-editor-document {

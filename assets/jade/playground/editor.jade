@@ -7,6 +7,12 @@ block vars
 
 block headerScripts
 
+block pageHeader
+  header#top(role="banner")
+    .header-content
+      +mastheadSignedOut
+
+
 block content
 
   .draft-editor
@@ -51,5 +57,7 @@ block content
               td etst
               td etst
               td etst
+
+block pageFooter
 
 block footerScripts
