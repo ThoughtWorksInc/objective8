@@ -20,14 +20,33 @@
 
 .footer-row {
   @include cf;
+  margin-bottom: 1em;
 }
 
 .footer-content-links {
   float: left;
   list-style: none;
-  margin: 0 0 0 0;
+  margin: 0;
   padding: 0;
   width: 50%;
+  li {
+    margin-bottom: 0.25em;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+.footer-link {
+  display: inline-block;
+  line-height: 1.4;
+  color: $offwhite;
+  text-decoration: none;
+  &:visited {
+    color: $offwhite;
+  }
+  &:hover {
+    color: #2e8aca;
+  }
 }
 
 .footer-content-text {
@@ -39,19 +58,9 @@
   font-style: italic;
 }
 
-.footer-link {
-  color: $offwhite;
-  &:visited {
-    color: $offwhite;
-  }
-  &:hover {
-    color: #2e8aca;
-  }
-}
-
 .footer-footer {
-  border-top: 1px solid $offwhite;
+  padding-top: 1em;
+  border-top: 1px solid rgba($offwhite,0.25);
   text-align: right;
-  margin-top: 1em;
 }
 
