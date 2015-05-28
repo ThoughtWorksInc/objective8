@@ -4,3 +4,4 @@
     - common
     - postgres
     - nginx
+    - ferm
