@@ -344,7 +344,7 @@ question-create,doc-title,Add a question
 question-create,doc-description,Add a question to this objective
 question-create,add-a-question,Add a question to this objective
 question-create,guidance-heading,Tips for questions
-question-create,guidance-text,"Your question should be focused and specific, as the answers will influence the policy drafting process."
+question-create,guidance-text,"Be focused and specific, as the answers will influence the policy drafting process."
 question-create,question-title,Questions are a maximum length of 500 characters
 question-create,question-label,Question
 question-create,post-button,Add question
