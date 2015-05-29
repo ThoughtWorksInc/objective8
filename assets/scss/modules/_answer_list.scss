@@ -36,14 +36,19 @@
 
 .writer-note-item-container {
   margin-top: 0.5em;
-  color: $green1;
+  padding-left: 1.5em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  border-left: 4px solid $grey-4;
+  :last-child {
+    margin-bottom: 0;
+  }
 }
 
 .writer-note-item-label {
-  font-weight: bold; 
-  &:after {
-    content: ": ";
-  }
+  display: block;
+  color: $green1;
+  font-size: 0.9em;
 }
 
 .answer-new {

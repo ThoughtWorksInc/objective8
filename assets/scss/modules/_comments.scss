@@ -57,7 +57,15 @@
 
 .comment-reason-text {
   @extend %list-item-date;
-  margin-bottom: 0.8em;
+  margin-bottom: .6em;
+  &:not(:empty) {
+    &:before {
+      content: ', ';
+    }
+  }
+  &:empty {
+    display: none;
+  }
 }
 
 .annotation-reason {

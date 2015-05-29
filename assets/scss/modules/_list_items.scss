@@ -2,7 +2,7 @@
   margin: 0 0 $default_block_spacing 0;
   padding: 0;
   list-style: none;
-  :last-child {
+  >:last-child {
     margin-bottom: 0;
   }
 }
@@ -31,6 +31,9 @@
     &:last-of-type {
       margin-bottom: 0;
     }
+  }
+  &:empty {
+    display: none;
   }
 }
 .list-item-actions {

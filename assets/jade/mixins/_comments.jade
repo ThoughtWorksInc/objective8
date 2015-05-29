@@ -3,14 +3,16 @@ mixin commentReply()
     +voteUpDownControls
     a.comment-reply.clj-comment-reply(href="#") Reply
 
-mixin commentItem(author, date)
+mixin commentItem(author, date, reason)
   li.comment-item.clj-comment-item
     .comment-meta
       span.comment-author.clj-comment-author #{author}
       span.comment-date.clj-comment-date #{date}
+      span.comment-reason-text.clj-comment-reason-text.func--comment-reason-text #{reason}
+
     .comment-text.clj-comment-text.func--comment-text
-    .comment-reason-text.clj-comment-reason-text.func--comment-reason-text
       block
+
     +commentReply
     +writerNote
 
