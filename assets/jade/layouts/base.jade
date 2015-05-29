@@ -55,54 +55,51 @@ html.no-js(lang="en", class="#{htmlClass}")
       to improve your experience.
     <![endif]-->
 
-    block pageHeader
-      header#top(role="banner")
-        .header-content
-          +mastheadSignedOut
-          +statusBar
+    input.nav-trigger#nav-trigger(type="checkbox")
 
-    block guidance
+    .site-navigation
+      a.func--objectives(href="/objectives", title="!Go to the Objectives list", data-l8n="attr/title:masthead/objectives-link-title-attr content:masthead/objectives-link") !View Objectives
+      a(href="/objectives/create", title="!Create an Objective", data-l8n="attr/title:masthead/create-link-title-attr content:masthead/create-link") !Create an Objective
+      a(href="/learn-more", title="!Learn more about Objective[8]", data-l8n="attr/title:masthead/about-link-title-attr content:masthead/about-link") !About
 
-    #main-content(role="main").main-content
-      block content
+    .app-wrapper
+      block pageHeader
+        header#top(role="banner")
+          .header-content
+            +mastheadSignedOut
+            +statusBar
 
-    nav#clj-navigation
-      #navigation.navigation-wrapper
-        h2.navigation-title(data-l8n="content:masthead/navigation-title") !Navigation
-        ul.navigation-list
-          li
-            a(href="/objectives", title="!Go to the Objectives list", data-l8n="attr/title:masthead/objectives-link-title-attr content:masthead/objectives-link") !Objectives
-          li
-            a(href="/objectives/create", title="!Create an Objective", data-l8n="attr/title:masthead/create-link-title-attr content:masthead/create-link") !Create an Objective
-          li
-            a(href="/learn-more", title="!Learn more about Objective[8]", data-l8n="attr/title:masthead/about-link-title-attr content:masthead/about-link") !About
+      block guidance
 
-    block pageFooter
-      footer
-        .footer-container
-          .footer
-            .footer-row
-              ul.footer-content-links
-                li
-                  a.footer-link(href="/learn-more", data-l8n="content:footer/about-link") !About
-                li
-                  a.footer-link(href="/admin-activity", data-l8n="content:footer/deleted-link") !Deleted Content
-                li
-                  a.footer-link(href="https://github.com/ThoughtWorksInc/objective8")
-                    | Github
-                    = " "
-                    i.fa.fa-github
-              .footer-content-text.footer-alpha-warning(data-l8n="content:footer/alpha-warning") !ALPHA: this is a testing version of Objective8 data and content may change several times a day
-            .footer-footer
-              a.footer-link(data-l8n="content:footer/dcent-link", href="http://dcentproject.eu/") !DCENT
+      #main-content(role="main").main-content
+        block content
 
-    .js-modal.js-hidden.js-close-target
-      .js-modal-container
-        .js-modal-dismiss
-          a.js-close.clj-modal-close-anchor(href='#')
-            span(data-l8n="content:footer/modal-dismiss") !Close
-            =" "
-            i.fa.fa-times
+      block pageFooter
+        footer
+          .footer-container
+            .footer
+              .footer-row
+                ul.footer-content-links
+                  li
+                    a.footer-link(href="/learn-more", data-l8n="content:footer/about-link") !About
+                  li
+                    a.footer-link(href="/admin-activity", data-l8n="content:footer/deleted-link") !Deleted Content
+                  li
+                    a.footer-link(href="https://github.com/ThoughtWorksInc/objective8")
+                      | Github
+                      = " "
+                      i.fa.fa-github
+                .footer-content-text.footer-alpha-warning(data-l8n="content:footer/alpha-warning") !ALPHA: this is a testing version of Objective8 data and content may change several times a day
+              .footer-footer
+                a.footer-link(data-l8n="content:footer/dcent-link", href="http://dcentproject.eu/") !DCENT
+
+      .js-modal.js-hidden.js-close-target
+        .js-modal-container
+          .js-modal-dismiss
+            a.js-close.clj-modal-close-anchor(href='#')
+              span(data-l8n="content:footer/modal-dismiss") !Close
+              =" "
+              i.fa.fa-times
 
     +javascriptIncludeTag("scripts.min")
     block footerScripts

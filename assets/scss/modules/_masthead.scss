@@ -4,6 +4,7 @@
     margin-bottom: 2em;
   }
 }
+
 .masthead {
   position: relative;
   height: $masthead_height;
@@ -46,21 +47,6 @@
     text-align: left;
     display: inline-block;
     margin-right: 1em;
-  }
-}
-
-.masthead-large-screen-nav {
-  display: none;
-  @include mq(768) {
-    text-transform: uppercase;
-    font-size: 0.85em;
-    font-weight: bold;
-    display: inline;
-    position: relative;
-    top: -4px;
-    a {
-      margin-right: 2em;
-    }
   }
 }
 

@@ -97,6 +97,11 @@
     @content;
   }
 }
+@mixin mq-max($point) {
+  @media screen and (max-width: $point / $doc-font-size +em) {
+    @content;
+  }
+}
 
 // Word Wrap
 @mixin word_wrap {

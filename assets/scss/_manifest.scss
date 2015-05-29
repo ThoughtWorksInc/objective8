@@ -1,4 +1,11 @@
 /* This file manifest keeps partials in the correct order */
+
+@import 'mixins/functions';
+@import 'mixins/positioning';
+@import 'mixins/dimensions';
+@import 'mixins/star';
+@import 'mixins/document';
+
 @import 'root/root';
 @import 'root/typography';
 @import 'root/links';
@@ -28,12 +35,6 @@
 @import 'font_awesome/rotated-flipped';
 @import 'font_awesome/stacked';
 @import 'font_awesome/icons';
-
-@import 'mixins/functions';
-@import 'mixins/positioning';
-@import 'mixins/dimensions';
-@import 'mixins/star';
-@import 'mixins/document';
 
 @import 'modules/bootstrap_social';
 

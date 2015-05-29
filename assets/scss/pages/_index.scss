@@ -2,10 +2,7 @@
   @include cf;
   height: 100%;
   background-color: #fefdf1;
-  body {
-    min-height: 100%;
-    position: relative;
-    z-index: 1;
+  .app-wrapper {
     &:after {
       content: '';
       position: absolute;
