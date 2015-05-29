@@ -1,5 +1,6 @@
 default ansible_ssh_host=127.0.0.1 ansible_ssh_port=2223
+digital_ocean ansible_ssh_host=178.62.94.128
 
 [dob]
 default
-
+digital_ocean

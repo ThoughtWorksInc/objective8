@@ -61,6 +61,7 @@
                              :database ~database-connection-url}
                    :aliases {"translation-template" ["run" "-m" "dev-helpers.translation/main"]}}
              :uberjar {:source-paths ["prod"]
+                       :jvm-opts ["-Dlog4j.configuration=log4j.dev"]   
                        :ragtime {:migrations ragtime.sql.files/migrations
                                  :database ~database-connection-url}
                        :main main
