@@ -1,73 +1,75 @@
-.navigation-wrapper {
-  background: $grey-4;
-  margin-bottom: $footer_height;
-  position: relative;
-  z-index: 2;
-  @include mq(768) {
-    display: none;
-  }
-}
-
-.navigation-title {
-  font-size: 0.95em;
-  margin-top: 0;
-  margin-bottom: 0;
-  padding: 1em;
-  background: rgba($grey-2,0.1);
-  @include mq(768) {
-    margin-bottom: 1em;
-  }
-}
-
-.navigation-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  li {
-    border-top: 1px solid rgba($grey-2,0.25);
-  }
-  a {
-    display: block;
-    padding: 1em;
-    text-decoration: none;
-    color: $grey-15;
-    transition: all 0.1s ease-in-out;
-    &:hover {
-      border-left: 5px solid $green1;
-      color: $black;
+.nav-trigger {
+  position: absolute;
+  clip: rect(0, 0, 0, 0);
+  &:checked ~ .app-wrapper {
+    @include mq-max(768) {
+      transform: translateX($mobile_nav_width);
+      box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.15);
     }
-    &.selected {
-      border-left: 5px solid $green1;
-      color: $black;
-      position: relative;
-      &:hover {
-        cursor: default;
-        box-shadow: none;
-      }
+  }
+  &:checked ~ .app-wrapper label[for="nav-trigger"] {
+    &:after {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: transparent;
+    }
+  }
+}
 
-      .csstransforms & {
-        @include mq(1150) {
-          &:before {
-            content:'';
-            position: absolute;
-            background-color: #e5e5e5;
-            width:39px;
-            height:39px;
-            right: -20px;
-            transform: rotate(-45deg);
-            top: 7px;
-          }
-          &:after {
-            content:'';
-            position: absolute;
-            width:39px;
-            height:39px;
-            box-shadow: -2px -2px 5px -2px rgba(0,0,0,0.3) inset;
-            right: -20px;
-            transform: rotate(-45deg);
-            top: 7px;
-          }
-        }
+.site-navigation {
+  width: $mobile_nav_width;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  height: 100%;
+  background: $black;
+  color: $white;
+  text-transform: uppercase;
+  font-size: 0.85em;
+  font-weight: bold;
+  a {
+    text-decoration: none;
+    clear: both;
+    width: 100%;
+    display: block;
+    padding: 2em 1.25em;
+    border-bottom: 1px solid rgba($white,0.05);
+    &:visited, & {
+      color: inherit;
+    }
+    &:hover, &:focus {
+      background-color: $white;
+      color: $black;
+      text-decoration: none;
+    }
+  }
+
+  @include mq(768) {
+    position: absolute;
+    top: 16px;
+    left: 170px;
+    z-index: 3;
+    color: inherit;
+    background: transparent;
+    width: auto;
+    height: auto;
+    a {
+      clear: none;
+      width: auto;
+      padding: 0;
+      display: inline-block;
+      margin-right: 2em;
+      border-bottom: none;
+      &:hover, &:focus {
+        background-color: transparent;
+        color: $black;
+        text-decoration: underline;
       }
     }
   }
