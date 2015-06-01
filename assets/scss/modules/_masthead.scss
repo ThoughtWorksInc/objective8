@@ -13,6 +13,10 @@
   color: $default_text_color;
   padding: 0.4em 1em 0.6em;
   box-shadow: 0 2px 7px rgba(0,0,0,.15);
+  text-align: center;
+  @include mq(768) {
+    text-align: left;
+  }
   a {
     color: inherit;
     text-decoration: none;
@@ -42,10 +46,9 @@
   font-size: 1.6em;
   letter-spacing: -0.025em;
   text-align: center;
-  display: block;
+  display: inline-block;
   @include mq(768) {
     text-align: left;
-    display: inline-block;
     margin-right: 1em;
   }
 }

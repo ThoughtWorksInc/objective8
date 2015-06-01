@@ -1,6 +1,12 @@
 .nav-trigger {
   position: absolute;
   clip: rect(0, 0, 0, 0);
+  &:checked ~ .site-navigation {
+    @include mq-max(768) {
+      position: fixed;
+      transform: translate(0,0);
+    }
+  }
   &:checked ~ .app-wrapper {
     @include mq-max(768) {
       transform: translateX($mobile_nav_width);
@@ -23,7 +29,7 @@
 
 .site-navigation {
   width: $mobile_nav_width;
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   z-index: 1;

@@ -12,6 +12,7 @@
 html,
 body {
   min-height: 100%;
+  overflow-x: hidden;
 }
 
 html {
@@ -26,7 +27,6 @@ body {
   font-family: $sans-serif;
   line-height: $baselineheight;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
 }
 
 .middle-container {
