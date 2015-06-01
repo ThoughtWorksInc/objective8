@@ -36,7 +36,7 @@
 
 (defn translation-resource-locator [filename]
   (fn [] {:resource-name (csv-file-name->language-keyword filename)
-          :resource (io/reader (io/file "resources" "translations" filename))}))
+          :resource (io/reader (io/resource (str "translations/" filename)))}))
 
 (def parse-error-messages
   {:long-path "Translation lookup path too long"
@@ -63,18 +63,16 @@
         {status :status :as load-result} (load-translation* resource-name resource)]
     load-result))
 
-(defn translation-file? [file]
-   (re-matches #".*\.csv$" (.getName file)))
-
 (defn find-translation-resources
   ([path]
    (find-translation-resources path translation-resource-locator))
 
   ([path resource-locator-fn]
-   (->> (io/file path)
-        file-seq
-        (filter translation-file?)
-        (map (comp resource-locator-fn #(.getName %))))))
+   (->> (str path "/languages.txt")
+        io/resource
+        io/reader
+        line-seq
+        (map resource-locator-fn))))
 
 (defn load-translations [resource-locators]
   (let [load-results (->> resource-locators
@@ -87,7 +85,7 @@
        (ex-info "Errors when loading translation resources"
                 {:causes errors})))))
 
-(def translations-directory "resources/translations")
+(def translations-directory "translations")
 
 (defn configure-translations []
   {:dictionary (load-translations (find-translation-resources translations-directory))
