@@ -29,6 +29,9 @@
   }
 }
 
+.writer-dashboard-header {
+  margin-bottom: 1.5em;
+}
 .writer-dashboard-title {
   a {
     color: inherit;
@@ -38,8 +41,7 @@
     }
   }
   margin-top: 0;
-  margin-bottom: 16px;
-  padding-left: 16px;
+  margin-bottom: 0;
   line-height: 1.2;
   font-family: $sans-serif;
   font-size: em(32);
@@ -49,9 +51,22 @@
   @include mq(640) {
     text-align: left;
   }
-  @include mq(768) {
-    font-size: em(42);
-  }
+}
+.writer-dashboard-stars {
+  position: relative;
+  display: inline-block;
+  margin-right: 0.25em;
+  color: $yellow;
+}
+.writer-dashboard-stars-count {
+  position: absolute;
+  top: 34px;
+  left: 0;
+  width: 100%;
+  color: $default_text_color;
+  font-size: 14px;
+  text-align: center;
+  font-weight: normal;
 }
 
 .writer-dashboard-stats {

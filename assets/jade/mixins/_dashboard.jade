@@ -85,8 +85,11 @@ mixin dashboardQuestionBlank()
 mixin writerDashboardHeader
   .writer-dashboard-header
     h1.writer-dashboard-title.clj-dashboard-title
+      .writer-dashboard-stars.clj-dashboard-stat-starred
+        i.fa.fa-star
+        .writer-dashboard-stars-count.clj-dashboard-stat-starred-amount 320
       a.writer-dashboard-title-link.clj-dashboard-title-link(href="/objectives/o_id") !We need more bike lanes in soho
-    .writer-dashboard-stats.clj-dashboard-stats
+    //-.writer-dashboard-stats.clj-dashboard-stats
       p.dashboard-stat.clj-dashboard-stat-participant
         span.dashboard-stat-amount.clj-dashboard-stat-participant-amount 5432
         span.dashboard-stat-title(data-l8n="content:writer-dashboard/participants-stat-title") !Participants
