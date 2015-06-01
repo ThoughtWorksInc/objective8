@@ -60,6 +60,9 @@
                    :ragtime {:migrations ragtime.sql.files/migrations
                              :database ~database-connection-url}
                    :aliases {"translation-template" ["run" "-m" "dev-helpers.translation/main"]}}
+             :load-testing {:source-paths ["load_testing"]
+                            :dependencies [[clj-gatling "0.5.4"]]
+                            :main load-tests}
              :uberjar {:source-paths ["prod"]
                        :jvm-opts ["-Dlog4j.configuration=log4j.dev"]   
                        :ragtime {:migrations ragtime.sql.files/migrations
