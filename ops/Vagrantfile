@@ -25,7 +25,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
-  config.vm.define "dob" do |dob|
+  config.vm.define "dob_vm" do |dob|
     dob.vm.network "private_network", ip: "192.168.50.51"
     dob.vm.network :forwarded_port, guest: 22, host: 2223, id: "ssh", auto_correct: false
 
@@ -34,8 +34,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 
     dob.vm.provision "ansible" do |ansible|
-      ansible.playbook = "dob_playbook.yml"
-      ansible.inventory_path = "dob.inventory"
+      ansible.playbook = "dob_vm_playbook.yml"
+      ansible.inventory_path = "dob_vm.inventory"
       ansible.sudo = true
     end
   end

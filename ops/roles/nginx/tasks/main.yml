@@ -4,3 +4,15 @@
 
  - name: install fail2ban
    apt: name=fail2ban state=present
+
+ - name: copy over objective8 nginx config
+   copy: src="objective8" dest="/etc/nginx/sites-available/objective8" mode=0644
+
+ - name: create symbolic link to nginx objective8 config
+   file: src="/etc/nginx/sites-available/objective8" dest="/etc/nginx/sites-enabled/objective8" state=link
+  
+ - name: remove default nginx symbolic link from sites-enabled
+   file: path="/etc/nginx/sites-enabled/default" state=absent
+
+ - name: restart nginx
+   service: name=nginx state=restarted

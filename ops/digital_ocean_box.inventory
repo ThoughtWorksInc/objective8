@@ -1,0 +1,4 @@
+default ansible_ssh_host=178.62.94.128
+
+[digital_ocean_box]
+default

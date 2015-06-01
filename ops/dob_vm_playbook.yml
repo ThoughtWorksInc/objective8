@@ -1,7 +1,5 @@
 ---
- - hosts: dob
-   sudo: true
-   remote_user: root
+ - hosts: dob_vm
    roles:
     - common
     - postgres

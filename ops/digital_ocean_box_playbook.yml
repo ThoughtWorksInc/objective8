@@ -1,0 +1,11 @@
+---
+ - hosts: digital_ocean_box
+   sudo: true
+   remote_user: root
+   roles:
+    - common
+    - postgres
+    - nginx
+    - ferm
+    - jre
+    - objective8_postgres_config
