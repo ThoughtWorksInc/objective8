@@ -102,9 +102,13 @@
 (defn seed-objective [user]
   (let [objective (sh/store-an-objective {:user user :title (str "objective created by " (:username user))})
         writer (sh/store-a-writer {:user user :objective objective})
-        comments (doall (for [x (range 120)]
-                          (sh/store-a-comment {:entity objective :comment-text (str "comment - " x)})))]
-    (doseq [comment (take 60 comments)]
+        objective-comments (doall (for [x (range 120)]
+                                    (sh/store-a-comment {:entity objective :comment-text (str "objective comment - " x)})))
+        draft (sh/store-a-draft {:objective objective :user user})
+        draft-comments (doall (for [x (range 120)]
+                                (sh/store-a-comment {:entity draft :comment-text (str "draft comment - " x)})))]
+    (doseq [comment (flatten [(take 60 objective-comments)
+                              (take 60 draft-comments)])]
       (sh/store-a-note {:note-on-entity comment
                         :writer writer
                         :note (str "note on " (:comment comment))}))))
