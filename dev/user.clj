@@ -106,9 +106,17 @@
                                     (sh/store-a-comment {:entity objective :comment-text (str "objective comment - " x)})))
         draft (sh/store-a-draft {:objective objective :user user})
         draft-comments (doall (for [x (range 120)]
-                                (sh/store-a-comment {:entity draft :comment-text (str "draft comment - " x)})))]
+                                (sh/store-a-comment {:entity draft :comment-text (str "draft comment - " x)})))
+        questions (doall (for [x (range 120)]
+                           (sh/store-a-question {:user user :objective objective :question-text (str "question - " x)})))
+        section (sh/store-a-section {:draft draft :section-label "abcd1234"})
+        annotations (doall (for [x (range 120)]
+                             (:comment (sh/store-an-annotation {:section section
+                                                                :annotation-text (str "annotation - " x)
+                                                                :reason "general"}))))]
     (doseq [comment (flatten [(take 60 objective-comments)
-                              (take 60 draft-comments)])]
+                              (take 60 draft-comments)
+                              (take 60 annotations)])]
       (sh/store-a-note {:note-on-entity comment
                         :writer writer
                         :note (str "note on " (:comment comment))}))))

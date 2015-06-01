@@ -76,11 +76,12 @@
 
   ([required-entities]
    (let [{created-by-id :_id} (l-get required-entities :user (store-a-user))
-         {objective-id :_id} (l-get required-entities :objective (store-an-objective))]
+         {objective-id :_id} (l-get required-entities :objective (store-an-objective))
+         question-text (get required-entities :question-text "A question")]
      (storage/pg-store! {:entity :question
                          :created-by-id created-by-id
                          :objective-id objective-id
-                         :question "A question"}))))
+                         :question question-text}))))
 
 (defn store-an-answer
   ([]
@@ -168,11 +169,12 @@
   ([] (store-a-section {}))
 
   ([entities]
-   (let [draft (l-get entities :draft (store-a-draft))]
+   (let [draft (l-get entities :draft (store-a-draft))
+         section-label (get entities :section-label "abcdefg")]
      (storage/pg-store! {:entity :section
                          :draft-id (:_id draft)
                          :objective-id (:objective-id draft)
-                         :section-label "abcdefg"}))))
+                         :section-label section-label}))))
 
 (defn store-a-comment
   ([]
