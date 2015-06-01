@@ -33,11 +33,13 @@
    (store-an-objective {}))
 
   ([entities]
-   (let [{user-id :_id} (l-get entities :user (store-a-user))]
+   (let [{user-id :_id} (l-get entities :user (store-a-user))
+         title (get entities :title "test title")
+         description (get entities :description "test description")]
      (storage/pg-store! {:entity :objective
                          :removed-by-admin false
-                         :title "test title"
-                         :description "test description"
+                         :title title
+                         :description description
                          :created-by-id user-id}))))
 
 (defn store-an-admin-removed-objective

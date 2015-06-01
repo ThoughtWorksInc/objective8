@@ -321,7 +321,7 @@
                (:body response) => (contains "test note")))
 
        (tabular
-        (future-facts "about pagination"
+        (facts "about pagination"
                (fact "comments are retrieved starting from the requested offset"
                      (-> user-session
                          ih/sign-in-as-existing-user
@@ -336,31 +336,30 @@
                                              (contains {:offset 10 :limit 50}))
                       => {:status ::http-api/success
                           :result {:comments []}}))
-
                (tabular
-                (fact "user can see the range of comments currently being viewed"
-                             (against-background
-                              (http-api/get-objective OBJECTIVE_ID)
-                              => {:status ::http-api/success
-                                  :result {:uri OBJECTIVE_URI
-                                           :_id OBJECTIVE_ID
-                                           :meta {:comments-count ?comments-count}}})
-                             (-> user-session
-                                 ih/sign-in-as-existing-user
-                                 (p/request (str (utils/path-for :fe/dashboard-comments :id OBJECTIVE_ID)
-                                                 "?offset=" ?offset
-                                                 "&comment-view=" ?view-type))
-                                 :response
-                                 :body)
-                             => (contains ?comment-index-regex))
-                ?offset   ?comments-count        ?comment-index-regex
-                0         75                     #"1.+-.+50"
-                50        75                     #"51.+-.+75"
-                0         0                      #"0.+-.+0"))
+                (fact "pagination navigation links are displayed when necessary"
+                      (against-background
+                       (http-api/get-comments OBJECTIVE_URI anything)
+                       => {:status ::http-api/success
+                           :result {:comments []
+                                    :pagination ?pagination}})
+                      (let [body (-> user-session
+                                     ih/sign-in-as-existing-user
+                                     (p/request (str (utils/path-for :fe/dashboard-comments :id OBJECTIVE_ID)
+                                                     "?offset=10"
+                                                     "&comment-view=" ?view-type))
+                                     :response
+                                     :body)]
+                        body => (contains ?expected-link-class)))
+                
+                ?pagination                 ?expected-link-class
+                {:next-offset 1}            "clj-comments-next"
+                {:previous-offset 1}        "clj-comments-previous"))
         
         ?view-type
         "up-votes"
-        "down-votes"))
+        "down-votes"
+        "paperclip"))
 
 (def section [["h1" {:data-section-label "1234abcd"} "A Heading"]])
 

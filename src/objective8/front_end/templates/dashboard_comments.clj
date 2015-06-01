@@ -70,7 +70,7 @@
           [:.clj-dashboard-writer-note-text] (html/content (:note comment))))
 
 (defn comment-list-items [{:keys [data] :as context}]
-  (let [comments (:comments data)]
+  (let [comments (get-in data [:comments-data :comments])]
     (html/at comments-without-writer-note-snippet
              [:.clj-dashboard-comment-item]
              (html/clone-for [comment comments]
@@ -79,7 +79,7 @@
                                                              (html/substitute (render-comment-without-note context comment)))))))
 
 (defn comment-list [{:keys [data] :as context}]
-  (let [comments (:comments data)]
+  (let [comments (get-in data [:comments-data :comments])]
     (if (empty? comments)
       (dashboard-comments-no-comments context)
       (comment-list-items context))))
@@ -131,8 +131,9 @@
   (let [objective (:objective data)
         selected-comment-target-uri (:selected-comment-target-uri data)
         dashboard-url (url/url (utils/path-for :fe/dashboard-comments :id (:_id objective)))
-        comment-view-type (:comment-view-type data)
-        offset (:offset data)]
+        next-comments (get-in data [:comments-data :pagination :next-offset])
+        previous-comments (get-in data [:comments-data :pagination :previous-offset])
+        comment-view-type (:comment-view-type data)]
     (->> (html/at dashboard-comments-template
                   [:title] (html/content (:title doc))
                   [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
@@ -189,33 +190,23 @@
                   
                   [:.clj-dashboard-content-stats] nil
 
-                  [:.clj-writer-dashboard-comments-pagination] nil
-                  #_(when-not (= comment-view-type :paperclip) identity)
-
-                  [:.clj-comments-start-index] nil
-                  #_(html/content (str (min (inc offset) total-comments)))
-                  [:.clj-comments-end-index] nil
-                  #_(html/content (str (min (+ offset fe-config/comments-pagination)
-                                                                     total-comments)))
+                  [:.clj-comments-previous]
+                  (when previous-comments
+                    (html/transformation
+                     [:.clj-comments-previous-link]
+                     (html/set-attr :href
+                                    (-> dashboard-url
+                                        (assoc :query {:offset previous-comments
+                                                       :comment-view (name comment-view-type)})))))
                   
-                  [:.clj-comments-previous] nil
-                  #_(if (> offset 0) enable-link identity)
-                  [:.clj-comments-previous-link] nil
-                  #_(html/set-attr :href 
-                                 (-> dashboard-url
-                                     (assoc :query {:offset (max 0 (- offset fe-config/comments-pagination))
-                                                    :comment-view (name comment-view-type)})
-                                     str))
-                  
-                  [:.clj-comments-next] nil
-                  #_(if (> total-comments (+ offset fe-config/comments-pagination)) enable-link identity)
-                  
-                  [:.clj-comments-next-link] nil
-                  #_(html/set-attr :href 
-                                 (-> dashboard-url
-                                     (assoc :query {:offset (+ offset fe-config/comments-pagination)
-                                                    :comment-view (name comment-view-type)})
-                                     str)))
+                  [:.clj-comments-next]
+                  (when next-comments
+                    (html/transformation
+                     [:.clj-comments-next-link]
+                     (html/set-attr :href
+                                    (-> dashboard-url
+                                        (assoc :query {:offset next-comments
+                                                       :comment-view (name comment-view-type)}))))))
          pf/add-google-analytics
          (tf/translate context)
          html/emit*    

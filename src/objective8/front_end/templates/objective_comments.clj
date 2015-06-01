@@ -21,7 +21,7 @@
                                                           (assoc :anchor "comments")))
              [:.clj-parent-text] (html/content (:title objective))
              [:.clj-secondary-navigation-previous] 
-             (when previous-comments 
+             (when previous-comments
                (html/transformation
                  [:.clj-secondary-navigation-previous-link] 
                  (html/set-attr :href (-> comments-url

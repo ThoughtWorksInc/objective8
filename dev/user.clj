@@ -96,10 +96,24 @@
     (loop [i 0]
       (when (< i 120)
         (sh/store-a-question {:user user
-                             :objective objective})
+                              :objective objective})
         (recur (inc i))))))
 
-(defn seed-data []
-  (seed-answers)
-  (seed-comments)
-  (seed-draft-comments))
+(defn seed-objective [user]
+  (let [objective (sh/store-an-objective {:user user :title (str "objective created by " (:username user))})
+        writer (sh/store-a-writer {:user user :objective objective})
+        comments (doall (for [x (range 120)]
+                          (sh/store-a-comment {:entity objective :comment-text (str "comment - " x)})))]
+    (doseq [comment (take 60 comments)]
+      (sh/store-a-note {:note-on-entity comment
+                        :writer writer
+                        :note (str "note on " (:comment comment))}))))
+
+(defn seed-data
+  ([]
+   (seed-answers)
+   (seed-comments)
+   (seed-draft-comments))
+
+  ([user]
+   (seed-objective user)))

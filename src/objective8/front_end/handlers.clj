@@ -244,7 +244,7 @@
                                             request
                                             :objective objective
                                             :drafts drafts
-                                            :comments (:comments comments-data)
+                                            :comments-data comments-data
                                             :comment-view-type comment-view-type
                                             :offset offset
                                             :selected-comment-target-uri selected-comment-target-uri)})))
