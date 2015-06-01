@@ -48,7 +48,9 @@ block content
 
     form.clj-import-draft-form.js-import-draft-form(action="/objectives/:id/import-draft", method="POST")
       input(type="hidden", name="google-doc-html-content").clj-google-doc-html-content.js-google-doc-html-content
-      span.user-input-error-message.clj-draft-content-empty-error(data-l8n="content:import-draft/draft-empty-validation-message") !The document you selected contains no content. Please check you have selected the correct document and try again.
+      .import-draft-error.clj-draft-content-empty-error
+        h2(data-l8n="content:import-draft/draft-empty-validation-title") !The document you selected is empty
+        p(data-l8n="content:import-draft/draft-empty-validation-message") !Please check you have selected the correct document and try again.
       a.button.cancel-link.clj-cancel-link.func--cancel-link(href="/objectives/:id/drafts", data-l8n="content:import-draft/cancel") !Cancel
       a.button.clj-select-file-link(disabled="disabled", data-l8n="content:import-draft/select-file", onClick="authoriseApp()") !Select file
       button.button.clj-preview-draft-button.js-preview-draft-button(style="display: none;", disabled="disabled", name="action", value="preview", type="submit", data-l8n="content:import-draft/preview") !Preview
