@@ -8,7 +8,7 @@
             [objective8.core :as core]
             [objective8.integration.integration-helpers :as ih]))
 
-(def user-session (ih/test-context))
+(def user-session (ih/front-end-context))
 
 (def OBJECTIVE_ID 3)
 (def OBJECTIVE_URI (str "/objectives/" OBJECTIVE_ID))

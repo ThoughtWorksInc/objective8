@@ -26,7 +26,7 @@
                (against-background
                  (http-api/post-admin-removal {:removal-uri OBJECTIVE_URI
                                                :removed-by-uri USER_URI}) => {:status ::http-api/success})
-               (let [user-session (ih/test-context)
+               (let [user-session (ih/front-end-context)
                      params {:removal-uri OBJECTIVE_URI}
                      {response :response} (-> user-session
                                               ih/sign-in-as-existing-user
@@ -43,7 +43,7 @@
                                                                  :result {:_id USER_ID
                                                                           :username "username"}}
                  (http-api/get-user anything) => {:result {:admin true}})
-               (let [user-session (ih/test-context)
+               (let [user-session (ih/front-end-context)
                      {response :response} (-> user-session
                                               ih/sign-in-as-existing-user
                                               (p/request (utils/path-for :fe/admin-removal-confirmation-get)))]
@@ -58,7 +58,7 @@
                                                                  :result {:_id USER_ID
                                                                           :username "username"}}
                  (http-api/get-user anything) => {:result {:admin true}})
-               (let [user-session (ih/test-context)
+               (let [user-session (ih/front-end-context)
                      params {:removal-uri OBJECTIVE_URI
                              :removal-sample "Objective Title"}
                      {response :response} (-> user-session
@@ -77,7 +77,7 @@
                (http-api/get-admin-removals) => {:status ::http-api/success
                                                  :result [{:removal-uri OBJECTIVE_URI
                                                            :_created_at "2015-03-24T17:06:37.714Z"}]})
-             (let [{response :response} (-> (ih/test-context) 
+             (let [{response :response} (-> (ih/front-end-context) 
                                             (p/request (utils/path-for :fe/admin-activity)))]
                (:status response) => 200
                (:body response) => (contains OBJECTIVE_URI))))

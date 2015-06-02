@@ -13,7 +13,7 @@
 
 (def TWITTER_ID "twitter-123456")
 
-(def user-session (helpers/test-context))
+(def user-session (helpers/front-end-context))
 
 (facts "answers"
        (binding [config/enable-csrf false]

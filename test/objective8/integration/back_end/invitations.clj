@@ -12,7 +12,7 @@
             [objective8.back-end.domain.objectives :as objectives]
             [objective8.middleware :as m])) 
 
-(def app (helpers/test-context))
+(def app (helpers/api-context))
 (def OBJECTIVE_ID 1)
 (def INVITED_BY_ID 2)
 (def INVITATION_ID 3)

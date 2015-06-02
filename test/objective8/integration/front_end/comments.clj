@@ -19,7 +19,7 @@
 (def OBJECTIVE_URI (str "/objectives/" OBJECTIVE_ID))
 (def DRAFT_URI (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID))
 
-(def user-session (helpers/test-context))
+(def user-session (helpers/front-end-context))
 
 (facts "about posting comments"
        (binding [config/enable-csrf false]

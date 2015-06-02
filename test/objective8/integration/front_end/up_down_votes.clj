@@ -13,7 +13,7 @@
          (http-api/create-user anything) => {:status ::http-api/success
                                              :result {:_id 100}}
          (http-api/get-question 1 1) => {:is :a-question})
-        (let [signed-in-session (-> (helpers/test-context)
+        (let [signed-in-session (-> (helpers/front-end-context)
                                     (helpers/with-sign-in "http://localhost:8080/objectives/1/questions/1"))]
           (:response signed-in-session) => (contains {:status 200})
           (p/request signed-in-session
@@ -32,7 +32,7 @@
                                              :result {:_id 100}}
          (http-api/get-question 1 1) => {:is :a-question})
 
-        (let [signed-in-session (-> (helpers/test-context)
+        (let [signed-in-session (-> (helpers/front-end-context)
                                     (helpers/with-sign-in "http://localhost:8080/objectives/1/questions/1"))]
           (:response signed-in-session) => (contains {:status 200})
           (p/request signed-in-session

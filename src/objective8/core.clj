@@ -121,11 +121,11 @@
                :api/post-mark (m/wrap-bearer-token back-end-handlers/post-mark bt/token-provider)
                :api/post-writer-note (m/wrap-bearer-token back-end-handlers/post-writer-note bt/token-provider)})
   
-(defn app [app-config]
-  (-> (make-handler routes/routes (some-fn handlers #(when (fn? %) %)))
+(defn front-end-handler [config]
+  (-> (make-handler routes/front-end-routes (some-fn handlers #(when (fn? %) %)))
       (m/wrap-not-found front-end-handlers/error-404)
-      (friend/authenticate (:authentication app-config))
-      (wrap-tower (:translation app-config))
+      (friend/authenticate (:authentication config))
+      (wrap-tower (:translation config))
       m/strip-trailing-slashes
       wrap-keyword-params
       wrap-params
@@ -133,10 +133,22 @@
       wrap-json-response
       wrap-flash
       (wrap-session {:cookie-attrs {:http-only true}
-                     :store (:session-store app-config)})
+                     :store (:session-store config)})
       (wrap-xss-protection true {:mode :block})
       (wrap-frame-options :sameorigin)
-      ((if (:https app-config)
+      ((if (:https config)
+         (comp wrap-forwarded-scheme wrap-ssl-redirect)
+         identity))))
+
+(defn api-handler [config]
+  (-> (make-handler routes/api-routes (some-fn handlers #(when (fn? %) %)))
+      m/strip-trailing-slashes
+      wrap-keyword-params
+      wrap-params
+      wrap-json-params
+      wrap-json-response
+      wrap-flash
+      ((if (:https config)
          (comp wrap-forwarded-scheme wrap-ssl-redirect)
          identity))))
 
@@ -160,8 +172,6 @@
     (let [admins (clojure.string/split admins-var #" ")]
         (doall (map store-admin admins)))))
 
-(defonce server (atom nil))
-
 (def app-config
   {:authentication {:allow-anon? true
                     :workflows [(if (= (:fake-twitter-mode config/environment) "TRUE")
@@ -174,25 +184,38 @@
    :https (:https-only config/environment)
    :db-spec (db/spec (:db-config config/environment))})
 
+(def front-end-server (atom nil))
+(def api-server (atom nil))
+
 (defn start-server 
   ([]
    (start-server app-config))
-  ([app-config] 
-   (let [port (:front-end-port config/environment)]
-     (db/connect! (:db-spec app-config)) 
+  ([config] 
+   (let [front-end-port (:front-end-port config/environment)
+         api-port (:api-port config/environment)]
+     (db/connect! (:db-spec config)) 
      (initialise-api)
-     (log/info (str "Starting objective8 on port " port))
-     (reset! server (run-server (app app-config) {:port port})))))
+     (log/info (str "Starting objective8 front-end on port " front-end-port))
+     (reset! front-end-server (run-server (front-end-handler config) {:port front-end-port}))
+     (log/info (str "Starting objective8 api on port " api-port))
+     (reset! api-server (run-server (api-handler config) {:port api-port})))))
 
 (defn -main []
   (start-server))
 
-(defn stop-server []
-  (when-not (nil? @server)
-    (log/info "Stopping objective8")
-    (@server)
-    (reset! server nil)))
+(defn stop-api-server []
+  (when-not (nil? @api-server)
+    (log/info "Stopping objective8 api")
+    (@api-server)
+    (reset! api-server nil)))
+
+(defn stop-front-end-server []
+  (when-not (nil? @front-end-server)
+    (log/info "Stopping objective8 front-end")
+    (@front-end-server)
+    (reset! front-end-server nil)))
 
 (defn restart-server []
-  (stop-server)
+  (stop-front-end-server)
+  (stop-api-server)
   (start-server))

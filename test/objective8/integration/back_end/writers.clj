@@ -10,7 +10,7 @@
             [objective8.middleware :as m]
             [objective8.back-end.domain.writers :as writers]))
 
-(def app (helpers/test-context))
+(def app (helpers/api-context))
 
 (facts "POST /api/v1/objectives/:obj-id/writers"
        (against-background

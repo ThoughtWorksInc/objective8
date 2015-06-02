@@ -34,7 +34,7 @@
                               [:p {:data-section-label SECTION_LABEL_2} "second paragraph"]])
 (def SOME_HTML (hc/html SOME_HICCUP))
 
-(def user-session (helpers/test-context))
+(def user-session (helpers/front-end-context))
 
 (facts "about rendering index page"
        (fact "there are no untranslated strings"
@@ -210,7 +210,7 @@
                                                                     :username "UserName"}]} 
                (http-api/retrieve-writers OBJECTIVE_ID) => {:status ::http-api/success 
                                                             :result []}) 
-             (let [user-session (helpers/test-context)
+             (let [user-session (helpers/front-end-context)
                    {status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/draft-list :id OBJECTIVE_ID))
                                                    :response)]
@@ -238,7 +238,7 @@
                (http-api/get-draft-sections :draft-uri) => {:status ::http-api/success
                                                             :result []}) 
 
-             (let [user-session (helpers/test-context)
+             (let [user-session (helpers/front-end-context)
                    {status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/draft :id OBJECTIVE_ID :d-id DRAFT_ID))
                                                    :response)]
@@ -269,7 +269,7 @@
                             :_created_at "2015-02-12T16:46:18.838Z"
                             :uri :draft-uri 
                             :username "UserName"}})
-             (let [user-session (helpers/test-context)
+             (let [user-session (helpers/front-end-context)
                    {status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/draft-diff :id OBJECTIVE_ID :d-id DRAFT_ID))
                                                    :response)]
@@ -286,7 +286,7 @@
                (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}} 
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result an-objective})
-             (let [user-session (helpers/test-context)
+             (let [user-session (helpers/front-end-context)
                    {status :status body :body} (-> user-session
                                                    (helpers/sign-in-as-existing-user)
                                                    (p/request (utils/path-for :fe/add-draft-get
@@ -321,7 +321,7 @@
                                                                   :uri (str "/objectives/" OBJECTIVE_ID
                                                                             "/drafts/" DRAFT_ID
                                                                             "/sections/" SECTION_LABEL)}})
-             (let [user-session (helpers/test-context)
+             (let [user-session (helpers/front-end-context)
                    {status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/draft-section :id OBJECTIVE_ID :d-id DRAFT_ID :section-label SECTION_LABEL))
                                                    :response)]

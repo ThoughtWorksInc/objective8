@@ -10,7 +10,7 @@
             [objective8.back-end.domain.users :as users]
             [objective8.middleware :as m]))
 
-(def app (helpers/test-context))
+(def app (helpers/api-context))
 
 (def OBJECTIVE_ID 10)
 

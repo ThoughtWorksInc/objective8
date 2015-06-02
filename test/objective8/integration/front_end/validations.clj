@@ -70,7 +70,7 @@
 (def twitter-callback-url (str utils/host-url "/twitter-callback?oauth_verifier=VERIFICATION_TOKEN"))
 (def sign-up-url (str utils/host-url "/sign-up"))
 
-(def user-session (ih/test-context))
+(def user-session (ih/front-end-context))
 
 (facts "about the sign-up form"
        (binding [config/enable-csrf false

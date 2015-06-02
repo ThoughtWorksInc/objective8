@@ -2,9 +2,8 @@
   (:require [bidi.bidi :as bidi]
             [bidi.ring :refer [->Resources]]))
 
-(def routes
-  [
-   "/"  ;; FRONT-END
+(def front-end-routes
+  ["/"  ;; FRONT-END
    {""                  :fe/index
     "sign-in"           :fe/sign-in
     "sign-out"          :fe/sign-out
@@ -56,10 +55,11 @@
     "edit-profile"      {:get :fe/edit-profile-get
                          :post :fe/edit-profile-post}
     "users"             {["/" :username] {:get :fe/profile}}
-    "error"             {"/configuration" {:get :fe/error-configuration}}
+    "error"             {"/configuration" {:get :fe/error-configuration}}}])
 
-    ;; API
-    "api/v1"            {"/users" {:post :api/post-user-profile
+(def api-routes
+  ["/"
+   {"api/v1"            {"/users" {:post :api/post-user-profile
                                    :get :api/get-user-by-query
                                    "/writer-profiles" {:put :api/put-writer-profile}
                                    ["/" [#"\d+" :id]] :api/get-user}
@@ -83,7 +83,7 @@
                                                                                                     "/sections" {:get :api/get-sections 
                                                                                                                  ["/" [#"[0-9a-f]{8}" :section-label]] {:get :api/get-section}}}}}}
                          "/writers" {["/" [#"\d+" :id]] {
-                                     "/objectives" {:get :api/get-objectives-for-writer}}} 
+                                                         "/objectives" {:get :api/get-objectives-for-writer}}} 
 
                          "/meta" {"/comments" {:post :api/post-comment
                                                :get :api/get-comments}

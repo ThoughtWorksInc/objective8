@@ -18,7 +18,7 @@
 (def DRAFT_ID 56)
 (def SECTION_LABEL "1234abcd")
 (def SECTION_URI (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID "/sections/" SECTION_LABEL))
-(def user-session (helpers/test-context))
+(def user-session (helpers/front-end-context))
 
 (facts "annotations"
        (binding [config/enable-csrf false]

@@ -20,7 +20,7 @@
                                                           :result []})
 
        (fact "profile is shown of the user matching the provided username"
-             (let [user-session (helpers/test-context)
+             (let [user-session (helpers/front-end-context)
                    {response :response} (-> user-session
                                             (p/request (utils/path-for :fe/profile 
                                                                        :username "someUsername")))]
@@ -34,7 +34,7 @@
                                                                             :_created_at CREATED_AT}})) 
 
        (fact "message is shown when user has no profile" 
-             (let [user-session (helpers/test-context)
+             (let [user-session (helpers/front-end-context)
                    {response :response} (-> user-session
                                             (p/request (utils/path-for :fe/profile 
                                                                        :username "someUsername")))]

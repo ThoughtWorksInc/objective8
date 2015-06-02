@@ -98,7 +98,7 @@
 ;; OBJECTIVES
 (defn objective-list [request]
   (let [signed-in-id (get (friend/current-authentication) :identity)
-        {status :status objectives :result} (if signed-in-id
+        {status :status objectives :result :as api-call} (if signed-in-id
                                               (http-api/get-objectives {:signed-in-id signed-in-id})
                                               (http-api/get-objectives))]
     (cond

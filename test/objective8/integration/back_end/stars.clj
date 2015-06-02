@@ -8,7 +8,7 @@
             [objective8.integration.integration-helpers :as helpers]
             [objective8.back-end.domain.stars :as stars]))
 
-(def app (helpers/test-context))
+(def app (helpers/api-context))
 
 (facts "POST /api/v1/meta/stars"
        (against-background

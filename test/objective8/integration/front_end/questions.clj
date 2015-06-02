@@ -27,9 +27,9 @@
                      :_id QUESTION_ID
                      :meta {:answers-count 16}})
 
-(def default-app (core/app helpers/test-config))
+(def default-app (core/front-end-handler helpers/test-config))
 
-(def user-session (helpers/test-context))
+(def user-session (helpers/front-end-context))
 
 (facts "about questions"
        (binding [config/enable-csrf false]

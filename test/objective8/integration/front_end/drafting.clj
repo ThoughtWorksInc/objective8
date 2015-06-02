@@ -36,7 +36,7 @@
 (def draft-list-url (utils/path-for :fe/draft-list :id OBJECTIVE_ID))
 (def draft-diff-url (utils/path-for :fe/draft-diff :id OBJECTIVE_ID :d-id DRAFT_ID))
 
-(def user-session (ih/test-context))
+(def user-session (ih/front-end-context))
 
 (def an-objective {:_id OBJECTIVE_ID
                    :title "my objective title"
@@ -228,7 +228,7 @@
                (http-api/retrieve-writers OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success 
                                                                       :result []}) 
 
-             (let [user-session (ih/test-context)
+             (let [user-session (ih/front-end-context)
                    {status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/draft :id OBJECTIVE_ID :d-id DRAFT_ID))
                                                    :response)]
@@ -264,7 +264,7 @@
                                                                   :uri (str "/objectives/" OBJECTIVE_ID
                                                                             "/drafts/" DRAFT_ID
                                                                             "/sections/" SECTION_LABEL)}})
-             (let [user-session (ih/test-context)
+             (let [user-session (ih/front-end-context)
                    {status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/draft-section :id OBJECTIVE_ID :d-id DRAFT_ID :section-label SECTION_LABEL))
                                                    :response)]

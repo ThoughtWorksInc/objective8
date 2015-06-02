@@ -10,7 +10,7 @@
             [objective8.back-end.actions :as actions]
             [objective8.middleware :as m]))
 
-(def app (helpers/test-context))
+(def app (helpers/api-context))
 
 (def some-hiccup [["p" "tiny paragraph"]])
 

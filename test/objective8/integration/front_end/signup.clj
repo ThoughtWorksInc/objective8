@@ -12,7 +12,7 @@
             [objective8.utils :as utils]
             [objective8.front-end.workflows.sign-up :as sign-up]))
 
-(def test-session (helpers/test-context))
+(def test-session (helpers/front-end-context))
 
 (def twitter-callback-url (str utils/host-url "/twitter-callback?oauth_verifier=VERIFICATION_TOKEN"))
 (def sign-up-url (str utils/host-url "/sign-up"))
@@ -109,7 +109,7 @@
                                               :result {:_id USER_ID}}
           (utils/safen-url "/target") => "/target")
         (let [target-uri "/target"
-              user-session (helpers/test-context)
+              user-session (helpers/front-end-context)
               sign-in-with-refer-response (-> user-session
                                               (p/request (str utils/host-url "/sign-in?refer=" target-uri))
                                               (p/request twitter-callback-url)
@@ -125,7 +125,7 @@
                                                           :result {:_id USER_ID}}
           (utils/safen-url "/target") => "/target")
         (let [target-uri "/target"
-              user-session (helpers/test-context)
+              user-session (helpers/front-end-context)
               sign-in-with-refer-response (-> user-session
                                               (p/request (str utils/host-url "/sign-in?refer=" target-uri))
                                               (p/request twitter-callback-url)
@@ -139,7 +139,7 @@
                                               :result {:_id USER_ID}}
           (utils/safen-url "/danger-zone") => nil)
         (let [target-uri "/danger-zone"
-              user-session (helpers/test-context)
+              user-session (helpers/front-end-context)
               sign-in-with-refer-response (-> user-session
                                               (p/request (str utils/host-url "/sign-in?refer=" target-uri))
                                               (p/request twitter-callback-url)

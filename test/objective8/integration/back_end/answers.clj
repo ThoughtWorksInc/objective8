@@ -12,7 +12,7 @@
             [objective8.middleware :as m]
             [objective8.back-end.domain.answers :as answers]))
 
-(def app (helpers/test-context))
+(def app (helpers/api-context))
 
 (def OBJECTIVE_ID 234)
 (def USER_ID 1)

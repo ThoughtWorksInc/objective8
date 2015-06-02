@@ -51,7 +51,7 @@
 
 (defn sign-up-form [{session :session :as request}]
   (if-let [twitter-id (:twitter-id session)]
-    (let [{status :status user :result} (http-api/find-user-by-twitter-id twitter-id)]
+    (let [{status :status user :result :as td} (http-api/find-user-by-twitter-id twitter-id)]
       (cond
         (= status ::http-api/success) (finalise-authorisation user session)
         (= status ::http-api/not-found) {:status 200

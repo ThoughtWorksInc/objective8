@@ -13,14 +13,14 @@
 (def objectives-create-request (mock/request :get "/objectives/create"))
 (def objectives-post-request (mock/request :post "/objectives"))
 
-(def default-app (core/app helpers/test-config))
+(def default-app (core/front-end-handler helpers/test-config))
 
 (facts "front end"
        (binding [config/enable-csrf false]
          (fact "google analytics is added to responses"
                (binding [config/environment (assoc config/environment
                                                    :google-analytics-tracking-id "GOOGLE_ANALYTICS_TRACKING_ID")]
-                 (let [{response :response} (p/request (helpers/test-context) (utils/path-for :fe/index))]
+                 (let [{response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/index))]
                    (:body response))) => (contains "GOOGLE_ANALYTICS_TRACKING_ID"))
 
          (facts "authorisation"

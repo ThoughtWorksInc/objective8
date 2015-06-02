@@ -8,7 +8,7 @@
             [objective8.integration.storage-helpers :as sh]
             [objective8.middleware :as m]))
 
-(def app (helpers/test-context))
+(def app (helpers/api-context))
 
 (facts "POST /api/v1/meta/admin-removals"
        (against-background

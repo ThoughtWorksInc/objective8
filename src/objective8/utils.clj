@@ -46,13 +46,13 @@
   (bidi/encode-parameter [s] s))
 
 (defn path-for [& args]
-  (str host-url (apply bidi/path-for routes/routes args)))
+  (str host-url (apply bidi/path-for routes/front-end-routes args)))
 
 (defn api-path-for [& args]
-  (str api-url (apply bidi/path-for routes/routes args)))
+  (str api-url (apply bidi/path-for routes/api-routes args)))
 
 (defn local-path-for [& args]
-  (apply bidi/path-for routes/routes args))
+  (apply bidi/path-for routes/front-end-routes args))
 
 (defn generate-random-uuid []
   (str (java.util.UUID/randomUUID)))

@@ -41,8 +41,8 @@
 
 (def EXPIRED_INVITATION (assoc ACTIVE_INVITATION :status "expired"))
 
-(def default-app (core/app helpers/test-config))
-(def user-session (helpers/test-context))
+(def default-app (core/front-end-handler helpers/test-config))
+(def user-session (helpers/front-end-context))
 
 (def writer-for-objective {:_id USER_ID :username "username" :writer-records [{:objective-id OBJECTIVE_ID}]})
 

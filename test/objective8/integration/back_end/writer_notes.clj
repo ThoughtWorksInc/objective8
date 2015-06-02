@@ -11,7 +11,7 @@
             [objective8.integration.storage-helpers :as sh]
             [objective8.middleware :as m]))
 
-(def app (helpers/test-context))
+(def app (helpers/api-context))
 
 (def OBJECTIVE_ID 234)
 (def USER_ID 1)

@@ -75,7 +75,8 @@
    (before :facts (reset! test-data-collector {}))
    (after :contents (do (wd/quit)
                         (integration-helpers/truncate-tables)
-                        (core/stop-server)))]
+                        (core/stop-api-server)
+                        (core/stop-front-end-server)))]
 
   (fact "can add an objective"
         (try (reset! twitter-id OBJECTIVE_OWNER_TWITTER_ID)

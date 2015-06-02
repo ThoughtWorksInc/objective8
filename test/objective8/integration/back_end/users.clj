@@ -15,7 +15,7 @@
 (def twitter-id "twitter-1")
 (def username "testname1")
 
-(def app (helpers/test-context))
+(def app (helpers/api-context))
 
 (def USER_ID 10)
 

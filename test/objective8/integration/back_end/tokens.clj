@@ -8,7 +8,7 @@
             [objective8.back-end.storage.database :as db]
             [objective8.back-end.domain.bearer-tokens :as bearer-tokens]))
 
-(def app (helpers/test-context))
+(def app (helpers/api-context))
 (def the-token "token")
 (def some-wrong-token "wrong-token")
 (def the-bearer "bearer")

@@ -8,39 +8,57 @@
 ;; Launching / relaunching / loading
 (defonce the-system nil)
 
-(defn- start-server []
-  (let [conf (:config the-system)
-        port (:port the-system)
-        server (server/run-server (core/app conf) {:port port})]
-    (assoc the-system :server server)))
+(defn- start-api-server [system]
+  (let [conf (:config system)
+        api-port (:api-port system)
+        server (server/run-server (core/api-handler conf) {:port api-port})]
+    (prn "Starting api server on port: " api-port)
+    (assoc system :api-server server)))
 
-(defn- stop-server [the-system]
-  (when-let [srv (:server the-system)]
-    (srv)))
+(defn- stop-api-server [system]
+  (when-let [srv (:api-server system)]
+    (srv))
+  (dissoc system :api-server))
+
+(defn- start-front-end-server [system]
+  (let [conf (:config system)
+        front-end-port (:front-end-port system)
+        server (server/run-server (core/front-end-handler conf) {:port front-end-port})]
+    (prn "Starting front-end server on port: " front-end-port)
+    (assoc system :front-end-server server)))
+
+(defn- stop-front-end-server [system]
+  (when-let [srv (:front-end-server system)]
+    (srv))
+  (dissoc system :front-end-server))
 
 (defn- init 
+  ([system]
+   (init system core/app-config))
 
-  ([]
-   (init core/app-config))
-
-  ([conf]
-   (let [port (:front-end-port config/environment)
-         db-connection (db/connect!)]
+  ([system conf]
+   (let [db-connection (db/connect!)]
      (core/initialise-api)
-     (alter-var-root #'the-system
-                     (constantly {:config conf
-                                  :port port
-                                  :db-connection db-connection})))))
+     (assoc system
+            :config conf
+            :front-end-port (:front-end-port config/environment)
+            :api-port (:api-port config/environment)
+            :db-connection db-connection))))
 
 (defn- make-launcher [config-name launcher-config]
   (fn []
-    (init launcher-config)
-    (alter-var-root #'the-system (constantly (start-server)))
-    (log/info (str "Objective8 server started on port: " (:port the-system)
+    (alter-var-root #'the-system #(-> %
+                                      (init launcher-config)
+                                      start-front-end-server
+                                      start-api-server))
+    (log/info (str "Objective8 started\nfront-end on port: " (:front-end-port the-system)
+                   "\napi on port:" (:api-port the-system)
                    " in configuration " config-name))))
 
 (defn stop []
-  (alter-var-root #'the-system stop-server)
+  (alter-var-root #'the-system #(-> %
+                                    stop-api-server
+                                    stop-front-end-server))
   (log/info "Objective8 server stopped."))
 
 (defn make-launcher-map [configs]

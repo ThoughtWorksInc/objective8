@@ -11,7 +11,7 @@
             [objective8.middleware :as m]
             [objective8.back-end.domain.questions :as questions]))
 
-(def app (helpers/test-context))
+(def app (helpers/api-context))
 
 (def OBJECTIVE_ID 234)
 (def WRONG_OBJECTIVE_ID (+ OBJECTIVE_ID 1))

@@ -9,7 +9,7 @@
             [objective8.integration.storage-helpers :as sh]
             [objective8.middleware :as m]))
 
-(def app (ih/test-context))
+(def app (ih/api-context))
 (facts "POST /api/v1/up-down-votes"
        (against-background
          (m/valid-credentials? anything anything anything) => true) 

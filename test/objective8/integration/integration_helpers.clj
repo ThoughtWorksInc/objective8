@@ -93,12 +93,19 @@
                           :login-uri "/sign-in"}
          :https nil))
 
-(defn test-context
+(defn front-end-context
   "Creates a fake application context"
-  ([] (test-context {}))
+  ([] (front-end-context {}))
 
   ([config-changes]
-   (p/session (core/app (merge test-config config-changes)))))
+   (p/session (core/front-end-handler (merge test-config config-changes)))))
+
+(defn api-context
+  "Creates a fake application context"
+  ([] (api-context {}))
+
+  ([config-changes]
+   (p/session (core/api-handler (merge test-config config-changes)))))
 
 ;; Test data generators
 
