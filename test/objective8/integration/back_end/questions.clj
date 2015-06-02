@@ -50,7 +50,7 @@
          (fact "the posted question is stored, and the resource location is reported"
                (let [{obj-id :_id user-id :created-by-id} (sh/store-an-objective)
                      question (a-question obj-id user-id)
-                     {response :response} (p/request app (str "/api/v1/objectives/" obj-id "/questions")
+                     {response :response} (p/request app (utils/api-path-for :api/post-question :id obj-id)
                                                      :request-method :post
                                                      :content-type "application/json"
                                                      :body (json/generate-string question))]
@@ -63,7 +63,7 @@
                (let [{objective-id :_id :as objective} (sh/store-an-objective)
                      {writer-id :user-id} (sh/store-a-writer {:objective objective})
                      question (a-question objective-id writer-id)
-                     {response :response} (p/request app (str "/api/v1/objectives/" objective-id "/questions")
+                     {response :response} (p/request app (utils/api-path-for :api/post-question :id objective-id)
                                                      :request-method :post
                                                      :content-type "application/json"
                                                      :body (json/generate-string question))]
@@ -77,14 +77,14 @@
                  (questions/store-question! anything) =throws=> (org.postgresql.util.PSQLException.
                                                                   (org.postgresql.util.ServerErrorMessage. "" 0)))
                (let [{obj-id :_id} (sh/store-an-objective)]
-                 (:response (p/request app (str "/api/v1/objectives/" obj-id "/questions")
+                 (:response (p/request app (utils/api-path-for :api/post-question :id obj-id)
                                        :request-method :post
                                        :content-type "application/json"
                                        :body (the-question-as-json)))) => (contains {:status 400}))
 
          (fact "a 400 status is returned if a map->question exception is raised"
                (let [{obj-id :_id} (sh/store-an-objective)]
-                 (:response (p/request app (str "/api/v1/objectives/" obj-id "/questions")
+                 (:response (p/request app (utils/api-path-for :api/post-question :id obj-id)
                                        :request-method :post
                                        :content-type "application/json"
                                        :body (json/generate-string the-invalid-question)))) => (contains {:status 400})))) 
@@ -99,20 +99,20 @@
 
         (fact "can retrieve a question using its id"
               (let [{question-id :_id objective-id :objective-id :as question} (sh/store-a-question)
-                    {response :response} (p/request app (str "/api/v1/objectives/" objective-id "/questions/" question-id))]
+                    {response :response} (p/request app (utils/api-path-for :api/get-question :id objective-id :q-id question-id))]
                 (:body response) => (helpers/json-contains question)))
 
         (fact "a 404 status is returned if the question does not belong to the objective"
               (let [{question-id :_id objective-id :objective-id :as question} (sh/store-a-question)
                     wrong-objective-id (inc objective-id)
-                    {response :response} (p/request app (str "/api/v1/objectives/" wrong-objective-id "/questions/" question-id))]
+                    {response :response} (p/request app (utils/api-path-for :api/get-question :id wrong-objective-id :q-id question-id))]
                 (:status response) => 404))
 
          (fact "can retrieve a question with answer count"
                (let [{question-id :_id objective-id :objective-id :as question} (sh/store-a-question)
                      _ (sh/store-an-answer {:question question})]
                  (-> app
-                     (p/request (str "/api/v1/objectives/" objective-id "/questions/" question-id))
+                     (p/request (utils/api-path-for :api/get-question :id objective-id :q-id question-id))
                      (get-in [:response :body])) => (helpers/json-contains
                                                       {:meta (contains {:answers-count 1})})))))
 
@@ -127,7 +127,7 @@
              (let [{objective-id :_id :as objective} (sh/store-an-objective)
                    question-1 (sh/store-a-question {:objective objective})
                    question-2 (sh/store-a-question {:objective objective})
-                   {response :response} (p/request app (str "/api/v1/objectives/" objective-id "/questions"))
+                   {response :response} (p/request app (utils/api-path-for :api/get-questions-for-objective :id objective-id))
 
                    expected-result [question-1 question-2]]
                (:body response) => (helpers/json-contains (map contains expected-result) :in-any-order)))
@@ -141,7 +141,7 @@
                     (sh/store-an-answer {:question question-with-two-answers})
                     (sh/store-an-answer {:question question-with-two-answers})
 
-                 (-> (p/request app (str "/api/v1/objectives/" objective-id "/questions")
+                    (-> (p/request app (utils/api-path-for :api/get-questions-for-objective :id objective-id)
                             :params {:sorted-by "answers"})
                      (get-in [:response :body])) => (helpers/json-contains [(contains {:_id two-answer-q-id})
                                                                             (contains {:_id one-answer-q-id})])))
@@ -157,7 +157,7 @@
 
                      unmarked-question (sh/store-a-question {:objective objective})
 
-                     {response :response} (p/request app (utils/path-for :api/get-questions-for-objective :id (:_id objective)))]
+                     {response :response} (p/request app (utils/api-path-for :api/get-questions-for-objective :id (:_id objective)))]
                  (:body response) => (helpers/json-contains [(contains {:_id (:_id marked-question)
                                                                         :meta (contains {:marked true
                                                                                :marked-by marked-by})})
@@ -171,7 +171,7 @@
 
                      (sh/store-an-answer {:question question}) 
                  (-> app
-                     (p/request (utils/path-for :api/get-questions-for-objective :id (:_id objective)))
+                     (p/request (utils/api-path-for :api/get-questions-for-objective :id (:_id objective)))
                      :response
                      :body)  => (helpers/json-contains [(contains {:_id (:_id question)
                                                                    :meta (contains {:answers-count 1})})])))))
@@ -196,7 +196,7 @@
                    mark-data {:question-uri question-uri
                          :created-by-uri created-by-uri}
 
-                   {response :response} (p/request app "/api/v1/meta/marks"
+                   {response :response} (p/request app (utils/api-path-for :api/post-mark)
                                                    :request-method :post
                                                    :content-type "application/json"
                                                    :body (json/generate-string mark-data))]
@@ -221,7 +221,7 @@
                      new-mark-data {:created-by-uri created-by-uri
                                     :question-uri question-uri}
 
-                     {response :response} (p/request app "/api/v1/meta/marks"
+                     {response :response} (p/request app (utils/api-path-for :api/post-mark)
                                                      :request-method :post
                                                      :content-type "application/json"
                                                      :body (json/generate-string new-mark-data))]

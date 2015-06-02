@@ -30,7 +30,6 @@
 (def the-answer (an-answer OBJECTIVE_ID QUESTION_ID USER_ID))
 (def the-invalid-answer (dissoc the-answer :question-id))
 
-
 (facts "POST /api/v1/objectives/:id/questions/:id/answers"
        (against-background
          (m/valid-credentials? anything anything anything) => true)
@@ -42,7 +41,10 @@
          (fact "creates an answer"
                (let [{q-id :_id obj-id :objective-id created-by-id :created-by-id} (sh/store-a-question)
                      answer (an-answer obj-id q-id created-by-id)
-                     {response :response} (p/request app (str "/api/v1/objectives/" obj-id "/questions/" q-id "/answers")
+                     {response :response} (p/request app
+                                                     (utils/api-path-for :api/post-answer
+                                                                         :id obj-id
+                                                                         :q-id q-id)
                                                      :request-method :post
                                                      :content-type "application/json"
                                                      :body (json/generate-string answer))]
@@ -54,36 +56,31 @@
                (against-background
                  (answers/store-answer! anything) =throws=> (org.postgresql.util.PSQLException.
                                                               (org.postgresql.util.ServerErrorMessage. "" 0)))
-               (get-in (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers")
+               (get-in (p/request app
+                                  (utils/api-path-for :api/post-answer
+                                                      :id OBJECTIVE_ID
+                                                      :q-id QUESTION_ID)
                                   :request-method :post
                                   :content-type "application/json"
                                   :body (json/generate-string the-answer))
                        [:response :status]) => 404)
 
          (fact "returns a 404 status if a map->answer exception is raised"
-               (get-in (p/request app (str "/api/v1/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID "/answers")
+               (get-in (p/request app
+                                  (utils/api-path-for :api/post-answer
+                                                      :id OBJECTIVE_ID
+                                                      :q-id QUESTION_ID)
                                   :request-method :post
                                   :content-type "application/json"
                                   :body (json/generate-string the-invalid-answer))
                        [:response :status]) => 404)
-
-         (tabular
-           (fact "returns an error if the objective and question ids are not integers"
-                 (get-in (p/request app (str "/api/v1/objectives/" ?objective_id 
-                                             "/questions/" ?question_id "/answers")
-                                    :request-method :post
-                                    :content-type "application/json"
-                                    :body (json/generate-string the-answer))
-                         [:response :status]) => 404)
-           ?objective_id  ?question_id
-           INVALID_ID     QUESTION_ID
-           OBJECTIVE_ID   INVALID_ID
-           INVALID_ID     INVALID_ID)
-
+         
          (fact "returns a 404 status if the question does not belong to the objective"
                (let [{q-id :_id o-id :objective-id} (sh/store-a-question)
-                     {response :response} (p/request app (str "/api/v1/objectives/" (inc o-id) 
-                                                              "/questions/" q-id "/answers")
+                     {response :response} (p/request app
+                                                     (utils/api-path-for :api/post-answer
+                                                                         :id (inc o-id)
+                                                                         :q-id q-id)
                                                      :request-method :post
                                                      :content-type "application/json"
                                                      :body "")]
@@ -101,7 +98,10 @@
                                                 (take 5)
                                                 (map sh/store-an-answer)))
                      answer-uri (str "/objectives/" objective-id "/questions/" q-id "/answers/")
-                     {response :response} (p/request app (str "/api/v1/objectives/" objective-id "/questions/" q-id "/answers"))]
+                     {response :response} (p/request app
+                                                     (utils/api-path-for :api/get-answers-for-question
+                                                                         :id objective-id
+                                                                         :q-id q-id))]
                  (:body response) => (helpers/json-contains (map contains (->> stored-answers
                                                                                reverse
                                                                                (map #(dissoc % :global-id))
@@ -112,15 +112,18 @@
                      {global-id :global-id} (sh/store-an-answer {:question question})
                      up-votes (doall (for [_ (range 5)] (sh/store-an-up-down-vote global-id :up)))
                      down-votes (doall (for [_ (range 3)] (sh/store-an-up-down-vote global-id :down)))
-                     {response :response} (p/request app (utils/path-for :api/get-answers-for-question
+                     {response :response} (p/request app
+                                                     (utils/api-path-for :api/get-answers-for-question
                                                                          :id objective-id
                                                                          :q-id q-id))]
                  (:body response) => (helpers/json-contains [(contains {:votes {:up 5 :down 3}})])))
 
          (fact "returns a 404 status if the question does not belong to the objective"
                (let [{q-id :_id o-id :objective-id} (sh/store-a-question)
-                     {response :response} (p/request app (str "/api/v1/objectives/" (inc o-id)
-                                                              "/questions/" q-id "/answers"))]
+                     {response :response} (p/request app
+                                                     (utils/api-path-for :api/get-answers-for-question
+                                                                         :id (inc o-id)
+                                                                         :q-id q-id))]
                  (:status response) => 404))))
 
 (facts "GET /api/v1/objectives/:id/questions/:id/answers?sorted-by=up-votes"
@@ -139,9 +142,10 @@
                  (sh/store-an-up-down-vote most-up-votes-g-id :up) 
                  (sh/store-an-up-down-vote least-up-votes-g-id :up) 
 
-                 (-> (p/request app (str (utils/path-for :api/get-answers-for-question
-                                                         :id objective-id
-                                                         :q-id question-id) "?sorted-by=up-votes"))
+                 (-> (p/request app (str (utils/api-path-for :api/get-answers-for-question
+                                                             :id objective-id
+                                                             :q-id question-id)
+                                         "?sorted-by=up-votes"))
                      (get-in [:response :body])) => (helpers/json-contains [(contains {:_id most-up-votes-id})
                                                                             (contains {:_id least-up-votes-id})])))))
 
@@ -161,9 +165,10 @@
                  (sh/store-an-up-down-vote most-down-votes-g-id :down) 
                  (sh/store-an-up-down-vote least-down-votes-g-id :down) 
 
-                 (-> (p/request app (str (utils/path-for :api/get-answers-for-question
+                 (-> (p/request app (str (utils/api-path-for :api/get-answers-for-question
                                                          :id objective-id
-                                                         :q-id question-id) "?sorted-by=down-votes"))
+                                                         :q-id question-id)
+                                         "?sorted-by=down-votes"))
                      (get-in [:response :body])) => (helpers/json-contains [(contains {:_id most-down-votes-id})
                                                                             (contains {:_id least-down-votes-id})])))))
 
@@ -178,9 +183,10 @@
                     answer-without-note (sh/store-an-answer {:question question :answer-text "without note"})
                     answer-with-note (-> (sh/store-an-answer {:question question :answer-text "with note"})
                                          (sh/with-note "writer note content"))
-                    {response :response} (p/request app (str (utils/path-for :api/get-answers-for-question
-                                                                             :id objective-id
-                                                                             :q-id question-id) "?filter-type=has-writer-note"))]
+                    {response :response} (p/request app (str (utils/api-path-for :api/get-answers-for-question
+                                                                                 :id objective-id
+                                                                                 :q-id question-id)
+                                                             "?filter-type=has-writer-note"))]
                 (:body response) => (helpers/json-contains [(contains {:_id (:_id answer-with-note)
                                                                        :answer "with note"
                                                                        :note "writer note content"})])
@@ -197,7 +203,7 @@
                      stored-answers (doall (->> (repeat {:question question})
                                                 (take 10)
                                                 (map sh/store-an-answer)))
-                     p-response (p/request app (str (utils/path-for :api/get-answers-for-question
+                     p-response (p/request app (str (utils/api-path-for :api/get-answers-for-question
                                                                     :id o-id
                                                                     :q-id q-id)
                                                     "?offset=7"))]

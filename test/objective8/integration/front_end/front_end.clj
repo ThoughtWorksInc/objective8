@@ -18,11 +18,11 @@
 (facts "front end"
        (binding [config/enable-csrf false]
          (fact "google analytics is added to responses"
-               (let [{response :response} (p/request (helpers/test-context) (utils/path-for :fe/index))]
-                 (:body response)) => (contains "GOOGLE_ANALYTICS_TRACKING_ID")
-               (provided
-                 (config/get-var "GA_TRACKING_ID") => "GOOGLE_ANALYTICS_TRACKING_ID"))
-  
+               (binding [config/environment (assoc config/environment
+                                                   :google-analytics-tracking-id "GOOGLE_ANALYTICS_TRACKING_ID")]
+                 (let [{response :response} (p/request (helpers/test-context) (utils/path-for :fe/index))]
+                   (:body response))) => (contains "GOOGLE_ANALYTICS_TRACKING_ID"))
+
          (facts "authorisation"
                 (facts "unauthorised users"
                        (fact "cannot reach the objective creation page"

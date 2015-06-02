@@ -4,6 +4,7 @@
             [oauth.client :as oauth]
             [cheshire.core :as json]
             [objective8.core :as core]
+            [objective8.utils :as utils]
             [objective8.back-end.storage.storage :as s]
             [objective8.back-end.domain.users :as users]
             [objective8.integration.integration-helpers :as helpers]
@@ -38,7 +39,7 @@
                     {owned-objective-id :_id} (sh/store-an-objective {:user the-user})
                     writer-record-1 (sh/store-a-writer {:user the-user})
                     writer-record-2 (sh/store-a-writer {:user the-user})
-                    {response :response} (p/request app (str "/api/v1/users/" user-id))]
+                    {response :response} (p/request app (utils/api-path-for :api/get-user :id user-id))]
                 (:body response) =>
                 (helpers/json-contains {:writer-records (contains [(contains writer-record-1) (contains writer-record-2)])})
                 (:body response) =>
@@ -47,17 +48,13 @@
                 (helpers/json-contains {:admin false})))
  
          (fact "returns a 404 if the user does not exist"
-               (-> (p/request app "/api/v1/users/123456")
-                   (get-in [:response :status])) => 404)
- 
-         (fact "returns a 404 if the user id is not an integer"
-               (-> (p/request app "/api/v1/users/NOT_AN_INTEGER")
+               (-> (p/request app (utils/api-path-for :api/get-user :id 123456))
                    (get-in [:response :status])) => 404))
        
        (fact "retrieves user record with admin role for admin user"
              (let [{user-id :_id twitter-id :twitter-id :as the-user} (sh/store-a-user)
                    _ (users/store-admin! {:twitter-id twitter-id})
-                   {response :response} (p/request app (str "/api/v1/users/" user-id))]
+                   {response :response} (p/request app (utils/api-path-for :api/get-user :id user-id))]
                (:body response) =>
                (helpers/json-contains {:admin true}))))
 
@@ -73,17 +70,17 @@
 
                 (fact "a user can be retrieved by twitter id"
                       (let [{twitter-id :twitter-id :as the-user} (sh/store-a-user)
-                            peridot-response (p/request app (str "/api/v1/users?twitter=" twitter-id))
+                            peridot-response (p/request app (str (utils/api-path-for :api/get-user-by-query) "?twitter=" twitter-id))
                             body (get-in peridot-response [:response :body])]
                         body => (helpers/json-contains the-user))) 
 
                 (fact "returns a 404 if the user does not exist"
-                      (let [user-request (p/request app (str "/api/v1/users?twitter=twitter-IDONTEXIST"))]
+                      (let [user-request (p/request app (str (utils/api-path-for :api/get-user-by-query) "?twitter=twitter-IDONTEXIST"))]
                         (-> user-request :response :status)) => 404) 
 
                 (fact "a user can be retrieved by username"
                       (let [{username :username :as the-user} (sh/store-a-user)
-                            peridot-response (p/request app (str "/api/v1/users?username=" username)) 
+                            peridot-response (p/request app (str (utils/api-path-for :api/get-user-by-query) "?username=" username)) 
                             body (get-in peridot-response [:response :body])]
                         body => (helpers/json-contains the-user)))))
 
@@ -91,7 +88,7 @@
               (against-background
                 (m/valid-credentials? anything anything anything) => true)
               (fact "the posted user is stored"
-                    (let [peridot-response (p/request app "/api/v1/users"
+                    (let [peridot-response (p/request app (utils/api-path-for :api/post-user-profile)
                                                       :request-method :post
                                                       :content-type "application/json"
                                                       :body (json/generate-string user))]
@@ -104,7 +101,7 @@
                     (against-background
                       (users/store-user! anything) => stored-user)
 
-                    (let [result (p/request app "/api/v1/users"
+                    (let [result (p/request app (utils/api-path-for :api/post-user-profile)
                                             :request-method :post
                                             :content-type "application/json"
                                             :body (json/generate-string user))
@@ -117,7 +114,7 @@
                     (against-background
                       (users/store-user! anything) =throws=> (org.postgresql.util.PSQLException. 
                                                                (org.postgresql.util.ServerErrorMessage. "" 0)))
-                    (:response (p/request app "/api/v1/users"
+                    (:response (p/request app (utils/api-path-for :api/post-user-profile)
                                           :request-method :post
                                           :content-type "application/json"
                                           :body (json/generate-string user))) => (contains {:status 400})))
@@ -127,7 +124,7 @@
                 (m/valid-credentials? anything anything anything) => true)
               (fact "the writer profile info is updated in a user"
                     (let [{user-id :_id :as user} (sh/store-a-user)
-                          {response :response} (p/request app "/api/v1/users/writer-profiles" 
+                          {response :response} (p/request app (utils/api-path-for :api/put-writer-profile)
                                                           :request-method :put
                                                           :content-type "application/json"
                                                           :body (json/generate-string {:name "name" 
@@ -139,7 +136,7 @@
 
               (fact "returns a 404 if the user does not exist"
                     (let [invalid-user-id 2323
-                          {response :response} (p/request app "/api/v1/users/writer-profiles"
+                          {response :response} (p/request app (utils/api-path-for :api/put-writer-profile)
                                                           :request-method :put
                                                           :content-type "application/json"
                                                           :body (json/generate-string {:name "name"
@@ -150,7 +147,7 @@
               (fact "returns a 400 when posting invalid profile data"
                     (let [profile-data-without-biog {:name "name"
                                                    :user-uri (str "/users/" USER_ID)}
-                          {response :response} (p/request app "/api/v1/users/writer-profiles"
+                          {response :response} (p/request app (utils/api-path-for :api/put-writer-profile)
                                                           :request-method :put
                                                           :content-type "application/json"
                                                           :body (json/generate-string profile-data-without-biog))]

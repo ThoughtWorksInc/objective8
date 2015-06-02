@@ -20,7 +20,7 @@
 (def google-analytics-script (html/select library-html-resource [:.clj-google-analytics]))
 
 (defn add-google-analytics [nodes]
-  (if-let [tracking-id (config/get-var "GA_TRACKING_ID")]
+  (if-let [tracking-id (:google-analytics-tracking-id config/environment)]
     (html/at nodes 
              [:head] (html/append google-analytics-script)
              [:.clj-google-analytics html/text-node] (html/replace-vars {:trackingID tracking-id}))

@@ -140,26 +140,9 @@
          (comp wrap-forwarded-scheme wrap-ssl-redirect)
          identity))))
 
-(defonce server (atom nil))
-
-(def app-config
-  {:authentication {:allow-anon? true
-                    :workflows [(if (= (config/get-var "FAKE_TWITTER_MODE") "TRUE")
-                                  stub-twitter-workflow
-                                  (twitter-workflow (configure-twitter))),
-                                sign-up-workflow]
-                    :login-uri "/sign-in"}
-   :session-store (memory-store)
-   :translation (configure-translations)
-   :https (config/get-var "HTTPS_ONLY")
-   :db-spec db/postgres-spec})
-
 (defn get-bearer-token-details []
-  (let [bearer-name (config/get-var "API_BEARER_NAME")
-        bearer-token (config/get-var "API_BEARER_TOKEN")]
-    (when (and bearer-name bearer-token)
-      {:bearer-name bearer-name
-       :bearer-token bearer-token})))
+  (-> (:api-credentials config/environment)
+      (utils/select-all-or-nothing [:bearer-name :bearer-token])))
 
 (defn store-admin [twitter-id]
   (when-not (users/get-admin-by-twitter-id twitter-id)
@@ -173,15 +156,29 @@
       (do 
         (log/info "Storing bearer token details")
         (bt/store-token! bearer-token-details))))
-  (when-let [admins-var (config/get-var "ADMINS")]
+  (when-let [admins-var (:admins config/environment)]
     (let [admins (clojure.string/split admins-var #" ")]
         (doall (map store-admin admins)))))
 
+(defonce server (atom nil))
+
+(def app-config
+  {:authentication {:allow-anon? true
+                    :workflows [(if (= (:fake-twitter-mode config/environment) "TRUE")
+                                  stub-twitter-workflow
+                                  (twitter-workflow (configure-twitter (:twitter-credentials config/environment)))),
+                                sign-up-workflow]
+                    :login-uri "/sign-in"}
+   :session-store (memory-store)
+   :translation (configure-translations)
+   :https (:https-only config/environment)
+   :db-spec (db/spec (:db-config config/environment))})
+
 (defn start-server 
   ([]
-   (start-server app-config)) 
+   (start-server app-config))
   ([app-config] 
-   (let [port (Integer/parseInt (config/get-var "APP_PORT" "8080"))]
+   (let [port (:front-end-port config/environment)]
      (db/connect! (:db-spec app-config)) 
      (initialise-api)
      (log/info (str "Starting objective8 on port " port))

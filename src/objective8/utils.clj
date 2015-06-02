@@ -14,7 +14,10 @@
   (:import  [org.pegdown PegDownProcessor Extensions]))
 
 (def host-url
-  (str (config/get-var "HTTPS" "http://") (config/get-var "BASE_URI" "localhost:8080")))
+  (str (:https config/environment) (:base-uri config/environment)))
+
+(def api-url
+  (str (:https config/environment) (:api-uri config/environment)))
 
 ;;Map manipulation
 (defn select-all-or-nothing
@@ -44,6 +47,9 @@
 
 (defn path-for [& args]
   (str host-url (apply bidi/path-for routes/routes args)))
+
+(defn api-path-for [& args]
+  (str api-url (apply bidi/path-for routes/routes args)))
 
 (defn local-path-for [& args]
   (apply bidi/path-for routes/routes args))

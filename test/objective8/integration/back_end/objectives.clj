@@ -39,7 +39,7 @@
   (facts "GET /api/v1/objectives returns a list of non-removed objectives in reverse chronological order"
          (fact "objectives are returned as a list"
                (let [stored-objectives (doall (repeatedly 5 sh/store-an-objective))
-                     {response :response} (p/request app "/api/v1/objectives")]
+                     {response :response} (p/request app (utils/api-path-for :api/get-objectives))]
                  (:body response) => (helpers/json-contains (map contains (->> stored-objectives
                                                                                (map #(dissoc % :global-id))
                                                                                reverse)))))
@@ -47,15 +47,16 @@
          (fact "returns an empty list if there are no objectives"
                (do
                  (helpers/truncate-tables)
-                 (helpers/peridot-response-json-body->map (p/request app "/api/v1/objectives")))
+                 (helpers/peridot-response-json-body->map (p/request app (utils/api-path-for :api/get-objectives))))
                => empty?))
 
   (facts "GET /api/v1/objectives?include-removed=true returns a list of all objectives, including removed"
          (fact "all objectives are returned as a list"
                (let [stored-objectives (doall (repeatedly 2 sh/store-an-objective))
                      stored-removed-objectives (doall (repeatedly 2 sh/store-an-admin-removed-objective))
-                     {response :response} (p/request app "/api/v1/objectives?include-removed=true")
-                     default-response (p/request app "/api/v1/objectives")]
+                     {response :response} (p/request app (str (utils/api-path-for :api/get-objectives)
+                                                              "?include-removed=true"))
+                     default-response (p/request app (utils/api-path-for :api/get-objectives))]
                  (:body response) => (helpers/json-contains 
                                        (map contains (->> (concat stored-objectives stored-removed-objectives)
                                                           (map #(dissoc % :global-id))
@@ -70,7 +71,7 @@
                      {user-id :_id :as user} (sh/store-a-user)
                      starred-objective (sh/store-an-objective)
                      stored-star (sh/store-a-star {:user user :objective starred-objective})
-                     {response :response} (p/request app (str "/api/v1/objectives?user-id=" user-id))] 
+                     {response :response} (p/request app (str (utils/api-path-for :api/get-objectives) "?user-id=" user-id))] 
                  (:body response) => (helpers/json-contains [(contains {:meta (contains {:starred true})})
                                                              (contains {:meta (contains {:starred false})})] :in-any-order))))
 
@@ -84,7 +85,7 @@
                      stored-stars (doall (map sh/store-a-star
                                               [{:user user :objective (first starred-objectives)}
                                                {:user user :objective (second starred-objectives)}])) ]
-                 (get-in (p/request app (str "/api/v1/objectives?starred=true&user-id=" user-id)) [:response :body])
+                 (get-in (p/request app (str (utils/api-path-for :api/get-objectives) "?starred=true&user-id=" user-id)) [:response :body])
                  => (helpers/json-contains (map contains (->> starred-objectives
                                                               reverse
                                                               (map #(select-keys % [:_id]))))))))
@@ -98,7 +99,7 @@
                      _ (sh/store-a-star {:objective stored-objective})
 
                      objective-uri (str "/objectives/" (:_id stored-objective))
-                     {body :body} (-> (p/request app (utils/path-for :api/get-objective
+                     {body :body} (-> (p/request app (utils/api-path-for :api/get-objective
                                                                      :id (:_id stored-objective)))
                                       :response)]
                  body => (helpers/json-contains (dissoc stored-objective :global-id :meta))
@@ -109,11 +110,7 @@
                  body =not=> (helpers/json-contains {:global-id anything})))
 
          (fact "returns a 404 if an objective does not exist"
-               (p/request app (str "/api/v1/objectives/" 123456))
-               => (contains {:response (contains {:status 404})})) 
-
-         (fact "returns an error if objective id is not an integer"
-               (p/request app "/api/v1/objectives/NOT-AN-INTEGER")
+               (p/request app (utils/api-path-for :api/get-objective :id 123456))
                => (contains {:response (contains {:status 404})})))
 
   (facts "GET /api/v1/objectives/:id?signed-in-id=<user-id>"
@@ -123,7 +120,7 @@
                      {user-id :_id :as user} (sh/store-a-user)
                      _ (sh/store-a-star {:user user :objective starred-objective})
 
-                     {body :body} (-> (p/request app (str "/api/v1/objectives/" o-id "?signed-in-id=" user-id))
+                     {body :body} (-> (p/request app (str (utils/api-path-for :api/get-objective :id o-id) "?signed-in-id=" user-id))
                                       :response)
                      retrieved-objective (-> starred-objective
                                              (select-keys [:_id :description :_created_at :created-by-id])
@@ -139,7 +136,7 @@
              (let [{username :username :as user} (sh/store-a-user) 
                    stored-objective (sh/store-an-admin-removed-objective {:user user}) 
                    objective-uri (str "/objectives/" (:_id stored-objective))
-                   {body :body} (-> (p/request app (str (utils/path-for :api/get-objective
+                   {body :body} (-> (p/request app (str (utils/api-path-for :api/get-objective
                                                                         :id (:_id stored-objective)) 
                                                         "?include-removed=true"))
                                     :response)]
@@ -149,7 +146,7 @@
              (let [{username :username :as user} (sh/store-a-user) 
                    stored-objective (sh/store-an-admin-removed-objective {:user user}) 
                    objective-uri (str "/objectives/" (:_id stored-objective))
-                   {status :status} (-> (p/request app (utils/path-for :api/get-objective
+                   {status :status} (-> (p/request app (utils/api-path-for :api/get-objective
                                                                        :id (:_id stored-objective)))
                                         :response)]
                status => 404)))
@@ -162,7 +159,7 @@
                (let [{user-id :_id} (sh/store-a-user)
                      the-objective {:title "my objective title"
                                     :created-by-id user-id}
-                     {response :response} (p/request app "/api/v1/objectives"
+                     {response :response} (p/request app (utils/api-path-for :api/post-objective)
                                                      :request-method :post
                                                      :content-type "application/json"
                                                      :body (json/generate-string the-objective))]
@@ -177,13 +174,13 @@
                (against-background
                  (objectives/store-objective! anything) =throws=> (org.postgresql.util.PSQLException.
                                                                     (org.postgresql.util.ServerErrorMessage. "" 0)))
-               (:response (p/request app "/api/v1/objectives"
+               (:response (p/request app (utils/api-path-for :api/post-objective)
                                      :request-method :post
                                      :content-type "application/json"
                                      :body (json/generate-string the-objective))) => (contains {:status 400}))
 
          (fact "a 400 status is returned if a map->objective exception is raised"
-               (:response (p/request app "/api/v1/objectives"
+               (:response (p/request app (utils/api-path-for :api/post-objective)
                                      :request-method :post
                                      :content-type "application/json"
                                      :body (json/generate-string the-invalid-objective))) => (contains {:status 400}))))

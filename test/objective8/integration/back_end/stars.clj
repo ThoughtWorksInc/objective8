@@ -2,6 +2,7 @@
   (:require [midje.sweet :refer :all]
             [peridot.core :as p]
             [cheshire.core :as json]
+            [objective8.utils :as utils]
             [objective8.middleware :as m]
             [objective8.integration.storage-helpers :as sh]
             [objective8.integration.integration-helpers :as helpers]
@@ -22,7 +23,7 @@
                     objective-uri (str "/objectives/" objective-id)
                     data {:objective-uri objective-uri
                           :created-by-id user-id}
-                    {response :response} (p/request app "/api/v1/meta/stars"
+                    {response :response} (p/request app (utils/api-path-for :api/post-star)
                                                     :request-method :post
                                                     :content-type "application/json"
                                                     :body (json/generate-string data))]
@@ -42,7 +43,7 @@
                      objective-uri (str "/objectives/" objective-id)
                      data {:objective-uri objective-uri
                            :created-by-id user-id}
-                     {response :response} (p/request app "/api/v1/meta/stars"
+                     {response :response} (p/request app (utils/api-path-for :api/post-star)
                                                      :request-method :post
                                                      :content-type "application/json"
                                                      :body (json/generate-string data))]
@@ -59,7 +60,7 @@
               (let [{user-id :_id} (sh/store-a-user)
                     star-data {:objective-uri "any" 
                                :created-by-id user-id}
-                    {response :response} (p/request app "/api/v1/meta/stars"
+                    {response :response} (p/request app (utils/api-path-for :api/post-star)
                                                     :request-method :post
                                                     :content-type "application/json"
                                                     :body (json/generate-string star-data))]

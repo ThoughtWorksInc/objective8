@@ -24,7 +24,7 @@
    (init core/app-config))
 
   ([conf]
-   (let [port (Integer/parseInt (config/get-var "APP_PORT" "8080"))
+   (let [port (:front-end-port config/environment)
          db-connection (db/connect!)]
      (core/initialise-api)
      (alter-var-root #'the-system
@@ -38,8 +38,6 @@
     (alter-var-root #'the-system (constantly (start-server)))
     (log/info (str "Objective8 server started on port: " (:port the-system)
                    " in configuration " config-name))))
-
-
 
 (defn stop []
   (alter-var-root #'the-system stop-server)

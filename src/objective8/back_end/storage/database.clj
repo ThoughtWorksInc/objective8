@@ -3,14 +3,11 @@
             [clojure.tools.logging :as log]
             [objective8.config :as config]))
 
-(def db-config
-  {:db (config/get-var "DB_NAME" "objective8")
-   :user (config/get-var "DB_USER" "objective8")
-   :password (config/get-var "DB_PASSWORD" "development") ;TODO password management
-   :host (config/get-var "DB_HOST" "localhost")
-   :port (config/get-var "DB_PORT" 5432)})
+(def db-config (:db-config config/environment))
 
 (def postgres-spec (db/postgres db-config))
+
+(def spec db/postgres)
 
 (defn connect!
   "Connect to the database described by the DB spec"

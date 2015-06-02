@@ -6,10 +6,11 @@
             [objective8.front-end.api.http :as http-api]
             [objective8.utils :as utils]))
 
-(def host-url utils/host-url)
-
 (def BEARER_NAME "bearer")
 (def BEARER_TOKEN "token")
+
+(background
+ [(before :facts (alter-var-root #'utils/api-url (constantly "stub/api/url")))])
 
 (background (http-api/get-api-credentials) => {"api-bearer-name" BEARER_NAME
                                                "api-bearer-token" BEARER_TOKEN})
@@ -150,7 +151,7 @@
                                     :result [the-objective]} 
       (provided
         (http-api/default-get-call
-          (contains (utils/path-for :api/get-objectives))
+          (contains (utils/api-path-for :api/get-objectives))
           (contains {:headers (contains {"api-bearer-name" anything
                                          "api-bearer-token" anything})})) => {:status ::http-api/success
                                                                               :result [{:some :data}]}))
@@ -160,7 +161,7 @@
                                                             :result [the-objective]}
       (provided
         (http-api/default-get-call
-          (contains (utils/path-for :api/get-objectives))
+          (contains (utils/api-path-for :api/get-objectives))
           (contains {:query-params {:user-id USER_ID}})) => {:status ::http-api/success
                                                              :result [{:some :data}]}))
 
@@ -170,7 +171,7 @@
 
       (provided
         (http-api/default-get-call
-          (contains (utils/path-for :api/get-objectives-for-writer :id USER_ID))) => {:status ::http-api/success
+          (contains (utils/api-path-for :api/get-objectives-for-writer :id USER_ID))) => {:status ::http-api/success
                                                             :result [{:some :data}]}))
 
 (fact "getting objectives for a writer returns failure status if api call is unsuccessful"
@@ -178,7 +179,7 @@
 
       (provided
         (http-api/default-get-call
-          (contains (utils/path-for :api/get-objectives-for-writer :id USER_ID))) => {:status ::http-api/not-found}))
+          (contains (utils/api-path-for :api/get-objectives-for-writer :id USER_ID))) => {:status ::http-api/not-found}))
 
 ;; COMMENTS
 (def some-uri "/some/uri")
@@ -193,7 +194,7 @@
       (http-api/get-comments some-uri) => :api-call-result
       (provided
        (http-api/default-get-call
-         (contains (utils/path-for :api/get-comments))
+         (contains (utils/api-path-for :api/get-comments))
          {:query-params {:uri some-uri}}) => :api-call-result))
 
 ;; NOTES
@@ -231,7 +232,7 @@
 (fact "getting all questions for an objective sorted by answer count hits the correct API endpoint"
       (http-api/retrieve-questions OBJECTIVE_ID {:sorted-by "answers"}) => :api-call-result
       (provided 
-        (http-api/default-get-call (contains (utils/path-for :api/get-questions-for-objective :id OBJECTIVE_ID))
+        (http-api/default-get-call (contains (utils/api-path-for :api/get-questions-for-objective :id OBJECTIVE_ID))
           {:query-params {:sorted-by "answers"}}) => :api-call-result))
 
 (def mark-data {:question-uri "/objectives/1/questions/2" :created-by-uri "/users/2"})
@@ -250,8 +251,8 @@
 
 (fact "creating an answer hits the correct API endpoint"
       (http-api/create-answer the-answer) => :api-call-result
-      (provided (http-api/default-post-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID
-                                                             "/questions/" QUESTION_ID "/answers"))
+      (provided (http-api/default-post-call (contains (str utils/api-url "/api/v1/objectives/" OBJECTIVE_ID
+                                                           "/questions/" QUESTION_ID "/answers"))
                   the-answer) => :api-call-result))
 
 (def QUESTION_URI (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))
@@ -264,7 +265,7 @@
 (fact "getting all answers for a question sorted by up-down-votes hits the correct API endpoint"
       (http-api/retrieve-answers QUESTION_URI {:sorted-by "up-votes"}) => :api-call-result
       (provided
-        (http-api/default-get-call (contains (utils/path-for :api/get-answers-for-question 
+        (http-api/default-get-call (contains (utils/api-path-for :api/get-answers-for-question 
                                                              :id OBJECTIVE_ID :q-id QUESTION_ID))
           {:query-params {:sorted-by "up-votes"}}) => :api-call-result))
 
@@ -276,7 +277,7 @@
 (fact "creating an invitation hits the correct API endpoint"
       (http-api/create-invitation the-invitation) => :api-call-result
       (provided 
-        (http-api/default-post-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID 
+        (http-api/default-post-call (contains (str utils/api-url "/api/v1/objectives/" OBJECTIVE_ID 
                                                      "/writer-invitations")) the-invitation) => :api-call-result))
 
 (def profile-data {:name "NAME"
@@ -286,14 +287,14 @@
 (fact "posting a profile hits the correct API endpoint"
       (http-api/post-profile profile-data) => :api-call-result
       (provided
-        (http-api/default-put-call (contains (str host-url "/api/v1/users/writer-profiles")) profile-data) => :api-call-result))
+        (http-api/default-put-call (contains (str utils/api-url "/api/v1/users/writer-profiles")) profile-data) => :api-call-result))
 
 (def UUID "some-long-random-string")
 
 (fact "retrieving an invitation hits the correct API endpoint"
       (http-api/retrieve-invitation-by-uuid UUID) => :api-call-result
       (provided
-        (http-api/default-get-call (contains (str host-url "/api/v1/invitations?uuid=" UUID))) => :api-call-result))
+        (http-api/default-get-call (contains (str utils/api-url "/api/v1/invitations?uuid=" UUID))) => :api-call-result))
 
 (def INVITATION_ID 3)
 (def the-writer {:invitation-uuid UUID
@@ -303,7 +304,7 @@
 (fact "posting a writer hits the correct API endpoint"
       (http-api/post-writer the-writer) => :api-call-result
       (provided
-        (http-api/default-post-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID 
+        (http-api/default-post-call (contains (str utils/api-url "/api/v1/objectives/" OBJECTIVE_ID 
                                                    "/writers")) the-writer) => :api-call-result))
 
 (def declined-invitation {:invitation-uuid UUID
@@ -312,13 +313,13 @@
 (fact "declining an invitation hits the correct API endpoint"
       (http-api/decline-invitation declined-invitation) => :api-call-result
       (provided
-        (http-api/default-put-call (contains (str host-url "/api/v1/objectives/" OBJECTIVE_ID
+        (http-api/default-put-call (contains (str utils/api-url "/api/v1/objectives/" OBJECTIVE_ID
                                                   "/writer-invitations/" INVITATION_ID)) declined-invitation) => :api-call-result))
 
 (fact "getting writers for an objective hits the correct API endpoint"
       (http-api/retrieve-writers OBJECTIVE_ID) => :api-call-result
       (provided
-        (http-api/default-get-call (contains (str host-url "/api/v1/objectives/"
+        (http-api/default-get-call (contains (str utils/api-url "/api/v1/objectives/"
                                                   OBJECTIVE_ID "/writers"))) => :api-call-result))
 
 ;;DRAFTS
@@ -335,34 +336,34 @@
       (http-api/post-draft draft) => :api-call-result
       (provided
        (http-api/default-post-call
-         (contains (str host-url
+         (contains (str utils/api-url
                         "/api/v1/objectives/" OBJECTIVE_ID
                         "/drafts")) draft) => :api-call-result))
 
 (fact "getting a draft for an objective hits the correct API endpoint"
       (http-api/get-draft OBJECTIVE_ID DRAFT_ID) => :api-call-result
       (provided
-        (http-api/default-get-call (contains (utils/path-for :api/get-draft :id OBJECTIVE_ID :d-id DRAFT_ID))) => :api-call-result))
+        (http-api/default-get-call (contains (utils/api-path-for :api/get-draft :id OBJECTIVE_ID :d-id DRAFT_ID))) => :api-call-result))
 
 (fact "getting drafts for an objective hits the correct API endpoint"
       (http-api/get-all-drafts OBJECTIVE_ID) => :api-call-result
       (provided
-        (http-api/default-get-call (contains (utils/path-for :api/get-drafts-for-objective :id OBJECTIVE_ID))) => :api-call-result))
+        (http-api/default-get-call (contains (utils/api-path-for :api/get-drafts-for-objective :id OBJECTIVE_ID))) => :api-call-result))
 
 (fact "getting a draft section hits the correct API endpoint"
       (http-api/get-draft-section section-uri) => :api-call-result
       (provided
-        (http-api/default-get-call (contains (utils/path-for :api/get-section :id OBJECTIVE_ID :d-id DRAFT_ID :section-label SECTION_LABEL))) => :api-call-result))
+        (http-api/default-get-call (contains (utils/api-path-for :api/get-section :id OBJECTIVE_ID :d-id DRAFT_ID :section-label SECTION_LABEL))) => :api-call-result))
 
 (fact "getting draft sections hits the correct API endpoint"
       (http-api/get-draft-sections draft-uri) => :api-call-result
       (provided
-        (http-api/default-get-call (contains (utils/path-for :api/get-sections :id OBJECTIVE_ID :d-id DRAFT_ID))) => :api-call-result))
+        (http-api/default-get-call (contains (utils/api-path-for :api/get-sections :id OBJECTIVE_ID :d-id DRAFT_ID))) => :api-call-result))
 
 (fact "getting annotations hits the correct API endpoint"
       (http-api/get-annotations draft-uri) => :api-call-result
       (provided
-        (http-api/default-get-call (contains (utils/path-for :api/get-annotations :id OBJECTIVE_ID :d-id DRAFT_ID))) => :api-call-result))
+        (http-api/default-get-call (contains (utils/api-path-for :api/get-annotations :id OBJECTIVE_ID :d-id DRAFT_ID))) => :api-call-result))
 
 ;;STARS
 
@@ -385,4 +386,4 @@
 (fact "getting admin removals hits the correct API endpoint"
       (http-api/get-admin-removals) => :api-call-result
       (provided
-        (http-api/default-get-call (utils/path-for :api/get-admin-removals)) => :api-call-result))
+       (http-api/default-get-call (contains (utils/api-path-for :api/get-admin-removals))) => :api-call-result))

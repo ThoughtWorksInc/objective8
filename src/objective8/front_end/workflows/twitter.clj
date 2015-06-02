@@ -8,18 +8,16 @@
               [objective8.utils :as utils]
               [objective8.config :as config]))
 
-(defn configure-twitter []
-  (let [consumer-token (config/get-var "TWITTER_CONSUMER_TOKEN")
-        secret-token (config/get-var "TWITTER_CONSUMER_SECRET_TOKEN")]
-    (if (and consumer-token secret-token)
-      {:consumer (oauth/make-consumer consumer-token
-                                      secret-token
-                                      "https://api.twitter.com/oauth/request_token"
-                                      "https://api.twitter.com/oauth/access_token"
-                                      "https://api.twitter.com/oauth/authenticate"
-                                      :hmac-sha1)
-       :callback-url (str utils/host-url "/twitter-callback")}
-      :invalid-configuration)))
+(defn configure-twitter [{:keys [consumer-token secret-token] :as twitter-credentials}]
+  (if (and consumer-token secret-token)
+    {:consumer (oauth/make-consumer consumer-token
+                                    secret-token
+                                    "https://api.twitter.com/oauth/request_token"
+                                    "https://api.twitter.com/oauth/access_token"
+                                    "https://api.twitter.com/oauth/authenticate"
+                                    :hmac-sha1)
+     :callback-url (str utils/host-url "/twitter-callback")}
+    :invalid-configuration))
 
 (defn valid? [configuration]
   (not (= configuration :invalid-configuration)))

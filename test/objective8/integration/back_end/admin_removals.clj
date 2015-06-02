@@ -26,7 +26,7 @@
                                        (str "/objectives/"))
                     removal-data {:removal-uri objective-uri
                                   :removed-by-uri admin-uri}
-                    {response :response} (p/request app "/api/v1/meta/admin-removals"
+                    {response :response} (p/request app (utils/api-path-for :api/post-admin-removal)
                                                     :request-method :post
                                                     :content-type "application/json"
                                                     :body (json/generate-string removal-data))]
@@ -42,7 +42,7 @@
                                   (str "/users/"))
                     removal-data {:removal-uri "/non-existent-objective"
                                   :removed-by-uri admin-uri}
-                    {response :response} (p/request app "/api/v1/meta/admin-removals"
+                    {response :response} (p/request app (utils/api-path-for :api/post-admin-removal)
                                                     :request-method :post
                                                     :content-type "application/json"
                                                     :body (json/generate-string removal-data))]
@@ -58,7 +58,7 @@
                                        (str "/objectives/"))
                     removal-data {:removal-uri objective-uri 
                                   :removed-by-uri admin-uri}
-                    {response :response} (p/request app "/api/v1/meta/admin-removals"
+                    {response :response} (p/request app (utils/api-path-for :api/post-admin-removal)
                                                     :request-method :post
                                                     :content-type "application/json"
                                                     :body (json/generate-string removal-data))]
@@ -74,7 +74,7 @@
                                         (str "/objectives/"))
                      removal-data {:removal-uri objective-uri
                                    :removed-by-uri user-uri}
-                     {response :response} (p/request app "/api/v1/meta/admin-removals"
+                     {response :response} (p/request app (utils/api-path-for :api/post-admin-removal)
                                                      :request-method :post
                                                      :content-type "application/json"
                                                      :body (json/generate-string removal-data))]
@@ -93,5 +93,5 @@
                                                          (assoc :uri (str "/admin-removals/" (:_id stored-admin-removal))
                                                                 :removed-by-uri (str "/users/" (:removed-by-id stored-admin-removal)))
                                                          (dissoc :_id :removed-by-id))
-                    {response :response} (p/request app "/api/v1/meta/admin-removals")]
+                    {response :response} (p/request app (utils/api-path-for :api/get-admin-removals))]
                     (:body response)  => (helpers/json-contains [expected-retrieved-admin-removal])))))

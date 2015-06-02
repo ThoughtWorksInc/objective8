@@ -46,7 +46,8 @@
                     comment-data {:comment-on-uri uri-for-draft
                                   :comment "A comment"
                                   :created-by-id user-id}
-                    {response :response} (p/request app (str "/api/v1/meta/comments")
+                    {response :response} (p/request app
+                                                    (utils/api-path-for :api/post-comment)
                                                     :request-method :post
                                                     :content-type "application/json"
                                                     :body (json/generate-string comment-data))]
@@ -60,34 +61,36 @@
                 (:body response) =not=> (helpers/json-contains {:global-id anything})
                 (:headers response) => (helpers/location-contains (str "/api/v1/meta/comments/"))))
 
-         (fact "the posted annotation is stored with a reason"
-               (let [{user-id :_id :as user} (sh/store-a-user)
+        (fact "the posted annotation is stored with a reason"
+              (let [{user-id :_id :as user} (sh/store-a-user)
                     {d-id :_id o-id :objective-id global-id :global-id :as draft} (sh/store-a-draft {:content draft-content}) 
                     uri-for-draft-section (str "/objectives/" o-id "/drafts/" d-id "/sections/" section-label)
                     comment-data {:comment-on-uri uri-for-draft-section
                                   :comment "A comment"
                                   :created-by-id user-id
                                   :reason "unclear"}
-                     {response :response} (p/request app (str "/api/v1/meta/comments")
-                                                     :request-method :post
-                                                     :content-type "application/json"
-                                                     :body (json/generate-string comment-data))]
-                 (:status response) => 201
-                 (:body response) => (helpers/json-contains {:_id integer?
-                                                             :uri (contains "/comments/")
-                                                             :comment-on-uri uri-for-draft-section
-                                                             :comment "A comment"
-                                                             :created-by-id user-id
-                                                             :reason "unclear"})
-                 (:body response) =not=> (helpers/json-contains {:comment-on-id anything})
-                 (:body response) =not=> (helpers/json-contains {:global-id anything})
-                 (:headers response) => (helpers/location-contains (str "/api/v1/meta/comments/"))))
+                    {response :response} (p/request app
+                                                    (utils/api-path-for :api/post-comment)
+                                                    :request-method :post
+                                                    :content-type "application/json"
+                                                    :body (json/generate-string comment-data))]
+                (:status response) => 201
+                (:body response) => (helpers/json-contains {:_id integer?
+                                                            :uri (contains "/comments/")
+                                                            :comment-on-uri uri-for-draft-section
+                                                            :comment "A comment"
+                                                            :created-by-id user-id
+                                                            :reason "unclear"})
+                (:body response) =not=> (helpers/json-contains {:comment-on-id anything})
+                (:body response) =not=> (helpers/json-contains {:global-id anything})
+                (:headers response) => (helpers/location-contains (str "/api/v1/meta/comments/"))))
 
         (fact "returns 404 when entity to be commented on doesn't exist"
               (let [comment-data {:comment-on-uri "nonexistent/entity"
                                   :comment "A comment"
                                   :created-by-id 1}
-                    {response :response} (p/request app (str "/api/v1/meta/comments")
+                    {response :response} (p/request app
+                                                    (utils/api-path-for :api/post-comment)
                                                     :request-method :post
                                                     :content-type "application/json"
                                                     :body (json/generate-string comment-data))]
@@ -111,7 +114,9 @@
                                                 (map #(assoc % :comment-on-uri draft-uri
                                                              :uri (str "/comments/" (:_id %))))))
                     escaped-draft-uri (str "%2fobjectives%2f" objective-id "%2fdrafts%2f" draft-id)
-                    {response :response} (p/request app (str "/api/v1/meta/comments?uri=" escaped-draft-uri))]
+                    {response :response} (p/request app
+                                                    (str (utils/api-path-for :api/get-comments)
+                                                         "?uri=" escaped-draft-uri))]
                 (:body response) => (helpers/json-contains
                                      {:comments (contains (map contains (reverse stored-comments)))
                                       :pagination {}
@@ -121,7 +126,9 @@
                                               :filter-type "none"}})))
 
         (fact "returns 404 if the entity to retrieve comments for does not exist"
-              (let [{response :response} (p/request app (str "/api/v1/meta/comments?uri=" "%2fnonexistent%2furi"))]
+              (let [{response :response} (p/request app
+                                                    (str (utils/api-path-for :api/get-comments)
+                                                         "?uri=" "%2fnonexistent%2furi"))]
                 (:status response) => 404
                 (:body response) => (helpers/json-contains {:reason "Entity does not exist"})))))
 
@@ -144,9 +151,10 @@
                     _ (sh/store-an-up-down-vote (:global-id comment-with-some-votes) :up)
 
                     escaped-objective-uri (str "%2Fobjectives%2F" (:_id objective))
-                    {body :body} (:response (p/request app (str (utils/path-for :api/get-comments)
-                                                                "?uri=" escaped-objective-uri
-                                                                "&sorted-by=up-votes")))]
+                    {body :body} (:response (p/request app
+                                                       (str (utils/api-path-for :api/get-comments)
+                                                            "?uri=" escaped-objective-uri
+                                                            "&sorted-by=up-votes")))]
                 body => (helpers/json-contains {:comments
                                                 (contains [(contains {:_id (:_id comment-with-most-votes)})
                                                            (contains {:_id (:_id comment-with-some-votes)})
@@ -166,9 +174,10 @@
                      {comment-with-note-id :_id} (-> (sh/store-a-comment {:entity objective :comment-text "with note"})
                                                      (sh/with-note "writer note content"))
                      escaped-objective-uri (str "%2Fobjectives%2F" (:_id objective))
-                     {body :body} (:response (p/request app (str (utils/path-for :api/get-comments)
-                                                                 "?uri=" escaped-objective-uri
-                                                                 "&filter-type=has-writer-note")))]
+                     {body :body} (:response (p/request app
+                                                        (str (utils/api-path-for :api/get-comments)
+                                                             "?uri=" escaped-objective-uri
+                                                             "&filter-type=has-writer-note")))]
                  body => (helpers/json-contains
                           {:comments (contains [(contains {:_id comment-with-note-id
                                                          :comment "with note"
@@ -191,9 +200,10 @@
                                                  (map sh/store-a-comment)))
 
                      escaped-objective-uri (str "%2Fobjectives%2F" (:_id objective))
-                     p-response  (p/request app (str (utils/path-for :api/get-comments)
-                                                     "?uri=" escaped-objective-uri
-                                                     "&offset=5"))]
+                     p-response  (p/request app
+                                            (str (utils/api-path-for :api/get-comments)
+                                                 "?uri=" escaped-objective-uri
+                                                 "&offset=5"))]
                  (count (:comments (helpers/peridot-response-json-body->map p-response))) => 5
                  (get-in p-response [:response :body]) => (helpers/json-contains {:query (contains {:offset 5})})))))
 
@@ -211,9 +221,10 @@
                                                  (map sh/store-a-comment)))
 
                      escaped-objective-uri (str "%2Fobjectives%2F" (:_id objective))
-                     p-response  (p/request app (str (utils/path-for :api/get-comments)
-                                                     "?uri=" escaped-objective-uri
-                                                     "&limit=5"))]
+                     p-response  (p/request app
+                                            (str (utils/api-path-for :api/get-comments)
+                                                 "?uri=" escaped-objective-uri
+                                                 "&limit=5"))]
                  (count (:comments (helpers/peridot-response-json-body->map p-response))) => 5
                  (get-in p-response [:response :body]) => (helpers/json-contains {:query (contains {:limit 5})})))))
 
@@ -232,11 +243,11 @@
                                   :comment "A comment"
                                   :reason "general"
                                   :created-by-id user-id}
-                    {first-response :response} (p/request app (str "/api/v1/meta/comments")
+                    {first-response :response} (p/request app (utils/api-path-for :api/post-comment)
                                                     :request-method :post
                                                     :content-type "application/json"
                                                     :body (json/generate-string comment-data))
-                    {second-response :response} (p/request app (str "/api/v1/meta/comments")
+                    {second-response :response} (p/request app (utils/api-path-for :api/post-comment)
                                                     :request-method :post
                                                     :content-type "application/json"
                                                     :body (json/generate-string comment-data))] 

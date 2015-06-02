@@ -7,12 +7,11 @@
 
 (def api-failure nil)
 
-(def consumer {:consumer-name (config/get-var "API_BEARER_NAME")
-               :consumer-token (config/get-var "API_BEARER_TOKEN")})
+(def consumer (:api-credentials config/environment))
 
 (defn get-api-credentials []
-  {"api-bearer-name" (consumer :consumer-name)
-   "api-bearer-token" (consumer :consumer-token)})
+  {"api-bearer-name" (consumer :bearer-name)
+   "api-bearer-token" (consumer :bearer-token)})
 
 (defn json-request [object]
   {:headers {"Content-Type" "application/json"}
@@ -73,34 +72,34 @@
 ;;USERS
 
 (defn create-user [user]
-  (default-post-call (str utils/host-url "/api/v1/users") user))
+  (default-post-call (str utils/api-url "/api/v1/users") user))
 
 (defn find-user-by-twitter-id [twitter-id]
   (default-get-call
-    (str utils/host-url "/api/v1/users?twitter=" twitter-id)
+    (str utils/api-url "/api/v1/users?twitter=" twitter-id)
     {:headers (get-api-credentials)}))
 
 (defn find-user-by-username [username]
   (default-get-call
-    (str utils/host-url "/api/v1/users?username=" username)
+    (str utils/api-url "/api/v1/users?username=" username)
     {:headers (get-api-credentials)}))
 
 (defn get-user [user-id]
   (default-get-call
-    (str utils/host-url "/api/v1/users/" user-id)
+    (str utils/api-url "/api/v1/users/" user-id)
     {:headers (get-api-credentials)}))
 
 ;; OBJECTIVES
 
 (defn create-objective [objective]
   (default-post-call
-    (str utils/host-url "/api/v1/objectives") objective))
+    (str utils/api-url "/api/v1/objectives") objective))
 
 (defn get-objective
   ([id] (get-objective id {}))
 
   ([id query]
-   (default-get-call (str utils/host-url "/api/v1/objectives/" id)
+   (default-get-call (str utils/api-url "/api/v1/objectives/" id)
      (assoc {:headers (get-api-credentials)}
             :query-params query))))
 
@@ -115,31 +114,31 @@
 
   ([query]
    (default-get-call
-     (str utils/host-url "/api/v1/objectives")
+     (str utils/api-url "/api/v1/objectives")
      (query->objectives-query-params query))))
 
 (defn get-objectives-for-writer [user-id]
-  (default-get-call (utils/path-for :api/get-objectives-for-writer :id user-id)))
+  (default-get-call (utils/api-path-for :api/get-objectives-for-writer :id user-id)))
 
 ;; COMMENTS
 (defn post-comment [comment-data]
-  (default-post-call (utils/path-for :api/post-comment) comment-data))
+  (default-post-call (utils/api-path-for :api/post-comment) comment-data))
 
 (defn get-comments 
   ([entity-uri]
    (get-comments entity-uri {}))
 
   ([entity-uri options]
-   (default-get-call (utils/path-for :api/get-comments) {:query-params (merge {:uri entity-uri} options)})))
+   (default-get-call (utils/api-path-for :api/get-comments) {:query-params (merge {:uri entity-uri} options)})))
 
 ;; QUESTIONS
 
 (defn create-question [question]
-  (default-post-call (str utils/host-url "/api/v1/objectives/" (:objective-id question) "/questions") question))
+  (default-post-call (str utils/api-url "/api/v1/objectives/" (:objective-id question) "/questions") question))
 
 (defn get-question [objective-id question-id]
   (default-get-call
-    (str utils/host-url "/api/v1/objectives/" objective-id "/questions/" question-id)))
+    (str utils/api-url "/api/v1/objectives/" objective-id "/questions/" question-id)))
 
 (defn retrieve-questions
   ([objective-id]
@@ -147,17 +146,17 @@
 
   ([objective-id options]
    (default-get-call
-     (str utils/host-url "/api/v1/objectives/" objective-id "/questions")
+     (str utils/api-url "/api/v1/objectives/" objective-id "/questions")
      {:query-params options})))
 
 (defn post-mark [mark-data]
-  (default-post-call (utils/path-for :api/post-mark) mark-data))
+  (default-post-call (utils/api-path-for :api/post-mark) mark-data))
 
 ;; ANSWERS
 
 (defn create-answer [answer]
   (default-post-call
-    (str utils/host-url
+    (str utils/api-url
          "/api/v1/objectives/" (:objective-id answer)
          "/questions/" (:question-id answer) "/answers")
     answer))
@@ -168,73 +167,73 @@
 
   ([question-uri options]
    (default-get-call
-     (str utils/host-url "/api/v1" question-uri "/answers")
+     (str utils/api-url "/api/v1" question-uri "/answers")
      {:query-params options}))) 
 
 ;; WRITERS
 
 (defn create-invitation [invitation]
   (default-post-call
-    (str utils/host-url "/api/v1/objectives/" (:objective-id invitation) "/writer-invitations") invitation))
+    (str utils/api-url "/api/v1/objectives/" (:objective-id invitation) "/writer-invitations") invitation))
 
 (defn retrieve-invitation-by-uuid [uuid]
   (default-get-call
-    (str utils/host-url "/api/v1/invitations?uuid=" uuid)))
+    (str utils/api-url "/api/v1/invitations?uuid=" uuid)))
 
 (defn decline-invitation [{:keys [objective-id invitation-id] :as invitation}]
   (default-put-call
-    (str utils/host-url "/api/v1/objectives/" objective-id "/writer-invitations/" invitation-id)
+    (str utils/api-url "/api/v1/objectives/" objective-id "/writer-invitations/" invitation-id)
     invitation))
 
 (defn retrieve-writers [objective-id]
   (default-get-call
-    (str utils/host-url "/api/v1/objectives/" objective-id "/writers")))
+    (str utils/api-url "/api/v1/objectives/" objective-id "/writers")))
 
 (defn post-writer [writer]
-  (default-post-call (str utils/host-url
+  (default-post-call (str utils/api-url
                           "/api/v1/objectives/" (:objective-id writer)
                           "/writers") writer))
 
 (defn post-profile [profile-data]
-  (default-put-call (utils/path-for :api/put-writer-profile) profile-data))
+  (default-put-call (utils/api-path-for :api/put-writer-profile) profile-data))
 
 (defn post-writer-note [note-data]
-  (default-post-call (utils/path-for :api/post-writer-note) note-data))
+  (default-post-call (utils/api-path-for :api/post-writer-note) note-data))
 
 ;; DRAFTS
 
 (defn get-draft [objective-id draft-id]
-  (default-get-call (utils/path-for :api/get-draft :id objective-id :d-id draft-id)))
+  (default-get-call (utils/api-path-for :api/get-draft :id objective-id :d-id draft-id)))
 
 (defn post-draft [{objective-id :objective-id :as draft}]
-  (default-post-call (utils/path-for :api/post-draft :id objective-id) draft))
+  (default-post-call (utils/api-path-for :api/post-draft :id objective-id) draft))
 
 (defn get-all-drafts [objective-id]
-  (default-get-call (utils/path-for :api/get-drafts-for-objective :id objective-id)))
+  (default-get-call (utils/api-path-for :api/get-drafts-for-objective :id objective-id)))
 
 (defn get-draft-section [section-uri]
-  (default-get-call (str utils/host-url "/api/v1" section-uri)))
+  (default-get-call (str utils/api-url "/api/v1" section-uri)))
 
 (defn get-draft-sections [draft-uri]
-  (default-get-call (str utils/host-url "/api/v1" draft-uri "/sections")))
+  (default-get-call (str utils/api-url "/api/v1" draft-uri "/sections")))
 
 (defn get-annotations [draft-uri]
-  (default-get-call (str utils/host-url "/api/v1" draft-uri "/annotations")))
+  (default-get-call (str utils/api-url "/api/v1" draft-uri "/annotations")))
 
 ;; VOTES
 
 (defn create-up-down-vote [vote]
-  (default-post-call (utils/path-for :api/post-up-down-vote) vote))
+  (default-post-call (utils/api-path-for :api/post-up-down-vote) vote))
 
 ;; STARS
 
 (defn post-star [star-data]
-  (default-post-call (utils/path-for :api/post-star) star-data))
+  (default-post-call (utils/api-path-for :api/post-star) star-data))
 
 ;; ADMIN REMOVALS 
 
 (defn post-admin-removal [admin-removal-data]
-  (default-post-call (utils/path-for :api/post-admin-removal) admin-removal-data))  
+  (default-post-call (utils/api-path-for :api/post-admin-removal) admin-removal-data))  
 
 (defn get-admin-removals []
-  (default-get-call (utils/path-for :api/get-admin-removals)))
+  (default-get-call (utils/api-path-for :api/get-admin-removals)))

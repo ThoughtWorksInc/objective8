@@ -38,7 +38,7 @@
                      note-data {:note-on-uri uri-for-answer
                                 :note "A note"
                                 :created-by-id user-id}
-                     {response :response} (p/request app (str "/api/v1/meta/writer-notes")
+                     {response :response} (p/request app (utils/api-path-for :api/post-writer-note)
                                                      :request-method :post
                                                      :content-type "application/json"
                                                      :body (json/generate-string note-data))]
@@ -68,7 +68,7 @@
                      note-data {:note-on-uri comment-uri
                                 :note "A note"
                                 :created-by-id user-id}
-                     {response :response} (p/request app (str "/api/v1/meta/writer-notes")
+                     {response :response} (p/request app (utils/api-path-for :api/post-writer-note)
                                                      :request-method :post
                                                      :content-type "application/json"
                                                      :body (json/generate-string note-data))]
@@ -92,7 +92,7 @@
                      note-data {:note-on-uri uri-for-comment
                                 :note "A note"
                                 :created-by-id user-id}
-                     {response :response} (p/request app (str "/api/v1/meta/writer-notes")
+                     {response :response} (p/request app (utils/api-path-for :api/post-writer-note)
                                                      :request-method :post
                                                      :content-type "application/json"
                                                      :body (json/generate-string note-data))]
@@ -111,7 +111,7 @@
                (let [note-data {:note-on-uri "nonexistent/entity"
                                 :note "A note"
                                 :created-by-id 1}
-                     {response :response} (p/request app (str "/api/v1/meta/writer-notes")
+                     {response :response} (p/request app (utils/api-path-for :api/post-writer-note)
                                                      :request-method :post
                                                      :content-type "application/json"
                                                      :body (json/generate-string note-data))]

@@ -2,6 +2,7 @@
   (:require [midje.sweet :refer :all] 
             [peridot.core :as p] 
             [cheshire.core :as json]
+            [objective8.utils :as utils]
             [objective8.config :as config]
             [objective8.integration.integration-helpers :as helpers] 
             [objective8.integration.storage-helpers :as sh]
@@ -29,8 +30,7 @@
                      writer-data {:invitation-uuid invitation-uuid
                                   :invitee-id invitee-id
                                   :objective-id objective-id}
-                     {response :response} (p/request app (str "/api/v1/objectives/" objective-id
-                                                              "/writers")
+                     {response :response} (p/request app (utils/api-path-for :api/post-writer :id objective-id)
                                                      :request-method :post
                                                      :content-type "application/json"
                                                      :body (json/generate-string writer-data))
@@ -54,8 +54,7 @@
                                   :objective-id objective-id
                                   :invitation-reason "some reason"
                                   :writer-name "writer name"}
-                     {response :response} (p/request app (str "/api/v1/objectives/" objective-id
-                                                              "/writers")
+                     {response :response} (p/request app (utils/api-path-for :api/post-writer :id objective-id)
                                                      :request-method :post
                                                      :content-type "application/json"
                                                      :body (json/generate-string writer-data))]
@@ -72,7 +71,7 @@
                     writers (doall (->> (repeat {:invitation invitation})
                                            (take 5)
                                            (map sh/store-a-writer)))
-                    {response :response} (p/request app (str "/api/v1/objectives/" o-id "/writers"))]
+                    {response :response} (p/request app (utils/api-path-for :api/get-writers-for-objective :id o-id))]
                 (:body response) => (helpers/json-contains (map contains writers))))))
 
 
@@ -91,7 +90,7 @@
                    _ (sh/store-a-writer {:objective objective :user user})
                    _ (sh/store-a-writer {:objective second-objective :user user})
                    _ (sh/store-a-writer {:objective objective-for-another-user})
-                   {response :response} (p/request app (str "/api/v1/writers/" user-id "/objectives"))]
+                   {response :response} (p/request app (utils/api-path-for :api/get-objectives-for-writer :id user-id))]
              (:body response) => (helpers/json-contains 
                                    (map contains (->> [second-objective objective] 
                                                           (map #(dissoc % :global-id)))))
