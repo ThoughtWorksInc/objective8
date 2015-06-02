@@ -20,7 +20,6 @@ start_with_credentials.sh
 start_with_twitter_credentials.sh
 start_locally.sh
 hs_err*.log
-init-script
 .idea/
 profiles.clj
 latest.dump

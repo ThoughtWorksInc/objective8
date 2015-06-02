@@ -72,13 +72,6 @@
                                  :database ~database-connection-url}
                        :main main
                        :aot [main]}
-             :build {:plugins [[org.clojars.strongh/lein-init-script "1.3.1"]]
-                     :lis-opts {:name "objective8"
-                                :redirect-output-to "/var/log/objective8d-init.log"
-                                :jvm-opts ["-server"
-                                           "-Xms256M"
-                                           "-Xmx512M"
-                                           "-XX:MaxPermSize=128M"]}}
              :heroku {:source-paths ["dev"]
                       :repl-options {:init-ns user
                                      :timeout 120000}
