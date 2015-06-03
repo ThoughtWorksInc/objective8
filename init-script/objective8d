@@ -35,7 +35,7 @@ start() {
 		exit 1
 	fi
 	echo "Starting $NAME"
-	java -Dlog4j.configuration=log4j.dev -server -Xms256M -Xmx512M -XX:MaxPermSize=128M -jar $INSTALL_JAR &> /var/log/objective8d-init.log &
+	java -Dlog4j.configuration=log4j.debug -server -Xms256M -Xmx512M -XX:MaxPermSize=128M -jar $INSTALL_JAR &> /var/log/objective8d-init.log &
 	PID=$!
 	echo $PID > $PID_FILE
 	exit 0
