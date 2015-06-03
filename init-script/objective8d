@@ -10,6 +10,8 @@ INSTALL_DIR=/usr/local/objective8
 INSTALL_JAR=$INSTALL_DIR/"$NAME"-"$VERSION"-standalone.jar
 mkdir -p $PID_DIR
 
+[ -f /etc/default/objective8_config ] && . /etc/default/objective8_config
+
 # returns 0 if PID in file is running, 1 if otherwise
 process_running() {
 	pid=`cat "$PID_FILE" 2>/dev/null`
