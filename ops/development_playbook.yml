@@ -2,7 +2,8 @@
  - hosts: development
 
    vars:
-    pgres_md5: "md5b1c083dd6a381c6b47539ffa375f1b51"
+    HOME_PATH: /home/vagrant/
+    PG_PASSWORD: "development"
 
    roles:
     - common

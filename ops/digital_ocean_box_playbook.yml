@@ -3,6 +3,9 @@
    sudo: true
    remote_user: root
 
+   vars:
+    HOME_PATH: /root/
+
    vars_prompt:
     - name: "PG_PASSWORD"
       prompt: "Enter postgres password for user objective8:"

@@ -1,6 +1,9 @@
 ---
  - hosts: dob_vm
 
+   vars:
+    HOME_PATH: /home/vagrant/
+
    vars_prompt:
     - name: "PG_PASSWORD"
       prompt: "Enter postgres password for user objective8:"
