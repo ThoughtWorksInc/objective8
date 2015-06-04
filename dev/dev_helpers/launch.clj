@@ -12,7 +12,7 @@
 (defn- start-back-end-server [system]
   (let [conf (:config system)
         api-port (:api-port system)
-        server (server/run-server (core/back-end-handler conf) {:port api-port})]
+        server (server/run-server (core/back-end-handler conf) {:port api-port :thread 4})]
     (prn "Starting api server on port: " api-port)
     (assoc system :back-end-server server)))
 
@@ -24,7 +24,7 @@
 (defn- start-front-end-server [system]
   (let [conf (:config system)
         front-end-port (:front-end-port system)
-        server (server/run-server (core/front-end-handler conf) {:port front-end-port})]
+        server (server/run-server (core/front-end-handler conf) {:port front-end-port :thread 4})]
     (prn "Starting front-end server on port: " front-end-port)
     (assoc system :front-end-server server)))
 

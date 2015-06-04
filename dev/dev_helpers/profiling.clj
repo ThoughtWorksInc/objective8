@@ -15,11 +15,11 @@
       result))))
 
 (defn average [coll]
-  (when-not (empty? coll)
-  (/ (reduce + coll) (count coll))))
+  (/ (reduce + coll) (count coll)))
 
 (defn render-report-call [[tag times-atom]]
-  (prn tag (apply min @times-atom) (average @times-atom) (apply max @times-atom)))
+  (when-not (empty? @times-atom)
+    (prn tag (apply min @times-atom) (average @times-atom) (apply max @times-atom))))
 
 (defn prn-report []
   (doall
@@ -46,12 +46,13 @@
   (clear-all-hooks))
 
 (defn instrument [prof-config]
-  (add-hook #'objective8.front-end.handlers/objective-detail (report-call "0 - objective-detail"))
-  ;(rh/add-hook #'objective8.front-end.api.http/get-objective (report-call "http api get objective"))
-  ;(rh/add-hook #'objective8.front-end.api.http/retrieve-writers (report-call "http api retrieve writers"))
-  ;(rh/add-hook #'objective8.front-end.api.http/retrieve-questions (report-call "http api retrieve questions"))
-  ;(rh/add-hook #'objective8.front-end.api.http/get-comments (report-call "http api get comments"))
-  ;(rh/add-hook #'objective8.front-end.api.http/get-draft (report-call "http api get draft"))
-  ;(rh/add-hook #'objective8.back-end.storage.storage/pg-get-objective-as-signed-in-user (report-call "pg get obj as signed in user"))
-  ;(rh/add-hook #'objective8.back-end.storage.storage/pg-get-objective (report-call "pg get obj"))
+  (add-hook #'objective8.front-end.handlers/objective-detail (report-call [:handlers :objective-detail]))
+  (add-hook #'objective8.front-end.api.http/get-objective (report-call [:http-api :get-objective]))
+  (add-hook #'objective8.front-end.api.http/retrieve-writers (report-call [:http-api :retrieve-writers]))
+  (add-hook #'objective8.front-end.api.http/retrieve-questions (report-call [:http-api :retrieve-questions]))
+  (add-hook #'objective8.front-end.api.http/get-comments (report-call [:http-api :get-comments]))
+  (add-hook #'objective8.front-end.api.http/get-draft (report-call [:http-api :get-draft]))
+  
+  (add-hook #'objective8.front-end.views/objective-detail-page (report-call [:page]))
+  
   )

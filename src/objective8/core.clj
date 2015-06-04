@@ -120,38 +120,45 @@
    :api/post-mark (m/wrap-bearer-token back-end-handlers/post-mark bt/token-provider)
    :api/post-writer-note (m/wrap-bearer-token back-end-handlers/post-writer-note bt/token-provider)})
 
+(defn common-middleware [h config]
+  (-> h 
+      wrap-keyword-params
+      wrap-params
+      wrap-json-params
+      wrap-json-response
+      ((if (:https config)
+           (comp wrap-forwarded-scheme wrap-ssl-redirect)
+           identity))))
+
+(defn front-end-middleware [h config]
+  (-> h
+      (wrap-tower (:translation config))
+      wrap-flash
+      (wrap-session {:cookie-attrs {:http-only true}
+                     :store (:session-store config)})
+      (wrap-xss-protection true {:mode :block})
+      (wrap-frame-options :sameorigin)))
+
+(defn profiling-middleware [h config]
+  (if-let [profile-middleware (:profile-middleware config)]
+    (do
+      (prn "adding profiling middleware")
+      (profile-middleware h))
+    h))
+
 (defn front-end-handler [config]
   (let [handler-map (front-end-handlers)]
     (-> (make-handler routes/front-end-routes (some-fn handler-map #(when (fn? %) %)))
         (m/wrap-not-found front-end-handlers/error-404)
         (friend/authenticate (:authentication config))
-        (wrap-tower (:translation config))
-        m/strip-trailing-slashes
-        wrap-keyword-params
-        wrap-params
-        wrap-json-params
-        wrap-json-response
-        wrap-flash
-        (wrap-session {:cookie-attrs {:http-only true}
-                       :store (:session-store config)})
-        (wrap-xss-protection true {:mode :block})
-        (wrap-frame-options :sameorigin)
-        ((if (:https config)
-           (comp wrap-forwarded-scheme wrap-ssl-redirect)
-           identity)))))
+        (profiling-middleware config)
+        (front-end-middleware config) 
+        (common-middleware config))))
 
 (defn back-end-handler [config]
   (let [handler-map (back-end-handlers)]
     (-> (make-handler routes/back-end-routes (some-fn handler-map #(when (fn? %) %)))
-        m/strip-trailing-slashes
-        wrap-keyword-params
-        wrap-params
-        wrap-json-params
-        wrap-json-response
-        wrap-flash
-        ((if (:https config)
-           (comp wrap-forwarded-scheme wrap-ssl-redirect)
-           identity)))))
+        (common-middleware config))))
 
 (defn get-bearer-token-details []
   (-> (:api-credentials config/environment)
@@ -191,6 +198,7 @@
 (defn start-server 
   ([]
    (start-server app-config))
+
   ([config] 
    (let [front-end-port (:front-end-port config/environment)
          api-port (:api-port config/environment)]

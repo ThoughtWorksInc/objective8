@@ -20,13 +20,28 @@
                               :host (config/get-var "DB_HOST" "127.0.0.1")
                               :port (config/get-var "DB_PORT" 5432)}))
 
+(defn load-test-sign-in [handler]
+  (fn [request]
+    (if (= "true" (get-in request [:headers "x-load-test-signed-in"]))
+      (let [gatling-user-id (Integer/parseInt (get-in request [:headers "x-load-test-user-id"]))
+            username (str "username-" gatling-user-id)
+            session (merge (:session request)
+                           {:cemerick.friend/identity {:current gatling-user-id
+                                                       :authentications {gatling-user-id {:identity gatling-user-id
+                                                                                          :roles #{:signed-in :writer-for-85826}
+                                                                                          :username username}}}})]
+        (handler (assoc request :session session)))
+      (handler request))))
+
 (def configs 
   {:default {:app-config core/app-config}
    :stub-twitter {:app-config (assoc core/app-config :authentication stub-twitter-auth-config)}
    :local-stub-twitter {:app-config (assoc core/app-config
                                            :authentication stub-twitter-auth-config
                                            :db-spec local-spec)}
-   :profiling {:app-config (assoc core/app-config :authentication stub-twitter-auth-config)
+   :profiling {:app-config (assoc core/app-config 
+                                  :authentication stub-twitter-auth-config
+                                  :profile-middleware load-test-sign-in)
                :profile? true}})
 
 (def launchers (make-launcher-map configs))
@@ -111,6 +126,9 @@
                                 (sh/store-a-comment {:entity draft :comment-text (str "draft comment - " x)})))
         questions (doall (for [x (range 120)]
                            (sh/store-a-question {:user user :objective objective :question-text (str "question - " x)})))
+        answers (doall (for [question questions
+                             x (range 10)]
+                         (sh/store-an-answer {:question question :answer-text (str "Answer to " (:question question) "is because of " x)})))
         section (sh/store-a-section {:draft draft :section-label "abcd1234"})
         annotations (doall (for [x (range 120)]
                              (:comment (sh/store-an-annotation {:section section
