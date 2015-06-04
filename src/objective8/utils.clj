@@ -49,7 +49,7 @@
   (str host-url (apply bidi/path-for routes/front-end-routes args)))
 
 (defn api-path-for [& args]
-  (str api-url (apply bidi/path-for routes/api-routes args)))
+  (str api-url (apply bidi/path-for routes/back-end-routes args)))
 
 (defn local-path-for [& args]
   (apply bidi/path-for routes/front-end-routes args))

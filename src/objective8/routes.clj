@@ -57,7 +57,7 @@
     "users"             {["/" :username] {:get :fe/profile}}
     "error"             {"/configuration" {:get :fe/error-configuration}}}])
 
-(def api-routes
+(def back-end-routes
   ["/"
    {"api/v1"            {"/users" {:post :api/post-user-profile
                                    :get :api/get-user-by-query

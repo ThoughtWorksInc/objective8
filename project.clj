@@ -59,12 +59,12 @@
                              [jonase/eastwood "0.2.1"]]
                    :ragtime {:migrations ragtime.sql.files/migrations
                              :database ~database-connection-url}
-                   :aliases {"translation-template" ["run" "-m" "dev-helpers.translation/main"]}}
+                   :aliases {"translation-template" ["run" "-m" "dev-helpers.translation/main"]}
+                   :jvm-opts ["-Dlog4j.configuration=log4j.dev"]}
              :load-testing {:source-paths ["load_testing"]
                             :repl-options [:init-ns load-tests]
                             :dependencies [[clj-gatling "0.5.4"]
-                                           [org.clojure/tools.nrepl "0.2.10"]
-                                           ]
+                                           [org.clojure/tools.nrepl "0.2.10"]]
                             :main load-tests}
              :uberjar {:source-paths ["prod"]
                        :jvm-opts ["-Dlog4j.configuration=log4j.dev"]   

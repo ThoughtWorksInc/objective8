@@ -21,11 +21,13 @@
                               :port (config/get-var "DB_PORT" 5432)}))
 
 (def configs 
-  {:default core/app-config
-   :stub-twitter (assoc core/app-config :authentication stub-twitter-auth-config)
-   :local-stub-twitter (assoc core/app-config
-                              :authentication stub-twitter-auth-config
-                              :db-spec local-spec)})
+  {:default {:app-config core/app-config}
+   :stub-twitter {:app-config (assoc core/app-config :authentication stub-twitter-auth-config)}
+   :local-stub-twitter {:app-config (assoc core/app-config
+                                           :authentication stub-twitter-auth-config
+                                           :db-spec local-spec)}
+   :profiling {:app-config (assoc core/app-config :authentication stub-twitter-auth-config)
+               :profile? true}})
 
 (def launchers (make-launcher-map configs))
 

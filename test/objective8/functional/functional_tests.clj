@@ -75,7 +75,7 @@
    (before :facts (reset! test-data-collector {}))
    (after :contents (do (wd/quit)
                         (integration-helpers/truncate-tables)
-                        (core/stop-api-server)
+                        (core/stop-back-end-server)
                         (core/stop-front-end-server)))]
 
   (fact "can add an objective"

@@ -263,6 +263,32 @@ LEFT JOIN (SELECT drafts.objective_id, COUNT(drafts.*) AS number
 ON drafts_meta.objective_id = objectives._id
 WHERE objectives._id = ?" [objective-id]] :results)))))
 
+(defn pg-get-objective-as-signed-in-user [objective-id user-id]
+  (let [unmap-objective (first (get mappings/objective :transforms))]
+    (first (map unmap-objective
+                (korma/exec-raw ["
+SELECT objectives.*, users.username, user_stars.active, stars_meta.number AS stars_count, comments_meta.number AS comments_count, drafts_meta.number AS drafts_count
+FROM objective8.objectives AS objectives
+LEFT JOIN (SELECT active, objective_id
+           FROM objective8.stars
+           WHERE created_by_id=?) AS user_stars
+ON user_stars.objective_id = objectives._id
+LEFT JOIN (SELECT objective_id, COUNT(*) AS number
+           FROM objective8.stars
+           GROUP BY stars.objective_id) AS stars_meta
+ON stars_meta.objective_id = objectives._id
+LEFT JOIN (SELECT comments.comment_on_id, COUNT(comments.*) AS number
+           FROM objective8.comments AS comments
+           GROUP BY comments.comment_on_id) AS comments_meta
+ON comments_meta.comment_on_id = objectives.global_id
+LEFT JOIN (SELECT drafts.objective_id, COUNT(drafts.*) AS number
+           FROM objective8.drafts AS drafts
+           GROUP BY drafts.objective_id) AS drafts_meta
+ON drafts_meta.objective_id = objectives._id
+JOIN objective8.users AS users
+ON objectives.created_by_id = users._id
+WHERE objectives._id=? AND objectives.removed_by_admin=false" [user-id objective-id]] :results)))))
+
 (defn pg-get-objectives-for-writer [user-id]
   (let [unmap-objective (first (get mappings/objective :transforms))]
     (apply vector (map unmap-objective
@@ -290,33 +316,6 @@ ON objectives.created_by_id = users._id
 WHERE objectives.removed_by_admin=false 
 ORDER BY objectives._created_at DESC
 LIMIT 50" [user-id]] :results)))))
-
-(defn pg-get-objective-as-signed-in-user [objective-id user-id]
-  (let [unmap-objective (first (get mappings/objective :transforms))]
-    (first (map unmap-objective
-                (korma/exec-raw ["
-SELECT objectives.*, users.username, user_stars.active, stars_meta.number AS stars_count, comments_meta.number AS comments_count, drafts_meta.number AS drafts_count
-FROM objective8.objectives AS objectives
-LEFT JOIN (SELECT active, objective_id
-           FROM objective8.stars
-           WHERE created_by_id=?) AS user_stars
-ON user_stars.objective_id = objectives._id
-LEFT JOIN (SELECT objective_id, COUNT(*) AS number
-           FROM objective8.stars
-           GROUP BY stars.objective_id) AS stars_meta
-ON stars_meta.objective_id = objectives._id
-LEFT JOIN (SELECT comments.comment_on_id, COUNT(comments.*) AS number
-           FROM objective8.comments AS comments
-           GROUP BY comments.comment_on_id) AS comments_meta
-ON comments_meta.comment_on_id = objectives.global_id
-LEFT JOIN (SELECT drafts.objective_id, COUNT(drafts.*) AS number
-           FROM objective8.drafts AS drafts
-           GROUP BY drafts.objective_id) AS drafts_meta
-ON drafts_meta.objective_id = objectives._id
-JOIN objective8.users AS users
-ON objectives.created_by_id = users._id
-WHERE objectives._id=? AND objectives.removed_by_admin=false" [user-id objective-id]] :results)))))
-
 
 (defn pg-retrieve-question-by-query-map [query-map]
   (when-let [sanitised-query (utils/select-all-or-nothing query-map [:_id :objective-id :entity])]

@@ -105,7 +105,7 @@
   ([] (api-context {}))
 
   ([config-changes]
-   (p/session (core/api-handler (merge test-config config-changes)))))
+   (p/session (core/back-end-handler (merge test-config config-changes)))))
 
 ;; Test data generators
 

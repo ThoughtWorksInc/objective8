@@ -28,129 +28,130 @@
             [objective8.back-end.storage.database :as db]
             [objective8.back-end.domain.bearer-tokens :as bt]))
 
-(def handlers {;; Front End Handlers
-               :fe/index front-end-handlers/index
-               :fe/sign-in front-end-handlers/sign-in
-               :fe/sign-out front-end-handlers/sign-out
-               :fe/profile front-end-handlers/profile
-               :fe/project-status front-end-handlers/project-status
-               :fe/learn-more front-end-handlers/learn-more
-               :fe/admin-activity front-end-handlers/admin-activity
-               :fe/create-objective-form (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form) #{:signed-in})
-               :fe/create-objective-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form-post) #{:signed-in})
-               :fe/objective-list (utils/anti-forgery-hook front-end-handlers/objective-list) 
-               :fe/objective (utils/anti-forgery-hook front-end-handlers/objective-detail)
-               :fe/get-comments-for-objective (utils/anti-forgery-hook front-end-handlers/get-comments-for-objective)
-               :fe/add-a-question (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-a-question) #{:signed-in}) 
-               :fe/add-question-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-question-form-post) #{:signed-in})
-               :fe/question-list (utils/anti-forgery-hook front-end-handlers/question-list)
-               :fe/question (utils/anti-forgery-hook front-end-handlers/question-detail)
-               :fe/add-answer-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-answer-form-post) #{:signed-in})
-               :fe/writers-list (utils/anti-forgery-hook front-end-handlers/writers-list)
-               :fe/invite-writer (m/wrap-authorise-writer-inviter (utils/anti-forgery-hook front-end-handlers/invite-writer)) 
-               :fe/invitation-form-post (m/wrap-authorise-writer-inviter (utils/anti-forgery-hook front-end-handlers/invitation-form-post))
-               :fe/writer-invitation front-end-handlers/writer-invitation
-               :fe/create-profile-get (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-profile-get) #{:signed-in})
-               :fe/create-profile-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-profile-post) #{:signed-in})
+(defn front-end-handlers []
+  {:fe/index front-end-handlers/index
+   :fe/sign-in front-end-handlers/sign-in
+   :fe/sign-out front-end-handlers/sign-out
+   :fe/profile front-end-handlers/profile
+   :fe/project-status front-end-handlers/project-status
+   :fe/learn-more front-end-handlers/learn-more
+   :fe/admin-activity front-end-handlers/admin-activity
+   :fe/create-objective-form (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form) #{:signed-in})
+   :fe/create-objective-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form-post) #{:signed-in})
+   :fe/objective-list (utils/anti-forgery-hook front-end-handlers/objective-list) 
+   :fe/objective (utils/anti-forgery-hook front-end-handlers/objective-detail)
+   :fe/get-comments-for-objective (utils/anti-forgery-hook front-end-handlers/get-comments-for-objective)
+   :fe/add-a-question (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-a-question) #{:signed-in}) 
+   :fe/add-question-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-question-form-post) #{:signed-in})
+   :fe/question-list (utils/anti-forgery-hook front-end-handlers/question-list)
+   :fe/question (utils/anti-forgery-hook front-end-handlers/question-detail)
+   :fe/add-answer-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-answer-form-post) #{:signed-in})
+   :fe/writers-list (utils/anti-forgery-hook front-end-handlers/writers-list)
+   :fe/invite-writer (m/wrap-authorise-writer-inviter (utils/anti-forgery-hook front-end-handlers/invite-writer)) 
+   :fe/invitation-form-post (m/wrap-authorise-writer-inviter (utils/anti-forgery-hook front-end-handlers/invitation-form-post))
+   :fe/writer-invitation front-end-handlers/writer-invitation
+   :fe/create-profile-get (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-profile-get) #{:signed-in})
+   :fe/create-profile-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-profile-post) #{:signed-in})
 
-               :fe/edit-profile-get (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/edit-profile-get) #{:signed-in})
-               :fe/edit-profile-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/edit-profile-post) #{:signed-in})
-               :fe/accept-invitation (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/accept-invitation) #{:signed-in})
-               :fe/decline-invitation (utils/anti-forgery-hook front-end-handlers/decline-invitation) 
-               :fe/add-draft-get (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/add-draft-get)
-                                                               permissions/request->writer-roles)
-               :fe/add-draft-post (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/add-draft-post)
-                                                                permissions/request->writer-roles)
-               :fe/draft (utils/anti-forgery-hook front-end-handlers/draft)
-               :fe/get-comments-for-draft (utils/anti-forgery-hook front-end-handlers/get-comments-for-draft)
-               :fe/draft-diff front-end-handlers/draft-diff
-               :fe/draft-section (utils/anti-forgery-hook front-end-handlers/draft-section) 
-               :fe/draft-list front-end-handlers/draft-list
-               :fe/import-draft-get (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/import-draft-get)
-                                                                  permissions/request->writer-roles)
-               :fe/import-draft-post (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/import-draft-post)
-                                                                   permissions/request->writer-roles)
-               :fe/dashboard-questions (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/dashboard-questions) permissions/request->writer-roles)
-               :fe/dashboard-comments (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/dashboard-comments) permissions/request->writer-roles)
-               :fe/dashboard-annotations (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/dashboard-annotations) permissions/request->writer-roles)
-               
-               :fe/post-up-vote (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-up-vote) #{:signed-in}) 
-               :fe/post-down-vote (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-down-vote) #{:signed-in}) 
-               :fe/post-comment (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-comment) #{:signed-in})
-               :fe/post-annotation (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-annotation) #{:signed-in})
-               :fe/post-star (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-star) #{:signed-in})
-               :fe/post-mark (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/post-mark) permissions/mark-request->mark-question-roles)
-               :fe/post-writer-note (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-writer-note) #{:signed-in})
-               :fe/admin-removal-confirmation-get (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/admin-removal-confirmation) #{:admin})
-               :fe/admin-removal-confirmation-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-admin-removal-confirmation) #{:admin})
-               :fe/post-admin-removal (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-admin-removal) #{:admin})
-               :fe/error-configuration front-end-handlers/error-configuration
+   :fe/edit-profile-get (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/edit-profile-get) #{:signed-in})
+   :fe/edit-profile-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/edit-profile-post) #{:signed-in})
+   :fe/accept-invitation (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/accept-invitation) #{:signed-in})
+   :fe/decline-invitation (utils/anti-forgery-hook front-end-handlers/decline-invitation) 
+   :fe/add-draft-get (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/add-draft-get)
+                                                   permissions/request->writer-roles)
+   :fe/add-draft-post (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/add-draft-post)
+                                                    permissions/request->writer-roles)
+   :fe/draft (utils/anti-forgery-hook front-end-handlers/draft)
+   :fe/get-comments-for-draft (utils/anti-forgery-hook front-end-handlers/get-comments-for-draft)
+   :fe/draft-diff front-end-handlers/draft-diff
+   :fe/draft-section (utils/anti-forgery-hook front-end-handlers/draft-section) 
+   :fe/draft-list front-end-handlers/draft-list
+   :fe/import-draft-get (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/import-draft-get)
+                                                      permissions/request->writer-roles)
+   :fe/import-draft-post (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/import-draft-post)
+                                                       permissions/request->writer-roles)
+   :fe/dashboard-questions (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/dashboard-questions) permissions/request->writer-roles)
+   :fe/dashboard-comments (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/dashboard-comments) permissions/request->writer-roles)
+   :fe/dashboard-annotations (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/dashboard-annotations) permissions/request->writer-roles)
+   
+   :fe/post-up-vote (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-up-vote) #{:signed-in}) 
+   :fe/post-down-vote (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-down-vote) #{:signed-in}) 
+   :fe/post-comment (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-comment) #{:signed-in})
+   :fe/post-annotation (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-annotation) #{:signed-in})
+   :fe/post-star (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-star) #{:signed-in})
+   :fe/post-mark (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/post-mark) permissions/mark-request->mark-question-roles)
+   :fe/post-writer-note (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-writer-note) #{:signed-in})
+   :fe/admin-removal-confirmation-get (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/admin-removal-confirmation) #{:admin})
+   :fe/admin-removal-confirmation-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-admin-removal-confirmation) #{:admin})
+   :fe/post-admin-removal (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-admin-removal) #{:admin})
+   :fe/error-configuration front-end-handlers/error-configuration})
 
-               
-               ;; API Handlers
-               :api/post-user-profile (m/wrap-bearer-token back-end-handlers/post-user-profile bt/token-provider)
-               :api/get-user-by-query (m/wrap-bearer-token back-end-handlers/find-user-by-query bt/token-provider)
-               :api/get-user (m/wrap-bearer-token back-end-handlers/get-user bt/token-provider)
-               :api/put-writer-profile (m/wrap-bearer-token back-end-handlers/put-writer-profile bt/token-provider)
-               :api/post-objective (m/wrap-bearer-token back-end-handlers/post-objective bt/token-provider)
-               :api/get-objective (m/wrap-bearer-token back-end-handlers/get-objective bt/token-provider) 
-               :api/get-objectives (m/wrap-bearer-token back-end-handlers/get-objectives bt/token-provider) 
-               :api/post-comment (m/wrap-bearer-token back-end-handlers/post-comment bt/token-provider)
-               :api/get-comments back-end-handlers/get-comments
-               :api/post-question (m/wrap-bearer-token back-end-handlers/post-question bt/token-provider)
-               :api/get-question back-end-handlers/get-question
-               :api/get-questions-for-objective back-end-handlers/retrieve-questions
-               :api/get-answers-for-question back-end-handlers/get-answers
-               :api/post-answer (m/wrap-bearer-token back-end-handlers/post-answer bt/token-provider)
-               :api/post-invitation (m/wrap-bearer-token back-end-handlers/post-invitation bt/token-provider)
-               :api/get-invitation back-end-handlers/get-invitation
-               :api/post-writer (m/wrap-bearer-token back-end-handlers/post-writer bt/token-provider)
-               :api/put-invitation-declination (m/wrap-bearer-token back-end-handlers/put-invitation-declination bt/token-provider)
-               :api/get-writers-for-objective back-end-handlers/retrieve-writers
-               :api/get-objectives-for-writer back-end-handlers/get-objectives-for-writer
-               :api/post-draft (m/wrap-bearer-token back-end-handlers/post-draft bt/token-provider)
-               :api/get-draft back-end-handlers/get-draft
-               :api/get-drafts-for-objective back-end-handlers/retrieve-drafts
-               :api/get-sections back-end-handlers/get-sections
-               :api/get-section back-end-handlers/get-section
-               :api/get-annotations back-end-handlers/get-annotations
-               :api/post-admin-removal (m/wrap-bearer-token back-end-handlers/post-admin-removal bt/token-provider)
-               :api/get-admin-removals back-end-handlers/get-admin-removals
-               :api/post-up-down-vote (m/wrap-bearer-token back-end-handlers/post-up-down-vote bt/token-provider)
-               :api/post-star (m/wrap-bearer-token back-end-handlers/post-star bt/token-provider)
-               :api/post-mark (m/wrap-bearer-token back-end-handlers/post-mark bt/token-provider)
-               :api/post-writer-note (m/wrap-bearer-token back-end-handlers/post-writer-note bt/token-provider)})
-  
+(defn back-end-handlers []
+  {:api/post-user-profile (m/wrap-bearer-token back-end-handlers/post-user-profile bt/token-provider)
+   :api/get-user-by-query (m/wrap-bearer-token back-end-handlers/find-user-by-query bt/token-provider)
+   :api/get-user (m/wrap-bearer-token back-end-handlers/get-user bt/token-provider)
+   :api/put-writer-profile (m/wrap-bearer-token back-end-handlers/put-writer-profile bt/token-provider)
+   :api/post-objective (m/wrap-bearer-token back-end-handlers/post-objective bt/token-provider)
+   :api/get-objective (m/wrap-bearer-token back-end-handlers/get-objective bt/token-provider) 
+   :api/get-objectives (m/wrap-bearer-token back-end-handlers/get-objectives bt/token-provider) 
+   :api/post-comment (m/wrap-bearer-token back-end-handlers/post-comment bt/token-provider)
+   :api/get-comments back-end-handlers/get-comments
+   :api/post-question (m/wrap-bearer-token back-end-handlers/post-question bt/token-provider)
+   :api/get-question back-end-handlers/get-question
+   :api/get-questions-for-objective back-end-handlers/retrieve-questions
+   :api/get-answers-for-question back-end-handlers/get-answers
+   :api/post-answer (m/wrap-bearer-token back-end-handlers/post-answer bt/token-provider)
+   :api/post-invitation (m/wrap-bearer-token back-end-handlers/post-invitation bt/token-provider)
+   :api/get-invitation back-end-handlers/get-invitation
+   :api/post-writer (m/wrap-bearer-token back-end-handlers/post-writer bt/token-provider)
+   :api/put-invitation-declination (m/wrap-bearer-token back-end-handlers/put-invitation-declination bt/token-provider)
+   :api/get-writers-for-objective back-end-handlers/retrieve-writers
+   :api/get-objectives-for-writer back-end-handlers/get-objectives-for-writer
+   :api/post-draft (m/wrap-bearer-token back-end-handlers/post-draft bt/token-provider)
+   :api/get-draft back-end-handlers/get-draft
+   :api/get-drafts-for-objective back-end-handlers/retrieve-drafts
+   :api/get-sections back-end-handlers/get-sections
+   :api/get-section back-end-handlers/get-section
+   :api/get-annotations back-end-handlers/get-annotations
+   :api/post-admin-removal (m/wrap-bearer-token back-end-handlers/post-admin-removal bt/token-provider)
+   :api/get-admin-removals back-end-handlers/get-admin-removals
+   :api/post-up-down-vote (m/wrap-bearer-token back-end-handlers/post-up-down-vote bt/token-provider)
+   :api/post-star (m/wrap-bearer-token back-end-handlers/post-star bt/token-provider)
+   :api/post-mark (m/wrap-bearer-token back-end-handlers/post-mark bt/token-provider)
+   :api/post-writer-note (m/wrap-bearer-token back-end-handlers/post-writer-note bt/token-provider)})
+
 (defn front-end-handler [config]
-  (-> (make-handler routes/front-end-routes (some-fn handlers #(when (fn? %) %)))
-      (m/wrap-not-found front-end-handlers/error-404)
-      (friend/authenticate (:authentication config))
-      (wrap-tower (:translation config))
-      m/strip-trailing-slashes
-      wrap-keyword-params
-      wrap-params
-      wrap-json-params
-      wrap-json-response
-      wrap-flash
-      (wrap-session {:cookie-attrs {:http-only true}
-                     :store (:session-store config)})
-      (wrap-xss-protection true {:mode :block})
-      (wrap-frame-options :sameorigin)
-      ((if (:https config)
-         (comp wrap-forwarded-scheme wrap-ssl-redirect)
-         identity))))
+  (let [handler-map (front-end-handlers)]
+    (-> (make-handler routes/front-end-routes (some-fn handler-map #(when (fn? %) %)))
+        (m/wrap-not-found front-end-handlers/error-404)
+        (friend/authenticate (:authentication config))
+        (wrap-tower (:translation config))
+        m/strip-trailing-slashes
+        wrap-keyword-params
+        wrap-params
+        wrap-json-params
+        wrap-json-response
+        wrap-flash
+        (wrap-session {:cookie-attrs {:http-only true}
+                       :store (:session-store config)})
+        (wrap-xss-protection true {:mode :block})
+        (wrap-frame-options :sameorigin)
+        ((if (:https config)
+           (comp wrap-forwarded-scheme wrap-ssl-redirect)
+           identity)))))
 
-(defn api-handler [config]
-  (-> (make-handler routes/api-routes (some-fn handlers #(when (fn? %) %)))
-      m/strip-trailing-slashes
-      wrap-keyword-params
-      wrap-params
-      wrap-json-params
-      wrap-json-response
-      wrap-flash
-      ((if (:https config)
-         (comp wrap-forwarded-scheme wrap-ssl-redirect)
-         identity))))
+(defn back-end-handler [config]
+  (let [handler-map (back-end-handlers)]
+    (-> (make-handler routes/back-end-routes (some-fn handler-map #(when (fn? %) %)))
+        m/strip-trailing-slashes
+        wrap-keyword-params
+        wrap-params
+        wrap-json-params
+        wrap-json-response
+        wrap-flash
+        ((if (:https config)
+           (comp wrap-forwarded-scheme wrap-ssl-redirect)
+           identity)))))
 
 (defn get-bearer-token-details []
   (-> (:api-credentials config/environment)
@@ -185,7 +186,7 @@
    :db-spec (db/spec (:db-config config/environment))})
 
 (def front-end-server (atom nil))
-(def api-server (atom nil))
+(def back-end-server (atom nil))
 
 (defn start-server 
   ([]
@@ -196,18 +197,19 @@
      (db/connect! (:db-spec config)) 
      (initialise-api)
      (log/info (str "Starting objective8 front-end on port " front-end-port))
-     (reset! front-end-server (run-server (front-end-handler config) {:port front-end-port}))
+     (reset! front-end-server (run-server (front-end-handler config)
+                                          {:port front-end-port}))
      (log/info (str "Starting objective8 api on port " api-port))
-     (reset! api-server (run-server (api-handler config) {:port api-port})))))
+     (reset! back-end-server (run-server (back-end-handler config) {:port api-port})))))
 
 (defn -main []
   (start-server))
 
-(defn stop-api-server []
-  (when-not (nil? @api-server)
+(defn stop-back-end-server []
+  (when-not (nil? @back-end-server)
     (log/info "Stopping objective8 api")
-    (@api-server)
-    (reset! api-server nil)))
+    (@back-end-server)
+    (reset! back-end-server nil)))
 
 (defn stop-front-end-server []
   (when-not (nil? @front-end-server)
@@ -217,5 +219,5 @@
 
 (defn restart-server []
   (stop-front-end-server)
-  (stop-api-server)
+  (stop-back-end-server)
   (start-server))
