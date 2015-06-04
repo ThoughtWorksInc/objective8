@@ -12,5 +12,5 @@
    postgresql_privs: role=objective8 database=objective8 state=present privs=CREATE type=database
    sudo_user: postgres
 
- - name: create .pgres file
-   lineinfile: dest={{ HOME_PATH }}.pgres state=present create=yes line="localhost:5432:objective8:objective8:{{ PG_PASSWORD }}"
+ - name: create .pgpass file
+   lineinfile: dest=/usr/local/objective8/.pgpass state=present create=yes line="localhost:5432:objective8:objective8:{{ PG_PASSWORD }}"

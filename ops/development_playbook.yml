@@ -2,7 +2,6 @@
  - hosts: development
 
    vars:
-    HOME_PATH: /home/vagrant/
     PG_PASSWORD: "development"
 
    roles:

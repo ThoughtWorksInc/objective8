@@ -1,0 +1,7 @@
+---
+ - name: copy postgres_backup.sh
+   copy: src=postgres_backup.sh dest=/usr/local/objective8
+         owner=root group=root mode=0700
+
+ - cron: name="create postgres backups" special_time=daily job="/usr/local/objective8/postgres_backup.sh"
+ 
