@@ -1,7 +1,6 @@
 (ns objective8.front-end.templates.import-draft
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]  
             [objective8.front-end.templates.page-furniture :as pf]
             [objective8.front-end.templates.template-functions :as tf]
             [objective8.utils :as utils]))
@@ -24,7 +23,7 @@
     (html/at nodes
              [:.clj-draft-content-empty-error] (when (contains? (:content validation-report) :empty) identity))))
 
-(defn import-draft-page [{:keys [data doc] :as context}]
+(defn import-draft-page [{:keys [anti-forgery-snippet data doc] :as context}]
   (let [objective-id (:objective-id data)
         import-draft-preview-html (get-in doc [:flash :import-draft-preview-html])]
     (->>
@@ -42,7 +41,7 @@
                                               (html/substitute (submit-button context))
                                               identity)
                [:.clj-import-draft-form] (html/do-> 
-                                           (html/prepend (html/html-snippet (anti-forgery-field)))
+                                           (html/prepend anti-forgery-snippet)
                                            (html/set-attr :action (utils/local-path-for :fe/import-draft-post :id objective-id)))
                [:.clj-google-doc-html-content] (html/set-attr :value import-draft-preview-html)
 

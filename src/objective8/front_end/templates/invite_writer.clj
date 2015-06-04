@@ -1,7 +1,6 @@
 (ns objective8.front-end.templates.invite-writer
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]  
             [objective8.front-end.templates.page-furniture :as pf]
             [objective8.front-end.templates.template-functions :as tf]))
 
@@ -9,9 +8,9 @@
 
 (def invite-writer-form-snippet (html/select pf/library-html-resource [:.clj-invite-a-writer-form]))
 
-(defn invite-writer-form []
+(defn invite-writer-form [{:keys [anti-forgery-snippet] :as context}]
   (html/at invite-writer-form-snippet
-           [:.clj-invite-a-writer-form] (html/prepend (html/html-snippet (anti-forgery-field)))))
+           [:.clj-invite-a-writer-form] (html/prepend anti-forgery-snippet)))
 
 (def sign-in-to-invite-writer-snippet (html/select pf/library-html-resource [:.clj-to-invite-writer-please-sign-in]))
 
@@ -22,7 +21,7 @@
 
 (defn invite-writer [{user :user :as context}]
   (if user
-    (invite-writer-form) 
+    (invite-writer-form context) 
     (sign-in-to-invite-writer context)))
 
 (defn apply-validations [{:keys [doc] :as context} nodes]

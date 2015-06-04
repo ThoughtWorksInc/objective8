@@ -1,7 +1,6 @@
 (ns objective8.front-end.templates.objective
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]
             [cemerick.url :as url]
             [objective8.config :as config]
             [objective8.front-end.config :as fe-config]
@@ -31,7 +30,7 @@
 
 (def invitation-response-snippet (html/select (html/html-resource "templates/jade/objective-invitation-response.html") [:.clj-invitation-response]))
 
-(defn invitation-rsvp-modal [{:keys [data invitation-rsvp user ring-request] :as context}]
+(defn invitation-rsvp-modal [{:keys [anti-forgery-snippet data invitation-rsvp user ring-request] :as context}]
   (let [objective (:objective data)
         tl8 (tf/translator context)
         objective-id (:objective-id invitation-rsvp)
@@ -44,10 +43,10 @@
                                         [:.clj-invitation-response-decline] 
                                         (html/do-> 
                                           (html/set-attr :action (utils/local-path-for :fe/decline-invitation :id (:objective-id invitation-rsvp) :i-id (:invitation-id invitation-rsvp)))
-                                          (html/prepend (html/html-snippet (anti-forgery-field)))) 
+                                          (html/prepend anti-forgery-snippet)) 
                                         [:.clj-invitation-response-accept]
                                         (if user
-                                          (html/do-> (html/prepend (html/html-snippet (anti-forgery-field))) 
+                                          (html/do-> (html/prepend anti-forgery-snippet)  
                                                      (html/set-attr :action (utils/local-path-for :fe/accept-invitation :id (:objective-id invitation-rsvp) :i-id (:invitation-id invitation-rsvp))))
                                           (html/substitute (html/at pf/anchor-button 
                                                                     [:.clj-anchor-button] (html/do->
@@ -137,43 +136,44 @@
          (translations :question-actions/answer) 
          (translations :question-actions/answers))))
 
-(defn question-list-items [list-item-snippet questions translations]
-  (html/at list-item-snippet
-           [:.clj-question-item] 
-           (html/clone-for [question questions]
-                           [:.clj-question-text] (html/content (:question question))
-                           [:.clj-question-answer-count] (html/content (answer-count-text (get-in question [:meta :answers-count]) translations))
-                           [:.clj-answer-link] (html/set-attr :href (str "/objectives/" (:objective-id question)
-                                                                         "/questions/" (:_id question)))
-                           [:.clj-promote-question-form] (html/prepend (html/html-snippet (anti-forgery-field)))
-                           [:.clj-demote-question-form] (html/prepend (html/html-snippet (anti-forgery-field)))
-                           [:.clj-refer] (html/set-attr :value (str "/objectives/" (:objective-id question) "#questions"))
-                           [:.clj-question-uri] (html/set-attr :value (str "/objectives/" (:objective-id question)
-                                                                           "/questions/" (:_id question))))))
+(defn question-list-items [list-item-snippet questions translations anti-forgery-snippet]
+    (html/at list-item-snippet
+             [:.clj-question-item] 
+             (html/clone-for [question questions]
+                             :lockstep
+                             {[:.clj-question-text] (html/content (:question question))
+                              [:.clj-question-answer-count] (html/content (answer-count-text (get-in question [:meta :answers-count]) translations))
+                              [:.clj-answer-link] (html/set-attr :href (str "/objectives/" (:objective-id question)
+                                                                            "/questions/" (:_id question)))
+                              [:.clj-promote-question-form] (html/prepend anti-forgery-snippet)
+                              [:.clj-demote-question-form] (html/prepend anti-forgery-snippet)
+                              [:.clj-refer] (html/set-attr :value (str "/objectives/" (:objective-id question) "#questions"))
+                              [:.clj-question-uri] (html/set-attr :value (str "/objectives/" (:objective-id question)
+                                                                              "/questions/" (:_id question)))})))
 
-(defn objective-question-list [{:keys [data user translations] :as context}]
+(defn objective-question-list [{:keys [data user translations anti-forgery-snippet] :as context}]
   (let [objective-questions (filter domain/marked? (:questions data))
         list-item-snippet (if (permissions/can-mark-questions? (:objective data) user)
                             question-list-item-with-demote-form-snippet
                             question-list-item-snippet)]
     (if (empty? objective-questions)
       empty-objective-question-list-item-snippet
-      (question-list-items list-item-snippet objective-questions translations))))
+      (question-list-items list-item-snippet objective-questions translations anti-forgery-snippet))))
 
-(defn community-question-list [{:keys [data user translations] :as context}]
+(defn community-question-list [{:keys [data user translations anti-forgery-snippet] :as context}]
   (let [community-questions (filter (complement domain/marked?) (:questions data))
         list-item-snippet (if (permissions/can-mark-questions? (:objective data) user)
                             question-list-item-with-promote-form-snippet
                             question-list-item-snippet)]
     (if (empty? community-questions)
       empty-community-question-list-item-snippet
-      (question-list-items list-item-snippet community-questions translations))))
+      (question-list-items list-item-snippet community-questions translations anti-forgery-snippet))))
 
 
 ;; STAR FORM
-(defn star-form-when-signed-in [{:keys [data ring-request] :as context}]
+(defn star-form-when-signed-in [{:keys [anti-forgery-snippet data ring-request] :as context}]
       (html/transformation
-             [:.clj-star-form] (html/prepend (html/html-snippet (anti-forgery-field)))
+             [:.clj-star-form] (html/prepend anti-forgery-snippet)
              [:.clj-refer] (html/set-attr :value (:uri ring-request))
              [:.clj-star-on-uri] (html/set-attr :value (:uri ring-request))
              [:.clj-objective-star] (if (domain/starred? (:objective data))
@@ -188,20 +188,9 @@
              [:.clj-star-on-uri] nil))
 
 ;; OBJECTIVE PAGE
-(def star-form-snippet (html/select objective-template [:.clj-star-form]))
-
-(defn star-form [objective ring-request]
-  (html/at star-form-snippet
-           [:.clj-star-form] (html/prepend (html/html-snippet (anti-forgery-field)))
-           [:.clj-refer] (html/set-attr :value (:uri ring-request))
-           [:.clj-star-on-uri] (html/set-attr :value (:uri ring-request))
-           [:.clj-objective-star] (if (domain/starred? objective)
-                                    (html/add-class "starred")
-                                    identity)))
-
 (def comment-history-snippet (html/select objective-template [:.clj-comment-history-item]))
 
-(defn objective-page [{:keys [translations data doc invitation-rsvp ring-request user] :as context}]
+(defn produce-objective-page [{:keys [translations data doc invitation-rsvp ring-request user] :as context}]
   (let [objective (:objective data)
         objective-id (:_id objective)
         flash (:flash doc)
@@ -210,9 +199,9 @@
                                                  :id objective-id)
                                  url/url
                                  (assoc :query {:offset next-comments}))]
-    (->>
-     (html/at objective-template
-              [:title] (html/content (:title doc))
+    (html/at objective-template
+             :lockstep 
+             {[:title] (html/content (:title doc))
               [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
               [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
               [:.clj-modal-contents]
@@ -248,7 +237,7 @@
 
               [:.clj-writer-dashboard-link] (when (permissions/writer-for? user objective-id)
                                               (html/set-attr
-                                               :href (str "/objectives/" (:_id objective) "/dashboard/questions")))
+                                                :href (str "/objectives/" (:_id objective) "/dashboard/questions")))
 
               [:.clj-objective-question-list] (html/content (objective-question-list context))
               [:.clj-community-question-list] (html/content (community-question-list context))
@@ -256,14 +245,18 @@
 
               [:.clj-comment-list] (html/content (pf/comment-list context))
 
-              [:.clj-comment-list] (if next-comments
-                                     (html/append comment-history-snippet)
-                                     identity)
 
               [:.clj-comment-history-link] (html/set-attr :href comment-history-link)
 
-              [:.clj-comment-create] (html/content (pf/comment-create context :objective)))
-     pf/add-google-analytics
-     (tf/translate context)
-     html/emit*
-     (apply str))))
+              [:.clj-comment-create] (html/content (pf/comment-create context :objective))}
+
+             [:.clj-comment-list] (if next-comments
+                                    (html/append comment-history-snippet)
+                                    identity))))
+
+(defn objective-page [context]
+  (->> (produce-objective-page context)
+       pf/add-google-analytics
+       (tf/translate context)
+       html/emit*
+       (apply str)))

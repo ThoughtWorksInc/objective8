@@ -1,7 +1,6 @@
 (ns objective8.front-end.templates.objective-list
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]  
             [objective8.front-end.permissions :as permissions]
             [objective8.config :as config]
             [objective8.front-end.templates.page-furniture :as pf]
@@ -15,9 +14,9 @@
 (def objective-list-item-removal-container (html/select objective-list-resource 
                                                         [:.clj-objective-list-item-removal-container]))
 
-(defn removal-container [{:keys [title uri] :as objective}]
+(defn removal-container [anti-forgery-snippet {:keys [title uri] :as objective}]
   (html/at objective-list-item-removal-container
-           [:.clj-objective-removal-form] (html/prepend (html/html-snippet (anti-forgery-field)))
+           [:.clj-objective-removal-form] (html/prepend anti-forgery-snippet)
            [:.clj-removal-uri] (html/set-attr :value uri)
            [:.clj-removal-sample] (html/set-attr :value title)))
 
@@ -30,7 +29,7 @@
 (defn brief-description [objective]
   (shorten-content (:description objective)))
 
-(defn objective-list-items [{:keys [translations data user] :as context}]
+(defn objective-list-items [{:keys [anti-forgery-snippet translations data user] :as context}]
   (let [objectives (:objectives data)]
     (html/at objective-list-item-resource [:.clj-objective-list-item] 
              (html/clone-for [{objective-id :_id :as objective} objectives]
@@ -39,7 +38,7 @@
                                                                 identity)    
 
                              [:.clj-objective-list-item-removal-container] (when (permissions/admin? user) 
-                                                                             (html/substitute (removal-container objective)))
+                                                                             (html/substitute (removal-container anti-forgery-snippet objective)))
 
 
                              [:.clj-objective-list-dashboard-link]  (when (permissions/writer-for? user objective-id)

@@ -2,7 +2,6 @@
   (:require [net.cgrand.enlive-html :as html]
             [cemerick.url :as url]
             [objective8.utils :as utils]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]
             [objective8.front-end.templates.page-furniture :as pf]
             [objective8.front-end.templates.template-functions :as tf]))
 
@@ -41,14 +40,14 @@
                [:.clj-writer-note-empty-error] nil    
                [:.clj-writer-note-length-error] nil))))
 
-(defn render-answer-without-note [{:keys [ring-request] :as context} answer]
+(defn render-answer-without-note [{:keys [anti-forgery-snippet ring-request] :as context} answer]
   (->> (html/at no-writer-note-snippet
                 [:.clj-dashboard-answer-item-text] (html/content (:answer answer)) 
                 [:.clj-dashboard-answer-item-up-count] (html/content (str (get-in answer [:votes :up]))) 
                 [:.clj-dashboard-answer-item-down-count] (html/content (str (get-in answer [:votes :down]))) 
                 [:.clj-refer] (html/set-attr :value (utils/referer-url ring-request))
                 [:.clj-note-on-uri] (html/set-attr :value (:uri answer))
-                [:.clj-dashboard-writer-note-form] (html/prepend (html/html-snippet (anti-forgery-field))))
+                [:.clj-dashboard-writer-note-form] (html/prepend anti-forgery-snippet))
        (apply-writer-note-form-validations context answer)))
 
 (defn render-answer-with-note [context answer]

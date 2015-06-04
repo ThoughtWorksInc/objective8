@@ -1,7 +1,6 @@
 (ns objective8.front-end.templates.question
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]
             [cemerick.url :as url]
             [objective8.utils :as utils]
             [objective8.front-end.templates.page-furniture :as pf]
@@ -18,9 +17,9 @@
      [:.clj-meta-sharing-facebook-description] (html/set-attr :content (translations :question-page/facebook-description))
      [:.clj-meta-sharing-facebook-image] nil)))
 
-(defn voting-actions-when-signed-in [{:keys [ring-request] :as context} answer]
+(defn voting-actions-when-signed-in [{:keys [anti-forgery-snippet ring-request] :as context} answer]
   (html/transformation
-    [:.clj-approval-form] (html/prepend (html/html-snippet (anti-forgery-field)))
+    [:.clj-approval-form] (html/prepend anti-forgery-snippet)
     [:.clj-vote-on-uri] (html/set-attr :value (:uri answer))
     [:.clj-refer] (html/set-attr :value (str (:uri ring-request) "?offset=" (get-in context [:data :offset]) "#answer-" (:_id answer)))
     [:.clj-up-score] (html/content (str (get-in answer [:votes :up])))
@@ -85,7 +84,7 @@
                                 (-> question-url
                                     (assoc :query {:offset (+ offset fe-config/answers-pagination)}))))))))
 
-(defn question-page [{:keys [translations data user doc] :as context}]
+(defn question-page [{:keys [anti-forgery-snippet translations data user doc] :as context}]
   (let [question (:question data)
         answers (:answers data)
         objective (:objective data)
@@ -119,7 +118,7 @@
                                           (html/set-attr :action
                                                          (str "/objectives/" (:_id objective)
                                                               "/questions/" (:_id question) "/answers"))
-                                          (html/prepend (html/html-snippet (anti-forgery-field))))
+                                          (html/prepend anti-forgery-snippet))
                                         (html/substitute (sign-in-to-add-answer context))) 
 
                   [:.l8n-guidance-heading] (tl8 :question-page/guidance-heading))

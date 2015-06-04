@@ -1,7 +1,6 @@
 (ns objective8.front-end.templates.add-question
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]
             [objective8.front-end.templates.page-furniture :as pf]
             [objective8.front-end.templates.template-functions :as tf]
             [objective8.utils :as utils]))
@@ -18,12 +17,12 @@
              [:.clj-question-length-error] (when (contains? (:question validation-report) :length) identity)
              [:.clj-input-question] (html/content (:question previous-inputs)))))
 
-(defn add-question-form [{:keys [data] :as context}]
+(defn add-question-form [{:keys [anti-forgery-snippet data] :as context}]
   (let [objective-id (get-in data [:objective :_id])]
     (html/at add-question-form-snippet 
              [:.clj-question-create-form] 
              (html/do-> 
-               (html/prepend (html/html-snippet (anti-forgery-field)))  
+               (html/prepend anti-forgery-snippet)  
                (html/set-attr :action (utils/local-path-for :fe/add-question-form-post :id objective-id))))))
 
 (def sign-in-to-add-question-snippet (html/select pf/library-html-resource [:.clj-to-add-question-please-sign-in]))

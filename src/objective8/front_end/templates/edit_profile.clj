@@ -1,7 +1,6 @@
 (ns objective8.front-end.templates.edit-profile
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]  
             [objective8.front-end.templates.page-furniture :as pf]
             [objective8.front-end.templates.template-functions :as tf]))
 
@@ -23,7 +22,7 @@
                                          (html/content input-biog)    
                                          identity))))
 
-(defn edit-profile-page [{:keys [doc data] :as context}]
+(defn edit-profile-page [{:keys [anti-forgery-snippet doc data] :as context}]
   (let [user-profile (:user-profile data)]
     (->>
       (html/at edit-profile-template
@@ -31,7 +30,7 @@
                [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
                [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
                [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
-               [:.clj-edit-profile-form] (html/prepend (html/html-snippet (anti-forgery-field)))
+               [:.clj-edit-profile-form] (html/prepend anti-forgery-snippet)
                [:.clj-edit-profile-name] (html/set-attr :value (:name user-profile))
                [:.clj-edit-profile-biog] (html/content (:biog user-profile)))
       (apply-validations context)

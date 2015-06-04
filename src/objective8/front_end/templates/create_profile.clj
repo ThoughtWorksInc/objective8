@@ -1,7 +1,6 @@
 (ns objective8.front-end.templates.create-profile
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]  
             [objective8.front-end.templates.page-furniture :as pf]
             [objective8.front-end.templates.template-functions :as tf]))
 
@@ -23,13 +22,13 @@
                                          (html/content input-biog)    
                                          identity))))
 
-(defn create-profile-page [{:keys [doc] :as context}]
+(defn create-profile-page [{:keys [anti-forgery-snippet doc] :as context}]
   (->> (html/at create-profile-template
                 [:title] (html/content (:title doc))
                 [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
                 [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
                 [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
-                [:.clj-create-profile-form] (html/prepend (html/html-snippet (anti-forgery-field))))
+                [:.clj-create-profile-form] (html/prepend anti-forgery-snippet))
        (apply-validations context)
        pf/add-google-analytics 
        (tf/translate context)

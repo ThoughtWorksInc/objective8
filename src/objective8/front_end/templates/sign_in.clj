@@ -1,7 +1,6 @@
 (ns objective8.front-end.templates.sign-in 
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]  
             [objective8.front-end.templates.page-furniture :as f]
             [objective8.front-end.templates.template-functions :as tf]))
 

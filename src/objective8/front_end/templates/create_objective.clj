@@ -1,7 +1,6 @@
 (ns objective8.front-end.templates.create-objective 
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]  
             [objective8.front-end.templates.page-furniture :as pf]
             [objective8.front-end.templates.template-functions :as tf]))
 
@@ -19,7 +18,7 @@
              [:.clj-description-length-error] (when (contains? (:description validation-report) :length) identity)
              [:.clj-input-objective-background] (html/content (:description previous-inputs)))))
 
-(defn create-objective-page [{:keys [doc] :as context}]
+(defn create-objective-page [{:keys [anti-forgery-snippet doc] :as context}]
   (->>
    (html/at create-objective-template
             [:title] (html/content (:title doc))
@@ -28,7 +27,7 @@
             [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
 
             [:.clj-guidance-buttons] nil
-            [:.clj-create-objective-form] (html/prepend (html/html-snippet (anti-forgery-field))))
+            [:.clj-create-objective-form] (html/prepend anti-forgery-snippet))
    (apply-validations context)
    pf/add-google-analytics
    (tf/translate context)

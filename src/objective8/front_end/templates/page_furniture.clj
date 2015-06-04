@@ -1,7 +1,6 @@
 (ns objective8.front-end.templates.page-furniture
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]
             [cemerick.url :as url]
             [objective8.config :as config]
             [objective8.utils :as utils]
@@ -117,52 +116,57 @@
   (str (utils/referer-url request)
        "#comment-" (:_id comment)))
 
-(defn voting-actions-when-signed-in [{:keys [data ring-request] :as context} comment]
+(defn voting-actions-when-signed-in [{:keys [data ring-request anti-forgery-snippet] :as context} comment]
   (html/transformation
-    [:.clj-up-down-vote-form] (html/prepend (html/html-snippet (anti-forgery-field)))
-    [:.clj-vote-on-uri] (html/set-attr "value" (:uri comment))
-    [:.clj-refer] (html/set-attr "value" (comment-refer-uri ring-request comment))
-    [:.clj-up-vote-count] (html/content (str (get-in comment [:votes :up])))
-    [:.clj-down-vote-count] (html/content (str (get-in comment [:votes :down])))))
+    :lockstep 
+    {[:.clj-up-down-vote-form] (html/prepend anti-forgery-snippet)
+     [:.clj-vote-on-uri] (html/set-attr "value" (:uri comment))
+     [:.clj-refer] (html/set-attr "value" (comment-refer-uri ring-request comment))
+     [:.clj-up-vote-count] (html/content (str (get-in comment [:votes :up])))
+     [:.clj-down-vote-count] (html/content (str (get-in comment [:votes :down])))}))
 
 (defn voting-actions-when-not-signed-in [{:keys [data ring-request] :as context} comment]
   (html/transformation
-   [:.clj-up-down-vote-form] (html/set-attr "method" "get")
-   [:.clj-up-down-vote-form] (html/set-attr "action" "/sign-in")
-   [:.clj-refer] (html/set-attr "value" (comment-refer-uri ring-request comment))
-   [:.clj-vote-on-uri] nil
-   [:.clj-up-vote-count] (html/content (str (get-in comment [:votes :up])))
-   [:.clj-down-vote-count] (html/content (str (get-in comment [:votes :down])))))
+    :lockstep
+    {[:.clj-up-down-vote-form] (html/do-> (html/set-attr "method" "get") (html/set-attr "action" "/sign-in"))
+     [:.clj-refer] (html/set-attr "value" (comment-refer-uri ring-request comment))
+     [:.clj-vote-on-uri] nil
+     [:.clj-up-vote-count] (html/content (str (get-in comment [:votes :up])))
+     [:.clj-down-vote-count] (html/content (str (get-in comment [:votes :down])))}))
 
 (def empty-comment-list-item-snippet (html/select library-html-resource [:.clj-empty-comment-list-item]))
 
 (def comment-list-item-snippet (html/select library-html-resource [:.clj-comment-item])) 
 
-(defn comment-list-items [{:keys [data user translations] :as context}]
-  (let [comments (get-in data [:comments-data :comments])]
-    (html/at comment-list-item-snippet
-             [:.clj-comment-item] 
-             (html/clone-for [comment comments]
-                             [:.clj-comment-item] (html/set-attr :id (str "comment-" (:_id comment)))
-                             [:.clj-comment-author] (html/content (:username comment))
-                             [:.clj-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
-                             [:.clj-comment-text] (html/content (:comment comment))
-                             [:.clj-comment-reason-text] (when (:reason comment)
-                                                           (html/content 
-                                                             (translations (keyword "add-comment-form" (str "comment-reason-" (:reason comment))))))
-                             [:.clj-up-down-vote-form] 
-                             (if user
-                               (voting-actions-when-signed-in context comment)
-                               (voting-actions-when-not-signed-in context comment))
-                             [:.clj-writer-note-item-container] (when (:note comment) identity)
-                             [:.clj-writer-note-item-content] (html/content (:note comment))
-                             [:.clj-comment-reply] nil)))) 
+(defn comment-item [{:keys [user translations] :as context} comment]
+  (html/at comment-list-item-snippet
+   :lockstep 
+   {[:.clj-comment-item] (html/set-attr :id (str "comment-" (:_id comment)))
+    [:.clj-comment-author] (html/content (:username comment))
+    [:.clj-comment-date] (html/content (utils/iso-time-string->pretty-time (:_created_at comment)))
+    [:.clj-comment-text] (html/content (:comment comment))
+    [:.clj-comment-reason-text] (when (:reason comment)
+                                  (html/content 
+                                   (translations (keyword "add-comment-form" (str "comment-reason-" (:reason comment))))))
+    [:.clj-up-down-vote-form] 
+    (if user
+      (voting-actions-when-signed-in context comment)
+      (voting-actions-when-not-signed-in context comment))
+    [:.clj-writer-note-item-container] (when (:note comment) identity)
+    [:.clj-writer-note-item-content] (html/content (:note comment))
+    [:.clj-comment-reply] nil}))
+
+(defn comment-list-items [{:keys [data user translations] :as context} comments]
+  (html/at comment-list-item-snippet
+           [:.clj-comment-item] 
+           (html/clone-for [comment comments]
+                           [:.clj-comment-item] (html/content (comment-item context comment))))) 
 
 (defn comment-list [{:keys [data] :as context}]
   (let [comments (get-in data [:comments-data :comments])]
     (if (empty? comments)
       empty-comment-list-item-snippet
-      (comment-list-items context))))
+      (comment-list-items context comments))))
 
 ;; COMMENT CREATE
 
@@ -177,10 +181,10 @@
              [:.clj-comment-empty-error] (when (contains? (:comment validation-report) :empty) identity)
              [:.clj-input-comment] (html/content (:comment previous-inputs)))))
 
-(defn comment-create-form [{:keys [data doc ring-request translations] :as context} comment-target]
+(defn comment-create-form [{:keys [anti-forgery-snippet data doc ring-request translations] :as context} comment-target]
   (let [page-name (:page-name doc)]
     (->> (html/at comment-create-form-snippet
-                  [:.clj-add-comment-form] (html/prepend (html/html-snippet (anti-forgery-field)))
+                  [:.clj-add-comment-form] (html/prepend anti-forgery-snippet)
                   [:.clj-add-comment-form] (if (= :section comment-target)
                                              (html/set-attr :action (str (get-in data [comment-target :uri]) "/annotations"))
                                              identity)

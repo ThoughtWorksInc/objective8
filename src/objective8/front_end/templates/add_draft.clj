@@ -1,7 +1,6 @@
 (ns objective8.front-end.templates.add-draft
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]  
             [objective8.front-end.templates.page-furniture :as pf]
             [objective8.front-end.templates.template-functions :as tf]
             [objective8.utils :as utils]))
@@ -15,7 +14,7 @@
     (html/at nodes
              [:.clj-draft-empty-error] (when (contains? (:markdown validation-report) :empty) identity))))
 
-(defn add-draft-page [{:keys [data doc] :as context}]
+(defn add-draft-page [{:keys [data doc anti-forgery-snippet] :as context}]
   (let [objective-id (:objective-id data)]
     (->> (html/at add-draft-template
                   [:title] (html/content (:title doc))
@@ -28,7 +27,7 @@
                   
                   [:.clj-add-draft-form] (html/do->
                                           (html/set-attr :action (utils/local-path-for :fe/add-draft-get :id objective-id))
-                                          (html/prepend (html/html-snippet (anti-forgery-field)))) 
+                                          (html/prepend anti-forgery-snippet))
                   [:.clj-add-draft-content] (html/content (:markdown data))
                   [:.clj-cancel-link] (html/set-attr :href (utils/local-path-for :fe/draft-list :id objective-id)))
          (apply-validations context)

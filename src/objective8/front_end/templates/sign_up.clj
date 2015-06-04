@@ -1,7 +1,6 @@
 (ns objective8.front-end.templates.sign-up 
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]  
             [objective8.front-end.templates.page-furniture :as f]
             [objective8.front-end.templates.template-functions :as tf]))
 
@@ -20,7 +19,7 @@
              [:.clj-email-invalid-error] (when (contains? (:email-address validation-report) :invalid) identity)
              [:.clj-input-email-address] (html/set-attr :value (:email-address previous-inputs)))))
 
-(defn sign-up-page [{:keys [translations data doc] :as context}]
+(defn sign-up-page [{:keys [anti-forgery-snippet translations data doc] :as context}]
   (let [objective (:objective data)]
     (->> (html/at sign-up-template 
                   [:title] (html/content (:title doc))
@@ -28,7 +27,7 @@
                   [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
                   [:.clj-status-bar] (html/substitute (f/status-flash-bar context))
 
-                  [:.clj-sign-up-form] (html/prepend (html/html-snippet (anti-forgery-field)))
+                  [:.clj-sign-up-form] (html/prepend anti-forgery-snippet)
                   [:.clj-username-error] (when-let [error-type (get-in doc [:errors :username])]
                                            (html/content (translations (keyword "sign-up" (name error-type))))))
          (apply-validations context)

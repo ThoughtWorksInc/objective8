@@ -2,7 +2,6 @@
   (:require [net.cgrand.enlive-html :as html]
             [cemerick.url :as url]
             [objective8.utils :as utils]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]
             [objective8.front-end.config :as fe-config]
             [objective8.front-end.templates.page-furniture :as pf]
             [objective8.front-end.templates.template-functions :as tf]))
@@ -46,7 +45,7 @@
                [:.clj-writer-note-empty-error] nil
                [:.clj-writer-note-length-error] nil))))
 
-(defn render-comment-without-note [{:keys [ring-request] :as context} comment]
+(defn render-comment-without-note [{:keys [anti-forgery-snippet ring-request] :as context} comment]
   (->> (html/at no-writer-note-snippet
                 [:.clj-dashboard-comment-text] (html/content (:comment comment))
                 [:.clj-dashboard-comment-author] (html/content (:username comment))
@@ -56,7 +55,7 @@
                 [:.clj-dashboard-comment-down-count] (html/content (str (get-in comment [:votes :down])) )
                 [:.clj-refer] (html/set-attr :value (utils/referer-url ring-request))
                 [:.clj-note-on-uri] (html/set-attr :value (:uri comment))
-                [:.clj-dashboard-writer-note-form] (html/prepend (html/html-snippet (anti-forgery-field))))
+                [:.clj-dashboard-writer-note-form] (html/prepend anti-forgery-snippet))
        (apply-writer-note-form-validations context comment)))
 
 (defn render-comment-with-note [context comment]

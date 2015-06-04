@@ -1,5 +1,7 @@
 (ns objective8.front-end.views
   (:require [cemerick.friend :as friend]
+            [net.cgrand.enlive-html :as html]
+            [ring.util.anti-forgery :refer [anti-forgery-field]]
             [objective8.front-end.templates.index :as index]
             [objective8.front-end.templates.learn-more :as learn-more]
             [objective8.front-end.templates.project-status :as project-status]
@@ -52,9 +54,11 @@
 (defn make-view-context [page-name request data]
   (let [auth-map (friend/current-authentication request)
         translations (:t' request)
+        anti-forgery-snippet (html/html-snippet (anti-forgery-field))
         data (apply hash-map data)]
     {:translations translations 
      :ring-request request
+     :anti-forgery-snippet anti-forgery-snippet
      :user (user-info request auth-map)
      :doc (doc-info request page-name translations data)
      :invitation-rsvp (get-in request [:session :invitation])
