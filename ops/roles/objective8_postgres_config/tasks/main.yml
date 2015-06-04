@@ -5,7 +5,7 @@
 
  - name: add objective8 role
    #TODO - password management
-   postgresql_user:  name=objective8 login_user=postgres password={{ pgres_md5 }} encrypted=true db=objective8
+   postgresql_user:  name=objective8 login_user=postgres password={{ PG_PASSWORD }} db=objective8
    sudo_user: postgres
 
  - name: give objective8 user CREATE on database

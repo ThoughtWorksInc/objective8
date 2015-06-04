@@ -4,8 +4,8 @@
    remote_user: root
 
    vars_prompt:
-    - name: "pgres_md5"
-      prompt: "Enter encrypted password-username-hash for setting up postgres user. It must be generated with the format 'str[\"md5\"] + md5[ password + username ]', resulting in a total of 35 characters. An easy way to do this is: echo \"md5`echo -n \"verysecretpasswordJOE\" | md5`\"."
+    - name: "PG_PASSWORD"
+      prompt: "Enter postgres password for user objective8:"
       confirm: yes
 
    roles:
