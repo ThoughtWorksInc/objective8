@@ -7,6 +7,7 @@ VERSION=0.0.1-SNAPSHOT
 PID_DIR=/var/run
 PID_FILE=$PID_DIR/$NAME.pid
 INSTALL_DIR=/usr/local/objective8
+LOGGING_ROOT=/var/log
 JAR_NAME="$NAME"-"$VERSION"-standalone.jar
 mkdir -p $PID_DIR
 
@@ -41,7 +42,7 @@ start() {
   fi
   echo "Starting $NAME"
   cd $INSTALL_DIR
-  java -Dlog4j.configuration=log4j.debug -server -Xms256M -Xmx512M -XX:MaxPermSize=128M -jar $JAR_NAME &> /var/log/objective8d-init.log &
+  java -DLOGGING_ROOT=$LOGGING_ROOT -Dlog4j.configuration=log4j.debug -server -Xms256M -Xmx512M -XX:MaxPermSize=128M -jar $JAR_NAME &> $LOGGING_ROOT/objective8d-init.log &
   PID=$!
   echo $PID > $PID_FILE
   exit 0
