@@ -184,7 +184,7 @@ export TWITTER_CONSUMER_SECRET_TOKEN=<as above>
   The following command will install necessary packages and configure them (it will take a few minutes).
   It will require choosing a database password and supplying your Amazon S3 credentials for automatically backing up (encrypted) the database to an Amazon S3 bucket: 
   ```
-  ansible-playbook ops/digital_ocean_box_playbook.yml -i ops/digital_ocean_box.inventory --extra-vars "CONFIG_FILE_PATH={config file path from the previous step}"
+  ansible-playbook ops/digital_ocean_box_playbook.yml -i ops/digital_ocean_box.inventory --extra-vars "CONFIG_FILE_PATH={config file path from the previous step without the curly braces}"
   ```
   
 ####Deploy application to the server
