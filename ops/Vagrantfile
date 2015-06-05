@@ -36,6 +36,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     dob.vm.provision "ansible" do |ansible|
       ansible.playbook = "dob_vm_playbook.yml"
       ansible.inventory_path = "dob_vm.inventory"
+      ansible.extra_vars = {CONFIG_FILE_PATH: "FULL PATH TO OBJECTIVE8 CONFIG FILE"}
       ansible.sudo = true
     end
   end

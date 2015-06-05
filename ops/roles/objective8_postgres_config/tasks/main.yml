@@ -5,7 +5,7 @@
 
  - name: add objective8 role
    #TODO - password management
-   postgresql_user: name=objective8 login_user=postgres password={{ PG_PASSWORD }} db=objective8
+   postgresql_user: name=objective8 login_user=postgres password={{ DB_PASSWORD }} db=objective8
    sudo_user: postgres
 
  - name: give objective8 user CREATE on database
@@ -13,4 +13,4 @@
    sudo_user: postgres
 
  - name: create .pgpass file
-   lineinfile: dest=/usr/local/objective8/.pgpass state=present create=yes line="localhost:5432:objective8:objective8:{{ PG_PASSWORD }}" mode=0600
+   lineinfile: dest=/usr/local/objective8/.pgpass state=present create=yes line="localhost:5432:objective8:objective8:{{ DB_PASSWORD }}" mode=0600

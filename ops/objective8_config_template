@@ -1,0 +1,21 @@
+---
+# Your application URI or IP address
+BASE_URI: ""
+
+# The following strings are for connecting to the API and should be kept secret
+API_BEARER_NAME: ""
+API_BEARER_TOKEN: ""
+
+# Password for the Objective8 postgres user
+DB_PASSWORD: ""
+
+# Your Twitter development app credentials
+TWITTER_CONSUMER_TOKEN: ""
+TWITTER_CONSUMER_SECRET_TOKEN: ""
+
+# Your AWS credentials
+AWS_ACCESS_KEY: "" 
+AWS_SECRET_KEY: ""
+
+# A passphrase for encrypting the database backups before they reach AWS S3
+AWS_GPG_PASSPHRASE: ""
