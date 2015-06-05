@@ -168,6 +168,8 @@ export TWITTER_CONSUMER_SECRET_TOKEN=<as above>
 
 ##Deployment to ubuntu server (e.g. through digital ocean)
 
+All of the following steps are essential.
+
 ####Provision
 - Provision an ubuntu server machine (can be a cloud server such as digital ocean)
 - A machine with 1gb RAM and 30gb hard disk has been sufficient for early tests
@@ -192,10 +194,13 @@ Run Ansible playbook:
 ####Deploy application to the server
 Run:
 
-```
-chmod +x deploy.sh
-REMOTE_USER={username on server} SERVER_IP={IP address of server} ./deploy.sh
-```
+  The following will copy the application to the server and start it running as a service.
+  Once complete you should be able to access the app at your IP address.
+
+  ```
+  chmod +x deploy.sh
+  REMOTE_USER={username on server} SERVER_IP={IP address of server} ./deploy.sh
+  ```
 
 ## Docker
 
