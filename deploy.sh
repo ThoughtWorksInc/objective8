@@ -10,3 +10,5 @@ cp -r migrations $DIR
 tar -cvzf $TAR $DIR
 scp $TAR $REMOTE_USER@$SERVER_IP:~
 ssh $REMOTE_USER@$SERVER_IP "tar -xvzf $TAR; cd $DIR; sudo bash init-script/remote_start_objective8.sh"
+rm -rf $DIR
+lein do clean
