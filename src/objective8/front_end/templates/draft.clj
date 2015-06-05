@@ -112,19 +112,22 @@
                                         [:.clj-comment-history-link] (html/set-attr :href comment-history-link)
                                         [:.clj-comment-create] (html/content (pf/comment-create context :draft)))))))
 
-(defn draft-page [{:keys [translations data doc] :as context}]
+(defn render-draft-page [{:keys [translations data doc] :as context}]
   (let [objective (:objective data)]
-    (apply str
-           (html/emit*
-             (tf/translate context
-                           (pf/add-google-analytics
-                             (html/at draft-template
-                                      [:title] (html/content (:title doc))
-                                      [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
-                                      [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
-                                      [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
+    (html/at draft-template
+             [:title] (html/content (:title doc))
+             [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
+             [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+             [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
 
-                                      [:.clj-guidance-buttons] nil
-                                      [:.clj-guidance-heading] (html/content (translations :draft-guidance/heading))
+             [:.clj-guidance-buttons] nil
+             [:.clj-guidance-heading] (html/content (translations :draft-guidance/heading))
 
-                                      [:.clj-draft-wrapper] (html/substitute (draft-wrapper context)))))))))
+             [:.clj-draft-wrapper] (html/substitute (draft-wrapper context)))))
+
+(defn draft-page [context]
+  (->> (render-draft-page context)
+       pf/add-google-analytics
+       (tf/translate context)
+       html/emit*
+       (apply str)))
