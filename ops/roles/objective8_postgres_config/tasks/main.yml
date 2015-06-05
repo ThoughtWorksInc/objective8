@@ -13,4 +13,4 @@
    sudo_user: postgres
 
  - name: create .pgpass file
-   lineinfile: dest=/usr/local/objective8/.pgpass state=present create=yes line="localhost:5432:objective8:objective8:{{ PG_PASSWORD }}"
+   lineinfile: dest=/usr/local/objective8/.pgpass state=present create=yes line="localhost:5432:objective8:objective8:{{ PG_PASSWORD }}" mode=0600

@@ -6,6 +6,18 @@
       prompt: "Enter postgres password for user objective8:"
       confirm: yes
 
+    - name: "AWS_ACCESS_KEY"
+      prompt: "Enter AWS access key for S3 postgres backups"
+      confirm: yes
+
+    - name: "AWS_SECRET_KEY"
+      prompt: "Enter AWS secret key for S3 postgres backups"
+      confirm: yes
+
+    - name: "AWS_GPG_PASSPHRASE"
+      prompt: "Enter a passphrase for gpg encryption of backups to S3"
+      confirm: yes
+
    roles:
     - common
     - postgres

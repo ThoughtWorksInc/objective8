@@ -3,5 +3,10 @@
    copy: src=postgres_backup.sh dest=/usr/local/objective8
          owner=root group=root mode=0700
 
+ - name: install S3cmd (command line backup tool for Amazon S3)
+   apt: name="s3cmd" state=present 
+
+ - name: copy S3cmd configuration file
+   template: src=.s3cfg.j2 dest=/usr/local/objective8/.s3cfg
+
  - cron: name="create postgres backups" special_time=daily job="/usr/local/objective8/postgres_backup.sh"
- 
