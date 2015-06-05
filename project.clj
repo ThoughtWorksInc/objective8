@@ -72,8 +72,7 @@
                                  :database ~database-connection-url}
                        :main main
                        :aot [main]}
-             :heroku {:source-paths ["dev"]
-                      :repl-options {:init-ns user
+             :heroku {:repl-options {:init-ns user
                                      :timeout 120000}
                       :ragtime {:migrations ragtime.sql.files/migrations
                                 :database ~database-connection-url}
