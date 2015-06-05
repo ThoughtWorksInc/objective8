@@ -42,7 +42,12 @@
 (defn error-configuration [request]
   {:status 500
    :headers {"Content-Type" "text/html"}
-   :body (views/error-configuration "configuration-error" request)})
+   :body (views/error-configuration "error-configuration" request)})
+
+(defn default-error-page [request error-status]
+  {:status error-status
+   :headers {"content-type" "text/html"}
+   :body (views/error-default "error-default" request)})
 
 (defn index [request]
   {:status 200
@@ -75,8 +80,8 @@
 (defn profile [{:keys [route-params] :as request}]
   (let [username (:username route-params)
         {user-status :status user :result} (http-api/find-user-by-username username)]
-    (cond
-      (= user-status ::http-api/success)
+    (case user-status
+      ::http-api/success
       (let [user-profile (:profile user)
             {objective-status :status  objectives-for-writer :result} (http-api/get-objectives-for-writer (:_id user))
             joined-date (utils/iso-time-string->pretty-date (:_created_at user))]
@@ -90,9 +95,12 @@
                                 :joined-date joined-date
                                 :doc {:title (str (:name user-profile) " | Objective[8]")})}
           (error-404-response request)))
-      (= user-status ::http-api/not-found) (error-404-response request)
+      
+      ::http-api/not-found
+      (error-404-response request)
 
-      :else {:status 500})))
+      (do (log/info (str "Error when retrieving user by name " {:http-api-status user-status :username username}))
+          (default-error-page request 500)))))
 
 
 ;; OBJECTIVES
@@ -109,7 +117,8 @@
                                    :objectives objectives)}
  
       (= status ::http-api/error)
-      {:status 502})))
+      (do (log/info (str "Error when retrieving objectives " {:http-api-status status}))
+          (default-error-page request 502)))))
 
 (defn create-objective-form [request]
   {:status 200
@@ -120,20 +129,29 @@
   (let [objective-data (fr/request->objective-data request (get (friend/current-authentication) :identity))]
     (case (:status objective-data)
 
-      ::fr/valid (let [{status :status stored-objective :result} (http-api/create-objective (:data objective-data))]
-                   (cond (= status ::http-api/success)
-                         (let [objective-url (str utils/host-url "/objectives/" (:_id stored-objective))]
-                           (-> (response/redirect objective-url)
-                               (assoc :flash {:type :share-objective
-                                              :created-objective stored-objective}
-                                      :session session)
-                               (permissions/add-authorisation-role (permissions/writer-for (:_id stored-objective)))
-                               (permissions/add-authorisation-role (permissions/writer-inviter-for (:_id stored-objective)))))
-                         (= status ::http-api/invalid-input) {:status 400}
-                         :else {:status 502}))
+      ::fr/valid
+      (let [{status :status stored-objective :result} (http-api/create-objective (:data objective-data))]
+        (cond (= status ::http-api/success)
+              (let [objective-url (str utils/host-url "/objectives/" (:_id stored-objective))]
+                (-> (response/redirect objective-url)
+                    (assoc :flash {:type :share-objective
+                                   :created-objective stored-objective}
+                           :session session)
+                    (permissions/add-authorisation-role (permissions/writer-for (:_id stored-objective)))
+                    (permissions/add-authorisation-role (permissions/writer-inviter-for (:_id stored-objective)))))
+              (= status ::http-api/invalid-input)
+              (do (log/info (str "Invalid input when creating objective " {:http-api-status status
+                                                                            :posted-data objective-data}))
+                  (default-error-page request 400))
+              
+              :else
+              (do (log/info (str "Error when creating objective " {:http-api-status status
+                                                                    :posted-data objective-data}))
+                  (default-error-page request 502))))
 
-      ::fr/invalid (-> (response/redirect (utils/path-for :fe/create-objective-form))
-                       (assoc :flash {:validation (dissoc objective-data :status)})))))
+      ::fr/invalid
+      (-> (response/redirect (utils/path-for :fe/create-objective-form))
+          (assoc :flash {:validation (dissoc objective-data :status)})))))
 
 (defn remove-invitation-from-session [response]
   (update-in response [:session] dissoc :invitation))
@@ -177,12 +195,17 @@
                                                    :description details}))})
            (= objective-status ::http-api/not-found) (error-404-response updated-request)
 
-           (= objective-status ::http-api/invalid-input) {:status 400}
+           (= objective-status ::http-api/invalid-input)
+           (do (log/info (str "Error when getting objective " {:http-api-status objective-status}))
+               (default-error-page request 400))
 
-           :else {:status 500}))
+           :else
+           (do (log/info (str "Error when getting objective " {:http-api-status objective-status}))
+               (default-error-page request 500))))
+       
        (catch Exception e
-         (log/info "Invalid query string: " e)
-         {:status 400})))
+         (do (log/info "Exception in objective-detail handler: " e)
+             (default-error-page request 500)))))
 
 (def dashboard-questions-answer-view-query-params
   {:up-votes {:sorted-by "up-votes" :filter-type "none"}
@@ -205,15 +228,20 @@
                                                    (http-api/retrieve-answers selected-question-uri answer-query-params))]
     (cond
       (every? #(= ::http-api/success %) [objective-status questions-status answers-status])
-        {:status 200
-         :headers {"Content-Type" "text/html"}
-         :body (views/dashboard-questions-page "dashboard-questions"
-                                               request
-                                               :objective objective
-                                               :questions questions
-                                               :answers answers
-                                               :answer-view-type answer-view-type
-                                               :selected-question-uri selected-question-uri)})))
+      {:status 200
+       :headers {"Content-Type" "text/html"}
+       :body (views/dashboard-questions-page "dashboard-questions"
+                                             request
+                                             :objective objective
+                                             :questions questions
+                                             :answers answers
+                                             :answer-view-type answer-view-type
+                                             :selected-question-uri selected-question-uri)}
+      :else
+      (do (log/info (str "Error in dashboard-questions handler " {:objective-http-api-status objective-status
+                                                                   :questions-http-api-status questions-status
+                                                                   :answers-http-api-status answers-status}))
+          (default-error-page request 500)))))
 
 (def dashboard-comments-query-params
   {:up-votes {:sorted-by "up-votes" :filter-type "none"}
@@ -237,7 +265,7 @@
         {comments-status :status comments-data :result} (http-api/get-comments selected-comment-target-uri
                                                                                comment-query-params)]
     (cond
-      (every? #(= ::http-api/success %) [objective-status comments-status])
+      (every? #(= ::http-api/success %) [objective-status comments-status drafts-status])
       {:status 200
        :headers {"Content-Type" "text/html"}
        :body (views/dashboard-comments-page "dashboard-comments"
@@ -247,7 +275,13 @@
                                             :comments-data comments-data
                                             :comment-view-type comment-view-type
                                             :offset offset
-                                            :selected-comment-target-uri selected-comment-target-uri)})))
+                                            :selected-comment-target-uri selected-comment-target-uri)}
+      
+      :else
+      (do (log/info (str "Error in dashboard-comments handler " {:objective-http-api-status objective-status
+                                                                  :comments-http-api-status comments-status
+                                                                  :drafts-http-api-status drafts-status}))
+          (default-error-page request 500)))))
 
 (defn dashboard-annotations [{:keys [route-params params] :as request}]
   (let [objective-id (Integer/parseInt (:id route-params))
@@ -276,7 +310,12 @@
                                                :objective objective
                                                :drafts drafts
                                                :annotations nil
-                                               :selected-draft-uri selected-draft-uri)})))
+                                               :selected-draft-uri selected-draft-uri)}
+      :else
+      (do (log/info (str "Error in dashboard-annotations handler " {:objective-http-api-status objective-status
+                                                                     :annotations-http-api-status annotations-status
+                                                                     :drafts-http-api-status drafts-status}))
+          (default-error-page request 500)))))
 
 (defn post-writer-note [{:keys [route-params params] :as request}]
   (if-let [writer-note-data (fr/request->writer-note-data request (get (friend/current-authentication) :identity))]
@@ -286,13 +325,17 @@
         (cond
           (= status ::http-api/success)
           (redirect-to-params-referer request)
+          
           (= status ::http-api/forbidden)
-          {:status 403}))
+          (do (log/info (str "Attempt to post writer note when not authorised " {:data writer-note-data}))
+              (default-error-page request 403))))
 
       ::fr/invalid
       (-> (redirect-to-params-referer request)
           (assoc :flash {:validation (dissoc writer-note-data :status)})))
-    {:status 400}))
+
+    (do (log/info (str "Invalid data when creating writer note " {:request-params params}))
+        (default-error-page request 400))))
 
 ;; COMMENTS
 
@@ -325,7 +368,10 @@
                                                  (:title objective) " | Objective[8]")]
                                 {:title details
                                  :description details}))}
-                {:status 500}))
+
+                (do (log/info (str "Error when retrieving comments " {:comments-http-api-status comments-status}))
+                    (default-error-page request 500))))
+            
             (response/redirect (str (utils/path-for :fe/get-comments-for-objective
                                                     :id objective-id)
                                     "?offset=" (max 0 (- comment-count fe-config/comments-pagination))))))
@@ -365,7 +411,10 @@
                                                    (utils/iso-time-string->pretty-time (:_created_at draft)) " | Objective[8]")]
                                   {:title details
                                    :description details}))}
-                  {:status 500}))
+                  
+                  (do (log/info (str "Error when retrieving comments " {:comments-http-api-status comments-status}))
+                      (default-error-page request 500))))
+              
               (response/redirect (str (utils/path-for :fe/get-comments-for-draft
                                                       :id objective-id
                                                       :d-id draft-id)
@@ -394,15 +443,19 @@
               (assoc :flash {:type :flash-message
                              :message :comment-view/created-message}))
 
-          (= status ::http-api/invalid-input) {:status 400}
+          (= status ::http-api/invalid-input)
+          (do (log/info (str "Invalid data when posting a comment " {:http-api-status status
+                                                                      :data (:data comment-data)}))
+              (default-error-page request 400))
 
           :else {:status 502}))
 
       ::fr/invalid
       (-> (redirect-to-params-referer request "add-comment-form")
           (assoc :flash {:validation (dissoc comment-data :status)})))
-    {:status 400}))
-
+    
+    (do (log/info (str "Invalid data when posting a comment " {:request-params (:params request)}))
+        (default-error-page request 400))))
 
 (defn post-annotation [request]
   (if-let [annotation-data (fr/request->annotation-data request (get (friend/current-authentication) :identity))]
@@ -415,14 +468,22 @@
               (assoc :flash {:type :flash-message
                              :message :draft-section/annotation-created-message}))
 
-          (= status ::http-api/invalid-input) {:status 400}
+          (= status ::http-api/invalid-input)
+          (do (log/info (str "Invalid data when posting an annotation " {:http-api-status status
+                                                                          :data (:data annotation-data)}))
+              (default-error-page request 400))
 
-          :else {:status 502}))
+          :else
+          (do (log/info (str "Error when posting an annotation " {:http-api-status status
+                                                                  :data (:data annotation-data)}))
+              (default-error-page request 502))))
 
       ::fr/invalid
       (-> (redirect-to-params-referer request)
           (assoc :flash {:validation (dissoc annotation-data :status)})))
-    {:status 400}))
+
+    (do (log/info (str "Invalid data when posting an annotation " {:request-params (:params request)}))
+        (default-error-page request 400))))
 
 ;; QUESTIONS
 
@@ -441,7 +502,10 @@
        :headers {"Content-Type" "text/html"}}
 
       (= objective-status ::http-api/not-found) (error-404-response request)
-      :else {:status 500})))
+      
+      :else
+      (do (log/info (str "Error getting objective on create question form " {:http-api-status objective-status}))
+          (default-error-page request 500)))))
 
 (defn question-list [{{id :id} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)]
