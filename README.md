@@ -188,11 +188,12 @@ export TWITTER_CONSUMER_SECRET_TOKEN=<as above>
   ```
   
 ####Deploy application to the server
-- Run:
-  ```
-  chmod +x deploy.sh
-  REMOTE_USER={username on server} SERVER_IP={IP address of server} ./deploy.sh
-  ```
+Run:
+
+```
+chmod +x deploy.sh
+REMOTE_USER={username on server} SERVER_IP={IP address of server} ./deploy.sh
+```
 
 ## Docker
 
