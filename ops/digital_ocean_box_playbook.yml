@@ -3,10 +3,8 @@
    sudo: true
    remote_user: root
 
-   vars_prompt:
-    - name: "PG_PASSWORD"
-      prompt: "Enter postgres password for user objective8:"
-      confirm: yes
+   vars_files:
+    - "{{ CONFIG_FILE_PATH }}"
 
    roles:
     - common
@@ -16,3 +14,4 @@
     - jre
     - objective8_postgres_config
     - objective8_postgres_backups
+    - objective8_application_config
