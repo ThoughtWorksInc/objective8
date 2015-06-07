@@ -444,17 +444,20 @@
                              :message :comment-view/created-message}))
 
           (= status ::http-api/invalid-input)
-          (do (log/info (str "Invalid data when posting a comment " {:http-api-status status
+          (do (log/info (str "post-comment: Invalid data " {:http-api-status status
                                                                       :data (:data comment-data)}))
               (default-error-page request 400))
 
-          :else {:status 502}))
+          :else
+          (do (log/info (str "post-comment: error in api call " {:http-api-status status
+                                                     :data (:data comment-data)}))
+              (default-error-page request 502))))
 
       ::fr/invalid
       (-> (redirect-to-params-referer request "add-comment-form")
           (assoc :flash {:validation (dissoc comment-data :status)})))
     
-    (do (log/info (str "Invalid data when posting a comment " {:request-params (:params request)}))
+    (do (log/info (str "post-comment: Invalid data " {:request-params (:params request)}))
         (default-error-page request 400))))
 
 (defn post-annotation [request]
@@ -521,9 +524,14 @@
                        (assoc (response/redirect objective-url) :flash {:type :share-question
                                                                         :created-question question}))
 
-                     (= status ::http-api/invalid-input) {:status 400}
+                     (= status ::http-api/invalid-input)
+                     (do (log/info (str "add-question-form-post: invalid input when creating question" {:data (:data question-data)}))
+                         (default-error-page request 400))
 
-                     :else {:status 502}))
+                     :else
+                     (do (log/info (str "add-question-form-post: error when creating question" {:http-api-status status}))
+                         (default-error-page request 502))))
+      
       ::fr/invalid (-> (response/redirect (utils/path-for :fe/add-a-question
                                                           :id (:id route-params)))
                        (assoc :flash {:validation (dissoc question-data :status)})))))
@@ -558,7 +566,11 @@
                                             :offset offset
                                             :doc {:title (:question question)
                                                   :description (:question question)})}
-                {:status 500}))
+                (do (log/info (str "question-detail: error retrieving content " {:answer-status answer-status
+                                                                                 :objective-status objective-status
+                                                                                 :request {:params params
+                                                                                           :route-params route-params}}))
+                    (default-error-page request 500))))
             (response/redirect (str (utils/path-for :fe/question
                                                     :q-id q-id
                                                     :id o-id)
@@ -566,11 +578,17 @@
 
         (= question-status ::http-api/not-found) (error-404-response request)
 
-        (= question-status ::http-api/invalid-input) {:status 400}
+        (= question-status ::http-api/invalid-input) (do (log/info (str "question-detail: invalid input to get-question"))
+                                                         (default-error-page request 400))
 
-        :else {:status 500}))
+        :else
+        (do (log/info (str "question-detail: error in question api call "
+                           {:question-status question-status
+                            :request {:params params :route-params route-params}}))
+            (default-error-page request 500))))
+    
     (catch Exception e
-      (log/info "Invalid query string: " e)
+      (log/info "question-detail: Exception " e)
       (error-404-response request))))
 
 
@@ -588,9 +606,13 @@
             (assoc (response/redirect answer-url) :flash {:type :flash-message
                                                           :message :question-view/added-answer-message}))
 
-          (= status ::http-api/invalid-input) {:status 400}
+          (= status ::http-api/invalid-input)
+          (do (log/info (str "add-answer-form-post: create-answer api call invalid input " {:data (:data answer-data)}))
+              (default-error-page request 400))
 
-          :else {:status 502}))
+          :else
+          (do (log/info (str "add-answer-form-post: create-answer api call error " {:data (:data answer-data)}))
+              (default-error-page request 502))))
 
       ::fr/invalid
       (-> (response/redirect (str (utils/path-for :fe/question
@@ -616,7 +638,10 @@
       (= status ::http-api/not-found)
       (error-404-response request)
 
-      :else {:status 500})))
+      :else
+      (do (log/info (str "invite-writer: error in get-objective api call " {:objective-id objective-id
+                                                                            :http-api-status status}))
+          (default-error-page request 500)))))
 
 (defn writers-list [{{id :id} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)]
@@ -637,14 +662,20 @@
                                :writer-email (:writer-email stored-invitation)})))
 
           ::http-api/invalid-input
-          {:status 400}
+          (do (log/info (str "invitation-form-post: invalid input in create-invitation api call " {:data (:data invitation-data)}))
+              (default-error-page request 400))
 
-          {:status 502}))
+          (do (log/info (str "invitation-form-post: error in create-invitation api call " {:data (:data invitation-data)
+                                                                                           :http-api-status status}))
+              (default-error-page request 502))))
 
       ::fr/invalid
       (-> (response/redirect (utils/path-for :fe/invite-writer :id (:id route-params)))
           (assoc :flash {:validation (dissoc invitation-data :status)})))
-    {:status 400}))
+    
+    (do (log/info (str "invitation-form-post: fatal data validation error " {:request {:params request
+                                                                                       :route-params request}}))
+        (default-error-page request 400))))
 
 (defn writer-invitation [{{uuid :uuid} :route-params :keys [t' locale session] :as request}]
   (let [{status :status invitation :result} (http-api/retrieve-invitation-by-uuid uuid)
@@ -667,7 +698,10 @@
         :else (error-404-response request))
 
       (= status ::http-api/not-found) (error-404-response request)
-      :else {:status 500})))
+      
+      :else (do (log/info (str "writer-invitation: error retrieving invitation " {:http-api-status status
+                                                                                  :uuid uuid}))
+                (default-error-page request 500)))))
 
 (defn create-profile-get [request]
   {:status 200
@@ -681,10 +715,13 @@
         ::fr/valid (let [{status :status} (http-api/post-profile (:data profile-data))]
                      (if (= status ::http-api/success)
                        (accept-invitation request)
-                       {:status 500}))
+                       (do (log/info (str "create-profile-post: error posting profile to api " {:data (:data profile-data)
+                                                                                                :http-api-status status}))
+                           (default-error-page request 500))))
         ::fr/invalid (-> (response/redirect (utils/path-for :fe/create-profile-get))
                          (assoc :flash {:validation (dissoc profile-data :status)}))))
-    {:status 401}))
+    (do (log/info (str "create-profile-post: attempt to create a writer profile without an invitation"))
+        (default-error-page request 401))))
 
 (defn edit-profile-get [request]
   (if (permissions/writer? (friend/current-authentication))
@@ -695,8 +732,10 @@
            :header {"Content-Type" "text/html"}
            :body (views/edit-profile "edit-profile" request :user-profile user-profile)})
 
-        {:status 500}))
-    {:status 401}))
+        (do (log/info (str "edit-profile-get: api get-user request error " {:status user-status :user-id (:identity (friend/current-authentication))}))
+            (default-error-page request 500))))
+    (do (log/info (str "edit-profile-get: attempt to edit profile when not a writer"))
+        (default-error-page request 401))))
 
 (defn edit-profile-post [request]
   (if (permissions/writer? (friend/current-authentication))
@@ -708,10 +747,13 @@
                        (-> (utils/path-for :fe/profile :username (get (friend/current-authentication) :username))
                            response/redirect)
 
-                       :else {:status 500}))
+                       :else (do (log/info (str "edit-profile-post: api post-profile error " {:data (:data profile-data)
+                                                                                              :http-api-status status}))
+                                 (default-error-page request 500))))
         ::fr/invalid (-> (response/redirect (utils/path-for :fe/edit-profile-get))
                          (assoc :flash {:validation (dissoc profile-data :status)}))))
-    {:status 401}))
+    (do (log/info (str "edit-profile-post: attempt to post profile when not a writer"))
+        (default-error-page request 401))))
 
 (defn decline-invitation [{session :session :as request}]
   (if-let [invitation-credentials (:invitation session)]
@@ -727,8 +769,11 @@
             (assoc :session session)
             remove-invitation-from-session)
 
-        :else {:status 500}))
-    {:status 401}))
+        :else (do (log/info (str "decline-invitation: api error when declining invitation " {:http-api-status status
+                                                                                             :invitation-credentials invitation-credentials}))
+                  (default-error-page request 500))))
+    (do (log/info (str "decline-invitation: attempt to decline invitation without invitation credentials"))
+        (default-error-page request 401))))
 
 (defn create-writer [{:keys [session] :as request}]
   (let [invitation-credentials (:invitation session)
@@ -746,7 +791,9 @@
           (permissions/add-authorisation-role (permissions/writer-inviter-for objective-id))
           (permissions/add-authorisation-role (permissions/writer-for objective-id)))
 
-      :else {:status 500})))
+      :else (do (log/info (str "create-writer: post-writer api error " {:http-api-status status
+                                                                        :data writer}))
+                (default-error-page request 500)))))
 
 (defn accept-invitation [{:keys [session] :as request}]
   (if-let [invitation-credentials (:invitation session)]
@@ -758,7 +805,8 @@
           (-> (utils/path-for :fe/create-profile-get)
               response/redirect
               (assoc :session session)))))
-    {:status 401}))
+    (do (log/info (str "accept-invitation: attempt to accept invitation without invitation credentials"))
+        (default-error-page request 401))))
 
 ;;DRAFTS
 
@@ -771,7 +819,8 @@
 
       ::http-api/not-found (error-404-response request)
 
-      {:status 500})))
+      (do (log/info (str "add-draft-get: api error in get-objective " {:http-api-status objective-status :objective-id objective-id}))
+          (default-error-page request 500)))))
 
 (defn add-draft-post [{:keys [params route-params] :as request}]
   (let [draft-data (fr/request->add-draft-data request (get (friend/current-authentication) :identity))]
@@ -796,7 +845,9 @@
 
             ::http-api/not-found (error-404-response request)
 
-            {:status 502})))
+            (do (log/info (str "add-draft-post: api error post-draft " {:http-api-status status
+                                                                        :data draft-info}))
+                (default-error-page request 502)))))
 
       ::fr/invalid (-> (response/redirect (utils/path-for :fe/add-draft-get :id (:id route-params)))
                        (assoc :flash {:validation (dissoc draft-data :status)})))))
@@ -810,7 +861,9 @@
 
       ::http-api/not-found (error-404-response request)
 
-      {:status 500})))
+      (do (log/info (str "import-draft-get: api error get-objective " {:http-api-status objective-status
+                                                                       :objective-id objective-id}))
+          (default-error-page request 500)))))
 
 (defn import-draft-post [{:keys [params route-params] :as request}]
   (let [draft-data (fr/request->imported-draft-data request (get (friend/current-authentication) :identity))]
@@ -823,9 +876,18 @@
                    "submit" (let [{status :status draft :result} (http-api/post-draft draft-data)]
                               (cond
                                 (= status ::http-api/success)
-                                (response/redirect (utils/path-for :fe/draft :id (:objective-id draft-data) :d-id (:_id draft)))
-                                (= status ::http-api/not-found) {:status 404}
-                                :else {:status 502})))
+                                (response/redirect
+                                 (utils/path-for :fe/draft
+                                                 :id (:objective-id draft-data)
+                                                 :d-id (:_id draft)))
+
+                                (= status ::http-api/not-found)
+                                (error-404-response request)
+                                
+                                :else
+                                (do (log/info (str "import-draft-post: api error post-draft " {:http-api-status status
+                                                                                               :data draft}))
+                                    (default-error-page request 502)))))
 
       ::fr/invalid (-> (response/redirect (utils/path-for :fe/import-draft-get :id (:id route-params)))
                        (assoc :flash {:validation (dissoc draft-data :status)})))))
@@ -864,9 +926,15 @@
            :headers {"Content-Type" "text/html"}}
           (error-404-response request))
 
-        :else {:status 500}))
-    (do (log/info "Invalid draft query" (select-keys request [:route-params :params]))
-        {:status 400})))
+        :else (do (log/info (str "draft: error in api calls "
+                                 {:draft-http-api-status draft-status
+                                  :objective-http-api-status objective-status
+                                  :comments-http-api-status comments-status
+                                  }))
+                  (default-error-page request 500))))
+    
+    (do (log/info "draft: Invalid draft query" (select-keys request [:route-params :params]))
+        (default-error-page request 400))))
 
 (defn draft-diff [request]
   (if-let [draft-query (fr/request->draft-query request)]
@@ -890,8 +958,8 @@
                                                                 utils/hiccup->html))
                :headers {"Content-Type" "text/html"}})))
         (error-404-response request)))
-    (do (log/info "invalid draft query: " (select-keys request [:route-params]))
-        {:status 400})))
+    (do (log/info "draft: invalid draft query " (select-keys request [:route-params]))
+        (default-error-page request 400))))
 
 (defn draft-list [{{:keys [id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)
@@ -908,7 +976,9 @@
 
       ::http-api/not-found (error-404-response request)
 
-      {:status 500})))
+      (do (log/info (str "draft-list: api error get-objective " {:http-api-status objective-status
+                                                                 :objective-id objective-id}))
+          (default-error-page request 500)))))
 
 (defn draft-section [{:keys [uri] :as request}]
   (let [{section-status :status section :result} (http-api/get-draft-section uri)
@@ -924,7 +994,10 @@
       (= ::http-api/not-found)
       (error-404-response request)
 
-      :else {:status 500})))
+      :else (do (log/info (str "draft-section: api error get-draft-section "
+                               {:http-api-status section-status
+                                :uri uri}))
+                (default-error-page request 500)))))
 
 (defn post-up-vote [request]
   (-> (fr/request->up-vote-info request (get (friend/current-authentication) :identity))
@@ -940,21 +1013,43 @@
   (let [star-data (fr/request->star-info request (get (friend/current-authentication) :identity))
         {status :status stored-star :result} (http-api/post-star star-data)]
     (cond
-      (= status ::http-api/success) (redirect-to-params-referer request)
+      (= status ::http-api/success)
+      (redirect-to-params-referer request)
 
-      (= status ::http-api/invalid-input) {:status 400}
+      (= status ::http-api/invalid-input)
+      (do (log/info (str "post-star: invalid input when posting star "
+                         {:http-api-status status
+                          :data star-data}))
+          (default-error-page request 400))
 
-      :else {:status 502})))
+      :else
+      (do (log/info (str "post-star: api error post-star "
+                         {:http-api-status status
+                          :data star-data}))
+          (default-error-page request 502)))))
 
 (defn post-mark [request]
   (if-let [mark-data (fr/request->mark-info request (get (friend/current-authentication) :identity))]
     (let [{status :status mark :result} (http-api/post-mark mark-data)]
       (case status
-        ::http-api/success (redirect-to-params-referer request)
-        ::http-api/invalid-input {:status 400}
+        ::http-api/success
+        (redirect-to-params-referer request)
 
-        {:status 502}))
-    {:status 400}))
+        ::http-api/invalid-input
+        (do (log/info (str "post-mark: invalid input to api for post-mark "
+                           {:data mark-data}))
+            (default-error-page request 400))
+
+        (do (log/info (str "post-mark: api error post-mark "
+                           {:http-api-status status
+                            :data mark-data}))
+            (default-error-page request 502))))
+    
+    (do (log/info (str "post-mark: fatal validation error "
+                       {:request {:params (:params request)
+                                  :route-params (:route-params request)}
+                        :authenticated-user-id (get (friend/current-authentication) :identity)}))
+        (default-error-page request 400))))
 
 ;;ADMINS
 
@@ -963,12 +1058,25 @@
     (let [{status :status admin-removal :result} (http-api/post-admin-removal admin-removal-confirmation-data)
           updated-session (dissoc (:session request) :removal-data)]
       (case status
-        ::http-api/success (-> (response/redirect (utils/path-for :fe/objective-list))
-                               (assoc :session updated-session))
-        ::http-api/invalid-input {:status 400}
+        ::http-api/success
+        (-> (response/redirect (utils/path-for :fe/objective-list))
+            (assoc :session updated-session))
 
-        {:status 502}))
-    {:status 400}))
+        ::http-api/invalid-input
+        (do (log/info (str "post-admin-removal-confirmation: invalid input to post-admin-removal api "
+                           {:data admin-removal-confirmation-data}))
+            (default-error-page request 400))
+
+        (do (log/info (str "post-admin-removal-confirmation: api error post-admin-removal "
+                           {:http-api-status status
+                            :data admin-removal-confirmation-data}))
+            (default-error-page request 502))))
+    
+    (do (log/info (str "post-admin-removal-confirmation: fatal validation error "
+                       {:request {:params (:params request)
+                                  :route-params (:route-params request)}
+                        :authenticated-user-id (get (friend/current-authentication) :identity)}))
+        (default-error-page request 400))))
 
 (defn admin-removal-confirmation [request]
   (if-let [removal-data (fr/request->removal-data request)]
@@ -983,7 +1091,11 @@
     (let [updated-session (assoc (:session request) :removal-data admin-removal-data)]
       (-> (response/redirect (utils/path-for :fe/admin-removal-confirmation-get))
           (assoc :session updated-session)))
-    {:status 400}))
+    
+    (do (log/info (str "post-admin-removal: fatal validation error "
+                       {:request {:params (:params request)
+                                  :route-params (:route-params request)}}))
+        (default-error-page request 400))))
 
 (defn admin-activity [request]
   (let [{status :status admin-removals :result} (http-api/get-admin-removals)]
@@ -994,5 +1106,7 @@
        :body (views/admin-activity "admin-activity" request
                                    :admin-removals admin-removals)}
 
-      (= status ::http-api/error)
-      {:status 502})))
+      :else
+      (do (log/info (str "admin-activity: api error get-admin-removals "
+                         {:http-api-status status}))
+          (default-error-page request 502)))))
