@@ -14,7 +14,7 @@
                                     secret-token
                                     "https://api.twitter.com/oauth/request_token"
                                     "https://api.twitter.com/oauth/access_token"
-                                    "https://api.twitter.com/oauth/authenticate"
+                                    "https://api.twitter.com/oauth/authorize"
                                     :hmac-sha1)
      :callback-url (str utils/host-url "/twitter-callback")}
     :invalid-configuration))
