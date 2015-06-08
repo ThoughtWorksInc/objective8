@@ -24,7 +24,7 @@
                  [de.ubercode.clostache/clostache "1.4.0"]
                  [enlive "1.1.5"]
                  [com.taoensso/tower "3.0.2"]
-                 [clj-oauth "1.5.1"]
+                 [clj-oauth "1.5.2"]
                  [cheshire "5.4.0"]
                  [clj-time "0.9.0"]
                  [korma "0.4.1"]
