@@ -27,6 +27,8 @@
     (let [consumer (:consumer twitter-config)
           callback-url (:callback-url twitter-config)
           _ (prn "Before oauth/request-token")
+          _ (prn "Consumer:" consumer)
+          _ (prn "Callback-url" callback-url)
           request-token-response (oauth/request-token consumer callback-url)
           _ (prn "After oauth/request-token")
           approval-uri (oauth/user-approval-uri consumer (:oauth_token request-token-response))
