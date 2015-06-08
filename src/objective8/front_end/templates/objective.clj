@@ -245,14 +245,13 @@
 
               [:.clj-comment-list] (html/content (pf/comment-list context))
 
-
-              [:.clj-comment-history-link] (html/set-attr :href comment-history-link)
-
               [:.clj-comment-create] (html/content (pf/comment-create context :objective))}
 
              [:.clj-comment-list] (if next-comments
                                     (html/append comment-history-snippet)
-                                    identity))))
+                                    identity)
+
+             [:.clj-comment-history-link] (html/set-attr :href comment-history-link))))
 
 (defn objective-page [context]
   (->> (produce-objective-page context)
