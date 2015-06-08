@@ -26,13 +26,10 @@
   (try
     (let [consumer (:consumer twitter-config)
           callback-url (:callback-url twitter-config)
-          _ (prn "Before oauth/request-token")
-          _ (prn "Consumer:" consumer)
-          _ (prn "Callback-url" callback-url)
+          _ (log/debug "Before calling oAuth request token")
           request-token-response (oauth/request-token consumer callback-url)
-          _ (prn "After oauth/request-token")
-          approval-uri (oauth/user-approval-uri consumer (:oauth_token request-token-response))
-          _ (prn "Approval uri:" approval-uri)]
+          _ (log/debug "After calling oAuth request token")
+          approval-uri (oauth/user-approval-uri consumer (:oauth_token request-token-response))]
       (response/redirect approval-uri))
     (catch clojure.lang.ExceptionInfo e
       (do (log/warn (str "Could not get request token from twitter: " e))
@@ -41,11 +38,9 @@
 (defn twitter-callback [{:keys [params session twitter-config] :as request}]
   (try
     (let [consumer (:consumer twitter-config)
-          _ (prn "Before oauth/acces-token")
           twitter-response (oauth/access-token consumer
                                                params
                                                (:oauth_verifier params))
-          _ (prn "After oauth/acces-token")
           twitter-user-id (str "twitter-" (:user_id twitter-response))
           twitter-screen-name (:screen_name twitter-response)
           the-response (into (response/redirect (str utils/host-url "/sign-up"))
