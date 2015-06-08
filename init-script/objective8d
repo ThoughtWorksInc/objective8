@@ -11,10 +11,10 @@ LOGGING_ROOT=/var/log
 JAR_NAME="$NAME"-"$VERSION"-standalone.jar
 mkdir -p $PID_DIR
 
-CONFIG_DIR=/etc/default/objective8_config 
+CONFIG_FILE=$INSTALL_DIR/objective8_config
 
 set -a
-. $CONFIG_DIR || echo "ERROR: Environment variables not set. Config file not found at $CONFIG_DIR"
+. $CONFIG_FILE || echo "ERROR: Environment variables not set. Config file not found at $CONFIG_FILE"
 
 # returns 0 if PID in file is running, 1 if otherwise
 process_running() {
