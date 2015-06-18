@@ -5,8 +5,17 @@
  - name: install fail2ban
    apt: name=fail2ban state=present
 
+ - name: create SSL folder
+   file: path="/etc/nginx/ssl" state=directory
+
+ - name: copy SSL cert
+   copy: src={{ cert_location }} dest="/etc/nginx/ssl/objective8.crt"
+
+ - name: copy SSL key
+   copy: src={{ cert_key_location }} dest="/etc/nginx/ssl/objective8.key"
+
  - name: copy over objective8 nginx config
-   copy: src="objective8" dest="/etc/nginx/sites-available/objective8" mode=0644
+   template: src="objective8.j2" dest="/etc/nginx/sites-available/objective8" mode=0644
 
  - name: create symbolic link to nginx objective8 config
    file: src="/etc/nginx/sites-available/objective8" dest="/etc/nginx/sites-enabled/objective8" state=link
