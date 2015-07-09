@@ -13,6 +13,8 @@ server {
   ssl_session_cache shared:SSL:32m;
   ssl_session_timeout 10m;
 
+  ssl_protocols TLSv1.2 TLSv1.1 TLSv1;
+
   location /static/ {
     alias /var/www/objective8/public/;
   }
