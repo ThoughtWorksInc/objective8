@@ -51,16 +51,16 @@
 ;;USER
 (facts "About map->user"
        (fact "Column values are pulled out and converted, the map gets turned to json"
-             (let [user (map->user {:twitter-id "twitter-TWITTERID" :username "username"})]
-               user => (contains {:twitter_id "twitter-TWITTERID"
+             (let [user (map->user {:auth-provider-user-id "twitter-TWITTER_ID" :username "username"})]
+               user => (contains {:auth_provider_user_id "twitter-TWITTER_ID"
                                   :username "username"
                                   :user_data json-type?})
-               (json-type->map (:user_data user)) =not=> (contains {:twitter-id anything})
+               (json-type->map (:user_data user)) =not=> (contains {:auth-provider-user-id anything})
                (json-type->map (:user_data user)) =not=> (contains {:username anything})))
        
-       (fact "throws exception if :twitter-id or :username is missing"
+       (fact "throws exception if :auth-provider-user-id or :username is missing"
              (map->user {:a "B"}) => (throws Exception)
-             (map->user {:twitter-id "twitter-TWITTERID"}) => (throws Exception)
+             (map->user {:auth-provider-user-id "twitter-TWITTERID"}) => (throws Exception)
              (map->user {:username "username"}) => (throws Exception)))
 
 ;;UP-DOWN-VOTES

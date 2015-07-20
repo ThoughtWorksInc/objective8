@@ -201,12 +201,12 @@
              => {:status ::actions/success
                  :result {:entity :user
                           :_id USER_ID
-                          :twitter-id "twitter-id"
+                          :auth-provider-user-id "twitter-id"
                           :owned-objectives :stubbed-owned-objectives
                           :writer-records :stubbed-writer-records
                           :admin true}}
              (provided
-               (users/retrieve-user user-uri) => {:entity :user :_id USER_ID :twitter-id "twitter-id"}
+               (users/retrieve-user user-uri) => {:entity :user :_id USER_ID :auth-provider-user-id "twitter-id"}
                (users/get-admin-by-twitter-id "twitter-id") => {:twitter-id "twitter-id"}
                (writers/retrieve-writers-by-user-id USER_ID) => :stubbed-writer-records 
                (objectives/get-objectives-owned-by-user-id USER_ID) => :stubbed-owned-objectives)))
@@ -325,7 +325,7 @@
      (actions/create-admin-removal! admin-removal) => {:status ::actions/success
                                                        :result :stored-admin-removal}
      (provided
-       (users/retrieve-user USER_URI) => {:twitter-id "twitter-123456"}
+       (users/retrieve-user USER_URI) => {:auth-provider-user-id "twitter-123456"}
        (users/get-admin-by-twitter-id "twitter-123456") => {:twitter-id "twitter-123456"}
        (storage/pg-retrieve-entity-by-uri objective-uri :with-global-id) => {:_id OBJECTIVE_ID}
        (objectives/admin-remove-objective! {:_id OBJECTIVE_ID}) => {:_id OBJECTIVE_ID}

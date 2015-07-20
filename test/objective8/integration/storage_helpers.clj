@@ -17,13 +17,13 @@
   (str "username-" (swap! username-index inc)))
 
 (defn store-a-user [] (storage/pg-store! {:entity :user
-                                          :twitter-id "twitter-TWITTER_ID"
+                                          :auth-provider-user-id "twitter-TWITTER_ID"
                                           :username (generate-unique-username)
                                           :profile {:name "Barry"
                                                     :biog "I'm Barry..."}}))
 
 (defn store-an-admin []
-  (let [{twitter-id :twitter-id :as user} (store-a-user)]
+  (let [{twitter-id :auth-provider-user-id :as user} (store-a-user)]
     (users/store-admin! {:twitter-id twitter-id})
     user))
 

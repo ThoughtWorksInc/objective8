@@ -46,8 +46,7 @@
                    :session {:cemerick.friend/identity {:current 155,
                                                         :authentications {155 {:identity 155, :username 155, :roles #{:signed-in}}}},
                              :ring.middleware.anti-forgery/anti-forgery-token "V/ASBxBlK3hM2RGvK5IbXcFvlUrnyNxYFzI6Dwfy8VNYbpAeNVOXFnm7EfP0bXsIg5dsOVS/q0d4Zrn/",
-                             :twitter-screen-name "twitter name if signed in",
-                             :twitter-id "twitter-NUMBERS"},
+                             :auth-provider-user-id "twitter-NUMBERS"},
                    :tconfig {:dictionary {:es {}, :en {}}, :dev-mode? false, :fallback-locale :en, :log-missing-translations-function "log missing translations function"}})
 
 (fact "calls the wrapped function with a view-context based on a ring request"

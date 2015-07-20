@@ -12,7 +12,7 @@
 (def USER_ID 1)
 (def user-uri (str "/users/" USER_ID))
 
-(def the-user {:twitter-id twitter-id
+(def the-user {:auth-provider-user-id twitter-id
                :email-address email-address
                :username username})
 
@@ -39,18 +39,18 @@
              (provided (storage/pg-retrieve-entity-by-uri "/users/0")
                        => {:uri "/users/0"})))
 
-(facts "Finding users by twitter-id"
-       (fact "can find user by twitter-id"
-             (users/find-user-by-twitter-id twitter-id) => stored-user
-             (provided (storage/pg-retrieve {:entity :user :twitter-id twitter-id})
+(facts "Finding users by auth-provider-user-id"
+       (fact "can find user by auth-provider-user-id"
+             (users/find-user-by-auth-provider-user-id twitter-id) => stored-user
+             (provided (storage/pg-retrieve {:entity :user :auth-provider-user-id twitter-id})
                        => {:query {:entity :user
-                                   :twitter-id twitter-id}
+                                   :auth-provider-user-id twitter-id}
                            :result [(assoc stored-user :entity :user)]}))
-       (fact "returns nil if no user exists with given twitter-id"
-             (users/find-user-by-twitter-id "twitter-00000") => nil
-             (provided (storage/pg-retrieve {:entity :user :twitter-id "twitter-00000"})
+       (fact "returns nil if no user exists with given auth-provider-user-id"
+             (users/find-user-by-auth-provider-user-id "twitter-00000") => nil
+             (provided (storage/pg-retrieve {:entity :user :auth-provider-user-id "twitter-00000"})
                        => {:query {:entity :user
-                                   :twitter-id "twitter-00000"}
+                                   :auth-provider-user-id "twitter-00000"}
                            :result []})))
 
 (facts "Finding users by username"

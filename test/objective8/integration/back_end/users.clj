@@ -52,11 +52,10 @@
                    (get-in [:response :status])) => 404))
        
        (fact "retrieves user record with admin role for admin user"
-             (let [{user-id :_id twitter-id :twitter-id :as the-user} (sh/store-a-user)
-                   _ (users/store-admin! {:twitter-id twitter-id})
+             (let [{user-id :_id auth-provider-user-id :auth-provider-user-id :as the-user} (sh/store-a-user)
+                   _ (users/store-admin! {:twitter-id auth-provider-user-id})
                    {response :response} (p/request app (utils/api-path-for :api/get-user :id user-id))]
-               (:body response) =>
-               (helpers/json-contains {:admin true}))))
+               (:body response) => (helpers/json-contains {:admin true}))))
 
 (facts "users"
        (facts "about querying for users"
@@ -69,9 +68,9 @@
                  (after :facts (helpers/truncate-tables))] 
 
                 (fact "a user can be retrieved by auth-provider-user-id"
-                      (let [{twitter-id :twitter-id :as the-user} (sh/store-a-user)
+                      (let [{auth-provider-user-id :auth-provider-user-id :as the-user} (sh/store-a-user)
                             peridot-response (p/request app (str (utils/api-path-for :api/get-user-by-query) 
-                                                                 "?auth_provider_user_id=" twitter-id))
+                                                                 "?auth_provider_user_id=" auth-provider-user-id))
                             body (get-in peridot-response [:response :body])]
                         body => (helpers/json-contains the-user))) 
 

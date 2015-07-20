@@ -23,9 +23,7 @@
   (let [twitter-id (get params :twitter-id @twitter-id)]
     (log/info "Stubbing twitter with fake twitter id: " twitter-id)
     (-> (response/redirect (str utils/host-url "/sign-up"))
-        (assoc :session (assoc session 
-                               :twitter-id twitter-id
-                               :twitter-screen-name "I'm a teapot")))))
+        (assoc-in [:session :auth-provider-user-id] twitter-id))))
 
 (def stub-twitter-routes
   ["/" {"twitter-sign-in"        :stub-twitter

@@ -118,7 +118,7 @@
 (def map->user
   (db-insertion-mapper "user"
                        :user-data
-                       [:twitter-id :username]))
+                       [:auth-provider-user-id :username]))
 
 (defn map->up-down-vote
   "Prepares a clojure map for storage as an up-down-vote"
@@ -305,7 +305,7 @@
   (korma/prepare map->user)
   (korma/transform (-> (unmap :user_data)
                        (with-columns 
-                         [:twitter-id :username :_created_at]
+                         [:auth-provider-user-id :username :_created_at]
                          {:_created_at sql-time->iso-time-string}))))
 
 (korma/defentity comment

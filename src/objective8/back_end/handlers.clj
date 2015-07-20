@@ -54,8 +54,8 @@
 
 ;; USERS
 
-(defn find-user-by-twitter-id [twitter-id]
-  (if-let [user (users/find-user-by-twitter-id twitter-id)]
+(defn find-user-by-auth-provider-user-id [auth-provider-user-id]
+  (if-let [user (users/find-user-by-auth-provider-user-id auth-provider-user-id)]
     (response/content-type (response/response user) "application/json")
     (response/not-found "")))
 
@@ -66,7 +66,7 @@
 
 (defn find-user-by-query [{:keys [params] :as request}]
   (if-let [auth-provider-user-id (params :auth_provider_user_id)]
-    (find-user-by-twitter-id auth-provider-user-id)
+    (find-user-by-auth-provider-user-id auth-provider-user-id)
     (if-let [username (params :username)]
       (find-user-by-username username)))) 
 

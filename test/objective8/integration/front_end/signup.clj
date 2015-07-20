@@ -66,7 +66,7 @@
                                         :email-address "test@email.address.com"})
                  => {:status ::http-api/success
                      :result {:_id USER_ID
-                              :twitter-id "twitter-TWITTER_ID"
+                              :auth-provider-user-id "twitter-TWITTER_ID"
                               :username "someUsername"
                               :email-address "test@email.address.com"}})
 
@@ -98,7 +98,7 @@
                (http-api/find-user-by-auth-provider-user-id "twitter-TWITTER_ID")
                => {:status ::http-api/success
                    :result {:_id USER_ID
-                            :twitter-id "twitter-TWITTER_ID"
+                            :auth-provider-user-id "twitter-TWITTER_ID"
                             :email-address "test@email.address.com"}} :times 1)))
 
 (binding [config/enable-csrf false]

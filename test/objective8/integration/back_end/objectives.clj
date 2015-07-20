@@ -23,11 +23,6 @@
 
 (def stored-objective (assoc the-objective :_id OBJECTIVE_ID))
 
-(defn gen-user-with-id
-  "Make a user and return the ID for use in creating other content"
-  []
-  (:_id (users/store-user! {:twitter-id "anything" :username "username"})))
-
 (background
  (m/valid-credentials? anything anything anything) => true)
 

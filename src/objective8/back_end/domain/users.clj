@@ -5,8 +5,8 @@
   (let [result (storage/pg-retrieve-entity-by-uri user-uri)]
     (when (get result :_id) result)))
 
-(defn find-user-by-twitter-id [twitter-id]
-  (-> (storage/pg-retrieve {:entity :user :twitter-id twitter-id})
+(defn find-user-by-auth-provider-user-id [auth-provider-user-id]
+  (-> (storage/pg-retrieve {:entity :user :auth-provider-user-id auth-provider-user-id})
       :result
       first))
 
@@ -16,12 +16,8 @@
       first))
 
 (defn store-user! [user]
-  (let [auth-provider-user-id (:auth-provider-user-id user)
-        user (cond-> user
-               auth-provider-user-id (assoc :twitter-id auth-provider-user-id)
-               auth-provider-user-id (dissoc :auth-provider-user-id)   
-               true (assoc :entity :user))]
-    (storage/pg-store! user)))
+  (-> (assoc user :entity :user)
+      storage/pg-store!))
 
 (defn update-user! [user]
   (storage/pg-update-user! user))
