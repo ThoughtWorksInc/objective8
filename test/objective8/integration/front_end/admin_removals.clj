@@ -19,9 +19,9 @@
          (fact "admin can post an admin-removal confirmation for an objective"
                (against-background
                  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
-                 (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                                 :result {:_id USER_ID
-                                                                          :username "username"}}
+                 (http-api/find-user-by-auth-provider-user-id anything) => {:status ::http-api/success
+                                                                            :result {:_id USER_ID
+                                                                                     :username "username"}}
                  (http-api/get-user anything) => {:result {:admin true}})
                (against-background
                  (http-api/post-admin-removal {:removal-uri OBJECTIVE_URI
@@ -35,13 +35,13 @@
                                                          :params params))]
                  (:headers response) => (ih/location-contains (utils/path-for :fe/objective-list))
                  (:status response) => 302))
-         
+
          (fact "admin cannot reach the admin-removal confirmation page without valid removal-data parameters in the session"
                (against-background
                  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
-                 (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                                 :result {:_id USER_ID
-                                                                          :username "username"}}
+                 (http-api/find-user-by-auth-provider-user-id anything) => {:status ::http-api/success
+                                                                            :result {:_id USER_ID
+                                                                                     :username "username"}}
                  (http-api/get-user anything) => {:result {:admin true}})
                (let [user-session (ih/front-end-context)
                      {response :response} (-> user-session
@@ -54,9 +54,9 @@
          (fact "admin can post an admin-removal for an objective"
                (against-background
                  (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
-                 (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                                 :result {:_id USER_ID
-                                                                          :username "username"}}
+                 (http-api/find-user-by-auth-provider-user-id anything) => {:status ::http-api/success
+                                                                            :result {:_id USER_ID
+                                                                                     :username "username"}}
                  (http-api/get-user anything) => {:result {:admin true}})
                (let [user-session (ih/front-end-context)
                      params {:removal-uri OBJECTIVE_URI

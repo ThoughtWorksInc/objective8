@@ -65,19 +65,15 @@
     (response/not-found "")))
 
 (defn find-user-by-query [{:keys [params] :as request}]
-  (if-let [twitter-id (params :twitter)]
-    (find-user-by-twitter-id twitter-id)
+  (if-let [auth-provider-user-id (params :auth_provider_user_id)]
+    (find-user-by-twitter-id auth-provider-user-id)
     (if-let [username (params :username)]
       (find-user-by-username username)))) 
 
 (defn post-user-profile [request]
   (try
-    (let [twitter-id (get-in request [:params :twitter-id])
-          email-address (get-in request [:params :email-address])
-          username (get-in request [:params :username])
-          user (users/store-user! {:twitter-id twitter-id
-                                   :email-address email-address
-                                   :username username})
+    (let [user-data (select-keys (:params request) [:auth-provider-user-id :email-address :username])
+          user (users/store-user! user-data)
           resource-location (str utils/host-url "/api/v1/users/" (:_id user))]
       (resource-created-response resource-location user))
     (catch Exception e

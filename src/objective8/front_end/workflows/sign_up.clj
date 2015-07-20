@@ -27,7 +27,7 @@
                                   (map permissions/writer-inviter-for))
         objective-owner-roles (map permissions/owner-of owned-objective-ids)
         admin-role (if admin [:admin] [])] 
-        
+
     (-> (concat writer-roles writer-inviter-roles objective-owner-roles admin-role)
         (conj :signed-in)
         set)))
@@ -50,8 +50,8 @@
     (auth-map user)))
 
 (defn sign-up-form [{session :session :as request}]
-  (if-let [twitter-id (:auth-provider-user-id session)]
-    (let [{status :status user :result :as td} (http-api/find-user-by-twitter-id twitter-id)]
+  (if-let [auth-provider-user-id (:auth-provider-user-id session)]
+    (let [{status :status user :result :as td} (http-api/find-user-by-auth-provider-user-id auth-provider-user-id)]
       (cond
         (= status ::http-api/success) (finalise-authorisation user session)
         (= status ::http-api/not-found) {:status 200
@@ -62,12 +62,12 @@
     (response/redirect "/sign-in")))
 
 (defn sign-up-form-post [{:keys [params session] :as request}]
-  (if-let [twitter-id (:auth-provider-user-id session)]
+  (if-let [auth-provider-user-id (:auth-provider-user-id session)]
     (let [user-sign-up-data (fr/request->user-sign-up-data request)]
       (case (:status user-sign-up-data)
         ::fr/valid
         (let [{status :status user :result} (http-api/create-user 
-                                              {:twitter-id twitter-id
+                                              {:auth-provider-user-id auth-provider-user-id
                                                :username (-> user-sign-up-data :data :username)
                                                :email-address (-> user-sign-up-data :data :email-address)})]
           (case status

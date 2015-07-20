@@ -35,9 +35,9 @@
          (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
          (http-api/create-user anything) => {:status ::http-api/success
                                              :result {:_id USER_ID}}
-         (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                         :result {:_id USER_ID
-                                                                  :username "username"}})
+         (http-api/find-user-by-auth-provider-user-id anything) => {:status ::http-api/success
+                                                                    :result {:_id USER_ID
+                                                                             :username "username"}})
        (binding [config/enable-csrf false]
          (fact "authorised user can post and retrieve objective"
                (against-background (http-api/create-objective 
@@ -115,9 +115,9 @@
        (against-background
          ;; Twitter authentication background
          (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
-         (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                         :result {:_id USER_ID
-                                                                  :username "username"}})
+         (http-api/find-user-by-auth-provider-user-id anything) => {:status ::http-api/success
+                                                                    :result {:_id USER_ID
+                                                                             :username "username"}})
 
        (fact "when the viewing user is not signed in, the get-objectives query is made with no user information"
              (p/request user-session "http://localhost:8080/objectives") => anything

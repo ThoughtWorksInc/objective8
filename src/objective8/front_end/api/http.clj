@@ -74,9 +74,9 @@
 (defn create-user [user]
   (default-post-call (str utils/api-url "/api/v1/users") user))
 
-(defn find-user-by-twitter-id [twitter-id]
+(defn find-user-by-auth-provider-user-id [auth-provider-user-id]
   (default-get-call
-    (str utils/api-url "/api/v1/users?twitter=" twitter-id)
+    (str utils/api-url "/api/v1/users?auth_provider_user_id=" auth-provider-user-id)
     {:headers (get-api-credentials)}))
 
 (defn find-user-by-username [username]

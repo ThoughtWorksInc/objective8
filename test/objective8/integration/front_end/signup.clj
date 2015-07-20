@@ -51,7 +51,7 @@
        (fact "New users signing in with twitter are asked to sign up by entering their email address"
              (against-background
                (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
-               (http-api/find-user-by-twitter-id "twitter-TWITTER_ID") => {:status ::http-api/not-found})
+               (http-api/find-user-by-auth-provider-user-id "twitter-TWITTER_ID") => {:status ::http-api/not-found})
              (-> test-session
                  (p/request twitter-callback-url)
                  p/follow-redirect) => (check-html-content "<title>Sign up"))
@@ -61,14 +61,14 @@
                (against-background
                  (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"
                                                                      :screen_name "SCREEN_NAME"}
-                 (http-api/create-user {:twitter-id "twitter-TWITTER_ID"
+                 (http-api/create-user {:auth-provider-user-id "twitter-TWITTER_ID"
                                         :username "someUsername"
                                         :email-address "test@email.address.com"})
-                         => {:status ::http-api/success
-                             :result {:_id USER_ID
-                                      :twitter-id "twitter-TWITTER_ID"
-                                      :username "someUsername"
-                                      :email-address "test@email.address.com"}})
+                 => {:status ::http-api/success
+                     :result {:_id USER_ID
+                              :twitter-id "twitter-TWITTER_ID"
+                              :username "someUsername"
+                              :email-address "test@email.address.com"}})
 
                (let [unauthorized-request-context (p/request test-session protected-resource)
                      signed-in-context (p/request unauthorized-request-context twitter-callback-url)
@@ -95,7 +95,7 @@
                    signed-in-context (p/request unauthorized-request-context twitter-callback-url)]
                (p/follow-redirect signed-in-context)) => (check-redirects-to protected-resource 303)
              (provided
-               (http-api/find-user-by-twitter-id "twitter-TWITTER_ID")
+               (http-api/find-user-by-auth-provider-user-id "twitter-TWITTER_ID")
                => {:status ::http-api/success
                    :result {:_id USER_ID
                             :twitter-id "twitter-TWITTER_ID"
@@ -121,8 +121,8 @@
   (fact "unauthorised, registered user can sign in and be referred to a target uri"
         (against-background
           (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
-          (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                          :result {:_id USER_ID}}
+          (http-api/find-user-by-auth-provider-user-id anything) => {:status ::http-api/success
+                                                                     :result {:_id USER_ID}}
           (utils/safen-url "/target") => "/target")
         (let [target-uri "/target"
               user-session (helpers/front-end-context)

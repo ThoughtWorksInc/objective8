@@ -12,14 +12,14 @@
             [objective8.middleware :as m]))
 
 (def email-address "test@email.address.com")
-(def twitter-id "twitter-1")
+(def auth-provider-user-id "twitter-TWITTER_ID")
 (def username "testname1")
 
 (def app (helpers/api-context))
 
 (def USER_ID 10)
 
-(def user {:twitter-id twitter-id
+(def user {:auth-provider-user-id auth-provider-user-id
            :email-address email-address
            :username username })
 
@@ -68,14 +68,16 @@
                                      (helpers/truncate-tables)))
                  (after :facts (helpers/truncate-tables))] 
 
-                (fact "a user can be retrieved by twitter id"
+                (fact "a user can be retrieved by auth-provider-user-id"
                       (let [{twitter-id :twitter-id :as the-user} (sh/store-a-user)
-                            peridot-response (p/request app (str (utils/api-path-for :api/get-user-by-query) "?twitter=" twitter-id))
+                            peridot-response (p/request app (str (utils/api-path-for :api/get-user-by-query) 
+                                                                 "?auth_provider_user_id=" twitter-id))
                             body (get-in peridot-response [:response :body])]
                         body => (helpers/json-contains the-user))) 
 
                 (fact "returns a 404 if the user does not exist"
-                      (let [user-request (p/request app (str (utils/api-path-for :api/get-user-by-query) "?twitter=twitter-IDONTEXIST"))]
+                      (let [user-request (p/request app (str (utils/api-path-for :api/get-user-by-query) 
+                                                             "?auth_provider_user_id=twitter-IDONTEXIST"))]
                         (-> user-request :response :status)) => 404) 
 
                 (fact "a user can be retrieved by username"

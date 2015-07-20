@@ -59,7 +59,7 @@
                (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success
                                                                     :result basic-question}
                (http-api/retrieve-answers QUESTION_URI anything) => {:status ::http-api/success
-                                                                        :result []} 
+                                                                     :result []} 
                (http-api/get-objective OBJECTIVE_ID)=> {:status ::http-api/success 
                                                         :result {:title "some title"
                                                                  :_id OBJECTIVE_ID}})
@@ -71,20 +71,20 @@
                (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success
                                                                     :result (assoc-in basic-question [:meta :answer-count] 2)}
                (http-api/retrieve-answers QUESTION_URI anything) => {:status ::http-api/success
-                                                                        :result [{:_id 12
-                                                                                  :objective-id OBJECTIVE_ID
-                                                                                  :question-id QUESTION_ID
-                                                                                  :created-by-id USER_ID
-                                                                                  :answer "The answer"
-                                                                                  :note "The writer note"
-                                                                                  :votes {:up 1237 
-                                                                                          :down 6601}}
-                                                                                 {:_id 13
-                                                                                  :objective-id OBJECTIVE_ID
-                                                                                  :question-id QUESTION_ID
-                                                                                  :created-by-id USER_ID
-                                                                                  :answer "Another answer"
-                                                                                  :votes {:up 0 :down 0}}]} 
+                                                                     :result [{:_id 12
+                                                                               :objective-id OBJECTIVE_ID
+                                                                               :question-id QUESTION_ID
+                                                                               :created-by-id USER_ID
+                                                                               :answer "The answer"
+                                                                               :note "The writer note"
+                                                                               :votes {:up 1237 
+                                                                                       :down 6601}}
+                                                                              {:_id 13
+                                                                               :objective-id OBJECTIVE_ID
+                                                                               :question-id QUESTION_ID
+                                                                               :created-by-id USER_ID
+                                                                               :answer "Another answer"
+                                                                               :votes {:up 0 :down 0}}]} 
                (http-api/get-objective OBJECTIVE_ID)=> {:status ::http-api/success 
                                                         :result {:title "some title"
                                                                  :_id OBJECTIVE_ID}})
@@ -106,7 +106,7 @@
              (provided
                (http-api/retrieve-answers anything {:offset 10
                                                     :limit 50}) => {:status ::http-api/success
-                                                                :result []}))
+                                                                    :result []}))
 
        (fact "A user should receive a 404 if a question doesn't exist"
              (against-background
@@ -140,8 +140,8 @@
          (fact "objective owners and writers can mark questions to enhance visibility"
                (against-background
                  (oauth/access-token anything anything anything) => {:user_id USER_ID}
-                 (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                                 :result user-owning-objective}
+                 (http-api/find-user-by-auth-provider-user-id anything) => {:status ::http-api/success
+                                                                            :result user-owning-objective}
                  (http-api/get-user anything) => {:result user-owning-objective})
                (against-background
                  (http-api/post-mark {:created-by-uri USER_URI

@@ -26,7 +26,7 @@
                                             :content-type "application/json"
                                             :headers {"api-bearer-token" some-wrong-token
                                                       "api-bearer-name" the-bearer}
-                                            :body (json/generate-string {:twitter-id "Twitter_ID"
+                                            :body (json/generate-string {:auth-provider-user-id "twitter-TWITTER_ID"
                                                                          :username "username"}))
                                  => (contains {:response (contains  {:status 401})}))
 
@@ -37,6 +37,6 @@
                                             :content-type "application/json"
                                             :headers {"api-bearer-token" the-token
                                                       "api-bearer-name" the-bearer}
-                                            :body (json/generate-string {:twitter-id "Twitter_ID"
+                                            :body (json/generate-string {:auth-provider-user-id "twitter-TWITTER_ID"
                                                                          :username "username"}))
                                  => (contains {:response (contains  {:status 201})}))))

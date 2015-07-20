@@ -23,7 +23,7 @@
         user-map {:twitter-id (str "twitter-load-test-" user-id)
                   :username (str "username-load-test-" user-id)
                   :email-address (str "email-" user-id "@loadtest.com")}
-        {status :status user :result :as find-result} (http-api/find-user-by-twitter-id (:twitter-id user-map))]
+        {status :status user :result :as find-result} (http-api/find-user-by-auth-provider-user-id (:twitter-id user-map))]
     (if (= status ::http-api/success)
       (authorise {:status 200} user)
 

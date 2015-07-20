@@ -16,7 +16,11 @@
       first))
 
 (defn store-user! [user]
-  (let [user (assoc user :entity :user)]
+  (let [auth-provider-user-id (:auth-provider-user-id user)
+        user (cond-> user
+               auth-provider-user-id (assoc :twitter-id auth-provider-user-id)
+               auth-provider-user-id (dissoc :auth-provider-user-id)   
+               true (assoc :entity :user))]
     (storage/pg-store! user)))
 
 (defn update-user! [user]

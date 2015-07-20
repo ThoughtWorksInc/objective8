@@ -36,12 +36,12 @@
                      :status "active"})
 
 (def ^:dynamic the-user participant)
-(def ^:dynamic find-user-by-twitter-id-result {:status ::http-api/success :result the-user})
+(def ^:dynamic find-user-by-auth-provider-user-id-result {:status ::http-api/success :result the-user})
 
 (background
   ;; Sign-in background
   (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
-  (http-api/find-user-by-twitter-id anything) => find-user-by-twitter-id-result 
+  (http-api/find-user-by-auth-provider-user-id anything) => find-user-by-auth-provider-user-id-result
   (http-api/get-user anything) => {:status ::http-api/success
                                    :result the-user}
 
@@ -74,7 +74,7 @@
 
 (facts "about the sign-up form"
        (binding [config/enable-csrf false
-                 find-user-by-twitter-id-result {:status ::http-api/not-found}]
+                 find-user-by-auth-provider-user-id-result {:status ::http-api/not-found}]
          (tabular
            (fact "validation errors are reported"
                  (-> user-session

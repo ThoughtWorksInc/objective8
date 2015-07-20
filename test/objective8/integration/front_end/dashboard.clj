@@ -30,8 +30,8 @@
 
 (background
   (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
-  (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                  :result writer-for-objective}
+  (http-api/find-user-by-auth-provider-user-id anything) => {:status ::http-api/success
+                                                             :result writer-for-objective}
   (http-api/get-user anything) => {:result writer-for-objective})
 
 (facts "about the questions dashboard for writers"
@@ -321,45 +321,45 @@
                (:body response) => (contains "test note")))
 
        (tabular
-        (facts "about pagination"
-               (fact "comments are retrieved starting from the requested offset"
-                     (-> user-session
-                         ih/sign-in-as-existing-user
-                         (p/request (str (utils/path-for :fe/dashboard-comments :id OBJECTIVE_ID)
-                                         "?offset=10"
-                                         "&comment-view=" ?view-type))
-                         :response
-                         :status)
-                     => 200
-                     (provided
-                      (http-api/get-comments OBJECTIVE_URI
-                                             (contains {:offset 10 :limit 50}))
-                      => {:status ::http-api/success
-                          :result {:comments []}}))
-               (tabular
-                (fact "pagination navigation links are displayed when necessary"
-                      (against-background
-                       (http-api/get-comments OBJECTIVE_URI anything)
-                       => {:status ::http-api/success
-                           :result {:comments []
-                                    :pagination ?pagination}})
-                      (let [body (-> user-session
-                                     ih/sign-in-as-existing-user
-                                     (p/request (str (utils/path-for :fe/dashboard-comments :id OBJECTIVE_ID)
-                                                     "?offset=10"
-                                                     "&comment-view=" ?view-type))
-                                     :response
-                                     :body)]
-                        body => (contains ?expected-link-class)))
-                
-                ?pagination                 ?expected-link-class
-                {:next-offset 1}            "clj-comments-next"
-                {:previous-offset 1}        "clj-comments-previous"))
-        
-        ?view-type
-        "up-votes"
-        "down-votes"
-        "paperclip"))
+         (facts "about pagination"
+                (fact "comments are retrieved starting from the requested offset"
+                      (-> user-session
+                          ih/sign-in-as-existing-user
+                          (p/request (str (utils/path-for :fe/dashboard-comments :id OBJECTIVE_ID)
+                                          "?offset=10"
+                                          "&comment-view=" ?view-type))
+                          :response
+                          :status)
+                      => 200
+                      (provided
+                        (http-api/get-comments OBJECTIVE_URI
+                                               (contains {:offset 10 :limit 50}))
+                        => {:status ::http-api/success
+                            :result {:comments []}}))
+                (tabular
+                  (fact "pagination navigation links are displayed when necessary"
+                        (against-background
+                          (http-api/get-comments OBJECTIVE_URI anything)
+                          => {:status ::http-api/success
+                              :result {:comments []
+                                       :pagination ?pagination}})
+                        (let [body (-> user-session
+                                       ih/sign-in-as-existing-user
+                                       (p/request (str (utils/path-for :fe/dashboard-comments :id OBJECTIVE_ID)
+                                                       "?offset=10"
+                                                       "&comment-view=" ?view-type))
+                                       :response
+                                       :body)]
+                          body => (contains ?expected-link-class)))
+
+                  ?pagination                 ?expected-link-class
+                  {:next-offset 1}            "clj-comments-next"
+                  {:previous-offset 1}        "clj-comments-previous"))
+
+         ?view-type
+         "up-votes"
+         "down-votes"
+         "paperclip"))
 
 (def section [["h1" {:data-section-label "1234abcd"} "A Heading"]])
 
@@ -401,12 +401,12 @@
        (fact "can see note text if the annotations has a note"
              (against-background
                (http-api/get-annotations anything) => {:status ::http-api/success
-                                                 :result [{:section section
-                                                           :comments [{:comment "A section comment"
-                                                                       :_created_at "2015-01-01T01:01:00.000Z"
-                                                                       :username "A User"
-                                                                       :note "test note"
-                                                                       :votes {:up 5 :down 3}}]}]})
+                                                       :result [{:section section
+                                                                 :comments [{:comment "A section comment"
+                                                                             :_created_at "2015-01-01T01:01:00.000Z"
+                                                                             :username "A User"
+                                                                             :note "test note"
+                                                                             :votes {:up 5 :down 3}}]}]})
              (let [{response :response} (-> user-session
                                             ih/sign-in-as-existing-user
                                             (p/request (utils/path-for :fe/dashboard-annotations :id OBJECTIVE_ID)))]

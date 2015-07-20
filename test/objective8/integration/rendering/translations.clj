@@ -82,13 +82,13 @@
        (fact "there are no untranslated strings"
              (against-background
                (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
-               (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                               :result {:_id USER_ID
-                                                                        :username "username"}})
+               (http-api/find-user-by-auth-provider-user-id anything) => {:status ::http-api/success
+                                                                          :result {:_id USER_ID
+                                                                                   :username "username"}})
              (let [{status :status body :body} (-> user-session
-                            (helpers/sign-in-as-existing-user)
-                            (p/request (utils/path-for :fe/create-objective-form))
-                            :response)]
+                                                   (helpers/sign-in-as-existing-user)
+                                                   (p/request (utils/path-for :fe/create-objective-form))
+                                                   :response)]
                status => 200
                body => helpers/no-untranslated-strings)))
 
@@ -112,14 +112,14 @@
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result an-objective}
                (http-api/get-comments (:uri an-objective) anything) => {:status ::http-api/success 
-                                                                          :result []})
+                                                                        :result []})
              (let [{status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/get-comments-for-objective 
                                                                               :id OBJECTIVE_ID))
                                                    :response)]
                status => 200
                body => helpers/no-untranslated-strings))
-       
+
        (fact "there are no untranslated strings for viewing all comments on a draft"
              (against-background
                (http-api/get-objective OBJECTIVE_ID_AS_STRING) => {:status ::http-api/success
@@ -130,7 +130,7 @@
                             :_created_at "2015-02-12T16:46:18.838Z"
                             :meta {:comments-count 5}}}
                (http-api/get-comments anything anything) => {:status ::http-api/success
-                                                              :result []})
+                                                             :result []})
              (let [{status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/get-comments-for-draft
                                                                               :id OBJECTIVE_ID
@@ -154,7 +154,7 @@
                (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success 
                                                                     :result a-question}
                (http-api/retrieve-answers QUESTION_URI anything) => {:status ::http-api/success
-                                                            :result []})
+                                                                     :result []})
              (let [{status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/question 
                                                                               :id OBJECTIVE_ID
@@ -167,11 +167,11 @@
        (fact "there are no untranslated strings"
              (against-background
                (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
-               (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                               :result {:_id USER_ID
-                                                                        :username "username"}}
+               (http-api/find-user-by-auth-provider-user-id anything) => {:status ::http-api/success
+                                                                          :result {:_id USER_ID
+                                                                                   :username "username"}}
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                        :result an-objective})
+                                                         :result an-objective})
              (let [{status :status body :body} (-> user-session
                                                    (helpers/sign-in-as-existing-user)
                                                    (p/request (utils/path-for :fe/add-a-question :id OBJECTIVE_ID))
@@ -183,12 +183,12 @@
        (fact "there are no untranslated strings"
              (against-background
                (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
-               (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                               :result {:_id USER_ID
-                                                                        :username "username"}}
+               (http-api/find-user-by-auth-provider-user-id anything) => {:status ::http-api/success
+                                                                          :result {:_id USER_ID
+                                                                                   :username "username"}}
                (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}}
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
-                                                        :result an-objective})
+                                                         :result an-objective})
              (let [{status :status body :body} (-> user-session
                                                    (helpers/sign-in-as-existing-user)
                                                    (p/request (utils/path-for :fe/invite-writer :id OBJECTIVE_ID))
@@ -280,9 +280,9 @@
        (fact "there are no untranslated strings"
              (against-background
                (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
-               (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                               :result {:_id USER_ID
-                                                                        :username "username"}}
+               (http-api/find-user-by-auth-provider-user-id anything) => {:status ::http-api/success
+                                                                          :result {:_id USER_ID
+                                                                                   :username "username"}}
                (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}} 
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result an-objective})
@@ -299,9 +299,9 @@
        (fact "there are no untranslated strings" 
              (against-background
                (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
-               (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                               :result {:_id USER_ID
-                                                                        :username "username"}}
+               (http-api/find-user-by-auth-provider-user-id anything) => {:status ::http-api/success
+                                                                          :result {:_id USER_ID
+                                                                                   :username "username"}}
                (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}} 
                (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                          :result an-objective})
@@ -332,9 +332,9 @@
        (fact "there are no untranslated strings"
              (against-background
                (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
-               (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                               :result {:_id USER_ID
-                                                                        :username "username"}}
+               (http-api/find-user-by-auth-provider-user-id anything) => {:status ::http-api/success
+                                                                          :result {:_id USER_ID
+                                                                                   :username "username"}}
                (http-api/retrieve-invitation-by-uuid UUID) => {:status ::http-api/success
                                                                :result ACTIVE_INVITATION}
                (http-api/get-objective OBJECTIVE_ID anything) => {:status ::http-api/success
@@ -351,9 +351,9 @@
        (fact "there are no untranslated strings"
              (against-background
                (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
-               (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                               :result {:_id USER_ID
-                                                                        :username "username"}}
+               (http-api/find-user-by-auth-provider-user-id anything) => {:status ::http-api/success
+                                                                          :result {:_id USER_ID
+                                                                                   :username "username"}}
                (http-api/get-user anything) => {:status ::http-api/success
                                                 :result {:writer-records [{:objective-id OBJECTIVE_ID}]
                                                          :username "username"
@@ -368,23 +368,23 @@
 
 (facts "about rendering the writer-dashboard pages"
        (against-background
-        (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
-        (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                        :result {:_id USER_ID
-                                                                 :username "username"}}
-        (http-api/get-user anything) => {:status ::http-api/success
-                                         :result {:username "username"
-                                                  :writer-records [{:objective-id OBJECTIVE_ID}]}})
+         (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
+         (http-api/find-user-by-auth-provider-user-id anything) => {:status ::http-api/success
+                                                                    :result {:_id USER_ID
+                                                                             :username "username"}}
+         (http-api/get-user anything) => {:status ::http-api/success
+                                          :result {:username "username"
+                                                   :writer-records [{:objective-id OBJECTIVE_ID}]}})
 
        (facts "about the questions dashboard"
               (fact "there are no untranslated strings"
                     (against-background
-                     (http-api/get-objective anything) => {:status ::http-api/success
-                                                                    :result (assoc an-objective :meta {:stars 1})}
-                     (http-api/retrieve-questions anything anything) => {:status ::http-api/success
-                                                                         :result []}
-                     (http-api/retrieve-answers anything anything) => {:status ::http-api/success
-                                                                       :result []})
+                      (http-api/get-objective anything) => {:status ::http-api/success
+                                                            :result (assoc an-objective :meta {:stars 1})}
+                      (http-api/retrieve-questions anything anything) => {:status ::http-api/success
+                                                                          :result []}
+                      (http-api/retrieve-answers anything anything) => {:status ::http-api/success
+                                                                        :result []})
                     (let [{status :status body :body} (-> user-session
                                                           helpers/sign-in-as-existing-user
                                                           (p/request (utils/path-for :fe/dashboard-questions :id OBJECTIVE_ID))
@@ -395,12 +395,12 @@
        (facts "about the comments dashboard"
               (fact "there are no untranslated strings"
                     (against-background
-                     (http-api/get-objective anything) => {:status ::http-api/success
-                                                                    :result (assoc an-objective :meta {:stars 1})}
-                     (http-api/get-all-drafts anything) => {:status ::http-api/success
-                                                            :result []}
-                     (http-api/get-comments anything anything) => {:status ::http-api/success
-                                                                   :result []})
+                      (http-api/get-objective anything) => {:status ::http-api/success
+                                                            :result (assoc an-objective :meta {:stars 1})}
+                      (http-api/get-all-drafts anything) => {:status ::http-api/success
+                                                             :result []}
+                      (http-api/get-comments anything anything) => {:status ::http-api/success
+                                                                    :result []})
                     (let [{status :status body :body} (-> user-session
                                                           helpers/sign-in-as-existing-user
                                                           (p/request (utils/path-for :fe/dashboard-comments :id OBJECTIVE_ID))
@@ -443,7 +443,7 @@
        (fact "there are no untranslated strings"
              (against-background
                (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
-               (http-api/find-user-by-twitter-id "twitter-TWITTER_ID") => {:status ::http-api/not-found})
+               (http-api/find-user-by-auth-provider-user-id "twitter-TWITTER_ID") => {:status ::http-api/not-found})
              (let [{status :status body :body} (-> user-session
                                                    (p/request twitter-callback-url)
                                                    p/follow-redirect

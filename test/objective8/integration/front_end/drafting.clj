@@ -47,9 +47,9 @@
 (facts "about writing drafts"
        (against-background
          (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
-         (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                         :result {:_id USER_ID
-                                                                  :username "username"}}
+         (http-api/find-user-by-auth-provider-user-id anything) => {:status ::http-api/success
+                                                                    :result {:_id USER_ID
+                                                                             :username "username"}}
          (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}})
 
        (binding [config/enable-csrf false]
@@ -239,9 +239,9 @@
 (facts "about rendering import-draft page"
        (against-background
          (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"}
-         (http-api/find-user-by-twitter-id anything) => {:status ::http-api/success
-                                                         :result {:_id USER_ID
-                                                                  :username "username"}}
+         (http-api/find-user-by-auth-provider-user-id anything) => {:status ::http-api/success
+                                                                    :result {:_id USER_ID
+                                                                             :username "username"}}
          (http-api/get-user anything) => {:result {:writer-records [{:objective-id OBJECTIVE_ID}]}} 
          (http-api/get-objective OBJECTIVE_ID) => {:status ::http-api/success
                                                    :result an-objective})
