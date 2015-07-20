@@ -19,5 +19,5 @@
 
 (facts "about admin roles"
        (fact "admin roles are stored"
-             (let [admin-data {:twitter-id "192734"}]
+             (let [admin-data {:auth-provider-user-id "192734"}]
                (users/store-admin! admin-data) => (contains admin-data))))) 

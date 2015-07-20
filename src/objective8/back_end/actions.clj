@@ -154,7 +154,7 @@
   (if-let [user (users/retrieve-user user-uri)]
     (let [writers (writers/retrieve-writers-by-user-id (:_id user))
           objectives (objectives/get-objectives-owned-by-user-id (:_id user))
-          admin (users/get-admin-by-twitter-id (:auth-provider-user-id user))]
+          admin (users/get-admin-by-auth-provider-user-id (:auth-provider-user-id user))]
       {:status ::success :result (assoc user 
                                         :writer-records writers
                                         :owned-objectives objectives 
@@ -196,7 +196,7 @@
 
 (defn create-admin-removal! [{:keys [removal-uri removed-by-uri] :as admin-removal-data}]
   (if-let [user (users/retrieve-user removed-by-uri)]
-    (if (users/get-admin-by-twitter-id (:auth-provider-user-id user))
+    (if (users/get-admin-by-auth-provider-user-id (:auth-provider-user-id user))
       (if-let [objective (storage/pg-retrieve-entity-by-uri removal-uri :with-global-id)]
         (if (:removed-by-admin objective)
           {:status ::entity-not-found} 

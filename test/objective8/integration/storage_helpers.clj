@@ -23,8 +23,8 @@
                                                     :biog "I'm Barry..."}}))
 
 (defn store-an-admin []
-  (let [{twitter-id :auth-provider-user-id :as user} (store-a-user)]
-    (users/store-admin! {:twitter-id twitter-id})
+  (let [{auth-provider-user-id :auth-provider-user-id :as user} (store-a-user)]
+    (users/store-admin! {:auth-provider-user-id auth-provider-user-id})
     user))
 
 (defn store-an-objective 

@@ -53,7 +53,7 @@
        
        (fact "retrieves user record with admin role for admin user"
              (let [{user-id :_id auth-provider-user-id :auth-provider-user-id :as the-user} (sh/store-a-user)
-                   _ (users/store-admin! {:twitter-id auth-provider-user-id})
+                   _ (users/store-admin! {:auth-provider-user-id auth-provider-user-id})
                    {response :response} (p/request app (utils/api-path-for :api/get-user :id user-id))]
                (:body response) => (helpers/json-contains {:admin true}))))
 

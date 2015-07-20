@@ -25,7 +25,7 @@
 (defn store-admin! [admin-data]
   (storage/pg-store! (assoc admin-data :entity :admin)))
 
-(defn get-admin-by-twitter-id [twitter-id]
-  (-> (storage/pg-retrieve {:entity :admin :twitter-id twitter-id})
+(defn get-admin-by-auth-provider-user-id [auth-provider-user-id]
+  (-> (storage/pg-retrieve {:entity :admin :auth-provider-user-id auth-provider-user-id})
       :result
       first))

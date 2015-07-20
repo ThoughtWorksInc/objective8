@@ -69,7 +69,7 @@
                          (integration-helpers/truncate-tables)
                          (core/start-server config-without-twitter)
                          (wd/set-driver! {:browser :firefox})
-                         (users/store-admin! {:twitter-id ADMIN_AND_WRITER_TWITTER_ID})  
+                         (users/store-admin! {:auth-provider-user-id ADMIN_AND_WRITER_TWITTER_ID})  
                          (reset! journey-state {})
                          (clear-screenshots)))
    (before :facts (reset! test-data-collector {}))

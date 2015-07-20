@@ -183,7 +183,7 @@
 (def map->admin
   (db-insertion-mapper "admin"
                        nil
-                       [:twitter-id]))
+                       [:auth-provider-user-id]))
 
 (def map->admin-removal
   (db-insertion-mapper "admin-removal"
@@ -272,7 +272,7 @@
   (korma/prepare map->admin)
   (korma/transform (-> (constantly {:entity :admin})
                        (with-columns
-                         [:twitter-id :_created_at :_id]))))
+                         [:auth-provider-user-id :_created_at :_id]))))
 
 (korma/defentity admin-removal
   (korma/pk :_id)

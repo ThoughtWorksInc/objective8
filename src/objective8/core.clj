@@ -164,10 +164,10 @@
   (-> (:api-credentials config/environment)
       (utils/select-all-or-nothing [:bearer-name :bearer-token])))
 
-(defn store-admin [twitter-id]
-  (when-not (users/get-admin-by-twitter-id twitter-id)
+(defn store-admin [auth-provider-user-id]
+  (when-not (users/get-admin-by-auth-provider-user-id auth-provider-user-id)
     (log/info "Storing an admin")
-    (users/store-admin! {:twitter-id twitter-id})))
+    (users/store-admin! {:auth-provider-user-id auth-provider-user-id})))
 
 (defn initialise-api []
   (when-let [bearer-token-details (get-bearer-token-details)]
