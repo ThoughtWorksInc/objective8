@@ -19,6 +19,7 @@
             [objective8.front-end.permissions :as permissions]
             [objective8.front-end.translation :refer [configure-translations]]
             [objective8.front-end.workflows.twitter :refer [twitter-workflow configure-twitter]]
+            [objective8.front-end.workflows.stonecutter :as stonecutter]
             [objective8.front-end.workflows.stub-twitter :refer [stub-twitter-workflow]]
             [objective8.front-end.workflows.sign-up :refer [sign-up-workflow]]
             [objective8.front-end.handlers :as front-end-handlers]
@@ -184,7 +185,11 @@
   {:authentication {:allow-anon? true
                     :workflows [(if (= (:fake-twitter-mode config/environment) "TRUE")
                                   stub-twitter-workflow
-                                  (twitter-workflow (configure-twitter (:twitter-credentials config/environment)))),
+                                  (twitter-workflow (configure-twitter (:twitter-credentials config/environment))))
+                                (stonecutter/workflow (stonecutter/configure (:stonecutter-auth-provider-url config/environment)
+                                                                             (:stonecutter-client-id config/environment)
+                                                                             (:stonecutter-client-secret config/environment)
+                                                                             (:stonecutter-callback-uri config/environment)))
                                 sign-up-workflow]
                     :login-uri "/sign-in"}
    :session-store (memory-store)
