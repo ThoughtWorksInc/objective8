@@ -50,7 +50,7 @@
     (auth-map user)))
 
 (defn sign-up-form [{session :session :as request}]
-  (if-let [twitter-id (:twitter-id session)]
+  (if-let [twitter-id (:auth-provider-user-id session)]
     (let [{status :status user :result :as td} (http-api/find-user-by-twitter-id twitter-id)]
       (cond
         (= status ::http-api/success) (finalise-authorisation user session)
@@ -62,7 +62,7 @@
     (response/redirect "/sign-in")))
 
 (defn sign-up-form-post [{:keys [params session] :as request}]
-  (if-let [twitter-id (:twitter-id session)]
+  (if-let [twitter-id (:auth-provider-user-id session)]
     (let [user-sign-up-data (fr/request->user-sign-up-data request)]
       (case (:status user-sign-up-data)
         ::fr/valid

@@ -15,7 +15,7 @@
     (log/info "Stubbing twitter with fake twitter id: " @twitter-id)
     (-> (response/redirect (str utils/host-url "/sign-up"))
         (assoc :session (assoc session 
-                               :twitter-id @twitter-id
+                               :auth-provider-user-id @twitter-id
                                :twitter-screen-name "I'm a teapot")))))
 
 (defn create-or-sign-in [{params :params :as request}]

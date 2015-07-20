@@ -44,7 +44,7 @@
               => {:user_id "user-id"})
 
              (let [response (twitter-callback (-> fake-request with-verifier))]
-               (:session response) => (contains {:twitter-id "twitter-user-id"})
+               (:session response) => (contains {:auth-provider-user-id "twitter-user-id"})
                response => (contains {:status 302})
                (:headers response) => (contains {"Location" (contains "sign-up")})))
 
