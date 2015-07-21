@@ -23,12 +23,12 @@
                                                                       :client_secret (:client-secret stonecutter-config)}})]
       (-> token-response :body (json/parse-string keyword))))
 
-(defn configure [authorisation-provider-url
+(defn configure [auth-provider-url
                  client-id
                  client-secret
                  callback-uri]
-  (if (and authorisation-provider-url client-id client-secret callback-uri)
-    {:authorisation-provider-url authorisation-provider-url
+  (if (and auth-provider-url client-id client-secret callback-uri)
+    {:auth-provider-url auth-provider-url
      :client-id client-id
      :client-secret client-secret
      :callback-uri callback-uri}
