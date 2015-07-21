@@ -44,4 +44,7 @@
                :port (get-var "DB_PORT" 5432)}
    :google-analytics-tracking-id (get-var "GA_TRACKING_ID")
    :twitter-credentials {:consumer-token (get-var "TWITTER_CONSUMER_TOKEN")
-                         :secret-token (get-var "TWITTER_CONSUMER_SECRET_TOKEN")}})
+                         :secret-token (get-var "TWITTER_CONSUMER_SECRET_TOKEN")}
+   :stonecutter-auth-provider-url (get-var "STONECUTTER_AUTH_URL")
+   :stonecutter-client-id (get-var "STONECUTTER_CLIENT_ID")
+   :stonecutter-client-secret (get-var "STONECUTTER_CLIENT_SECRET")})

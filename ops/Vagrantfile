@@ -10,7 +10,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "development", primary: true do |dev|
     dev.vm.network "private_network", ip: "192.168.50.50"
-    dev.vm.network :forwarded_port, guest: 22, host: 2222, id: "ssh", auto_correct: false
+    dev.vm.network :forwarded_port, guest: 22, host: 2282, id: "ssh", auto_correct: false
 
     dev.vm.synced_folder "../", "/var/objective8"
     

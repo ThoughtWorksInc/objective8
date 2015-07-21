@@ -12,6 +12,7 @@
             [ring.middleware.ssl :refer [wrap-ssl-redirect wrap-hsts wrap-forwarded-scheme]]
             [bidi.ring :refer [make-handler]]
             [taoensso.tower.ring :refer [wrap-tower]]
+            [stonecutter-oauth.client :as soc]
             [objective8.routes :as routes]
             [objective8.config :as config]
             [objective8.utils :as utils]
@@ -39,16 +40,16 @@
    :fe/admin-activity front-end-handlers/admin-activity
    :fe/create-objective-form (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form) #{:signed-in})
    :fe/create-objective-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form-post) #{:signed-in})
-   :fe/objective-list (utils/anti-forgery-hook front-end-handlers/objective-list) 
+   :fe/objective-list (utils/anti-forgery-hook front-end-handlers/objective-list)
    :fe/objective (utils/anti-forgery-hook front-end-handlers/objective-detail)
    :fe/get-comments-for-objective (utils/anti-forgery-hook front-end-handlers/get-comments-for-objective)
-   :fe/add-a-question (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-a-question) #{:signed-in}) 
+   :fe/add-a-question (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-a-question) #{:signed-in})
    :fe/add-question-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-question-form-post) #{:signed-in})
    :fe/question-list (utils/anti-forgery-hook front-end-handlers/question-list)
    :fe/question (utils/anti-forgery-hook front-end-handlers/question-detail)
    :fe/add-answer-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/add-answer-form-post) #{:signed-in})
    :fe/writers-list (utils/anti-forgery-hook front-end-handlers/writers-list)
-   :fe/invite-writer (m/wrap-authorise-writer-inviter (utils/anti-forgery-hook front-end-handlers/invite-writer)) 
+   :fe/invite-writer (m/wrap-authorise-writer-inviter (utils/anti-forgery-hook front-end-handlers/invite-writer))
    :fe/invitation-form-post (m/wrap-authorise-writer-inviter (utils/anti-forgery-hook front-end-handlers/invitation-form-post))
    :fe/writer-invitation front-end-handlers/writer-invitation
    :fe/create-profile-get (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-profile-get) #{:signed-in})
@@ -57,7 +58,7 @@
    :fe/edit-profile-get (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/edit-profile-get) #{:signed-in})
    :fe/edit-profile-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/edit-profile-post) #{:signed-in})
    :fe/accept-invitation (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/accept-invitation) #{:signed-in})
-   :fe/decline-invitation (utils/anti-forgery-hook front-end-handlers/decline-invitation) 
+   :fe/decline-invitation (utils/anti-forgery-hook front-end-handlers/decline-invitation)
    :fe/add-draft-get (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/add-draft-get)
                                                    permissions/request->writer-roles)
    :fe/add-draft-post (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/add-draft-post)
@@ -65,7 +66,7 @@
    :fe/draft (utils/anti-forgery-hook front-end-handlers/draft)
    :fe/get-comments-for-draft (utils/anti-forgery-hook front-end-handlers/get-comments-for-draft)
    :fe/draft-diff front-end-handlers/draft-diff
-   :fe/draft-section (utils/anti-forgery-hook front-end-handlers/draft-section) 
+   :fe/draft-section (utils/anti-forgery-hook front-end-handlers/draft-section)
    :fe/draft-list front-end-handlers/draft-list
    :fe/import-draft-get (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/import-draft-get)
                                                       permissions/request->writer-roles)
@@ -74,9 +75,9 @@
    :fe/dashboard-questions (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/dashboard-questions) permissions/request->writer-roles)
    :fe/dashboard-comments (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/dashboard-comments) permissions/request->writer-roles)
    :fe/dashboard-annotations (m/authorize-based-on-request (utils/anti-forgery-hook front-end-handlers/dashboard-annotations) permissions/request->writer-roles)
-   
-   :fe/post-up-vote (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-up-vote) #{:signed-in}) 
-   :fe/post-down-vote (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-down-vote) #{:signed-in}) 
+
+   :fe/post-up-vote (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-up-vote) #{:signed-in})
+   :fe/post-down-vote (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-down-vote) #{:signed-in})
    :fe/post-comment (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-comment) #{:signed-in})
    :fe/post-annotation (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-annotation) #{:signed-in})
    :fe/post-star (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-star) #{:signed-in})
@@ -93,8 +94,8 @@
    :api/get-user (m/wrap-bearer-token back-end-handlers/get-user bt/token-provider)
    :api/put-writer-profile (m/wrap-bearer-token back-end-handlers/put-writer-profile bt/token-provider)
    :api/post-objective (m/wrap-bearer-token back-end-handlers/post-objective bt/token-provider)
-   :api/get-objective (m/wrap-bearer-token back-end-handlers/get-objective bt/token-provider) 
-   :api/get-objectives (m/wrap-bearer-token back-end-handlers/get-objectives bt/token-provider) 
+   :api/get-objective (m/wrap-bearer-token back-end-handlers/get-objective bt/token-provider)
+   :api/get-objectives (m/wrap-bearer-token back-end-handlers/get-objectives bt/token-provider)
    :api/post-comment (m/wrap-bearer-token back-end-handlers/post-comment bt/token-provider)
    :api/get-comments back-end-handlers/get-comments
    :api/post-question (m/wrap-bearer-token back-end-handlers/post-question bt/token-provider)
@@ -122,7 +123,7 @@
    :api/post-writer-note (m/wrap-bearer-token back-end-handlers/post-writer-note bt/token-provider)})
 
 (defn common-middleware [h config]
-  (-> h 
+  (-> h
       wrap-keyword-params
       wrap-params
       wrap-json-params
@@ -153,7 +154,7 @@
         (m/wrap-not-found front-end-handlers/error-404)
         (friend/authenticate (:authentication config))
         (profiling-middleware config)
-        (front-end-middleware config) 
+        (front-end-middleware config)
         (common-middleware config))))
 
 (defn back-end-handler [config]
@@ -174,7 +175,7 @@
   (when-let [bearer-token-details (get-bearer-token-details)]
     (if (bt/get-token (bearer-token-details :bearer-name))
       (bt/update-token! bearer-token-details)
-      (do 
+      (do
         (log/info "Storing bearer token details")
         (bt/store-token! bearer-token-details))))
   (when-let [admins-var (:admins config/environment)]
@@ -186,10 +187,12 @@
                     :workflows [(if (= (:fake-twitter-mode config/environment) "TRUE")
                                   stub-twitter-workflow
                                   (twitter-workflow (configure-twitter (:twitter-credentials config/environment))))
-                                (stonecutter/workflow (stonecutter/configure (:stonecutter-auth-provider-url config/environment)
-                                                                             (:stonecutter-client-id config/environment)
-                                                                             (:stonecutter-client-secret config/environment)
-                                                                             (:stonecutter-callback-uri config/environment)))
+                                (stonecutter/workflow (soc/configure (:stonecutter-auth-provider-url config/environment)
+                                                                     (:stonecutter-client-id config/environment)
+                                                                     (:stonecutter-client-secret config/environment)
+                                                                     (str (:https config/environment)
+                                                                          (:base-uri config/environment)
+                                                                          "/stonecutter-callback")))
                                 sign-up-workflow]
                     :login-uri "/sign-in"}
    :session-store (memory-store)
@@ -200,14 +203,14 @@
 (def front-end-server (atom nil))
 (def back-end-server (atom nil))
 
-(defn start-server 
+(defn start-server
   ([]
    (start-server app-config))
 
-  ([config] 
+  ([config]
    (let [front-end-port (:front-end-port config/environment)
          api-port (:api-port config/environment)]
-     (db/connect! (:db-spec config)) 
+     (db/connect! (:db-spec config))
      (initialise-api)
      (log/info (str "Starting objective8 front-end on port " front-end-port))
      (reset! front-end-server (run-server (front-end-handler config)
