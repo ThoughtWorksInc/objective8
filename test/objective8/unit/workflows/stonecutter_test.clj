@@ -1,12 +1,13 @@
 (ns objective8.unit.workflows.stonecutter-test
   (:require [midje.sweet :refer :all]
+            [stonecutter-oauth.client :as soc]
             [objective8.utils :as utils]
             [objective8.front-end.workflows.stonecutter :refer :all]))
 
 (fact "stonecutter-sign-in generates the correct response"
       (stonecutter-sign-in {:stonecutter-config ...config...}) => ...stonecutter-sign-in-response...
       (provided
-        (authorisation-redirect-response ...config...) => ...stonecutter-sign-in-response...))
+        (soc/authorisation-redirect-response ...config...) => ...stonecutter-sign-in-response...))
 
 (fact "stonecutter-callback redirects to the sign-in workflow with the auth-provider-user-id set in the session"
       (stonecutter-callback {:stonecutter-config ...config... :params {:code ...auth-code...}})
@@ -14,7 +15,7 @@
                     :headers {"Location" (str utils/host-url "/sign-up")}
                     :session {:auth-provider-user-id "stonecutter-USER_ID"}})
       (provided
-        (request-access-token! ...config... ...auth-code...)
+        (soc/request-access-token! ...config... ...auth-code...)
         => {:status :success
             :token {:user-id "USER_ID"}}))
 
