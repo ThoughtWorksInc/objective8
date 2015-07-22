@@ -128,7 +128,7 @@
       wrap-params
       wrap-json-params
       wrap-json-response
-      ((if (:https-only config)
+      ((if (:https config)
            (comp wrap-forwarded-scheme wrap-ssl-redirect)
            identity))))
 
@@ -190,12 +190,14 @@
                                 (stonecutter/workflow (soc/configure (:stonecutter-auth-provider-url config/environment)
                                                                      (:stonecutter-client-id config/environment)
                                                                      (:stonecutter-client-secret config/environment)
-                                                                     (str utils/host-url "/d-cent-callback")))
+                                                                     (str (:https config/environment)
+                                                                          (:base-uri config/environment)
+                                                                          "/d-cent-callback")))
                                 sign-up-workflow]
                     :login-uri "/sign-in"}
    :session-store (memory-store)
    :translation (configure-translations)
-   :https-only (:https-only config/environment)
+   :https (:https-only config/environment)
    :db-spec (db/spec (:db-config config/environment))})
 
 (def front-end-server (atom nil))

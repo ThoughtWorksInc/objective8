@@ -7,30 +7,31 @@
 (defn- env-lookup [var-name]
   (get (System/getenv) var-name))
 
-(defn get-var
+(defn get-var 
   "Attempts to read an environment variable. If no variable is
   found will log a warning message and use the default. If no
   default is provided will use nil"
   ([var-name]
    (get-var var-name nil))
-  ([var-name default]
+  ([var-name default] 
   (if-let [variable (get (System/getenv) var-name)]
     variable
     (do
       (if default
           (log/info (str "Failed to look up environment variable \"" var-name "\" - using provided default"))
-          (log/error (str "Failed to look up environment variable \"" var-name "\" - no default provided")))
+          (log/error (str "Failed to look up environment variable \"" var-name "\" - no default provided"))) 
       default))))
 
 (def ^:dynamic environment
-  {:base-uri (get-var "BASE_URI" "localhost:8080")
-
+  {:https (get-var "HTTPS" "http://")
+   :base-uri (get-var "BASE_URI" "localhost:8080")
+   
    :front-end-uri (get-var "BASE_URI" "localhost:8080")
    :front-end-port (Integer/parseInt (get-var "APP_PORT" "8080"))
-
+   
    :api-uri (get-var "API_URI" "localhost:8081")
    :api-port (Integer/parseInt (get-var "API_SERVER_PORT" "8081"))
-
+   
    :fake-twitter-mode (get-var "FAKE_TWITTER_MODE")
    :https-only (get-var "HTTPS_ONLY")
    :api-credentials {:bearer-name (get-var "API_BEARER_NAME")
