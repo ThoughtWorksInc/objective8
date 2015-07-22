@@ -1,7 +1,7 @@
 ---
 # Your application URI or IP address
 BASE_URI: ""
-
+HTTPS_ONLY: ""
 # The following strings are for connecting to the API and should be kept secret
 API_BEARER_NAME: ""
 API_BEARER_TOKEN: ""
