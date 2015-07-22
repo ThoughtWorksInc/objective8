@@ -13,7 +13,7 @@
       (stonecutter-callback {:stonecutter-config ...config... :params {:code ...auth-code...}})
       => (contains {:status 302
                     :headers {"Location" (str utils/host-url "/sign-up")}
-                    :session {:auth-provider-user-id "stonecutter-USER_ID"}})
+                    :session {:auth-provider-user-id "d-cent-USER_ID"}})
       (provided
         (soc/request-access-token! ...config... ...auth-code...)
         => {:status :success
