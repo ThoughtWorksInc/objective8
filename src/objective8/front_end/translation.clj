@@ -92,5 +92,5 @@
    :dev-mode? false
    :fallback-locale :en
    :log-missing-translation-fn (fn [{:keys [locales ks ns] :as args}]
-                                 (log/warn (str "Missing translation! locales: " locales 
+                                 (log/warn (str "Missing translation! locales: " locales
                                                 ", keys: " ks ", namespace: " ns)))})

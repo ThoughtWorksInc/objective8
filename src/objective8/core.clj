@@ -192,7 +192,7 @@
                                                                      (:stonecutter-client-secret config/environment)
                                                                      (str (:https config/environment)
                                                                           (:base-uri config/environment)
-                                                                          "/stonecutter-callback")))
+                                                                          "/d-cent-callback")))
                                 sign-up-workflow]
                     :login-uri "/sign-in"}
    :session-store (memory-store)

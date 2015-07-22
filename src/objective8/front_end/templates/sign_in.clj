@@ -1,4 +1,4 @@
-(ns objective8.front-end.templates.sign-in 
+(ns objective8.front-end.templates.sign-in
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [objective8.front-end.templates.page-furniture :as f]
@@ -11,8 +11,9 @@
          (html/emit*
            (tf/translate context
                          (f/add-google-analytics
-                           (html/at sign-in-template 
+                           (html/at sign-in-template
                                     [:title] (html/content (:title doc))
                                     [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
+                                    [:.clj-sign-in-d-cent] nil
                                     [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
                                     [:.clj-status-bar] (html/substitute (f/status-flash-bar context))))))))

@@ -13,7 +13,7 @@
   (let [auth-code (get-in request [:params :code])
         stonecutter-config (get-in request [:stonecutter-config])
         token-response (soc/request-access-token! stonecutter-config auth-code)
-        auth-provider-user-id (str "stonecutter-" (get-in token-response [:token :user-id]))]
+        auth-provider-user-id (str "d-cent-" (get-in token-response [:token :user-id]))]
     (-> (response/redirect (str utils/host-url "/sign-up"))
         (assoc-in [:session :auth-provider-user-id] auth-provider-user-id))))
 
@@ -26,8 +26,8 @@
   (response/redirect (utils/path-for :fe/error-configuration)))
 
 (def stonecutter-routes
-  ["/" {"stonecutter-sign-in" :sign-in
-        "stonecutter-callback" :callback}])
+  ["/" {"d-cent-sign-in" :sign-in
+        "d-cent-callback" :callback}])
 
 (defn stonecutter-handlers [config]
   {:sign-in (wrap-stonecutter-config stonecutter-sign-in config invalid-configuration-handler)
