@@ -1,11 +1,11 @@
 (def database-connection-url
-  (or (System/getenv "DB_JDBC_URL") 
+  (or (System/getenv "DB_JDBC_URL")
       "jdbc:postgresql://localhost/objective8?user=objective8&password=development"))
 
 (defproject objective8 "0.0.1-SNAPSHOT"
   :description "Cool new project to do things and stuff"
   :min-lein-version "2.0.0"
-  :test-paths ["test"] 
+  :test-paths ["test"]
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/core.cache "0.6.4"]
                  [http-kit "2.1.16"]
@@ -37,7 +37,7 @@
                  [hickory "0.5.4"]
                  [diff-match-patch-clj "1.0.0-SNAPSHOT"]
                  [crypto-random "1.2.0"]
-                 [org.clojars.d-cent/stonecutter-oauth "0.1.1-SNAPSHOT"]
+                 [org.clojars.d-cent/stonecutter-oauth "0.1.3-SNAPSHOT"]
                  [com.googlecode.owasp-java-html-sanitizer/owasp-java-html-sanitizer "r239" :exclusions [com.google.guava/guava com.google.code.findbugs/jsr305]]]
   :main objective8.core
   :plugins [[ragtime/ragtime.lein "0.3.8"]]
@@ -46,10 +46,10 @@
                                   :timeout 120000}
                    :dependencies [[midje "1.6.3"]
                                   [ring/ring-mock "0.2.0"]
-                                  [clj-webdriver "0.6.1" :exclusions [org.seleniumhq.selenium/selenium-java 
+                                  [clj-webdriver "0.6.1" :exclusions [org.seleniumhq.selenium/selenium-java
                                                                       org.seleniumhq.selenium/selenium-server
                                                                       org.seleniumhq.selenium/selenium-remote-driver
-                                                                      xml-apis]] 
+                                                                      xml-apis]]
                                   [org.seleniumhq.selenium/selenium-server "2.45.0"]
                                   [org.seleniumhq.selenium/selenium-java "2.45.0"]
                                   [org.seleniumhq.selenium/selenium-remote-driver "2.45.0"]
@@ -69,7 +69,7 @@
                                            [org.clojure/tools.nrepl "0.2.10"]]
                             :main load-tests}
              :uberjar {:source-paths ["prod"]
-                       :jvm-opts ["-Dlog4j.configuration=log4j.dev"]   
+                       :jvm-opts ["-Dlog4j.configuration=log4j.dev"]
                        :ragtime {:migrations ragtime.sql.files/migrations
                                  :database ~database-connection-url}
                        :main main

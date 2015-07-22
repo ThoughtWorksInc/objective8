@@ -13,7 +13,7 @@
   (let [auth-code (get-in request [:params :code])
         stonecutter-config (get-in request [:stonecutter-config])
         token-response (soc/request-access-token! stonecutter-config auth-code)
-        auth-provider-user-id (str "d-cent-" (get-in token-response [:token :user-id]))]
+        auth-provider-user-id (str "d-cent-" (:user-id token-response))]
     (-> (response/redirect (str utils/host-url "/sign-up"))
         (assoc-in [:session :auth-provider-user-id] auth-provider-user-id))))
 

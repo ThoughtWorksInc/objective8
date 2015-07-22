@@ -16,8 +16,7 @@
                     :session {:auth-provider-user-id "d-cent-USER_ID"}})
       (provided
         (soc/request-access-token! ...config... ...auth-code...)
-        => {:status :success
-            :token {:user-id "USER_ID"}}))
+        => {:user-id "USER_ID"}))
 
 (facts "about wrap-stonecutter-config"
        (fact "includes the stonecutter configuration in the request when the configuration is valid"
