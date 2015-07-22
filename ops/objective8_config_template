@@ -20,3 +20,8 @@ AWS_SECRET_KEY: ""
 # A passphrase for encrypting the database backups before they reach AWS S3
 # You will need this if you ever want to restore backups from a different machine so don't lose/forget it.
 AWS_GPG_PASSPHRASE: ""
+
+# Your Stonecutter auth config
+STONECUTTER_AUTH_URL: ""
+STONECUTTER_CLIENT_ID: ""
+STONECUTTER_CLIENT_SECRET: ""
