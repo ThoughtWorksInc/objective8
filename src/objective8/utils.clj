@@ -14,10 +14,10 @@
   (:import  [org.pegdown PegDownProcessor Extensions]))
 
 (def host-url
-  (str (:https config/environment) (:base-uri config/environment)))
+  (str (:uri-scheme config/environment) "://" (:base-uri config/environment)))
 
 (def api-url
-  (str (:https config/environment) (:api-uri config/environment)))
+  (str (:uri-scheme config/environment) "://" (:api-uri config/environment)))
 
 ;;Map manipulation
 (defn select-all-or-nothing
@@ -116,7 +116,7 @@
   (let [query-term "(?:[a-zA-Z-]+=[a-zA-Z0-9-|/%]*)"]
     (re-pattern (str query-term "(?:&" query-term ")*"))))
 
-(defn safen-query [query] 
+(defn safen-query [query]
   (when query
     ((regex-checker valid-query-string-regex) query)))
 
@@ -152,7 +152,7 @@
   (str uri (when query-string
              (str "?" query-string))))
 
-(defn anti-forgery-hook 
+(defn anti-forgery-hook
   "Hook enables CSRF when config variable set. Can be disabled for tests"
   [handler]
   (let [handler-with-anti-forgery (wrap-anti-forgery handler)]
@@ -168,7 +168,7 @@
        (filter sequential?)
        (apply list)))
 
-(defn- parse-markdown 
+(defn- parse-markdown
   "Extends endophile.core's 'md' method to include SUPPRESS_ALL_HTML"
   [md]
   (.parseMarkdown
@@ -192,7 +192,7 @@
 (defn html->hiccup [html]
   (map hickory/as-hiccup (hickory/parse-fragment html)))
 
-(defn split-hiccup-element 
+(defn split-hiccup-element
   "Returns a map with :element-without-content and :content
    :element-without-content is either:
    - just the html tag (string or key) (e.g. [:h1])
