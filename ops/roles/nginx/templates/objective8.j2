@@ -13,6 +13,7 @@ server {
   ssl_session_cache shared:SSL:32m;
   ssl_session_timeout 10m;
 
+  ssl_dhparam /etc/nginx/cert/dhparam.pem;
   ssl_protocols TLSv1.2 TLSv1.1 TLSv1;
 
   location /static/ {
