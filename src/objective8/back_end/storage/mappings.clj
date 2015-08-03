@@ -179,6 +179,10 @@
   (db-insertion-mapper "star"
                        nil 
                        [:objective-id :created-by-id :active]))
+(def map->activity
+  (db-insertion-mapper "activity"
+                       :activity-details
+                       nil))
 
 (def map->admin
   (db-insertion-mapper "admin"
@@ -422,6 +426,12 @@
                          [:objective-id :created-by-id :active :_created_at :_id]
                          {:_created_at sql-time->iso-time-string}))))
 
+(korma/defentity activity
+  (korma/pk :_id)
+  (korma/table :objective8.activities)
+  (korma/prepare map->activity)
+  (korma/transform (unmap :activity_details)))
+
 (def entities {:objective objective
                :user user
                :admin admin
@@ -439,6 +449,7 @@
                :section section
                :bearer-token bearer-token
                :star star
+               :activity activity
                :global-identifier global-identifier})
 
 (defn get-mapping

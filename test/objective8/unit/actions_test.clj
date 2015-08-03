@@ -14,6 +14,7 @@
             [objective8.back-end.domain.answers :as answers]
             [objective8.back-end.domain.marks :as marks]
             [objective8.back-end.domain.admin-removals :as admin-removals]
+            [objective8.back-end.domain.activities :as activities]
             [objective8.back-end.domain.writer-notes :as writer-notes]
             [objective8.back-end.storage.storage :as storage]))
 
@@ -285,6 +286,7 @@
 
 (def objective {:created-by-id USER_ID :title "SOME TITLE"})
 (def stored-objective (assoc objective :_id OBJECTIVE_ID))
+(def retrieved-objective (assoc stored-objective :username "UserName"))
 (def invitation {:invited-by-id USER_ID
                  :objective-id OBJECTIVE_ID
                  :reason (str "Default writer as creator of this objective")
@@ -295,11 +297,13 @@
 
 
 (facts "about creating an objective"
-       (fact "when an objective is stored the creator becomes a writer for the objective"
+       (future-fact "when an objective is stored the creator becomes a writer for the objective"
              (actions/create-objective! objective) => {:status ::actions/success
                                                        :result stored-objective}
              (provided
                (objectives/store-objective! objective) => stored-objective
+               (objectives/get-objective OBJECTIVE_ID) => retrieved-objective
+               (activities/store-activity! retrieved-objective) => anything
                (users/retrieve-user user-uri) => {:username "UserName"}
                (invitations/store-invitation! invitation) => {:uuid UU_ID}
                (users/update-user! (contains {:profile {:name "UserName" :biog "This profile was automatically generated for the creator of objective: SOME TITLE"}})) => {}

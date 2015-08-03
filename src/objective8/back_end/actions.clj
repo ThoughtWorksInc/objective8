@@ -10,11 +10,11 @@
             [objective8.back-end.domain.questions :as questions]
             [objective8.back-end.domain.answers :as answers]
             [objective8.back-end.domain.marks :as marks]
+            [objective8.back-end.domain.activities :as activities]
             [objective8.back-end.domain.writer-notes :as writer-notes]
             [objective8.back-end.domain.admin-removals :as admin-removals]
             [objective8.back-end.storage.uris :as uris]
-            [objective8.back-end.storage.storage :as storage]
-            [objective8.config :as config]))
+            [objective8.back-end.storage.storage :as storage]))
 
 (defn create-writer-for-objective! [{:keys [created-by-id] :as objective}]
   (let
@@ -33,7 +33,8 @@
 
 (defn create-objective! [{:keys [created-by-id] :as objective}]
   (if-let [stored-objective (objectives/store-objective! objective)]
-    (do (create-writer-for-objective! stored-objective) 
+    (do #_(activities/store-activity! (objectives/get-objective (:_id stored-objective)))
+        (create-writer-for-objective! stored-objective)
         {:result stored-objective
          :status ::success})
     {:status ::failure}))
@@ -90,7 +91,7 @@
   (if-let [reason (:reason comment-data)]
     (let [section-labels (drafts/get-section-labels-for-draft-uri (str "/objectives/" objective-id "/drafts/" draft-id))]
       (if (some #{section-label} section-labels)
-        (let [stored-section (drafts/store-section! section-data) 
+        (let [stored-section (drafts/store-section! section-data)
               stored-comment (comments/store-comment-for! stored-section comment-data)]
           (create-reason-for-comment! reason stored-comment))
         {:status ::entity-not-found}))
@@ -110,14 +111,14 @@
       {:status ::entity-not-found})))
 
 (defn create-question! [{:keys [created-by-id objective-id] :as question}]
-  (if (objectives/get-objective objective-id) 
+  (if (objectives/get-objective objective-id)
     (if-let [stored-question (questions/store-question! question)]
       (if (writers/retrieve-writer-for-objective created-by-id objective-id)
         {:status ::success :result (->> (marks/store-mark! {:question-uri (:uri stored-question)
                                                             :created-by-uri (str "/users/" created-by-id)
                                                             :active true})
                                         :active
-                                        (assoc-in stored-question [:meta :marked]))} 
+                                        (assoc-in stored-question [:meta :marked]))}
         {:status ::success :result stored-question})
       {:status ::failure})
     {:status ::entity-not-found}))
@@ -155,16 +156,16 @@
     (let [writers (writers/retrieve-writers-by-user-id (:_id user))
           objectives (objectives/get-objectives-owned-by-user-id (:_id user))
           admin (users/get-admin-by-auth-provider-user-id (:auth-provider-user-id user))]
-      {:status ::success :result (assoc user 
+      {:status ::success :result (assoc user
                                         :writer-records writers
-                                        :owned-objectives objectives 
+                                        :owned-objectives objectives
                                         :admin (not (empty? admin)))})
     {:status ::entity-not-found}))
 
 (defn update-user-with-profile! [profile-data]
   (if-let [user (users/retrieve-user (:user-uri profile-data))]
-    {:status ::success 
-     :result (users/update-user! (assoc user :profile (dissoc profile-data :user-uri)))} 
+    {:status ::success
+     :result (users/update-user! (assoc user :profile (dissoc profile-data :user-uri)))}
     {:status ::entity-not-found}))
 
 (defn authorised-objectives-for-inviter [user-id]
@@ -187,7 +188,7 @@
 
 (defn create-writer-note! [{:keys [note-on-uri created-by-id] :as writer-note-data}]
   (if-let [{o-id :objective-id :as entity-to-note-on} (storage/pg-retrieve-entity-by-uri note-on-uri :with-global-id)]
-    (if (empty? (writer-notes/retrieve-note note-on-uri)) 
+    (if (empty? (writer-notes/retrieve-note note-on-uri))
       (if (writer-for-objective? o-id created-by-id)
         {:status ::success :result (writer-notes/store-note-for! entity-to-note-on writer-note-data)}
         {:status ::forbidden})
@@ -199,10 +200,10 @@
     (if (users/get-admin-by-auth-provider-user-id (:auth-provider-user-id user))
       (if-let [objective (storage/pg-retrieve-entity-by-uri removal-uri :with-global-id)]
         (if (:removed-by-admin objective)
-          {:status ::entity-not-found} 
+          {:status ::entity-not-found}
           (do
             (objectives/admin-remove-objective! objective)
-            {:status ::success :result (admin-removals/store-admin-removal! admin-removal-data)})) 
+            {:status ::success :result (admin-removals/store-admin-removal! admin-removal-data)}))
         {:status ::entity-not-found})
      {:status ::forbidden})
     {:status ::entity-not-found}))
