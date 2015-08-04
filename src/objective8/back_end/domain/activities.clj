@@ -9,11 +9,14 @@
    "actor" {"@type" "Person"
             "displayName" (:username objective)}
    "object" {"@type" "Objective"
-             "displayName" (:title objective) 
-             "description" (:description objective) 
+             "displayName" (:title objective)
+             "description" (:description objective)
              "url" (str utils/host-url  (:uri objective))}})
 
 (defn store-activity! [objective]
   (-> (objective->activity objective)
       (assoc :entity :activity)
       storage/pg-store!))
+
+(defn retrieve-activities []
+  (:result (storage/pg-retrieve {:entity :activity})))
