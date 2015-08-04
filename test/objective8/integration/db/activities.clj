@@ -11,7 +11,7 @@
                          (ih/truncate-tables)))
    (after :facts (ih/truncate-tables))])
 
-(fact "an activity can be stored and retrieved"
+(fact "an activity can be stored"
       (let [{user-id :_id username :username} (sh/store-a-user)
             objective-data {:created-by-id user-id
                             :description "objective description"
@@ -30,7 +30,7 @@
                                                                        "description" "objective description"
                                                                        "url" stored-objective-url}}))
 
-(fact "about retrieving activities"
+(fact "activities can be retrieved"
       (let [stored-activity-1 (-> (sh/store-an-objective)
                                       :_id
                                       objectives/get-objective
