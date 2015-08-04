@@ -15,5 +15,5 @@
                  "displayName" "UserName"}
         "object" {"@type" "Objective"
                   "displayName" "Title"
-                  "description" "Description"
+                  "content" "Description"
                   "url" "http://localhost:8080/objectives/21"}})

@@ -10,7 +10,7 @@
             "displayName" (:username objective)}
    "object" {"@type" "Objective"
              "displayName" (:title objective)
-             "description" (:description objective)
+             "content" (:description objective)
              "url" (str utils/host-url  (:uri objective))}})
 
 (defn store-activity! [objective]

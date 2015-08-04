@@ -27,7 +27,7 @@
                                                                       "displayName" username}
                                                              "object" {"@type" "Objective"
                                                                        "displayName" "objective title"
-                                                                       "description" "objective description"
+                                                                       "content" "objective description"
                                                                        "url" stored-objective-url}}))
 
 (fact "activities can be retrieved in reverse chronological order"
