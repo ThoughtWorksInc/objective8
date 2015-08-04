@@ -19,4 +19,5 @@
       storage/pg-store!))
 
 (defn retrieve-activities []
-  (:result (storage/pg-retrieve {:entity :activity})))
+  (:result (storage/pg-retrieve {:entity :activity} {:sort {:field :_created_at
+                                                            :ordering :DESC}})))

@@ -30,7 +30,7 @@
                                                                        "description" "objective description"
                                                                        "url" stored-objective-url}}))
 
-(fact "activities can be retrieved"
-      (let [stored-activity-1 (sh/store-an-activity)
-            stored-activity-2 (sh/store-an-activity)]
-      (activities/retrieve-activities) => [stored-activity-1 stored-activity-2]))
+(fact "activities can be retrieved in reverse chronological order"
+      (let [first-stored-activity (sh/store-an-activity)
+            latest-stored-activity (sh/store-an-activity)]
+      (activities/retrieve-activities) => [latest-stored-activity first-stored-activity]))

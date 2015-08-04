@@ -22,7 +22,7 @@
          (fact "activities are returned as a json array"
                (let [stored-activities (doall (repeatedly 5 sh/store-an-activity))
                      {response :response} (p/request app (utils/api-path-for :api/get-activities))]
-                 (json/parse-string (:body response)) => stored-activities))
+                 (json/parse-string (:body response)) => (reverse stored-activities)))
 
          (fact "returns an empty body if there are no activities"
                (do
