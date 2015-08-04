@@ -143,7 +143,7 @@
             (throw e)))
         => (every-checker
              (contains "[{\"@context\":\"http://www.w3.org/ns/activitystreams\",\"@type\":\"Create\"")
-             (contains "\"displayName\":\"Functional test headline\",\"description\":\"Functional test description with lots of hipster-ipsum:")))
+             (contains "\"displayName\":\"Functional test headline\",\"content\":\"Functional test description with lots of hipster-ipsum:")))
 
   (fact "Can star an objective"
         (try (wd/to (:objective-url @journey-state))
