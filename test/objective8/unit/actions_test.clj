@@ -44,7 +44,7 @@
              (against-background
               (up-down-votes/get-vote GLOBAL_ID USER_ID) => nil
               (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => an-answer)
-             (actions/cast-up-down-vote! vote-data) => {:status ::actions/success 
+             (actions/cast-up-down-vote! vote-data) => {:status ::actions/success
                                                         :result :the-stored-vote}
              (provided
               (up-down-votes/store-vote! an-answer vote-data) => :the-stored-vote))
@@ -72,17 +72,17 @@
        (fact "the same user cannot vote twice on the same entity"
              (actions/allowed-to-vote? an-objective :vote-data) => falsey
              (provided
-               (up-down-votes/get-vote anything anything) => :a-vote))) 
+               (up-down-votes/get-vote anything anything) => :a-vote)))
 
 (def a-draft {:entity :draft})
 (def a-section {:entity :section :objective-id OBJECTIVE_ID})
-(def comment-data {:comment-on-uri "/entity-uri" 
+(def comment-data {:comment-on-uri "/entity-uri"
                    :comment "A comment"
                    :created-by-id USER_ID})
 (def COMMENT_ID)
 (def section-uri (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID "/sections/" SECTION_LABEL))
 (def reason-type "expand")
-(def section-comment-data {:comment-on-uri section-uri :reason reason-type}) 
+(def section-comment-data {:comment-on-uri section-uri :reason reason-type})
 
 
 (facts "about creating comments"
@@ -99,16 +99,16 @@
                (comments/store-comment-for! a-draft comment-data) => :the-stored-comment))
 
        (fact "can comment on a draft section with existing comments"
-             (actions/create-comment! section-comment-data) => {:status ::actions/success :result {:_id COMMENT_ID :reason reason-type}} 
+             (actions/create-comment! section-comment-data) => {:status ::actions/success :result {:_id COMMENT_ID :reason reason-type}}
              (provided
-               (storage/pg-retrieve-entity-by-uri section-uri :with-global-id) => a-section 
-               (comments/store-comment-for! a-section section-comment-data) => {:_id COMMENT_ID} 
+               (storage/pg-retrieve-entity-by-uri section-uri :with-global-id) => a-section
+               (comments/store-comment-for! a-section section-comment-data) => {:_id COMMENT_ID}
                (comments/store-reason! {:reason reason-type :comment-id COMMENT_ID}) => {:reason reason-type}))
 
        (fact "can comment on a draft section with no previous comments"
              (actions/create-comment! section-comment-data) => {:status ::actions/success :result {:_id COMMENT_ID :reason reason-type}}
              (provided
-               (storage/pg-retrieve-entity-by-uri section-uri :with-global-id) => nil 
+               (storage/pg-retrieve-entity-by-uri section-uri :with-global-id) => nil
                (drafts/get-section-labels-for-draft-uri DRAFT_URI) => [SECTION_LABEL]
                (drafts/store-section! {:entity :section :draft-id DRAFT_ID :objective-id OBJECTIVE_ID
                                        :section-label SECTION_LABEL}) => a-section
@@ -129,9 +129,9 @@
                                                                          :comments [:annotation]}]}
 
              (provided
-               (drafts/get-annotated-sections-with-section-content DRAFT_URI) => [{:uri :section-uri 
+               (drafts/get-annotated-sections-with-section-content DRAFT_URI) => [{:uri :section-uri
                                                                                    :objective-id OBJECTIVE_ID
-                                                                                   :section :some-hiccup}] 
+                                                                                   :section :some-hiccup}]
                (comments/get-comments :section-uri {}) => [:annotation])))
 
 (def STAR_ID 47)
@@ -168,7 +168,7 @@
 
 (facts "about creating questions"
        (fact "A question can be created"
-             (actions/create-question! question) => {:status ::actions/success :result :stored-question} 
+             (actions/create-question! question) => {:status ::actions/success :result :stored-question}
              (provided
                (objectives/get-objective OBJECTIVE_ID) => :an-objective
                (writers/retrieve-writer-for-objective USER_ID OBJECTIVE_ID) => nil
@@ -198,7 +198,7 @@
 
 (facts "about getting users"
        (fact "gets user with writer records, owned objectives and admin role if they exist"
-             (actions/get-user-with-roles user-uri) 
+             (actions/get-user-with-roles user-uri)
              => {:status ::actions/success
                  :result {:entity :user
                           :_id USER_ID
@@ -209,7 +209,7 @@
              (provided
                (users/retrieve-user user-uri) => {:entity :user :_id USER_ID :auth-provider-user-id "twitter-id"}
                (users/get-admin-by-auth-provider-user-id "twitter-id") => {:auth-provider-user-id "twitter-id"}
-               (writers/retrieve-writers-by-user-id USER_ID) => :stubbed-writer-records 
+               (writers/retrieve-writers-by-user-id USER_ID) => :stubbed-writer-records
                (objectives/get-objectives-owned-by-user-id USER_ID) => :stubbed-owned-objectives)))
 
 (def user-uri (str "/users/" USER_ID))
@@ -228,23 +228,23 @@
 
 
 (facts "about creating an answer"
-       (fact "succeeds when the question exists" 
+       (fact "succeeds when the question exists"
              (actions/create-answer! answer) => {:status ::actions/success
-                                                 :result :stored-answer} 
+                                                 :result :stored-answer}
              (provided
                (questions/get-question QUESTION_URI) => :a-question
                (answers/store-answer! answer) => :stored-answer))
 
-       (fact "returns entity-not-found status when the associated question doesn't exist" 
-             (actions/create-answer! answer) => {:status ::actions/entity-not-found} 
+       (fact "returns entity-not-found status when the associated question doesn't exist"
+             (actions/create-answer! answer) => {:status ::actions/entity-not-found}
              (provided
                (questions/get-question QUESTION_URI) => nil))
 
        (fact "returns failure status when storing the answer fails"
-             (actions/create-answer! answer) => {:status ::actions/failure} 
+             (actions/create-answer! answer) => {:status ::actions/failure}
              (provided
                (questions/get-question QUESTION_URI) => :a-question
-               (answers/store-answer! answer) => nil))) 
+               (answers/store-answer! answer) => nil)))
 
 (def invitation {:objective-id OBJECTIVE_ID
                  :invited-by-id USER_ID})
@@ -297,7 +297,7 @@
 
 
 (facts "about creating an objective"
-       (future-fact "when an objective is stored the creator becomes a writer for the objective"
+       (fact "when an objective is stored the creator becomes a writer for the objective"
              (actions/create-objective! objective) => {:status ::actions/success
                                                        :result stored-objective}
              (provided

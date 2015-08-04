@@ -27,9 +27,7 @@
  (m/valid-credentials? anything anything anything) => true)
 
 (against-background
-  [(before :contents (do (helpers/db-connection)
-                         #_(helpers/truncate-tables)))
-   #_(after :facts (helpers/truncate-tables))]
+  [(before :contents (helpers/db-connection))]
 
   (facts "GET /api/v1/objectives returns a list of non-removed objectives in reverse chronological order"
          (fact "objectives are returned as a list"
@@ -52,12 +50,12 @@
                      {response :response} (p/request app (str (utils/api-path-for :api/get-objectives)
                                                               "?include-removed=true"))
                      default-response (p/request app (utils/api-path-for :api/get-objectives))]
-                 (:body response) => (helpers/json-contains 
+                 (:body response) => (helpers/json-contains
                                        (map contains (->> (concat stored-objectives stored-removed-objectives)
                                                           (map #(dissoc % :global-id))
                                                           reverse)))
-                 (helpers/peridot-response-json-body->map default-response) 
-                 => (just [(contains {:removed-by-admin false}) 
+                 (helpers/peridot-response-json-body->map default-response)
+                 => (just [(contains {:removed-by-admin false})
                            (contains {:removed-by-admin false})]))))
 
   (facts "GET /api/v1/objectives?user-id=<user-id>"
@@ -66,7 +64,7 @@
                      {user-id :_id :as user} (sh/store-a-user)
                      starred-objective (sh/store-an-objective)
                      stored-star (sh/store-a-star {:user user :objective starred-objective})
-                     {response :response} (p/request app (str (utils/api-path-for :api/get-objectives) "?user-id=" user-id))] 
+                     {response :response} (p/request app (str (utils/api-path-for :api/get-objectives) "?user-id=" user-id))]
                  (:body response) => (helpers/json-contains [(contains {:meta (contains {:starred true})})
                                                              (contains {:meta (contains {:starred false})})] :in-any-order))))
 
@@ -87,7 +85,7 @@
 
   (facts "GET /api/v1/objectives/:id"
          (fact "gets an objective along with its meta information"
-               (let [{username :username :as user} (sh/store-a-user) 
+               (let [{username :username :as user} (sh/store-a-user)
                      stored-objective (sh/store-an-objective {:user user})
 
                      _ (sh/store-a-comment {:entity stored-objective})
@@ -128,18 +126,18 @@
 
 (facts "About retrieving a removed objective"
        (fact "GET /api/v1/objectives/:id?include-removed=true returns the removed objective"
-             (let [{username :username :as user} (sh/store-a-user) 
-                   stored-objective (sh/store-an-admin-removed-objective {:user user}) 
+             (let [{username :username :as user} (sh/store-a-user)
+                   stored-objective (sh/store-an-admin-removed-objective {:user user})
                    objective-uri (str "/objectives/" (:_id stored-objective))
                    {body :body} (-> (p/request app (str (utils/api-path-for :api/get-objective
-                                                                        :id (:_id stored-objective)) 
+                                                                        :id (:_id stored-objective))
                                                         "?include-removed=true"))
                                     :response)]
                body => (helpers/json-contains (dissoc stored-objective :global-id :meta))))
 
        (fact "GET /api/v1/objectives/:id returns a 404"
-             (let [{username :username :as user} (sh/store-a-user) 
-                   stored-objective (sh/store-an-admin-removed-objective {:user user}) 
+             (let [{username :username :as user} (sh/store-a-user)
+                   stored-objective (sh/store-an-admin-removed-objective {:user user})
                    objective-uri (str "/objectives/" (:_id stored-objective))
                    {status :status} (-> (p/request app (utils/api-path-for :api/get-objective
                                                                        :id (:_id stored-objective)))

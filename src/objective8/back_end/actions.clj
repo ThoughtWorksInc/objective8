@@ -33,7 +33,7 @@
 
 (defn create-objective! [{:keys [created-by-id] :as objective}]
   (if-let [stored-objective (objectives/store-objective! objective)]
-    (do #_(activities/store-activity! (objectives/get-objective (:_id stored-objective)))
+    (do (activities/store-activity! (objectives/get-objective (:_id stored-objective)))
         (create-writer-for-objective! stored-objective)
         {:result stored-objective
          :status ::success})

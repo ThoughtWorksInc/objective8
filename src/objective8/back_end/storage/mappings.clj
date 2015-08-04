@@ -109,7 +109,7 @@
                        :comment
                        [:global-id :created-by-id :objective-id :comment-on-id]))
 
-(def map->reason 
+(def map->reason
   (db-insertion-mapper "reason"
                        nil
                        [:comment-id :reason]
@@ -155,7 +155,7 @@
                        :writer
                        [:user-id :objective-id :invitation-id]))
 
-(def map->writer-note 
+(def map->writer-note
   (db-insertion-mapper "writer-note"
                        :note
                        [:global-id :created-by-id :note-on-id :objective-id]))
@@ -177,11 +177,11 @@
 
 (def map->star
   (db-insertion-mapper "star"
-                       nil 
+                       nil
                        [:objective-id :created-by-id :active]))
 (def map->activity
   (db-insertion-mapper "activity"
-                       :activity-details
+                       :activity
                        nil))
 
 (def map->admin
@@ -204,7 +204,7 @@
 (defn with-columns
   ([unmap-fn column-keys]
    (with-columns unmap-fn column-keys {}))
-  
+
   ([unmap-fn column-keys transformations]
    (fn [m]
      (-> (unmap-fn m)
@@ -246,7 +246,7 @@
 
 (defn with-question-meta [unmap-fn]
   (fn [m] (-> (unmap-fn m)
-              (assoc :meta (cond-> {:marked (if (:marked m) true false) 
+              (assoc :meta (cond-> {:marked (if (:marked m) true false)
                                     :answers-count (get m :answers_count 0)}
                              (:marked m) (assoc :marked-by (:marked_by m)))))))
 
@@ -308,7 +308,7 @@
   (korma/table :objective8.users)
   (korma/prepare map->user)
   (korma/transform (-> (unmap :user_data)
-                       (with-columns 
+                       (with-columns
                          [:auth-provider-user-id :username :_created_at]
                          {:_created_at sql-time->iso-time-string}))))
 
@@ -321,7 +321,7 @@
                        (with-columns [:comment-on-id :created-by-id :global-id :objective-id])
                        with-username-if-present)))
 
-(korma/defentity reason 
+(korma/defentity reason
   (korma/pk :_id)
   (korma/table :objective8.reasons)
   (korma/prepare map->reason)
@@ -426,11 +426,17 @@
                          [:objective-id :created-by-id :active :_created_at :_id]
                          {:_created_at sql-time->iso-time-string}))))
 
+(defn unmap-activity [m]
+  (-> (:activity m)
+      postgres-type->string
+      json/parse-string
+      (dissoc "entity")))
+
 (korma/defentity activity
   (korma/pk :_id)
   (korma/table :objective8.activities)
   (korma/prepare map->activity)
-  (korma/transform (unmap :activity_details)))
+  (korma/transform unmap-activity))
 
 (def entities {:objective objective
                :user user
