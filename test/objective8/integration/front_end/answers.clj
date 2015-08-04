@@ -19,29 +19,29 @@
        (binding [config/enable-csrf false]
          (fact "authorised user can post and retrieve answer to a question"
                (against-background
-                (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success})
-              (against-background
-                  (http-api/create-answer {:answer "The answer"
-                                           :objective-id OBJECTIVE_ID
-                                           :question-id QUESTION_ID
-                                           :created-by-id USER_ID}) => {:status ::http-api/success
-                                                                        :result  {:_id 12
-                                                                                  :objective-id OBJECTIVE_ID
-                                                                                  :question-id QUESTION_ID
-                                                                                  :created-by-id USER_ID
-                                                                                  :answer "The answer"}})
-              (against-background
-                  (oauth/access-token anything anything anything) => {:user_id USER_ID}
-                  (http-api/create-user anything) => {:status ::http-api/success
-                                                      :result {:_id USER_ID}})
-              (let [params {:answer "The answer"}
-                    peridot-response (-> user-session
-                                         (helpers/with-sign-in (str "http://localhost:8080/objectives/" OBJECTIVE_ID 
-                                                                    "/questions/" QUESTION_ID))
-                                         (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID 
-                                                         "/questions/" QUESTION_ID "/answers")
-                                                    :request-method :post
+                 (http-api/get-question OBJECTIVE_ID QUESTION_ID) => {:status ::http-api/success})
+               (against-background
+                 (http-api/create-answer {:answer "The answer"
+                                          :objective-id OBJECTIVE_ID
+                                          :question-id QUESTION_ID
+                                          :created-by-id USER_ID}) => {:status ::http-api/success
+                                                                       :result  {:_id 12
+                                                                                 :objective-id OBJECTIVE_ID
+                                                                                 :question-id QUESTION_ID
+                                                                                 :created-by-id USER_ID
+                                                                                 :answer "The answer"}})
+               (against-background
+                 (oauth/access-token anything anything anything) => {:user_id USER_ID}
+                 (http-api/create-user anything) => {:status ::http-api/success
+                                                     :result {:_id USER_ID}})
+               (let [params {:answer "The answer"}
+                     peridot-response (-> user-session
+                                          (helpers/with-sign-in (str "http://localhost:8080/objectives/" OBJECTIVE_ID
+                                                                     "/questions/" QUESTION_ID))
+                                          (p/request (str "http://localhost:8080/objectives/" OBJECTIVE_ID
+                                                          "/questions/" QUESTION_ID "/answers")
+                                                     :request-method :post
                                                      :params params))]
-                peridot-response => (helpers/flash-message-contains {:type :flash-message
-                                                                     :message :question-view/added-answer-message})
-                peridot-response => (helpers/headers-location (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))))))
+                 peridot-response => (helpers/flash-message-contains {:type :flash-message
+                                                                      :message :question-view/added-answer-message})
+                 peridot-response => (helpers/headers-location (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))))))

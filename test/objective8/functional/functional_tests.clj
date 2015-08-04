@@ -1,4 +1,4 @@
-(ns objective8.functional.functional-tests 
+(ns objective8.functional.functional-tests
   (:require [midje.sweet :refer :all]
             [org.httpkit.server :refer [run-server]]
             [clj-webdriver.taxi :as wd]
@@ -16,7 +16,7 @@
 (def config-without-twitter (assoc core/app-config :authentication stub-twitter-auth-config))
 
 (defn wait-for-title [title]
-  (try 
+  (try
     (wd/wait-until #(= (wd/title) title) 5000)
     (catch Exception e
       (log/info (str ">>>>>>>>>>> Title never appeared:"))
@@ -57,6 +57,9 @@
 (def journey-state (atom nil))
 (def test-data-collector (atom {}))
 
+(def objective-description "Functional test description with lots of hipster-ipsum:
+                           Master cleanse squid nulla, ugh kitsch biodiesel cronut food truck. Nostrud Schlitz tempor farm-to-table skateboard, wayfarers adipisicing Pitchfork sunt Neutra brunch four dollar toast forage placeat. Fugiat lo-fi sed polaroid Portland et tofu Austin. Blue Bottle labore forage, in bitters incididunt ugh delectus seitan flannel. Mixtape migas cardigan, quis American Apparel culpa aliquip cupidatat et nisi scenester. Labore sriracha Etsy flannel XOXO. Normcore selvage do vero keytar synth.")
+
 (def FIRST_DRAFT_MARKDOWN  "First draft heading\n===\n\n- Some content")
 (def SECOND_DRAFT_MARKDOWN  "Second draft heading\n===\n\n- Some content\n- Some more content")
 (def THIRD_DRAFT_MARKDOWN  "Third draft heading\n===\n\n- Some content\n- Some more content\n- Another line of content")
@@ -64,12 +67,12 @@
 (def ADMIN_AND_WRITER_TWITTER_ID "twitter-123123")
 (def OBJECTIVE_OWNER_TWITTER_ID "twitter-789789")
 
-(against-background 
+(against-background
   [(before :contents (do (integration-helpers/db-connection)
                          (integration-helpers/truncate-tables)
                          (core/start-server config-without-twitter)
                          (wd/set-driver! {:browser :firefox})
-                         (users/store-admin! {:auth-provider-user-id ADMIN_AND_WRITER_TWITTER_ID})  
+                         (users/store-admin! {:auth-provider-user-id ADMIN_AND_WRITER_TWITTER_ID})
                          (reset! journey-state {})
                          (clear-screenshots)))
    (before :facts (reset! test-data-collector {}))
@@ -78,28 +81,29 @@
                         (core/stop-back-end-server)
                         (core/stop-front-end-server)))]
 
+
   (fact "can add an objective"
         (try (reset! twitter-id OBJECTIVE_OWNER_TWITTER_ID)
              (wd/to "localhost:8080")
              (wait-for-title "Objective[8]")
              (screenshot "home_page")
 
-             (wd/click "a[href='/objectives']") 
+             (wd/click "a[href='/objectives']")
              (wait-for-title "Objectives | Objective[8]")
              (screenshot "objectives_page")
 
-             (wd/click "a[href='/objectives/create']") 
+             (wd/click "a[href='/objectives/create']")
              (wait-for-title "Sign in or Sign up | Objective[8]")
              (screenshot "sign_in_page")
 
-             (wd/click ".func--sign-in-with-twitter") 
+             (wd/click ".func--sign-in-with-twitter")
              (wait-for-title "Sign up | Objective[8]")
              (screenshot "sign_up_almost_there")
 
              (wd/input-text "#username" "funcTestUser123")
-             (-> "#email-address" 
+             (-> "#email-address"
                  (wd/input-text "func_test_user@domain.com")
-                 wd/submit) 
+                 wd/submit)
 
              (screenshot "create_objective_page")
              (wait-for-title "Create an Objective | Objective[8]")
@@ -111,9 +115,7 @@
 
              (wd/input-text ".func--input-objective-title" "unctional test headline")
              (-> ".func--input-objective-background"
-                 (wd/input-text 
-                   "Functional test description with lots of hipster-ipsum:
-                   Master cleanse squid nulla, ugh kitsch biodiesel cronut food truck. Nostrud Schlitz tempor farm-to-table skateboard, wayfarers adipisicing Pitchfork sunt Neutra brunch four dollar toast forage placeat. Fugiat lo-fi sed polaroid Portland et tofu Austin. Blue Bottle labore forage, in bitters incididunt ugh delectus seitan flannel. Mixtape migas cardigan, quis American Apparel culpa aliquip cupidatat et nisi scenester. Labore sriracha Etsy flannel XOXO. Normcore selvage do vero keytar synth.")
+                 (wd/input-text objective-description)
                  wd/submit)
 
              (wait-for-title "Functional test headline | Objective[8]")
@@ -130,6 +132,18 @@
         =>  (contains {:page-title "Functional test headline | Objective[8]"
                        :modal-text "Functional test headline"
                        :writer-name "funcTestUser123"}))
+
+  (fact "Can retrieve activities"
+        (try
+          (wd/to "localhost:8080/activities")
+          (screenshot "activities_json")
+          (wd/page-source)
+          (catch Exception e
+            (screenshot "ERROR-Can-retrieve-activities")
+            (throw e)))
+        => (every-checker
+             (contains "[{\"@context\":\"http://www.w3.org/ns/activitystreams\",\"@type\":\"Create\"")
+             (contains "\"displayName\":\"Functional test headline\",\"description\":\"Functional test description with lots of hipster-ipsum:")))
 
   (fact "Can star an objective"
         (try (wd/to (:objective-url @journey-state))
@@ -165,7 +179,7 @@
           (wd/click ".func--comment-form-submit")
           (wait-for-title "Functional test headline | Objective[8]")
           (screenshot "objective_with_two_comments")
-          
+
           (wd/page-source)
 
           (catch Exception e
@@ -179,7 +193,7 @@
           (wait-for-title "Comments for Functional test headline | Objective[8]")
           (screenshot "objective_comment_history_offset_1")
           (swap! test-data-collector assoc :offset-equals-1-comment-count (count (wd/elements ".func--comment-text")))
-          
+
           (wd/click ".func--previous-link")
 
           (wait-for-title "Comments for Functional test headline | Objective[8]")
@@ -207,14 +221,14 @@
              (screenshot "add_question_page")
 
              (-> ".func--question-textarea"
-                 (wd/input-text "Functional test question") 
+                 (wd/input-text "Functional test question")
                  (wd/submit))
 
              (wait-for-element ".func--add-question")
              (screenshot "objective_page_with_question")
 
              {:modal-text (wd/text ".func--share-question-modal-text")}
-             
+
              (catch Exception e
                (screenshot "Error-Can-add-questions")
                (throw e)))
@@ -244,7 +258,7 @@
            (wait-for-element ".func--add-answer")
 
            (-> ".func--add-answer"
-               (wd/input-text "Functional test answer") 
+               (wd/input-text "Functional test answer")
                (wd/submit))
 
            (wait-for-element ".func--answer-text")
@@ -258,7 +272,7 @@
              (throw e)))
       => "Functional test answer")
 
-(fact "Can up vote an answer" 
+(fact "Can up vote an answer"
       (try (wd/to (:question-url @journey-state))
 
            (wait-for-element "textarea.func--add-answer")
@@ -307,7 +321,7 @@
 
 (fact "Can accept a writer invitation"
       (try (reset! twitter-id ADMIN_AND_WRITER_TWITTER_ID)
-           (wd/click ".func--masthead-sign-out") 
+           (wd/click ".func--masthead-sign-out")
            (screenshot "after_sign_out")
 
            (wd/to (:invitation-url @journey-state))
@@ -317,12 +331,12 @@
            (wd/click ".func--sign-in-to-accept")
 
            (wait-for-title "Sign in or Sign up | Objective[8]")
-           (wd/click ".func--sign-in-with-twitter") 
+           (wd/click ".func--sign-in-with-twitter")
            (wait-for-title "Sign up | Objective[8]")
-           (wd/input-text "#username" "funcTestWriter") 
-           (-> "#email-address" 
+           (wd/input-text "#username" "funcTestWriter")
+           (-> "#email-address"
                (wd/input-text "func_test_invited_writer_user@domain.com")
-               wd/submit) 
+               wd/submit)
 
            (wait-for-title "Functional test headline | Objective[8]")
            (screenshot "objective_page_after_signing_up")
@@ -332,7 +346,7 @@
            (wait-for-title "Create profile | Objective[8]")
            (screenshot "create_profile_page")
 
-           (wd/input-text ".func--name" "Invited writer real name") 
+           (wd/input-text ".func--name" "Invited writer real name")
            (-> ".func--biog"
                (wd/input-text  "Biography with lots of text...")
                wd/submit)
@@ -374,28 +388,28 @@
                (wd/input-text "My new real name"))
            (-> ".func--biog"
                wd/clear
-               (wd/input-text "My new biography") 
+               (wd/input-text "My new biography")
                wd/submit)
 
            (wait-for-title "My new real name | Objective[8]")
            (screenshot "updated_profile_page")
 
            {:name (wd/text (first (wd/elements ".func--writer-name")))
-            :biog (wd/text (first (wd/elements ".func--writer-biog")))} 
+            :biog (wd/text (first (wd/elements ".func--writer-biog")))}
 
            (catch Exception e
-             (screenshot "ERROR-can-edit-writer-profile") 
+             (screenshot "ERROR-can-edit-writer-profile")
              (throw e)))
       => (contains {:biog "My new biography"}))
 
 (fact "Can access dashboard from profile page"
-      (try 
+      (try
         (wd/click ".func--dashboard-link")
         (wait-for-title "Writer dashboard | Objective[8]")
         (screenshot "writer_dashboard_from_profile_page")
-       
+
         (wd/current-url)
-        
+
         (catch Exception e
           (screenshot "ERROR-can-access-dashboard-from-profile-page")
           (throw e)))
@@ -543,7 +557,7 @@
         (screenshot "draft_diff")
 
         (catch Exception e
-          (screenshot "ERROR-Can-view-draft-diffs") 
+          (screenshot "ERROR-Can-view-draft-diffs")
           (throw e))))
 
 (fact "Can view draft section"
@@ -554,9 +568,9 @@
         (wait-for-title "Draft section | Objective[8]")
         (screenshot "draft_section")
 
-        (wd/page-source) 
+        (wd/page-source)
         (catch Exception e
-          (screenshot "ERROR-Can-view-draft-section") 
+          (screenshot "ERROR-Can-view-draft-section")
           (throw e)))
       => (contains "Third draft heading"))
 
@@ -568,11 +582,11 @@
         (wait-for-title "Draft section | Objective[8]")
         (screenshot "draft_section_with_comment")
 
-        {:annotation (wd/text ".func--comment-text") 
-         :annotation-reason (wd/text ".func--comment-reason-text")} 
+        {:annotation (wd/text ".func--comment-text")
+         :annotation-reason (wd/text ".func--comment-reason-text")}
 
         (catch Exception e
-          (screenshot "ERROR-Can-annotate-a-draft-section")  
+          (screenshot "ERROR-Can-annotate-a-draft-section")
           (throw e)))
       => {:annotation "my draft section annotation"
           :annotation-reason  "Section is difficult to understand"})
@@ -585,8 +599,8 @@
 
        (wd/text ".func--annotation-count")
        (catch Exception e
-         (screenshot "ERROR-Can-view-number-of-annotations-on-a-section")  
-         (throw e))) 
+         (screenshot "ERROR-Can-view-number-of-annotations-on-a-section")
+         (throw e)))
       => "1")
 
 (fact "Can navigate to import from Google Drive"
@@ -619,7 +633,7 @@
 
            {:page-title (wd/title)
             :page-source (wd/page-source)}
-                     
+
            (catch Exception e
              (screenshot "ERROR-can-view-questions-dashboard")
              (throw e)))
@@ -636,13 +650,13 @@
            (screenshot "questions_dashboard_with_writer_note")
 
            (wd/text ".func--writer-note-text")
-           
+
            (catch Exception e
              (screenshot "ERROR-can-add-a-writer-note-to-an-answer")
              (throw e)))
       => "Functional test writer note on answer")
 
-(fact "Can view comments dashboard" 
+(fact "Can view comments dashboard"
       (try (wd/to (:objective-url @journey-state))
            (wait-for-title "Functional test headline | Objective[8]")
            (wd/click ".func--writer-dashboard-link")
@@ -676,8 +690,8 @@
              (throw e)))
       => "Functional test writer note on comment")
 
-(fact "Can view writer note on objective comment" 
-      (try (wd/to (:objective-url @journey-state)) 
+(fact "Can view writer note on objective comment"
+      (try (wd/to (:objective-url @journey-state))
            (wait-for-title "Functional test headline | Objective[8]")
            (screenshot "writer_note_on_objective_comment")
            (wd/page-source)
@@ -768,6 +782,6 @@
           (wd/page-source)
 
           (catch Exception e
-            (screenshot "ERROR-Can-view-the-removed-objective-on-the-admin-activity-page") 
+            (screenshot "ERROR-Can-view-the-removed-objective-on-the-admin-activity-page")
             (throw e)))
         => (contains objective-uri))))

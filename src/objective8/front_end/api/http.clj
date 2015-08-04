@@ -1,4 +1,4 @@
-(ns objective8.front-end.api.http 
+(ns objective8.front-end.api.http
   (:require [org.httpkit.client :as http]
             [ring.util.response :as response]
             [cheshire.core :as json]
@@ -124,7 +124,7 @@
 (defn post-comment [comment-data]
   (default-post-call (utils/api-path-for :api/post-comment) comment-data))
 
-(defn get-comments 
+(defn get-comments
   ([entity-uri]
    (get-comments entity-uri {}))
 
@@ -162,13 +162,13 @@
     answer))
 
 (defn retrieve-answers
-  ([question-uri] 
-   (retrieve-answers question-uri {})) 
+  ([question-uri]
+   (retrieve-answers question-uri {}))
 
   ([question-uri options]
    (default-get-call
      (str utils/api-url "/api/v1" question-uri "/answers")
-     {:query-params options}))) 
+     {:query-params options})))
 
 ;; WRITERS
 
@@ -230,10 +230,15 @@
 (defn post-star [star-data]
   (default-post-call (utils/api-path-for :api/post-star) star-data))
 
-;; ADMIN REMOVALS 
+;; ADMIN REMOVALS
 
 (defn post-admin-removal [admin-removal-data]
-  (default-post-call (utils/api-path-for :api/post-admin-removal) admin-removal-data))  
+  (default-post-call (utils/api-path-for :api/post-admin-removal) admin-removal-data))
 
 (defn get-admin-removals []
   (default-get-call (utils/api-path-for :api/get-admin-removals)))
+
+;; ACTIVITIES
+
+(defn get-activities []
+  (:body (get-request (utils/api-path-for :api/get-activities))))

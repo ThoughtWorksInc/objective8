@@ -11,6 +11,7 @@
     "learn-more"        :fe/learn-more
     "static/"           (->Resources {:prefix "public/"})
     "admin-activity"    :fe/admin-activity
+    "activities"        :fe/activities
     "meta"              {"/up-vote"      {:post :fe/post-up-vote}
                          "/down-vote"    {:post :fe/post-down-vote}
                          "/comments"     {:post :fe/post-comment}

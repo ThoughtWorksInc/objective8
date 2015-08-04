@@ -69,7 +69,7 @@
 (def USER_URI (str "/users/" USER_ID))
 (def USER_AUTH_PROVIDER_USER_ID "twitter-TWITTER_ID")
 (def the-user {:some :data
-               :auth-provider-user-id USER_AUTH_PROVIDER_USER_ID 
+               :auth-provider-user-id USER_AUTH_PROVIDER_USER_ID
                :username "someUsername"})
 
 (fact "creating a user record hits the correct API endpoint"
@@ -149,7 +149,7 @@
 
 (fact "getting objectives hits the correct API endpoint"
       (http-api/get-objectives) => {:status ::http-api/success
-                                    :result [the-objective]} 
+                                    :result [the-objective]}
       (provided
         (http-api/default-get-call
           (contains (utils/api-path-for :api/get-objectives))
@@ -232,7 +232,7 @@
 
 (fact "getting all questions for an objective sorted by answer count hits the correct API endpoint"
       (http-api/retrieve-questions OBJECTIVE_ID {:sorted-by "answers"}) => :api-call-result
-      (provided 
+      (provided
         (http-api/default-get-call (contains (utils/api-path-for :api/get-questions-for-objective :id OBJECTIVE_ID))
           {:query-params {:sorted-by "answers"}}) => :api-call-result))
 
@@ -241,7 +241,7 @@
 (fact "marking a question hits the correct API endpoint"
       (http-api/post-mark mark-data) => :api-call-result
       (provided
-        (http-api/default-post-call (contains "/api/v1/meta/marks") 
+        (http-api/default-post-call (contains "/api/v1/meta/marks")
           mark-data) => :api-call-result))
 
 ;; ANSWERS
@@ -266,7 +266,7 @@
 (fact "getting all answers for a question sorted by up-down-votes hits the correct API endpoint"
       (http-api/retrieve-answers QUESTION_URI {:sorted-by "up-votes"}) => :api-call-result
       (provided
-        (http-api/default-get-call (contains (utils/api-path-for :api/get-answers-for-question 
+        (http-api/default-get-call (contains (utils/api-path-for :api/get-answers-for-question
                                                                  :id OBJECTIVE_ID :q-id QUESTION_ID))
           {:query-params {:sorted-by "up-votes"}}) => :api-call-result))
 
@@ -277,8 +277,8 @@
 
 (fact "creating an invitation hits the correct API endpoint"
       (http-api/create-invitation the-invitation) => :api-call-result
-      (provided 
-        (http-api/default-post-call (contains (str utils/api-url "/api/v1/objectives/" OBJECTIVE_ID 
+      (provided
+        (http-api/default-post-call (contains (str utils/api-url "/api/v1/objectives/" OBJECTIVE_ID
                                                    "/writer-invitations")) the-invitation) => :api-call-result))
 
 (def profile-data {:name "NAME"
@@ -305,7 +305,7 @@
 (fact "posting a writer hits the correct API endpoint"
       (http-api/post-writer the-writer) => :api-call-result
       (provided
-        (http-api/default-post-call (contains (str utils/api-url "/api/v1/objectives/" OBJECTIVE_ID 
+        (http-api/default-post-call (contains (str utils/api-url "/api/v1/objectives/" OBJECTIVE_ID
                                                    "/writers")) the-writer) => :api-call-result))
 
 (def declined-invitation {:invitation-uuid UUID
@@ -388,3 +388,11 @@
       (http-api/get-admin-removals) => :api-call-result
       (provided
         (http-api/default-get-call (contains (utils/api-path-for :api/get-admin-removals))) => :api-call-result))
+
+;;ACTIVITIES
+
+(fact "getting activities hits the correct API endpoint"
+      (http-api/get-activities) => "SOME JSON"
+      (provided
+        (http-api/get-request (contains (utils/api-path-for :api/get-activities))) => {:status :200
+                                                                                       :body "SOME JSON"}))

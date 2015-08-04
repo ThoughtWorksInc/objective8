@@ -95,7 +95,7 @@
                                 :joined-date joined-date
                                 :doc {:title (str (:name user-profile) " | Objective[8]")})}
           (error-404-response request)))
-      
+
       ::http-api/not-found
       (error-404-response request)
 
@@ -115,7 +115,7 @@
        :header {"Content-Type" "text/html"}
        :body (views/objective-list "objective-list" request
                                    :objectives objectives)}
- 
+
       (= status ::http-api/error)
       (do (log/info (str "Error when retrieving objectives " {:http-api-status status}))
           (default-error-page request 502)))))
@@ -143,7 +143,7 @@
               (do (log/info (str "Invalid input when creating objective " {:http-api-status status
                                                                             :posted-data objective-data}))
                   (default-error-page request 400))
-              
+
               :else
               (do (log/info (str "Error when creating objective " {:http-api-status status
                                                                     :posted-data objective-data}))
@@ -202,7 +202,7 @@
            :else
            (do (log/info (str "Error when getting objective " {:http-api-status objective-status}))
                (default-error-page request 500))))
-       
+
        (catch Exception e
          (do (log/info "Exception in objective-detail handler: " e)
              (default-error-page request 500)))))
@@ -276,7 +276,7 @@
                                             :comment-view-type comment-view-type
                                             :offset offset
                                             :selected-comment-target-uri selected-comment-target-uri)}
-      
+
       :else
       (do (log/info (str "Error in dashboard-comments handler " {:objective-http-api-status objective-status
                                                                   :comments-http-api-status comments-status
@@ -297,7 +297,7 @@
        :headers {"Content-Type" "text/html"}
        :body (views/dashboard-annotations-page "dashboard-annotations"
                                                request
-                                               :objective objective 
+                                               :objective objective
                                                :drafts drafts
                                                :annotations annotations
                                                :selected-draft-uri selected-draft-uri)}
@@ -325,7 +325,7 @@
         (cond
           (= status ::http-api/success)
           (redirect-to-params-referer request)
-          
+
           (= status ::http-api/forbidden)
           (do (log/info (str "Attempt to post writer note when not authorised " {:data writer-note-data}))
               (default-error-page request 403))))
@@ -371,7 +371,7 @@
 
                 (do (log/info (str "Error when retrieving comments " {:comments-http-api-status comments-status}))
                     (default-error-page request 500))))
-            
+
             (response/redirect (str (utils/path-for :fe/get-comments-for-objective
                                                     :id objective-id)
                                     "?offset=" (max 0 (- comment-count fe-config/comments-pagination))))))
@@ -411,10 +411,10 @@
                                                    (utils/iso-time-string->pretty-time (:_created_at draft)) " | Objective[8]")]
                                   {:title details
                                    :description details}))}
-                  
+
                   (do (log/info (str "Error when retrieving comments " {:comments-http-api-status comments-status}))
                       (default-error-page request 500))))
-              
+
               (response/redirect (str (utils/path-for :fe/get-comments-for-draft
                                                       :id objective-id
                                                       :d-id draft-id)
@@ -456,7 +456,7 @@
       ::fr/invalid
       (-> (redirect-to-params-referer request "add-comment-form")
           (assoc :flash {:validation (dissoc comment-data :status)})))
-    
+
     (do (log/info (str "post-comment: Invalid data " {:request-params (:params request)}))
         (default-error-page request 400))))
 
@@ -505,7 +505,7 @@
        :headers {"Content-Type" "text/html"}}
 
       (= objective-status ::http-api/not-found) (error-404-response request)
-      
+
       :else
       (do (log/info (str "Error getting objective on create question form " {:http-api-status objective-status}))
           (default-error-page request 500)))))
@@ -531,7 +531,7 @@
                      :else
                      (do (log/info (str "add-question-form-post: error when creating question" {:http-api-status status}))
                          (default-error-page request 502))))
-      
+
       ::fr/invalid (-> (response/redirect (utils/path-for :fe/add-a-question
                                                           :id (:id route-params)))
                        (assoc :flash {:validation (dissoc question-data :status)})))))
@@ -586,7 +586,7 @@
                            {:question-status question-status
                             :request {:params params :route-params route-params}}))
             (default-error-page request 500))))
-    
+
     (catch Exception e
       (log/info "question-detail: Exception " e)
       (error-404-response request))))
@@ -672,7 +672,7 @@
       ::fr/invalid
       (-> (response/redirect (utils/path-for :fe/invite-writer :id (:id route-params)))
           (assoc :flash {:validation (dissoc invitation-data :status)})))
-    
+
     (do (log/info (str "invitation-form-post: fatal data validation error " {:request {:params request
                                                                                        :route-params request}}))
         (default-error-page request 400))))
@@ -698,7 +698,7 @@
         :else (error-404-response request))
 
       (= status ::http-api/not-found) (error-404-response request)
-      
+
       :else (do (log/info (str "writer-invitation: error retrieving invitation " {:http-api-status status
                                                                                   :uuid uuid}))
                 (default-error-page request 500)))))
@@ -883,7 +883,7 @@
 
                                 (= status ::http-api/not-found)
                                 (error-404-response request)
-                                
+
                                 :else
                                 (do (log/info (str "import-draft-post: api error post-draft " {:http-api-status status
                                                                                                :data draft}))
@@ -932,7 +932,7 @@
                                   :comments-http-api-status comments-status
                                   }))
                   (default-error-page request 500))))
-    
+
     (do (log/info "draft: Invalid draft query" (select-keys request [:route-params :params]))
         (default-error-page request 400))))
 
@@ -1044,7 +1044,7 @@
                            {:http-api-status status
                             :data mark-data}))
             (default-error-page request 502))))
-    
+
     (do (log/info (str "post-mark: fatal validation error "
                        {:request {:params (:params request)
                                   :route-params (:route-params request)}
@@ -1071,7 +1071,7 @@
                            {:http-api-status status
                             :data admin-removal-confirmation-data}))
             (default-error-page request 502))))
-    
+
     (do (log/info (str "post-admin-removal-confirmation: fatal validation error "
                        {:request {:params (:params request)
                                   :route-params (:route-params request)}
@@ -1091,7 +1091,7 @@
     (let [updated-session (assoc (:session request) :removal-data admin-removal-data)]
       (-> (response/redirect (utils/path-for :fe/admin-removal-confirmation-get))
           (assoc :session updated-session)))
-    
+
     (do (log/info (str "post-admin-removal: fatal validation error "
                        {:request {:params (:params request)
                                   :route-params (:route-params request)}}))
@@ -1102,7 +1102,7 @@
     (cond
       (= status ::http-api/success)
       {:status 200
-       :header {"Content-Type" "text/html"}
+       :headers {"Content-Type" "text/html"}
        :body (views/admin-activity "admin-activity" request
                                    :admin-removals admin-removals)}
 
@@ -1110,3 +1110,10 @@
       (do (log/info (str "admin-activity: api error get-admin-removals "
                          {:http-api-status status}))
           (default-error-page request 502)))))
+
+;;ACTIVITIES
+
+(defn activities [request]
+  {:status 200
+   :headers {"Content-Type" "application/json"}
+   :body (http-api/get-activities)})
