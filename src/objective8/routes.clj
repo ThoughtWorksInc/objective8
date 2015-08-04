@@ -22,7 +22,7 @@
                          "/admin-removals" {:post :fe/post-admin-removal}}
     "objectives"        {:get :fe/objective-list
                          :post :fe/create-objective-form-post
-                         "/create" {:get :fe/create-objective-form} 
+                         "/create" {:get :fe/create-objective-form}
                          ["/" [#"\d+" :id]] {:get :fe/objective
                                              "/comments" {:get :fe/get-comments-for-objective}
                                              "/invite-writer" {:get :fe/invite-writer}
@@ -80,10 +80,10 @@
                                                                        :get :api/get-drafts-for-objective
                                                                        ["/" [#"\d+|latest" :d-id]] {:get :api/get-draft
                                                                                                     "/annotations" {:get :api/get-annotations}
-                                                                                                    "/sections" {:get :api/get-sections 
+                                                                                                    "/sections" {:get :api/get-sections
                                                                                                                  ["/" [#"[0-9a-f]{8}" :section-label]] {:get :api/get-section}}}}}}
                          "/writers" {["/" [#"\d+" :id]] {
-                                                         "/objectives" {:get :api/get-objectives-for-writer}}} 
+                                                         "/objectives" {:get :api/get-objectives-for-writer}}}
 
                          "/meta" {"/comments" {:post :api/post-comment
                                                :get :api/get-comments}
@@ -93,4 +93,5 @@
                                   "/admin-removals" {:post :api/post-admin-removal
                                                      :get :api/get-admin-removals}}
                          "/up-down-votes" {:post :api/post-up-down-vote}
-                         "/invitations" {:get :api/get-invitation}}}])
+                         "/invitations" {:get :api/get-invitation}
+                         "/activities" {:get :api/get-activities}}}])

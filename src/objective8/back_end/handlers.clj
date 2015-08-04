@@ -15,7 +15,8 @@
             [objective8.back-end.requests :as br]
             [objective8.back-end.domain.stars :as stars]
             [objective8.back-end.domain.admin-removals :as admin-removals]
-            [objective8.back-end.actions :as actions]))
+            [objective8.back-end.actions :as actions]
+            [objective8.back-end.domain.activities :as activities]))
 
 (defn error-response [status message]
   {:status status
@@ -68,7 +69,7 @@
   (if-let [auth-provider-user-id (params :auth_provider_user_id)]
     (find-user-by-auth-provider-user-id auth-provider-user-id)
     (if-let [username (params :username)]
-      (find-user-by-username username)))) 
+      (find-user-by-username username))))
 
 (defn post-user-profile [request]
   (try
@@ -100,11 +101,11 @@
           (= status ::actions/success)
           (resource-updated-response (utils/api-path-for :api/get-user :id (:_id user)) user)
 
-          (= status ::actions/entity-not-found)  
-          (not-found-response "User does not exist with that user-uri") 
+          (= status ::actions/entity-not-found)
+          (not-found-response "User does not exist with that user-uri")
 
           :else
-          (internal-server-error "Error when posting profile")))  
+          (internal-server-error "Error when posting profile")))
       (invalid-response "Invalid profile post request"))
     (catch Exception e
       (log/info "Error when posting profile: " e)
@@ -151,7 +152,7 @@
           (resource-created-response (str utils/host-url "/api/v1/meta/stars/" (:_id star))
                                      star)
 
-          (= status ::actions/entity-not-found)  
+          (= status ::actions/entity-not-found)
           (not-found-response "Objective does not exist")
 
           :else
@@ -286,10 +287,10 @@
 ;;ANSWERS
 (defn post-answer [{:keys [route-params params] :as request}]
   (try
-    (if-let [answer-data (br/request->answer-data request)] 
+    (if-let [answer-data (br/request->answer-data request)]
       (let [ {status :status answer :result} (actions/create-answer! answer-data)]
         (case status
-          ::actions/success 
+          ::actions/success
           (resource-created-response (str utils/host-url
                                           "/api/v1/objectives/" (:objective-id answer)
                                           "/questions/" (:question-id answer)
@@ -301,7 +302,7 @@
 
           ;; default
           (internal-server-error "Error when posting comment")))
-      (invalid-response "Invalid answer post request")) 
+      (invalid-response "Invalid answer post request"))
     (catch Exception e
       (log/info "Error when posting answer: " e)
       (invalid-response "Invalid answer post request"))))
@@ -311,12 +312,12 @@
     (if-let [{question-uri :question-uri sorted-by :sorted-by filter-type :filter-type :as query-params} (br/request->answers-query request)]
       (if (questions/get-question question-uri)
         (let [answers-query {:sorted-by sorted-by
-                             :filter-type filter-type 
+                             :filter-type filter-type
                              :offset (get query-params :offset 0)}
               answers (answers/get-answers question-uri answers-query)]
           (-> answers
               response/response
-              (response/content-type "application/json"))) 
+              (response/content-type "application/json")))
         (not-found-response "Question does not exist"))
       (invalid-response "Invalid answers query"))
     (catch Exception e
@@ -345,8 +346,8 @@
   (try
     (let [invitation-data (br/request->invitation-data request)
           {status :status stored-invitation :result} (actions/create-invitation! invitation-data)]
-      (case status 
-        ::actions/success (resource-created-response 
+      (case status
+        ::actions/success (resource-created-response
                             (str utils/host-url
                                  "/api/v1/objectives/" (:objective-id stored-invitation)
                                  "/writer-invitations/" (:_id stored-invitation)) stored-invitation)
@@ -410,14 +411,14 @@
          objectives (objectives/get-objectives-for-writer user-id)]
      (-> objectives
          response/response
-         (response/content-type "application/json"))) 
+         (response/content-type "application/json")))
     (catch Exception e
       (log/info "Errow when retrieving objectives for writer: " e)
       (invalid-response "Invalid objectives get request for this writer"))))
 
 ;;DRAFTS
 (defn post-draft [{{objective-id :id} :route-params :as request}]
-  (let [draft-data (br/request->draft-data request)] 
+  (let [draft-data (br/request->draft-data request)]
     (if-let [draft (actions/submit-draft! draft-data)]
       (resource-created-response (utils/api-path-for :api/get-draft :id objective-id :d-id (str (:_id draft)))
                                  draft)
@@ -440,10 +441,10 @@
 
 (defn retrieve-drafts [{{:keys [id]} :route-params :as request}]
   (let [objective-id (Integer/parseInt id)]
-    (if-let [drafts (drafts/retrieve-drafts objective-id)] 
+    (if-let [drafts (drafts/retrieve-drafts objective-id)]
       (-> drafts
           response/response
-          (response/content-type "application/json")) 
+          (response/content-type "application/json"))
       (response/not-found ""))))
 
 ;;SECTION
@@ -461,8 +462,8 @@
           (-> section
               response/response
               (response/content-type "application/json"))
-          (not-found-response "Draft does not belong to this objective")) 
-        (not-found-response "Section does not exist"))) 
+          (not-found-response "Draft does not belong to this objective"))
+        (not-found-response "Section does not exist")))
     (catch Exception e
       (log/info "Invalid route: " e)
       (invalid-response "Invalid section request for this draft"))))
@@ -511,7 +512,7 @@
         (cond
           (= status ::actions/success)
           (resource-created-response (str utils/host-url
-                                          "/api/v1" (:uri mark) 
+                                          "/api/v1" (:uri mark)
                                           ) mark)
 
           (= status ::actions/forbidden)
@@ -526,3 +527,8 @@
     (catch Exception e
       (log/info "Error when marking question: " e)
       (internal-server-error "Error when marking question"))))
+
+(defn get-activities [request]
+  (-> (activities/retrieve-activities)
+      response/response
+      (response/content-type "application/json")))

@@ -120,7 +120,8 @@
    :api/post-up-down-vote (m/wrap-bearer-token back-end-handlers/post-up-down-vote bt/token-provider)
    :api/post-star (m/wrap-bearer-token back-end-handlers/post-star bt/token-provider)
    :api/post-mark (m/wrap-bearer-token back-end-handlers/post-mark bt/token-provider)
-   :api/post-writer-note (m/wrap-bearer-token back-end-handlers/post-writer-note bt/token-provider)})
+   :api/post-writer-note (m/wrap-bearer-token back-end-handlers/post-writer-note bt/token-provider)
+   :api/get-activities back-end-handlers/get-activities})
 
 (defn common-middleware [h config]
   (-> h

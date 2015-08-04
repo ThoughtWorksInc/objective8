@@ -31,12 +31,6 @@
                                                                        "url" stored-objective-url}}))
 
 (fact "activities can be retrieved"
-      (let [stored-activity-1 (-> (sh/store-an-objective)
-                                      :_id
-                                      objectives/get-objective
-                                      activities/store-activity!)
-            stored-activity-2 (-> (sh/store-an-objective)
-                                  :_id
-                                  objectives/get-objective
-                                  activities/store-activity!)]
+      (let [stored-activity-1 (sh/store-an-activity)
+            stored-activity-2 (sh/store-an-activity)]
       (activities/retrieve-activities) => [stored-activity-1 stored-activity-2]))

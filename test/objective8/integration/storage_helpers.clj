@@ -1,6 +1,7 @@
 (ns objective8.integration.storage-helpers
   (:require [clj-time.core :as tc]
             [objective8.back-end.domain.objectives :as objectives]
+            [objective8.back-end.domain.activities :as activities]
             [objective8.back-end.domain.users :as users]
             [objective8.back-end.storage.storage :as storage]
             [objective8.back-end.actions :as actions]))
@@ -27,8 +28,8 @@
     (users/store-admin! {:auth-provider-user-id auth-provider-user-id})
     user))
 
-(defn store-an-objective 
-  
+(defn store-an-objective
+
   ([]
    (store-an-objective {}))
 
@@ -54,6 +55,12 @@
                          :title "test title"
                          :description "test description"
                          :created-by-id user-id}))))
+
+(defn store-an-activity []
+ (-> (store-an-objective)
+     :_id
+     objectives/get-objective
+     activities/store-activity!))
 
 (defn store-an-invitation
   ([] (store-an-invitation {}))
@@ -211,13 +218,13 @@
   section-entity)
 
 (defn retrieve-invitation [invitation-id]
-  (-> (storage/pg-retrieve {:entity :invitation :_id invitation-id}) 
+  (-> (storage/pg-retrieve {:entity :invitation :_id invitation-id})
       :result
       first))
 
-(defn store-a-star 
+(defn store-a-star
   ([]
-   (store-a-star {})) 
+   (store-a-star {}))
 
   ([entities]
    (let [{objective-id :_id} (l-get entities :objective (store-an-objective))
