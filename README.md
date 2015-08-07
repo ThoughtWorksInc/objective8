@@ -16,6 +16,8 @@ cd objective8/ops/
 ####To get started:
 
 ```
+# use the provided template to create an objective8_config file
+cp objective8_config_template objective8_config
 vagrant up
 # type 'vagrant' when asked for a sudoers password
 vagrant ssh
