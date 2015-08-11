@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 heroku git:remote --app objective8
 heroku maintenance:on
 heroku buildpacks:clear
