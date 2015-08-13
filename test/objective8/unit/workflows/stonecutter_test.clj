@@ -17,7 +17,7 @@
                            :session {:auth-provider-user-id "d-cent-USER_ID"}})
              (provided
                (soc/request-access-token! ...config... ...auth-code...)
-               => {:user-id "USER_ID"}))
+               => {:user-info {:sub "USER_ID"}}))
 
        (fact "redirects to invalid-configuration page when unable to retrieve token from auth server"
              (against-background

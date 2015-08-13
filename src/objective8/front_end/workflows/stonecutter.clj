@@ -18,10 +18,12 @@
   (try
     (let [auth-code (get-in request [:params :code])
           stonecutter-config (get-in request [:stonecutter-config])
-          token-response (soc/request-access-token! stonecutter-config auth-code)
-          auth-provider-user-id (str "d-cent-" (:user-id token-response))]
-      (-> (response/redirect (str utils/host-url "/sign-up"))
-          (assoc-in [:session :auth-provider-user-id] auth-provider-user-id)))
+          token-response (soc/request-access-token! stonecutter-config auth-code)]
+      (if-let [sub (get-in token-response [:user-info :sub])]
+        (-> (response/redirect (str utils/host-url "/sign-up"))
+            (assoc-in [:session :auth-provider-user-id] (str "d-cent-" sub)))
+        (throw (ex-info "'sub' is nil or missing from user-info record in token-response from stonecutter"
+                        {:user-info-keys (keys (:user-info token-response))}))))
     (catch Exception e
       (do (log/info "Exception in Stonecutter callback handler: " e)
           (invalid-configuration-handler request)))))

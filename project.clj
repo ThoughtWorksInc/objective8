@@ -37,7 +37,7 @@
                  [hickory "0.5.4"]
                  [diff-match-patch-clj "1.0.0-SNAPSHOT"]
                  [crypto-random "1.2.0"]
-                 [org.clojars.d-cent/stonecutter-oauth "0.1.3-SNAPSHOT"]
+                 [org.clojars.d-cent/stonecutter-oauth "0.1.4-SNAPSHOT"]
                  [com.googlecode.owasp-java-html-sanitizer/owasp-java-html-sanitizer "r239" :exclusions [com.google.guava/guava com.google.code.findbugs/jsr305]]]
   :main objective8.core
   :plugins [[ragtime/ragtime.lein "0.3.8"]]
