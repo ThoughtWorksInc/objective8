@@ -52,4 +52,5 @@
         (activities/retrieve-activities 2 2) => [a2 a1]
         (activities/retrieve-activities 2 3) => [a1]
         (activities/retrieve-activities 2 4) => []
-        (activities/retrieve-activities 3 1) => [a3 a2 a1]))
+        (activities/retrieve-activities 3 1) => [a3 a2 a1]
+        (activities/retrieve-activities 2 9) => []))

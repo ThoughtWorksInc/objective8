@@ -529,6 +529,8 @@
       (internal-server-error "Error when marking question"))))
 
 (defn get-activities [request]
-  (-> (activities/retrieve-activities)
-      response/response
-      (response/content-type "application/json")))
+  (let [limit (get-in request [:params :limit])
+        offset (get-in request [:params :offset])]
+    (-> (activities/retrieve-activities limit offset)
+        response/response
+        (response/content-type "application/json"))))

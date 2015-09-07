@@ -1,6 +1,6 @@
 (ns objective8.front-end.api.http
   (:require [org.httpkit.client :as http]
-            [ring.util.response :as response]
+            [ring.util.codec :as codec]
             [cheshire.core :as json]
             [objective8.utils :as utils]
             [objective8.config :as config]))
@@ -240,5 +240,9 @@
 
 ;; ACTIVITIES
 
-(defn get-activities []
-  (:body (get-request (utils/api-path-for :api/get-activities))))
+(defn get-activities [limit offset]
+  (let [query (->> {:limit limit :offset offset}
+                   (remove (comp nil? second))
+                   (into {})
+                   codec/form-encode)]
+    (:body (get-request (str (utils/api-path-for :api/get-activities) "?" query)))))

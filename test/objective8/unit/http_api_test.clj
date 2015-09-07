@@ -12,7 +12,7 @@
 (background
   [(before :facts (alter-var-root #'utils/api-url (constantly "stub/api/url")))])
 
-(background (http-api/get-api-credentials) => {"api-bearer-name" BEARER_NAME
+(background (http-api/get-api-credentials) => {"api-bearer-name"  BEARER_NAME
                                                "api-bearer-token" BEARER_TOKEN})
 
 (facts "about API GET requests"
@@ -20,22 +20,22 @@
          (fact "maps http response status to API status"
                (http-api/default-get-call "/some/url") => (contains {:status ?http-api-status})
                (provided (http-api/get-request "/some/url" {}) => {:body "" :status ?http-status}))
-         ?http-status        ?http-api-status
-         200                 ::http-api/success
-         404                 ::http-api/not-found
-         400                 ::http-api/invalid-input
-         403                 ::http-api/forbidden
-         :anything           ::http-api/error))
+         ?http-status ?http-api-status
+         200 ::http-api/success
+         404 ::http-api/not-found
+         400 ::http-api/invalid-input
+         403 ::http-api/forbidden
+         :anything ::http-api/error))
 
 (facts "about API POST requests"
        (tabular
          (fact "maps http response status to API status"
                (http-api/default-post-call "/some/url" {:some :data}) => (contains {:status ?http-api-status})
                (provided (http-api/post-request "/some/url" anything) => {:status ?http-status :body ""}))
-         ?http-status        ?http-api-status
-         201                 ::http-api/success
-         400                 ::http-api/invalid-input
-         :anything           ::http-api/error)
+         ?http-status ?http-api-status
+         201 ::http-api/success
+         400 ::http-api/invalid-input
+         :anything ::http-api/error)
 
        (fact "accesses the API with the front-end credentials"
              (http-api/default-post-call "/some/url" {:some :data}) => anything
@@ -43,17 +43,17 @@
                (http-api/post-request "/some/url"
                                       (contains
                                         {:headers (contains
-                                                    {"api-bearer-name" BEARER_NAME
+                                                    {"api-bearer-name"  BEARER_NAME
                                                      "api-bearer-token" BEARER_TOKEN})})) => {:status 200 :body ""})))
 (facts "about API PUT requests"
        (tabular
          (fact "maps http response status to API status"
                (http-api/default-put-call "/some/url" {:some :data}) => (contains {:status ?http-api-status})
                (provided (http-api/put-request "/some/url" anything) => {:status ?http-status :body ""}))
-         ?http-status        ?http-api-status
-         200                 ::http-api/success
-         404                 ::http-api/not-found
-         :anything           ::http-api/error)
+         ?http-status ?http-api-status
+         200 ::http-api/success
+         404 ::http-api/not-found
+         :anything ::http-api/error)
 
        (fact "accesses the API with the front-end credentials"
              (http-api/default-put-call "/some/url" {:some :data}) => anything
@@ -61,16 +61,16 @@
                (http-api/put-request "/some/url"
                                      (contains
                                        {:headers (contains
-                                                   {"api-bearer-name" BEARER_NAME
+                                                   {"api-bearer-name"  BEARER_NAME
                                                     "api-bearer-token" BEARER_TOKEN})})) => {:status 200 :body ""})))
 
 ;;USERS
 (def USER_ID 3)
 (def USER_URI (str "/users/" USER_ID))
 (def USER_AUTH_PROVIDER_USER_ID "twitter-TWITTER_ID")
-(def the-user {:some :data
+(def the-user {:some                  :data
                :auth-provider-user-id USER_AUTH_PROVIDER_USER_ID
-               :username "someUsername"})
+               :username              "someUsername"})
 
 (fact "creating a user record hits the correct API endpoint"
       (http-api/create-user the-user) => :api-call-result
@@ -81,7 +81,7 @@
       (provided
         (http-api/default-get-call
           (contains (str "/api/v1/users?auth_provider_user_id=" USER_AUTH_PROVIDER_USER_ID))
-          (contains {:headers (contains {"api-bearer-name" anything
+          (contains {:headers (contains {"api-bearer-name"  anything
                                          "api-bearer-token" anything})})) => :api-call-result))
 
 (fact "finding a user record by username hits the correct API endpoint with credentials"
@@ -89,7 +89,7 @@
       (provided
         (http-api/default-get-call
           (contains (str "/api/v1/users?username=" (:username the-user)))
-          (contains {:headers (contains {"api-bearer-name" anything
+          (contains {:headers (contains {"api-bearer-name"  anything
                                          "api-bearer-token" anything})})) => :api-call-result))
 
 (fact "getting a user record hits the correct API endpoint with credentials"
@@ -97,7 +97,7 @@
       (provided
         (http-api/default-get-call
           (contains (str "/api/v1/users/" USER_ID))
-          (contains {:headers (contains {"api-bearer-name" anything
+          (contains {:headers (contains {"api-bearer-name"  anything
                                          "api-bearer-token" anything})})) => :api-call-result))
 
 ;OBJECTIVES
@@ -119,7 +119,7 @@
       (provided
         (http-api/default-get-call
           (contains (str "/api/v1/objectives/" OBJECTIVE_ID))
-          (contains {:headers (contains {"api-bearer-name" anything
+          (contains {:headers (contains {"api-bearer-name"  anything
                                          "api-bearer-token" anything})})) => {:status ::http-api/success
                                                                               :result {:some :data}}))
 
@@ -129,8 +129,8 @@
       (provided
         (http-api/default-get-call
           (contains (str "/api/v1/objectives/" OBJECTIVE_ID))
-          (contains {:headers (contains {"api-bearer-name" anything
-                                         "api-bearer-token" anything})
+          (contains {:headers      (contains {"api-bearer-name"  anything
+                                              "api-bearer-token" anything})
                      :query-params (contains {:signed-in-id USER_ID})})) => {:status ::http-api/success
                                                                              :result {:some :data}}))
 
@@ -141,8 +141,8 @@
       (provided
         (http-api/default-get-call
           (contains (str "/api/v1/objectives/" OBJECTIVE_ID))
-          (contains {:headers (contains {"api-bearer-name" anything
-                                         "api-bearer-token" anything})
+          (contains {:headers      (contains {"api-bearer-name"  anything
+                                              "api-bearer-token" anything})
                      :query-params (contains {:with-stars-count true})})) => {:status ::http-api/success
                                                                               :result {:some :data}}))
 
@@ -153,7 +153,7 @@
       (provided
         (http-api/default-get-call
           (contains (utils/api-path-for :api/get-objectives))
-          (contains {:headers (contains {"api-bearer-name" anything
+          (contains {:headers (contains {"api-bearer-name"  anything
                                          "api-bearer-token" anything})})) => {:status ::http-api/success
                                                                               :result [{:some :data}]}))
 
@@ -207,7 +207,7 @@
 
 ;; QUESTIONS
 
-(def the-question {:some :data
+(def the-question {:some         :data
                    :objective-id OBJECTIVE_ID})
 
 (def QUESTION_ID 42)
@@ -234,7 +234,7 @@
       (http-api/retrieve-questions OBJECTIVE_ID {:sorted-by "answers"}) => :api-call-result
       (provided
         (http-api/default-get-call (contains (utils/api-path-for :api/get-questions-for-objective :id OBJECTIVE_ID))
-          {:query-params {:sorted-by "answers"}}) => :api-call-result))
+                                   {:query-params {:sorted-by "answers"}}) => :api-call-result))
 
 (def mark-data {:question-uri "/objectives/1/questions/2" :created-by-uri "/users/2"})
 
@@ -242,19 +242,19 @@
       (http-api/post-mark mark-data) => :api-call-result
       (provided
         (http-api/default-post-call (contains "/api/v1/meta/marks")
-          mark-data) => :api-call-result))
+                                    mark-data) => :api-call-result))
 
 ;; ANSWERS
 
-(def the-answer {:some :data
+(def the-answer {:some         :data
                  :objective-id OBJECTIVE_ID
-                 :question-id QUESTION_ID})
+                 :question-id  QUESTION_ID})
 
 (fact "creating an answer hits the correct API endpoint"
       (http-api/create-answer the-answer) => :api-call-result
       (provided (http-api/default-post-call (contains (str utils/api-url "/api/v1/objectives/" OBJECTIVE_ID
                                                            "/questions/" QUESTION_ID "/answers"))
-                  the-answer) => :api-call-result))
+                                            the-answer) => :api-call-result))
 
 (def QUESTION_URI (str "/objectives/" OBJECTIVE_ID "/questions/" QUESTION_ID))
 (fact "getting all answers for a question hits the correct API endpoint"
@@ -268,11 +268,11 @@
       (provided
         (http-api/default-get-call (contains (utils/api-path-for :api/get-answers-for-question
                                                                  :id OBJECTIVE_ID :q-id QUESTION_ID))
-          {:query-params {:sorted-by "up-votes"}}) => :api-call-result))
+                                   {:query-params {:sorted-by "up-votes"}}) => :api-call-result))
 
 ;; WRITERS
 
-(def the-invitation {:some :data
+(def the-invitation {:some         :data
                      :objective-id OBJECTIVE_ID})
 
 (fact "creating an invitation hits the correct API endpoint"
@@ -281,8 +281,8 @@
         (http-api/default-post-call (contains (str utils/api-url "/api/v1/objectives/" OBJECTIVE_ID
                                                    "/writer-invitations")) the-invitation) => :api-call-result))
 
-(def profile-data {:name "NAME"
-                   :biog "Biography"
+(def profile-data {:name     "NAME"
+                   :biog     "Biography"
                    :user-uri (str "/users/" USER_ID)})
 
 (fact "posting a profile hits the correct API endpoint"
@@ -299,8 +299,8 @@
 
 (def INVITATION_ID 3)
 (def the-writer {:invitation-uuid UUID
-                 :invitee-id 10
-                 :objective-id OBJECTIVE_ID})
+                 :invitee-id      10
+                 :objective-id    OBJECTIVE_ID})
 
 (fact "posting a writer hits the correct API endpoint"
       (http-api/post-writer the-writer) => :api-call-result
@@ -309,8 +309,8 @@
                                                    "/writers")) the-writer) => :api-call-result))
 
 (def declined-invitation {:invitation-uuid UUID
-                          :invitation-id INVITATION_ID
-                          :objective-id OBJECTIVE_ID})
+                          :invitation-id   INVITATION_ID
+                          :objective-id    OBJECTIVE_ID})
 (fact "declining an invitation hits the correct API endpoint"
       (http-api/decline-invitation declined-invitation) => :api-call-result
       (provided
@@ -326,7 +326,7 @@
 ;;DRAFTS
 
 (def DRAFT_ID 876)
-(def draft {:content :markdown-as-hiccup
+(def draft {:content      :markdown-as-hiccup
             :objective-id OBJECTIVE_ID
             :submitter-id USER_ID})
 (def SECTION_LABEL "abcd1212")
@@ -392,7 +392,7 @@
 ;;ACTIVITIES
 
 (fact "getting activities hits the correct API endpoint"
-      (http-api/get-activities) => "SOME JSON"
+      (http-api/get-activities 1 2) => "SOME JSON"
       (provided
-        (http-api/get-request (contains (utils/api-path-for :api/get-activities))) => {:status :200
-                                                                                       :body "SOME JSON"}))
+        (http-api/get-request (contains (str (utils/api-path-for :api/get-activities) "?limit=1&offset=2"))) => {:status :200
+                                                                                                                 :body   "SOME JSON"}))

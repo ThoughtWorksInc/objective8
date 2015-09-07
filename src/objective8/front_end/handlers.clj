@@ -1114,6 +1114,8 @@
 ;;ACTIVITIES
 
 (defn activities [request]
-  {:status 200
-   :headers {"Content-Type" "application/json"}
-   :body (http-api/get-activities)})
+  (let [limit (get-in request [:params :limit])
+        offset (get-in request [:params :offset])]
+    {:status  200
+     :headers {"Content-Type" "application/json"}
+     :body    (http-api/get-activities limit offset)}))

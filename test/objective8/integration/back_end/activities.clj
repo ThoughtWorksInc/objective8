@@ -25,4 +25,13 @@
                (do
                  (helpers/truncate-tables)
                  (:body (p/request app (utils/api-path-for :api/get-activities))))
-               => empty?)))
+               => empty?))
+
+  (facts "GET /api/v1/activities supports offset and limit"
+         (helpers/truncate-tables)
+         (let [a1 (sh/store-an-activity)
+               a2 (sh/store-an-activity)
+               a3 (sh/store-an-activity)
+               a4 (sh/store-an-activity)
+               {response :response} (p/request app (str (utils/api-path-for :api/get-activities) "?offset=1&limit=2"))]
+           (json/parse-string (:body response)) => [a3 a2])))
