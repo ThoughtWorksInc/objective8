@@ -18,6 +18,11 @@
       (assoc :entity :activity)
       storage/pg-store!))
 
-(defn retrieve-activities []
-  (:result (storage/pg-retrieve {:entity :activity} {:sort {:field :_created_at
-                                                            :ordering :DESC}})))
+(defn retrieve-activities
+  ([] (retrieve-activities nil nil))
+  ([limit] (retrieve-activities limit nil))
+  ([limit offset]
+   (:result (storage/pg-retrieve {:entity :activity} {:sort   {:field    :_created_at
+                                                               :ordering :DESC}
+                                                      :offset offset
+                                                      :limit  limit}))))

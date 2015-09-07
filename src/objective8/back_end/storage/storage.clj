@@ -30,12 +30,13 @@
 (defn select
   "Wrapper around Korma's select call"
   [entity where options]
-  (let [{:keys [limit]} options
+  (let [{:keys [limit offset]} options
         {:keys [field ordering]} (get options :sort {:field :_created_at
                                                      :ordering :ASC})
         select-query (-> (korma/select* entity)
                          (korma/where where)
                          (korma/limit limit)
+                         (korma/offset offset)
                          (korma/order field ordering))
         with-relation (first (keys (:rel entity)))]
     (if with-relation
