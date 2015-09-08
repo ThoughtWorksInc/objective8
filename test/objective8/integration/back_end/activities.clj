@@ -28,10 +28,14 @@
                  (:body (p/request app (utils/api-path-for :api/get-activities))))
                => empty?)
 
-         (fact "has the correct content type"
-               (get-in (p/request app (utils/api-path-for :api/get-activities))
-                       [:response :headers "Content-Type"])
-               => "application/activity+json"))
+         ;; TODO 20150908 DM - Firefox doesn't seem to support using
+         ;; the +json suffix to indicate interpreting non-standard
+         ;; mime-types as json (see http://tools.ietf.org/html/rfc6839#page-4).
+         ;; Thus, this breaks the functional tests.
+         (future-fact "has the correct content type"
+                      (get-in (p/request app (utils/api-path-for :api/get-activities))
+                              [:response :headers "Content-Type"])
+                      => "application/activity+json"))
 
   (fact "GET /api/v1/activities supports offset and limit"
         (helpers/truncate-tables)

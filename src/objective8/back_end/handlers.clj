@@ -562,4 +562,4 @@
       (cond-> activities
         wrapped (wrap-as-ordered-collection limit offset)
         true response/response
-        true (response/content-type "application/activity+json")))))
+        true (response/content-type "application/json")))))
