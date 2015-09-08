@@ -5,7 +5,7 @@
             [objective8.utils :as utils]
             [objective8.integration.integration-helpers :as ih]))
 
-(fact "admin removals can be retrieved"
+(fact "activity stream can be retrieved"
       (against-background
         (http-api/get-activities "2" "3") => "[json-blob]")
       (let [{response :response} (-> (ih/front-end-context)
@@ -13,3 +13,7 @@
         (:status response) => 200
         (get-in response [:headers "Content-Type"]) => "application/json"
         (:body response) => "[json-blob]"))
+
+(fact "activity stream can be retrieved, wrapped as an activity streams 2.0 OrderedCollection structure"
+      (against-background
+       (http-api/get-activities "2" "3" true) => ""))

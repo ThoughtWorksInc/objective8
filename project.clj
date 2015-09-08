@@ -44,7 +44,7 @@
   :profiles {:dev {:source-paths ["dev"]
                    :repl-options {:init-ns user
                                   :timeout 120000}
-                   :dependencies [[midje "1.6.3"]
+                   :dependencies [[midje "1.7.0"]
                                   [ring/ring-mock "0.2.0"]
                                   [clj-webdriver "0.6.1" :exclusions [org.seleniumhq.selenium/selenium-java
                                                                       org.seleniumhq.selenium/selenium-server
