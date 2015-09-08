@@ -388,11 +388,3 @@
       (http-api/get-admin-removals) => :api-call-result
       (provided
         (http-api/default-get-call (contains (utils/api-path-for :api/get-admin-removals))) => :api-call-result))
-
-;;ACTIVITIES
-
-(fact "getting activities hits the correct API endpoint"
-      (http-api/get-activities 1 2) => "SOME JSON"
-      (provided
-        (http-api/get-request (contains (str (utils/api-path-for :api/get-activities) "?limit=1&offset=2"))) => {:status :200
-                                                                                                                 :body   "SOME JSON"}))

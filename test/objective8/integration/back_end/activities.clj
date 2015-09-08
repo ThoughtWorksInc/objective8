@@ -26,7 +26,12 @@
                (do
                  (helpers/truncate-tables)
                  (:body (p/request app (utils/api-path-for :api/get-activities))))
-               => empty?))
+               => empty?)
+
+         (fact "has the correct content type"
+               (get-in (p/request app (utils/api-path-for :api/get-activities))
+                       [:response :headers "Content-Type"])
+               => "application/activity+json"))
 
   (fact "GET /api/v1/activities supports offset and limit"
         (helpers/truncate-tables)

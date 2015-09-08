@@ -38,7 +38,6 @@
    :fe/project-status front-end-handlers/project-status
    :fe/learn-more front-end-handlers/learn-more
    :fe/admin-activity front-end-handlers/admin-activity
-   :fe/activities front-end-handlers/activities
    :fe/create-objective-form (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form) #{:signed-in})
    :fe/create-objective-form-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/create-objective-form-post) #{:signed-in})
    :fe/objective-list (utils/anti-forgery-hook front-end-handlers/objective-list)

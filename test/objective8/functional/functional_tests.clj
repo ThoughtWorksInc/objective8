@@ -135,7 +135,7 @@
 
   (fact "Can retrieve activities"
         (try
-          (wd/to "localhost:8080/activities")
+          (wd/to "localhost:8081/api/v1/activities")
           (screenshot "activities_json")
           (wd/page-source)
           (catch Exception e

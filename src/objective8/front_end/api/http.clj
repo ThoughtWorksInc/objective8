@@ -237,12 +237,3 @@
 
 (defn get-admin-removals []
   (default-get-call (utils/api-path-for :api/get-admin-removals)))
-
-;; ACTIVITIES
-
-(defn get-activities [limit offset]
-  (let [query (->> {:limit limit :offset offset}
-                   (remove (comp nil? second))
-                   (into {})
-                   codec/form-encode)]
-    (:body (get-request (str (utils/api-path-for :api/get-activities) "?" query)))))

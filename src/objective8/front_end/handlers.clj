@@ -1110,12 +1110,3 @@
       (do (log/info (str "admin-activity: api error get-admin-removals "
                          {:http-api-status status}))
           (default-error-page request 502)))))
-
-;;ACTIVITIES
-
-(defn activities [request]
-  (let [limit (get-in request [:params :limit])
-        offset (get-in request [:params :offset])]
-    {:status  200
-     :headers {"Content-Type" "application/json"}
-     :body    (http-api/get-activities limit offset)}))
