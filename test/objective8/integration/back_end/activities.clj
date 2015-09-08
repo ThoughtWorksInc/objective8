@@ -39,13 +39,18 @@
               a2 (sh/store-an-activity)
               a3 (sh/store-an-activity)
               a4 (sh/store-an-activity)
-              {response :response} (p/request app (str (utils/api-path-for :api/get-activities) "?offset=1&limit=2"))]
+              {response :response} (p/request app (str (utils/api-path-for :api/get-activities)
+                                                       "?offset=1"
+                                                       "&limit=2"))]
           (json/parse-string (:body response)) => [a3 a2]))
 
   (fact "GET /api/v1/activities optionally responds with an activity streams 2.0 OrderedCollection Json-LD document"
         (helpers/truncate-tables)
         (let [[_ _ _ a4 a5 _] (doall (repeatedly 6 sh/store-an-activity))
-              {response :response} (p/request app (str (utils/api-path-for :api/get-activities) "?offset=1&limit=2&as_ordered_collection=true"))]
+              {response :response} (p/request app (str (utils/api-path-for :api/get-activities)
+                                                       "?offset=1"
+                                                       "&limit=2"
+                                                       "&as_ordered_collection=true"))]
           (json/parse-string (:body response))
           => (just {"@context" "http://www.w3.org/ns/activitystreams"
                     "@type" "OrderedCollection"

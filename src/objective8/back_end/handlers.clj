@@ -528,22 +528,33 @@
       (log/info "Error when marking question: " e)
       (internal-server-error "Error when marking question"))))
 
+;; Activities
+
 (defn remove-json-ld-context [activities]
   (map #(dissoc % "@context") activities))
 
+(defn activity-query-format-string [limit]
+  (str (utils/api-path-for :api/get-activities)
+       "?offset=%s"
+       (when limit (str "&limit=" limit))
+       "&as_ordered_collection=true"))
+
 (defn wrap-as-ordered-collection [activities limit offset]
-  (let [next-offset (+ offset limit)
-        prev-offset (max 0 (- offset limit))
-        route-format-string (str (utils/api-path-for :api/get-activities)
-                                 "?offset=%s&limit=%s&as_ordered_collection=true")]
-    {"@context" "http://www.w3.org/ns/activitystreams"
-     "@type" "OrderedCollection"
-     "first" (format route-format-string 0 limit)
-     "next" (format route-format-string next-offset limit)
-     "prev" (format route-format-string prev-offset limit)
-     "itemsPerPage" limit
-     "startIndex" offset
-     "items" (remove-json-ld-context activities)}))
+  (let [offset (if offset offset 0)
+        next-offset (when limit (+ offset limit))
+        prev-offset (when limit (max 0 (- offset limit)))
+        link-format-string (activity-query-format-string limit)
+        include-prev-link? (and (when limit (> limit 0))
+                               (> offset 0))
+        include-next-link? (when limit (= (count activities) limit))]
+    (cond-> {"@context" "http://www.w3.org/ns/activitystreams"
+             "@type" "OrderedCollection"
+             "items" (remove-json-ld-context activities)
+             "startIndex" offset
+             "first" (format link-format-string 0)}
+      (not (nil? limit)) (assoc "itemsPerPage" limit)
+      include-prev-link? (assoc "prev" (format link-format-string prev-offset))
+      include-next-link? (assoc "next" (format link-format-string next-offset)))))
 
 (defn get-activities [request]
   (let [{:keys [limit offset wrapped] :as query} (br/request->activities-query request)]
