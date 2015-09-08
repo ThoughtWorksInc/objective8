@@ -69,3 +69,16 @@
          {:limit "not-valid"}
          {:limit "-10"}
          {:offset "-5"}))
+
+(facts "request->activities-query"
+       (tabular
+        (fact "returns query map when the request is valid"
+              (let [request {:params ?params}]
+                (br/request->activities-query request)) => ?activities-query)
+        ?params                             ?activities-query
+        {:limit "1"}                        {:limit 1 :offset nil :wrapped false}
+        {:offset "1"}                       {:limit nil :offset 1 :wrapped false}
+        {:as_ordered_collection "true"}     {:limit nil :offset nil :wrapped true}
+        {:limit "not-an-integer"}           nil
+        {:offset "not-an-integer"}          nil
+        {:as_ordered_collection "someting"} {:limit nil :offset nil :wrapped false}))

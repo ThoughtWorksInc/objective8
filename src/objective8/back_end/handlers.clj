@@ -531,30 +531,24 @@
 (defn remove-json-ld-context [activities]
   (map #(dissoc % "@context") activities))
 
-(defn wrap-with-pagination-metadata [activities limit offset]
+(defn wrap-as-ordered-collection [activities limit offset]
   (let [next-offset (+ offset limit)
         prev-offset (max 0 (- offset limit))
         route-format-string (str (utils/api-path-for :api/get-activities)
-                                 "?offset=%s&limit=%s&pagination_metadata=true")]
+                                 "?offset=%s&limit=%s&as_ordered_collection=true")]
     {"@context" "http://www.w3.org/ns/activitystreams"
      "@type" "OrderedCollection"
      "first" (format route-format-string 0 limit)
      "next" (format route-format-string next-offset limit)
      "prev" (format route-format-string prev-offset limit)
-                                        ;   "last" (format route-format-string last-offset limit)
      "itemsPerPage" limit
-     "startIndex" (+ 1 offset)
+     "startIndex" offset
      "items" (remove-json-ld-context activities)}))
 
-(defn request->activities-query [request]
-  {:limit (when-let [limit (get-in request [:params :limit])] (Integer/parseInt limit))
-   :offset (when-let [offset (get-in request [:params :offset])] (Integer/parseInt offset))
-   :with-metadata (get-in request [:params :pagination_metadata])})
-
 (defn get-activities [request]
-  (let [{:keys [limit offset with-metadata]} (request->activities-query request)]
+  (let [{:keys [limit offset wrapped] :as query} (br/request->activities-query request)]
     (let [activities (activities/retrieve-activities limit offset)]
       (cond-> activities
-        with-metadata (wrap-with-pagination-metadata limit offset)
+        wrapped (wrap-as-ordered-collection limit offset)
         true response/response
         true (response/content-type "application/json")))))

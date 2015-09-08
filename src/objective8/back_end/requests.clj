@@ -109,3 +109,12 @@
 
 (defn request->writer-note-data [{:keys [params] :as request}]
   (utils/select-all-or-nothing params [:note :created-by-id :note-on-uri]))
+
+(defn request->activities-query [request]
+  (try
+    {:limit (when-let [limit (get-in request [:params :limit])] (Integer/parseInt limit))
+     :offset (when-let [offset (get-in request [:params :offset])] (Integer/parseInt offset))
+     :wrapped (= "true" (get-in request [:params :as_ordered_collection]))}
+    (catch Exception e nil)))
+
+

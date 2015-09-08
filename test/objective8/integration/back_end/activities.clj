@@ -40,17 +40,14 @@
   (fact "GET /api/v1/activities optionally responds with an activity streams 2.0 OrderedCollection Json-LD document"
         (helpers/truncate-tables)
         (let [[_ _ _ a4 a5 _] (doall (repeatedly 6 sh/store-an-activity))
-              {response :response} (p/request app (str (utils/api-path-for :api/get-activities) "?offset=1&limit=2&pagination_metadata=true"))]
+              {response :response} (p/request app (str (utils/api-path-for :api/get-activities) "?offset=1&limit=2&as_ordered_collection=true"))]
           (json/parse-string (:body response))
           => (just {"@context" "http://www.w3.org/ns/activitystreams"
                     "@type" "OrderedCollection"
-                                        ;                    "totalItems" 6
                     "itemsPerPage" 2
-                    "startIndex" 2
-                    "first" (str (utils/api-path-for :api/get-activities) "?offset=0&limit=2&pagination_metadata=true")
-                    "prev" (str (utils/api-path-for :api/get-activities) "?offset=0&limit=2&pagination_metadata=true")
-                    "next" (str (utils/api-path-for :api/get-activities) "?offset=3&limit=2&pagination_metadata=true")
+                    "startIndex" 1
+                    "first" (str (utils/api-path-for :api/get-activities) "?offset=0&limit=2&as_ordered_collection=true")
+                    "prev" (str (utils/api-path-for :api/get-activities) "?offset=0&limit=2&as_ordered_collection=true")
+                    "next" (str (utils/api-path-for :api/get-activities) "?offset=3&limit=2&as_ordered_collection=true")
                     "items" [(dissoc a5 "@context")
                              (dissoc a4 "@context")]}))))
-
-
