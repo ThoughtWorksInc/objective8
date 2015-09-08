@@ -22,4 +22,7 @@ server {
   location / {
     proxy_pass http://localhost:8080;
   }
+  location /json/ {
+    proxy_pass http://localhost:8081;
+  }
 }
