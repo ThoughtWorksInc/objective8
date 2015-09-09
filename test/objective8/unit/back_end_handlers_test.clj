@@ -55,10 +55,12 @@
                (take 5 activities)  5          nil)))
 
 (fact "activity query format string is generated correctly, depending on whether a limit was provided"
-      (bh/activity-query-format-string nil) => (str (utils/api-path-for :api/get-activities)
+      (against-background
+       (utils/get-external-api-url) => "EXTERNAL_API_URL")
+      (bh/activity-query-format-string nil) => (str (utils/external-api-path-for :api/get-activities)
                                                     "?offset=%s"
                                                     "&as_ordered_collection=true")
-      (bh/activity-query-format-string 10) => (str (utils/api-path-for :api/get-activities)
+      (bh/activity-query-format-string 10) => (str (utils/external-api-path-for :api/get-activities)
                                                     "?offset=%s"
                                                     "&limit=10"
                                                     "&as_ordered_collection=true"))

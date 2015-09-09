@@ -534,7 +534,7 @@
   (map #(dissoc % "@context") activities))
 
 (defn activity-query-format-string [limit]
-  (str (utils/api-path-for :api/get-activities)
+  (str (utils/external-api-path-for :api/get-activities)
        "?offset=%s"
        (when limit (str "&limit=" limit))
        "&as_ordered_collection=true"))
