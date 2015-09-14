@@ -1,5 +1,6 @@
 (ns objective8.back-end.requests
-  (:require [objective8.utils :as utils]))
+  (:require [clj-time.format :as time-format]
+            [objective8.utils :as utils]))
 
 (defn request->objective-data [{params :params :as request}]
   (select-keys params [:title :description :created-by-id]))
@@ -26,9 +27,9 @@
 
 (defn request->comment-data [{params :params :as request}]
   (let [reason (:reason params)]
-    (cond-> params 
-      true (utils/select-all-or-nothing [:comment :created-by-id :comment-on-uri])
-      reason (assoc :reason reason))))
+    (cond-> params
+            true (utils/select-all-or-nothing [:comment :created-by-id :comment-on-uri])
+            reason (assoc :reason reason))))
 
 (defn validate-sorted-by [query sorted-by]
   (if sorted-by
@@ -62,11 +63,15 @@
         nil))
     query))
 
+(defn validate-date [date]
+  (when (time-format/parse date)
+    date))
+
 (defn request->answer-data [{:keys [route-params params] :as request}]
-  {:answer (:answer params)
+  {:answer        (:answer params)
    :created-by-id (:created-by-id params)
-   :objective-id (Integer/parseInt (:id route-params)) 
-   :question-id (Integer/parseInt (:q-id route-params))})
+   :objective-id  (Integer/parseInt (:id route-params))
+   :question-id   (Integer/parseInt (:q-id route-params))})
 
 (defn request->answers-query [{:keys [params route-params] :as request}]
   (let [question-uri (str "/objectives/" (:id route-params) "/questions/" (:q-id route-params))
@@ -79,15 +84,15 @@
             (validate-offset offset))))
 
 (defn request->comments-query [{params :params :as request}]
-  (let [sorted-by (keyword (:sorted-by params)) 
-        filter-type (keyword (:filter-type params)) 
+  (let [sorted-by (keyword (:sorted-by params))
+        filter-type (keyword (:filter-type params))
         limit (:limit params)
         offset (:offset params)]
-  (some-> (utils/select-all-or-nothing params [:uri])
-          (validate-sorted-by sorted-by)
-          (validate-filter-type filter-type)
-          (validate-limit limit)
-          (validate-offset offset))))
+    (some-> (utils/select-all-or-nothing params [:uri])
+            (validate-sorted-by sorted-by)
+            (validate-filter-type filter-type)
+            (validate-limit limit)
+            (validate-offset offset))))
 
 (defn request->star-data [{params :params :as request}]
   (utils/select-all-or-nothing params [:objective-uri :created-by-id]))
@@ -98,11 +103,11 @@
 (defn request->objectives-query [{:keys [params] :as request}]
   (let [user-id (:user-id params)
         starred (:starred params)
-        include-removed? (:include-removed params)] 
+        include-removed? (:include-removed params)]
     (cond-> {}
-      user-id (assoc :signed-in-id (Integer/parseInt user-id))
-      starred (assoc :filters {:starred starred})
-      include-removed? (assoc :include-removed? include-removed?))))
+            user-id (assoc :signed-in-id (Integer/parseInt user-id))
+            starred (assoc :filters {:starred starred})
+            include-removed? (assoc :include-removed? include-removed?))))
 
 (defn request->mark-data [{:keys [params] :as request}]
   (utils/select-all-or-nothing params [:question-uri :created-by-uri]))
@@ -112,9 +117,11 @@
 
 (defn request->activities-query [request]
   (try
-    {:limit (when-let [limit (get-in request [:params :limit])] (Integer/parseInt limit))
-     :offset (when-let [offset (get-in request [:params :offset])] (Integer/parseInt offset))
-     :wrapped (= "true" (get-in request [:params :as_ordered_collection]))}
+    {:limit     (when-let [limit (get-in request [:params :limit])] (Integer/parseInt limit))
+     :offset    (when-let [offset (get-in request [:params :offset])] (Integer/parseInt offset))
+     :wrapped   (= "true" (get-in request [:params :as_ordered_collection]))
+     :from-date (when-let [from-date (get-in request [:params :from])] (validate-date from-date))
+     :to-date   (when-let [to-date (get-in request [:params :to])] (validate-date to-date))}
     (catch Exception e nil)))
 
 

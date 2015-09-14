@@ -558,7 +558,7 @@
 
 (defn get-activities [request]
   (let [{:keys [limit offset wrapped] :as query} (br/request->activities-query request)]
-    (let [activities (activities/retrieve-activities limit offset)]
+    (let [activities (activities/retrieve-activities query)]
       (cond-> activities
         wrapped (wrap-as-ordered-collection limit offset)
         true response/response

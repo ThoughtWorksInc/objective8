@@ -441,3 +441,24 @@ LEFT JOIN (SELECT comments.comment_on_id, COUNT(comments.*) AS number
 ON comments_meta.comment_on_id = sections.global_id
 WHERE sections.draft_id = ?
 AND sections.objective_id = ?" [draft-id objective-id]] :results))))
+
+(defn pg-retrieve-activities [query-map]
+(let [limit (:limit query-map)
+      limit-clause (when limit (str "LIMIT " limit))
+      offset (:offset query-map)
+      offset-clause (when offset (str "OFFSET " offset))
+      from-date (:from-date query-map)
+      from-date-clause (when from-date (str "WHERE activity->>'published' > '" from-date "'"))
+      to-date (:to-date query-map)
+      to-date-clause (when to-date
+                       (if from-date
+                         (str "AND activity->>'published' < '" to-date "'")
+                         (str "WHERE activity->>'published' < '" to-date "'")))
+      unmap-activity (first (get mappings/activity :transforms))]
+  (apply vector (map unmap-activity (korma/exec-raw [(string/join " " ["
+  SELECT activities.*
+  FROM objective8.activities AS activities"
+  from-date-clause
+  to-date-clause
+  "ORDER BY _created_at DESC
+  " limit-clause offset-clause])] :results)))))

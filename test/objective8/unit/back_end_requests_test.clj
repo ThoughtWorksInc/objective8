@@ -1,6 +1,7 @@
 (ns objective8.unit.back-end-requests-test
   (:require [midje.sweet :refer :all]
-            [objective8.back-end.requests :as br]))
+            [objective8.back-end.requests :as br]
+            [objective8.back-end.storage.mappings :as mappings]))
 
 (def OBJECTIVE_ID 1)
 (def QUESTION_ID 2)
@@ -75,10 +76,15 @@
         (fact "returns query map when the request is valid"
               (let [request {:params ?params}]
                 (br/request->activities-query request)) => ?activities-query)
-        ?params                             ?activities-query
-        {:limit "1"}                        {:limit 1 :offset nil :wrapped false}
-        {:offset "1"}                       {:limit nil :offset 1 :wrapped false}
-        {:as_ordered_collection "true"}     {:limit nil :offset nil :wrapped true}
-        {:limit "not-an-integer"}           nil
-        {:offset "not-an-integer"}          nil
-        {:as_ordered_collection "someting"} {:limit nil :offset nil :wrapped false}))
+        ?params                                      ?activities-query
+        {:limit "1"}                                 {:limit 1 :offset nil :wrapped false :from-date nil :to-date nil}
+        {:offset "1"}                                {:limit nil :offset 1 :wrapped false :from-date nil :to-date nil}
+        {:as_ordered_collection "true"}              {:limit nil :offset nil :wrapped true :from-date nil :to-date nil}
+        {:limit "not-an-integer"}                    nil
+        {:offset "not-an-integer"}                   nil
+        {:as_ordered_collection "someting"}          {:limit nil :offset nil :wrapped false :from-date nil :to-date nil}
+        {:from "not-a-datetime"}                     {:limit nil :offset nil :wrapped false :from-date nil :to-date nil}
+        {:from "2015-09-11T16:00:00.000Z"
+         :to "2015-09-12T16:00:00.000Z"}             {:limit nil :offset nil :wrapped false
+                                                      :from-date "2015-09-11T16:00:00.000Z"
+                                                      :to-date   "2015-09-12T16:00:00.000Z"}))
