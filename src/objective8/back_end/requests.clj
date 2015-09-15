@@ -64,8 +64,9 @@
     query))
 
 (defn validate-date [date]
-  (when (time-format/parse date)
-    date))
+  (if (time-format/parse date)
+    date
+    :invalid))
 
 (defn request->answer-data [{:keys [route-params params] :as request}]
   {:answer        (:answer params)

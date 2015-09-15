@@ -557,9 +557,12 @@
       include-next-link? (assoc "next" (format link-format-string next-offset)))))
 
 (defn get-activities [request]
-  (let [{:keys [limit offset wrapped] :as query} (br/request->activities-query request)]
-    (let [activities (activities/retrieve-activities query)]
-      (cond-> activities
-        wrapped (wrap-as-ordered-collection limit offset)
-        true response/response
-        true (response/content-type "application/json")))))
+  (let [{:keys [limit offset wrapped from-date to-date] :as query} (br/request->activities-query request)]
+    (if (or (= from-date :invalid)
+            (= to-date :invalid))
+      (invalid-response "Invalid query")
+      (let [activities (activities/retrieve-activities query)]
+        (cond-> activities
+                wrapped (wrap-as-ordered-collection limit offset)
+                true response/response
+                true (response/content-type "application/json"))))))
