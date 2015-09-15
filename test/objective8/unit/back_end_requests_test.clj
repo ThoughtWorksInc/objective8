@@ -83,7 +83,7 @@
         {:limit "not-an-integer"}                    nil
         {:offset "not-an-integer"}                   nil
         {:as_ordered_collection "someting"}          {:limit nil :offset nil :wrapped false :from-date nil :to-date nil}
-        {:from "not-a-datetime"}                     {:limit nil :offset nil :wrapped false :from-date nil :to-date nil}
+        {:from "not-a-datetime"}                     {:limit nil :offset nil :wrapped false :from-date :invalid :to-date nil}
         {:from "2015-09-11T16:00:00.000Z"
          :to "2015-09-12T16:00:00.000Z"}             {:limit nil :offset nil :wrapped false
                                                       :from-date "2015-09-11T16:00:00.000Z"
