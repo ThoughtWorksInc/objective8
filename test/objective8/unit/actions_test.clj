@@ -170,7 +170,7 @@
 
 (facts "about creating questions"
        (fact "A question can be created"
-             (actions/create-question! question) => {:status ::actions/success :result :stored-question}
+             (actions/create-question! question) => {:status ::actions/success :result stored-question}
              (provided
                (objectives/get-objective OBJECTIVE_ID) => :an-objective
                (writers/retrieve-writer-for-objective USER_ID OBJECTIVE_ID) => nil
