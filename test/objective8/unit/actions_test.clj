@@ -164,7 +164,9 @@
 (def mark-data {:question-uri QUESTION_URI
                :created-by-uri user-uri })
 
-(def question {:objective-id OBJECTIVE_ID :created-by-id USER_ID})
+(def question {:objective-id OBJECTIVE_ID :created-by-id USER_ID :uri QUESTION_URI :question "Sample question"})
+(def stored-question (assoc question :_id QUESTION_ID))
+(def retrieved-question (assoc stored-question :username "UserName"))
 
 (facts "about creating questions"
        (fact "A question can be created"
@@ -172,7 +174,9 @@
              (provided
                (objectives/get-objective OBJECTIVE_ID) => :an-objective
                (writers/retrieve-writer-for-objective USER_ID OBJECTIVE_ID) => nil
-               (questions/store-question! question) => :stored-question)))
+               (questions/store-question! question) => stored-question
+               (questions/get-question QUESTION_URI) => retrieved-question
+               (activities/store-activity! retrieved-question) => anything)))
 
 (facts "about marking questions"
        (fact "a mark is created if none already exists"

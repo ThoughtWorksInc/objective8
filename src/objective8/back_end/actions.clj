@@ -113,13 +113,14 @@
 (defn create-question! [{:keys [created-by-id objective-id] :as question}]
   (if (objectives/get-objective objective-id)
     (if-let [stored-question (questions/store-question! question)]
-      (if (writers/retrieve-writer-for-objective created-by-id objective-id)
-        {:status ::success :result (->> (marks/store-mark! {:question-uri (:uri stored-question)
-                                                            :created-by-uri (str "/users/" created-by-id)
-                                                            :active true})
-                                        :active
-                                        (assoc-in stored-question [:meta :marked]))}
-        {:status ::success :result stored-question})
+      (do (activities/store-activity! (questions/get-question (:uri stored-question)))
+        (if (writers/retrieve-writer-for-objective created-by-id objective-id)
+          {:status ::success :result (->> (marks/store-mark! {:question-uri   (:uri stored-question)
+                                                              :created-by-uri (str "/users/" created-by-id)
+                                                              :active         true})
+                                          :active
+                                          (assoc-in stored-question [:meta :marked]))}
+          {:status ::success :result stored-question}))
       {:status ::failure})
     {:status ::entity-not-found}))
 
