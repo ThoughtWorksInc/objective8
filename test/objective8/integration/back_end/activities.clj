@@ -67,7 +67,7 @@
                              (dissoc a4 "@context")]})))
 
   (tabular
-    (fact "GET /api/v1/activities optionally responds with an activity stream filtered by start and/or end date"
+    (fact "GET /api/v1/activities optionally responds with an activity stream filtered by start and end date"
           (helpers/truncate-tables)
           (let [a1 (sh/store-an-activity)
                 a2 (sh/store-an-activity)
@@ -78,9 +78,27 @@
                                                                      "?from=" ?timestamp-from "&to=" ?timestamp-to))))) => ?result))
 
     ?timestamp-from                   ?timestamp-to              ?result
-    (get a2 "published")              nil                        [a4 a3]
-    nil                               (get a2 "published")       [a1]
+    (get a2 "published")              nil                        {"reason" "Invalid query"}
+    nil                               (get a2 "published")       {"reason" "Invalid query"}
     (get a2 "published")              (get a4 "published")       [a3]
-    nil                               nil                        [a4 a3 a2 a1]
-    "something-invalid"               (get a4 "published")       [a3 a2 a1]
-    (get a4 "published")              nil                        []))
+    nil                               nil                        {"reason" "Invalid query"}
+    "something-invalid"               (get a4 "published")       {"reason" "Invalid query"}
+    (get a4 "published")              nil                        {"reason" "Invalid query"})
+
+  (tabular
+    (fact "GET /api/v1/activities optionally responds with an activity stream filtered by start date only"
+          (helpers/truncate-tables)
+          (let [a1 (sh/store-an-activity)
+                a2 (sh/store-an-activity)
+                a3 (sh/store-an-activity)
+                a4 (sh/store-an-activity)
+                a2-timestamp (get a2 "published")]
+            (json/parse-string (:body (:response (p/request app (str (utils/api-path-for :api/get-activities)
+                                                                     "?from=" ?timestamp-from))))) => ?result))
+
+    ?timestamp-from                   ?result
+    (get a2 "published")              [a4 a3]
+    nil                               {"reason" "Invalid query"}
+    "something-invalid"               {"reason" "Invalid query"}
+  )
+  )
