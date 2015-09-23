@@ -1,4 +1,4 @@
 default ansible_ssh_host=127.0.0.1 ansible_ssh_port=2223
 
 [dob_vm]
-default site_address="https://192.168.50.51" cert_location="objective8.crt" cert_key_location="objective8.key"
+default site_address="https://192.168.50.51" cert_location="testing_objective8.crt" cert_key_location="testing_objective8.key"
