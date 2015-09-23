@@ -1,3 +1,5 @@
+#!/bin/bash
+
 npm install
 lein do clean, uberjar
 DIR=deploy_assets
