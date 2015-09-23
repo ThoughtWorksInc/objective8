@@ -14,3 +14,11 @@
 
  - name: create .pgpass file
    lineinfile: dest=/usr/local/objective8/.pgpass state=present create=yes line="localhost:5432:objective8:objective8:{{ DB_PASSWORD }}" mode=0600
+
+ - name: copy postgres hba config file to /etc/postgresql
+   copy: src=pg_hba.conf dest=/etc/postgresql/9.3/main/pg_hba.conf
+         owner=postgres group=postgres mode=0700
+
+ - name: copy postgres config file to /etc/postgresql
+   copy: src=postgresql.conf dest=/etc/postgresql/9.3/main/postgresql.conf
+         owner=postgres group=postgres mode=0700
