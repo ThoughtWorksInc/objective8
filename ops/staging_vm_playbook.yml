@@ -1,0 +1,14 @@
+---
+ - hosts: staging_vm
+
+   vars_files:
+    - "{{ CONFIG_FILE_PATH }}"
+
+   roles:
+    - common
+    - postgres
+    - nginx
+    - ferm
+    - docker
+    - objective8_postgres_config
+    - objective8_application_config

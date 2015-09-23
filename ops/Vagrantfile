@@ -41,5 +41,23 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
+  config.vm.define "staging_vm" do |staging| 
+    staging.vm.network "private_network", ip: "192.168.50.52"
+    staging.vm.network :forwarded_port, guest: 22, host: 2224, id: "ssh", auto_correct: false
+
+    staging.vm.synced_folder "../", "/var/objective8"
+
+    staging.vm.provider "virtualbox" do |vbox|
+      vbox.customize ["modifyvm", :id, "--memory", digital_ocean_memory, "--cpus", 1] 
+    end
+
+    staging.vm.provision "ansible" do |ansible|
+      ansible.playbook = "staging_vm_playbook.yml"
+      ansible.inventory_path = "staging_vm.inventory"
+      ansible.extra_vars = {CONFIG_FILE_PATH: "objective8_config"}
+      ansible.sudo = true
+    end
+  end
+
 end
 
