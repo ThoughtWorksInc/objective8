@@ -54,7 +54,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     staging.vm.provision "ansible" do |ansible|
       ansible.playbook = "staging_vm_playbook.yml"
       ansible.inventory_path = "staging_vm.inventory"
-      ansible.extra_vars = {CONFIG_FILE_PATH: "objective8_config"}
+      ansible.extra_vars = {CONFIG_FILE_PATH: "objective8_docker_config"}
       ansible.sudo = true
     end
   end

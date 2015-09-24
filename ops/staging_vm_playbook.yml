@@ -11,4 +11,4 @@
     - ferm
     - docker
     - objective8_postgres_config
-    - objective8_application_config
+    - objective8_application_config_docker
