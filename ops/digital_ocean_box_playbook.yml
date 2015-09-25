@@ -11,7 +11,7 @@
     - postgres
     - nginx
     - ferm
-    - jre
+    - docker
     - objective8_postgres_config
     - objective8_postgres_backups
-    - objective8_application_config
+    - objective8_application_config_docker
