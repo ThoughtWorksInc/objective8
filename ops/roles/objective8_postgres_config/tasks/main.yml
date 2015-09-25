@@ -22,3 +22,6 @@
  - name: copy postgres config file to /etc/postgresql
    copy: src=postgresql.conf dest=/etc/postgresql/9.3/main/postgresql.conf
          owner=postgres group=postgres mode=0700
+
+ - name: restart postgres after updating configuration files
+   service: name=postgresql state=restarted
