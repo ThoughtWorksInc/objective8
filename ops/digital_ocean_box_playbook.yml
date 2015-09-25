@@ -14,4 +14,4 @@
     - docker
     - objective8_postgres_config
     - objective8_postgres_backups
-    - objective8_application_config_docker
+    - objective8_application_config

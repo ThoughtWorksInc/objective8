@@ -1,3 +1,0 @@
----
- - name: copy application config file
-   template: src=objective8_config.j2 dest=/usr/local/objective8/objective8_config

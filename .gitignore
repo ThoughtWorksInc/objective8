@@ -15,6 +15,7 @@ resources/public/images/*.svg
 resources/templates/jade
 test/objective8/functional/screenshots/*.png
 ops/.vagrant
+ops/*_config
 ops/roles/nginx/files/secure/
 **/secure/**
 .lein-deps-sum

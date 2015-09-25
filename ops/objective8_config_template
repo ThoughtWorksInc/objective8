@@ -1,6 +1,7 @@
 ---
 # Your application URI or IP address (including port if required)
 BASE_URI: ""
+APP_PORT: ""
 
 # The externally accessible API uri (including port if required)
 EXTERNAL_API_URI: ""
@@ -9,8 +10,12 @@ EXTERNAL_API_URI: ""
 API_BEARER_NAME: ""
 API_BEARER_TOKEN: ""
 
-# Password for the Objective8 postgres user
+# Database config 
+DB_USER: ""
 DB_PASSWORD: ""
+DB_HOST: ""
+DB_PORT: ""
+DB_NAME: ""
 
 # Your Twitter development app credentials
 TWITTER_CONSUMER_TOKEN: ""
@@ -28,3 +33,6 @@ AWS_GPG_PASSPHRASE: ""
 STONECUTTER_AUTH_URL: ""
 STONECUTTER_CLIENT_ID: ""
 STONECUTTER_CLIENT_SECRET: ""
+
+# use for configuring logs, ex: "-Dlog4j.configuration=log4j.debug"
+JAVA_OPTS: ""
