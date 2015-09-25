@@ -199,12 +199,12 @@ Run Ansible playbook:
 ####Deploy application to the server
 Run:
 
-  The following will copy the application to the server and start it running as a service.
+  The following will copy the application to the server and start it running as a service on a docker container.
   Once complete you should be able to access the app at your IP address.
 
   ```
-  chmod +x deploy.sh
-  REMOTE_USER={username on server} SERVER_IP={IP address of server} ./deploy.sh
+  chmod +x deploy_prod.sh
+  REMOTE_USER={username on server} SERVER_IP={IP address of server} ./deploy_prod.sh
   ```
 
 ## Docker
