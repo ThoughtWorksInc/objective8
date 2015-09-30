@@ -1,4 +1,4 @@
-default ansible_ssh_host=46.101.34.24
+default ansible_ssh_host=objective8-staging.dcentproject.eu
 
 [digital_ocean_box]
-default site_address="46.101.34.24" cert_location="secure/objective8.crt" cert_key_location="secure/objective8.key"
+default site_address="https://objective8-staging.dcentproject.eu" cert_location="secure/objective8.crt" cert_key_location="secure/objective8.key"
