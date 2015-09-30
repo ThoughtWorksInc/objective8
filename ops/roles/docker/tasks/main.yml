@@ -31,6 +31,25 @@
 #     name: pgres
 #     image: postgres:latest
 
+ - name: make db directory
+   file: path=/data/db state=directory
+
+ - name: docker mongo
+   docker:
+     name: mongo
+     image: mongo:3
+     pull: always
+     volumes:
+       - /data/db:/data/db
+
+ - name: docker coracle
+   docker:
+     name: coracle
+     image: dcent/coracle:50
+     pull: always
+     links:
+       - "mongo:mongo"
+
  - name: docker java
    docker:
      image: java:8
