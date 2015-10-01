@@ -49,6 +49,8 @@
      pull: always
      links:
        - "mongo:mongo"
+     ports:
+       - "7000:7000"
 
  - name: docker java
    docker:
