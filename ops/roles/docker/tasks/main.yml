@@ -49,8 +49,9 @@
      pull: always
      links:
        - "mongo:mongo"
-     expose:
-       - 7000
+     expose: 7000
+     ports:
+       - "7000:7000/tcp"
      env:
        BEARER_TOKEN: "{{ CORACLE_BEARER_TOKEN }}"
 
