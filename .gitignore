@@ -31,3 +31,4 @@ latest.dump
 tmp/
 objective8_config
 *.iml
+*.tar.gz
