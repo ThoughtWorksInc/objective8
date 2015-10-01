@@ -47,4 +47,5 @@
                          :secret-token (get-var "TWITTER_CONSUMER_SECRET_TOKEN")}
    :stonecutter-auth-provider-url (get-var "STONECUTTER_AUTH_URL")
    :stonecutter-client-id (get-var "STONECUTTER_CLIENT_ID")
-   :stonecutter-client-secret (get-var "STONECUTTER_CLIENT_SECRET")})
+   :stonecutter-client-secret (get-var "STONECUTTER_CLIENT_SECRET")
+   :coracle-bearer-token (get-var "CORACLE_BEARER_TOKEN")})
