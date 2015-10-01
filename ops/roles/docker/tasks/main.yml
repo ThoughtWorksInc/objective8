@@ -51,6 +51,8 @@
        - "mongo:mongo"
      ports:
        - "7000:7000"
+     env:
+       BEARER_TOKEN: {{ CORACLE_BEARER_TOKEN }}
 
  - name: docker java
    docker:
