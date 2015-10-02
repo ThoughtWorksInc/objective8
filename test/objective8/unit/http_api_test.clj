@@ -1,8 +1,5 @@
 (ns objective8.unit.http-api-test
-  (:use org.httpkit.fake)
-  (:require [org.httpkit.client :as http]
-            [midje.sweet :refer :all]
-            [cheshire.core :as json]
+  (:require [midje.sweet :refer :all]
             [objective8.front-end.api.http :as http-api]
             [objective8.utils :as utils]))
 
