@@ -3,7 +3,8 @@
             [objective8.back-end.storage.storage :as storage]
             [objective8.utils :as utils]
             [objective8.back-end.domain.objectives :as objectives]
-            [clojure.tools.logging :as log]))
+            [clojure.tools.logging :as log]
+            [objective8.config :as config]))
 
 (defn objective->activity [objective]
   {"@context"  "http://www.w3.org/ns/activitystreams"
@@ -54,8 +55,11 @@
       (catch Exception e
         (log/error (format "Error posting activity %s to coracle" activity-json) e)))))
 
-(defn new-coracle-activity-storage [bearer-token url]
-  (CoracleActivityStorage. bearer-token url))
+(defn new-coracle-activity-storage
+  ([bearer-token url]
+   (CoracleActivityStorage. bearer-token url))
+  ([]
+   (new-coracle-activity-storage (:coracle-bearer-token config/environment) (:coracle-post-uri config/environment))))
 
 (defrecord DBActivityStorage []
   ActivityStorage
@@ -64,6 +68,12 @@
        (assoc :entity :activity)
         storage/pg-store!)))
 
+(defn new-db-activity-storage []
+  (DBActivityStorage. ))
+
+(def coracle-activity-storage (new-coracle-activity-storage))
+(def db-activity-storage (new-db-activity-storage))
+
 (defn store-activity!
   ([activity-storage entity]
    (let [entity-to-activity-mapping-fn (get-mapping entity)]
@@ -71,7 +81,8 @@
           entity-to-activity-mapping-fn
           (store-activity activity-storage))))
   ([entity]
-   (store-activity! (DBActivityStorage.) entity)))
+   (store-activity! coracle-activity-storage entity)
+   (store-activity! db-activity-storage entity)))      ;; TODO remove db storage when mooncake has been repointed
 
 (defn retrieve-activities [query]
   (storage/pg-retrieve-activities (assoc query :entity :activity)))
