@@ -2,7 +2,8 @@
   (:require [org.httpkit.client :as http]
             [objective8.back-end.storage.storage :as storage]
             [objective8.utils :as utils]
-            [objective8.back-end.domain.objectives :as objectives]))
+            [objective8.back-end.domain.objectives :as objectives]
+            [clojure.tools.logging :as log]))
 
 (defn objective->activity [objective]
   {"@context"  "http://www.w3.org/ns/activitystreams"
@@ -44,8 +45,14 @@
 (defrecord CoracleActivityStorage [coracle-bearer-token coracle-storage-url]
   ActivityStorage
   (store-activity [this activity-json]
-    (http/post coracle-storage-url {:headers {"bearer_token" coracle-bearer-token "Content-Type" "application/activity+json"}
-                                    :body activity-json})))
+    (try
+      (let [response @(http/post coracle-storage-url {:headers {"bearer_token" coracle-bearer-token "Content-Type" "application/activity+json"}
+                                                     :body    activity-json})]
+        (if (not= (:status response) 201)
+          (log/error (format "201 not received when posting activity %s to coracle" activity-json))
+          activity-json))
+      (catch Exception e
+        (log/error (format "Error posting activity %s to coracle" activity-json) e)))))
 
 (defn new-coracle-activity-storage [bearer-token url]
   (CoracleActivityStorage. bearer-token url))
