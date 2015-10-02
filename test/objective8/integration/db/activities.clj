@@ -12,27 +12,43 @@
                          (ih/truncate-tables)))
    (after :facts (ih/truncate-tables))])
 
+(defrecord StubActivityStorage [a]
+  activities/ActivityStorage
+  (store-activity [this activity]
+    (swap! a conj activity)
+    activity))
+
+(defn create-stub-activity-storage [atom]
+  (StubActivityStorage. atom))
+
 (facts "about store-activity!"
        (fact "stores activities of type 'objective'"
-             (let [{user-id :_id username :username} (sh/store-a-user)
+             (let [activities-atom (atom [])
+                   activity-storage (create-stub-activity-storage activities-atom)
+                   {user-id :_id username :username} (sh/store-a-user)
                    objective-data {:created-by-id user-id
                                    :description   "objective description"
                                    :title         "objective title"}
                    stored-objective (objectives/store-objective! objective-data)
                    stored-objective-timestamp (:_created_at stored-objective)
                    stored-objective-url (str utils/host-url (:uri stored-objective))
-                   retrieved-objective (objectives/get-objective (:_id stored-objective))]
-               (activities/store-activity! retrieved-objective) => {"@context"  "http://www.w3.org/ns/activitystreams"
-                                                                    "@type"     "Create"
-                                                                    "published" stored-objective-timestamp
-                                                                    "actor"     {"@type"       "Person"
-                                                                                 "displayName" username}
-                                                                    "object"    {"@type"       "Objective"
-                                                                                 "displayName" "objective title"
-                                                                                 "content"     "objective description"
-                                                                                 "url"         stored-objective-url}}))
+                   retrieved-objective (objectives/get-objective (:_id stored-objective))
+                   expected-activity {"@context"  "http://www.w3.org/ns/activitystreams"
+                                      "@type"     "Create"
+                                      "published" stored-objective-timestamp
+                                      "actor"     {"@type"       "Person"
+                                                   "displayName" username}
+                                      "object"    {"@type"       "Objective"
+                                                   "displayName" "objective title"
+                                                   "content"     "objective description"
+                                                   "url"         stored-objective-url}}]
+               (activities/store-activity! activity-storage retrieved-objective) => expected-activity
+               @activities-atom => [expected-activity]))
+
        (fact "stores activities of type 'question'"
-             (let [{objective-user-id :_id} (sh/store-a-user)
+             (let [activities-atom (atom [])
+                   activity-storage (create-stub-activity-storage activities-atom)
+                   {objective-user-id :_id} (sh/store-a-user)
                    {question-user-id :_id question-username :username} (sh/store-a-user)
                    objective-data {:created-by-id objective-user-id
                                    :description   "objective description"
@@ -40,32 +56,34 @@
                    stored-objective (objectives/store-objective! objective-data)
                    question-data {:created-by-id question-user-id
                                   :objective-id  (:_id stored-objective)
-                                  :question   "Question content"}
+                                  :question      "Question content"}
                    stored-question (questions/store-question! question-data)
                    stored-question-timestamp (:_created_at stored-question)
                    stored-question-url (str utils/host-url (:uri stored-question))
-                   retrieved-question (questions/get-question (:uri stored-question))]
-               (activities/store-activity! retrieved-question) => {"@context"  "http://www.w3.org/ns/activitystreams"
-                                                                   "@type"     "Question"
-                                                                   "published" stored-question-timestamp
-                                                                   "actor"     {"@type"       "Person"
-                                                                                "displayName" question-username}
-                                                                   "object"    {"@type"
-                                                                                              "Objective Question"
-                                                                                "displayName" "Question content"
-                                                                                "url"         stored-question-url
-                                                                                "object"      {"@type"       "Objective"
-                                                                                               "displayName" "objective title"}}}))
+                   retrieved-question (questions/get-question (:uri stored-question))
+                   expected-activity {"@context"  "http://www.w3.org/ns/activitystreams"
+                                      "@type"     "Question"
+                                      "published" stored-question-timestamp
+                                      "actor"     {"@type"       "Person"
+                                                   "displayName" question-username}
+                                      "object"    {"@type"
+                                                                 "Objective Question"
+                                                   "displayName" "Question content"
+                                                   "url"         stored-question-url
+                                                   "object"      {"@type"       "Objective"
+                                                                  "displayName" "objective title"}}}]
+               (activities/store-activity! activity-storage retrieved-question) => expected-activity
+               @activities-atom => [expected-activity]))
 
-             (fact "throws exception if no entity key is present"
-                   (activities/store-activity! {}) => (throws Exception "No entity mapping for {:entity nil}"))
-             (fact "throws exception if entity key is not recognised in mappings"
-                   (activities/store-activity! {:entity :unknown}) => (throws Exception "No entity mapping for {:entity :unknown}")))
+       (fact "throws exception if no entity key is present"
+             (activities/store-activity! {}) => (throws Exception "No entity mapping for {:entity nil}"))
+       (fact "throws exception if entity key is not recognised in mappings"
+             (activities/store-activity! {:entity :unknown}) => (throws Exception "No entity mapping for {:entity :unknown}")))
 
 (fact "activities can be retrieved in reverse chronological order"
       (let [first-stored-activity (sh/store-an-activity)
             latest-stored-activity (sh/store-an-activity)]
-      (activities/retrieve-activities {}) => [latest-stored-activity first-stored-activity]))
+        (activities/retrieve-activities {}) => [latest-stored-activity first-stored-activity]))
 
 (fact "can retrieve n number of entries"
       (doall (repeatedly 10 sh/store-an-activity))

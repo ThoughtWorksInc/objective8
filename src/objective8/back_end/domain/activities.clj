@@ -37,12 +37,28 @@
     entity-to-activity-mapping-fn
     (throw (Exception. (str "No entity mapping for " {:entity entity})))))
 
-(defn store-activity! [entity]
-  (let [entity-to-activity-mapping-fn (get-mapping entity)]
-    (-> entity
-        entity-to-activity-mapping-fn
-        (assoc :entity :activity)
+(defprotocol ActivityStorage
+  (store-activity [this activity]))
+
+(defrecord CoracleActivityStorage [coracle-storage-url]
+  ActivityStorage
+  (store-activity [this activity]))
+
+(defrecord DBActivityStorage []
+  ActivityStorage
+  (store-activity [this activity]
+    (-> activity
+       (assoc :entity :activity)
         storage/pg-store!)))
+
+(defn store-activity!
+  ([activity-storage entity]
+   (let [entity-to-activity-mapping-fn (get-mapping entity)]
+     (->> entity
+          entity-to-activity-mapping-fn
+          (store-activity activity-storage))))
+  ([entity]
+   (store-activity! (DBActivityStorage. ) entity)))
 
 (defn retrieve-activities [query]
   (storage/pg-retrieve-activities (assoc query :entity :activity)))
