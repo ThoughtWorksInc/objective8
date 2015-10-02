@@ -50,7 +50,7 @@
       (let [response @(http/post coracle-storage-url {:headers {"bearer_token" coracle-bearer-token "Content-Type" "application/activity+json"}
                                                      :body    activity-json})]
         (if (not= (:status response) 201)
-          (log/error (format "201 not received when posting activity %s to coracle" activity-json))
+          (log/error (format "201 not received when posting activity %s to coracle - response received: %s" activity-json response))
           activity-json))
       (catch Exception e
         (log/error (format "Error posting activity %s to coracle" activity-json) e)))))
