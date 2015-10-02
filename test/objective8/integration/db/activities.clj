@@ -1,11 +1,13 @@
 (ns objective8.integration.db.activities
   (:require [midje.sweet :refer :all]
+            [org.httpkit.client :as http]
             [objective8.utils :as utils]
             [objective8.integration.integration-helpers :as ih]
             [objective8.integration.storage-helpers :as sh]
             [objective8.back-end.domain.activities :as activities]
             [objective8.back-end.domain.objectives :as objectives]
-            [objective8.back-end.domain.questions :as questions]))
+            [objective8.back-end.domain.questions :as questions]
+            ))
 
 (background
   [(before :contents (do (ih/db-connection)
@@ -116,3 +118,14 @@
         (activities/retrieve-activities {:to-date a2-timestamp}) => [a1]
         (activities/retrieve-activities {:from-date a2-timestamp :to-date a4-timestamp}) => [a3]
         (activities/retrieve-activities {}) => [a4 a3 a2 a1]))
+
+(facts "about storing activities to coracle"
+       (let [bearer-token "a-bearer-token"
+             coracle-url "coracle-post-url"
+             body "an-activity"
+             coracle (activities/new-coracle-activity-storage bearer-token coracle-url)]
+         (activities/store-activity! coracle body) => anything
+         (provided
+           (activities/get-mapping anything) => identity
+           (http/request {:method :post :headers {"bearer_token" bearer-token "Content-Type" "application/activity+json"}
+                          :url coracle-url :body body} nil) => anything :times 1)))

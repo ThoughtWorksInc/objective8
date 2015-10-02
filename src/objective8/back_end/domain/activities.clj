@@ -1,5 +1,6 @@
 (ns objective8.back-end.domain.activities
-  (:require [objective8.back-end.storage.storage :as storage]
+  (:require [org.httpkit.client :as http]
+            [objective8.back-end.storage.storage :as storage]
             [objective8.utils :as utils]
             [objective8.back-end.domain.objectives :as objectives]))
 
@@ -40,14 +41,19 @@
 (defprotocol ActivityStorage
   (store-activity [this activity]))
 
-(defrecord CoracleActivityStorage [coracle-storage-url]
+(defrecord CoracleActivityStorage [coracle-bearer-token coracle-storage-url]
   ActivityStorage
-  (store-activity [this activity]))
+  (store-activity [this activity-json]
+    (http/post coracle-storage-url {:headers {"bearer_token" coracle-bearer-token "Content-Type" "application/activity+json"}
+                                    :body activity-json})))
+
+(defn new-coracle-activity-storage [bearer-token url]
+  (CoracleActivityStorage. bearer-token url))
 
 (defrecord DBActivityStorage []
   ActivityStorage
-  (store-activity [this activity]
-    (-> activity
+  (store-activity [this activity-json]
+    (-> activity-json
        (assoc :entity :activity)
         storage/pg-store!)))
 
@@ -58,7 +64,7 @@
           entity-to-activity-mapping-fn
           (store-activity activity-storage))))
   ([entity]
-   (store-activity! (DBActivityStorage. ) entity)))
+   (store-activity! (DBActivityStorage.) entity)))
 
 (defn retrieve-activities [query]
   (storage/pg-retrieve-activities (assoc query :entity :activity)))
