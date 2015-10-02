@@ -48,4 +48,5 @@
    :stonecutter-auth-provider-url (get-var "STONECUTTER_AUTH_URL")
    :stonecutter-client-id (get-var "STONECUTTER_CLIENT_ID")
    :stonecutter-client-secret (get-var "STONECUTTER_CLIENT_SECRET")
-   :coracle-bearer-token (get-var "CORACLE_BEARER_TOKEN")})
+   :coracle-bearer-token (get-var "CORACLE_BEARER_TOKEN")
+   :coracle-post-uri (get-var "CORACLE_URI" "localhost:7000/activities")})
