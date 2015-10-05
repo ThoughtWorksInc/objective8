@@ -45,7 +45,7 @@
  - name: docker coracle
    docker:
      name: coracle
-     image: dcent/coracle:58
+     image: dcent/coracle:60
      pull: always
      links:
        - "mongo:mongo"
@@ -54,6 +54,7 @@
        - "7000:7000/tcp"
      env:
        BEARER_TOKEN: "{{ CORACLE_BEARER_TOKEN }}"
+       SECURE: "true"
 
  - name: docker java
    docker:
