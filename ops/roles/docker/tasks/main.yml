@@ -45,7 +45,7 @@
  - name: docker coracle
    docker:
      name: coracle
-     image: dcent/coracle:60
+     image: dcent/coracle:61
      pull: always
      links:
        - "mongo:mongo"
