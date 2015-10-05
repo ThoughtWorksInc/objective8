@@ -4,7 +4,8 @@
             [objective8.utils :as utils]
             [objective8.back-end.domain.objectives :as objectives]
             [clojure.tools.logging :as log]
-            [objective8.config :as config]))
+            [objective8.config :as config]
+            [cheshire.core :as json]))
 
 (defn objective->activity [objective]
   {"@context"  "http://www.w3.org/ns/activitystreams"
@@ -45,15 +46,16 @@
 
 (defrecord CoracleActivityStorage [coracle-bearer-token coracle-storage-url]
   ActivityStorage
-  (store-activity [this activity-json]
-    (try
-      (let [response @(http/post coracle-storage-url {:headers {"bearer_token" coracle-bearer-token "Content-Type" "application/activity+json"}
-                                                     :body    activity-json})]
-        (if (not= (:status response) 201)
-          (log/error (format "201 not received when posting activity %s to coracle - response received: %s" activity-json response))
-          activity-json))
-      (catch Exception e
-        (log/error (format "Error posting activity %s to coracle" activity-json) e)))))
+  (store-activity [this activity]
+    (let [activity-json (json/generate-string activity)]
+      (try
+        (let [response @(http/post coracle-storage-url {:headers {"bearer_token" coracle-bearer-token "Content-Type" "application/activity+json"}
+                                                        :body    activity-json})]
+          (if (not= (:status response) 201)
+            (log/error (format "201 not received when posting activity %s to coracle [%s] - response received: %s" activity-json coracle-storage-url response))
+            activity))
+        (catch Exception e
+          (log/error (format "Error posting activity %s to coracle" activity) e))))))
 
 (defn new-coracle-activity-storage
   ([bearer-token url]
@@ -63,8 +65,8 @@
 
 (defrecord DBActivityStorage []
   ActivityStorage
-  (store-activity [this activity-json]
-    (-> activity-json
+  (store-activity [this activity]
+    (-> activity
        (assoc :entity :activity)
         storage/pg-store!)))
 

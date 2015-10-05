@@ -7,7 +7,7 @@
             [objective8.back-end.domain.activities :as activities]
             [objective8.back-end.domain.objectives :as objectives]
             [objective8.back-end.domain.questions :as questions]
-            ))
+            [cheshire.core :as json]))
 
 (background
   [(before :contents (do (ih/db-connection)
@@ -128,7 +128,7 @@
          (provided
            (activities/get-mapping anything) => identity
            (http/request {:method :post :headers {"bearer_token" bearer-token "Content-Type" "application/activity+json"}
-                          :url coracle-url :body body} nil) => (atom {:status 201}) :times 1)))
+                          :url    coracle-url :body (json/generate-string body)} nil) => (atom {:status 201}) :times 1)))
 
 (facts "failure cases when storing activities to coracle"
        (fact "silently logs when coracle returns error"
