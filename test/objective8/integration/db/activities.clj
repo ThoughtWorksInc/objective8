@@ -127,7 +127,7 @@
          (activities/store-activity! coracle body) => body
          (provided
            (activities/get-mapping anything) => identity
-           (http/request {:method :post :headers {"bearer_token" bearer-token "Content-Type" "application/activity+json"}
+           (http/request {:method :post :headers {"bearer-token" bearer-token "Content-Type" "application/activity+json"}
                           :url    coracle-url :body (json/generate-string body)} nil) => (atom {:status 201}) :times 1)))
 
 (facts "failure cases when storing activities to coracle"

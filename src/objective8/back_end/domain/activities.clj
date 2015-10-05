@@ -49,7 +49,7 @@
   (store-activity [this activity]
     (let [activity-json (json/generate-string activity)]
       (try
-        (let [response @(http/post coracle-storage-url {:headers {"bearer_token" coracle-bearer-token "Content-Type" "application/activity+json"}
+        (let [response @(http/post coracle-storage-url {:headers {"bearer-token" coracle-bearer-token "Content-Type" "application/activity+json"}
                                                         :body    activity-json})]
           (if (not= (:status response) 201)
             (log/error (format "201 not received when posting activity %s to coracle [%s] - response received: %s" activity-json coracle-storage-url response))
