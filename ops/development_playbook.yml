@@ -9,5 +9,6 @@
     - dev
     - leiningen
     - postgres 
+    - docker
     - objective8_postgres_config
 
