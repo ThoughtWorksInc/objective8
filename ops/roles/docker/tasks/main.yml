@@ -54,7 +54,6 @@
        - "7000:7000/tcp"
      env:
        BEARER_TOKEN: "{{ CORACLE_BEARER_TOKEN }}"
-       SECURE: "true"
 
  - name: docker java
    docker:
