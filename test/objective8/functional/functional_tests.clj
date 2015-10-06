@@ -133,18 +133,6 @@
                        :modal-text "Functional test headline"
                        :writer-name "funcTestUser123"}))
 
-  (fact "Can retrieve activities"
-        (try
-          (wd/to "localhost:8081/api/v1/activities")
-          (screenshot "activities_json")
-          (wd/page-source)
-          (catch Exception e
-            (screenshot "ERROR-Can-retrieve-activities")
-            (throw e)))
-        => (every-checker
-             (contains "[{\"@context\":\"http://www.w3.org/ns/activitystreams\",\"@type\":\"Create\"")
-             (contains "\"displayName\":\"Functional test headline\",\"content\":\"Functional test description with lots of hipster-ipsum:")))
-
   (fact "Can star an objective"
         (try (wd/to (:objective-url @journey-state))
              (wait-for-title "Functional test headline | Objective[8]")
