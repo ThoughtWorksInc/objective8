@@ -530,39 +530,9 @@
 
 ;; Activities
 
-(defn remove-json-ld-context [activities]
-  (map #(dissoc % "@context") activities))
 
 (defn activity-query-format-string [limit]
   (str (utils/external-api-path-for :api/get-activities)
        "?offset=%s"
        (when limit (str "&limit=" limit))
        "&as_ordered_collection=true"))
-
-(defn wrap-as-ordered-collection [activities limit offset]
-  (let [offset (if offset offset 0)
-        next-offset (when limit (+ offset limit))
-        prev-offset (when limit (max 0 (- offset limit)))
-        link-format-string (activity-query-format-string limit)
-        include-prev-link? (and (when limit (> limit 0))
-                               (> offset 0))
-        include-next-link? (when limit (= (count activities) limit))]
-    (cond-> {"@context" "http://www.w3.org/ns/activitystreams"
-             "@type" "OrderedCollection"
-             "items" (remove-json-ld-context activities)
-             "startIndex" offset
-             "first" (format link-format-string 0)}
-      (not (nil? limit)) (assoc "itemsPerPage" limit)
-      include-prev-link? (assoc "prev" (format link-format-string prev-offset))
-      include-next-link? (assoc "next" (format link-format-string next-offset)))))
-
-(defn get-activities [request]
-  (let [{:keys [limit offset wrapped from-date to-date] :as query} (br/request->activities-query request)]
-    (if (or (= from-date :invalid)
-            (= to-date :invalid))
-      (invalid-response "Invalid query")
-      (let [activities (activities/retrieve-activities query)]
-        (cond-> activities
-                wrapped (wrap-as-ordered-collection limit offset)
-                true response/response
-                true (response/content-type "application/json"))))))
