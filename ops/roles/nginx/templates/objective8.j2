@@ -19,8 +19,8 @@ server {
   location /static/ {
     alias /var/www/objective8/public/;
   }
-  location /activities {
-    proxy_pass http://localhost:7000/activities;
+  location /as2/ {
+    proxy_pass http://localhost:7000;
   }
   location /api/v1/ {
     proxy_pass http://localhost:8081;
