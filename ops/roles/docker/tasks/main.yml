@@ -54,6 +54,7 @@
        - "7000:7000/tcp"
      env:
        BEARER_TOKEN: "{{ CORACLE_BEARER_TOKEN }}"
+       EXTERNAL_JWK_SET_URL: "{{ external_jwk_set_url }}"
 
  - name: docker java
    docker:
