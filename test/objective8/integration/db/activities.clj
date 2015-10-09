@@ -2,7 +2,6 @@
   (:require [midje.sweet :refer :all]
             [org.httpkit.client :as http]
             [objective8.utils :as utils]
-            [objective8.integration.integration-helpers :as ih]
             [objective8.integration.storage-helpers :as sh]
             [objective8.back-end.domain.activities :as activities]
             [objective8.back-end.domain.objectives :as objectives]
