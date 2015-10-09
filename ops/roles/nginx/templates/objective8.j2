@@ -19,9 +19,11 @@ server {
   location /static/ {
     alias /var/www/objective8/public/;
   }
+  # trailing '/' after port means app doesn't know about '/as2/'
   location /as2/ {
-    proxy_pass http://localhost:7000;
+    proxy_pass http://localhost:7000/;
   }
+  # no trailing '/' after port means app knows about '/api/v1/'
   location /api/v1/ {
     proxy_pass http://localhost:8081;
   }
