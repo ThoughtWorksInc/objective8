@@ -1,4 +1,10 @@
 default ansible_ssh_host=objective8.dcentproject.eu
 
 [digital_ocean_box]
-default site_address="https://objective8.dcentproject.eu" cert_location="secure/objective8.crt" cert_key_location="secure/objective8.key"
+default
+
+[digital_ocean_box:vars]
+site_address="https://objective8.dcentproject.eu"
+cert_location="secure/objective8.crt"
+cert_key_location="secure/objective8.key"
+external_jwk_set_url="https://objective8.dcentproject.eu/as2/jwk-set"
