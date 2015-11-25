@@ -285,8 +285,8 @@
     (cond-> (initialise-field-validation html-content)
       (empty? html-content) (report-error :empty))))
 
-(defn request->imported-draft-data [{:keys [route-params] :as request} user-id]
-  (let [objective-id (Integer/parseInt (:id route-params))]
+(defn request->imported-draft-data [request user-id]
+  (let [objective-id (Integer/parseInt (get-in request [:route-params :id]))]
     (some-> (initialise-request-validation request)
             (validate :content import-draft-content-validator)
             (assoc-in [:data :objective-id] objective-id)
