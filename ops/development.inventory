@@ -3,3 +3,5 @@ default ansible_ssh_host=127.0.0.1 ansible_ssh_port=2282
 [development]
 default CORACLE_BEARER_TOKEN="test-bearer-token"
 
+[development:vars]
+external_jwk_set_url=""

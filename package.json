@@ -36,6 +36,6 @@
     "url": "https://github.com/ThoughtWorksInc/objective8/issues"
   },
   "scripts": {
-    "postinstall": "grunt build"
+    "postinstall": "./npm-postinstall.sh"
   }
 }
