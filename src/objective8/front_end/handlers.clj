@@ -869,16 +869,16 @@
   (let [draft-data (fr/request->imported-draft-data request (get (friend/current-authentication) :identity))]
     (case (:status draft-data)
       ::fr/valid (case (:action params)
-                   "preview" (-> (response/redirect (utils/path-for :fe/import-draft-get :id  (:objective-id draft-data)))
+                   "preview" (-> (response/redirect (utils/path-for :fe/import-draft-get :id  (get-in draft-data [:data :objective-id])))
                                  (assoc :flash {:type :import-draft-preview
-                                                :import-draft-preview-html (utils/hiccup->html (:content draft-data))}))
+                                                :import-draft-preview-html (utils/hiccup->html (get-in draft-data [:data :content]))}))
 
-                   "submit" (let [{status :status draft :result} (http-api/post-draft draft-data)]
+                   "submit" (let [{status :status draft :result} (http-api/post-draft (:data draft-data))]
                               (cond
                                 (= status ::http-api/success)
                                 (response/redirect
                                  (utils/path-for :fe/draft
-                                                 :id (:objective-id draft-data)
+                                                 :id (get-in draft-data [:data :objective-id])
                                                  :d-id (:_id draft)))
 
                                 (= status ::http-api/not-found)
