@@ -26,9 +26,10 @@
                   "displayName" (:username question)}
      "object"    {"@type"       "Objective Question"
                   "displayName" (:question question)
-                  "url"         (str utils/host-url (:uri question))
-                  "object"      {"@type"       "Objective"
-                                 "displayName" (:title objective)}}}))
+                  "url"         (str utils/host-url (:uri question))}
+     "target"    {"@type"       "Objective"
+                  "displayName" (:title objective)
+                  "url"         (str utils/host-url (:uri objective))}}))
 
 (def entities->activities {:objective objective->activity
                            :question  question->activity})

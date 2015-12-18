@@ -50,6 +50,7 @@
                                    :description   "objective description"
                                    :title         "objective title"}
                    stored-objective (objectives/store-objective! objective-data)
+                   stored-objective-url (str utils/host-url (:uri stored-objective))
                    question-data {:created-by-id question-user-id
                                   :objective-id  (:_id stored-objective)
                                   :question      "Question content"}
@@ -65,9 +66,10 @@
                                       "object"    {"@type"
                                                                  "Objective Question"
                                                    "displayName" "Question content"
-                                                   "url"         stored-question-url
-                                                   "object"      {"@type"       "Objective"
-                                                                  "displayName" "objective title"}}}]
+                                                   "url"         stored-question-url}
+                                      "target"    {"@type"       "Objective"
+                                                   "displayName" "objective title"
+                                                   "url"         stored-objective-url}}]
                (activities/store-activity! activity-storage retrieved-question) => expected-activity
                @activities-atom => [expected-activity]))
 
