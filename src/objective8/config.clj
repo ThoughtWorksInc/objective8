@@ -39,11 +39,11 @@
    :api-credentials               {:bearer-name  (get-var "API_BEARER_NAME")
                                    :bearer-token (get-var "API_BEARER_TOKEN")}
    :admins                        (get-var "ADMINS")
-   :db-config                     {:db       (get-var "DB_NAME" "objective8")
-                                   :user     (get-var "DB_USER" "objective8")
-                                   :password (get-var "DB_PASSWORD" "development") ;TODO password management
-                                   :host     (get-var "DB_HOST" "localhost")
-                                   :port     (get-var "DB_PORT" 5432)}
+   :db-config                     {:db       (or (get-var "POSTGRES_DB") (get-var "DB_NAME" "objective8"))
+                                   :user     (or (get-var "POSTGRES_USER") (get-var "DB_USER" "objective8"))
+                                   :password (or (get-var "POSTGRES_PASSWORD") (get-var "DB_PASSWORD" "development")) ;TODO password management
+                                   :host     (or (get-var "POSTGRES_PORT_5432_TCP_ADDR") (get-var "DB_HOST" "localhost"))
+                                   :port     (or (get-var "POSTGRES_PORT_5432_TCP_PORT") (get-var "DB_PORT" 5432))}
    :google-analytics-tracking-id  (get-var "GA_TRACKING_ID")
    :twitter-credentials           {:consumer-token (get-var "TWITTER_CONSUMER_TOKEN")
                                    :secret-token   (get-var "TWITTER_CONSUMER_SECRET_TOKEN")}

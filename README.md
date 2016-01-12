@@ -1,4 +1,6 @@
-# d-cent prototype
+# Objective8
+
+[![Build Status](https://snap-ci.com/d-cent/objective8/branch/master/build_image)](https://snap-ci.com/d-cent/objective8/branch/master)
 
 ## Getting Started
 
@@ -132,16 +134,6 @@ then run the task and start the app using:
 (reset :default)
 ```
 
-##Deployment
-
-To deploy, you need to set some environment variables:
-```
-export APP_PORT=<port on which the applicaton will be served, defaults to 8080>
-export BASE_URI=<the base uri at which the application is served, including the port, defaults to 'localhost:8080'>
-export TWITTER_CONSUMER_TOKEN=<obtain this from twitter when registering the application to allow sign-in via twitter>
-export TWITTER_CONSUMER_SECRET_TOKEN=<as above>
-```
-
 ##Deployment to Heroku
 
 ######Heroku account setup:
@@ -209,8 +201,17 @@ Run:
 
 ## Docker
 
-With root privileges:
+First, open the *objective8_docker_config_template* found in the */ops* directory, enter your credentials and save the file.
+
+Next, start a postgres docker container.
+
+```
+docker run -d --env-file={docker config relative file path} -v /data --name pg_objective8 postgres
+```
+
+Then, build and start the objective8 docker container.
+
 ```
 docker build -t objective8 .
-docker run -it -p 8080:8080 --rm --name objective8-live objective8
+docker run -d --env-file={docker config relative file path} -v /Users/awelch/IdeaProjects/objective8/migrations:/usr/src/app/target/migrations -p 8080:8080 -p 8081:8081 --link pg_objective8:postgres --name objective8 objective8
 ```
