@@ -6,6 +6,7 @@ WORKDIR /usr/src/app
 COPY project.clj /usr/src/app/
 RUN lein with-profile production deps
 COPY . /usr/src/app
+RUN apt-get -y install build-essential
 RUN npm install
 
 RUN lein uberjar

@@ -201,17 +201,81 @@ Run:
 
 ## Docker
 
-First, open the *objective8_docker_config_template* found in the */ops* directory, enter your credentials and save the file.
+To run the application you'll need the following containers:
 
-Next, start a postgres docker container.
+* Postgresql
+* Nginx
+* Objective8
 
-```
-docker run -d --env-file={docker config relative file path} -v /data --name pg_objective8 postgres
-```
+First, open the *objective8_docker_config_template* found in the */ops* directory, enter your credentials and save the file. This will be used in both postgres and objective8.
+
+#### Postres Container
+
+To start a postgres docker container, using the relative path for your config file.
+
+    docker run -d --env-file=<docker config relative file path> -v /data --name pg_objective8 postgres
+
+#### Nginx container
+
+Nginx is used to add SSL protection and act as a reverse proxy. to use it you need:
+
+* an SSL certificate and key
+* a dhparam.pem file
+* an nginx.conf file
+
+You can acquire an SSL certificate and key online inexpensively. You should receive a pair of files, for instance stonecutter.crt and stonecutter.key. Store them in their own directory somewhere safe.
+
+You can generate a dhparam.pem file by running: 
+    
+    openssl dhparam -rand – 2048 > dhparam.pem
+ 
+You can create an nginx.conf file by copying the following into a new file and replacing the <> appropriately:
+
+    events {
+    }
+    http {
+      server {
+      listen 80;
+      return 301 $request_uri;
+      }
+      
+      
+      server {
+        listen 443 ssl;
+      
+        ssl_certificate /etc/nginx/ssl/<file name for SSL certificate>;
+        ssl_certificate_key /etc/nginx/ssl/<file name for SSL key>;
+      
+        ssl_session_cache shared:SSL:32m;
+        ssl_session_timeout 10m;
+      
+        ssl_dhparam /etc/nginx/cert/dhparam.pem;
+        ssl_protocols TLSv1.2 TLSv1.1 TLSv1;
+      
+        # trailing '/' after port means app doesn't know about '/as2/'
+        location /as2/ {
+          proxy_pass http://<docker ip>:7000/;
+        }
+        # no trailing '/' after port means app knows about '/api/v1/'
+        location /api/v1/ {
+          proxy_pass http://<docker ip>:8081;
+        }
+        location / {
+          proxy_pass http://<docker ip>:8080;
+        }
+      }
+    }
+
+
+Finally, run the following command:
+
+    docker run -v <absolute path to SSL certificates and keys directory>:/etc/nginx/ssl -v <absolute path to conf file>/nginx.conf:/etc/nginx/nginx.conf -v <absolute path to dhparam file>/dhparam.pem:/etc/nginx/cert/dhparam.pem -P -d --name nginx-conainer nginx
+        
+#### Objective8
 
 Then, build and start the objective8 docker container.
 
 ```
 docker build -t objective8 .
-docker run -d --env-file={docker config relative file path} -v {absolute path to objective8 project}/migrations:/usr/src/app/target/migrations -p 8080:8080 -p 8081:8081 --link pg_objective8:postgres --name objective8 objective8
+docker run -d --env-file=<relative path to objective8 docker config> -v <absolute path to project location>/objective8/migrations:/usr/src/app/target/migrations -p 8080:8080 -p 8081:8081 --link pg_objective8:postgres --name objective8 objective8
 ```
