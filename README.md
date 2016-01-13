@@ -209,7 +209,7 @@ To run the application you'll need the following containers:
 
 First, open the *objective8_docker_config_template* found in the */ops* directory, enter your credentials and save the file. This will be used in both postgres and objective8.
 
-#### Postres Container
+#### Postgres Container
 
 To start a postgres docker container, using the relative path for your config file.
 
@@ -223,7 +223,7 @@ Nginx is used to add SSL protection and act as a reverse proxy. to use it you ne
 * a dhparam.pem file
 * an nginx.conf file
 
-You can acquire an SSL certificate and key online inexpensively. You should receive a pair of files, for instance stonecutter.crt and stonecutter.key. Store them in their own directory somewhere safe.
+You can acquire an SSL certificate and key online inexpensively. You should receive a pair of files, for instance objective8.crt and objective8.key. Store them in their own directory somewhere safe.
 
 You can generate a dhparam.pem file by running: 
     
