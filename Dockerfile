@@ -8,6 +8,10 @@ RUN lein with-profile production deps
 COPY . /usr/src/app
 RUN apt-get -y install build-essential
 RUN npm install
+RUN npm install -g grunt
+RUN npm install -g grunt-cli
+RUN npm rebuild node-sass
+RUN grunt build
 
 RUN lein uberjar
 WORKDIR /usr/src/app/target
