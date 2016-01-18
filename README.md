@@ -4,7 +4,7 @@
 
 ## Getting Started
 
-###Local setup
+### Local setup
 To start the development VM you will need to install
 - Vagrant + Virtualbox (see https://www.vagrantup.com/downloads.html, https://www.virtualbox.org/wiki/Downloads)
 - Ansible (see http://docs.ansible.com/intro_installation.html)
@@ -15,7 +15,7 @@ cd objective8/ops/
 ```
 
 ### Working on the VM
-####To get started:
+#### To get started:
 
 ```
 # use the provided template to create an objective8_config file
@@ -28,45 +28,45 @@ npm install
 lein ragtime migrate
 ```
 
-####Running the tests
+#### Running the tests
 
-######To run all tests:
+###### To run all tests:
 ```
 test/run_all_tests.sh
 ```
-######To run only unit tests:
+###### To run only unit tests:
 ```
 lein midje objective8.unit.*
 ```
-######To run only integration tests:
+###### To run only integration tests:
 ```
 lein midje objective8.integration.*
 ```
-######To run only functional tests:
+###### To run only functional tests:
 ```
 test/run_functional_tests.sh
 ```
 
-#####Use `:autotest` to make tests rerun automatically when files are changed:
+##### Use `:autotest` to make tests rerun automatically when files are changed:
 
 *Autotest watches directories rather than namespaces*
 
-######Autotest all tests:
+###### Autotest all tests:
 ```
 test/run_all_tests.sh :autotest
 ```
 
-######Autotest unit and integration tests:
+###### Autotest unit and integration tests:
 ```
 test/autotest_unit_and_integration_tests.sh
 ```
 
-######Autotest functional tests:
+###### Autotest functional tests:
 ```
 test/autotest_functional_tests.sh
 ```
 
-######Extra configuration options:
+###### Extra configuration options:
 
 You can also pass extra configuration to the tests using the :config
 option.  For example: to run just the unit tests with autotest and without any logging, use:
@@ -75,7 +75,7 @@ lein midje :autotest test/objective8/unit/ :config config/tests/no-logging.clj
 ```
 
 
-####Adding or updating a translation resource
+#### Adding or updating a translation resource
 
 Resources for translating the site into different languages are located under:
 /resources/translations/<locale-identifier>.csv
@@ -94,26 +94,26 @@ lein translation-template es el
 will generate or update `/resources/translations/es.csv` and
 `/resources/translations/el.csv`.
 
-####Running the app
+#### Running the app
 
-######Build front-end assets (html and css) using:
+###### Build front-end assets (html and css) using:
 ```
 npm install
 ```
 
-######Designing in the browser
+###### Designing in the browser
 This allows you to rapidly design.  You can create jade, modify the sass and js.  These will all be live reloaded.
 ```
 grunt design
 ```
 
-######Running the app with a fake twitter (used for Sign-in) 
+###### Running the app with a fake twitter (used for Sign-in) 
 ```
 lein repl
 (reset :stub-twitter)
 ```
 
-######Running the app with credentials
+###### Running the app with credentials
 create a task (for example `start_with_credentials.sh` with the following content:
 
 ```
@@ -134,18 +134,18 @@ then run the task and start the app using:
 (reset :default)
 ```
 
-##Deployment to Heroku
+## Deployment to Heroku
 
-######Heroku account setup:
+###### Heroku account setup:
 - Create a heroku account
 - Create new heroku app
 - Install heroku tool-belt
 
-######Setup Twitter API for app:
+###### Setup Twitter API for app:
 - create new app on www.dev.twitter.com
 - get consumer API key
 
-######Local heroku configuration:
+###### Local heroku configuration:
 - add heroku remote: `heroku git:remote -a [APP_NAME]`
 - Add heroku postgres add-on: `heroku addons:create heroku-postgresql:hobby-dev`
 
@@ -163,16 +163,16 @@ then run the task and start the app using:
 - Push to Heroku
 
 
-##Deployment to ubuntu server (e.g. through digital ocean)
+## Deployment to ubuntu server (e.g. through digital ocean)
 
 All of the following steps are essential.
 
-####Provision
+#### Provision
 - Provision an ubuntu server machine (can be a cloud server such as digital ocean)
 - A machine with 1gb RAM and 30gb hard disk has been sufficient for early tests
 - Enable connection to the box via ssh - [how to](https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys--2) 
 
-####Configure with ansible
+#### Configure with ansible
 - Install Ansible
 - In file *ops/digital_ocean_box.inventory* replace the IP address with the IP address of your ubuntu server machine
 - Create a Twitter developer account and "app" for user authentication in the app
@@ -188,7 +188,7 @@ Run Ansible playbook:
   ansible-playbook ops/digital_ocean_box_playbook.yml -i ops/digital_ocean_box.inventory --extra-vars "CONFIG_FILE_PATH={config file path from the previous step without the curly braces}"
   ```
   
-####Deploy application to the server
+#### Deploy application to the server
 Run:
 
   The following will copy the application to the server and start it running as a service on a docker container.
