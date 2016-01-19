@@ -1,4 +1,4 @@
 #!/bin/bash
 
-#npm rebuild node-sass
-#grunt build
+npm rebuild node-sass
+grunt build
