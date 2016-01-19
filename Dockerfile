@@ -10,6 +10,7 @@ RUN apt-get -y install build-essential
 RUN npm cache clean
 RUN npm install -g node-gyp
 RUN npm install utf-8-validate
+RUN npm install bufferutil
 RUN npm install
 RUN npm install -g grunt
 RUN npm install -g grunt-cli
