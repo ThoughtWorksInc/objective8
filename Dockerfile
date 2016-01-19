@@ -7,9 +7,8 @@ COPY project.clj /usr/src/app/
 RUN lein with-profile production deps
 COPY . /usr/src/app
 RUN apt-get -y install build-essential
-RUN rm -rf /usr/src/app/node_modules
 RUN npm install -g node-gyp
-RUN npm install
+RUN npm install -ddd
 RUN npm install -g grunt
 RUN npm install -g grunt-cli
 RUN npm rebuild node-sass
