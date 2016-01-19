@@ -7,7 +7,8 @@ COPY project.clj /usr/src/app/
 RUN lein with-profile production deps
 COPY . /usr/src/app
 RUN apt-get -y install build-essential
-RUN npm install
+RUN npm cache clean
+RUN npm install --loglevel verbose
 RUN npm install -g grunt
 RUN npm install -g grunt-cli
 RUN npm rebuild node-sass
