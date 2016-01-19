@@ -7,20 +7,6 @@ COPY project.clj /usr/src/app/
 RUN lein with-profile production deps
 COPY . /usr/src/app
 RUN apt-get -y install build-essential
-RUN npm config set jobs 1
-RUN npm install jade
-RUN npm install grunt
-RUN npm install grunt-cli
-RUN npm install grunt-contrib-concat
-RUN npm install grunt-contrib-copy
-RUN npm install grunt-contrib-jade
-RUN npm install grunt-contrib-jshint
-RUN npm install grunt-contrib-uglify
-RUN npm install grunt-contrib-watch
-RUN npm install grunt-sass
-RUN npm install jshint-stylish
-RUN npm install load-grunt-tasks
-RUN npm install node-sass
 RUN npm install
 RUN npm install -g grunt
 RUN npm install -g grunt-cli
