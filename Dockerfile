@@ -7,9 +7,9 @@ COPY project.clj /usr/src/app/
 RUN lein with-profile production deps
 COPY . /usr/src/app
 RUN apt-get -y install build-essential
-RUN apt-get -y install python
 RUN npm cache clean
 RUN npm install -g node-gyp
+RUN npm install utf-8-validate
 RUN npm install
 RUN npm install -g grunt
 RUN npm install -g grunt-cli
