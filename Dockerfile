@@ -7,6 +7,7 @@ COPY project.clj /usr/src/app/
 RUN lein with-profile production deps
 COPY . /usr/src/app
 RUN apt-get -y install build-essential
+RUN npm config set jobs 1
 RUN npm install jade
 RUN npm install grunt
 RUN npm install jshint-stylish
