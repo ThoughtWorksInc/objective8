@@ -20,7 +20,9 @@
     "jade": "^1.9.2",
     "jshint-stylish": "~1.0.0",
     "load-grunt-tasks": "~0.4.0",
-    "node-sass": "2.1.1"
+    "node-sass": "2.1.1",
+    "grunt-browser-sync": "2.2.0",
+    "grunt-express-server": "0.5.1"
   },
   "devDependencies": {
     "express": "^4.12.1",

@@ -7,8 +7,6 @@ COPY project.clj /usr/src/app/
 RUN lein with-profile production deps
 COPY . /usr/src/app
 RUN apt-get -y install build-essential
-RUN npm install -g node-gyp
-#RUN npm install
 RUN npm install jade
 RUN npm install grunt
 RUN npm install grunt-autoprefixer
@@ -24,6 +22,7 @@ RUN npm install grunt-sass
 RUN npm install jshint-stylish
 RUN npm install load-grunt-tasks
 RUN npm install node-sass
+RUN npm install
 RUN npm install -g grunt
 RUN npm install -g grunt-cli
 RUN npm rebuild node-sass
