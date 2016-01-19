@@ -9,15 +9,6 @@ COPY . /usr/src/app
 RUN apt-get -y install build-essential
 RUN npm install jade
 RUN npm install grunt
-RUN npm install grunt-autoprefixer
-RUN npm install grunt-cli
-RUN npm install grunt-contrib-concat
-RUN npm install grunt-contrib-copy
-RUN npm install grunt-contrib-jade
-RUN npm install grunt-contrib-jshint
-RUN npm install grunt-contrib-uglify
-RUN npm install grunt-contrib-watch
-RUN npm install grunt-sass
 RUN npm install jshint-stylish
 RUN npm install load-grunt-tasks
 RUN npm install node-sass
