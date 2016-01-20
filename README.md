@@ -8,9 +8,9 @@
 To start the development VM you will need to install
 - Vagrant + Virtualbox (see https://www.vagrantup.com/downloads.html, https://www.virtualbox.org/wiki/Downloads)
 - Ansible (see http://docs.ansible.com/intro_installation.html)
+- Clone the repository
 
 ```
-git clone git@github.com:ThoughtWorksInc/objective8.git
 cd objective8/ops/
 ```
 
