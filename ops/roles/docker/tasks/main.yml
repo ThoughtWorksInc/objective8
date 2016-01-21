@@ -4,11 +4,6 @@
  - name: install pip
    apt: name=python-pip state=present
 
- # # required to prevent bug:
- # # https://github.com/ansible/ansible/issues/10810
- # - name: ensure pip is upgraded
- #   command: easy_install -U pip
-
  # latest version of docker-py breaks all the things:
  # https://github.com/ansible/ansible-modules-core/issues/1227
  - name: install docker-py
@@ -25,11 +20,6 @@
 
  - name: restart docker service
    service: name=docker state=restarted
-
-# - name: docker postgres
-#   docker:
-#     name: pgres
-#     image: postgres:latest
 
  - name: make db directory
    file: path=/data/db state=directory

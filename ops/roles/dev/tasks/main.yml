@@ -27,7 +27,13 @@
    apt: name="docker.io" state=present
 
  - name: install firefox
-   apt: name=firefox state=present
+   get_url: url=https://ftp.mozilla.org/pub/firefox/releases/38.0/linux-x86_64/en-US/firefox-38.0.tar.bz2 dest=/opt/
+
+ - name: extract firefox
+   unarchive: src=/opt/firefox-38.0.tar.bz2 dest=/opt/ copy=no
+
+ - name: link firefox binary to path
+   file: src=/opt/firefox/firefox dest=/usr/bin/firefox state=link
 
  - name: install xvfb
    apt: name=xvfb state=present

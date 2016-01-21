@@ -17,16 +17,21 @@ cd objective8/ops/
 ### Working on the VM
 #### To get started:
 
-```
-# use the provided template to create an objective8_config file
-cp objective8_config_template objective8_config
-vagrant up
-# type 'vagrant' when asked for a sudoers password
-vagrant ssh
-cd /var/objective8
-npm install
-lein ragtime migrate
-```
+    # use the provided template to create an objective8_config file
+
+    cp objective8_config_template objective8_config
+
+    vagrant up
+
+    # type 'vagrant' when asked for a sudoers password
+
+    vagrant ssh
+
+    cd /var/objective8
+
+    npm install
+
+    lein ragtime migrate
 
 #### Running the tests
 
