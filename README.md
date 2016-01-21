@@ -275,7 +275,4 @@ Finally, run the following command:
 
 Then, build and start the objective8 docker container.
 
-```
-docker build -t objective8 .
-docker run -d --env-file=<relative path to objective8 docker config> -v <absolute path to project location>/objective8/migrations:/usr/src/app/target/migrations -p 8080:8080 -p 8081:8081 --link pg_objective8:postgres --name objective8 objective8
-```
+    docker run -d --env-file=<relative path to objective8 docker config> -v <absolute path to project location>/objective8/migrations:/usr/src/app/target/migrations -p 8080:8080 -p 8081:8081 --link pg_objective8:postgres --name objective8 dcent/objective8
