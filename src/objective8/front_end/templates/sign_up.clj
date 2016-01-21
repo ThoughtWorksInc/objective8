@@ -30,9 +30,4 @@
                   [:.clj-sign-up-form] (html/prepend anti-forgery-snippet)
                   [:.clj-username-error] (when-let [error-type (get-in doc [:errors :username])]
                                            (html/content (translations (keyword "sign-up" (name error-type))))))
-         (apply-validations context)
-         f/add-google-analytics
-         f/add-custom-favicon
-         (tf/translate context)
-         html/emit*
-         (apply str))))
+         (apply-validations context))))

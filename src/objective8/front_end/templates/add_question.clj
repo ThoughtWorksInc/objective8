@@ -52,9 +52,4 @@
               [:.clj-objective-navigation-item-objective] (html/set-attr :href (utils/local-path-for :fe/objective :id objective-id))
               [:.clj-objective-title] (html/content (:title objective))
               [:.clj-question-create] (html/content (add-question context)))
-     (apply-validations context)
-     pf/add-google-analytics
-     pf/add-custom-favicon
-     (tf/translate context)
-     html/emit*
-     (apply str))))
+     (apply-validations context))))

@@ -22,16 +22,11 @@
 
 (defn admin-activity-page [{:keys [doc data] :as context}]
   (let [admin-removals (:admin-removals data)]
-    (apply str
-           (html/emit*
-             (tf/translate context
-                           (-> (html/at admin-activity-template
-                                        [:title] (html/content (:title doc))
-                                        [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
-                                        [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
-                                        [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
-                                        [:.clj-admin-removals-list] (html/content (if (empty? admin-removals)
-                                                                                    (empty-removals-list-item context)
-                                                                                    (removals-list-items context))))
-                               pf/add-google-analytics
-                               pf/add-custom-favicon))))))
+    (html/at admin-activity-template
+                [:title] (html/content (:title doc))
+                [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
+                [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+                [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
+                [:.clj-admin-removals-list] (html/content (if (empty? admin-removals)
+                                                            (empty-removals-list-item context)
+                                                            (removals-list-items context))))))
