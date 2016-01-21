@@ -36,11 +36,10 @@
 (defn objective-comments-page [{:keys [doc] :as context}]
   (->> (html/at objective-comments-template
                 [:title] (html/content (:title doc))
-
                 [:.clj-secondary-navigation] (html/substitute (objective-comments-navigation context))
-
                 [:.clj-comment-list] (html/content (pf/comment-list context)))
        pf/add-google-analytics
+       pf/add-custom-favicon
        (tf/translate context)
        html/emit*
        (apply str)))

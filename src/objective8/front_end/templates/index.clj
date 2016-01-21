@@ -9,9 +9,10 @@
   (apply str
          (html/emit*
            (tf/translate context
-                         (pf/add-google-analytics 
-                           (html/at index-template
-                                    [:title] (html/content (:title doc))
-                                    [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
-                                    [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
-                                    [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))))))))
+                         (-> (html/at index-template
+                                      [:title] (html/content (:title doc))
+                                      [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
+                                      [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+                                      [:.clj-status-bar] (html/substitute (pf/status-flash-bar context)))
+                             pf/add-google-analytics
+                             pf/add-custom-favicon)))))

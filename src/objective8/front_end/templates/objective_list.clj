@@ -56,7 +56,7 @@
   (apply str
          (html/emit*
            (tf/translate context
-                         (pf/add-google-analytics
+                         (->
                            (html/at objective-list-resource
                                     [:title] (html/content (:title doc))
                                     [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
@@ -65,4 +65,6 @@
                                     [:.clj-guidance-buttons] nil
                                     [:.l8n-guidance-heading] (html/content (translations :objectives-guidance/heading))
 
-                                    [:.clj-objective-list] (html/content (objective-list-items context))))))))
+                                    [:.clj-objective-list] (html/content (objective-list-items context)))
+                           pf/add-google-analytics
+                           pf/add-custom-favicon)))))
