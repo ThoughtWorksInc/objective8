@@ -31,13 +31,3 @@
                              (default-app objectives-post-request) => (contains {:status 302}))
                        (fact "cannot post a comment"
                              (default-app (mock/request :post "/meta/comments")) => (contains {:status 302}))))))
-
-(facts "about white-labelling"
-       (fact "custom favicon is used when env var is set"
-             (binding [config/environment (assoc config/environment
-                                            :favicon-file-name "custom.ico")]
-               (let [{response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/index))]
-                 (:body response) => (contains "/static/custom.ico"))))
-       (fact "default favicon is used when the env var is not set"
-             (let [{response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/index))]
-               (:body response) => (contains "/static/favicon.ico"))))

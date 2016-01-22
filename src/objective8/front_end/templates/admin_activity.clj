@@ -1,8 +1,8 @@
-(ns objective8.front-end.templates.admin-activity
+(ns objective8.front-end.templates.admin-activity  
   (:require [net.cgrand.enlive-html :as html]
             [objective8.front-end.templates.page-furniture :as pf]
             [objective8.utils :as utils]
-            [objective8.front-end.templates.template-functions :as tf]))
+            [objective8.front-end.templates.template-functions :as tf])) 
 
 (def admin-activity-template (html/html-resource "templates/jade/admin-activity.html"))
 
@@ -25,13 +25,12 @@
     (apply str
            (html/emit*
              (tf/translate context
-                           (-> (html/at admin-activity-template
-                                        [:title] (html/content (:title doc))
-                                        [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
-                                        [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
-                                        [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
-                                        [:.clj-admin-removals-list] (html/content (if (empty? admin-removals)
-                                                                                    (empty-removals-list-item context)
-                                                                                    (removals-list-items context))))
-                               pf/add-google-analytics
-                               pf/add-custom-favicon))))))
+                           (pf/add-google-analytics 
+                             (html/at admin-activity-template
+                                      [:title] (html/content (:title doc))
+                                      [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
+                                      [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+                                      [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
+                                      [:.clj-admin-removals-list] (html/content (if (empty? admin-removals) 
+                                                                                  (empty-removals-list-item context)
+                                                                                  (removals-list-items context))))))))))

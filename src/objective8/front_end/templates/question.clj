@@ -124,7 +124,6 @@
                   [:.l8n-guidance-heading] (tl8 :question-page/guidance-heading))
          (apply-validations context)
          pf/add-google-analytics
-         pf/add-custom-favicon
          (tf/translate context)
          html/emit*
          (apply str))))

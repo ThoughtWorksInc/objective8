@@ -41,7 +41,6 @@
                   
                   [:.clj-comment-list] (html/content (pf/comment-list context)))
          pf/add-google-analytics
-         pf/add-custom-favicon
          (tf/translate context)
          html/emit*
          (apply str))))

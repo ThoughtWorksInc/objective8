@@ -1,4 +1,4 @@
-(ns objective8.front-end.templates.create-objective
+(ns objective8.front-end.templates.create-objective 
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [objective8.front-end.templates.page-furniture :as pf]
@@ -30,7 +30,6 @@
             [:.clj-create-objective-form] (html/prepend anti-forgery-snippet))
    (apply-validations context)
    pf/add-google-analytics
-   pf/add-custom-favicon
    (tf/translate context)
    html/emit*
    (apply str)))

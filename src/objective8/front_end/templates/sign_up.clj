@@ -1,4 +1,4 @@
-(ns objective8.front-end.templates.sign-up
+(ns objective8.front-end.templates.sign-up 
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [objective8.front-end.templates.page-furniture :as f]
@@ -32,7 +32,6 @@
                                            (html/content (translations (keyword "sign-up" (name error-type))))))
          (apply-validations context)
          f/add-google-analytics
-         f/add-custom-favicon
          (tf/translate context)
          html/emit*
          (apply str))))

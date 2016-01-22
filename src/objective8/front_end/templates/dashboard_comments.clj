@@ -207,7 +207,6 @@
                                         (assoc :query {:offset next-comments
                                                        :comment-view (name comment-view-type)}))))))
          pf/add-google-analytics
-         pf/add-custom-favicon
          (tf/translate context)
          html/emit*    
          (apply str))))

@@ -51,5 +51,4 @@
    :stonecutter-client-id         (get-var "STONECUTTER_CLIENT_ID")
    :stonecutter-client-secret     (get-var "STONECUTTER_CLIENT_SECRET")
    :coracle-bearer-token          (get-var "CORACLE_BEARER_TOKEN")
-   :coracle-post-uri              (get-var "CORACLE_URI")
-   :favicon-file-name             (get-var "FAVICON_FILE_NAME")})
+   :coracle-post-uri              (get-var "CORACLE_URI")})

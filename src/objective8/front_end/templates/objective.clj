@@ -256,7 +256,6 @@
 (defn objective-page [context]
   (->> (produce-objective-page context)
        pf/add-google-analytics
-       pf/add-custom-favicon
        (tf/translate context)
        html/emit*
        (apply str)))
