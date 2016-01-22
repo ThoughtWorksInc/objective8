@@ -52,5 +52,4 @@
    :stonecutter-client-secret     (get-var "STONECUTTER_CLIENT_SECRET")
    :coracle-bearer-token          (get-var "CORACLE_BEARER_TOKEN")
    :coracle-post-uri              (get-var "CORACLE_URI")
-   :favicon-file-name             (get-var "FAVICON_FILE_NAME")
-   :app-name                      (get-var "APP_NAME" "Objective[8]")})
+   :favicon-file-name             (get-var "FAVICON_FILE_NAME")})

@@ -2,6 +2,9 @@
   (:require [midje.sweet :refer :all]
             [ring.mock.request :as mock]
             [peridot.core :as p]
+            [oauth.client :as oauth]
+            [objective8.back-end.storage.storage :as storage]
+            [objective8.front-end.api.http :as http-api]
             [objective8.integration.integration-helpers :as helpers]
             [objective8.utils :as utils]
             [objective8.config :as config]
@@ -30,19 +33,11 @@
                              (default-app (mock/request :post "/meta/comments")) => (contains {:status 302}))))))
 
 (facts "about white-labelling"
-       (fact "defaults are used when the env var is not set"
-             (let [{default-response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/index))]
-               (:body default-response) => (every-checker (contains "/static/favicon.ico")
-                                                          (contains "Objective[8]"))))
        (fact "custom favicon is used when env var is set"
              (binding [config/environment (assoc config/environment
                                             :favicon-file-name "custom.ico")]
                (let [{response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/index))]
                  (:body response) => (contains "/static/custom.ico"))))
-       (fact "custom app name is used when env var is set"
-             (binding [config/environment (assoc config/environment
-                                            :app-name "Policy Maker")]
-               (let [{response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/index))]
-                 (:body response) => (every-checker
-                                       (contains "<a href=\"/\" title=\"Go to home page\" rel=\"home\" data-l8n=\"attr/title:masthead/logo-title-attr\" class=\"masthead-logo\">Policy Maker</a>")
-                                       (contains "<title>Policy Maker</title>"))))))
+       (fact "default favicon is used when the env var is not set"
+             (let [{response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/index))]
+               (:body response) => (contains "/static/favicon.ico"))))

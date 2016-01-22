@@ -10,6 +10,7 @@
 (defn draft-diff-page [{:keys [data doc] :as context}]
   (let [{:keys [current-draft previous-draft-diffs current-draft-diffs]} data]
     (html/at draft-diff-template
+                [:title] (html/content (:title doc))
                 [:.clj-masthead-signed-out] nil
                 [:.clj-status-bar] nil
                 [:.clj-close-link] (html/set-attr :href (utils/path-for :fe/draft :id (:objective-id current-draft) :d-id (:_id current-draft)))

@@ -35,6 +35,7 @@
 
 (defn draft-comments-page [{:keys [doc] :as context}]
   (html/at draft-comments-template
+           [:title] (html/content (:title doc))
            [:.clj-secondary-navigation] (html/substitute (draft-comments-navigation context))
 
            [:.clj-comment-list] (html/content (pf/comment-list context))))

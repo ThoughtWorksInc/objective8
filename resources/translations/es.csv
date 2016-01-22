@@ -5,7 +5,7 @@ invitation-modal,mail-to-text,enviar email
 invitation-modal,email-subject,Has sido invitado para redactar un documento
 invitation-modal,email-body-line-1,Le he invitado para ayudar a redactar este documento:
 invitation-modal,email-body-line-2,Por favor siga el enlace más abajo para más información y para aceptar esta invitacion:
-objective-list,doc-title,Objetivos |
+objective-list,doc-title,Objetivos | Objective[8]
 objective-list,doc-description,
 objective-list,page-title,Objetivos
 objective-list,create-objective-link,Crear un objetivo
@@ -25,7 +25,7 @@ masthead,objectives-link-title-attr,Ir a la lista de Objetivos
 masthead,objectives-link,Objetivos
 masthead,about-link-title-attr,Saber más sobre Objective[8]
 masthead,about-link,Sobre esta página
-writer-list,doc-title,Candidatos a la redacción del documento |
+writer-list,doc-title,Candidatos a la redacción del documento | Objective[8]
 writer-list,page-intro,Los redactores trabajan entre sí y con la comunidad para redactar el borrador
 writer-list,writer-list-heading,Redactores incorporados recientemente
 writer-list,no-writers,Ningún redactor ha sido invitado por ahora
@@ -37,7 +37,7 @@ objectives-guidance,text-line-2,Un objetivo es un cambio que puede ser alcanzado
 index,index-welcome,Creación de politica colaborativa para organizaciones democráticas
 index,draft-info-keyword,borrador
 index,index-get-started-title,Objetivos
-index,doc-title,
+index,doc-title,Objective[8]
 index,learn-more,Saber más
 index,index-intro,"Recolectar la opinion de la comunidad, generar ideas, compartir, discutir, votar y colaborar con expertos para redactar nuevas politicas."
 index,draft-info-end,de una manera abierta y transparente
@@ -48,7 +48,7 @@ index,create-objective-keyword,objetivo
 index,create-objective-begin,Crear unrear un
 index,doc-description,
 index,create-objective-end,para describir el cambio que quieres realizar.
-sign-in,doc-title,Entra o regístrate|
+sign-in,doc-title,Entra o regístrate| Objective[8]
 sign-in,doc-description,Entra o regístrate a Objective[8]
 sign-in,page-title,Entrar o registrarse
 sign-in,sign-in-with-twitter,Entra con tu cuenta de Twitter
@@ -57,7 +57,7 @@ create-objective,headline,Título
 create-objective,submit-text,Crear
 create-objective,background-prompt,Cuenta más sobre por qué conseguir este objectivo es importante o necesario
 create-objective,goals,Metas
-create-objective,doc-title,Crear un Objectivo |
+create-objective,doc-title,Crear un Objectivo | Objectivo[8]
 create-objective,goals-prompt,Una meta es lo que te gustaría cambiar o lograr
 create-objective,goal-2,Meta 2
 create-objective,background,Contexto
@@ -65,7 +65,7 @@ create-objective,page-title,Crear un objectivo
 create-objective,headline-prompt,El título debería fomentar la colaboración y el debate
 create-objective,goal-3,Meta 3
 create-objective,doc-description,
-project-status,doc-title,Estado del proyecto |
+project-status,doc-title,Estado del proyecto | Objective [8]
 project-status,doc-description,
 project-status,page-title,Fase alpha
 project-status,page-intro,"Estamos diseñando y desarrollando Objetivo[8] en abierto. Esto permite que la herramienta evolucione según la uses, nos des feedback, y los desarrolladores vayan actualizando y subiendo el nuevo contenido."
@@ -77,7 +77,7 @@ objective-nav,objective,Objetivo
 objective-nav,writers,Redactores
 objective-nav,comments,Comentarios
 objective-nav,back-to-objective,Volver al objetivo
-sign-up,doc-title,Perfil |
+sign-up,doc-title,Perfil | Objetivo [8]
 sign-up,doc-description,
 sign-up,page-title,Casi hemos acabado
 sign-up,welcome,"Tu correo electrónico nos permitirá informarte cuando recibas respuestas a tus comentarios, objetivos y votos."
@@ -88,7 +88,7 @@ sign-up,email-label,Correo electrónico
 sign-up,button,
 draft-list,add-a-draft,Añadir un proyecto
 draft-list,drafting-begins,La redacción comienza en
-draft-list,doc-title,Borradores |
+draft-list,doc-title,Borradores | Objetivo[8]
 draft-list,no-previous-versions,No hay versiones anteriores
 draft-list,days,días
 draft-list,latest-draft,Últimos borradores
@@ -105,7 +105,7 @@ answer-create,jump-to-answer-button,Añadir una nueva respuesta
 answer-create,submit-answer-button,Añadir mi respuesta
 answer-create,answer-label,Tu respuesta
 answer-create,sign-in-reminder,Debes iniciar sesión para añadir una respuesta
-learn-more,doc-title,Leer más sobre
+learn-more,doc-title,Leer más sobre Objetivo [8]
 learn-more,doc-description,
 learn-more,page-title,Objetivo[8] 101
 learn-more,sub-title,Información básica
@@ -113,7 +113,7 @@ learn-more,page-intro,Objective8 es una plataforma para facilitar la creación c
 learn-more,page-content!,"<P><b>Las leyes</ b> son utilizadas por los gobiernos y las organizaciones para tomar decisiones coherentes y justas a fin de lograr los resultados deseados. </ P> <p> Un <b> objetivo </ b> es un cambio que podría lograrse mediante la introducción de nuevas leyes. Por ejemplo: Mejorar el acceso a la vivienda pública, o el aumento de la seguridad de nuestras carreteras </ p> <p> <b> Los redactores </ b> trabajan entre sí y con la comunidad para dar forma al proyecto. Utilizan las preguntas de la gente, las respuestas y comentarios para producir <b> borradores </ b> <span class = ""aún no implementada-nota-marcador""> * </ span>. Estos son refinado aún más a través de ciclos de retroalimentación y nuevas redacciones. </ P> <p> Puedes participar y dar tu opinión, crear y compartir objetivos, ofrecer tu opinión a través de <b> comentarios </ b>, hacer y responder a <b > preguntas </ b>, sugerir redactores, o incluso proporcionando información sobre proyectos redactados por tí mismo. Todo el proceso es abierto y transparente. </ P> <p class = ""ayudante de texto""> <span class = ""aún no implementada-nota-marcador""> * </ span> El sitio se encuentra en fase de desarrollo, muchas de estas características aún no se han implementado. ¡Vuelve pronto! </ P>"
 learn-more,get-started-button-text,Comienza
 learn-more,get-started-button-title,Comienza
-add-draft,doc-title,Editar borrador I
+add-draft,doc-title,Editar borrador I Objetivo[8]
 add-draft,doc-description,Borrador
 add-draft,placeholder,Introduce tu borrador aquí
 add-draft,submit,Enviar
@@ -126,7 +126,7 @@ create-objective-guidance,item-1,"Un objetivo es un cambio que podría lograrse 
 create-objective-guidance,item-2,Tu objetivo tiene sólo 30 días hasta que se transforme en un borrador de trabajo.
 create-objective-guidance,item-3,Comparte tu objetivo para fomentar la colaboración.
 invite-writer,sign-in,registrarse
-invite-writer,doc-title,Invita a un redactor
+invite-writer,doc-title,Invita a un redactor -
 invite-writer,writer-reason-attr-title,Las razones pueden tener una extensión máxima de 1.000 caracteres
 invite-writer,invite-button,Crear una invitación
 invite-writer,writer-reason-label,Deberían ayudar a redactar este documento porque:
@@ -176,7 +176,7 @@ objective-view,end-date-label,Fecha de  finalización del proceso
 objective-view,answer-link,Respuesta
 objective-view,created-message,Tu objetivo ha sido creado
 objective-view,drafting-begins,La redacción comienza en
-objective-view,doc-title,Objetivo |
+objective-view,doc-title,Objetivo | Objetivo [8]
 objective-view,comments,Comentarios
 objective-view,days,días
 objective-view,ask-a-question,Haz una pregunta
@@ -187,7 +187,7 @@ objective-view,writers,Redactores
 objective-view,invite-a-writer,Invita a un redactor
 draft,add-a-draft,Añadir un borrador
 draft,drafting-begins,La redacción comienza en
-draft,doc-title,Borrador de documento |
+draft,doc-title,Borrador de documento | Objetivo[8]
 draft,draft-writer,Publicado por
 draft,comments,Comentarios
 draft,days,días
@@ -202,7 +202,7 @@ draft-guidance,text-line-2,Los borradores son elaborados por los redactores que 
 draft-guidance,text-line-3,Todo el mundo puede opinar y hacer sugerencias.
 question-view,added-message,Tu pregunta ha sido añadida
 question-view,added-answer-message,¡Tu respuesta ha sido añadida!
-error-404,doc-title,Español (Error 404 |
+error-404,doc-title,Español (Error 404 | Objetivo[8])
 error-404,doc-description,"Lo sentimos, la página que solicitas no se encuentra"
 error-404,page-title,"Lo sentimos, la página que solicitas no se encuentra"
 error-404,page-intro,Parece que la página a la que intentas acceder no existe. Esto puede deberse a un enlace incorrecto o desactualizado
