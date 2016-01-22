@@ -157,6 +157,7 @@
 
                   [:.clj-dashboard-annotation-list] (html/content (annotation-list context)))
          pf/add-google-analytics
+         pf/add-custom-favicon
          (tf/translate context)
          html/emit*
          (apply str))))

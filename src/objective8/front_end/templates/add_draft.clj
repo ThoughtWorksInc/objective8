@@ -32,6 +32,7 @@
                   [:.clj-cancel-link] (html/set-attr :href (utils/local-path-for :fe/draft-list :id objective-id)))
          (apply-validations context)
          pf/add-google-analytics
+         pf/add-custom-favicon
          (tf/translate context)
          html/emit*
          (apply str))))

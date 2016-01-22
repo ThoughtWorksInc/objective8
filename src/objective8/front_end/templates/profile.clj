@@ -43,8 +43,7 @@
   (apply str
          (html/emit*
            (tf/translate context
-                         (pf/add-google-analytics
-                           (html/at profile-template
+                         (-> (html/at profile-template
                                     [:title] (html/content (:title doc))
                                     [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
                                     [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
@@ -60,4 +59,6 @@
                                     [:.clj-writer-biog] (html/content (:biog user-profile))
                                     [:.clj-writer-links] nil
                                     [:.clj-profile-objective-list-item-removal-container] nil
-                                    [:.clj-profile-objective-list] (html/content (profile-objective-list-items context)))))))))
+                                    [:.clj-profile-objective-list] (html/content (profile-objective-list-items context)))
+                           pf/add-google-analytics
+                           pf/add-custom-favicon))))))

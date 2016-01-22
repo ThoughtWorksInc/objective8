@@ -111,53 +111,54 @@
     (apply str
            (html/emit*
              (tf/translate context
-                           (pf/add-google-analytics
-                             (html/at dashboard-questions-template
-                                      [:title] (html/content (:title doc))
-                                      [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
-                                      [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
-                                      [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
+                           (-> (html/at dashboard-questions-template
+                                        [:title] (html/content (:title doc))
+                                        [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
+                                        [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+                                        [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
 
-                                      [:.clj-dashboard-title-link] (html/set-attr :href (url/url (utils/path-for :fe/objective :id (:_id objective))))
-                                      [:.clj-dashboard-title-link] (html/content (:title objective))
+                                        [:.clj-dashboard-title-link] (html/set-attr :href (url/url (utils/path-for :fe/objective :id (:_id objective))))
+                                        [:.clj-dashboard-title-link] (html/content (:title objective))
 
-                                      [:.clj-dashboard-stat-participant] nil
-                                      [:.clj-dashboard-stat-starred-amount] (html/content (str (get-in objective [:meta :stars-count])))
-                                      [:.clj-writer-dashboard-navigation-questions-link] (html/set-attr :href (utils/path-for :fe/dashboard-questions :id (:_id objective)))
-                                      [:.clj-writer-dashboard-navigation-comments-link] (html/set-attr :href (utils/path-for :fe/dashboard-comments :id (:_id objective)))
-                                      [:.clj-writer-dashboard-navigation-annotations-link] (html/set-attr :href (utils/path-for :fe/dashboard-annotations :id (:_id objective)))
-                                      [:.clj-dashboard-navigation-list] (html/content (navigation-list context))
-                                      [:.clj-dashboard-answer-list] (html/substitute (answer-list context))
+                                        [:.clj-dashboard-stat-participant] nil
+                                        [:.clj-dashboard-stat-starred-amount] (html/content (str (get-in objective [:meta :stars-count])))
+                                        [:.clj-writer-dashboard-navigation-questions-link] (html/set-attr :href (utils/path-for :fe/dashboard-questions :id (:_id objective)))
+                                        [:.clj-writer-dashboard-navigation-comments-link] (html/set-attr :href (utils/path-for :fe/dashboard-comments :id (:_id objective)))
+                                        [:.clj-writer-dashboard-navigation-annotations-link] (html/set-attr :href (utils/path-for :fe/dashboard-annotations :id (:_id objective)))
+                                        [:.clj-dashboard-navigation-list] (html/content (navigation-list context))
+                                        [:.clj-dashboard-answer-list] (html/substitute (answer-list context))
 
-                                      [:.clj-dashboard-filter-paper-clip]
-                                      (html/set-attr :href
-                                                     (str (assoc dashboard-url
-                                                                 :query {:selected selected-question-uri
-                                                                         :answer-view "paperclip"})))
-                                      
-                                      [:.clj-dashboard-filter-up-votes]
-                                      (html/set-attr :href
-                                                     (str (assoc dashboard-url
-                                                                 :query {:selected selected-question-uri
-                                                                         :answer-view "up-votes"})))
+                                        [:.clj-dashboard-filter-paper-clip]
+                                        (html/set-attr :href
+                                                       (str (assoc dashboard-url
+                                                              :query {:selected selected-question-uri
+                                                                      :answer-view "paperclip"})))
 
-                                      [:.clj-dashboard-filter-down-votes]
-                                      (html/set-attr :href
-                                                     (str (assoc dashboard-url
-                                                                 :query {:selected selected-question-uri
-                                                                         :answer-view "down-votes"})))
+                                        [:.clj-dashboard-filter-up-votes]
+                                        (html/set-attr :href
+                                                       (str (assoc dashboard-url
+                                                              :query {:selected selected-question-uri
+                                                                      :answer-view "up-votes"})))
 
-                                      [:.clj-dashboard-filter-paper-clip] (if (= answer-view-type :paperclip)
+                                        [:.clj-dashboard-filter-down-votes]
+                                        (html/set-attr :href
+                                                       (str (assoc dashboard-url
+                                                              :query {:selected selected-question-uri
+                                                                      :answer-view "down-votes"})))
+
+                                        [:.clj-dashboard-filter-paper-clip] (if (= answer-view-type :paperclip)
+                                                                              (html/add-class "on")
+                                                                              identity)
+
+
+                                        [:.clj-dashboard-filter-up-votes] (if (= answer-view-type :up-votes)
                                                                             (html/add-class "on")
                                                                             identity)
 
+                                        [:.clj-dashboard-filter-down-votes] (if (= answer-view-type :down-votes)
+                                                                              (html/add-class "on")
+                                                                              identity)
 
-                                      [:.clj-dashboard-filter-up-votes] (if (= answer-view-type :up-votes)
-                                                                          (html/add-class "on")
-                                                                          identity)
-
-                                      [:.clj-dashboard-filter-down-votes] (if (= answer-view-type :down-votes)
-                                                                            (html/add-class "on")
-                                                                            identity)
-
-                                      [:.clj-dashboard-content-stats] nil)))))))
+                                        [:.clj-dashboard-content-stats] nil)
+                               pf/add-google-analytics
+                               pf/add-custom-favicon))))))

@@ -54,6 +54,7 @@
               [:.clj-question-create] (html/content (add-question context)))
      (apply-validations context)
      pf/add-google-analytics
+     pf/add-custom-favicon
      (tf/translate context)
      html/emit*
      (apply str))))

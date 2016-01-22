@@ -1,9 +1,9 @@
-(ns objective8.front-end.templates.draft-section 
+(ns objective8.front-end.templates.draft-section
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [objective8.utils :as utils]
             [objective8.front-end.templates.page-furniture :as pf]
-            [objective8.front-end.templates.template-functions :as tf])) 
+            [objective8.front-end.templates.template-functions :as tf]))
 
 (def draft-section-template (html/html-resource "templates/jade/draft-section.html" {:parser jsoup/parser}))
 
@@ -14,8 +14,7 @@
     (apply str
            (html/emit*
              (tf/translate context           
-                           (pf/add-google-analytics
-                             (html/at draft-section-template 
+                           (-> (html/at draft-section-template
                                       [:title] (html/content (:title doc))
                                       [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
                                       [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
@@ -23,4 +22,6 @@
                                       [:.clj-back-to-draft-link] (html/set-attr :href draft-uri)
                                       [:.clj-draft-section] (html/html-content (:section section))
                                       [:.clj-comment-list] (html/content (pf/comment-list context))       
-                                      [:.clj-comment-create] (html/content (pf/comment-create context :section)))))))))
+                                      [:.clj-comment-create] (html/content (pf/comment-create context :section)))
+                               pf/add-google-analytics
+                               pf/add-custom-favicon))))))

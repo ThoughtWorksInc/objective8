@@ -34,7 +34,8 @@
                [:.clj-edit-profile-name] (html/set-attr :value (:name user-profile))
                [:.clj-edit-profile-biog] (html/content (:biog user-profile)))
       (apply-validations context)
-      pf/add-google-analytics 
+      pf/add-google-analytics
+      pf/add-custom-favicon
       (tf/translate context) 
       html/emit*
       (apply str))))

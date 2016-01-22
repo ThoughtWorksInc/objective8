@@ -60,25 +60,26 @@
     (apply str
            (html/emit*
              (tf/translate context
-                           (pf/add-google-analytics
-                             (html/at draft-list-template
-                                      [:title] (html/content (:title doc))
-                                      [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
-                                      [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
-                                      [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
-                                      [:.clj-objective-progress-indicator] (html/substitute (pf/progress-indicator context))
-                                      [:.clj-progress-drafts-item] (html/add-class "on")
-                                      [:.clj-progress-objective-item] (html/remove-class "on")
-                                      [:.clj-guidance-buttons] nil
+                           (-> (html/at draft-list-template
+                                        [:title] (html/content (:title doc))
+                                        [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
+                                        [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+                                        [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
+                                        [:.clj-objective-progress-indicator] (html/substitute (pf/progress-indicator context))
+                                        [:.clj-progress-drafts-item] (html/add-class "on")
+                                        [:.clj-progress-objective-item] (html/remove-class "on")
+                                        [:.clj-guidance-buttons] nil
 
-                                      [:.clj-guidance-heading] (html/content (translations :draft-guidance/heading))
+                                        [:.clj-guidance-heading] (html/content (translations :draft-guidance/heading))
 
-                                      [:.clj-draft-list-title] (html/content (:title objective))
+                                        [:.clj-draft-list-title] (html/content (:title objective))
 
-                                      [:.clj-drafts-wrapper] (html/substitute (drafts-wrapper context)) 
-                                      
-                                      [:.clj-previous-drafts-list] (if (empty? (rest drafts))
-                                                                     (html/substitute (translations :draft-list/no-previous-versions))
-                                                                     (html/content (previous-drafts (rest drafts))))
+                                        [:.clj-drafts-wrapper] (html/substitute (drafts-wrapper context))
 
-                                      [:.clj-writer-item-list] (html/content (pf/writer-list context))))))))) 
+                                        [:.clj-previous-drafts-list] (if (empty? (rest drafts))
+                                                                       (html/substitute (translations :draft-list/no-previous-versions))
+                                                                       (html/content (previous-drafts (rest drafts))))
+
+                                        [:.clj-writer-item-list] (html/content (pf/writer-list context)))
+                               pf/add-google-analytics
+                               pf/add-custom-favicon))))))
