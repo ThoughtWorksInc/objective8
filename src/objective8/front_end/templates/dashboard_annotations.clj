@@ -135,21 +135,29 @@
                                                         :anchor "dashboard-content")))))))
 
 (defn dashboard-annotations [{:keys [doc data] :as context}]
-  (let [objective (:objective data)]
-    (html/at dashboard-annotations-template
-                [:title] (html/content (:title doc))
-                [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
-                [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
-                [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
+  (let [objective (:objective data)
+        selected-comment-target-uri (:selected-draft-uri data)
+        dashboard-url (url/url (utils/path-for :fe/dashboard-annotations :id (:_id objective)))
+        comment-view-type (:comment-view-type data)]
+    (->> (html/at dashboard-annotations-template
+                  [:title] (html/content (:title doc))
+                  [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
+                  [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+                  [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
 
-                [:.clj-dashboard-title-link] (html/set-attr :href (url/url (utils/path-for :fe/objective :id (:_id objective))))
-                [:.clj-dashboard-title-link] (html/content (:title objective))
+                  [:.clj-dashboard-title-link] (html/set-attr :href (url/url (utils/path-for :fe/objective :id (:_id objective))))
+                  [:.clj-dashboard-title-link] (html/content (:title objective))
 
-                [:.clj-dashboard-stat-participant] nil
-                [:.clj-dashboard-stat-starred-amount] (html/content (str (get-in objective [:meta :stars-count])))
-                [:.clj-writer-dashboard-navigation-questions-link] (html/set-attr :href (utils/path-for :fe/dashboard-questions :id (:_id objective)))
-                [:.clj-writer-dashboard-navigation-comments-link] (html/set-attr :href (utils/path-for :fe/dashboard-comments :id (:_id objective)))
-                [:.clj-writer-dashboard-navigation-annotations-link] (html/set-attr :href (utils/path-for :fe/dashboard-annotations :id (:_id objective)))
-                [:.clj-dashboard-navigation-list] (html/content (navigation-list context))
+                  [:.clj-dashboard-stat-participant] nil
+                  [:.clj-dashboard-stat-starred-amount] (html/content (str (get-in objective [:meta :stars-count])))
+                  [:.clj-writer-dashboard-navigation-questions-link] (html/set-attr :href (utils/path-for :fe/dashboard-questions :id (:_id objective)))
+                  [:.clj-writer-dashboard-navigation-comments-link] (html/set-attr :href (utils/path-for :fe/dashboard-comments :id (:_id objective)))
+                  [:.clj-writer-dashboard-navigation-annotations-link] (html/set-attr :href (utils/path-for :fe/dashboard-annotations :id (:_id objective)))
+                  [:.clj-dashboard-navigation-list] (html/content (navigation-list context))
 
-                [:.clj-dashboard-annotation-list] (html/content (annotation-list context)))))
+                  [:.clj-dashboard-annotation-list] (html/content (annotation-list context)))
+         pf/add-google-analytics
+         pf/add-custom-favicon
+         (tf/translate context)
+         html/emit*
+         (apply str))))

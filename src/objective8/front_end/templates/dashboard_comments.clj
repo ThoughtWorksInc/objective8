@@ -133,76 +133,81 @@
         next-comments (get-in data [:comments-data :pagination :next-offset])
         previous-comments (get-in data [:comments-data :pagination :previous-offset])
         comment-view-type (:comment-view-type data)]
-    (html/at dashboard-comments-template
-                [:title] (html/content (:title doc))
-                [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
-                [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
-                [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
+    (->> (html/at dashboard-comments-template
+                  [:title] (html/content (:title doc))
+                  [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
+                  [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+                  [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
 
-                [:.clj-dashboard-title-link] (html/set-attr :href (url/url (utils/path-for :fe/objective :id (:_id objective))))
-                [:.clj-dashboard-title-link] (html/content (:title objective))
+                  [:.clj-dashboard-title-link] (html/set-attr :href (url/url (utils/path-for :fe/objective :id (:_id objective))))
+                  [:.clj-dashboard-title-link] (html/content (:title objective))
 
-                [:.clj-dashboard-stat-participant] nil
-                [:.clj-dashboard-stat-starred-amount] (html/content (str (get-in objective [:meta :stars-count])))
-                [:.clj-writer-dashboard-navigation-questions-link] (html/set-attr :href (utils/path-for :fe/dashboard-questions :id (:_id objective)))
-                [:.clj-writer-dashboard-navigation-comments-link] (html/set-attr :href (utils/path-for :fe/dashboard-comments :id (:_id objective)))
-                [:.clj-writer-dashboard-navigation-annotations-link] (html/set-attr :href (utils/path-for :fe/dashboard-annotations :id (:_id objective)))
+                  [:.clj-dashboard-stat-participant] nil
+                  [:.clj-dashboard-stat-starred-amount] (html/content (str (get-in objective [:meta :stars-count])))
+                  [:.clj-writer-dashboard-navigation-questions-link] (html/set-attr :href (utils/path-for :fe/dashboard-questions :id (:_id objective)))
+                  [:.clj-writer-dashboard-navigation-comments-link] (html/set-attr :href (utils/path-for :fe/dashboard-comments :id (:_id objective)))
+                  [:.clj-writer-dashboard-navigation-annotations-link] (html/set-attr :href (utils/path-for :fe/dashboard-annotations :id (:_id objective)))
 
-                [:.clj-dashboard-navigation-list] (html/content (navigation-list context))
-                [:.clj-dashboard-comment-list] (html/substitute (comment-list context))
+                  [:.clj-dashboard-navigation-list] (html/content (navigation-list context))
+                  [:.clj-dashboard-comment-list] (html/substitute (comment-list context))
 
-                [:.clj-dashboard-filter-paper-clip]
-                (html/do->
-                  (html/set-attr
+                  [:.clj-dashboard-filter-paper-clip]
+                  (html/do->
+                   (html/set-attr
                     :href
                     (str (assoc dashboard-url
-                           :query {:selected     selected-comment-target-uri
-                                   :comment-view "paperclip"})))
-
-                  (if (= comment-view-type :paperclip)
-                    (html/add-class "on")
-                    identity))
-
-                [:.clj-dashboard-filter-up-votes]
-                (html/do->
-                  (html/set-attr
+                                :query {:selected selected-comment-target-uri
+                                        :comment-view "paperclip"})))
+                   
+                   (if (= comment-view-type :paperclip)
+                     (html/add-class "on")
+                     identity))
+                  
+                  [:.clj-dashboard-filter-up-votes]
+                  (html/do->
+                   (html/set-attr
                     :href
                     (str (assoc dashboard-url
-                           :query {:selected     selected-comment-target-uri
-                                   :comment-view "up-votes"})))
-
-                  (if (= comment-view-type :up-votes)
-                    (html/add-class "on")
-                    identity))
-
-                [:.clj-dashboard-filter-down-votes]
-                (html/do->
-                  (html/set-attr
+                                :query {:selected selected-comment-target-uri
+                                        :comment-view "up-votes"})))
+                   
+                   (if (= comment-view-type :up-votes)
+                     (html/add-class "on")
+                     identity))
+                  
+                  [:.clj-dashboard-filter-down-votes]
+                  (html/do->
+                   (html/set-attr
                     :href
                     (str (assoc dashboard-url
-                           :query {:selected     selected-comment-target-uri
-                                   :comment-view "down-votes"})))
+                                :query {:selected selected-comment-target-uri
+                                        :comment-view "down-votes"})))
+                   
+                   (if (= comment-view-type :down-votes)
+                     (html/add-class "on")
+                     identity))
+                  
+                  [:.clj-dashboard-content-stats] nil
 
-                  (if (= comment-view-type :down-votes)
-                    (html/add-class "on")
-                    identity))
-
-                [:.clj-dashboard-content-stats] nil
-
-                [:.clj-comments-previous]
-                (when previous-comments
-                  (html/transformation
-                    [:.clj-comments-previous-link]
-                    (html/set-attr :href
-                                   (-> dashboard-url
-                                       (assoc :query {:offset       previous-comments
-                                                      :comment-view (name comment-view-type)})))))
-
-                [:.clj-comments-next]
-                (when next-comments
-                  (html/transformation
-                    [:.clj-comments-next-link]
-                    (html/set-attr :href
-                                   (-> dashboard-url
-                                       (assoc :query {:offset       next-comments
-                                                      :comment-view (name comment-view-type)}))))))))
+                  [:.clj-comments-previous]
+                  (when previous-comments
+                    (html/transformation
+                     [:.clj-comments-previous-link]
+                     (html/set-attr :href
+                                    (-> dashboard-url
+                                        (assoc :query {:offset previous-comments
+                                                       :comment-view (name comment-view-type)})))))
+                  
+                  [:.clj-comments-next]
+                  (when next-comments
+                    (html/transformation
+                     [:.clj-comments-next-link]
+                     (html/set-attr :href
+                                    (-> dashboard-url
+                                        (assoc :query {:offset next-comments
+                                                       :comment-view (name comment-view-type)}))))))
+         pf/add-google-analytics
+         pf/add-custom-favicon
+         (tf/translate context)
+         html/emit*    
+         (apply str))))

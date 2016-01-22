@@ -33,9 +33,15 @@
                  (html/set-attr :href (-> comments-url
                                           (assoc :query {:offset next-comments}))))))))
 
-(defn draft-comments-page [{:keys [doc] :as context}]
-  (html/at draft-comments-template
-           [:title] (html/content (:title doc))
-           [:.clj-secondary-navigation] (html/substitute (draft-comments-navigation context))
-
-           [:.clj-comment-list] (html/content (pf/comment-list context))))
+(defn draft-comments-page [{:keys [data doc] :as context}]
+  (let [{objective-id :_id :as objective} (:objective data)]
+    (->> (html/at draft-comments-template
+                  [:title] (html/content (:title doc))
+                  [:.clj-secondary-navigation] (html/substitute (draft-comments-navigation context)) 
+                  
+                  [:.clj-comment-list] (html/content (pf/comment-list context)))
+         pf/add-google-analytics
+         pf/add-custom-favicon
+         (tf/translate context)
+         html/emit*
+         (apply str))))

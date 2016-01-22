@@ -29,4 +29,9 @@
                 [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
                 [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
                 [:.clj-create-profile-form] (html/prepend anti-forgery-snippet))
-       (apply-validations context)))
+       (apply-validations context)
+       pf/add-google-analytics
+       pf/add-custom-favicon
+       (tf/translate context)
+       html/emit* 
+       (apply str)))

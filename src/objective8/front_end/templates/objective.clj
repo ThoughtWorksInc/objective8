@@ -190,7 +190,7 @@
 ;; OBJECTIVE PAGE
 (def comment-history-snippet (html/select objective-template [:.clj-comment-history-item]))
 
-(defn objective-page [{:keys [translations data doc invitation-rsvp ring-request user] :as context}]
+(defn produce-objective-page [{:keys [translations data doc invitation-rsvp ring-request user] :as context}]
   (let [objective (:objective data)
         objective-id (:_id objective)
         flash (:flash doc)
@@ -252,3 +252,11 @@
                                     identity)
 
              [:.clj-comment-history-link] (html/set-attr :href comment-history-link))))
+
+(defn objective-page [context]
+  (->> (produce-objective-page context)
+       pf/add-google-analytics
+       pf/add-custom-favicon
+       (tf/translate context)
+       html/emit*
+       (apply str)))
