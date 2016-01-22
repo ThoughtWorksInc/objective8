@@ -75,6 +75,7 @@
            viewfn
            pf/add-google-analytics
            pf/add-custom-favicon
+           (pf/add-custom-app-name context)
            (tf/translate context)
            html/emit*
            (apply str)))))

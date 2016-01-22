@@ -42,7 +42,6 @@
         objective-id (:_id objective)]
     (->>
      (html/at add-question-template
-              [:title] (html/content (:title doc))
               [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
               [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
               [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))

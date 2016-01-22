@@ -109,7 +109,6 @@
         dashboard-url (url/url (utils/path-for :fe/dashboard-questions :id (:_id objective)))
         answer-view-type (:answer-view-type data)]
     (html/at dashboard-questions-template
-                [:title] (html/content (:title doc))
                 [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
                 [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
                 [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))

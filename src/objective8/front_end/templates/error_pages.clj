@@ -6,7 +6,6 @@
 
 (defn error-configuration-page [{:keys [doc] :as context}]
   (html/at error-configuration-template
-           [:title] (html/content (:title doc))
            [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
            [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
            [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))))
@@ -15,7 +14,6 @@
 
 (defn error-default-page [{:keys [doc] :as context}]
   (html/at error-default-template
-           [:title] (html/content (:title doc))
            [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
            [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
            [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))))

@@ -4,8 +4,7 @@
             [cemerick.url :as url]
             [objective8.config :as config]
             [objective8.utils :as utils]
-            [objective8.front-end.permissions :as permissions]
-            [objective8.front-end.templates.template-functions :as tf]))
+            [objective8.front-end.permissions :as permissions]))
 
 (def library-html "templates/jade/library.html")
 (def library-html-resource (html/html-resource library-html {:parser jsoup/parser}))
@@ -31,6 +30,18 @@
              [[:link (html/attr= :rel "shortcut icon")]] (html/set-attr :href (str "/static/" favicon-name)))
     nodes))
 
+(defn construct-page-title [context app-name]
+  (let [title (get-in context [:doc :title])]
+    (if (empty? title)
+      app-name
+      (str title " " app-name))))
+
+(defn add-custom-app-name [context nodes]
+  (if-let [app-name (:app-name config/environment)]
+    (html/at nodes
+             [:.masthead-logo] (html/content app-name)
+             [:title] (html/content (construct-page-title context app-name)))
+    nodes))
 
 ;; MASTHEAD
 

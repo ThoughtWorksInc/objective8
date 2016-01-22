@@ -93,7 +93,6 @@
         more-answers? (> answers-count (+ offset fe-config/answers-pagination))
         tl8 (tf/translator context)]
     (->> (html/at question-template
-                  [:title] (html/content (:title doc))
                   [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
                   [:head] (facebook-meta-tags context)
                   [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))

@@ -201,8 +201,7 @@
                                  (assoc :query {:offset next-comments}))]
     (html/at objective-template
              :lockstep 
-             {[:title] (html/content (:title doc))
-              [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+             {[:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
               [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
               [:.clj-modal-contents]
               (case (:type flash)
