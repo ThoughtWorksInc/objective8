@@ -17,7 +17,6 @@
 (defn add-draft-page [{:keys [data doc anti-forgery-snippet] :as context}]
   (let [objective-id (:objective-id data)]
     (->> (html/at add-draft-template
-                  [:title] (html/content (:title doc))
                   [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr :content (:description doc))
                   [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
                   [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))

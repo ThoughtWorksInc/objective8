@@ -35,6 +35,5 @@
 
 (defn objective-comments-page [{:keys [doc] :as context}]
   (html/at objective-comments-template
-              [:title] (html/content (:title doc))
               [:.clj-secondary-navigation] (html/substitute (objective-comments-navigation context))
               [:.clj-comment-list] (html/content (pf/comment-list context))))

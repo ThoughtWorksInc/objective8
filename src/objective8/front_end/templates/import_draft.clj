@@ -28,7 +28,6 @@
         import-draft-preview-html (get-in doc [:flash :import-draft-preview-html])]
     (->>
       (html/at import-draft-template
-               [:title] (html/content (:title doc))
                [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr :content (:description doc))
                [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
                [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))

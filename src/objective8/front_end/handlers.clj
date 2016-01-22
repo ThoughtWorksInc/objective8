@@ -93,7 +93,7 @@
                                 :profile-owner username
                                 :objectives-for-writer objectives-for-writer
                                 :joined-date joined-date
-                                :doc {:title (str (:name user-profile) " | Objective[8]")})}
+                                :doc {:title (str (:name user-profile) " |")})}
           (error-404-response request)))
 
       ::http-api/not-found
@@ -190,7 +190,7 @@
                                            :questions questions
                                            :comments-data comments-data
                                            :latest-draft latest-draft
-                                           :doc (let [details (str (:title objective) " | Objective[8]")]
+                                           :doc (let [details (str (:title objective) " |")]
                                                   {:title details
                                                    :description details}))})
            (= objective-status ::http-api/not-found) (error-404-response updated-request)
@@ -365,7 +365,7 @@
                          :objective objective
                          :comments-data comments-data
                          :doc (let [details (str (t' :objective-comments/title-prefix) " "
-                                                 (:title objective) " | Objective[8]")]
+                                                 (:title objective) " |")]
                                 {:title details
                                  :description details}))}
 
@@ -408,7 +408,7 @@
                            :comments-data comments-data
                            :objective objective
                            :doc (let [details (str (t' :draft-comments/title-prefix) " "
-                                                   (utils/iso-time-string->pretty-time (:_created_at draft)) " | Objective[8]")]
+                                                   (utils/iso-time-string->pretty-time (:_created_at draft)) " |")]
                                   {:title details
                                    :description details}))}
 
@@ -500,7 +500,7 @@
        :body (views/add-question-page "question-create"
                                       request
                                       :objective objective
-                                      :doc {:title (str (t' :question-create/doc-title) " to "(:title objective) " | Objective[8]")
+                                      :doc {:title (str (t' :question-create/doc-title) " to "(:title objective) " |")
                                             :description (str (t' :question-create/doc-description))})
        :headers {"Content-Type" "text/html"}}
 
@@ -632,7 +632,7 @@
       {:status 200
        :body (views/invite-writer-page "invite-writer" request
                                        :objective objective
-                                       :doc {:title (str (t' :invite-writer/doc-title) " " (:title objective) " | Objective[8]")})
+                                       :doc {:title (str (t' :invite-writer/doc-title) " " (:title objective) " |")})
        :headers {"Content-Type" "text/html"}}
 
       (= status ::http-api/not-found)
