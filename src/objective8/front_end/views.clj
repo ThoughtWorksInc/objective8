@@ -25,19 +25,21 @@
             [objective8.front-end.templates.dashboard-questions :as dashboard-questions]
             [objective8.front-end.templates.dashboard-comments :as dashboard-comments]
             [objective8.front-end.templates.dashboard-annotations :as dashboard-annotations]
-            [objective8.front-end.templates.sign-in :as sign-in]  
+            [objective8.front-end.templates.sign-in :as sign-in]
             [objective8.front-end.templates.sign-up :as sign-up]
             [objective8.front-end.templates.admin-activity :as admin-activity]
             [objective8.front-end.templates.admin-removal-confirmation :as admin-removal-confirmation]
             [objective8.front-end.templates.error-404 :as error-404]
-            [objective8.front-end.templates.error-pages :as error-pages]))
+            [objective8.front-end.templates.error-pages :as error-pages]
+            [objective8.front-end.templates.page-furniture :as pf]
+            [objective8.front-end.templates.template-functions :as tf]))
 
 (defn- user-info [request auth-map]
   (when auth-map {:username (:username auth-map)
                   :roles (:roles auth-map)}))
 
 (defn- doc-info [request page-name translations data]
-  (when (and page-name translations) 
+  (when (and page-name translations)
     (-> {:flash (:flash request)}
         (assoc :page-name page-name)
         (assoc :errors (:errors data))
@@ -55,7 +57,7 @@
         translations (:t' request)
         anti-forgery-snippet (html/html-snippet (anti-forgery-field))
         data (apply hash-map data)]
-    {:translations translations 
+    {:translations translations
      :ring-request request
      :anti-forgery-snippet anti-forgery-snippet
      :user (user-info request auth-map)
@@ -67,8 +69,15 @@
   "Wraps a template so that it can easily be called
   from a handler by converting ring-requests to view-contexts"
   [viewfn]
-  (fn [page-name ring-request & data] 
-    (viewfn (make-view-context page-name ring-request data))))
+  (fn [page-name ring-request & data]
+    (let [context (make-view-context page-name ring-request data)]
+      (->> context
+           viewfn
+           pf/add-google-analytics
+           pf/add-custom-favicon
+           (tf/translate context)
+           html/emit*
+           (apply str)))))
 
 (def error-404 (view error-404/error-404-page))
 (def error-configuration (view error-pages/error-configuration-page))

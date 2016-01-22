@@ -53,9 +53,4 @@
                   
                   [:.clj-invite-a-writer-form] (html/content (invite-writer context))
                   [:.clj-invite-a-writer-form] (html/set-attr :action (str "/objectives/" (:_id objective) "/writer-invitations")))
-         (apply-validations context)
-         pf/add-google-analytics
-         pf/add-custom-favicon
-         (tf/translate context)
-         html/emit*
-         (apply str))))
+         (apply-validations context))))

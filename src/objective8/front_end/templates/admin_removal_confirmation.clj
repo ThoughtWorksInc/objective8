@@ -8,15 +8,10 @@
 
 (defn admin-removal-confirmation-page [{:keys [anti-forgery-snippet doc data] :as context}]
   (let [{:keys [removal-uri removal-sample] :as removal-data} (:removal-data data)]
-    (apply str
-           (html/emit*
-             (tf/translate context
-                           (-> (html/at admin-removal-confirmation-template
-                                        [:title] (html/content (:title doc))
-                                        [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr :content (:description doc))
-                                        [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
-                                        [:.clj-objective-title] (html/content removal-sample)
-                                        [:.clj-removal-confirmation-form] (html/prepend anti-forgery-snippet)
-                                        [:.clj-removal-uri] (html/set-attr :value removal-uri))
-                               pf/add-google-analytics
-                               pf/add-custom-favicon))))))
+    (html/at admin-removal-confirmation-template
+                [:title] (html/content (:title doc))
+                [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr :content (:description doc))
+                [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
+                [:.clj-objective-title] (html/content removal-sample)
+                [:.clj-removal-confirmation-form] (html/prepend anti-forgery-snippet)
+                [:.clj-removal-uri] (html/set-attr :value removal-uri))))

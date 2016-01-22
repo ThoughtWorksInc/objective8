@@ -50,9 +50,9 @@
                    :tconfig {:dictionary {:es {}, :en {}}, :dev-mode? false, :fallback-locale :en, :log-missing-translations-function "log missing translations function"}})
 
 (fact "calls the wrapped function with a view-context based on a ring request"
-      (let [view-fn (views/view test-view)]
+      (let [view-fn (fn [page-name ring-request & data] (views/make-view-context page-name ring-request data))]
         (fact "pulls out the ring request"
-              (view-fn "index" {:request "request"}) => (contains {:ring-request {:request "request"}})) 
+              (view-fn "index" {:request "request"}) => (contains {:ring-request {:request "request"}}))
 
         (fact "pulls out translation information"
               (view-fn "test" ring-request) => (contains {:translations fn?}))
@@ -67,19 +67,19 @@
               (view-fn "test" (assoc ring-request :flash "flash")) => (contains {:doc (contains {:flash "flash"})}))
 
         (fact "pulls out invitation if set"
-              (view-fn "test" (assoc-in ring-request 
+              (view-fn "test" (assoc-in ring-request
                                         [:session :invitation]
                                         "INVITATION")) => (contains {:invitation-rsvp "INVITATION"}))
 
         (fact "pulls out user information if the user is authenticated with friend"
               (view-fn "test" ring-request) => (contains {:user {:username "Wibble"
-                                                                 :roles #{:signed-in}}}) 
+                                                                 :roles #{:signed-in}}})
               (provided
                 (friend/current-authentication ring-request) => {:username "Wibble"
-                                                                 :roles #{:signed-in}})) 
+                                                                 :roles #{:signed-in}}))
 
         (fact "user is nil if there is no friend authentication"
-              (view-fn "test" ring-request) => (contains {:user nil}) 
+              (view-fn "test" ring-request) => (contains {:user nil})
               (provided
                 (friend/current-authentication ring-request) => nil))
 

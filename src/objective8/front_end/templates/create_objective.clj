@@ -28,9 +28,4 @@
 
             [:.clj-guidance-buttons] nil
             [:.clj-create-objective-form] (html/prepend anti-forgery-snippet))
-   (apply-validations context)
-   pf/add-google-analytics
-   pf/add-custom-favicon
-   (tf/translate context)
-   html/emit*
-   (apply str)))
+   (apply-validations context)))

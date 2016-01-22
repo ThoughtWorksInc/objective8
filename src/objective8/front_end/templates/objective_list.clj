@@ -53,18 +53,12 @@
                              (html/content (brief-description objective))))))
 
 (defn objective-list-page [{:keys [translations data doc] :as context}]
-  (apply str
-         (html/emit*
-           (tf/translate context
-                         (->
-                           (html/at objective-list-resource
-                                    [:title] (html/content (:title doc))
-                                    [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
-                                    [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
+  (html/at objective-list-resource
+              [:title] (html/content (:title doc))
+              [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+              [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
 
-                                    [:.clj-guidance-buttons] nil
-                                    [:.l8n-guidance-heading] (html/content (translations :objectives-guidance/heading))
+              [:.clj-guidance-buttons] nil
+              [:.l8n-guidance-heading] (html/content (translations :objectives-guidance/heading))
 
-                                    [:.clj-objective-list] (html/content (objective-list-items context)))
-                           pf/add-google-analytics
-                           pf/add-custom-favicon)))))
+              [:.clj-objective-list] (html/content (objective-list-items context))))
