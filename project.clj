@@ -40,7 +40,8 @@
                  [org.clojars.d-cent/stonecutter-oauth "0.2.0-SNAPSHOT"]
                  [com.googlecode.owasp-java-html-sanitizer/owasp-java-html-sanitizer "r239" :exclusions [com.google.guava/guava com.google.code.findbugs/jsr305]]]
   :main objective8.core
-  :plugins [[ragtime/ragtime.lein "0.3.8"]]
+  :plugins [[ragtime/ragtime.lein "0.3.8"]
+            [lein-cloverage "1.0.6"]]
   :profiles {:dev {:source-paths ["dev"]
                    :repl-options {:init-ns user
                                   :timeout 120000}
