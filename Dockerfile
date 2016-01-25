@@ -6,6 +6,7 @@ WORKDIR /usr/src/app
 COPY project.clj /usr/src/app/
 RUN lein with-profile production deps
 COPY . /usr/src/app
+RUN apt-get update
 RUN apt-get -y install build-essential
 RUN npm install
 RUN npm install -g grunt
