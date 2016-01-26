@@ -118,7 +118,6 @@
                  (wd/input-text objective-description)
                  wd/submit)
 
-             (log/warn (str "--------------------------> " (wd/title)))
              (wait-for-title "Functional test headline | Objective[8]")
              (swap! journey-state assoc :objective-url (wd/current-url))
              (screenshot "objective_page")

@@ -44,5 +44,4 @@
                                             :app-name "Policy Maker")]
                (let [{response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/index))]
                  (:body response) => (every-checker
-                                       (contains "<a href=\"/\" title=\"Go to home page\" rel=\"home\" data-l8n=\"attr/title:masthead/logo-title-attr\" class=\"masthead-logo\">Policy Maker</a>")
-                                       (contains "<title>Policy Maker</title>"))))))
+                                       (contains "<a href=\"/\" title=\"Go to home page\" rel=\"home\" data-l8n=\"attr/title:masthead/logo-title-attr\" class=\"masthead-logo\">Policy Maker</a>"))))))

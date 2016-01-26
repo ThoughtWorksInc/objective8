@@ -11,7 +11,8 @@
             [objective8.utils :as utils]
             [objective8.front-end.permissions :as permissions]
             [objective8.front-end.draft-diffs :as diffs]
-            [objective8.front-end.views :as views]))
+            [objective8.front-end.views :as views]
+            [objective8.config :as config]))
 
 (declare accept-invitation)
 
@@ -88,12 +89,12 @@
         (if (= objective-status ::http-api/success)
           {:status 200
            :header {"Content-Type" "text/html"}
-           :body (views/profile "profile" request
-                                :user-profile user-profile
-                                :profile-owner username
-                                :objectives-for-writer objectives-for-writer
-                                :joined-date joined-date
-                                :doc {:title (str (:name user-profile) " |")})}
+           :body   (views/profile "profile" request
+                                  :user-profile user-profile
+                                  :profile-owner username
+                                  :objectives-for-writer objectives-for-writer
+                                  :joined-date joined-date
+                                  :doc {:title (str (:name user-profile) " | " (:app-name config/environment))})}
           (error-404-response request)))
 
       ::http-api/not-found
@@ -190,7 +191,7 @@
                                            :questions questions
                                            :comments-data comments-data
                                            :latest-draft latest-draft
-                                           :doc (let [details (str (:title objective) " |")]
+                                           :doc (let [details (str (:title objective) " | " (:app-name config/environment))]
                                                   {:title details
                                                    :description details}))})
            (= objective-status ::http-api/not-found) (error-404-response updated-request)
@@ -365,7 +366,7 @@
                          :objective objective
                          :comments-data comments-data
                          :doc (let [details (str (t' :objective-comments/title-prefix) " "
-                                                 (:title objective) " |")]
+                                                 (:title objective) " | " (:app-name config/environment))]
                                 {:title details
                                  :description details}))}
 
@@ -408,7 +409,7 @@
                            :comments-data comments-data
                            :objective objective
                            :doc (let [details (str (t' :draft-comments/title-prefix) " "
-                                                   (utils/iso-time-string->pretty-time (:_created_at draft)) " |")]
+                                                   (utils/iso-time-string->pretty-time (:_created_at draft)) " | " (:app-name config/environment))]
                                   {:title details
                                    :description details}))}
 
@@ -500,7 +501,7 @@
        :body (views/add-question-page "question-create"
                                       request
                                       :objective objective
-                                      :doc {:title (str (t' :question-create/doc-title) " to "(:title objective) " |")
+                                      :doc {:title (str (t' :question-create/doc-title) " to "(:title objective) " | " (:app-name config/environment))
                                             :description (str (t' :question-create/doc-description))})
        :headers {"Content-Type" "text/html"}}
 
@@ -632,7 +633,7 @@
       {:status 200
        :body (views/invite-writer-page "invite-writer" request
                                        :objective objective
-                                       :doc {:title (str (t' :invite-writer/doc-title) " " (:title objective) " |")})
+                                       :doc {:title (str (t' :invite-writer/doc-title) " " (:title objective) " | " (:app-name config/environment))})
        :headers {"Content-Type" "text/html"}}
 
       (= status ::http-api/not-found)

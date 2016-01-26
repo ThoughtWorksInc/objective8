@@ -2,19 +2,19 @@ masthead,skip-to-navigation,Skip to navigation
 masthead,logo-title-attr,Go to home page
 masthead,objectives-link-title-attr,Go to the Objectives list
 masthead,objectives-link,View Objectives
-masthead,about-link-title-attr,Learn more about Objective[8]
+masthead,about-link-title-attr,Learn more about %app-name%
 masthead,about-link,About
 masthead,create-link-title-attr,Create an Objective
 masthead,create-link,Create an Objective
 masthead,navigation-title,Navigation
-status-bar,status-text,ALPHA: This is a testing build of Objective8. Features and data may change several times a day.
-sign-in,doc-title,Sign in or Sign up |
-sign-in,doc-description,Sign in or Sign up to Objective[8]
+status-bar,status-text,ALPHA: This is a testing build of %app-name%. Features and data may change several times a day.
+sign-in,doc-title,Sign in or Sign up | %app-name%
+sign-in,doc-description,Sign in or Sign up to %app-name%
 sign-in,page-title,Sign in or Sign up
 sign-in,sign-in-with-twitter,Sign in with Twitter
 sign-in,twitter-helper-text,We will never post to Twitter without your permission.
 sign-in,sign-in-with-d-cent,Sign in with D-Cent
-sign-up,doc-title,Sign up |
+sign-up,doc-title,Sign up | %app-name%
 sign-up,doc-description,
 sign-up,page-title,Almost there
 sign-up,username-label,Username
@@ -29,7 +29,7 @@ objective-guidance,text-line-1,A policy starts with an idea.
 objective-guidance,text-line-2,These are catalysts for change.
 objective-guidance,text-line-3,Everyone can comment and make suggestions to contribute towards the draft stage.
 objectives-guidance,heading,What are objectives?
-objectives-guidance,text-line-1,Objective[8] centers its policy drafting process around objectives.
+objectives-guidance,text-line-1,%app-name% centers its policy drafting process around objectives.
 objectives-guidance,text-line-2,An objective is a change that could be achieved by introducing new policy.
 create-objective-guidance,heading,Creating an objective
 create-objective-guidance,item-1,"An objective is a change that could be achieved by introducing new policy. For example: improving access to public housing, or increasing the safety of our roads."
@@ -38,8 +38,8 @@ draft-guidance,heading,What is a draft?
 draft-guidance,text-line-1,Drafts are versions of the policy as it is being written.
 draft-guidance,text-line-2,Drafts are crafted by the writers that have been nominated for an objective.
 draft-guidance,text-line-3,Everyone can comment and make suggestions.
-index,doc-title,
-index,doc-description,Objective[8]
+index,doc-title,%app-name%
+index,doc-description,%app-name%
 index,index-welcome,Collaborative policy making for democratic organisations.
 index,index-get-started-title,Objectives
 index,index-intro,"Gather community opinion, generate ideas, share, discuss, vote and collaborate with experts to draft new policy."
@@ -54,12 +54,12 @@ index,draft-finished,The finished Policy
 index,draft-finished-info,is published!
 index,objectives,View Objectives
 index,learn-more,Learn more
-objective-list,doc-title,Objectives |
+objective-list,doc-title,Objectives | %app-name%
 objective-list,doc-description,
 objective-list,page-title,Objectives
 objective-list,create-objective-link,Create an objective
 objective-list,subtitle,Recently created objectives
-create-objective,doc-title,Create an Objective |
+create-objective,doc-title,Create an Objective | %app-name%
 create-objective,doc-description,
 create-objective,page-title,Create an objective
 create-objective,headline,Headline
@@ -74,7 +74,7 @@ create-objective,submit-text,Create
 create-objective,title-length-validation-message,The objective title must be between 3 and 120 characters
 create-objective,description-empty-validation-message,Please enter a description for your objective
 create-objective,description-length-validation-message,The objective description can have at most 5000 characters
-draft,doc-title,Policy draft |
+draft,doc-title,Policy draft | %app-name%
 draft,doc-description,Draft policy for objective ... 
 draft,add-a-draft,Add a draft
 draft,import-draft,Import a draft from Google Drive
@@ -93,7 +93,7 @@ draft,comment-post-button,Add a comment
 draft,load-more-comments,More comments
 draft-comments,draft-prefix,Draft
 draft-comments,title-prefix,Comments for draft
-draft-list,doc-title,Drafts |
+draft-list,doc-title,Drafts | %app-name%
 draft-list,doc-description,
 draft-list,objective,Objective
 draft-list,drafts,Drafts
@@ -105,21 +105,21 @@ draft-list,no-previous-versions,There are no previous versions
 draft-list,add-a-draft,Add a draft
 draft-list,import,Import draft from Google Drive
 draft-list,writers,Writers
-draft-section,doc-title,Draft section |
+draft-section,doc-title,Draft section | %app-name%
 draft-section,doc-description,
 draft-section,page-title,Add annotation to:
 draft-section,comment-box-label-title,Want to discuss this section?
 draft-section,comment-box-label-helper,You can leave an annotation here.
 draft-section,comment-post-button,Add an annotation
 draft-section,annotation-created-message,Your annotation has been added!
-add-draft,doc-title,Add draft |
+add-draft,doc-title,Add draft | %app-name%
 add-draft,doc-description,Draft policy
 add-draft,placeholder,Enter your draft here
 add-draft,cancel,Cancel
 add-draft,submit,Add draft
 add-draft,draft-empty-validation-message,The draft cannot be empty
 add-draft,preview,Preview
-import-draft,doc-title,Import draft |
+import-draft,doc-title,Import draft | %app-name%
 import-draft,doc-description,Import a draft from Google Drive
 import-draft,page-title,Import a draft from Google Drive
 import-draft,cancel,Cancel
@@ -128,7 +128,7 @@ import-draft,preview,Preview
 import-draft,submit,Submit
 import-draft,draft-empty-validation-title,The document you selected is empty
 import-draft,draft-empty-validation-message,Please check you have selected the correct document and try again.
-draft-diff,doc-title,Draft changes |
+draft-diff,doc-title,Draft changes | %app-name%
 draft-diff,doc-description,View the changes made in this draft version
 draft-diff,previous-version-title,Previous version
 draft-diff,this-version-title,This version
@@ -148,11 +148,11 @@ writer-dashboard,link-button,Dashboard
 writer-dashboard,writer-note-placeholder,Add a reply to the community
 writer-dashboard,writer-note-empty-validation-message,Your response cannot be empty
 writer-dashboard,writer-note-length-validation-message,Your response cannot be more than 500 characters
-dashboard-questions,doc-title,Writer dashboard |
+dashboard-questions,doc-title,Writer dashboard | %app-name%
 dashboard-questions,doc-description,A summary of engagement with questions and answers for this objective
-dashboard-annotations,doc-title,Writer dashboard |
+dashboard-annotations,doc-title,Writer dashboard | %app-name%
 dashboard-annotations,doc-description,A summary of annotations for drafts
-dashboard-comments,doc-title,Writer dashboard |
+dashboard-comments,doc-title,Writer dashboard | %app-name%
 dashboard-comments,doc-description,A summary of discussions about this objective and related drafts
 dashboard-comments,latest-draft-label,Latest
 dashboard-comments,draft-label-prefix,Draft
@@ -160,16 +160,16 @@ dashboard-comments,objective-label,Objective
 comment-create,comment-title,Comments are a maximum length of 500 characters
 comment-create,post-button,Add a comment
 comment-create,comment-label,Your comment
-writer-list,doc-title,Policy writers |
+writer-list,doc-title,Policy writers | %app-name%
 writer-list,page-intro,Writers work with each other and the community to draft policy.
 writer-list,writer-list-heading,Recently added writers
 writer-list,no-writers,No writers have been invited yet.
 writer-list,doc-description,Policy writers...
-project-status,doc-title,Project status |
+project-status,doc-title,Project status | %app-name%
 project-status,doc-description,
 project-status,page-title,Alpha phase
-project-status,page-intro,"We are developing and designing Objective[8] in the open. This allows the tool evolve as you use it, as you give feedback, and as the developers update and add content."
-project-status,page-content!,"<p>It is important to note that during this time data may be removed or destroyed as part of our process. Any of the views and data expressed here is to be used for example purposes only and does not accurately represent the real views of users.</p><h2>How to get involved</h2><p>This project is open source and we are inviting people to collaborate with us to build a better tool. For developers and you can find the code on github at <a href=""https://github.com/ThoughtWorksInc/objective8"" title=""Objective[8] on github"">https://github.com/ThoughtWorksInc/objective8</a>. We will also be adding details for upcoming usability sessions shortly.</p><h2>Have you got an idea?</h2><p>We are really interested in user feedback and are currently inviting people to leave comments our <a href=""https://github.com/ThoughtWorksInc/objective8/issues"">github issues page</a>.</p>"
+project-status,page-intro,"We are developing and designing %app-name% in the open. This allows the tool evolve as you use it, as you give feedback, and as the developers update and add content."
+project-status,page-content!,"<p>It is important to note that during this time data may be removed or destroyed as part of our process. Any of the views and data expressed here is to be used for example purposes only and does not accurately represent the real views of users.</p><h2>How to get involved</h2><p>This project is open source and we are inviting people to collaborate with us to build a better tool. For developers and you can find the code on github at <a href=""https://github.com/ThoughtWorksInc/objective8"" title=""%app-name% on github"">https://github.com/ThoughtWorksInc/objective8</a>. We will also be adding details for upcoming usability sessions shortly.</p><h2>Have you got an idea?</h2><p>We are really interested in user feedback and are currently inviting people to leave comments our <a href=""https://github.com/ThoughtWorksInc/objective8/issues"">github issues page</a>.</p>"
 objective-nav,questions,Questions
 objective-nav,title,Navigation for
 objective-nav,back-to-top,Back to top
@@ -188,7 +188,7 @@ question-actions,demote-question,demote
 question-actions,answer,answer
 question-actions,answers,answers
 question-page,guidance-heading,What is a question?
-question-page,guidance-text-1,Questions are how Objective[8] gathers community ideas for use in drafting policy
+question-page,guidance-text-1,Questions are how %app-name% gathers community ideas for use in drafting policy
 question-page,previous-page,Previous
 question-page,next-page,Next
 question-page,answers-for,Answers for
@@ -205,11 +205,11 @@ question-page,facebook-description,"By answering this question, you are helping 
 question-page,writer-note-label,Response from the writers
 question-page,answer-empty-validation-message,Please provide an answer
 question-page,answer-length-validation-message,The answer must be between 1 and 500 characters
-learn-more,doc-title,Learn more |
+learn-more,doc-title,Learn more | %app-name%
 learn-more,doc-description,
-learn-more,page-title,Objective[8] 101
+learn-more,page-title,%app-name% 101
 learn-more,sub-title,What are the basics?
-learn-more,page-intro,Objective8 is a platform to enable collaborative policy making for democratic organisations.
+learn-more,page-intro,%app-name% is a platform to enable collaborative policy making for democratic organisations.
 learn-more,page-content!,"<p><b>Policy</b> is used by governments and organisations to make consistent and fair decisions in order to achieve desired outcomes.</p><p>An <b>objective</b> is a change that could be achieved by introducing new policy.  For example: improving access to public housing, or increasing the safety of our roads.</p><p><b>Writers</b> work with each other and the community to draft policy.  They use the crowdsourced questions, answers and comments to produce <b>policy drafts</b><span class=""not-yet-implemented-footnote-marker"">*</span>.  These are further refined through cycles of feedback and redrafting.</p><p>You can get involved and have your say by creating and sharing objectives, offering your opinion through <b>comments</b>, asking and answering <b>questions</b>, suggesting policy writers, or even providing feedback on the policy drafts themselves.  The whole process is open and transparent.</p><p class=""helper-text""> <span class=""not-yet-implemented-footnote-marker"">*</span>As the site is still under development, these features have not yet been implemented. Check back soon!</p>"
 learn-more,get-started-button-text,Get started
 learn-more,get-started-button-title,Get started
@@ -220,7 +220,7 @@ objective-view,latest-draft,Latest draft
 objective-view,details,Details
 objective-view,goals-label,Goals
 objective-view,created-message,Your objective has been created!
-objective-view,doc-title,Objective |
+objective-view,doc-title,Objective | %app-name%
 objective-view,background-label,Background
 objective-view,doc-description,Objective  ...
 objective-view,writers,Writers
@@ -270,15 +270,15 @@ to-invite-writer,sign-in-link,sign-in
 to-invite-writer,after-sign-in-link,to invite a policy writer.
 question-view,added-message,Your question has been added!
 question-view,added-answer-message,Your answer has been added!
-error-404,doc-title,Error |
+error-404,doc-title,Error | %app-name%
 error-404,doc-description,Sorry the page you requested can't be found.
 error-404,page-title,Sorry the page you requested can't be found.
 error-404,page-intro,The page you were trying to reach at this address doesn't seem to exist. This is usually the result of a bad or outdated link. We apologise for any inconvenience.
 error-404,page-content!,"<h2>What can I do now?</h2><ul class=""list-large""><li>Please return to the <a href=""/"" title=""Go to Home"">home page</a>.</li><li>To report an issue visit our <a href=""https://github.com/ThoughtWorksInc/objective8/issues"">github issues page</a>.</li></ul>"
-error-configuration,doc-title,Configuration error |
+error-configuration,doc-title,Configuration error | %app-name%
 error-configuration,doc-description,"Sorry, the site has been incorrectly configured. Please contact the site administrator."
 error-configuration,page-title,Application configuration error
-error-configuration,page-intro,There is a problem with the way this instance of Objective[8] has been configured.  Please contact the site administrator.
+error-configuration,page-intro,There is a problem with the way this instance of %app-name% has been configured.  Please contact the site administrator.
 answer-view,created-message,Your answer has been posted!
 answer-view,no-answers,No one has answered this question yet.
 answer-view,answer-title,Answers
@@ -313,7 +313,7 @@ invite-writer,writer-reason-length-validation-message,Your reason can be at most
 invitation,writer-name-title,Writer names are a maximum length of 50 characters
 invitation,reason-title,Reasons are a maximum length of 1000 characters
 invitation,reason-label,"They should help draft this policy, because: "
-invitation,doc-title,Policy writers
+invitation,doc-title,Policy writers | %app-name%
 invitation,doc-description,Policy writers...
 invitation,submit,Create an invite
 invitation,page-intro,Do you know someone with the enthusiasm and expertise to help draft this policy?
@@ -339,9 +339,9 @@ invitation-modal,email-body-line-1,I have invited you to help draft some policy 
 invitation-modal,email-body-line-2,Please follow the link below for more information and to accept the invitation
 base,project-status!,"ALPHA: We are still testing, <a href=""/project-status"" title=""Find out more about our project status"">find out more</a>"
 base,header-logo-title,Go to home page
-base,header-logo-text,Objective[8]
+base,header-logo-text,%app-name%
 base,browsehappy!,"You are using an <strong>outdated</strong> browser. Please <a href=""http://browsehappy.com/"">upgrade your browser</a> to improve your experience."
-question-create,doc-title,Add a question
+question-create,doc-title,Add a question | %app-name%
 question-create,doc-description,Add a question to this objective
 question-create,add-a-question,Add a question to this objective
 question-create,guidance-heading,Tips for questions
@@ -359,7 +359,7 @@ invitation-response,accept,Accept
 invitation-response,banner-message,Respond to your invitation to help draft policy
 invitation-response,expired-banner-message,This invitation has expired
 invitation-response,invitation-declined-banner-message,Invitation declined
-create-profile,doc-title,Create profile |
+create-profile,doc-title,Create profile | %app-name%
 create-profile,doc-description,
 create-profile,page-title,Create a writer profile
 create-profile,profile-intro,"Your profile is open for everyone to read.  You should talk about your writing experience. Include your areas of policy expertise."
@@ -370,7 +370,7 @@ create-profile,biography,Biography:
 create-profile,biog-length-validation-message,The biography has a maximum length of 5000 characters
 create-profile,biog-empty-validation-message,The biography cannot be empty
 create-profile,button,Create profile
-edit-profile,doc-title,Edit profile |
+edit-profile,doc-title,Edit profile | %app-name%
 edit-profile,doc-description,
 edit-profile,page-title,Edit your writer profile
 edit-profile,profile-intro,"Your profile is open for everyone to read.  You should talk about your writing experience. Include your areas of policy expertise."
@@ -389,13 +389,13 @@ profile,edit-profile,Edit profile
 profile,objective-list,is a writer for these Objectives
 profile,dashboard-link,Dashboard
 policy,contributors-title,Policy Contributors
-admin-removal-confirmation,doc-title,Are you sure? |
+admin-removal-confirmation,doc-title,Are you sure? | %app-name%
 admin-removal-confirmation,doc-description,Confirm removal of this content
 admin-removal-confirmation,page-title,Please confirm
 admin-removal-confirmation,are-you-sure,Are you sure you want to remove this objective:
 admin-removal-confirmation,no,No
 admin-removal-confirmation,yes,Yes
-admin-activity,doc-title,Admin activity |
+admin-activity,doc-title,Admin activity | %app-name%
 admin-activity,doc-description,View what the admins have been doing
 admin-activity,page-title,Admin activity
 admin-activity,subtitle,The following content has been removed
@@ -403,7 +403,7 @@ admin-activity,no-admin-removals,No content has been removed
 footer,about-link,About
 footer,deleted-link,Deleted Content
 footer,dcent-link,DCENT
-footer,alpha-warning,ALPHA: this is a testing version of Objective8 data and content may change several times a day
+footer,alpha-warning,ALPHA: this is a testing version of %app-name% data and content may change several times a day
 footer,modal-dismiss,Close
 secondary-navigation,previous,Previous
 secondary-navigation,next,Next

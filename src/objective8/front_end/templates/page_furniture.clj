@@ -30,17 +30,11 @@
              [[:link (html/attr= :rel "shortcut icon")]] (html/set-attr :href (str "/static/" favicon-name)))
     nodes))
 
-(defn construct-page-title [context app-name]
-  (let [title (get-in context [:doc :title])]
-    (if (empty? title)
-      app-name
-      (str title " " app-name))))
-
 (defn add-custom-app-name [context nodes]
   (if-let [app-name (:app-name config/environment)]
     (html/at nodes
              [:.masthead-logo] (html/content app-name)
-             [:title] (html/content (construct-page-title context app-name)))
+             [:title] (html/content (get-in context [:doc :title])))
     nodes))
 
 ;; MASTHEAD

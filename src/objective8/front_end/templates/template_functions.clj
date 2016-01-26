@@ -7,7 +7,7 @@
   "Returns a translation function which replaces the
   content of nodes with translations for k"
   [{:keys [translations] :as context}]
-  (fn [k] 
+  (fn [k]
     #(assoc % :content (translations k))))
 
 (defn text->p-nodes
@@ -20,15 +20,15 @@
                                                              newline-followed-by-optional-whitespace)))))
 
 (defn- apply-translation [translation-string node translations]
-  (let [[translation-type-string translation-key-string] (clojure.string/split translation-string #":") 
+  (let [[translation-type-string translation-key-string] (clojure.string/split translation-string #":")
         translation-type (keyword translation-type-string)
         translation-key (keyword translation-key-string)
         translation (translations translation-key)]
-    (cond 
-      (= :content translation-type) 
-      (assoc node :content (list translation))  
-      
-      (= :html translation-type) 
+    (cond
+      (= :content translation-type)
+      (assoc node :content (list translation))
+
+      (= :html translation-type)
       (assoc node :content (html/html-snippet translation))
 
       (= "attr" (namespace translation-type))

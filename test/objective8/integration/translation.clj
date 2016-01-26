@@ -1,8 +1,8 @@
 (ns objective8.integration.translation
-  (:import [java.io File])
   (:require [midje.sweet :refer :all]
             [clojure.java.io :as io]
-            [objective8.front-end.translation :as tr]))
+            [objective8.front-end.translation :as tr]
+            [objective8.config :as config]))
 
 (defn test-resource-locator [locale-keyword resource-file]
   (fn [] {:resource-name locale-keyword
@@ -17,7 +17,7 @@
                          {:template-1 {:tag-1 "template 1 tag 1 content"
                                        :tag-2 "template 1 tag 2 content"}
                           :template-2 {:tag-1 "template 2 tag 1 content"
-                                       :tag-2 "template 2 tag 2 content"}}}})
+                                       :tag-2 "template 2 tag 2 Objective[8]"}}}})
 
       (fact "attempting to parse bad translation resources reports an error"
             (tr/load-translation (test-resource-locator :rn "error--lookup-path-too-long.csv"))
@@ -27,7 +27,12 @@
             (tr/load-translation (test-resource-locator :rn "error--lookup-path-too-short.csv"))
             => {:status ::tr/parse-error
                 :message "Translation lookup path too short"
-                :resource-name :rn}))
+                :resource-name :rn})
+      (fact "loads a translation with a substitution variable"
+            (binding [config/environment (assoc config/environment
+                                           :app-name "Policy Maker")]
+              (last (tr/replace-key ["index" "app-name" "The app is called %app-name%"]))
+              => "The app is called Policy Maker")))
 
 (facts "about loading a set of translation resources"
        (fact "generates a translation dictionary"

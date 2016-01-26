@@ -5,7 +5,7 @@ invitation-modal,mail-to-text,enviar email
 invitation-modal,email-subject,Has sido invitado para redactar un documento
 invitation-modal,email-body-line-1,Le he invitado para ayudar a redactar este documento:
 invitation-modal,email-body-line-2,Por favor siga el enlace más abajo para más información y para aceptar esta invitacion:
-objective-list,doc-title,Objetivos |
+objective-list,doc-title,Objetivos | %app-name%
 objective-list,doc-description,
 objective-list,page-title,Objetivos
 objective-list,create-objective-link,Crear un objetivo
@@ -23,21 +23,21 @@ masthead,skip-to-navigation,Skip to navigation
 masthead,logo-title-attr,Go to home page
 masthead,objectives-link-title-attr,Ir a la lista de Objetivos
 masthead,objectives-link,Objetivos
-masthead,about-link-title-attr,Saber más sobre Objective[8]
+masthead,about-link-title-attr,Saber más sobre %app-name%
 masthead,about-link,Sobre esta página
-writer-list,doc-title,Candidatos a la redacción del documento |
+writer-list,doc-title,Candidatos a la redacción del documento | %app-name%
 writer-list,page-intro,Los redactores trabajan entre sí y con la comunidad para redactar el borrador
 writer-list,writer-list-heading,Redactores incorporados recientemente
 writer-list,no-writers,Ningún redactor ha sido invitado por ahora
 writer-list,doc-description,Candidatos a la redacción del documento...
 answer-votes,drafting-started,La votación ha sido congelada para este objetivo y está en proceso de redacción
 objectives-guidance,heading,¿Cuáles son los objetivos?
-objectives-guidance,text-line-1,Objective[8] centra el proceso de redacción en torno a objetivos
+objectives-guidance,text-line-1,%app-name% centra el proceso de redacción en torno a objetivos
 objectives-guidance,text-line-2,Un objetivo es un cambio que puede ser alcanzado mediante una nueva norma o política
 index,index-welcome,Creación de politica colaborativa para organizaciones democráticas
 index,draft-info-keyword,borrador
 index,index-get-started-title,Objetivos
-index,doc-title,
+index,doc-title,%app-name%
 index,learn-more,Saber más
 index,index-intro,"Recolectar la opinion de la comunidad, generar ideas, compartir, discutir, votar y colaborar con expertos para redactar nuevas politicas."
 index,draft-info-end,de una manera abierta y transparente
@@ -48,8 +48,8 @@ index,create-objective-keyword,objetivo
 index,create-objective-begin,Crear unrear un
 index,doc-description,
 index,create-objective-end,para describir el cambio que quieres realizar.
-sign-in,doc-title,Entra o regístrate|
-sign-in,doc-description,Entra o regístrate a Objective[8]
+sign-in,doc-title,Entra o regístrate | %app-name%
+sign-in,doc-description,Entra o regístrate a %app-name%
 sign-in,page-title,Entrar o registrarse
 sign-in,sign-in-with-twitter,Entra con tu cuenta de Twitter
 sign-in,twitter-helper-text,Nunca escribiremos en Twitter sin tu permiso.
@@ -57,7 +57,7 @@ create-objective,headline,Título
 create-objective,submit-text,Crear
 create-objective,background-prompt,Cuenta más sobre por qué conseguir este objectivo es importante o necesario
 create-objective,goals,Metas
-create-objective,doc-title,Crear un Objectivo |
+create-objective,doc-title,Crear un Objectivo | %app-name%
 create-objective,goals-prompt,Una meta es lo que te gustaría cambiar o lograr
 create-objective,goal-2,Meta 2
 create-objective,background,Contexto
@@ -65,10 +65,10 @@ create-objective,page-title,Crear un objectivo
 create-objective,headline-prompt,El título debería fomentar la colaboración y el debate
 create-objective,goal-3,Meta 3
 create-objective,doc-description,
-project-status,doc-title,Estado del proyecto |
+project-status,doc-title,Estado del proyecto | %app-name%
 project-status,doc-description,
 project-status,page-title,Fase alpha
-project-status,page-intro,"Estamos diseñando y desarrollando Objetivo[8] en abierto. Esto permite que la herramienta evolucione según la uses, nos des feedback, y los desarrolladores vayan actualizando y subiendo el nuevo contenido."
+project-status,page-intro,"Estamos diseñando y desarrollando %app-name% en abierto. Esto permite que la herramienta evolucione según la uses, nos des feedback, y los desarrolladores vayan actualizando y subiendo el nuevo contenido."
 project-status,page-content!,"<p> Es importante que tengas en cuenta que durante este tiempo algunos contenidos pueden ser borrados como parte del proceso. Todas las vistas y los datos que se visualizan aquí son ejemplos prácticos y no representan de forma precisa la vista real del usuario final. </p><h2> Como involucrarse </h2><p>Este proyecto es Software Libre y estamos invitando a la gente a colaborar para mejorar la herramienta. Si eres desarrollador podrás encontrar el código en github en<a href=""https://github.com/ThoughtWorksInc/objective8"" title=""Objective[8] on github"">https://github.com/ThoughtWorksInc/objective8</a>. También estaremos añadiendo nuevos detalles provenientes de las pruebas de usabilidad próximamente. </p><h2> ¿Tienes una idea que aportar? </h2><p> Estamos muy interesados en recoger todo el feedback posible que los usuarios puedan darnos así que os invitamos a dejar comentarios aquí<a href=""https://github.com/ThoughtWorksInc/objective8/issues"">página de comentarios de github </a>.</p>)"
 objective-nav,questions,Preguntas
 objective-nav,title,Navegar por
@@ -77,7 +77,7 @@ objective-nav,objective,Objetivo
 objective-nav,writers,Redactores
 objective-nav,comments,Comentarios
 objective-nav,back-to-objective,Volver al objetivo
-sign-up,doc-title,Perfil |
+sign-up,doc-title,Perfil | %app-name%
 sign-up,doc-description,
 sign-up,page-title,Casi hemos acabado
 sign-up,welcome,"Tu correo electrónico nos permitirá informarte cuando recibas respuestas a tus comentarios, objetivos y votos."
@@ -88,7 +88,7 @@ sign-up,email-label,Correo electrónico
 sign-up,button,
 draft-list,add-a-draft,Añadir un proyecto
 draft-list,drafting-begins,La redacción comienza en
-draft-list,doc-title,Borradores |
+draft-list,doc-title,Borradores | %app-name%
 draft-list,no-previous-versions,No hay versiones anteriores
 draft-list,days,días
 draft-list,latest-draft,Últimos borradores
@@ -98,22 +98,22 @@ draft-list,doc-description,
 draft-list,previous-versions,Versiones anteriores
 draft-list,writers,Redactores
 answer-create,guidance-heading,¿Qué es una pregunta?
-answer-create,guidance-text-1,Las preguntas son la forma en que Objetivo[8] recoge ideas de la comunidad para su uso en la elaboración de documentos
+answer-create,guidance-text-1,Las preguntas son la forma en que %app-name% recoge ideas de la comunidad para su uso en la elaboración de documentos
 answer-create,answers-for,Respuestas para
 answer-create,answer-title,Las respuestas pueden tener un máximo de 500 Caracteres
 answer-create,jump-to-answer-button,Añadir una nueva respuesta
 answer-create,submit-answer-button,Añadir mi respuesta
 answer-create,answer-label,Tu respuesta
 answer-create,sign-in-reminder,Debes iniciar sesión para añadir una respuesta
-learn-more,doc-title,Leer más sobre
+learn-more,doc-title,Leer más sobre | %app-name%
 learn-more,doc-description,
-learn-more,page-title,Objetivo[8] 101
+learn-more,page-title,%app-name% 101
 learn-more,sub-title,Información básica
-learn-more,page-intro,Objective8 es una plataforma para facilitar la creación colectiva de proyectos en organizaciones democráticas
+learn-more,page-intro,%app-name% es una plataforma para facilitar la creación colectiva de proyectos en organizaciones democráticas
 learn-more,page-content!,"<P><b>Las leyes</ b> son utilizadas por los gobiernos y las organizaciones para tomar decisiones coherentes y justas a fin de lograr los resultados deseados. </ P> <p> Un <b> objetivo </ b> es un cambio que podría lograrse mediante la introducción de nuevas leyes. Por ejemplo: Mejorar el acceso a la vivienda pública, o el aumento de la seguridad de nuestras carreteras </ p> <p> <b> Los redactores </ b> trabajan entre sí y con la comunidad para dar forma al proyecto. Utilizan las preguntas de la gente, las respuestas y comentarios para producir <b> borradores </ b> <span class = ""aún no implementada-nota-marcador""> * </ span>. Estos son refinado aún más a través de ciclos de retroalimentación y nuevas redacciones. </ P> <p> Puedes participar y dar tu opinión, crear y compartir objetivos, ofrecer tu opinión a través de <b> comentarios </ b>, hacer y responder a <b > preguntas </ b>, sugerir redactores, o incluso proporcionando información sobre proyectos redactados por tí mismo. Todo el proceso es abierto y transparente. </ P> <p class = ""ayudante de texto""> <span class = ""aún no implementada-nota-marcador""> * </ span> El sitio se encuentra en fase de desarrollo, muchas de estas características aún no se han implementado. ¡Vuelve pronto! </ P>"
 learn-more,get-started-button-text,Comienza
 learn-more,get-started-button-title,Comienza
-add-draft,doc-title,Editar borrador I
+add-draft,doc-title,Editar borrador I | %app-name%
 add-draft,doc-description,Borrador
 add-draft,placeholder,Introduce tu borrador aquí
 add-draft,submit,Enviar
@@ -176,7 +176,7 @@ objective-view,end-date-label,Fecha de  finalización del proceso
 objective-view,answer-link,Respuesta
 objective-view,created-message,Tu objetivo ha sido creado
 objective-view,drafting-begins,La redacción comienza en
-objective-view,doc-title,Objetivo |
+objective-view,doc-title,Objetivo | %app-name%
 objective-view,comments,Comentarios
 objective-view,days,días
 objective-view,ask-a-question,Haz una pregunta
@@ -187,7 +187,7 @@ objective-view,writers,Redactores
 objective-view,invite-a-writer,Invita a un redactor
 draft,add-a-draft,Añadir un borrador
 draft,drafting-begins,La redacción comienza en
-draft,doc-title,Borrador de documento |
+draft,doc-title,Borrador de documento | %app-name%
 draft,draft-writer,Publicado por
 draft,comments,Comentarios
 draft,days,días
@@ -202,7 +202,7 @@ draft-guidance,text-line-2,Los borradores son elaborados por los redactores que 
 draft-guidance,text-line-3,Todo el mundo puede opinar y hacer sugerencias.
 question-view,added-message,Tu pregunta ha sido añadida
 question-view,added-answer-message,¡Tu respuesta ha sido añadida!
-error-404,doc-title,Español (Error 404 |
+error-404,doc-title,Error | %app-name%
 error-404,doc-description,"Lo sentimos, la página que solicitas no se encuentra"
 error-404,page-title,"Lo sentimos, la página que solicitas no se encuentra"
 error-404,page-intro,Parece que la página a la que intentas acceder no existe. Esto puede deberse a un enlace incorrecto o desactualizado
@@ -216,7 +216,7 @@ comment-view,comment-title,Comentarios
 invitation,writer-name-title,El nombre del redactor puede tener una longitud máxima de 50 caracteres
 invitation,reason-title,La razón por la que invitas puede tener un máximo de 1000 caracteres
 invitation,reason-label,Debería ayudar a redactar este borrador porque:
-invitation,doc-title,Candidatos a redactores del borrador
+invitation,doc-title,Candidatos a redactores del borrador | %app-name%
 invitation,doc-description,Candidatos a redactores del borrador)
 invitation,submit,Crear una invitación
 invitation,page-intro,¿Conoces a alguien con el entusiasmo y la experiencia necesaria para ayudar a redactar este borrador
@@ -231,9 +231,9 @@ objective-guidance,text-line-2,Estos son catalizadores del cambio.
 objective-guidance,text-line-3,Todo el mundo puede opinar y hacer sugerencias para contribuir a la fase de borrador del proyecto.
 base,project-status!,"Español (ALPHA: Estamos todavía en desarrollo y pruebas, <a href=""/project status"" title=""Lee más sobre el estado de nuestro proyecto""> averiguar más </a>)"
 base,header-logo-title,Inicio
-base,header-logo-text,Objetivo[8]
-base,browsehappy!,Por favor <a href='http://browsehappy.com/' target='_blank' title='Visita browsehappy para aprender más sobre las últimas versiones de tu navegador'>actualiza tu navegador</a> para tener una mejor experiencia.
-question-create,doc-title,Adición de una pregunta
+base,header-logo-text,%app-name%
+base,browsehappy!,Por favor <a href='http://browsehappy.com/' target='blank' title='Visita browsehappy para aprender más sobre las últimas versiones de tu navegador'>actualiza tu navegador</a> para tener una mejor experiencia.
+question-create,doc-title,Adición de una pregunta | %app-name%
 question-create,doc-description,Añadir una pregunta a este objetivo
 question-create,add-a-question,Añadir una pregunta a este objetivo
 question-create,guidance-heading,Consejos para hacer preguntas

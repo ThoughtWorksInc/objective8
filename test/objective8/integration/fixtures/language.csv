@@ -1,4 +1,4 @@
 template-1,tag-1,"template 1 tag 1 content"
 template-1,tag-2,"template 1 tag 2 content"
 template-2,tag-1,"template 2 tag 1 content"
-template-2,tag-2,"template 2 tag 2 content"
+template-2,tag-2,"template 2 tag 2 %app-name%"

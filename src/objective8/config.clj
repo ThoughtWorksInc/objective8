@@ -54,3 +54,5 @@
    :coracle-post-uri              (get-var "CORACLE_URI")
    :favicon-file-name             (get-var "FAVICON_FILE_NAME")
    :app-name                      (get-var "APP_NAME" "Objective[8]")})
+
+(def replacement-keys [:app-name])

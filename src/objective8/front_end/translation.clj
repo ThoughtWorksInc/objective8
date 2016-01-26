@@ -3,7 +3,7 @@
             [clojure.java.io :as io]
             [clojure.string :as string]
             [clojure-csv.core :as csv]
-            [taoensso.tower :as tower]))
+            [objective8.config :as config]))
 
 ;; From http://stackoverflow.com/a/19656800/576322
 (defn lazy-read-csv
@@ -42,10 +42,21 @@
   {:long-path "Translation lookup path too long"
    :short-path "Translation lookup path too short"})
 
+(defn replace-key [translation-vec]
+  (let [replaced-translation (reduce (fn [translation key]
+                                       (string/replace translation (str "%" (name key) "%") (get config/environment key)))
+                                     (last translation-vec)
+                                     config/replacement-keys)]
+    (assoc translation-vec (- (count translation-vec) 1) replaced-translation)))
+
+(defn substitute [translation-seq]
+  (map replace-key translation-seq))
+
 (defn- load-translation* [resource-name resource]
   (try
     (let [language-identifier (keyword resource-name)
           dictionary (->> (lazy-read-csv resource)
+                          substitute
                           (map (juxt csv-line->dictionary-path
                                      csv-line->dictionary-content))
                           (reduce (fn [d [ks v]] (assoc-in d ks v)) {}))]
