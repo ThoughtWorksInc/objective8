@@ -37,6 +37,12 @@
              [:title] (html/content (get-in context [:doc :title])))
     nodes))
 
+(defn remove-footer-alpha-warning [nodes]
+  (if (not (:show-alpha-warnings config/environment))
+    (html/at nodes
+             [:.footer-alpha-warning] (html/substitute (html/html-snippet "")))
+    nodes))
+
 ;; MASTHEAD
 
 (def masthead-signed-out-snippet (html/select library-html-resource [:.clj-masthead-signed-out])) 
@@ -82,6 +88,7 @@
     (cond
       (= type :flash-message) (flash-bar (translations message)) 
       invitation-rsvp (flash-bar (invitation-response-banner context))
+      (not (:show-alpha-warnings config/environment)) (html/html-snippet "")
       :else status-bar-snippet)))
 
 ;; PROGRESS INDICATOR
