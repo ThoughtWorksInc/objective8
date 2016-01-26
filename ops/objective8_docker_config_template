@@ -37,3 +37,9 @@ STONECUTTER_CLIENT_SECRET=
 
 # use for configuring logs, ex=-Dlog4j.configuration=log4j.debug
 JAVA_OPTS=
+
+# customise application branding
+APP_NAME=
+FAVICON_FILE_NAME=
+# warnings will show if variable is set
+SHOW_ALPHA_WARNINGS=

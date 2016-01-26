@@ -54,6 +54,6 @@
    :coracle-post-uri              (get-var "CORACLE_URI")
    :favicon-file-name             (get-var "FAVICON_FILE_NAME")
    :app-name                      (get-var "APP_NAME" "Objective[8]")
-   :show-alpha-warnings           (get-var "ALPHA_WARNINGS" false)})
+   :show-alpha-warnings           (get-var "SHOW_ALPHA_WARNINGS" false)})
 
 (def replacement-keys [:app-name])
