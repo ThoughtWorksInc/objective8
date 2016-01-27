@@ -15,11 +15,11 @@ $dashboard_save_writer_note_button_width: 100px;
   width: $dashboard_save_writer_note_button_width;
   height: 36px;
   background: transparent;
-  color: $green1;
+  color: $color1;
   border: 0;
   border-left: 1px solid $grey-3;
   &:hover {
-    background-color: $green1;
+    background-color: $color1;
     color: $white;
   }
   //  outline
@@ -27,5 +27,5 @@ $dashboard_save_writer_note_button_width: 100px;
 
 .dashboard-writer-note-item-container {
   padding-top: 0.25em;
-  color: $green1;
+  color: $color1;
 }

@@ -17,7 +17,7 @@
   color: $default_text_color;
   &:focus {
     background-color: transparent;
-    border-bottom-color: $yellow;
+    border-bottom-color: $color3;
     outline: none;
   }
   &:hover {
@@ -58,7 +58,7 @@
   border: none;
   background: none;
   &:hover {
-    color: $dark_pink;
+    color: $color2_dark;
   }
 }
 

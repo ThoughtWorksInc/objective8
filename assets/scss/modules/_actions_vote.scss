@@ -24,7 +24,7 @@ $vote_button_spacing: 0.75em;
     color: rgba($default_text_color,0.5);
   }
   &:focus {
-    outline: $yellow solid 2px;
+    outline: $color3 solid 2px;
   }
   &[disabled=disabled] {
     color: inherit;

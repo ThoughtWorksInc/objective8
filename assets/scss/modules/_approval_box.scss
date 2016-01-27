@@ -41,7 +41,7 @@
 
 .approval-up {
   &:hover {
-    color: $yellow;
+    color: $color3;
     background:none;
   }
   &[disabled="disabled"] {
@@ -51,7 +51,7 @@
 
 .approval-down {
   &:hover {
-    color: $pink;
+    color: $color2;
     background:none;
   }
   &[disabled="disabled"] {

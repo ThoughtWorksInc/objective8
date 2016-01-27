@@ -2,7 +2,7 @@ $guidance_text_side_gutter: 1.5em;
 $guidance_text_top_gutter: 1.45em;
 
 .guidance-text-wrapper {
-  background-color: $green1;
+  background-color: $color1;
   margin: -1em -1em 2em -1em;
   padding: 1em;
 }
@@ -26,7 +26,7 @@ $guidance_text_top_gutter: 1.45em;
   line-height: 1.1;
   margin-top: 0;
   margin-bottom: 0.4em;
-  color: $green1;
+  color: $color1;
   @include mq(640) {
     padding-right: 100px;
   }

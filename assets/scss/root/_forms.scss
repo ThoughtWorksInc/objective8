@@ -40,7 +40,7 @@ textarea {
   padding: 0.5em;
   border: 1px solid #dcdcdc;
   &:focus {
-    outline: $yellow solid 2px;
+    outline: $color2 solid 2px;
   }
 }
 
@@ -51,9 +51,9 @@ input[type='radio'] {
 
 .user-input-error-message {
   font-size: 0.85em;
-  color: $dark_pink;
+  color: $color2_dark;
 }
 
 .required {
-  color: $pink;
+  color: $color2;
 }

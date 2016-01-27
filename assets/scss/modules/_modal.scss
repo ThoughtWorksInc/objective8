@@ -95,10 +95,10 @@
 
 .modal-share-icon-link {
   &:visited, & {
-    color: $green1;
+    color: $color1;
   }
   &:hover {
-    color: $green2;
+    color: $color1_dark;
   }
 }
 

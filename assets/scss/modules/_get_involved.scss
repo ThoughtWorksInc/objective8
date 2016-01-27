@@ -1,5 +1,5 @@
 .get-involved-widget {
-  background: $green1;
+  background: $color1;
   color: white;
   padding: 1em 1em 2em;
   margin: 2em 0 0;
@@ -11,7 +11,7 @@
 }
 
 .get-invloved-widget-item {
-  border-bottom: 1px solid $green2;
+  border-bottom: 1px solid $color1_dark;
   padding-bottom: 1em;
   margin-bottom: 1em;
   @include mq(1000) {

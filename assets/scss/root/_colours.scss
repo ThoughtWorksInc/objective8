@@ -1,10 +1,9 @@
 //Colours
-$green1: #007E84;
-$green2: #00676C;
-$yellow: #ffbf47;
-$pink: #9C0F83;
-$dark_pink: #9E2E8D;
-$blue: #3333fc;
+$color1: #007E84;
+$color1_dark: darken($color1, 5%);
+$color2_dark: #9C0F83;
+$color2: lighten($color2_dark, 5%);
+$color3: #ffbf47;
 
 // Standard palette, greys
 $black: #0b0c0c;

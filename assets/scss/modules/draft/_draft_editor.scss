@@ -71,15 +71,15 @@ ins {
 
 .removed-from-version,
 del {
-  background-color: rgba($pink,0.1);
+  background-color: rgba($color2,0.1);
   &:hover {
-    border-bottom-color: $pink;
+    border-bottom-color: $color2;
   }
 }
 .added-to-version,
 ins {
-  background-color: rgba($green2,0.1);
+  background-color: rgba($color1_dark,0.1);
   &:hover {
-    border-bottom-color: $green2;
+    border-bottom-color: $color1_dark;
   }
 }

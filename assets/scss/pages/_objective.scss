@@ -44,14 +44,14 @@
 
 .objective-questions-guidance {
   @extend %objective-section;
-  background-color: $green1;
+  background-color: $color1;
   color: $white;
 }
 .objective-questions-guidance-title {
   line-height: 1.2;
   margin-bottom: 0;
   padding: 0.75em 1em;
-  background-color: $green2;
+  background-color: $color1_dark;
 }
 .objective-questions-guidance-list {
   @include unstyledList();

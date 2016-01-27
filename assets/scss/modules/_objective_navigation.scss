@@ -54,7 +54,7 @@ $objective_navigation_height: 80px;
     a {
       border-color: transparent;
       &:hover {
-        color: $green2;
+        color: $color1_dark;
         border-color: transparent;
       }
     }
@@ -73,16 +73,16 @@ $objective_navigation_height: 80px;
       line-height: $objective_navigation_height;
     }
     &:hover {
-      color: $green2;
-      border-bottom-color: rgba($green2, 0.1);
+      color: $color1_dark;
+      border-bottom-color: rgba($color1_dark, 0.1);
     }
     &:focus {
       outline: none;
-      border-bottom-color: rgba($green2, 0.1);
+      border-bottom-color: rgba($color1_dark, 0.1);
     }
     &.on {
-      color: $green2;
-      border-bottom-color: $green1;
+      color: $color1_dark;
+      border-bottom-color: $color1;
     }
   }
 }

@@ -8,16 +8,16 @@
   color: $default_text_color;
   outline: none;
   &:focus {
-    color: $yellow;
+    color: $color3;
   }
   @if($allow_hover) {
     &:hover {
-      color: $yellow;
+      color: $color3;
       transform: translateZ(200px) rotate3d(0,1,0,180deg);
     }
   }
   &.starred {
-    color: $yellow;
+    color: $color3;
     .fa-star-o {
       display: none;
     }

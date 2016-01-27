@@ -1,7 +1,7 @@
 .draft-tabs {
   $draft_tab_color_off: $grey-4;
-  $draft_tab_color_hover: lighten($green1, 5%);
-  $draft_tab_color_active: $green1;
+  $draft_tab_color_hover: lighten($color1, 5%);
+  $draft_tab_color_active: $color1;
   margin: 0 auto 2em auto;
   padding: 0;
   list-style: none;

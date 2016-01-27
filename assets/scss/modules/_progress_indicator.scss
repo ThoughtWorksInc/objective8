@@ -27,11 +27,11 @@ $progress_indicator_height: 40px;
     }
   }
   .complete {
-    background-color: $green1;
+    background-color: $color1;
     color: $white;
   }
   .on {
-    background-color: $yellow;
+    background-color: $color3;
     pointer-events: none;
   }
   a {

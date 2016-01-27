@@ -40,16 +40,16 @@
   }
   &:hover {
     text-decoration: none;
-    color: $pink;
-    border-color: rgba($pink,0.1);
+    color: $color2;
+    border-color: rgba($color2,0.1);
   }
   &:focus {
     outline: none;
-    border-bottom-color: $yellow;
+    border-bottom-color: $color3;
   }
   &.on, &:active {
     cursor: pointer;
-    border-bottom-color: $pink;
+    border-bottom-color: $color2;
   }
   &.on {
     pointer-events: none;
