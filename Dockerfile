@@ -1,20 +1,12 @@
-FROM dcent/clojure-with-npm:0
+FROM dcent/clojure-npm-grunt-gulp
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+COPY . /usr/src/app/
+RUN lein with-profile production deps && \
+    npm install && \
+    npm rebuild node-sass && \
+    grunt build && \
+    lein uberjar
 
-COPY project.clj /usr/src/app/
-RUN lein with-profile production deps
-COPY . /usr/src/app
-RUN apt-get update
-RUN apt-get -y install build-essential
-RUN npm install
-RUN npm install -g grunt
-RUN npm install -g grunt-cli
-RUN npm rebuild node-sass
-RUN grunt build
-
-RUN lein uberjar
 WORKDIR /usr/src/app/target
 
 CMD java -jar objective8-0.0.1-SNAPSHOT-standalone.jar
