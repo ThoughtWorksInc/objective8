@@ -62,7 +62,7 @@ button {
 }
 
 .pink-button {
-  @include default-button($color2);
+  @include default-button($color2_light);
 }
 
 .normalise-button {

@@ -4,7 +4,7 @@
   min-height: $status_bar_height;
   padding: 0.3em 1em 0.5em;
 //  margin-bottom: $alpha_block_spacing;
-  background: $color2_dark;
+  background: $color2;
   color: white;
   @include mq(768) {
 //    margin-bottom: $gamma_block_spacing;

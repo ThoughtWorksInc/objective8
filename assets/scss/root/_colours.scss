@@ -1,9 +1,11 @@
+@import "_theme.scss";
+
 //Colours
-$color1: #007E84;
+$color1: #007E84 !default;
 $color1_dark: darken($color1, 5%);
-$color2_dark: #9C0F83;
-$color2: lighten($color2_dark, 5%);
-$color3: #ffbf47;
+$color2: #9C0F83 !default;
+$color2_light: lighten($color2, 5%);
+$color3: #ffbf47 !default;
 
 // Standard palette, greys
 $black: #0b0c0c;

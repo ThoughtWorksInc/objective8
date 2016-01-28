@@ -280,4 +280,15 @@ Finally, run the following command:
 
 Then, build and start the objective8 docker container.
 
-    docker run -d --env-file=<relative path to objective8 docker config> -v <absolute path to project location>/objective8/migrations:/usr/src/app/target/migrations -p 8080:8080 -p 8081:8081 --link pg_objective8:postgres --name objective8 dcent/objective8
+    docker run -d --env-file=<relative path to objective8 docker config> -p 8080:8080 -p 8081:8081 --link pg_objective8:postgres --name objective8 dcent/objective8
+
+To start the docker image with a custom color scheme, create a file named _theme.scss that defines the primary colour
+scheme:
+
+    $color1: #007E84;
+    $color2: #9C0F83;
+    $color3: #ffbf47;
+
+Then pass the _theme.scss file to docker container with
+
+    docker run -d --env-file=<relative path to objective8 docker config> -v <absolute path to _theme.scss>:/usr/src/app/assets/scss/root/_theme.scss -p 8080:8080 -p 8081:8081 --link pg_objective8:postgres --name objective8 dcent/objective8

@@ -25,7 +25,7 @@
   line-height: 1.2;
   font-size: 1.5em;
   font-weight: bold;
-  color: $color2;
+  color: $color2_light;
   @include mq(640) {
     font-size: 2em;
   }

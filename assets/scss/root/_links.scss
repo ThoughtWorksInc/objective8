@@ -14,6 +14,6 @@ a {
     text-decoration: underline;
   }
   &:focus {
-    outline: $color2 solid 2px;
+    outline: $color2_light solid 2px;
   }
 }

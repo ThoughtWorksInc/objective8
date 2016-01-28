@@ -23,7 +23,7 @@ TWITTER_CONSUMER_TOKEN=
 TWITTER_CONSUMER_SECRET_TOKEN=
 
 # Your AWS credentials
-AWS_ACCESS_KEY= 
+AWS_ACCESS_KEY=
 AWS_SECRET_KEY=
 
 # A passphrase for encrypting the database backups before they reach AWS S3

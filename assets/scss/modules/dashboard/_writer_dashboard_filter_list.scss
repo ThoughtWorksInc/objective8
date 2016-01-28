@@ -40,8 +40,8 @@
   }
   &:hover {
     text-decoration: none;
-    color: $color2;
-    border-color: rgba($color2,0.1);
+    color: $color2_light;
+    border-color: rgba($color2_light,0.1);
   }
   &:focus {
     outline: none;
@@ -49,7 +49,7 @@
   }
   &.on, &:active {
     cursor: pointer;
-    border-bottom-color: $color2;
+    border-bottom-color: $color2_light;
   }
   &.on {
     pointer-events: none;
