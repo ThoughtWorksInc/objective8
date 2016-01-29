@@ -111,6 +111,7 @@ This allows you to rapidly design.  You can create jade, modify the sass and js.
 ```
 grunt design
 ```
+Open your browser at http://192.168.50.50:2345/_routes to access it from outside the vagrant box.
 
 ###### Running the app with a fake twitter (used for Sign-in) 
 ```
