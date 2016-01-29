@@ -98,34 +98,54 @@ $home_icon_height: 140px;
 
 .icon-idea {
   @extend %index-icon;
-  background: image-url('lightbulb.png') no-repeat 50% 0;
-  background-size: contain;
-  .svg & {
-    background-image: image-url('lightbulb.svg');
+  .no-svg & {
+    background: image-url('lightbulb.png') no-repeat 50% 0;
+    background-size: contain;
+  }
+  svg {
+   height: $home_icon_height;
+   * {
+      fill: $color1;
+   }
   }
 }
 .icon-users {
   @extend %index-icon;
-  background: image-url('people.png') no-repeat 50% 0;
-  background-size: contain;
-  .svg & {
-    background-image: image-url('people.svg');
+  .no-svg & {
+    background: image-url('people.png') no-repeat 50% 0;
+    background-size: contain;
+  }
+  svg {
+   height: $home_icon_height;
+   .color1 * { fill: $color1; }
+   .color2 * { fill: $color2; }
+   .color3 * { fill: $color3; }
   }
 }
 .icon-comments {
   @extend %index-icon;
-  background: image-url('speechbubbles.png') no-repeat 50% 0;
-  background-size: contain;
-  .svg & {
-    background-image: image-url('speechbubbles.svg');
+  .no-svg & {
+    background: image-url('speechbubbles.png') no-repeat 50% 0;
+    background-size: contain;
+  }
+  svg {
+   height: $home_icon_height;
+   .color1 { fill: $color1; }
+   .color2 { fill: $color2; }
+   .color3 { fill: $color3; }
   }
 }
 .icon-policy {
   @extend %index-icon;
-  background: image-url('policy.png') no-repeat 50% 0;
-  background-size: contain;
-  .svg & {
-    background-image: image-url('policy.svg');
+  .no-svg & {
+    background: image-url('policy.png') no-repeat 50% 0;
+    background-size: contain;
+  }
+  svg {
+   height: $home_icon_height;
+   * {
+      fill: $color1;
+   }
   }
 }
 
