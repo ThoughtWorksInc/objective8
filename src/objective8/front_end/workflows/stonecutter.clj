@@ -25,6 +25,7 @@
           user-info (so-jwt/decode stonecutter-config (:id_token token-response) public-key-string)]
       (if-let [sub (:sub user-info)]
         (-> (response/redirect (str utils/host-url "/sign-up"))
+            (assoc :session (:session request))
             (assoc-in [:session :auth-provider-user-id] (str "d-cent-" sub)))
         (throw (ex-info "'sub' is nil or missing from user-info record in token-response from stonecutter"
                         {:user-info-keys (keys user-info)}))))

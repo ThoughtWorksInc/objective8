@@ -2,18 +2,15 @@
   (:require [midje.sweet :refer :all]
             [org.httpkit.server :refer [run-server]]
             [clj-webdriver.taxi :as wd]
-            [clj-webdriver.core :as wc]
             [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [clojure.string :as string]
             [objective8.core :as core]
-            [objective8.utils :as utils]
-            [objective8.back-end.actions :as actions]
             [objective8.back-end.domain.users :as users]
             [objective8.integration.integration-helpers :as integration-helpers]
-            [dev-helpers.stub-twitter :refer [stub-twitter-auth-config twitter-id]]))
+            [dev-helpers.stub-twitter-and-stonecutter :refer :all]))
 
-(def config-without-twitter (assoc core/app-config :authentication stub-twitter-auth-config))
+(def config-without-twitter-or-stonecutter (assoc core/app-config :authentication stub-twitter-and-stonecutter-auth-config))
 
 (defn wait-for-title [title]
   (try
@@ -64,15 +61,15 @@
 (def SECOND_DRAFT_MARKDOWN  "Second draft heading\n===\n\n- Some content\n- Some more content")
 (def THIRD_DRAFT_MARKDOWN  "Third draft heading\n===\n\n- Some content\n- Some more content\n- Another line of content")
 
-(def ADMIN_AND_WRITER_TWITTER_ID "twitter-123123")
+(def ADMIN_AND_WRITER_STONECUTTER_ID "d-cent-123123")
 (def OBJECTIVE_OWNER_TWITTER_ID "twitter-789789")
 
 (against-background
   [(before :contents (do (integration-helpers/db-connection)
                          (integration-helpers/truncate-tables)
-                         (core/start-server config-without-twitter)
+                         (core/start-server config-without-twitter-or-stonecutter)
                          (wd/set-driver! {:browser :firefox})
-                         (users/store-admin! {:auth-provider-user-id ADMIN_AND_WRITER_TWITTER_ID})
+                         (users/store-admin! {:auth-provider-user-id ADMIN_AND_WRITER_STONECUTTER_ID})
                          (reset! journey-state {})
                          (clear-screenshots)))
    (before :facts (reset! test-data-collector {}))
@@ -308,7 +305,7 @@
 
 
 (fact "Can accept a writer invitation"
-      (try (reset! twitter-id ADMIN_AND_WRITER_TWITTER_ID)
+      (try (reset! stonecutter-id ADMIN_AND_WRITER_STONECUTTER_ID)
            (wd/click ".func--masthead-sign-out")
            (screenshot "after_sign_out")
 
@@ -319,7 +316,7 @@
            (wd/click ".func--sign-in-to-accept")
 
            (wait-for-title "Sign in or Sign up | Objective[8]")
-           (wd/click ".func--sign-in-with-twitter")
+           (wd/click ".func--sign-in-with-d-cent")
            (wait-for-title "Sign up | Objective[8]")
            (wd/input-text "#username" "funcTestWriter")
            (-> "#email-address"

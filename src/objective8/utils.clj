@@ -166,6 +166,9 @@
                     (handler-with-anti-forgery request)
                     (handler request)))))
 
+(defn  uri->route [uri]
+  (when uri
+    (last (re-find #"\w+://.+(/.+)" uri))))
 
 ;; HICCUP & MARKDOWN
 

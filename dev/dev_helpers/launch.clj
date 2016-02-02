@@ -10,9 +10,8 @@
 (defonce the-system nil)
 
 (defn- start-back-end-server [system]
-  (let [conf (:config system)
-        api-port (:api-port system)
-        server (server/run-server (core/back-end-handler conf) {:port api-port :thread 4})]
+  (let [api-port (:api-port system)
+        server (server/run-server (core/back-end-handler) {:port api-port :thread 4})]
     (prn "Starting api server on port: " api-port)
     (assoc system :back-end-server server)))
 

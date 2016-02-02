@@ -1,4 +1,4 @@
-(ns dev-helpers.stub-twitter
+(ns dev-helpers.stub-twitter-and-stonecutter
   (:require [bidi.ring :refer [make-handler]]
             [clojure.tools.logging :as log]
             [ring.util.response :as response]
@@ -9,6 +9,7 @@
 ;; Stub out twitter authentication workflow
 
 (def twitter-id (atom "twitter-FAKE_ID"))
+(def stonecutter-id (atom "d-cent-123123"))
 
 (defn stub-twitter-handler [request]
   (let [session (:session request)]
@@ -46,3 +47,21 @@
                sign-up-workflow]
    :login-uri "/sign-in"})
 
+(defn stub-stonecutter-callback [request]
+  (-> (response/redirect (str utils/host-url "/sign-up"))
+      (assoc :session (:session request))
+      (assoc-in [:session :auth-provider-user-id] @stonecutter-id)))
+
+(defn stub-stonecutter-sign-in [request]
+  (stub-stonecutter-callback request))
+
+(def stub-stonecutter-workflow
+  (make-handler ["/" {"d-cent-sign-in"  stub-stonecutter-sign-in
+                      "d-cent-callback" stub-stonecutter-callback}]))
+
+(def stub-twitter-and-stonecutter-auth-config
+  {:allow-anon? true
+   :workflows [stub-twitter-workflow
+               stub-stonecutter-workflow
+               sign-up-workflow]
+   :login-uri "/sign-in"})

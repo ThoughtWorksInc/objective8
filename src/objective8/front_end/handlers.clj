@@ -2,11 +2,8 @@
   (:require [clojure.tools.logging :as log]
             [cemerick.friend :as friend]
             [ring.util.response :as response]
-            [cheshire.core :as json]
-            [org.httpkit.client :as http]
             [objective8.front-end.config :as fe-config]
             [objective8.front-end.api.http :as http-api]
-            [objective8.front-end.api.domain :as domain]
             [objective8.front-end.front-end-requests :as fr]
             [objective8.utils :as utils]
             [objective8.front-end.permissions :as permissions]
@@ -56,10 +53,12 @@
    :body (views/index "index" request)})
 
 (defn sign-in [{{refer :refer} :params :as request}]
-  {:status 200
-   :header {"Content-Type" "text/html"}
-   :body (views/sign-in "sign-in" request)
-   :session (assoc (:session request) :sign-in-referrer refer)})
+  (let [unauthorised-uri (get-in request [:session :cemerick.friend/unauthorized-uri])
+        referrer (or refer (utils/uri->route unauthorised-uri))]
+    {:status  200
+     :header  {"Content-Type" "text/html"}
+     :body    (views/sign-in "sign-in" request)
+     :session (assoc (:session request) :sign-in-referrer referrer)}))
 
 (defn sign-out [request]
   (assoc

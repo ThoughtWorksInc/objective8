@@ -26,7 +26,6 @@
             [objective8.front-end.handlers :as front-end-handlers]
             [objective8.back-end.domain.users :as users]
             [objective8.back-end.handlers :as back-end-handlers]
-            [objective8.back-end.storage.storage :as storage]
             [objective8.back-end.storage.database :as db]
             [objective8.back-end.domain.bearer-tokens :as bt]))
 
@@ -122,7 +121,7 @@
    :api/post-mark (m/wrap-bearer-token back-end-handlers/post-mark bt/token-provider)
    :api/post-writer-note (m/wrap-bearer-token back-end-handlers/post-writer-note bt/token-provider)})
 
-(defn common-middleware [h config]
+(defn common-middleware [h]
   (-> h
       wrap-keyword-params
       wrap-params
@@ -152,12 +151,12 @@
         (friend/authenticate (:authentication config))
         (profiling-middleware config)
         (front-end-middleware config)
-        (common-middleware config))))
+        (common-middleware))))
 
-(defn back-end-handler [config]
+(defn back-end-handler []
   (let [handler-map (back-end-handlers)]
     (-> (make-handler routes/back-end-routes (some-fn handler-map #(when (fn? %) %)))
-        (common-middleware config))))
+        (common-middleware))))
 
 (defn get-bearer-token-details []
   (-> (:api-credentials config/environment)
@@ -212,7 +211,7 @@
      (reset! front-end-server (run-server (front-end-handler config)
                                           {:port front-end-port}))
      (log/info (str "Starting objective8 api on port " api-port))
-     (reset! back-end-server (run-server (back-end-handler config) {:port api-port})))))
+     (reset! back-end-server (run-server (back-end-handler) {:port api-port})))))
 
 (defn -main []
   (start-server))

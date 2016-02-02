@@ -1,15 +1,12 @@
 (ns user
   (:require [clojure.tools.namespace.repl :as tnr]
             [clojure.tools.logging :as log]
-            [org.httpkit.server :as server]
             [clojure.set :as s]
             [korma.db :as kdb]
             [objective8.core :as core]
             [objective8.config :as config]
             [objective8.integration.storage-helpers :as sh]
-            [objective8.back-end.storage.database :as db]
-            [objective8.utils :as utils]
-            [dev-helpers.stub-twitter :refer [stub-twitter-auth-config]]
+            [dev-helpers.stub-twitter-and-stonecutter :refer [stub-twitter-auth-config]]
             [dev-helpers.launch :refer [stop make-launcher-map]]))
 
 ; Don't try to load ./test and ./integration

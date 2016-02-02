@@ -1,6 +1,5 @@
 (ns objective8.unit.workflows.stonecutter-test
   (:require [midje.sweet :refer :all]
-            [cheshire.core :as json]
             [stonecutter-oauth.client :as soc]
             [stonecutter-oauth.jwt :as so-jwt]
             [objective8.utils :as utils]
@@ -29,10 +28,11 @@
 
 (facts "about stonecutter-callback"
        (fact "stonecutter-callback redirects to the sign-in workflow with the auth-provider-user-id set in the session"
-             (stonecutter-callback {:stonecutter-config openid-test-config :params {:code ...auth-code...}})
+             (stonecutter-callback {:stonecutter-config openid-test-config :params {:code ...auth-code...} :session {:sign-in-referrer ...refer...}})
              => (contains {:status 302
                            :headers {"Location" (str utils/host-url "/sign-up")}
-                           :session {:auth-provider-user-id "d-cent-SUBJECT"}})
+                           :session {:auth-provider-user-id "d-cent-SUBJECT"
+                                     :sign-in-referrer ...refer...}})
              (provided
                (soc/request-access-token! openid-test-config ...auth-code...)
                => {:id_token token-expiring-in-year-2515}
