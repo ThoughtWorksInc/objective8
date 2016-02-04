@@ -53,6 +53,7 @@ sign-in,doc-description,Entra o regístrate a %app-name%
 sign-in,page-title,Entrar o registrarse
 sign-in,sign-in-with-twitter,Entra con tu cuenta de Twitter
 sign-in,twitter-helper-text,Nunca escribiremos en Twitter sin tu permiso.
+sign-in,sign-in-with-d-cent,Sign in with %stonecutter-name%
 create-objective,headline,Título
 create-objective,submit-text,Crear
 create-objective,background-prompt,Cuenta más sobre por qué conseguir este objectivo es importante o necesario
