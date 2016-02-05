@@ -1,6 +1,6 @@
 (def database-connection-url
   (or (System/getenv "DB_JDBC_URL")
-      "jdbc:postgresql://localhost/objective8?user=objective8&password=development"))
+    "jdbc:postgresql://localhost/objective8?user=objective8&password=development"))
 
 (defproject objective8 "0.0.1-SNAPSHOT"
   :description "Cool new project to do things and stuff"
@@ -10,7 +10,7 @@
                  [org.clojure/core.cache "0.6.4"]
                  [http-kit "2.1.16"]
                  [org.clojure/tools.logging "0.3.1"]
-                 [log4j/log4j "1.2.16" :exclusions  [javax.mail/mail javax.jms/jms com.sun.jdmk/jmxtools com.sun.jmx/jmxri]]
+                 [log4j/log4j "1.2.16" :exclusions [javax.mail/mail javax.jms/jms com.sun.jdmk/jmxtools com.sun.jmx/jmxri]]
                  [bidi "1.12.0"]
                  [ring "1.3.2"]
                  [ring/ring-json "0.3.1"]
@@ -42,40 +42,48 @@
   :main objective8.core
   :plugins [[ragtime/ragtime.lein "0.3.8"]
             [lein-cloverage "1.0.6"]]
-  :profiles {:dev {:source-paths ["dev"]
-                   :repl-options {:init-ns user
-                                  :timeout 120000}
-                   :dependencies [[midje "1.7.0"]
-                                  [ring/ring-mock "0.2.0"]
-                                  [clj-webdriver "0.7.2" :exclusions [org.seleniumhq.selenium/selenium-java
-                                                                      org.seleniumhq.selenium/selenium-server
-                                                                      org.seleniumhq.selenium/selenium-remote-driver
-                                                                      xml-apis]]
-                                  [org.seleniumhq.selenium/selenium-server "2.45.0"]
-                                  [org.seleniumhq.selenium/selenium-java "2.45.0"]
-                                  [org.seleniumhq.selenium/selenium-remote-driver "2.45.0"]
-                                  [javax.servlet/servlet-api "2.5"]
-                                  [peridot "0.3.1"]
-                                  [robert/hooke "1.3.0"]]
-                   :plugins [[lein-midje "3.1.3"]
-                             [jonase/eastwood "0.2.1"]]
-                   :ragtime {:migrations ragtime.sql.files/migrations
-                             :database ~database-connection-url}
-                   :aliases {"translation-template" ["run" "-m" "dev-helpers.translation/main"]}
-                   :jvm-opts ["-Dlog4j.configuration=log4j.dev"]}
+  :profiles {:dev          {:source-paths ["dev"]
+                            :repl-options {:init-ns user
+                                           :timeout 120000}
+                            :dependencies [[midje "1.7.0"]
+                                           [ring/ring-mock "0.2.0"]
+                                           [clj-webdriver "0.7.2" :exclusions [org.seleniumhq.selenium/selenium-java
+                                                                               org.seleniumhq.selenium/selenium-server
+                                                                               org.seleniumhq.selenium/selenium-remote-driver
+                                                                               xml-apis]]
+                                           [org.seleniumhq.selenium/selenium-server "2.45.0"]
+                                           [org.seleniumhq.selenium/selenium-java "2.45.0"]
+                                           [org.seleniumhq.selenium/selenium-remote-driver "2.45.0"]
+                                           [javax.servlet/servlet-api "2.5"]
+                                           [peridot "0.3.1"]
+                                           [robert/hooke "1.3.0"]]
+                            :plugins      [[lein-midje "3.1.3"]
+                                           [jonase/eastwood "0.2.1"]
+                                           [lein-shell "0.4.1"]]
+                            :ragtime      {:migrations ragtime.sql.files/migrations
+                                           :database   ~database-connection-url}
+                            :aliases      {"translation-template" ["run" "-m" "dev-helpers.translation/main"]
+                                           "unit"                 ["do" "grunt," "midje" "objective8.unit.*"]
+                                           "integration"          ["do" "grunt," "midje" "objective8.integration.*"]
+                                           "browser"              ["do" "grunt," "shell" "test/run_browser_tests.sh"]
+                                           "test"                 ["do" "grunt," "shell" "test/run_all_tests.sh"]
+                                           "auto-no-browser"      ["test" ":autotest" "src/" "test/objective8/unit/" "test/objective8/integration/"]
+                                           "grunt"                ["shell" "grunt" "build"]
+                                           "start"                ["do" "grunt," "shell" "./start_app_vm.sh"]}
+                            :jvm-opts     ["-Dlog4j.configuration=log4j.dev"]}
              :load-testing {:source-paths ["load_testing"]
                             :repl-options [:init-ns load-tests]
                             :dependencies [[clj-gatling "0.5.4"]
                                            [org.clojure/tools.nrepl "0.2.10"]]
-                            :main load-tests}
-             :uberjar {:source-paths ["prod"]
-                       :jvm-opts ["-Dlog4j.configuration=log4j.dev"]
-                       :ragtime {:migrations ragtime.sql.files/migrations
-                                 :database ~database-connection-url}
-                       :main main
-                       :aot [main]}
-             :heroku {:repl-options {:init-ns user
-                                     :timeout 120000}
-                      :ragtime {:migrations ragtime.sql.files/migrations
-                                :database ~database-connection-url}
-                      :jvm-opts ["-Dlog4j.configuration=log4j.heroku"]}})
+                            :main         load-tests}
+             :uberjar      {:source-paths ["prod"]
+                            :jvm-opts     ["-Dlog4j.configuration=log4j.dev"]
+                            :ragtime      {:migrations ragtime.sql.files/migrations
+                                           :database   ~database-connection-url}
+                            :main         main
+                            :aot          [main]}
+             :heroku       {:repl-options {:init-ns user
+                                           :timeout 120000}
+                            :ragtime      {:migrations ragtime.sql.files/migrations
+                                           :database   ~database-connection-url}
+                            :jvm-opts     ["-Dlog4j.configuration=log4j.heroku"]}})

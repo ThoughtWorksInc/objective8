@@ -37,3 +37,6 @@
 
  - name: install xvfb
    apt: name=xvfb state=present
+
+ - name: Install node dependencies
+   npm: path=/var/objective8

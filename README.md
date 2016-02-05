@@ -1,84 +1,57 @@
-# Objective8
+# Objective[8]
 
 [![Build Status](https://snap-ci.com/d-cent/objective8/branch/master/build_image)](https://snap-ci.com/d-cent/objective8/branch/master)
 
-## Getting Started
+A D-CENT project: an application for crowd sourcing and drafting policy.
 
-### Local setup
-To start the development VM you will need to install
-- Vagrant + Virtualbox (see https://www.vagrantup.com/downloads.html, https://www.virtualbox.org/wiki/Downloads)
-- Ansible (see http://docs.ansible.com/intro_installation.html)
-- Clone the repository
+## Development VM
 
-```
-cd objective8/ops/
-```
+You can develop and run the application in a VM to ensure that the correct versions of Objective[8]'s dependencies
+are installed. You will need [VirtualBox][], [Vagrant][] and [Ansible][] installed.
 
-### Working on the VM
-#### To get started:
+First, clone the repository.
 
-    # use the provided template to create an objective8_config file
+Navigate to the ops/ directory of the project and run:
 
-    cp objective8_config_template objective8_config
+    vagrant up development
+    
+The first time this is run, it will provision and configure a new VM.
 
-    vagrant up
-
-    # type 'vagrant' when asked for a sudoers password
+When the VM has started, access the virtual machine by running:
 
     vagrant ssh
 
+The source folder will be located at `/var/objective8`.
+
+After initial setup, navigate to the source directory and apply the migrations:
+
     cd /var/objective8
-
-    npm install
-
     lein ragtime migrate
 
-#### Running the tests
+[Vagrant]: https://www.vagrantup.com
+[Ansible]: http://docs.ansible.com/ansible/intro_installation.html
+[VirtualBox]: https://www.virtualbox.org/
 
-###### To run all tests:
+
+### Running the tests
+
+To run all tests, use this command:
+
 ```
-test/run_all_tests.sh
-```
-###### To run only unit tests:
-```
-lein midje objective8.unit.*
-```
-###### To run only integration tests:
-```
-lein midje objective8.integration.*
-```
-###### To run only functional tests:
-```
-test/run_functional_tests.sh
+lein test
 ```
 
-##### Use `:autotest` to make tests rerun automatically when files are changed:
+Commands and aliases can be found in the project.clj file.
 
-*Autotest watches directories rather than namespaces*
+### Designing in the browser
 
-###### Autotest all tests:
-```
-test/run_all_tests.sh :autotest
-```
+This allows you to rapidly design.  You can create jade, modify the sass and js.  These will all be live reloaded.
 
-###### Autotest unit and integration tests:
 ```
-test/autotest_unit_and_integration_tests.sh
+grunt design
 ```
 
-###### Autotest functional tests:
-```
-test/autotest_functional_tests.sh
-```
-
-###### Extra configuration options:
-
-You can also pass extra configuration to the tests using the :config
-option.  For example: to run just the unit tests with autotest and without any logging, use:
-```
-lein midje :autotest test/objective8/unit/ :config config/tests/no-logging.clj
-```
-
+Open your browser at http://192.168.50.50:2345/_routes to access it from outside the vagrant box.
 
 #### Adding or updating a translation resource
 
@@ -99,47 +72,22 @@ lein translation-template es el
 will generate or update `/resources/translations/es.csv` and
 `/resources/translations/el.csv`.
 
-#### Running the app
+### Running the app
 
-###### Build front-end assets (html and css) using:
-```
-npm install
-```
+Add any environment variables you want to use to the ```start_app_vm.sh``` script.
 
-###### Designing in the browser
-This allows you to rapidly design.  You can create jade, modify the sass and js.  These will all be live reloaded.
-```
-grunt design
-```
-Open your browser at http://192.168.50.50:2345/_routes to access it from outside the vagrant box.
+To start the app, run:
 
-###### Running the app with a fake twitter (used for Sign-in) 
-```
-API_BEARER_NAME=<choose a bearer name> \
-lein repl
-```
-Inside the repl run:
+    lein start
+
+And then inside the REPL run this for a fake twitter sign-in:
+
 ```
 (reset :stub-twitter)
 ```
 
-###### Running the app with credentials
-create a task (for example `start_with_credentials.sh` with the following content:
+or this for the normal sign-in options:
 
-```
-API_BEARER_NAME=<choose a bearer name> \
-API_BEARER_TOKEN=<choose a secure bearer token> \
-TWITTER_CONSUMER_TOKEN=<obtain this from twitter when registering the application to allow sign-in via twitter> \
-TWITTER_CONSUMER_SECRET_TOKEN=<as above> \
-STONECUTTER_CLIENT_ID=<this is from registering the application with a D-cent Stonecutter Oauth instance>  \
-STONECUTTER_CLIENT_SECRET=<as above> \
-STONECUTTER_AUTH_URL=<the full url of the Stonecutter Oauth instance that the application is registered with> \
-BASE_URI=<either localhost or VM ip address and :APP_PORT> \
-APP_PORT= <> \
-DB_PORT= <> \
-lein repl $*
-```
-then run the task and start the app using:
 ```
 (reset :default)
 ```
