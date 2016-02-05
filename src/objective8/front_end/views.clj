@@ -74,7 +74,6 @@
       (->> context
            viewfn
            pf/add-google-analytics
-           pf/add-custom-favicon
            (pf/add-custom-app-name context)
            pf/remove-footer-alpha-warning
            (tf/translate context)

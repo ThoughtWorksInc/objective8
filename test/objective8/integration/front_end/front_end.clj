@@ -34,11 +34,6 @@
              (let [{default-response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/index))]
                (:body default-response) => (every-checker (contains "/static/favicon.ico")
                                                           (contains "Objective[8]"))))
-       (fact "custom favicon is used when env var is set"
-             (binding [config/environment (assoc config/environment
-                                            :favicon-file-name "custom.ico")]
-               (let [{response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/index))]
-                 (:body response) => (contains "/static/custom.ico"))))
        (fact "custom app name is used when env var is set"
              (binding [config/environment (assoc config/environment
                                             :app-name "Policy Maker")]

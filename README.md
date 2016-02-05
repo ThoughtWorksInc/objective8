@@ -279,7 +279,7 @@ You can create an nginx.conf file by copying the following into a new file and r
 
 Finally, run the following command:
 
-    docker run -v <absolute path to SSL certificates and keys directory>:/etc/nginx/ssl -v <absolute path to conf file>/nginx.conf:/etc/nginx/nginx.conf -v <absolute path to dhparam file>/dhparam.pem:/etc/nginx/cert/dhparam.pem -p 443:443 -d --name nginx-conainer nginx
+    docker run -v <absolute path to SSL certificates and keys directory>:/etc/nginx/ssl -v <absolute path to conf file>/nginx.conf:/etc/nginx/nginx.conf -v <absolute path to dhparam file>/dhparam.pem:/etc/nginx/cert/dhparam.pem -p 443:443 -d --name nginx-container nginx
         
 #### Objective8
 
@@ -290,7 +290,7 @@ scheme:
     $color2: #9C0F83;
     $color3: #ffbf47;
 
-The following command will start the Objective[8] image with your custom colour scheme and a custom favicon. Since these are optional changes, you can omit either of the lines which pass the files into the docker container.
+The following command will start the Objective[8] image with your custom colour scheme and a custom favicon. Since these are optional changes, you can omit either of the lines which pass the ```_theme.scss``` or ```favicon.ico``` files into the docker container.
 
     docker run -d --env-file=<relative path to objective8 docker config> \
     -v <absolute path to _theme.scss>:/usr/src/app/assets/scss/root/_theme.scss \

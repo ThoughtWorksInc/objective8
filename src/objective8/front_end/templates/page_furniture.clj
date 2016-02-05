@@ -24,12 +24,6 @@
              [:.clj-google-analytics html/text-node] (html/replace-vars {:trackingID tracking-id}))
     nodes))
 
-(defn add-custom-favicon [nodes]
-  (if-let [favicon-name (:favicon-file-name config/environment)]
-    (html/at nodes
-             [[:link (html/attr= :rel "shortcut icon")]] (html/set-attr :href (str "/static/" favicon-name)))
-    nodes))
-
 (defn add-custom-app-name [context nodes]
   (if-let [app-name (:app-name config/environment)]
     (html/at nodes
