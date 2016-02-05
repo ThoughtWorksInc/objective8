@@ -115,7 +115,11 @@ Open your browser at http://192.168.50.50:2345/_routes to access it from outside
 
 ###### Running the app with a fake twitter (used for Sign-in) 
 ```
+API_BEARER_NAME=<choose a bearer name> \
 lein repl
+```
+Inside the repl run:
+```
 (reset :stub-twitter)
 ```
 
@@ -123,8 +127,8 @@ lein repl
 create a task (for example `start_with_credentials.sh` with the following content:
 
 ```
-API_BEARER_NAME=<choose a bearer name>
-API_BEARER_TOKEN=<choose a secure bearer token>
+API_BEARER_NAME=<choose a bearer name> \
+API_BEARER_TOKEN=<choose a secure bearer token> \
 TWITTER_CONSUMER_TOKEN=<obtain this from twitter when registering the application to allow sign-in via twitter> \
 TWITTER_CONSUMER_SECRET_TOKEN=<as above> \
 STONECUTTER_CLIENT_ID=<this is from registering the application with a D-cent Stonecutter Oauth instance>  \
@@ -279,10 +283,6 @@ Finally, run the following command:
         
 #### Objective8
 
-Then, build and start the objective8 docker container.
-
-    docker run -d --env-file=<relative path to objective8 docker config> -p 8080:8080 -p 8081:8081 --link pg_objective8:postgres --name objective8 dcent/objective8
-
 To start the docker image with a custom color scheme, create a file named _theme.scss that defines the primary colour
 scheme:
 
@@ -290,6 +290,9 @@ scheme:
     $color2: #9C0F83;
     $color3: #ffbf47;
 
-Then pass the _theme.scss file to docker container with
+The following command will start the Objective[8] image with your custom colour scheme and a custom favicon. Since these are optional changes, you can omit either of the lines which pass the files into the docker container.
 
-    docker run -d --env-file=<relative path to objective8 docker config> -v <absolute path to _theme.scss>:/usr/src/app/assets/scss/root/_theme.scss -p 8080:8080 -p 8081:8081 --link pg_objective8:postgres --name objective8 dcent/objective8
+    docker run -d --env-file=<relative path to objective8 docker config> \
+    -v <absolute path to _theme.scss>:/usr/src/app/assets/scss/root/_theme.scss \
+    -v <absolute path to favicon.ico>:/usr/src/app/resources/public/favicon.ico \
+    -p 8080:8080 -p 8081:8081 --link pg_objective8:postgres --name objective8 dcent/objective8
