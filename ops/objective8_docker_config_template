@@ -40,5 +40,6 @@ JAVA_OPTS=
 
 # customise application branding
 APP_NAME=
+STONECUTTER_NAME=
 # warnings will show if variable is set
 SHOW_ALPHA_WARNINGS=

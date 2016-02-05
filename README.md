@@ -283,16 +283,16 @@ Finally, run the following command:
         
 #### Objective8
 
-To start the docker image with a custom color scheme, create a file named _theme.scss that defines the primary colour
-scheme:
+To start the docker image with a custom colour scheme, create a file that defines the primary colour scheme:
 
     $color1: #007E84;
     $color2: #9C0F83;
     $color3: #ffbf47;
 
-The following command will start the Objective[8] image with your custom colour scheme and a custom favicon. Since these are optional changes, you can omit either of the lines which pass the ```_theme.scss``` or ```favicon.ico``` files into the docker container.
+The following command will start the Objective[8] image with your custom colour scheme, favicon and Stonecutter icon on the sign-in page. Since these are optional changes, you can omit any of the lines which pass those files into the docker container.
 
     docker run -d --env-file=<relative path to objective8 docker config> \
-    -v <absolute path to _theme.scss>:/usr/src/app/assets/scss/root/_theme.scss \
-    -v <absolute path to favicon.ico>:/usr/src/app/resources/public/favicon.ico \
+    -v <absolute path to colour scheme>:/usr/src/app/assets/scss/root/_theme.scss \
+    -v <absolute path to custom favicon>:/usr/src/app/resources/public/favicon.ico \
+    -v <absolute path to stonecutter sign-in icon>:/usr/src/app/resources/public/stonecutter-sign-in-icon.png \
     -p 8080:8080 -p 8081:8081 --link pg_objective8:postgres --name objective8 dcent/objective8
