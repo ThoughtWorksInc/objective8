@@ -9,29 +9,34 @@ mixin flashMessageSuccessBar
       block
 
 mixin mastheadContents()
-  .clj-masthead-navigation
-    label.masthead-nav-link(for="nav-trigger")
-      i.fa.fa-bars
-      span.visuallyhidden(data-l8n="content:masthead/skip-to-navigation") !Skip to navigation
-    a.masthead-logo(href="/", title="!Go to home page", rel="home", data-l8n="attr/title:masthead/logo-title-attr") Objective[8]
+  label.masthead-nav-link(for="nav-trigger")
+    i.fa.fa-bars
+    span.visuallyhidden(data-l8n="content:masthead/skip-to-navigation") !Skip to navigation
+  a.masthead-logo(href="/", title="!Go to home page", rel="home", data-l8n="attr/title:masthead/logo-title-attr") Objective[8]
+  .site-navigation
+    a.func--objectives(href="/objectives", title="!Go to the Objectives list", data-l8n="attr/title:masthead/objectives-link-title-attr content:masthead/objectives-link") !View Objectives
+    a(href="/objectives/create", title="!Create an Objective", data-l8n="attr/title:masthead/create-link-title-attr content:masthead/create-link") !Create an Objective
+    a(href="/learn-more", title="!Learn more about Objective[8]", data-l8n="attr/title:masthead/about-link-title-attr content:masthead/about-link") !About
 
 mixin mastheadSignedOut()
   .masthead.clj-masthead-signed-out
-    +mastheadContents()
-    .masthead-user-nav.clj-user-navigation-signed-out
-      a.masthead-sign-in.clj-masthead-sign-in(href="/sign-in", title="!Sign in", data-l8n="attr/title:navigation-global/sign-in-title")
-        i.fa.fa-sign-in
-        span(data-l8n="content:navigation-global/sign-in-text") !Sign in
+    .masthead-navigation.clj-masthead-navigation
+      +mastheadContents()
+      .masthead-user-nav.clj-user-navigation-signed-out
+        a.masthead-sign-in.clj-masthead-sign-in(href="/sign-in", title="!Sign in", data-l8n="attr/title:navigation-global/sign-in-title")
+          i.fa.fa-sign-in
+          span(data-l8n="content:navigation-global/sign-in-text") !Sign in
 
 mixin mastheadSignedIn()
   .masthead.clj-masthead-signed-in
-    +mastheadContents()
-    .masthead-user-nav.clj-user-navigation-signed-in
-      a.masthead-admin.clj-masthead-admin-badge.func--admin-link(href="/admin-activity")
-        span(data-l8n="content:navigation-global/admin-text") !Admin
-      a.masthead-edit-profile.clj-edit-profile(href="!edit-profile")
-        i.fa.fa-pencil-square-o.clj-pencil
-        span.masthead-username.clj-username !JoeBloggs
-      a.masthead-sign-out.clj-masthead-sign-out.func--masthead-sign-out(href="/sign-out", title="!Sign out", data-l8n="attr/title:navigation-global/sign-out-title")
-        i.fa.fa-sign-out
-        span(data-l8n="content:navigation-global/sign-out-text") !Sign out
+    .masthead-navigation.clj-masthead-navigation
+      +mastheadContents()
+      .masthead-user-nav.clj-user-navigation-signed-in
+        a.masthead-admin.clj-masthead-admin-badge.func--admin-link(href="/admin-activity")
+          span(data-l8n="content:navigation-global/admin-text") !Admin
+        a.masthead-edit-profile.clj-edit-profile(href="!edit-profile")
+          i.fa.fa-pencil-square-o.clj-pencil
+          span.masthead-username.clj-username !JoeBloggs
+        a.masthead-sign-out.clj-masthead-sign-out.func--masthead-sign-out(href="/sign-out", title="!Sign out", data-l8n="attr/title:navigation-global/sign-out-title")
+          i.fa.fa-sign-out
+          span(data-l8n="content:navigation-global/sign-out-text") !Sign out

@@ -7,7 +7,6 @@
 
 .masthead {
   position: relative;
-  height: $masthead_height;
   z-index: 10;
   background: $border_color;
   color: $default_text_color;
@@ -30,9 +29,6 @@
 }
 
 .masthead-nav-link {
-  position: absolute;
-  top: 0.25em;
-  left: 0.5em;
   font-weight: bold;
   font-size: 1.7em;
   @include mq(768) {
@@ -45,27 +41,27 @@
   font-weight: bold;
   font-size: 1.6em;
   letter-spacing: -0.025em;
-  text-align: center;
+  flex: 100;
   display: inline-block;
   @include mq(768) {
-    text-align: left;
+    flex: inherit;
     margin-right: 1em;
   }
 }
 
 .masthead-user-nav {
-  position: absolute;
-  top: 0.8em;
-  right: 1em;
+  display: inline-flex;
+  padding-top: 0.4em;
+  flex: 1;
+  white-space: nowrap;
   i {
     font-size: 1.5em;
   }
   span {
     display: none;
+    vertical-align: top;
     @include mq(768) {
       display: inline;
-      position: relative;
-      top: -4px;
       margin-left: 0.25em;
     }
   }
@@ -92,4 +88,12 @@
 
 .masthead-admin {
   padding-right: 0.5em;
+}
+
+.masthead-navigation {
+  display: flex;
+}
+
+.masthead-sign-in, .masthead-edit-profile {
+  margin-left: auto;
 }
