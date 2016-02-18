@@ -52,6 +52,7 @@ sign-in,doc-title,Entra o regístrate | %app-name%
 sign-in,doc-description,Entra o regístrate a %app-name%
 sign-in,page-title,Entrar o registrarse
 sign-in,sign-in-with-twitter,Entra con tu cuenta de Twitter
+sign-in,sign-in-with-facebook,Entra con tu cuenta de Facebook
 sign-in,twitter-helper-text,Nunca escribiremos en Twitter sin tu permiso.
 sign-in,sign-in-with-d-cent,Sign in with %stonecutter-name%
 create-objective,headline,Título
