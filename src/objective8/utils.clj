@@ -1,6 +1,7 @@
 (ns objective8.utils
   (:require [clj-time.format :as time-format]
             [clj-time.core :as time-core]
+            [clj-time.coerce :as time-coerce]
             [clojure.string :as s]
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
             [bidi.bidi :as bidi]
@@ -9,8 +10,7 @@
             [hickory.core :as hickory]
             [clojure.tools.logging :as log]
             [objective8.routes :as routes]
-            [objective8.config :as config]
-            [objective8.front-end.permissions :as permissions])
+            [objective8.config :as config])
   (:import  [org.pegdown PegDownProcessor Extensions]))
 
 (def host-url
@@ -67,6 +67,9 @@
 
 (defn current-time []
   (time-core/now))
+
+(defn unix-current-time []
+  (time-coerce/to-epoch (current-time)))
 
 (defn string->date-time [date-string]
   (time-format/parse (time-format/formatters :year-month-day) date-string))
