@@ -20,6 +20,7 @@
             [objective8.front-end.permissions :as permissions]
             [objective8.front-end.translation :refer [configure-translations]]
             [objective8.front-end.workflows.twitter :refer [twitter-workflow configure-twitter]]
+            [objective8.front-end.workflows.facebook :refer [facebook-workflow]]
             [objective8.front-end.workflows.stonecutter :as stonecutter]
             [objective8.front-end.workflows.stub-twitter :refer [stub-twitter-workflow]]
             [objective8.front-end.workflows.sign-up :refer [sign-up-workflow]]
@@ -189,6 +190,7 @@
                                                                      (str "https://" (:base-uri config/environment)
                                                                           "/d-cent-callback")
                                                                      :protocol :openid))
+                                (facebook-workflow (:facebook-credentials config/environment))
                                 sign-up-workflow]
                     :login-uri "/sign-in"}
    :session-store (memory-store)

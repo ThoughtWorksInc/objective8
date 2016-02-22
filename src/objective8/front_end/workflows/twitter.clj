@@ -1,11 +1,10 @@
 (ns objective8.front-end.workflows.twitter
-    (:require [clojure.tools.logging :as log]
-              [oauth.client :as oauth]
-              [ring.util.response :as response]
-              [bidi.ring :refer [make-handler]]
-              [objective8.front-end.views :as views]
-              [objective8.utils :as utils]
-              [objective8.config :as config]))
+  (:require [clojure.tools.logging :as log]
+            [oauth.client :as oauth]
+            [ring.util.response :as response]
+            [bidi.ring :refer [make-handler]]
+            [objective8.utils :as utils])
+  (:import (clojure.lang ExceptionInfo)))
 
 (defn configure-twitter [{:keys [consumer-token secret-token] :as twitter-credentials}]
   (if (and consumer-token secret-token)
@@ -30,7 +29,7 @@
           _ (log/debug "After calling oAuth request token")
           approval-uri (oauth/user-approval-uri consumer (:oauth_token request-token-response))]
       (response/redirect approval-uri))
-    (catch clojure.lang.ExceptionInfo e
+    (catch ExceptionInfo e
       (do (log/warn (str "Could not get request token from twitter: " e))
           {:status 502}))))
 
@@ -45,7 +44,7 @@
                              {:session (assoc session
                                               :auth-provider-user-id twitter-user-id)})]
       the-response)
-    (catch clojure.lang.ExceptionInfo e
+    (catch ExceptionInfo e
       (do (log/info (str "Did not get authentication from twitter: " e))
           (response/redirect "/")))))
 
