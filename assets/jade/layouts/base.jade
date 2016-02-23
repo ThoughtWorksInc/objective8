@@ -58,6 +58,14 @@ html.no-js(lang="en", class="#{htmlClass}")
 
     input.nav-trigger#nav-trigger(type="checkbox")
 
+    .js-modal.js-hidden.js-close-target
+      .js-modal-container
+        .js-modal-dismiss
+          a.js-close.clj-modal-close-anchor(href='#')
+            span(data-l8n="content:footer/modal-dismiss") !Close
+            =" "
+            i.fa.fa-times
+
     .app-wrapper
       block pageHeader
         header#top(role="banner")
@@ -88,14 +96,6 @@ html.no-js(lang="en", class="#{htmlClass}")
                 .footer-content-text.footer-alpha-warning(data-l8n="content:footer/alpha-warning") !ALPHA: this is a testing version of Objective8 data and content may change several times a day
               .footer-footer
                 a.footer-link(data-l8n="content:footer/dcent-link", href="http://dcentproject.eu/") !DCENT
-
-      .js-modal.js-hidden.js-close-target
-        .js-modal-container
-          .js-modal-dismiss
-            a.js-close.clj-modal-close-anchor(href='#')
-              span(data-l8n="content:footer/modal-dismiss") !Close
-              =" "
-              i.fa.fa-times
 
     +javascriptIncludeTag("scripts.min")
     block footerScripts
