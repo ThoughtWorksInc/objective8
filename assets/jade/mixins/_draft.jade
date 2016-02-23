@@ -3,7 +3,9 @@ mixin addCommentButton(count)
     a.clj-annotation-link.func--annotation-link(href="/draft-annotation", title="!Annotations", data-l8n="attr/title:draft/annotation-link-title")
       if count > 0
         i.fa.fa-comment-o.fa-lg
+        span.visuallyhidden(data-l8n="content:draft/annotation") !Add a comment
         span.draft-add-inline-comment-count.clj-draft-add-inline-comment-count.func--annotation-count #{count}
       else
         i.fa.fa-comment-o.fa-lg
+        span.visuallyhidden(data-l8n="content:draft/annotation") !Add a comment
   block

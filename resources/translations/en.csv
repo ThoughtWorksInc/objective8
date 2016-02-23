@@ -88,6 +88,7 @@ draft,writers,Writers
 draft,comments,Comments
 draft,what-changed,Compare with previous version
 draft,annotation-link-title,Annotations
+draft,annotation,Add a comment
 draft,comment-box-label-title,Want to discuss this draft?
 draft,comment-box-label-helper,You can leave a comment here.
 draft,comment-post-button,Add a comment
@@ -149,6 +150,9 @@ writer-dashboard,link-button,Dashboard
 writer-dashboard,writer-note-placeholder,Add a reply to the community
 writer-dashboard,writer-note-empty-validation-message,Your response cannot be empty
 writer-dashboard,writer-note-length-validation-message,Your response cannot be more than 500 characters
+writer-dashboard,up-votes,Sort by up votes
+writer-dashboard,down-votes,Sort by down votes
+writer-dashboard,writer-replies,Sort by writer replies
 dashboard-questions,doc-title,Writer dashboard | %app-name%
 dashboard-questions,doc-description,A summary of engagement with questions and answers for this objective
 dashboard-annotations,doc-title,Writer dashboard | %app-name%

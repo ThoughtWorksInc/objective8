@@ -32,7 +32,7 @@ mixin writerItem(name, href, photo)
         if photo == ""
           i.writer-item-no-image-icon.fa.fa-user
         else
-          img(src="#{photo}")
+          img(src="#{photo}" alt="Writer photo")
       .writer-item-text
         .writer-item-author.clj-writer-name.func--writer-name
           = name
@@ -50,7 +50,7 @@ mixin draftVersionNavigationWriter(name, href, photo)
       if photo == ""
         i.draft-version-writer-no-image-icon.fa.fa-user.fa-3x
       else
-        img(src="#{photo}")
+        img(src="#{photo}" alt="Writer photo")
     .draft-version-writer-text
       .draft-version-writer-author.clj-draft-version-writer-author
         = name

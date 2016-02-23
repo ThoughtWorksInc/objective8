@@ -1,5 +1,6 @@
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-	 viewBox="0 0 70 100" enable-background="new 0 0 70 100" xml:space="preserve">
+	 viewBox="0 0 70 100" enable-background="new 0 0 70 100" xml:space="preserve" aria-labelledby="title" role="img">
+	 <title id="title">Lightbulb</title>
 <g class="color1">
 	<path fill="#007E84" d="M47.131,34.657c2.664-1.722,4.676-4.125,4.908-5.998c0.099-0.787-0.02-1.928-2.182-2.745
 		c-0.641-0.242-1.402-0.459-2.07-0.459c-0.504,0-0.956,0.122-1.271,0.447c-1.385,1.437-0.565,6.107-0.052,7.327

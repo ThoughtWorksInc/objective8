@@ -198,6 +198,7 @@ draft,no-drafts,No se ha enviado ningún borrador todavía
 draft,doc-description,Borrador de documento para el objetivo ...
 draft,previous-draft,Anterior
 draft,writers,Redactores
+draft,annotation,Add a comment
 draft-guidance,heading,¿Qué es un borrador?
 draft-guidance,text-line-1,Los borradores son versiones de un documento mientras se está escribiendo.
 draft-guidance,text-line-2,Los borradores son elaborados por los redactores que han sido nominados para un objetivo.
@@ -250,3 +251,6 @@ invitation-response,sign-in-to-accept,Entrar para aceptar
 invitation-response,decline,Declinar el ofrecimiento
 invitation-response,accept,Aceptar
 invitation-response,banner-message,Responde a tu invitación para ayudar a redactar el proyecto
+writer-dashboard,up-votes,Sort by up votes
+writer-dashboard,down-votes,Sort by down votes
+writer-dashboard,writer-replies,Sort by writer replies

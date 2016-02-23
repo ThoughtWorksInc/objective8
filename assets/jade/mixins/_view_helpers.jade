@@ -20,6 +20,7 @@ mixin set(key)
 mixin shareIcon(icon, platform)
   li.modal-share-icon
     a.modal-share-icon-link(class="clj-share-on-#{platform}", href="!sharing url", target="_blank", data-l8n="attr/title:sharing/#{platform}-link-title", title="!share on platform")
+      span.visuallyhidden(data-l8n="content:sharing/#{platform}-link-title") !share on platform
       i(class="fa #{icon}")
 
 mixin guidanceText(heading,l8n)
