@@ -77,6 +77,7 @@
            (pf/add-custom-app-name context)
            pf/remove-footer-alpha-warning
            (tf/translate context)
+           (tf/set-page-language context)
            html/emit*
            (apply str)))))
 
