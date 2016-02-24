@@ -19,8 +19,6 @@ block content
       p.form-field
         label.form-field-label(for="objective-title")
           span.form-field-label-title#objective-title-label-title(data-l8n="content:create-objective/headline") !Headline
-          = " "
-          span.required *
           span.label-helper#objective-title-description(data-l8n="content:create-objective/headline-prompt") !A headline should encourage contribution or discussion
           input.clj-input-objective-title.func--input-objective-title(id="objective-title", name="title", type="text", aria-labelledby="objective-title-label-title", aria-describedby="objective-title-description")
           span.user-input-error-message.clj-title-length-error.func--objective-title-error(data-l8n="content:create-objective/title-length-validation-message") !The objective title must be between 3 and 120 characters
