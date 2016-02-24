@@ -20,6 +20,7 @@ mixin mastheadContents()
 
 mixin mastheadSignedOut()
   .masthead.clj-masthead-signed-out
+    a.hidden-until-focus(href="#main-content" data-l8n="content:masthead/skip-to-content") !Skip to content
     .masthead-navigation.clj-masthead-navigation
       +mastheadContents()
       .masthead-user-nav.clj-user-navigation-signed-out
@@ -29,6 +30,7 @@ mixin mastheadSignedOut()
 
 mixin mastheadSignedIn()
   .masthead.clj-masthead-signed-in
+    a.hidden-until-focus(href="#main-content" data-l8n="content:masthead/skip-to-content") !Skip to content
     .masthead-navigation.clj-masthead-navigation
       +mastheadContents()
       .masthead-user-nav.clj-user-navigation-signed-in

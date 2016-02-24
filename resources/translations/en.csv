@@ -7,6 +7,7 @@ masthead,about-link,About
 masthead,create-link-title-attr,Create an Objective
 masthead,create-link,Create an Objective
 masthead,navigation-title,Navigation
+masthead,skip-to-content,Skip to content
 status-bar,status-text,ALPHA: This is a testing build of %app-name%. Features and data may change several times a day.
 sign-in,doc-title,Sign in or Sign up | %app-name%
 sign-in,doc-description,Sign in or Sign up to %app-name%

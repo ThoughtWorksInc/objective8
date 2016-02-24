@@ -17,3 +17,12 @@ a {
     outline: $color2_light solid 2px;
   }
 }
+
+.hidden-until-focus {
+  @include visuallyhidden;
+  &:focus {
+    @include revert-visuallyhidden;
+    position: absolute;
+    background-color: white;
+  }
+}
