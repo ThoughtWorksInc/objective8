@@ -1,11 +1,6 @@
 (ns objective8.front-end.templates.template-functions
   (:require [net.cgrand.enlive-html :as html]))
 
-(defn set-page-language [context nodes]
-  (let [locale (get-in context [:ring-request :locale])]
-    (html/at nodes
-             [:html] (html/set-attr :lang (name locale)))))
-
 (defn translator
   "Returns a translation function which replaces the
   content of nodes with translations for k"
