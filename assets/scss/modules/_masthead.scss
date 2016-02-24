@@ -58,10 +58,10 @@
     font-size: 1.5em;
   }
   span {
-    display: none;
+    @include visuallyhidden;
     vertical-align: top;
     @include mq(768) {
-      display: inline;
+      @include revert-visuallyhidden;
       margin-left: 0.25em;
     }
   }
