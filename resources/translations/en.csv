@@ -248,6 +248,7 @@ objective-view,comment-box-label-title,Want to discuss the objective?
 objective-view,comment-box-label-helper,You can leave a comment here.
 objective-view,comment-post-button,Add a comment
 objective-view,comment-history,More comments
+objective-view,star,Star this objective
 objective-comments,title-prefix,Comments for
 objective-comments,doc-description,Comment history for objective
 objective-comments,comments,Comments

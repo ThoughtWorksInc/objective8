@@ -187,6 +187,7 @@ objective-view,doc-description,Objetivo ...
 objective-view,questions-title,Preguntas recientes
 objective-view,writers,Redactores
 objective-view,invite-a-writer,Invita a un redactor
+objective-view,star,Star this objective
 draft,add-a-draft,Añadir un borrador
 draft,drafting-begins,La redacción comienza en
 draft,doc-title,Borrador de documento | %app-name%
