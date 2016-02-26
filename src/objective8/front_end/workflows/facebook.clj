@@ -6,6 +6,7 @@
             [bidi.ring :refer [make-handler]]))
 
 (def redirect-uri (str utils/host-url "/facebook-callback"))
+(def error-redirect (response/redirect utils/host-url))
 
 (defn facebook-sign-in [{:keys [facebook-config] :as request}]
   (let [client-id (:client-id facebook-config)]
@@ -15,7 +16,20 @@
 (defn response->json [response]
   (json/parse-string (:body response) true))
 
-(defn get-access-token [{:keys [params facebook-config]}]
+(defn token-info-valid? [token-info facebook-config]
+  (let [expires-at (:expires_at token-info)
+        app-id (:app_id token-info)
+        client-id (:client-id facebook-config)]
+    (and (= app-id client-id) (> expires-at (utils/unix-current-time)))))
+
+(defn get-token-info [access-token facebook-config]
+  (let [client-id (:client-id facebook-config)
+        client-secret (:client-secret facebook-config)
+        response (http/get-request "https://graph.facebook.com/debug_token" {:query-params {:input_token  access-token
+                                                                                            :access_token (str client-id "|" client-secret)}})]
+    (:data (response->json response))))
+
+(defn get-access-token [{:keys [params facebook-config] :as request}]
   (let [code (:code params)
         client-id (:client-id facebook-config)
         client-secret (:client-secret facebook-config)
@@ -23,28 +37,26 @@
                                                                                                         :redirect_uri  redirect-uri
                                                                                                         :client_secret client-secret
                                                                                                         :code          code}})]
-    (:access_token (response->json response))))
+    (response->json response)))
 
-(defn get-token-info [{:keys [facebook-config]} access-token]
-  (let [client-id (:client-id facebook-config)
-        client-secret (:client-secret facebook-config)
-        response (http/get-request "https://graph.facebook.com/debug_token" {:query-params {:input_token  access-token
-                                                                                            :access_token (str client-id "|" client-secret)}})]
-    (:data (response->json response))))
+(defn check-token-info [{:keys [session facebook-config] :as request} access-token]
+  (let [token-info (get-token-info access-token facebook-config)
+        fb-user-id (str "facebook-" (:user_id token-info))]
+    (if (token-info-valid? token-info facebook-config)
+      (into (response/redirect (str utils/host-url "/sign-up"))
+            {:session (assoc session :auth-provider-user-id fb-user-id)})
+      error-redirect)))
 
-(defn facebook-callback [{:keys [params session facebook-config] :as request}]
+(defn check-access-token [request]
+  (let [access-token-response (get-access-token request)]
+    (if (:error access-token-response)
+      error-redirect
+      (check-token-info request (:access_token access-token-response)))))
+
+(defn facebook-callback [{:keys [params] :as request}]
   (if (:error params)
-    (response/redirect utils/host-url)
-    (let [access-token (get-access-token request)
-          token-info (get-token-info request access-token)
-          fb-user-id (str "facebook-" (:user_id token-info))
-          expires-at (:expires_at token-info)
-          app-id (:app_id token-info)
-          client-id (:client-id facebook-config)]
-      (if (and (= app-id client-id) (> expires-at (utils/unix-current-time)))
-        (into (response/redirect (str utils/host-url "/sign-up"))
-              {:session (assoc session :auth-provider-user-id fb-user-id)})
-        (response/redirect utils/host-url)))))
+    error-redirect
+    (check-access-token request)))
 
 (def facebook-routes
   ["/" {"facebook-sign-in"  :sign-in
