@@ -25,4 +25,9 @@ a {
     position: absolute;
     background-color: white;
   }
+
+  @include mq-max(768) {
+    display: none;
+    visibility: hidden;
+  }
 }
