@@ -278,6 +278,10 @@ to-invite-writer,sign-in-link,sign-in
 to-invite-writer,after-sign-in-link,to invite a policy writer.
 question-view,added-message,Your question has been added!
 question-view,added-answer-message,Your answer has been added!
+error-default,doc-title,Error | %app-name%
+error-default,doc-description,Something went wrong
+error-default,page-title,Something went wrong
+error-default,page-intro,"An unexpected error has occurred, please try again. We apologise for any inconvenience."
 error-404,doc-title,Error | %app-name%
 error-404,doc-description,Sorry the page you requested can't be found.
 error-404,page-title,Sorry the page you requested can't be found.

@@ -59,7 +59,7 @@
                                                                             :headers {"Location" utils/host-url}}))
        (fact "redirects to homepage when access token returns an error"
              (facebook-callback (-> fake-request with-code)) => (contains {:status  302
-                                                                           :headers {"Location" utils/host-url}})
+                                                                           :headers {"Location" (str utils/host-url "/error/log-in")}})
              (provided
                (http/get-request "https://graph.facebook.com/v2.3/oauth/access_token" {:query-params {:client_id     fake-client-id
                                                                                                       :redirect_uri  redirect-uri
@@ -68,7 +68,7 @@
                => graph-api-error))
        (fact "redirects to homepage when debug token returns an error"
              (facebook-callback (-> fake-request with-code)) => (contains {:status  302
-                                                                           :headers {"Location" utils/host-url}})
+                                                                           :headers {"Location" (str utils/host-url "/error/log-in")}})
              (provided
                (http/get-request "https://graph.facebook.com/v2.3/oauth/access_token" {:query-params {:client_id     fake-client-id
                                                                                                       :redirect_uri  redirect-uri
@@ -80,7 +80,7 @@
                => graph-api-error))
        (fact "redirects to homepage when app id in token info doesn't match client id"
              (facebook-callback (-> fake-request with-code)) => (contains {:status  302
-                                                                           :headers {"Location" utils/host-url}})
+                                                                           :headers {"Location" (str utils/host-url "/error/log-in")}})
 
              (provided
                (http/get-request "https://graph.facebook.com/v2.3/oauth/access_token" {:query-params {:client_id     fake-client-id
@@ -93,7 +93,7 @@
                => (token-info-response :app-id "error")))
        (fact "redirects to homepage when expiry time in token info is after now"
              (facebook-callback (-> fake-request with-code)) => (contains {:status  302
-                                                                           :headers {"Location" utils/host-url}})
+                                                                           :headers {"Location" (str utils/host-url "/error/log-in")}})
 
              (provided
                (http/get-request "https://graph.facebook.com/v2.3/oauth/access_token" {:query-params {:client_id     fake-client-id

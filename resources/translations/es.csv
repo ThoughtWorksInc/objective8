@@ -208,6 +208,10 @@ draft-guidance,text-line-2,Los borradores son elaborados por los redactores que 
 draft-guidance,text-line-3,Todo el mundo puede opinar y hacer sugerencias.
 question-view,added-message,Tu pregunta ha sido añadida
 question-view,added-answer-message,¡Tu respuesta ha sido añadida!
+error-default,doc-title,Error | %app-name%
+error-default,doc-description,Something went wrong
+error-default,page-title,Something went wrong
+error-default,page-intro,"An unexpected error has occurred, please try again. We apologise for any inconvenience."
 error-404,doc-title,Error | %app-name%
 error-404,doc-description,"Lo sentimos, la página que solicitas no se encuentra"
 error-404,page-title,"Lo sentimos, la página que solicitas no se encuentra"

@@ -44,8 +44,11 @@
 
 (defn default-error-page [request error-status]
   {:status error-status
-   :headers {"content-type" "text/html"}
+   :headers {"Content-Type" "text/html"}
    :body (views/error-default "error-default" request)})
+
+(defn error-log-in [request]
+  (default-error-page request 500))
 
 (defn index [request]
   {:status 200

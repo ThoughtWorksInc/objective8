@@ -3,10 +3,11 @@
             [objective8.utils :as utils]
             [objective8.front-end.api.http :as http]
             [cheshire.core :as json]
-            [bidi.ring :refer [make-handler]]))
+            [bidi.ring :refer [make-handler]]
+            [clojure.tools.logging :as log]))
 
 (def redirect-uri (str utils/host-url "/facebook-callback"))
-(def error-redirect (response/redirect utils/host-url))
+(def error-redirect (response/redirect (str utils/host-url "/error/log-in")))
 
 (defn facebook-sign-in [{:keys [facebook-config] :as request}]
   (let [client-id (:client-id facebook-config)]
@@ -54,9 +55,10 @@
       (check-token-info request (:access_token access-token-response)))))
 
 (defn facebook-callback [{:keys [params] :as request}]
-  (if (:error params)
-    error-redirect
-    (check-access-token request)))
+  (cond
+    (= (:error params) "access_denied") (response/redirect utils/host-url)
+    (:error params) error-redirect
+    :default (check-access-token request)))
 
 (def facebook-routes
   ["/" {"facebook-sign-in"  :sign-in
