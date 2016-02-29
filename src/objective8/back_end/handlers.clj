@@ -527,12 +527,3 @@
     (catch Exception e
       (log/info "Error when marking question: " e)
       (internal-server-error "Error when marking question"))))
-
-;; Activities
-
-
-(defn activity-query-format-string [limit]
-  (str (utils/external-api-path-for :api/get-activities)
-       "?offset=%s"
-       (when limit (str "&limit=" limit))
-       "&as_ordered_collection=true"))

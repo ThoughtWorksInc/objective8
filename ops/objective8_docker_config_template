@@ -1,9 +1,10 @@
 # Your application URI or IP address (including port if required)
 BASE_URI=
 APP_PORT=
+URI_SCHEME=
 
-# The externally accessible API uri (including port if required)
-EXTERNAL_API_URI=
+# The API uri (including port if required)
+API_URI=
 
 # The following strings are for connecting to the API and should be kept secret
 API_BEARER_NAME=

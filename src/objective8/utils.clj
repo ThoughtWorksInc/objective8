@@ -19,9 +19,6 @@
 (def api-url
   (str (:uri-scheme config/environment) "://" (:api-uri config/environment)))
 
-(defn get-external-api-url []
-  (str (:uri-scheme config/environment) "://" (:external-api-uri config/environment)))
-
 ;;Map manipulation
 (defn select-all-or-nothing
   "If m contains all of the keys in required-keys, then returns a
@@ -53,9 +50,6 @@
 
 (defn api-path-for [& args]
   (str api-url (apply bidi/path-for routes/back-end-routes args)))
-
-(defn external-api-path-for [& args]
-  (str (get-external-api-url) (apply bidi/path-for routes/back-end-routes args)))
 
 (defn local-path-for [& args]
   (apply bidi/path-for routes/front-end-routes args))

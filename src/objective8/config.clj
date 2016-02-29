@@ -32,7 +32,6 @@
    :front-end-port                (Integer/parseInt (get-var "APP_PORT" "8080"))
 
    :api-uri                       (get-var "API_URI" "localhost:8081")
-   :external-api-uri              (get-var "EXTERNAL_API_URI" "localhost:8081")
    :api-port                      (Integer/parseInt (get-var "API_SERVER_PORT" "8081"))
 
    :fake-twitter-mode             (get-var "FAKE_TWITTER_MODE")
