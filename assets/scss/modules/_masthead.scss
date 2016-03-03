@@ -62,10 +62,19 @@
     vertical-align: top;
     @include mq(768) {
       @include revert-visuallyhidden;
-      margin-left: 0.25em;
+      padding: 0;
+      margin-left: auto;
     }
   }
   a {
+    margin-left: auto;
+
+    &.masthead-sign-out {
+      margin-left: 0.8em;
+    }
+    span {
+      margin-left: 0.25em;
+    }
     &, &:hover {
       text-decoration: none;
     }
@@ -75,25 +84,10 @@
   }
 }
 
-.masthead-edit-profile {
-  margin-right: 0.8em;
-  @include mq(768) {
-    margin-right: 0;
-  }
-}
-
-.masthead-username {
-  padding-right: 1em;
-}
-
 .masthead-admin {
   padding-right: 0.5em;
 }
 
 .masthead-navigation {
   display: flex;
-}
-
-.masthead-sign-in, .masthead-edit-profile {
-  margin-left: auto;
 }
