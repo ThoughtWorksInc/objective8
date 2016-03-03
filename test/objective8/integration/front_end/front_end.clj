@@ -42,12 +42,12 @@
                                        (contains "<a href=\"/\" title=\"Go to home page\" rel=\"home\" data-l8n=\"attr/title:masthead/logo-title-attr\" class=\"masthead-logo\">Policy Maker</a>"))))))
 
 (facts "about the alpha warnings"
-       (fact "it is hidden when env var is falsey"
+       (fact "they are hidden when env var is falsey"
              (binding [config/environment (assoc config/environment :show-alpha-warnings false)]
                (let [{response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/index))]
                  (:body response) =not=> (contains "\"status-bar clj-status-bar\"")
                  (:body response) =not=> (contains "\"footer-content-text footer-alpha-warning\""))))
-       (fact "it is shown when env var is truthy"
+       (fact "they are shown when env var is truthy"
              (binding [config/environment (assoc config/environment :show-alpha-warnings true)]
                (let [{response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/index))]
                  (:body response) => (contains "\"status-bar clj-status-bar\"")
