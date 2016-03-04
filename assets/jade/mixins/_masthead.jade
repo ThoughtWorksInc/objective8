@@ -8,15 +8,17 @@ mixin flashMessageSuccessBar
     p.clj-flash-message-bar-text 
       block
 
+mixin mastheadNavigation()
+  .site-navigation
+    a.func--objectives(href="/objectives", title="!Go to the Objectives list", data-l8n="attr/title:masthead/objectives-link-title-attr content:masthead/objectives-link") !View Objectives
+    a(href="/objectives/create", title="!Create an Objective", data-l8n="attr/title:masthead/create-link-title-attr content:masthead/create-link") !Create an Objective
+    a(href="/learn-more", title="!Learn more about Objective[8]", data-l8n="attr/title:masthead/about-link-title-attr content:masthead/about-link") !About
+
 mixin mastheadContents()
   label.masthead-nav-link(for="nav-trigger")
     i.fa.fa-bars(aria-hidden="true")
     span.visuallyhidden(data-l8n="content:masthead/show-navigation") !Show navigation
   a.masthead-logo(href="/", title="!Go to home page", rel="home", data-l8n="attr/title:masthead/logo-title-attr") Objective[8]
-  .site-navigation
-    a.func--objectives(href="/objectives", title="!Go to the Objectives list", data-l8n="attr/title:masthead/objectives-link-title-attr content:masthead/objectives-link") !View Objectives
-    a(href="/objectives/create", title="!Create an Objective", data-l8n="attr/title:masthead/create-link-title-attr content:masthead/create-link") !Create an Objective
-    a(href="/learn-more", title="!Learn more about Objective[8]", data-l8n="attr/title:masthead/about-link-title-attr content:masthead/about-link") !About
 
 mixin mastheadSignedOut()
   .masthead.clj-masthead-signed-out
@@ -27,6 +29,7 @@ mixin mastheadSignedOut()
         a.masthead-sign-in.clj-masthead-sign-in(href="/sign-in", title="!Sign in", data-l8n="attr/title:navigation-global/sign-in-title")
           i.fa.fa-sign-in
           span(data-l8n="content:navigation-global/sign-in-text") !Sign in
+      +mastheadNavigation()
 
 mixin mastheadSignedIn()
   .masthead.clj-masthead-signed-in
@@ -42,3 +45,4 @@ mixin mastheadSignedIn()
         a.masthead-sign-out.clj-masthead-sign-out.func--masthead-sign-out(href="/sign-out", title="!Sign out", data-l8n="attr/title:navigation-global/sign-out-title")
           i.fa.fa-sign-out
           span(data-l8n="content:navigation-global/sign-out-text") !Sign out
+      +mastheadNavigation()

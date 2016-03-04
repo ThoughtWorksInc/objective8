@@ -31,6 +31,7 @@
 .masthead-nav-link {
   font-weight: bold;
   font-size: 1.7em;
+  float: left;
   @include mq(768) {
     display: none;
   }
@@ -41,18 +42,14 @@
   font-weight: bold;
   font-size: 1.6em;
   letter-spacing: -0.025em;
-  flex: 100;
   display: inline-block;
   @include mq(768) {
-    flex: inherit;
     margin-right: 1em;
   }
 }
 
 .masthead-user-nav {
-  display: inline-flex;
   padding-top: 0.4em;
-  flex: 1;
   white-space: nowrap;
   float: right;
   i {
@@ -87,8 +84,4 @@
 
 .masthead-admin {
   padding-right: 0.5em;
-}
-
-.masthead-navigation {
-  display: flex;
 }
