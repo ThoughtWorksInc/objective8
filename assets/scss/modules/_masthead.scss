@@ -43,6 +43,8 @@
   font-size: 1.6em;
   letter-spacing: -0.025em;
   display: inline-block;
+  word-break: break-word;
+  max-width: 35%;
   @include mq(768) {
     margin-right: 1em;
   }
