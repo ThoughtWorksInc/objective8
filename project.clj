@@ -54,6 +54,7 @@
                                            [org.seleniumhq.selenium/selenium-server "2.45.0"]
                                            [org.seleniumhq.selenium/selenium-java "2.45.0"]
                                            [org.seleniumhq.selenium/selenium-remote-driver "2.45.0"]
+                                           [org.clojure/algo.generic "0.1.2"]
                                            [javax.servlet/servlet-api "2.5"]
                                            [peridot "0.3.1"]
                                            [robert/hooke "1.3.0"]]
