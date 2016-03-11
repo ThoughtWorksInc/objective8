@@ -194,7 +194,7 @@ You can create an nginx.conf file by copying the following into a new file and r
     http {
       server {
       listen 80;
-      return 301 $request_uri;
+      return 301 https://<ip address>/$request_uri;
       }
       
       
@@ -212,14 +212,14 @@ You can create an nginx.conf file by copying the following into a new file and r
       
         # trailing '/' after port means app doesn't know about '/as2/'
         location /as2/ {
-          proxy_pass http://<docker ip>:7000/;
+          proxy_pass http://objective8:7000/;
         }
         # no trailing '/' after port means app knows about '/api/v1/'
         location /api/v1/ {
-          proxy_pass http://<docker ip>:8081;
+          proxy_pass http://objective8:8081;
         }
         location / {
-          proxy_pass http://<docker ip>:8080;
+          proxy_pass http://objective8:8080;
         }
       }
     }
@@ -227,7 +227,7 @@ You can create an nginx.conf file by copying the following into a new file and r
 
 Finally, run the following command:
 
-    docker run -v <absolute path to SSL certificates and keys directory>:/etc/nginx/ssl -v <absolute path to conf file>/nginx.conf:/etc/nginx/nginx.conf -v <absolute path to dhparam file>/dhparam.pem:/etc/nginx/cert/dhparam.pem -p 443:443 -d --name nginx-container nginx
+    docker run -v <absolute path to SSL certificates and keys directory>:/etc/nginx/ssl -v <absolute path to conf file>/nginx.conf:/etc/nginx/nginx.conf -v <absolute path to dhparam file>/dhparam.pem:/etc/nginx/cert/dhparam.pem --link objective8:objective8 -p 443:443 -p 80:80 -d --name nginx nginx
         
 #### Objective8
 
