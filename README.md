@@ -162,8 +162,8 @@ Run:
 To run the application you'll need the following containers:
 
 * Postgresql
-* Nginx
 * Objective8
+* Nginx
 
 First, open the *objective8_docker_config_template* found in the */ops* directory, enter your credentials and save the file. This will be used in both postgres and objective8.
 
@@ -173,6 +173,22 @@ To start a postgres docker container, using the relative path for your config fi
 
     docker run -d --env-file=<docker config relative file path> -v /data --name pg_objective8 postgres
 
+#### Objective8
+
+To start the docker image with a custom colour scheme, create a file that defines the primary colour scheme:
+
+    $color1: #007E84;
+    $color2: #9C0F83;
+    $color3: #ffbf47;
+
+The following command will start the Objective[8] image with your custom colour scheme, favicon and Stonecutter icon on the sign-in page. Since these are optional changes, you can omit any of the lines which pass those files into the docker container.
+
+    docker run -d --env-file=<relative path to objective8 docker config> \
+    -v <absolute path to colour scheme>:/usr/src/app/assets/scss/root/_theme.scss \
+    -v <absolute path to custom favicon>:/usr/src/app/resources/public/favicon.ico \
+    -v <absolute path to stonecutter sign-in icon>:/usr/src/app/resources/public/stonecutter-sign-in-icon.png \
+    -p 8080:8080 -p 8081:8081 --link pg_objective8:postgres --name objective8 dcent/objective8
+    
 #### Nginx container
 
 Nginx is used to add SSL protection and act as a reverse proxy. to use it you need:
@@ -194,7 +210,7 @@ You can create an nginx.conf file by copying the following into a new file and r
     http {
       server {
       listen 80;
-      return 301 https://<ip address>/$request_uri;
+      return 301 https://<ip address>$request_uri;
       }
       
       
@@ -229,18 +245,3 @@ Finally, run the following command:
 
     docker run -v <absolute path to SSL certificates and keys directory>:/etc/nginx/ssl -v <absolute path to conf file>/nginx.conf:/etc/nginx/nginx.conf -v <absolute path to dhparam file>/dhparam.pem:/etc/nginx/cert/dhparam.pem --link objective8:objective8 -p 443:443 -p 80:80 -d --name nginx nginx
         
-#### Objective8
-
-To start the docker image with a custom colour scheme, create a file that defines the primary colour scheme:
-
-    $color1: #007E84;
-    $color2: #9C0F83;
-    $color3: #ffbf47;
-
-The following command will start the Objective[8] image with your custom colour scheme, favicon and Stonecutter icon on the sign-in page. Since these are optional changes, you can omit any of the lines which pass those files into the docker container.
-
-    docker run -d --env-file=<relative path to objective8 docker config> \
-    -v <absolute path to colour scheme>:/usr/src/app/assets/scss/root/_theme.scss \
-    -v <absolute path to custom favicon>:/usr/src/app/resources/public/favicon.ico \
-    -v <absolute path to stonecutter sign-in icon>:/usr/src/app/resources/public/stonecutter-sign-in-icon.png \
-    -p 8080:8080 -p 8081:8081 --link pg_objective8:postgres --name objective8 dcent/objective8
