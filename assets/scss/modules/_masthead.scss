@@ -44,23 +44,38 @@
   letter-spacing: -0.025em;
   display: inline-block;
   word-break: break-word;
-  max-width: 85%;
+  max-width: 65%;
   @include mq($large_device) {
     margin-right: 1em;
     max-width: 20%;
+  }
+  @include mq($extra_large_device) {
+    margin-right: 1em;
+    max-width: 30%;
+  }
+  @include mq($monster_large_device) {
+    margin-right: 1em;
+    max-width: 35%;
   }
 }
 
 .masthead-user-nav {
   padding-top: 0.4em;
-  white-space: nowrap;
   float: right;
+  text-align: right;
+  max-width: 25%;
+
+  @include mq($monster_large_device) {
+    max-width: 30%;
+  }
+
   i {
     font-size: 1.5em;
   }
   span {
     @include visuallyhidden;
     vertical-align: top;
+    word-break: break-all;
     @include mq($large_device) {
       @include revert-visuallyhidden;
       padding: 0;
@@ -72,6 +87,7 @@
 
     &.masthead-sign-out {
       margin-left: 0.8em;
+      float: right;
     }
     span {
       margin-left: 0.25em;
@@ -87,4 +103,8 @@
 
 .masthead-admin {
   padding-right: 0.5em;
+}
+
+.masthead-navigation {
+  overflow: auto;
 }
