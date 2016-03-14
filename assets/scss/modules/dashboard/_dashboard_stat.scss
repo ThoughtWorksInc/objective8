@@ -3,7 +3,7 @@
   padding-right: 1em;
   display: inline-block;
   text-align: center;
-  @include mq(640) {
+  @include mq($medium_device) {
     padding-left: 0;
     padding-right: 2em;
     margin-right: 2em;
@@ -26,7 +26,7 @@
   font-size: 1.5em;
   font-weight: bold;
   color: $color2_light;
-  @include mq(640) {
+  @include mq($medium_device) {
     font-size: 2em;
   }
 }

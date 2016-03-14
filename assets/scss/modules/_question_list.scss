@@ -26,7 +26,7 @@
   position: relative;
   color: $link-colour;
   padding-right: 2em;
-  @include mq(768) {
+  @include mq($large_device) {
     padding-right: 7em;
   }
 }
@@ -82,7 +82,7 @@
 .promote-text,
 .demote-text {
   display: none;
-  @include mq(768) {
+  @include mq($large_device) {
     display: inline;
     margin-right: 0.6em;
   }

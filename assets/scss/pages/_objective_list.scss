@@ -1,6 +1,6 @@
 .objectives-list-actions {
   margin-bottom: 2em;
-  @include mq(321) {
+  @include mq($small_device) {
     margin-bottom: 3em;
   }
 }

@@ -1,7 +1,7 @@
 .policy-document {
   @include previewDocument();
   padding-top: 1em;
-  @include mq(640) {
+  @include mq($medium_device) {
     padding-top: 3em;
   }
 }

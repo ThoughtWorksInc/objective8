@@ -6,7 +6,7 @@
 .response-wrapper {
   //TODO use @extend .main-wrapper , node-sass needs upgrading
   padding: 1em;
-  @include mq(768) {
+  @include mq($large_device) {
     padding-left: 280px;
     max-width: 1100px;
     margin: 0 auto;

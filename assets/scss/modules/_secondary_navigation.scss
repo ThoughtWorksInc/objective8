@@ -4,7 +4,7 @@ $secondary_navigation_height: 80px;
   @include cf;
   min-height: $secondary_navigation_height;
   margin: 0 0 2em 0;
-  @include mq(480) {
+  @include mq($smallish_device) {
     margin-bottom: 4em;
   }
 }
@@ -14,7 +14,7 @@ $secondary_navigation_height: 80px;
   background: rgba($white, 0.96);
   border-bottom: 1px solid $grey-3;
   padding-bottom: 1.5em;
-  @include mq(480) {
+  @include mq($smallish_device) {
     position: absolute;
     left: 0;
     width: 100%;
@@ -30,13 +30,13 @@ $secondary_navigation_height: 80px;
 .secondary-navigation-content {
   position: relative;
   margin: -1px auto;
-  @include mq(480) {
+  @include mq($smallish_device) {
     min-height: $secondary_navigation_height;
     max-width: $max_content_width;
     padding: 0.5em;
     font-size: 100%;
   }
-  @include mq(768) {
+  @include mq($large_device) {
     padding-left: 0;
     padding-right: 0;
   }
@@ -51,7 +51,7 @@ $secondary_nav_icon_spacer: 0.4em;
   margin: 0;
   list-style-type: none;
 
-  @include mq(480) {
+  @include mq($smallish_device) {
     top: 40px;
   }
 
@@ -73,7 +73,7 @@ $secondary_nav_icon_spacer: 0.4em;
   right: 0.5em;
   text-align: right;
   @extend %secondary-navigation-content-controls;
-  @include mq(768) {
+  @include mq($large_device) {
     right: 0;
   }
 }
@@ -82,14 +82,14 @@ $secondary_nav_icon_spacer: 0.4em;
   @extend %secondary-navigation-content-controls;
   left: 0.5em;
 
-  @include mq(768) {
+  @include mq($large_device) {
     left: 0;
   }
 }
 
 .secondary-navigation-text {
   @include visuallyhidden;
-  @include mq(480) {
+  @include mq($smallish_device) {
     @include revert-visuallyhidden;
   }
 }

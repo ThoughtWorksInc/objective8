@@ -3,7 +3,7 @@
   margin-bottom: 2em;
   padding-top: 1em;
   padding-bottom: 2em;
-  @include mq(321) {
+  @include mq($small_device) {
     margin-bottom: 4em;
     padding-top: 2em;
     padding-bottom: 4em;

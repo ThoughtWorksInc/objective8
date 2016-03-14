@@ -29,7 +29,7 @@ $editor_min_device_width: 321;
   }
   .draft-preview-document {
     font-size: 50%;
-    @include mq(640) {
+    @include mq($medium_device) {
       font-size: 100%;
     }
   }
@@ -41,7 +41,7 @@ $editor_min_device_width: 321;
     flex: 1;
     overflow-y: auto;
   }
-  @include mq(640) {
+  @include mq($medium_device) {
     padding-left: 2em;
     padding-right: 2em;
   }
@@ -54,7 +54,7 @@ $editor_min_device_width: 321;
     max-width: 50%;
     overflow-y: auto;
   }
-  @include mq(640) {
+  @include mq($medium_device) {
     padding: 2em;
   }
 }

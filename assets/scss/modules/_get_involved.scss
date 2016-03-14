@@ -14,7 +14,7 @@
   border-bottom: 1px solid $color1_dark;
   padding-bottom: 1em;
   margin-bottom: 1em;
-  @include mq(1000) {
+  @include mq($extra_large_device) {
     float: left;
     width: 29.3333%;
     border-bottom: none;

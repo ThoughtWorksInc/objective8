@@ -13,7 +13,7 @@
 }
 
 .grid-column {
-  @include mq(480) {
+  @include mq($smallish_device) {
     min-height: 240px;
     float: left;
   }

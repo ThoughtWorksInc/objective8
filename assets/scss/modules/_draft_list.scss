@@ -44,7 +44,7 @@ $draft_icon_size_beta: 60px;
   padding-left: #{$draft_icon_size_alpha + 15px};
   color: $white;
   font-size: 120%;
-  @include mq(480) {
+  @include mq($smallish_device) {
     line-height: ($draft_icon_size_beta  - 3px);
     padding-left: ($draft_icon_size_beta + 15px);
   }
@@ -58,7 +58,7 @@ $draft_icon_size_beta: 60px;
   background-color: $white;
   color: $intro_grey;
   transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
-  @include mq(480) {
+  @include mq($smallish_device) {
     @include circle($draft_icon_size_beta);
   }
 }
@@ -69,7 +69,7 @@ $draft_icon_size_beta: 60px;
   font-size: 1em;
   text-align: center;
   color: inherit;
-  @include mq(480) {
+  @include mq($smallish_device) {
     height: $draft_icon_size_beta;
     line-height: ($draft_icon_size_beta  - 3px);
     font-size: 2em;
@@ -111,7 +111,7 @@ $draft_icon_size_beta: 60px;
   line-height: ($draft_icon_size_alpha - 3px);
   padding-left: #{$draft_icon_size_alpha + 15px};
   color: $link-colour;
-  @include mq(480) {
+  @include mq($smallish_device) {
     line-height: ($draft_icon_size_beta  - 3px);
     padding-left: ($draft_icon_size_beta + 15px);
   }
@@ -124,7 +124,7 @@ $draft_icon_size_beta: 60px;
   float: left;
   color: $link-colour;
   transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
-  @include mq(480) {
+  @include mq($smallish_device) {
     @include circle($draft_icon_size_beta);
   }
 }
@@ -135,7 +135,7 @@ $draft_icon_size_beta: 60px;
   font-size: 1em;
   text-align: center;
   color: inherit;
-  @include mq(480) {
+  @include mq($smallish_device) {
     height: $draft_icon_size_beta;
     line-height: ($draft_icon_size_beta  - 3px);
     font-size: 2em;

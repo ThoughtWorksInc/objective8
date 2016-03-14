@@ -4,13 +4,13 @@
   &:checked ~ .app-wrapper .site-navigation {
     @include mq-max(768) {
       position: fixed;
-      transform: translateX(-$mobile_nav_width);
+      transform: translateX(-$small_device);
       display: block;
     }
   }
   &:checked ~ .app-wrapper {
     @include mq-max(768) {
-      transform: translateX($mobile_nav_width);
+      transform: translateX($small_device);
       box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.15);
     }
   }
@@ -29,7 +29,7 @@
 }
 
 .site-navigation {
-  width: $mobile_nav_width;
+  width: $small_device;
   position: absolute;
   top: 0;
   left: 0;
@@ -58,7 +58,7 @@
     }
   }
 
-  @include mq(768) {
+  @include mq($large_device) {
     position: relative;
     display: inline-block;
     vertical-align: top;

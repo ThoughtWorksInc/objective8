@@ -4,7 +4,7 @@
   position: absolute;
   right: 0;
   a {
-    @include mq(768) {
+    @include mq($large_device) {
       width: $comment_icon_size;
     }
     position: relative;

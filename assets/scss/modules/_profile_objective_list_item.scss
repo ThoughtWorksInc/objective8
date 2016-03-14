@@ -36,7 +36,7 @@
 
 .profile-objective-list-item-star-container {
   margin-bottom: 2px;
-  @include mq(768) {
+  @include mq($large_device) {
     position: absolute;
     top: -2px;
     left: -38px;

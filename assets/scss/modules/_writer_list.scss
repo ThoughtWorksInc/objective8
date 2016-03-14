@@ -27,7 +27,7 @@ $writer_avatar_size_beta: 60px;
   background: $grey-4;
   overflow: hidden;
   float: left;
-  @include mq(480) {
+  @include mq($smallish_device) {
     @include circle($writer_avatar_size_beta);
   }
   img {
@@ -43,7 +43,7 @@ $writer_avatar_size_beta: 60px;
   text-align: center;
   color: rgba($grey-15,0.2);
   font-size: 1em;
-  @include mq(480) {
+  @include mq($smallish_device) {
     height: $writer_avatar_size_beta;
     line-height: ($writer_avatar_size_beta - 3px);
     font-size: 2em;
@@ -59,10 +59,10 @@ $writer_avatar_size_beta: 60px;
 .writer-item-text {
   padding-top: 5px;
   padding-left: ($writer_avatar_size_alpha + 15px);
-  @include mq(480) {
+  @include mq($smallish_device) {
     padding-left: ($writer_avatar_size_beta + 15px);
   }
-  @include mq(768) {
+  @include mq($large_device) {
     padding-top: 10px;
   }
   p:last-child {

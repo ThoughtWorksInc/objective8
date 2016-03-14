@@ -6,7 +6,7 @@
 //  margin-bottom: $alpha_block_spacing;
   background: $color2;
   color: white;
-  @include mq(768) {
+  @include mq($large_device) {
 //    margin-bottom: $gamma_block_spacing;
   }
   p {

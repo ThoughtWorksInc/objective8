@@ -5,7 +5,7 @@ $progress_indicator_height: 40px;
   padding: 0 1em;
   list-style: none;
   text-align: center;
-  @include mq(321) {
+  @include mq($small_device) {
     padding-left: 0;
     padding-right: 0;
   }
@@ -16,7 +16,7 @@ $progress_indicator_height: 40px;
     padding: 0;
     background-color: $grey-4;
     color: $grey-15;
-    @include mq(321) {
+    @include mq($small_device) {
       width: 120px;
     }
     &:first-child {

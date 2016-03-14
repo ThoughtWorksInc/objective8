@@ -4,12 +4,12 @@
   margin: -2em -1em 1em -1em;
   padding: 1.5em 1em 1em 1em;
   color: $white;
-  @include mq(640) {
+  @include mq($medium_device) {
     margin-bottom: 3em;
     padding-top: 3em;
     padding-bottom: 2em;
   }
-  @include mq(768) {
+  @include mq($large_device) {
     margin-top: -3.5em;
   }
 }

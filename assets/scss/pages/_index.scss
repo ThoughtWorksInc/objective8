@@ -39,10 +39,10 @@
   margin-left: auto;
   margin-right: auto;
   text-align: center;
-  @include mq(480) {
+  @include mq($smallish_device) {
     font-size: 40px;
   }
-  @include mq(768) {
+  @include mq($large_device) {
     font-size: 60px;
     line-height: 1;
   }
@@ -54,10 +54,10 @@
   max-width: 32em;
   margin-left: auto;
   margin-right: auto;
-  @include mq(480) {
+  @include mq($smallish_device) {
     font-size: 18px;
   }
-  @include mq(768) {
+  @include mq($large_device) {
     font-size: 21px;
   }
 }
@@ -67,22 +67,22 @@
   margin-right: -1em;
   margin-bottom: 2em;
   padding-top: 1em;
-  @include mq(768) {
+  @include mq($large_device) {
     padding-top: 1.5em;
   }
   .grid-container {
     position: relative;
     max-width: 860px;
     margin: 0 auto;
-    @include mq(768) {
+    @include mq($large_device) {
       width: auto;
     }
   }
   .grid-column {
-    @include mq(480) {
+    @include mq($smallish_device) {
       width: 50%;
     }
-    @include mq(768) {
+    @include mq($large_device) {
       width: 25%;
     }
   }

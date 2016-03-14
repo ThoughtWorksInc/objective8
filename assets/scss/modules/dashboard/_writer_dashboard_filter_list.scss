@@ -5,7 +5,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  @include mq(640) {
+  @include mq($medium_device) {
     border: none;
   }
 }
@@ -21,7 +21,7 @@
     width: 1px;
     height: 100%;
     background: $grey-3;
-    @include mq(640) {
+    @include mq($medium_device) {
       height: 75%;
     }
   }

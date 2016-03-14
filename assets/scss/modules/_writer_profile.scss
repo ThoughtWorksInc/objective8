@@ -7,7 +7,7 @@ $writer_profile_avatar_size_beta: 200px;
 .writer-profile-head {
   margin-bottom: 1em;
   padding-right: $writer_profile_avatar_size_alpha;
-  @include mq(640) {
+  @include mq($medium_device) {
     padding-right: $writer_profile_avatar_size_beta;
   }
 }
@@ -28,7 +28,7 @@ $writer_profile_avatar_size_beta: 200px;
   background: $grey-4;
   overflow: hidden;
   float: right;
-  @include mq(640) {
+  @include mq($medium_device) {
     @include circle($writer_profile_avatar_size_beta);
   }
   img {
@@ -43,7 +43,7 @@ $writer_profile_avatar_size_beta: 200px;
   line-height: ($writer_profile_avatar_size_alpha - 3px);
   text-align: center;
   color: rgba($grey-15,0.2);
-  @include mq(640) {
+  @include mq($medium_device) {
     height: $writer_profile_avatar_size_beta;
     line-height: ($writer_profile_avatar_size_beta - 3px);
     font-size: 6em;

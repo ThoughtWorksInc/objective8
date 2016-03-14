@@ -8,7 +8,7 @@
 
 
 .html-writer-dashboard {
-//  @include mq(640) {
+//  @include mq($medium_device) {
 //    overflow: hidden;
 //    body, & {
 //      height: 100%;
@@ -22,7 +22,7 @@
   }
   .main-content {
     padding: $header_height 0 0 0;
-    @include mq(640) {
+    @include mq($medium_device) {
       padding-left: 1em;
       padding-right: 1em;
     }
@@ -48,7 +48,7 @@
   letter-spacing: -0.025em;
   text-align: center;
   @include word_wrap;
-  @include mq(640) {
+  @include mq($medium_device) {
     text-align: left;
   }
 }
@@ -72,7 +72,7 @@
 .writer-dashboard-stats {
   text-align: center;
   margin-bottom: 0.5em;
-  @include mq(640) {
+  @include mq($medium_device) {
     text-align: inherit;
     padding-left: 1em;
     padding-right: 1em;
@@ -87,12 +87,12 @@
 }
 .writer-dashboard-navigation {
   margin-bottom: 2em;
-  @include mq(640) {
+  @include mq($medium_device) {
     float: left;
     width: 40%;
     margin-bottom: 0;
   }
-  @include mq(1000) {
+  @include mq($extra_large_device) {
     float: left;
     width: 30%;
     margin-bottom: 0;
@@ -100,12 +100,12 @@
 }
 
 .writer-dashboard-content-container {
-  @include mq(640) {
+  @include mq($medium_device) {
     float: right;
     width: 60%;
     padding-left: 1em;
   }
-  @include mq(1000) {
+  @include mq($extra_large_device) {
     float: right;
     width: 70%;
     padding-left: 1em;
@@ -114,7 +114,7 @@
 
 .writer-dashboard-annotation-content-container {
   @extend .writer-dashboard-content-container;
-  @include mq(640) {
+  @include mq($medium_device) {
     margin-top: 60px;
   }
 }
@@ -123,7 +123,7 @@
 
 .writer-dashboard-content {
   padding: 1em;
-  @include mq(640) {
+  @include mq($medium_device) {
     height: 504px;
     overflow-y: auto;
     padding-left: 2em;

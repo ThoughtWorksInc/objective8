@@ -1,7 +1,7 @@
 .main-content {
   min-height: 100%;
   padding: $alpha_body_vertical_spacing 1em #{$footer_height + 16px} 1em;
-  @include mq(640) {
+  @include mq($medium_device) {
     padding-bottom: $footer_height + 136;
   }
 }

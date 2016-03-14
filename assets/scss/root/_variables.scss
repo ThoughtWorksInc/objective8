@@ -41,6 +41,11 @@ $masthead_height: 52px;
 $status_bar_height: 35px;
 $header_height: $masthead_height + $status_bar_height;
 
-$mobile_nav_width: 260px;
+$small_device: 320;
+$smallish_device: 480;
+$medium_device: 640;
+$large_device: 768;
+$extra_large_device: 960;
+$monster_large_device: 1220;
 
 $footer_height: 200px;

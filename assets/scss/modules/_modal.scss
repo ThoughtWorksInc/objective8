@@ -2,7 +2,7 @@
   margin-bottom: 6em;
   padding: 2em;
   border: 1px solid $grey-3;
-  @include mq(640) {
+  @include mq($medium_device) {
     padding: 3em;
   }
   .main-content & {
@@ -41,7 +41,7 @@
 .js-modal-fix-up {
   background-color: $white;
   border: 0.3em solid $grey-3;
-  @include mq(640) {
+  @include mq($medium_device) {
     border-width: 0.6em;
   }
 }
@@ -49,7 +49,7 @@
 .js-modal-container {
   position: relative;
   margin: 1em;
-  @include mq(740) {
+  @include mq($large_device) {
     max-width: 44em;
     margin: 3em auto;
   }
@@ -58,7 +58,7 @@
 .js-modal-content {
   padding: 1.5em;
   font-size: 90%;
-  @include mq(550) {
+  @include mq($smallish_device) {
     padding: 2em;
     font-size: 100%;
   }
@@ -73,7 +73,7 @@
     text-decoration: none;
     & span{
       display: none;
-      @include mq(550) {
+      @include mq($smallish_device) {
         display: inherit;
       }
     }

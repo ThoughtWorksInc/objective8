@@ -2,10 +2,10 @@ $objective_navigation_height: 80px;
 
 .objective-navigation {
   height: $objective_navigation_height;
-  @include mq(450) {
+  @include mq($smallish_device) {
     margin-bottom: 2em;
   }
-  @include mq(768) {
+  @include mq($large_device) {
     margin-bottom: 4em;
   }
 }
@@ -34,7 +34,7 @@ $objective_navigation_height: 80px;
   list-style: none;
   overflow: hidden;
   font-size: 75%;
-  @include mq(450) {
+  @include mq($smallish_device) {
     height: $objective_navigation_height;
     font-size: 100%;
     max-width: $max_content_width;
@@ -43,10 +43,10 @@ $objective_navigation_height: 80px;
     display: inline-block;
     margin: 0 0.5em 0 0;
     padding: 0;
-    @include mq(430) {
+    @include mq($smallish_device) {
       margin-right: 1em;
     }
-    @include mq(520) {
+    @include mq($smallish_device) {
       margin-right: 2em;
     }
   }
@@ -68,7 +68,7 @@ $objective_navigation_height: 80px;
     border-bottom: 4px solid transparent;
     text-decoration: none;
     //    font-size: 90%;
-    @include mq(450) {
+    @include mq($smallish_device) {
       height: $objective_navigation_height;
       line-height: $objective_navigation_height;
     }

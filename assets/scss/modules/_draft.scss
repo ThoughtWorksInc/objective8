@@ -6,7 +6,7 @@
 
 %draft-section {
   margin-bottom: 2em;
-  @include mq(321) {
+  @include mq($small_device) {
     margin-bottom: 4em;
   }
 }
@@ -29,7 +29,7 @@
 }
 
 .draft-info-links {
-  @include mq(768) {
+  @include mq($large_device) {
     float: right;
   }
 }
@@ -42,7 +42,7 @@
 }
 
 .draft-writer-container {
-  @include mq(768) {
+  @include mq($large_device) {
     float: left;
     width: 50%;
   }

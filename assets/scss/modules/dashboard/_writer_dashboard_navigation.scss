@@ -12,7 +12,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  @include mq(640) {
+  @include mq($medium_device) {
     height: 480px;
     overflow-y: auto;
   }
@@ -89,7 +89,7 @@
   list-style: none;
   border-left: 1px solid rgba(40,44,42,0.1);
   border-bottom: 1px solid rgba(40,44,42,0.1);
-  @include mq(640) {
+  @include mq($medium_device) {
     display: block;
   }
 }
@@ -103,7 +103,7 @@
   z-index: 1;
   margin: 0 0 -1px 0;
   text-align: left;
-  @include mq(640) {
+  @include mq($medium_device) {
     float: left;
   }
   &.on {
@@ -128,7 +128,7 @@
   transition: color 0.2s;
   text-align: center;
   font-size: 80%;
-  @include mq(640) {
+  @include mq($medium_device) {
     padding-left: 1em;
     padding-right: 1em;
     text-align: left;
@@ -186,7 +186,7 @@
 
 .comments-navigation-text {
   @include visuallyhidden;
-  @include mq(480) {
+  @include mq($smallish_device) {
     @include revert-visuallyhidden;
   }
 }

@@ -4,7 +4,7 @@
 }
 .policy-contributors-list-item {
   margin-bottom: 0.4em;
-  @include mq(640) {
+  @include mq($medium_device) {
     width: 50%;
     float: left;
   }
