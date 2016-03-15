@@ -16,9 +16,6 @@ server {
   ssl_dhparam /etc/nginx/cert/dhparam.pem;
   ssl_protocols TLSv1.2 TLSv1.1 TLSv1;
 
-  location /static/ {
-    alias /var/www/objective8/public/;
-  }
   # trailing '/' after port means app doesn't know about '/as2/'
   location /as2/ {
     proxy_pass http://localhost:7000/;
