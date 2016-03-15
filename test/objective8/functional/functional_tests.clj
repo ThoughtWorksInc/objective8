@@ -8,7 +8,8 @@
             [objective8.core :as core]
             [objective8.back-end.domain.users :as users]
             [objective8.integration.integration-helpers :as integration-helpers]
-            [dev-helpers.stub-twitter-and-stonecutter :refer :all]))
+            [dev-helpers.stub-twitter-and-stonecutter :refer :all]
+            [objective8.front-end.templates.sign-in :as sign-in]))
 
 (def config-without-twitter-or-stonecutter (assoc core/app-config :authentication stub-twitter-and-stonecutter-auth-config))
 
@@ -65,7 +66,9 @@
 (def OBJECTIVE_OWNER_TWITTER_ID "twitter-789789")
 
 (against-background
-  [(before :contents (do (integration-helpers/db-connection)
+  [(sign-in/twitter-credentials-present?) => true
+   (sign-in/stonecutter-credentials-present?) => true
+   (before :contents (do (integration-helpers/db-connection)
                          (integration-helpers/truncate-tables)
                          (core/start-server config-without-twitter-or-stonecutter)
                          (wd/set-driver! {:browser :firefox})

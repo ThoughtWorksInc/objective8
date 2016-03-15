@@ -16,6 +16,8 @@ sign-in,page-title,Sign in or Sign up
 sign-in,sign-in-with-twitter,Sign in with Twitter
 sign-in,sign-in-with-facebook,Sign in with Facebook
 sign-in,twitter-helper-text,We will never post to Twitter without your permission.
+sign-in,facebook-helper-text,We will never post to Facebook without your permission.
+sign-in,twitter-and-facebook-helper-text,We will never post to Twitter or Facebook without your permission.
 sign-in,sign-in-with-d-cent,Sign in with %stonecutter-name%
 sign-up,doc-title,Sign up | %app-name%
 sign-up,doc-description,

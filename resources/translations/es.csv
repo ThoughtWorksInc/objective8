@@ -36,6 +36,8 @@ sign-in,page-title,Sign in or Sign up in spanish
 sign-in,sign-in-with-twitter,Sign in with Twitter in spanish
 sign-in,sign-in-with-facebook,Sign in with Facebook in spanish
 sign-in,twitter-helper-text,We will never post to Twitter without your permission. in spanish
+sign-in,facebook-helper-text,We will never post to Facebook without your permission. in Spanish
+sign-in,twitter-and-facebook-helper-text,We will never post to Twitter or Facebook without your permission. in Spanish
 sign-in,sign-in-with-d-cent,Sign in with %stonecutter-name% in spanish
 sign-up,doc-title,Sign up | %app-name% in spanish
 sign-up,doc-description, in spanish
