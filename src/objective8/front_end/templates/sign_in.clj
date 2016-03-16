@@ -26,11 +26,12 @@
 (defn set-helper-text-translation! []
   (cond
     (and (twitter-credentials-present?)
-         (facebook-credentials-present?)) (html/set-attr "data-l8n" "content:sign-in/twitter-and-facebook-helper-text")
-    (facebook-credentials-present?) (html/set-attr "data-l8n" "content:sign-in/facebook-helper-text")
-    (twitter-credentials-present?) (html/set-attr "data-l8n" "content:sign-in/twitter-helper-text")))
+         (facebook-credentials-present?)) (do (prn "twitter and facebook")
+                                              (html/set-attr :data-l8n "content:sign-in/twitter-and-facebook-helper-text"))
+    (facebook-credentials-present?) (html/set-attr :data-l8n "content:sign-in/facebook-helper-text")
+    (twitter-credentials-present?) (html/set-attr :data-l8n "content:sign-in/twitter-helper-text")))
 
-(defn sign-in-page [{:keys [data doc] :as context}]
+(defn sign-in-page [{:keys [doc] :as context}]
   (html/at sign-in-template
            [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
            [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
