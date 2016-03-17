@@ -59,11 +59,19 @@
       (and (not (empty? email-address))
            (not (valid-email? email-address))) (report-error :invalid))))
 
+(defn include-auth-email [{:keys [params session] :as request}]
+  (let [auth-email (:auth-provider-user-email session)
+        user-email (:email-address params)]
+    (if (and auth-email (nil? user-email))
+      (assoc-in request [:params :email-address] auth-email)
+      request)))
+
 (defn request->user-sign-up-data [request]
-  (-> (initialise-request-validation request)
-      (validate :username username-validator)
-      (validate :email-address email-address-validator)
-      (dissoc :request)))
+  (let [updated-request (include-auth-email request)]
+    (-> (initialise-request-validation updated-request)
+        (validate :username username-validator)
+        (validate :email-address email-address-validator)
+        (dissoc :request))))
 
 ;; Create objective
 
@@ -79,7 +87,7 @@
       (empty? description) (report-error :empty)
       (longer? description 5000) (report-error :length))))
 
-(defn request->objective-data [{:keys [params] :as request} user-id]
+(defn request->objective-data [request user-id]
   (-> (initialise-request-validation request)
       (validate :title objective-title-validator)
       (validate :description objective-description-validator)

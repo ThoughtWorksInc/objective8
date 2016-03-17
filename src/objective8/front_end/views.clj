@@ -35,8 +35,12 @@
             [objective8.front-end.templates.template-functions :as tf]))
 
 (defn- user-info [request auth-map]
-  (when auth-map {:username (:username auth-map)
-                  :roles (:roles auth-map)}))
+  (let [user-email (get-in request [:session :auth-provider-user-email])]
+    (if auth-map
+      {:username (:username auth-map)
+       :roles    (:roles auth-map)
+       :email    user-email}
+      {:email user-email})))
 
 (defn- doc-info [request page-name translations data]
   (when (and page-name translations)
@@ -57,13 +61,13 @@
         translations (:t' request)
         anti-forgery-snippet (html/html-snippet (anti-forgery-field))
         data (apply hash-map data)]
-    {:translations translations
-     :ring-request request
+    {:translations         translations
+     :ring-request         request
      :anti-forgery-snippet anti-forgery-snippet
-     :user (user-info request auth-map)
-     :doc (doc-info request page-name translations data)
-     :invitation-rsvp (get-in request [:session :invitation])
-     :data data}))
+     :user                 (user-info request auth-map)
+     :doc                  (doc-info request page-name translations data)
+     :invitation-rsvp      (get-in request [:session :invitation])
+     :data                 data}))
 
 (defn view
   "Wraps a template so that it can easily be called

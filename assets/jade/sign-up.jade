@@ -17,7 +17,7 @@ block content
             input.clj-input-username(id="username", name="username", type="text")
             span.user-input-error-message.clj-username-invalid-error(data-l8n="content:sign-up/username-invalid-validation-message") !Username must be between 1 and 16 characters, containing only letters or numbers
             span.user-input-error-message.clj-username-duplicated-error(data-l8n="content:sign-up/username-duplicated-validation-message") !This username is already taken. Please choose another.
-        p.form-field
+        p.form-field.clj-form-email-address
           label.form-field-label(for="email-address")
             span.form-field-label-title(data-l8n="content:sign-up/email-label") !Email
             input.clj-input-email-address(id="email-address", name="email-address", type="email")

@@ -26,8 +26,7 @@
 (defn set-helper-text-translation! []
   (cond
     (and (twitter-credentials-present?)
-         (facebook-credentials-present?)) (do (prn "twitter and facebook")
-                                              (html/set-attr :data-l8n "content:sign-in/twitter-and-facebook-helper-text"))
+         (facebook-credentials-present?)) (html/set-attr :data-l8n "content:sign-in/twitter-and-facebook-helper-text")
     (facebook-credentials-present?) (html/set-attr :data-l8n "content:sign-in/facebook-helper-text")
     (twitter-credentials-present?) (html/set-attr :data-l8n "content:sign-in/twitter-helper-text")))
 

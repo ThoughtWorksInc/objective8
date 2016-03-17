@@ -26,7 +26,8 @@
       (if-let [sub (:sub user-info)]
         (-> (response/redirect (str utils/host-url "/sign-up"))
             (assoc :session (:session request))
-            (assoc-in [:session :auth-provider-user-id] (str "d-cent-" sub)))
+            (assoc-in [:session :auth-provider-user-id] (str "d-cent-" sub))
+            (assoc-in [:session :auth-provider-user-email] (:email user-info)))
         (throw (ex-info "'sub' is nil or missing from user-info record in token-response from stonecutter"
                         {:user-info-keys (keys user-info)}))))
     (catch Exception e

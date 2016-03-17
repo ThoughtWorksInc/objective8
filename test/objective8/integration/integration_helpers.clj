@@ -11,7 +11,8 @@
             [objective8.front-end.workflows.twitter :as twitter]
             [objective8.front-end.workflows.sign-up :as sign-up]
             [objective8.back-end.storage.mappings :as m]
-            [objective8.back-end.storage.database :as db]))
+            [objective8.back-end.storage.database :as db]
+            [objective8.front-end.workflows.stonecutter :as stonecutter]))
 
 (defn db-connection [] (db/connect!))
 
@@ -87,11 +88,12 @@
 ;; App configuration for integration tests
 (def test-config
   (assoc core/app-config
-         :authentication {:allow-anon? true
-                          :workflows [(twitter/twitter-workflow {})
-                                      sign-up/sign-up-workflow]
-                          :login-uri "/sign-in"}
-         :https nil))
+    :authentication {:allow-anon? true
+                     :workflows   [(twitter/twitter-workflow {})
+                                   (stonecutter/workflow {})
+                                   sign-up/sign-up-workflow]
+                     :login-uri   "/sign-in"}
+    :https nil))
 
 (defn front-end-context
   "Creates a fake application context"

@@ -27,11 +27,12 @@
         (soc/authorisation-redirect-response openid-test-config) => ...stonecutter-sign-in-response...))
 
 (facts "about stonecutter-callback"
-       (fact "stonecutter-callback redirects to the sign-in workflow with the auth-provider-user-id set in the session"
+       (fact "stonecutter-callback redirects to the sign-in workflow with the auth-provider-user-id and auth-provider-user-email set in the session"
              (stonecutter-callback {:stonecutter-config openid-test-config :params {:code ...auth-code...} :session {:sign-in-referrer ...refer...}})
              => (contains {:status 302
                            :headers {"Location" (str utils/host-url "/sign-up")}
                            :session {:auth-provider-user-id "d-cent-SUBJECT"
+                                     :auth-provider-user-email "email@address.com"
                                      :sign-in-referrer ...refer...}})
              (provided
                (soc/request-access-token! openid-test-config ...auth-code...)

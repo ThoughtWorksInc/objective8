@@ -61,7 +61,7 @@
         :else {:status 500}))
     (response/redirect "/sign-in")))
 
-(defn sign-up-form-post [{:keys [params session] :as request}]
+(defn sign-up-form-post [{:keys [session] :as request}]
   (if-let [auth-provider-user-id (:auth-provider-user-id session)]
     (let [user-sign-up-data (fr/request->user-sign-up-data request)]
       (case (:status user-sign-up-data)

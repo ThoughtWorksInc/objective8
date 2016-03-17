@@ -73,15 +73,24 @@
 
         (fact "pulls out user information if the user is authenticated with friend"
               (view-fn "test" ring-request) => (contains {:user {:username "Wibble"
-                                                                 :roles #{:signed-in}}})
+                                                                 :roles #{:signed-in}
+                                                                 :email nil}})
               (provided
                 (friend/current-authentication ring-request) => {:username "Wibble"
                                                                  :roles #{:signed-in}}))
 
-        (fact "user is nil if there is no friend authentication"
-              (view-fn "test" ring-request) => (contains {:user nil})
+        (fact "user doesn't contain user information if there is no friend authentication"
+              (view-fn "test" ring-request) => (contains {:user {:email nil}})
               (provided
                 (friend/current-authentication ring-request) => nil))
+
+        (fact "user contains auth-email if it is in the session"
+              (let [request-with-auth-email (assoc-in ring-request
+                                                      [:session :auth-provider-user-email]
+                                                      ...email-address...)]
+                (view-fn "test" request-with-auth-email) => (contains {:user {:email ...email-address...}})
+                (provided
+                  (friend/current-authentication request-with-auth-email) => nil)))
 
         (fact "data is passed to the view"
               (view-fn "test" ring-request :data "yay") => (contains {:data {:data "yay"}}))))

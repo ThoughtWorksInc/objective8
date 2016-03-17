@@ -2,19 +2,18 @@
   (:require [midje.sweet :refer :all]
             [peridot.core :as p]
             [oauth.client :as oauth]
-            [cemerick.friend.workflows :as workflows]
-            [cemerick.friend :as friend]
-            [ring.util.codec :as c]
-            [objective8.core :as core]
             [objective8.config :as config]
             [objective8.integration.integration-helpers :as helpers]
             [objective8.front-end.api.http :as http-api]
             [objective8.utils :as utils]
-            [objective8.front-end.workflows.sign-up :as sign-up]))
+            [objective8.front-end.workflows.sign-up :as sign-up]
+            [stonecutter-oauth.client :as soc]
+            [stonecutter-oauth.jwt :as so-jwt]))
 
 (def test-session (helpers/front-end-context))
 
 (def twitter-callback-url (str utils/host-url "/twitter-callback?oauth_verifier=VERIFICATION_TOKEN"))
+(def stonecutter-callback-url (str utils/host-url "/d-cent-callback?code=1234567890ABCDEFGHIJ"))
 (def sign-up-url (str utils/host-url "/sign-up"))
 (def protected-resource (str utils/host-url "/objectives/create"))
 
@@ -25,7 +24,7 @@
    (check-redirects-to url-fragment 302))
   ([url-fragment status]
    (contains {:response
-              (contains {:status status
+              (contains {:status  status
                          :headers (contains {"Location" (contains url-fragment)})})})))
 
 (defn check-html-content [html-fragment]
@@ -56,19 +55,33 @@
                  (p/request twitter-callback-url)
                  p/follow-redirect) => (check-html-content "<title>Sign up"))
 
+       (fact "new users signing in with stonecutter are only asked to enter a username"
+             (against-background
+               (soc/request-access-token! anything "1234567890ABCDEFGHIJ") => {:id_token ...id-token...}
+               (so-jwt/get-public-key-string-from-jwk-set-url anything) => ...public-key-string...
+               (so-jwt/decode anything ...id-token... ...public-key-string...) => {:sub   "subject"
+                                                                                   :email "email@test.com"}
+               (http-api/find-user-by-auth-provider-user-id "d-cent-subject") => {:status ::http-api/not-found})
+             (let [response (-> test-session
+                                (p/request stonecutter-callback-url)
+                                p/follow-redirect)]
+               response => (every-checker (check-html-content "<title>Sign up")
+                                          (check-html-content "clj-input-username"))
+               response =not=> (check-html-content "clj-input-email-address")))
+
        (binding [config/enable-csrf false]
          (fact "After signing up (by posting their email address) the user is sent back to the resource they were trying to access"
                (against-background
-                 (oauth/access-token anything anything anything) => {:user_id "TWITTER_ID"
+                 (oauth/access-token anything anything anything) => {:user_id     "TWITTER_ID"
                                                                      :screen_name "SCREEN_NAME"}
                  (http-api/create-user {:auth-provider-user-id "twitter-TWITTER_ID"
-                                        :username "someUsername"
-                                        :email-address "test@email.address.com"})
+                                        :username              "someUsername"
+                                        :email-address         "test@email.address.com"})
                  => {:status ::http-api/success
-                     :result {:_id USER_ID
+                     :result {:_id                   USER_ID
                               :auth-provider-user-id "twitter-TWITTER_ID"
-                              :username "someUsername"
-                              :email-address "test@email.address.com"}})
+                              :username              "someUsername"
+                              :email-address         "test@email.address.com"}})
 
                (let [unauthorized-request-context (p/request test-session protected-resource)
                      signed-in-context (p/request unauthorized-request-context twitter-callback-url)
@@ -97,9 +110,9 @@
              (provided
                (http-api/find-user-by-auth-provider-user-id "twitter-TWITTER_ID")
                => {:status ::http-api/success
-                   :result {:_id USER_ID
+                   :result {:_id                   USER_ID
                             :auth-provider-user-id "twitter-TWITTER_ID"
-                            :email-address "test@email.address.com"}} :times 1)))
+                            :email-address         "test@email.address.com"}} :times 1)))
 
 (binding [config/enable-csrf false]
   (fact "unauthorised, unregistered user can sign in and be referred to a target uri"

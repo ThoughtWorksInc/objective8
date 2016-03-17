@@ -45,7 +45,7 @@
                                           (html/set-attr :action (utils/local-path-for :fe/decline-invitation :id (:objective-id invitation-rsvp) :i-id (:invitation-id invitation-rsvp)))
                                           (html/prepend anti-forgery-snippet)) 
                                         [:.clj-invitation-response-accept]
-                                        (if user
+                                        (if (:username user)
                                           (html/do-> (html/prepend anti-forgery-snippet)  
                                                      (html/set-attr :action (utils/local-path-for :fe/accept-invitation :id (:objective-id invitation-rsvp) :i-id (:invitation-id invitation-rsvp))))
                                           (html/substitute (html/at pf/anchor-button 

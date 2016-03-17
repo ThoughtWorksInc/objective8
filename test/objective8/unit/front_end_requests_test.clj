@@ -44,14 +44,22 @@
              (valid-username? "ABC-abc123") => falsey))
 
 (facts "about transforming requests to user-sign-up-data"
-       (fact "extracts the relevant data"
-             (let [user-sign-up-data (request->user-sign-up-data {:params {:username "validUsername"
-                                                                           :email-address "abc@def.com"}})]
+       (tabular
+         (fact "extracts the relevant data"
+               (let [user-sign-up-data (request->user-sign-up-data {:params {:username      ?username
+                                                                             :email-address ?email-address}
+                                                                    :session {:auth-provider-user-email ?auth-email}})]
 
-               (:data user-sign-up-data) => {:username "validUsername"
-                                             :email-address "abc@def.com"}
-               (:status user-sign-up-data) => ::objective8.front-end.front-end-requests/valid
-               (:report user-sign-up-data) => {}))
+                 (:data user-sign-up-data) => {:username      ?username
+                                               :email-address (or ?email-address ?auth-email)}
+                 (:status user-sign-up-data) => ::objective8.front-end.front-end-requests/valid
+                 (:report user-sign-up-data) => {}))
+
+         ?username               ?email-address             ?auth-email
+         "validUsername"         "abc@def.com"              nil
+         "validUsername"         nil                        "abc@def.com"
+         "validUsername"         "user-entered@email.com"   "auth@email.com")
+
 
        (fact "reports validation errors correctly when parameters are missing"
              (let [user-sign-up-data (request->user-sign-up-data {:params {}})]
