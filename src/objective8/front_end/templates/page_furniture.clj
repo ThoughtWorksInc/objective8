@@ -57,7 +57,7 @@
            [:.clj-username] (html/content (:username user))))
 
 (defn masthead [{:keys [user] :as context}]
-  (if user
+  (if (:username user)
     (masthead-signed-in context)
     (masthead-signed-out context)))
 
