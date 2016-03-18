@@ -17,7 +17,8 @@
                                                            :type "OAuthException"}})})
 
 (def fb-user-id "facebook-1234567")
-(def fb-user-email "facebook@example.com")
+(def valid-email "facebook@example.com")
+(def invalid-email "floogle wizard")
 (defn token-info-response [& {:keys [user-id app-id expires_at]
                               :or   {user-id    1234567
                                      app-id     fake-client-id
@@ -46,11 +47,12 @@
 ;; (fact "step 2: login and permissions acceptance handled by facebook")
 
 (facts "step 3: authenticating user"
-       (fact "stores the facebook user id and email in the session and redirects to sign-up"
+       (tabular
+         (fact "stores the facebook user id and email in the session and redirects to sign-up"
              (facebook-callback (-> fake-request with-code)) => (contains {:status  302
                                                                            :headers {"Location" (str utils/host-url "/sign-up")}
                                                                            :session {:auth-provider-user-id    fb-user-id
-                                                                                     :auth-provider-user-email fb-user-email}})
+                                                                                     :auth-provider-user-email ?auth-email}})
 
              (provided
                (http/get-request "https://graph.facebook.com/v2.3/oauth/access_token" {:query-params {:client_id     fake-client-id
@@ -61,7 +63,33 @@
                (http/get-request "https://graph.facebook.com/debug_token" {:query-params {:input_token  access-token
                                                                                           :access_token (str fake-client-id "|" fake-client-secret)}})
                => (token-info-response)
-               (http/get-request "https://graph.facebook.com/v2.5/1234567/?fields=email") => (user-info-response fb-user-email)))
+               (http/get-request "https://graph.facebook.com/v2.5/1234567/?fields=email") => (user-info-response ?fb-user-email)))
+         ?fb-user-email ?auth-email
+         valid-email    valid-email
+         nil            nil)
+
+       (tabular
+         (fact "stores the flash message in the request if email is invalid and redirects to sign-up"
+               (facebook-callback (-> fake-request with-code)) => (contains (into {:status  302
+                                                                                   :headers {"Location" (str utils/host-url "/sign-up")}
+                                                                                   :session {:auth-provider-user-id    fb-user-id}}
+                                                                                  ?flash-validation-value))
+
+               (provided
+                 (http/get-request "https://graph.facebook.com/v2.3/oauth/access_token" {:query-params {:client_id     fake-client-id
+                                                                                                        :redirect_uri  redirect-uri
+                                                                                                        :client_secret fake-client-secret
+                                                                                                        :code          login-code}})
+                 => access-token-response
+                 (http/get-request "https://graph.facebook.com/debug_token" {:query-params {:input_token  access-token
+                                                                                            :access_token (str fake-client-id "|" fake-client-secret)}})
+                 => (token-info-response)
+                 (http/get-request "https://graph.facebook.com/v2.5/1234567/?fields=email") => (user-info-response ?fb-user-email)))
+
+         ?fb-user-email ?flash-validation-value
+         invalid-email  {:flash {:validation :auth-email}}
+         " "            {:flash {:validation :auth-email}})
+
        (fact "redirects to homepage when user doesn't authorise application or error in fb"
              (facebook-callback (-> fake-request with-error)) => (contains {:status  302
                                                                             :headers {"Location" utils/host-url}}))
@@ -111,20 +139,4 @@
                => access-token-response
                (http/get-request "https://graph.facebook.com/debug_token" {:query-params {:input_token  access-token
                                                                                           :access_token (str fake-client-id "|" fake-client-secret)}})
-               => (token-info-response :expires_at 111)))
-       (fact "user email is nil in the session when permission to access email is declined"
-             (facebook-callback (-> fake-request with-code)) => (contains {:status  302
-                                                                           :headers {"Location" (str utils/host-url "/sign-up")}
-                                                                           :session {:auth-provider-user-id    fb-user-id
-                                                                                     :auth-provider-user-email nil}})
-
-             (provided
-               (http/get-request "https://graph.facebook.com/v2.3/oauth/access_token" {:query-params {:client_id     fake-client-id
-                                                                                                      :redirect_uri  redirect-uri
-                                                                                                      :client_secret fake-client-secret
-                                                                                                      :code          login-code}})
-               => access-token-response
-               (http/get-request "https://graph.facebook.com/debug_token" {:query-params {:input_token  access-token
-                                                                                          :access_token (str fake-client-id "|" fake-client-secret)}})
-               => (token-info-response)
-               (http/get-request "https://graph.facebook.com/v2.5/1234567/?fields=email") => (user-info-response nil))))
+               => (token-info-response :expires_at 111))))

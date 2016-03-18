@@ -3,7 +3,8 @@
             [objective8.utils :as utils]
             [objective8.front-end.api.http :as http]
             [cheshire.core :as json]
-            [bidi.ring :refer [make-handler]]))
+            [bidi.ring :refer [make-handler]]
+            [objective8.front-end.front-end-requests :as front-end]))
 
 (def redirect-uri (str utils/host-url "/facebook-callback"))
 (def error-redirect (response/redirect (str utils/host-url "/error/log-in")))
@@ -46,14 +47,26 @@
       response->json
       :email))
 
-(defn check-token-info [{:keys [session facebook-config] :as request} access-token]
+(defn fb-email-valid? [email]
+  (or (nil? email) (and (not (empty? email)) (front-end/valid-email? email))))
+
+(defn check-fb-email [{:keys [session] :as request} user-id]
+  (let [fb-user-id (str "facebook-" user-id)
+        fb-user-email (get-user-email user-id)
+        session-with-auth-id {:session (assoc session :auth-provider-user-id fb-user-id)}
+        redirect (into (response/redirect (str utils/host-url "/sign-up"))
+                       session-with-auth-id)]
+    (if (fb-email-valid? fb-user-email)
+      (into redirect
+            (assoc-in session-with-auth-id [:session :auth-provider-user-email] fb-user-email))
+      (into redirect
+            {:flash {:validation :auth-email}}))))
+
+(defn check-token-info [{:keys [facebook-config] :as request} access-token]
   (let [token-info (get-token-info access-token facebook-config)
-        user-id (:user_id token-info)
-        fb-user-id (str "facebook-" user-id)]
+        user-id (:user_id token-info)]
     (if (token-info-valid? token-info facebook-config)
-      (into (response/redirect (str utils/host-url "/sign-up"))
-            {:session (assoc session :auth-provider-user-id fb-user-id
-                                     :auth-provider-user-email (get-user-email user-id))})
+      (check-fb-email request user-id)
       error-redirect)))
 
 (defn check-access-token [request]

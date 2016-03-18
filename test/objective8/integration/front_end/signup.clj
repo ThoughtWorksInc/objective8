@@ -77,7 +77,7 @@
                (facebook/get-access-token anything) => {:access_token ...access-token...}
                (facebook/get-token-info ...access-token... anything) => {:user_id "123"}
                (facebook/token-info-valid? {:user_id "123"} anything) => true
-               (facebook/get-user-email "123") => ...email...
+               (facebook/get-user-email "123") => "valid@email.com"
                (http-api/find-user-by-auth-provider-user-id "facebook-123") => {:status ::http-api/not-found})
              (let [response (-> test-session
                                 (p/request facebook-callback-url)
