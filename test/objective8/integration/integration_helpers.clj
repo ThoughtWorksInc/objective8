@@ -12,7 +12,8 @@
             [objective8.front-end.workflows.sign-up :as sign-up]
             [objective8.back-end.storage.mappings :as m]
             [objective8.back-end.storage.database :as db]
-            [objective8.front-end.workflows.stonecutter :as stonecutter]))
+            [objective8.front-end.workflows.stonecutter :as stonecutter]
+            [objective8.front-end.workflows.facebook :as facebook]))
 
 (defn db-connection [] (db/connect!))
 
@@ -91,6 +92,7 @@
     :authentication {:allow-anon? true
                      :workflows   [(twitter/twitter-workflow {})
                                    (stonecutter/workflow {})
+                                   (facebook/facebook-workflow {})
                                    sign-up/sign-up-workflow]
                      :login-uri   "/sign-in"}
     :https nil))

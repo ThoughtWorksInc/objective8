@@ -17,6 +17,7 @@
                                                            :type "OAuthException"}})})
 
 (def fb-user-id "facebook-1234567")
+(def fb-user-email "facebook@example.com")
 (defn token-info-response [& {:keys [user-id app-id expires_at]
                               :or   {user-id    1234567
                                      app-id     fake-client-id
@@ -24,6 +25,10 @@
   {:body (json/generate-string {:data {:user_id    user-id
                                        :app_id     app-id
                                        :expires_at expires_at}})})
+
+(defn user-info-response [email]
+  {:body (json/generate-string {:id    fb-user-id
+                                :email email})})
 
 (defn with-code [request]
   (assoc-in request [:params :code] login-code))
@@ -35,15 +40,17 @@
       (let [response (facebook-sign-in fake-request)]
         response => (contains {:status  302
                                :headers {"Location" (str "https://www.facebook.com/dialog/oauth?client_id=" fake-client-id
-                                                         "&redirect_uri=" redirect-uri)}})))
+                                                         "&redirect_uri=" redirect-uri
+                                                         "&scope=public_profile,email")}})))
 
 ;; (fact "step 2: login and permissions acceptance handled by facebook")
 
 (facts "step 3: authenticating user"
-       (fact "stores the facebook user id in the session and redirects to sign-up"
+       (fact "stores the facebook user id and email in the session and redirects to sign-up"
              (facebook-callback (-> fake-request with-code)) => (contains {:status  302
                                                                            :headers {"Location" (str utils/host-url "/sign-up")}
-                                                                           :session {:auth-provider-user-id fb-user-id}})
+                                                                           :session {:auth-provider-user-id    fb-user-id
+                                                                                     :auth-provider-user-email fb-user-email}})
 
              (provided
                (http/get-request "https://graph.facebook.com/v2.3/oauth/access_token" {:query-params {:client_id     fake-client-id
@@ -53,7 +60,8 @@
                => access-token-response
                (http/get-request "https://graph.facebook.com/debug_token" {:query-params {:input_token  access-token
                                                                                           :access_token (str fake-client-id "|" fake-client-secret)}})
-               => (token-info-response)))
+               => (token-info-response)
+               (http/get-request "https://graph.facebook.com/v2.5/1234567/?fields=email") => (user-info-response fb-user-email)))
        (fact "redirects to homepage when user doesn't authorise application or error in fb"
              (facebook-callback (-> fake-request with-error)) => (contains {:status  302
                                                                             :headers {"Location" utils/host-url}}))
@@ -103,4 +111,20 @@
                => access-token-response
                (http/get-request "https://graph.facebook.com/debug_token" {:query-params {:input_token  access-token
                                                                                           :access_token (str fake-client-id "|" fake-client-secret)}})
-               => (token-info-response :expires_at 111))))
+               => (token-info-response :expires_at 111)))
+       (fact "user email is nil in the session when permission to access email is declined"
+             (facebook-callback (-> fake-request with-code)) => (contains {:status  302
+                                                                           :headers {"Location" (str utils/host-url "/sign-up")}
+                                                                           :session {:auth-provider-user-id    fb-user-id
+                                                                                     :auth-provider-user-email nil}})
+
+             (provided
+               (http/get-request "https://graph.facebook.com/v2.3/oauth/access_token" {:query-params {:client_id     fake-client-id
+                                                                                                      :redirect_uri  redirect-uri
+                                                                                                      :client_secret fake-client-secret
+                                                                                                      :code          login-code}})
+               => access-token-response
+               (http/get-request "https://graph.facebook.com/debug_token" {:query-params {:input_token  access-token
+                                                                                          :access_token (str fake-client-id "|" fake-client-secret)}})
+               => (token-info-response)
+               (http/get-request "https://graph.facebook.com/v2.5/1234567/?fields=email") => (user-info-response nil))))

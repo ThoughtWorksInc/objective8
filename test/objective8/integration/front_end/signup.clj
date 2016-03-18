@@ -8,11 +8,14 @@
             [objective8.utils :as utils]
             [objective8.front-end.workflows.sign-up :as sign-up]
             [stonecutter-oauth.client :as soc]
-            [stonecutter-oauth.jwt :as so-jwt]))
+            [stonecutter-oauth.jwt :as so-jwt]
+            [objective8.front-end.api.http :as http]
+            [objective8.front-end.workflows.facebook :as facebook]))
 
 (def test-session (helpers/front-end-context))
 
 (def twitter-callback-url (str utils/host-url "/twitter-callback?oauth_verifier=VERIFICATION_TOKEN"))
+(def facebook-callback-url (str utils/host-url "/facebook-callback?code=1234455r6ftgyhu"))
 (def stonecutter-callback-url (str utils/host-url "/d-cent-callback?code=1234567890ABCDEFGHIJ"))
 (def sign-up-url (str utils/host-url "/sign-up"))
 (def protected-resource (str utils/host-url "/objectives/create"))
@@ -64,6 +67,20 @@
                (http-api/find-user-by-auth-provider-user-id "d-cent-subject") => {:status ::http-api/not-found})
              (let [response (-> test-session
                                 (p/request stonecutter-callback-url)
+                                p/follow-redirect)]
+               response => (every-checker (check-html-content "<title>Sign up")
+                                          (check-html-content "clj-input-username"))
+               response =not=> (check-html-content "clj-input-email-address")))
+
+       (fact "new users signing in with facebook are only asked to enter a username"
+             (against-background
+               (facebook/get-access-token anything) => {:access_token ...access-token...}
+               (facebook/get-token-info ...access-token... anything) => {:user_id "123"}
+               (facebook/token-info-valid? {:user_id "123"} anything) => true
+               (facebook/get-user-email "123") => ...email...
+               (http-api/find-user-by-auth-provider-user-id "facebook-123") => {:status ::http-api/not-found})
+             (let [response (-> test-session
+                                (p/request facebook-callback-url)
                                 p/follow-redirect)]
                response => (every-checker (check-html-content "<title>Sign up")
                                           (check-html-content "clj-input-username"))

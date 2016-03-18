@@ -3,8 +3,7 @@
             [objective8.utils :as utils]
             [objective8.front-end.api.http :as http]
             [cheshire.core :as json]
-            [bidi.ring :refer [make-handler]]
-            [clojure.tools.logging :as log]))
+            [bidi.ring :refer [make-handler]]))
 
 (def redirect-uri (str utils/host-url "/facebook-callback"))
 (def error-redirect (response/redirect (str utils/host-url "/error/log-in")))
@@ -12,7 +11,8 @@
 (defn facebook-sign-in [{:keys [facebook-config] :as request}]
   (let [client-id (:client-id facebook-config)]
     (response/redirect (str "https://www.facebook.com/dialog/oauth?client_id=" client-id
-                            "&redirect_uri=" redirect-uri))))
+                            "&redirect_uri=" redirect-uri
+                            "&scope=public_profile,email"))))
 
 (defn response->json [response]
   (json/parse-string (:body response) true))
@@ -40,12 +40,20 @@
                                                                                                         :code          code}})]
     (response->json response)))
 
+(defn get-user-email [user-id]
+  (-> (str "https://graph.facebook.com/v2.5/" user-id "/?fields=email")
+      http/get-request
+      response->json
+      :email))
+
 (defn check-token-info [{:keys [session facebook-config] :as request} access-token]
   (let [token-info (get-token-info access-token facebook-config)
-        fb-user-id (str "facebook-" (:user_id token-info))]
+        user-id (:user_id token-info)
+        fb-user-id (str "facebook-" user-id)]
     (if (token-info-valid? token-info facebook-config)
       (into (response/redirect (str utils/host-url "/sign-up"))
-            {:session (assoc session :auth-provider-user-id fb-user-id)})
+            {:session (assoc session :auth-provider-user-id fb-user-id
+                                     :auth-provider-user-email (get-user-email user-id))})
       error-redirect)))
 
 (defn check-access-token [request]
