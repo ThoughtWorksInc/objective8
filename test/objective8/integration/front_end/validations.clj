@@ -5,7 +5,8 @@
             [objective8.front-end.api.http :as http-api]
             [objective8.integration.integration-helpers :as ih]
             [objective8.config :as config]
-            [objective8.utils :as utils]))
+            [objective8.utils :as utils]
+            [objective8.front-end.workflows.facebook :as facebook]))
 
 (def USER_ID 1)
 (def OBJECTIVE_ID 2)
@@ -68,6 +69,7 @@
   (http-api/get-draft-section anything) => {:status ::http-api/success :result draft-section})
 
 (def twitter-callback-url (str utils/host-url "/twitter-callback?oauth_verifier=VERIFICATION_TOKEN"))
+(def facebook-callback-url (str utils/host-url "/facebook-callback?code=1234455r6ftgyhu"))
 (def sign-up-url (str utils/host-url "/sign-up"))
 
 (def user-session (ih/front-end-context))
@@ -91,6 +93,23 @@
            ""            "abc@def.com"      "clj-username-invalid-error"
            "valid"       ""                 "clj-email-empty-error"
            "valid"       "invalid"          "clj-email-invalid-error")
+
+         (tabular
+           (fact "auth validation error is reported"
+               (against-background
+                 (facebook/get-access-token anything) => {:access_token ...access-token...}
+                 (facebook/get-token-info ...access-token... anything) => {:user_id "123"}
+                 (facebook/token-info-valid? {:user_id "123"} anything) => true
+                 (facebook/get-user-email "123") => ?fb-email-address)
+               (-> user-session
+                   (p/request facebook-callback-url)
+                   p/follow-redirect
+                   :response
+                   :body) => (contains "clj-auth-email-invalid-error"))
+
+           ?fb-email-address
+           "invalid"
+           "")
 
          (fact "error is reported if username is not unique"
                (against-background
@@ -116,7 +135,7 @@
 
            ?error-tag
            "clj-username-invalid-error" "clj-username-duplicated-error"
-           "clj-email-empty-error" "clj-email-invalid-error")))
+           "clj-email-empty-error" "clj-email-invalid-error" "clj-auth-email-invalid-error")))
 
 
 (facts "about the create objective form"

@@ -5,6 +5,7 @@
 }
 
 .sign-in-title {
+  margin: 0;
   font-size: 1.5em;
   @include mq($large_device) {
     font-size: 2em;

@@ -10,6 +10,8 @@
         validation-report (:report validation-data)
         previous-inputs (:data validation-data)]
     (html/at nodes
+             [:.clj-auth-email-invalid-error] (when (= validation-data :auth-email) identity)
+
              [:.clj-username-invalid-error] (when (contains? (:username validation-report) :invalid) identity)
              [:.clj-username-duplicated-error] (when (contains? (:username validation-report) :duplicated) identity)
              [:.clj-input-username] (html/set-attr :value (:username previous-inputs))

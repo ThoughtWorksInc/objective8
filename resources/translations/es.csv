@@ -49,6 +49,7 @@ sign-up,email-label,Email in spanish
 sign-up,email-empty-validation-message,You must enter an email address in spanish
 sign-up,email-invalid-validation-message,The email address you have entered is invalid in spanish
 sign-up,button,Create account in spanish
+sign-up,auth-email-invalid-message,"The email address from your account could not be retrieved, please type it below. In Spanish"
 objective-guidance,heading,What is an Objective? in spanish
 objective-guidance,text-line-1,A policy starts with an idea. in spanish
 objective-guidance,text-line-2,These are catalysts for change. in spanish

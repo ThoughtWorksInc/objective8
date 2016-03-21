@@ -29,6 +29,7 @@ sign-up,email-label,Email
 sign-up,email-empty-validation-message,You must enter an email address
 sign-up,email-invalid-validation-message,The email address you have entered is invalid
 sign-up,button,Create account
+sign-up,auth-email-invalid-message,"The email address from your account could not be retrieved, please type it below."
 objective-guidance,heading,What is an Objective?
 objective-guidance,text-line-1,A policy starts with an idea.
 objective-guidance,text-line-2,These are catalysts for change.

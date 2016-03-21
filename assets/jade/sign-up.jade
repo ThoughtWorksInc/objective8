@@ -9,6 +9,7 @@ block content
 
   .sign-up-container
     h1.sign-in-title(data-l8n="content:sign-up/page-title") !Almost there
+    span.user-input-error-message.clj-auth-email-invalid-error(data-l8n="content:sign-up/auth-email-invalid-message") !The email address from you account could not be retrieved, please type it below.
     form.sign-up-form.clj-sign-up-form(action="/sign-up", method="POST", novalidate)
       fieldset.sign-up-fields
         p.form-field
