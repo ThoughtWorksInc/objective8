@@ -49,7 +49,8 @@
              (get-in (stonecutter-callback {:stonecutter-config ...config... :params {:code ...auth-code...}})
                      [:headers "Location"]) => (contains (utils/path-for :fe/error-configuration)))
 
-       (fact "redirects to the sign-in page with flash message set in the session when email is invalid"
+       (tabular
+         (fact "redirects to the sign-in page with flash message set in the session when email is invalid"
              (stonecutter-callback {:stonecutter-config openid-test-config :params {:code ...auth-code...} :session {:sign-in-referrer ...refer...}})
              => (contains {:status 302
                            :headers {"Location" (str utils/host-url "/sign-up")}
@@ -62,7 +63,11 @@
                (so-jwt/get-public-key-string-from-jwk-set-url "ISSUER/api/jwk-set")
                => test-auth-provider-public-key
                (so-jwt/decode openid-test-config token-expiring-in-year-2515 test-auth-provider-public-key)
-               => (assoc token-content :email "invalid"))))
+               => (assoc token-content :email ?stonecutter-email)))
+         ?stonecutter-email
+         "invalid"
+         " "
+         nil))
 
 (facts "about wrap-stonecutter-config"
        (fact "includes the stonecutter configuration in the request when the configuration is valid"

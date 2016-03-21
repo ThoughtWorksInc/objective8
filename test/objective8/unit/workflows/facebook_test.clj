@@ -47,12 +47,11 @@
 ;; (fact "step 2: login and permissions acceptance handled by facebook")
 
 (facts "step 3: authenticating user"
-       (tabular
-         (fact "stores the facebook user id and email in the session and redirects to sign-up"
+       (fact "stores the facebook user id and email in the session and redirects to sign-up"
              (facebook-callback (-> fake-request with-code)) => (contains {:status  302
                                                                            :headers {"Location" (str utils/host-url "/sign-up")}
                                                                            :session {:auth-provider-user-id    fb-user-id
-                                                                                     :auth-provider-user-email ?fb-user-email}})
+                                                                                     :auth-provider-user-email valid-email}})
 
              (provided
                (http/get-request "https://graph.facebook.com/v2.3/oauth/access_token" {:query-params {:client_id     fake-client-id
@@ -63,10 +62,7 @@
                (http/get-request "https://graph.facebook.com/debug_token" {:query-params {:input_token  access-token
                                                                                           :access_token (str fake-client-id "|" fake-client-secret)}})
                => (token-info-response)
-               (http/get-request "https://graph.facebook.com/v2.5/1234567/?fields=email") => (user-info-response ?fb-user-email)))
-         ?fb-user-email
-         valid-email
-         nil)
+               (http/get-request "https://graph.facebook.com/v2.5/1234567/?fields=email") => (user-info-response valid-email)))
 
        (tabular
          (fact "stores the flash message in the request if email is invalid and redirects to sign-up"
@@ -88,7 +84,8 @@
 
          ?fb-user-email
          invalid-email
-         " ")
+         " "
+         nil)
 
        (fact "redirects to homepage when user doesn't authorise application or error in fb"
              (facebook-callback (-> fake-request with-error)) => (contains {:status  302

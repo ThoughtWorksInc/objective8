@@ -38,7 +38,7 @@
   (and (re-matches #"[^ @]+@[^ @]+$" email-address) (shorter? email-address 257)))
 
 (defn valid-not-empty-email? [email]
-  (or (nil? email) (and (not (empty? email)) (valid-email? email))))
+  (and (not (empty? email)) (valid-email? email)))
 
 (defn valid-username? [username]
   (re-matches #"[a-zA-Z0-9]{1,16}" username))
