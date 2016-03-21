@@ -47,16 +47,13 @@
       response->json
       :email))
 
-(defn fb-email-valid? [email]
-  (or (nil? email) (and (not (empty? email)) (front-end/valid-email? email))))
-
 (defn check-fb-email [{:keys [session] :as request} user-id]
   (let [fb-user-id (str "facebook-" user-id)
         fb-user-email (get-user-email user-id)
         session-with-auth-id {:session (assoc session :auth-provider-user-id fb-user-id)}
         redirect (into (response/redirect (str utils/host-url "/sign-up"))
                        session-with-auth-id)]
-    (if (fb-email-valid? fb-user-email)
+    (if (front-end/valid-not-empty-email? fb-user-email)
       (into redirect
             (assoc-in session-with-auth-id [:session :auth-provider-user-email] fb-user-email))
       (into redirect
