@@ -11,6 +11,11 @@ POSTGRES_PASSWORD=
 POSTGRES_USER=
 POSTGRES_DB=
 
+# The auth IDs of the admins, separated by spaces
+# The format is twitter-<ID of Twitter account> or facebook-<ID of Facebook account>
+# e.g. ADMINS=facebook-123456789 twitter-54321
+ADMINS=
+
 # Coracle config
 CORACLE_BEARER_TOKEN=
 CORACLE_URI=
@@ -35,9 +40,6 @@ AWS_GPG_PASSPHRASE=
 STONECUTTER_AUTH_URL=
 STONECUTTER_CLIENT_ID=
 STONECUTTER_CLIENT_SECRET=
-
-# use for configuring logs, ex=-Dlog4j.configuration=log4j.debug
-JAVA_OPTS=
 
 # customise application branding
 APP_NAME=
