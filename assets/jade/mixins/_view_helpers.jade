@@ -91,5 +91,6 @@ mixin googleAnalytics(trackingID)
 mixin cookieWarning
   script.clj-cookie-message(type='text/javascript').
     window.cookieconsent_options = {"message":'${cookieMessage}',"dismiss":'${cookieDismiss}',"learnMore":'${cookieLearnMore}',"link":'${cookieLink}',"theme":"dark-bottom"};
+  script.clj-cookie-library(type='text/javascript', src='/static/cookieconsent.min.js')
 
 

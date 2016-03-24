@@ -16,12 +16,13 @@
 ;; COOKIE MESSAGE
 
 (def cookie-message-script (html/select library-html-resource [:.clj-cookie-message]))
+(def cookie-message-library (html/select library-html-resource [:.clj-cookie-library]))
 
 (defn add-cookie-message [context nodes]
   (let [translations (:translations context)]
     (if (:cookie-message-enabled config/environment)
       (html/at nodes
-               [:head] (html/append cookie-message-script)
+               [:head] (html/append cookie-message-library cookie-message-script)
                [:.clj-cookie-message html/text-node] (html/replace-vars {:cookieLink (str utils/host-url "/cookies")
                                                                          :cookieMessage (translations :cookie-banner/message)
                                                                          :cookieDismiss (translations :cookie-banner/dismiss)
