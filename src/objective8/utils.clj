@@ -40,6 +40,13 @@
   (let [ks (keys m) vs (vals m)]
     (zipmap (map transformation ks) vs)))
 
+(defn deep-merge
+  "Recursively merges maps. If keys are not maps, the last value wins."
+  [& vals]
+  (if (every? map? vals)
+    (apply merge-with deep-merge vals)
+    (last vals)))
+
 ;;Bidi currently doesn't currently work with java.lang.Integer
 (extend-protocol bidi/ParameterEncoding
   java.lang.Integer

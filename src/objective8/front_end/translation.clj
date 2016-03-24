@@ -3,7 +3,8 @@
             [clojure.java.io :as io]
             [clojure.string :as string]
             [clojure-csv.core :as csv]
-            [objective8.config :as config]))
+            [objective8.config :as config]
+            [objective8.utils :as utils]))
 
 ;; From http://stackoverflow.com/a/19656800/576322
 (defn lazy-read-csv
@@ -35,8 +36,10 @@
   (keyword (first (string/split file-name #"\.csv$"))))
 
 (defn translation-resource-locator [filename]
-  (fn [] {:resource-name (csv-file-name->language-keyword filename)
-          :resource (io/reader (io/resource (str "translations/" filename)))}))
+  (let [custom-resource (io/resource (str "translations/custom-" filename))]
+    (fn [] {:resource-name   (csv-file-name->language-keyword filename)
+            :resource        (io/reader (io/resource (str "translations/" filename)))
+            :custom-resource (when custom-resource (io/reader custom-resource))})))
 
 (def parse-error-messages
   {:long-path "Translation lookup path too long"
@@ -52,15 +55,24 @@
 (defn substitute [translation-seq]
   (map replace-key translation-seq))
 
-(defn- load-translation* [resource-name resource]
+(defn load-dictionary [resource]
+  (->> (lazy-read-csv resource)
+       substitute
+       (map (juxt csv-line->dictionary-path
+                  csv-line->dictionary-content))
+       (reduce (fn [d [ks v]] (assoc-in d ks v)) {})
+       ))
+
+(defn load-custom-dictionary [custom-resource]
+  (if custom-resource (load-dictionary custom-resource) {}))
+
+(defn- load-translation* [resource-name resource custom-resource]
   (try
     (let [language-identifier (keyword resource-name)
-          dictionary (->> (lazy-read-csv resource)
-                          substitute
-                          (map (juxt csv-line->dictionary-path
-                                     csv-line->dictionary-content))
-                          (reduce (fn [d [ks v]] (assoc-in d ks v)) {}))]
-      {:status ::success :result {language-identifier dictionary}})
+          dictionary (load-dictionary resource)
+          customised-dictionary (load-custom-dictionary custom-resource)
+          combined-dictionary (utils/deep-merge dictionary customised-dictionary)]
+      {:status ::success :result {language-identifier combined-dictionary}})
     (catch Exception e
       (let [{cause :cause} (ex-data e)]
         {:status ::parse-error
@@ -70,8 +82,8 @@
       (.close resource))))
 
 (defn load-translation [resource-locator]
-  (let [{:keys [resource-name resource]} (resource-locator)
-        {status :status :as load-result} (load-translation* resource-name resource)]
+  (let [{:keys [resource-name resource custom-resource]} (resource-locator)
+        {status :status :as load-result} (load-translation* resource-name resource custom-resource)]
     load-result))
 
 (defn find-translation-resources
