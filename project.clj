@@ -70,7 +70,7 @@
                                            "test"                 ["do" "grunt," "shell" "test/run_all_tests.sh"]
                                            "auto-no-browser"      ["test" ":autotest" "src/" "test/objective8/unit/" "test/objective8/integration/"]
                                            "grunt"                ["shell" "grunt" "build"]
-                                           "start"                ["do" "grunt," "shell" "./start_app_vm.sh"]}
+                                           "start"                ["shell" "./start_app_vm.sh"]}
                             :jvm-opts     ["-Dlog4j.configuration=log4j.dev"]}
              :load-testing {:source-paths ["load_testing"]
                             :repl-options [:init-ns load-tests]
