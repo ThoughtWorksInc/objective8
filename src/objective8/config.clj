@@ -55,6 +55,7 @@
    :coracle-post-uri              (get-var "CORACLE_URI")
    :app-name                      (get-var "APP_NAME" "Objective[8]")
    :stonecutter-name              (get-var "STONECUTTER_NAME" "Stonecutter")
-   :show-alpha-warnings           (get-var "SHOW_ALPHA_WARNINGS" false)})
+   :show-alpha-warnings           (get-var "SHOW_ALPHA_WARNINGS" false)
+   :cookie-message-enabled        (get-var "COOKIE_MESSAGE_ENABLED" false)})
 
 (def replacement-keys [:app-name :stonecutter-name])

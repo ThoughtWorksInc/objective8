@@ -87,7 +87,8 @@
    :fe/admin-removal-confirmation-post (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-admin-removal-confirmation) #{:admin})
    :fe/post-admin-removal (friend/wrap-authorize (utils/anti-forgery-hook front-end-handlers/post-admin-removal) #{:admin})
    :fe/error-log-in front-end-handlers/error-log-in
-   :fe/error-configuration front-end-handlers/error-configuration})
+   :fe/error-configuration front-end-handlers/error-configuration
+   :fe/cookies front-end-handlers/cookies})
 
 (defn back-end-handlers []
   {:api/post-user-profile (m/wrap-bearer-token back-end-handlers/post-user-profile bt/token-provider)

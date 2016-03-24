@@ -110,3 +110,23 @@
   "url"  nil   "secret"  =not=>
   nil    "id"  "secret"  =not=>
   nil    nil   nil       =not=>)
+
+(tabular
+  (fact "the cookie message is only shown when the environment variable is set"
+      (binding [config/environment (assoc config/environment :cookie-message-enabled ?enabled)]
+        (let [{response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/index))]
+          (:body response) ?arrow (contains "clj-cookie-message")
+          (:body response) ?arrow (contains "clj-cookie-library"))))
+  ?enabled ?arrow
+  true     =>
+  false    =not=>)
+
+(fact "the more info link in the cookies message is set to the cookies page"
+      (binding [config/environment (assoc config/environment :cookie-message-enabled true)]
+        (let [{response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/index))
+              cookies-page (str utils/host-url "/cookies")]
+          (:body response) =not=> (contains "${cookieLink}")
+          (:body response) => (contains cookies-page)
+          (:body response) =not=> (contains "${cookieLearnMore}")
+          (:body response) =not=> (contains "${cookieDismiss}")
+          (:body response) =not=> (contains "${cookieMessage}"))))

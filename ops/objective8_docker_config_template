@@ -44,5 +44,6 @@ STONECUTTER_CLIENT_SECRET=
 # customise application branding
 APP_NAME=
 STONECUTTER_NAME=
-# warnings will show if variable is set
+# alpha warnings or cookie message will show if variable is set
 SHOW_ALPHA_WARNINGS=
+COOKIE_MESSAGE_ENABLED=

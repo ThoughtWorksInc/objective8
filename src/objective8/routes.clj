@@ -56,7 +56,8 @@
                          :post :fe/edit-profile-post}
     "users"             {["/" :username] {:get :fe/profile}}
     "error"             {"/configuration" {:get :fe/error-configuration}
-                         "/log-in" {:get :fe/error-log-in}}}])
+                         "/log-in" {:get :fe/error-log-in}}
+    "cookies"           :fe/cookies}])
 
 (def back-end-routes
   ["/"

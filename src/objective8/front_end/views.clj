@@ -31,6 +31,7 @@
             [objective8.front-end.templates.admin-removal-confirmation :as admin-removal-confirmation]
             [objective8.front-end.templates.error-404 :as error-404]
             [objective8.front-end.templates.error-pages :as error-pages]
+            [objective8.front-end.templates.cookies :as cookies]
             [objective8.front-end.templates.page-furniture :as pf]
             [objective8.front-end.templates.template-functions :as tf]))
 
@@ -78,6 +79,7 @@
       (->> context
            viewfn
            pf/add-google-analytics
+           (pf/add-cookie-message context)
            (pf/add-custom-app-name context)
            pf/remove-footer-alpha-warning
            (tf/translate context)
@@ -115,4 +117,5 @@
 (def sign-up (view sign-up/sign-up-page))
 (def admin-activity (view admin-activity/admin-activity-page))
 (def admin-removal-confirmation (view admin-removal-confirmation/admin-removal-confirmation-page))
+(def cookies (view cookies/cookie-page))
 

@@ -78,6 +78,11 @@
    :header {"Content-Type" "text/html"}
    :body (views/learn-more-page "learn-more" request)})
 
+(defn cookies [request]
+  {:status 200
+   :headers {"Content-Type" "text/html"}
+   :body (views/cookies "cookies" request)})
+
 ;; USER PROFILE
 
 (defn profile [{:keys [route-params] :as request}]

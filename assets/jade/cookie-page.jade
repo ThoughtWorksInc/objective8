@@ -1,0 +1,21 @@
+extends layouts/base
+include mixins/_view_helpers
+
+block vars
+  - bodyClass = ""
+  - pageTitle = "! Cookies"
+
+block content
+
+  .middle-container
+    h1(data-l8n="content:cookie-page/page-title") !Cookies
+    p(data-l8n="html:cookie-page/page-intro") !To make this site work properly, we sometimes place small data files called cookies on your device.
+
+    h2(data-l8n="content:cookie-page/sub-title-1") !What are cookies?
+    p(data-l8n="html:cookie-page/cookie-definition") !A cookie is a small text file...
+
+    h2(data-l8n="content:cookie-page/sub-title-2") !How do we use cookies?
+    div(data-l8n="html:cookie-page/our-cookies") !We use Google Analytics, a popular web analytics service provided by Google, Inc. ...
+
+    h2(data-l8n="content:cookie-page/sub-title-3") !How to control cookies
+    p(data-l8n="html:cookie-page/control-cookies") !You can control and/or delete cookies as you wish - for details, see...
