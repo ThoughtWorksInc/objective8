@@ -115,8 +115,7 @@
   (fact "the cookie message is only shown when the environment variable is set"
       (binding [config/environment (assoc config/environment :cookie-message-enabled ?enabled)]
         (let [{response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/index))]
-          (:body response) ?arrow (contains "clj-cookie-message")
-          (:body response) ?arrow (contains "clj-cookie-library"))))
+          (:body response) ?arrow (contains "clj-cookie-message"))))
   ?enabled ?arrow
   true     =>
   false    =not=>)

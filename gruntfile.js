@@ -142,6 +142,10 @@ module.exports = function(grunt) {
         src: '<%= folders.src %>/js/vendor/modernizr.js',
         dest: '<%= folders.output %>/public/modernizr.min.js'
       },
+      cookieconsent: {
+        src: '<%= folders.src %>/js/vendor/cookieconsent.js',
+        dest: '<%= folders.output %>/public/cookieconsent.min.js'
+      },
       build: {
         src: '<%= folders.output %>/public/scripts.js',
         dest: '<%= folders.output %>/public/scripts.min.js'

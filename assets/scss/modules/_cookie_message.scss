@@ -1,0 +1,23 @@
+.cc_container {
+  font-family: $sans-serif;
+
+  a {
+    color: $link-colour;
+    &:visited {
+      color: $link-visited-colour;
+    }
+    &:hover {
+      color: $link-hover-colour;
+    }
+    &:active {
+      color: $link-active-colour;
+    }
+    &:focus {
+      outline: $color2_light solid 2px;
+    }
+  }
+
+  .cc_btn {
+    background-color: $color3;
+  }
+}

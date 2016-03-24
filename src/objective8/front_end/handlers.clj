@@ -81,7 +81,7 @@
 (defn cookies [request]
   {:status 200
    :headers {"Content-Type" "text/html"}
-   :body (views/cookies "cookies" request)})
+   :body (views/cookies "cookie-page" request)})
 
 ;; USER PROFILE
 
