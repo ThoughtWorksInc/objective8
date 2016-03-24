@@ -65,6 +65,9 @@ objective-list,doc-description,
 objective-list,page-title,Objectives
 objective-list,create-objective-link,Create an objective
 objective-list,subtitle,Recently created objectives
+objective-list,drafting-begins,La redacción empieza en
+objective-list,days,días
+objective-list,drafting-started,La redacción ha comenzado
 create-objective,doc-title,Create an Objective | %app-name%
 create-objective,doc-description,
 create-objective,page-title,Create an objective
@@ -170,6 +173,9 @@ dashboard-comments,objective-label,Objective
 comment-create,comment-title,Comments are a maximum length of 500 characters
 comment-create,post-button,Add a comment
 comment-create,comment-label,Your comment
+question-sign-in,sign-in,Entrar
+question-sign-in,please,Por favor
+question-sign-in,to,añadir una pregunta
 writer-list,doc-title,Policy writers | %app-name%
 writer-list,page-intro,Writers work with each other and the community to draft policy.
 writer-list,writer-list-heading,Recently added writers
