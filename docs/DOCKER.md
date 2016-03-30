@@ -78,12 +78,14 @@ You can create an nginx.conf file by copying the following into a new file and r
     http {
       server {
       listen 80;
-      return 301 https://<ip address>$request_uri;
+      server_name <web address for site>
+      return 301 https://$server_name$request_uri;
       }
       
       
       server {
         listen 443 ssl;
+        server_name <web address for site>
       
         ssl_certificate /etc/nginx/ssl/<file name for SSL certificate>;
         ssl_certificate_key /etc/nginx/ssl/<file name for SSL key>;
