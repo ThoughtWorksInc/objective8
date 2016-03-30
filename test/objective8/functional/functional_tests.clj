@@ -321,9 +321,8 @@
            (wait-for-title "Sign in or Sign up | Objective[8]")
            (wd/click ".func--sign-in-with-d-cent")
            (wait-for-title "Sign up | Objective[8]")
-           (wd/input-text "#username" "funcTestWriter")
-           (-> "#email-address"
-               (wd/input-text "func_test_invited_writer_user@domain.com")
+           (-> "#username"
+               (wd/input-text "funcTestWriter")
                wd/submit)
 
            (wait-for-title "Functional test headline | Objective[8]")

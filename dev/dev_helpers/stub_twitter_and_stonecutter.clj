@@ -50,7 +50,8 @@
 (defn stub-stonecutter-callback [request]
   (-> (response/redirect (str utils/host-url "/sign-up"))
       (assoc :session (:session request))
-      (assoc-in [:session :auth-provider-user-id] @stonecutter-id)))
+      (assoc-in [:session :auth-provider-user-id] @stonecutter-id)
+      (assoc-in [:session :auth-provider-user-email] "email@example.com")))
 
 (defn stub-stonecutter-sign-in [request]
   (stub-stonecutter-callback request))
