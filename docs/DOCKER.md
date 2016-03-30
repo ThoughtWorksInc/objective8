@@ -8,7 +8,8 @@ To run the application you'll need the following containers:
 * Objective8
 * Nginx
 
-First, open the *objective8_docker_config_template* found in the */ops* directory, enter your credentials and save the file. This will be used in both postgres and objective8.
+First, open the *objective8_docker_config_template* found in the */ops* directory, enter your credentials and save the file. This will be used in both postgres and objective8. 
+You can find more information about the configuration variables [here](./CONFIG.md).
 
 ## Postgres Container
 

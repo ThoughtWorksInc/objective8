@@ -1,58 +1,42 @@
 ---
-# Your application URI or IP address (including port if required)
-BASE_URI: ""
-APP_PORT: ""
-
-# The externally accessible API uri (including port if required)
-API_URI: ""
-
-# The following strings are for connecting to the API and should be kept secret
 API_BEARER_NAME: ""
 API_BEARER_TOKEN: ""
 
-# Database config 
+BASE_URI: ""
+APP_PORT: ""
+API_URI: ""
+
 DB_USER: ""
 DB_PASSWORD: ""
 DB_HOST: ""
 DB_PORT: ""
 DB_NAME: ""
 
-# The auth IDs of the admins, separated by spaces
-# The format is twitter-<ID of Twitter account> or facebook-<ID of Facebook account>
-# e.g. ADMIN: "facebook-123456789 twitter-54321"
-ADMINS: ""
-
-# Coracle config
-CORACLE_BEARER_TOKEN: ""
-CORACLE_URI: ""
-
-# Your Twitter development app credentials
-TWITTER_CONSUMER_TOKEN: ""
-TWITTER_CONSUMER_SECRET_TOKEN: ""
-
-# Your Facebook development app credentials
-FB_CLIENT_ID: ""
-FB_CLIENT_SECRET: ""
-
-# Your AWS credentials
-AWS_ACCESS_KEY: "" 
-AWS_SECRET_KEY: ""
-
-# A passphrase for encrypting the database backups before they reach AWS S3
-# You will need this if you ever want to restore backups from a different machine so don't lose/forget it.
-AWS_GPG_PASSPHRASE: ""
-
-# Your Stonecutter auth config
 STONECUTTER_AUTH_URL: ""
 STONECUTTER_CLIENT_ID: ""
 STONECUTTER_CLIENT_SECRET: ""
+STONECUTTER_NAME: ""
 
-# use for configuring logs, ex: "-Dlog4j.configuration=log4j.debug"
+TWITTER_CONSUMER_TOKEN: ""
+TWITTER_CONSUMER_SECRET_TOKEN: ""
+
+FB_CLIENT_ID: ""
+FB_CLIENT_SECRET: ""
+
+CORACLE_URI: ""
+CORACLE_BEARER_TOKEN: ""
+
+ADMINS: ""
+
+AWS_ACCESS_KEY: ""
+AWS_SECRET_KEY: ""
+AWS_GPG_PASSPHRASE: ""
+
 JAVA_OPTS: ""
 
-# customise application branding
 APP_NAME: ""
-STONECUTTER_NAME: ""
-# alpha warnings or cookie message will show if variable is set
+
 SHOW_ALPHA_WARNINGS: ""
+
+GA_TRACKING_ID: ""
 COOKIE_MESSAGE_ENABLED: ""

@@ -12,7 +12,7 @@ All of the following steps are essential.
 - In file *ops/digital_ocean_box.inventory* replace the IP address with the IP address of your ubuntu server machine
 - Create a Twitter developer account and "app" for user authentication in the app
 - Create an AWS (Amazon Web Services) account which will be used to store database backups in S3
-- Use the *objective8_config_template* found in the */ops* directory and replace the empty strings with your credentials and save it for use in the next step. Take note of the file path.
+- Use the *objective8_config_template* found in the */ops* directory and replace the empty strings with your credentials and save it for use in the next step. Take note of the file path. You can find more information about the configuration variables [here](./CONFIG.md).
 - Create a */ops/roles/nginx/files/secure/* directory, and copy your SSL certificate and key files there, with the names *objective8.key* and *objective.crt*.
 
 Run Ansible playbook:
