@@ -85,7 +85,7 @@ mixin googleAnalytics(trackingID)
       m.parentNode.insertBefore(a,m)})
     (window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-    ga('create', '#{trackingID}', 'auto');
+    ga('create', '#{trackingID}', {'cookieExpires': 15778463});
     ga('send', 'pageview');
 
 mixin cookieWarning
