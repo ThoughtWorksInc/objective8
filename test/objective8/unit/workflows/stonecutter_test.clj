@@ -49,6 +49,12 @@
              (get-in (stonecutter-callback {:stonecutter-config ...config... :params {:code ...auth-code...}})
                      [:headers "Location"]) => (contains (utils/path-for :fe/error-configuration)))
 
+       (fact "redirects to referrer when access denied"
+             (stonecutter-callback {:params {:error "access_denied"}
+                                    :session {:sign-in-referrer "/objectives/1"}})
+             => (contains {:status 302
+                           :headers (contains {"Location" (contains "/objectives/1")})}))
+
        (tabular
          (fact "redirects to the sign-in page with flash message set in the session when email is invalid"
              (stonecutter-callback {:stonecutter-config openid-test-config :params {:code ...auth-code...} :session {:sign-in-referrer ...refer...}})

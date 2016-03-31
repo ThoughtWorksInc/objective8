@@ -23,26 +23,36 @@
         (into redirect
               {:flash {:validation :auth-email}})))
 
+(defn redirect-to-sign-up [request]
+  (let [auth-code (get-in request [:params :code])
+        stonecutter-config (get-in request [:stonecutter-config])
+        token-response (soc/request-access-token! stonecutter-config auth-code)
+        auth-jwks-url (get-auth-jwks-url stonecutter-config)
+        public-key-string (so-jwt/get-public-key-string-from-jwk-set-url auth-jwks-url)
+        user-info (so-jwt/decode stonecutter-config (:id_token token-response) public-key-string)
+        sub (:sub user-info)
+        email (:email user-info)
+        redirect (-> (response/redirect (str utils/host-url "/sign-up"))
+                     (assoc :session (:session request))
+                     (assoc-in [:session :auth-provider-user-id] (str "d-cent-" sub)))]
+    (if sub
+      (check-email-and-redirect email redirect)
+      (throw (ex-info "'sub' is nil or missing from user-info record in token-response from stonecutter"
+                      {:user-info-keys (keys user-info)})))))
+
+(defn redirect-to-referrer [request]
+  (let [redirect-url (some-> (:session request) :sign-in-referrer utils/safen-url)]
+    (-> (response/redirect (str utils/host-url redirect-url))
+        (assoc :session (:session request)))))
+
 (defn stonecutter-callback [request]
-  (try
-    (let [auth-code (get-in request [:params :code])
-          stonecutter-config (get-in request [:stonecutter-config])
-          token-response (soc/request-access-token! stonecutter-config auth-code)
-          auth-jwks-url (get-auth-jwks-url stonecutter-config)
-          public-key-string (so-jwt/get-public-key-string-from-jwk-set-url auth-jwks-url)
-          user-info (so-jwt/decode stonecutter-config (:id_token token-response) public-key-string)
-          sub (:sub user-info)
-          email (:email user-info)
-          redirect (-> (response/redirect (str utils/host-url "/sign-up"))
-                       (assoc :session (:session request))
-                       (assoc-in [:session :auth-provider-user-id] (str "d-cent-" sub)))]
-      (if sub
-        (check-email-and-redirect email redirect)
-        (throw (ex-info "'sub' is nil or missing from user-info record in token-response from stonecutter"
-                        {:user-info-keys (keys user-info)}))))
-    (catch Exception e
-      (do (log/info "Exception in Stonecutter callback handler: " e)
-          (invalid-configuration-handler request)))))
+  (if (get-in request [:params :error])
+    (redirect-to-referrer request)
+    (try
+      (redirect-to-sign-up request)
+      (catch Exception e
+        (do (log/info "Exception in Stonecutter callback handler: " e)
+            (invalid-configuration-handler request))))))
 
 (defn wrap-stonecutter-config [handler config invalid-configuration-handler]
   (case config
