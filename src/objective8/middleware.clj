@@ -52,3 +52,11 @@
         (friend/throw-unauthorized (friend/identity request)
                                    {::friend/wrapped-handler handler
                                     ::friend/required-roles roles})))))
+
+(defn wrap-handlers-except [handlers wrap-function exclusions]
+  (into {} (for [[k v] handlers]
+             [k (if (k exclusions) v (wrap-function v))])))
+
+(defn wrap-just-these-handlers [handlers-m wrap-function inclusions]
+  (into {} (for [[k v] handlers-m]
+             [k (if (k inclusions) (wrap-function v) v)])))
