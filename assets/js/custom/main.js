@@ -53,6 +53,6 @@ $('.js-hide-button').on('click', function(e) {
 
 //Developer Easter egg
 function helpObjective8 () {
-  window.location = "https://github.com/ThoughtWorksInc/objective8";
+  window.location = "https://github.com/d-cent/objective8";
 }
 console.log("Greetings fellow developers, we need your help -- helpObjective8()");
