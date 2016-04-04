@@ -14,11 +14,10 @@
 - Log in to your Heroku account: `heroku login`
 - Add heroku remote: `heroku git:remote -a [APP_NAME]`
 - Add heroku postgres add-on: `heroku addons:create heroku-postgresql:hobby-dev`
-- Set buildpacks: 
+- Set buildpacks:
 
-
-    heroku buildpacks:set heroku/nodejs
-    heroku buildpacks:add heroku/clojure
+        heroku buildpacks:set heroku/nodejs
+        heroku buildpacks:add heroku/clojure
 
 
 - Set Config Vars on Heroku
