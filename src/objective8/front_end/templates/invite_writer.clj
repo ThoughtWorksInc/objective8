@@ -20,7 +20,7 @@
            (html/set-attr :href (str "/sign-in?refer=" (:uri ring-request)))))
 
 (defn invite-writer [{user :user :as context}]
-  (if user
+  (if (:username user)
     (invite-writer-form context) 
     (sign-in-to-invite-writer context)))
 

@@ -33,7 +33,7 @@
            (html/set-attr :href (str "/sign-in?refer=" (:uri ring-request)))))
 
 (defn add-question [{user :user :as context}]
-  (if user
+  (if (:username user)
     (add-question-form context)
     (sign-in-to-add-question context)))
 

@@ -177,7 +177,7 @@
                                                  (html/content
                                                    (translations (keyword "add-comment-form" (str "comment-reason-" (:reason comment))))))
             [:.clj-up-down-vote-form]
-                                               (if user
+                                               (if (:username user)
                                                  (voting-actions-when-signed-in context comment)
                                                  (voting-actions-when-not-signed-in context comment))
             [:.clj-writer-note-item-container] (when (:note comment) identity)
@@ -233,7 +233,7 @@
 
 
 (defn comment-create [{user :user :as context} comment-target]
-  (if user
+  (if (:username user)
     (comment-create-form context comment-target)
     (sign-in-to-comment context)))
 

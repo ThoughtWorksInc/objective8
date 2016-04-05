@@ -104,7 +104,7 @@
                   [:.clj-answer] (html/clone-for [answer answers]
                                                  [:.clj-answer] (html/set-attr :id (str "answer-" (:_id answer)))
                                                  [:.clj-answer-text] (html/content (:answer answer))
-                                                 [:.clj-approval-form] (if user
+                                                 [:.clj-approval-form] (if (:username user)
                                                                          (voting-actions-when-signed-in context answer)
                                                                          (voting-actions-when-signed-out context answer))
                                                  [:.clj-writer-note-item-container] (when (:note answer)
@@ -112,7 +112,7 @@
 
                   [:.clj-answer-new] (when-not more-answers? identity)
 
-                  [:.clj-answer-form] (if user
+                  [:.clj-answer-form] (if (:username user)
                                         (html/do->
                                           (html/set-attr :action
                                                          (str "/objectives/" (:_id objective)

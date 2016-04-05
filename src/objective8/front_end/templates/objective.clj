@@ -220,7 +220,7 @@
               [:.clj-guidance-buttons] nil
               [:.clj-guidance-heading] (html/content (translations :objective-guidance/heading))
 
-              [:.clj-star-form] (if user
+              [:.clj-star-form] (if (:username user)
                                   (star-form-when-signed-in context)
                                   (star-form-when-not-signed-in context))
 
