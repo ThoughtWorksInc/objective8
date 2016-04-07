@@ -89,6 +89,7 @@
 (def error-404 (view error-404/error-404-page))
 (def error-configuration (view error-pages/error-configuration-page))
 (def error-default (view error-pages/error-default-page))
+(def error-log-in (view error-pages/error-log-in-page))
 
 (def index (view index/index-page))
 (def learn-more-page (view learn-more/learn-more-page))

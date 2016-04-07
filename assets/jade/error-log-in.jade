@@ -1,0 +1,12 @@
+extends layouts/base
+
+block vars
+  - pageTitle = "!Error | Objective[8]"
+
+block content
+
+  .middle-container.clj-error-404
+    h1(data-l8n="content:error-log-in/page-title") !An error has occurred
+    p(data-l8n="content:error-log-in/page-intro").lede !Sorry, something went wrong! Please try again later, or contact the site administrator if the problem persists.
+    .error-sign-in-button
+      a.button(href="/sign-in", data-l8n="content:error-log-in/sign-in-button") !Sign in

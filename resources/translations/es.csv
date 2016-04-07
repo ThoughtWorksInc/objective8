@@ -296,9 +296,13 @@ question-view,added-message,Your question has been added! in spanish
 question-view,added-answer-message,Your answer has been added! in spanish
 error-default,doc-title,Error | %app-name% in spanish
 error-default,doc-description,Something went wrong in spanish
-error-default,page-title,Something went wrong with signing you in in spanish
+error-default,page-title,Something went wrong in spanish
 error-default,page-intro,"An unexpected error has occurred, please try again. We apologise for any inconvenience." in spanish
-error-default,sign-in-button,Sign in in Spanish
+error-log-in,doc-title,Error | %app-name% in Spanish
+error-log-in,doc-description,Something went wrong in Spanish
+error-log-in,page-title,Something went wrong with signing you in in Spanish
+error-log-in,page-intro,"An unexpected error has occurred, please try again. We apologise for any inconvenience. in Spanish"
+error-log-in,sign-in-button,Sign in in Spanish
 error-404,doc-title,Error | %app-name% in spanish
 error-404,doc-description,Sorry the page you requested can't be found. in spanish
 error-404,page-title,Sorry the page you requested can't be found. in spanish

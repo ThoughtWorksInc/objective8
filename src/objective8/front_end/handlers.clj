@@ -48,7 +48,9 @@
    :body (views/error-default "error-default" request)})
 
 (defn error-log-in [request]
-  (default-error-page request 500))
+  {:status 500
+   :headers {"Content-Type" "text/html"}
+   :body (views/error-log-in "error-log-in" request)})
 
 (defn index [request]
   {:status 200

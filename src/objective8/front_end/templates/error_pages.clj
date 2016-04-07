@@ -13,13 +13,21 @@
 
 (def error-default-template (html/html-resource "templates/jade/error-default.html"))
 
-(defn error-default-page [{:keys [doc user] :as context}]
+(defn error-default-page [{:keys [doc] :as context}]
+  (html/at error-default-template
+           [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
+           [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+           [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))))
+
+(def error-log-in-template (html/html-resource "templates/jade/error-log-in.html"))
+
+(defn error-log-in-page [{:keys [doc] :as context}]
   (if (get-in config/environment [:okta-credentials :client-id])
-    (html/at error-default-template
-             [:body] (html/substitute (html/select error-default-template [:.app-wrapper]))
+    (html/at error-log-in-template
+             [:body] (html/substitute (html/select error-log-in-template [:.app-wrapper]))
              [:header] nil
              [:footer] nil)
-    (html/at error-default-template
+    (html/at error-log-in-template
              [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
              [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
              [:.clj-status-bar] (html/substitute (pf/status-flash-bar context)))))
