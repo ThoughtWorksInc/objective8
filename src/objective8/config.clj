@@ -1,5 +1,5 @@
 (ns objective8.config
- (:require [clojure.tools.logging :as log]))
+  (:require [clojure.tools.logging :as log]))
 
 (def ^:dynamic enable-csrf true)
 (def ^:dynamic two-phase? false)
@@ -14,13 +14,13 @@
   ([var-name]
    (get-var var-name nil))
   ([var-name default]
-  (if-let [variable (get (System/getenv) var-name)]
-    variable
-    (do
-      (if default
-          (log/info (str "Failed to look up environment variable \"" var-name "\" - using provided default"))
-          (log/error (str "Failed to look up environment variable \"" var-name "\" - no default provided")))
-      default))))
+   (if-let [variable (get (System/getenv) var-name)]
+     variable
+     (do
+       (if default
+         (log/info (str "Failed to look up environment variable \"" var-name "\" - using provided default"))
+         (log/error (str "Failed to look up environment variable \"" var-name "\" - no default provided")))
+       default))))
 
 (def base-uri (get-var "BASE_URI" "localhost:8080"))
 
@@ -48,6 +48,9 @@
                                    :secret-token   (get-var "TWITTER_CONSUMER_SECRET_TOKEN")}
    :facebook-credentials          {:client-id     (get-var "FB_CLIENT_ID")
                                    :client-secret (get-var "FB_CLIENT_SECRET")}
+   :okta-credentials              {:client-id     (get-var "OKTA_CLIENT_ID")
+                                   :client-secret (get-var "OKTA_CLIENT_SECRET")
+                                   :auth-url      (get-var "OKTA_AUTH_URL")}
    :stonecutter-auth-provider-url (get-var "STONECUTTER_AUTH_URL")
    :stonecutter-client-id         (get-var "STONECUTTER_CLIENT_ID")
    :stonecutter-client-secret     (get-var "STONECUTTER_CLIENT_SECRET")

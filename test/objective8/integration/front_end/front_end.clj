@@ -130,3 +130,13 @@
           (:body response) =not=> (contains "${cookieLearnMore}")
           (:body response) =not=> (contains "${cookieDismiss}")
           (:body response) =not=> (contains "${cookieMessage}"))))
+
+(tabular
+  (fact "the log in error page doesn't show the header or footer when the okta env var is set"
+        (binding [config/environment (assoc-in config/environment [:okta-credentials :client-id] ?client-id)]
+          (let [{response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/error-log-in))]
+            (:body response) ?arrow (contains "<header role=\"banner\" id=\"top\">")
+            (:body response) ?arrow (contains "<footer>"))))
+  ?client-id       ?arrow
+  "client-id-123"  =not=>
+  nil              =>)

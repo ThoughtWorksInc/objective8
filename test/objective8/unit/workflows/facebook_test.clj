@@ -124,7 +124,7 @@
                (http/get-request "https://graph.facebook.com/debug_token" {:query-params {:input_token  access-token
                                                                                           :access_token (str fake-client-id "|" fake-client-secret)}})
                => (token-info-response :app-id "error")))
-       (fact "redirects to homepage when expiry time in token info is after now"
+       (fact "redirects to homepage when expiry time in token info is before now"
              (facebook-callback (-> fake-request with-code)) => (contains {:status  302
                                                                            :headers {"Location" (str utils/host-url "/error/log-in")}})
 

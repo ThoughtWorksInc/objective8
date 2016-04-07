@@ -27,6 +27,13 @@ The following environment variables can be passed to the application.
 - **STONECUTTER_NAME** - defaults to Stonecutter
 
 
+#### Enter these credentials to add [Okta](https://www.okta.com) - it will disable all other login options
+
+- **OKTA_CLIENT_ID** - Your client ID, from Okta.
+- **OKTA_CLIENT_SECRET** - Your client secret, from Okta.
+- **OKTA_AUTH_URL** -Your Okta URL.
+
+
 #### Enter the credentials from [here](https://apps.twitter.com/) to add Twitter as a login option
 
 - **TWITTER_CONSUMER_TOKEN** - the Twitter App Consumer Key

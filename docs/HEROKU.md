@@ -24,7 +24,7 @@
 ### Facebook set up: 
 *(Optional: use as many login methods as you like)*
 
-- Create new website app
+- Create new website app [here](https://developers.facebook.com)
 - Navigate to settings > advanced > Client OAuth Settings > Valid OAuth redirect URIs
 - Enter `http://[APP_NAME].herokuapp.com/facebook-callback`
 - Save changes

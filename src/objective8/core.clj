@@ -21,6 +21,7 @@
             [objective8.front-end.translation :refer [configure-translations]]
             [objective8.front-end.workflows.twitter :refer [twitter-workflow configure-twitter]]
             [objective8.front-end.workflows.facebook :refer [facebook-workflow]]
+            [objective8.front-end.workflows.okta :refer [okta-workflow]]
             [objective8.front-end.workflows.stonecutter :as stonecutter]
             [objective8.front-end.workflows.stub-twitter :refer [stub-twitter-workflow]]
             [objective8.front-end.workflows.sign-up :refer [sign-up-workflow]]
@@ -29,6 +30,20 @@
             [objective8.back-end.handlers :as back-end-handlers]
             [objective8.back-end.storage.database :as db]
             [objective8.back-end.domain.bearer-tokens :as bt]))
+
+(defn all-okta-credentials-provided? []
+  (let [okta-credentials (:okta-credentials config/environment)]
+    (and (:client-id okta-credentials) (:client-secret okta-credentials) (:auth-url okta-credentials))))
+
+(defn wrap-signed-in [handlers]
+  (if (all-okta-credentials-provided?)
+    (m/wrap-handlers-except handlers #(friend/wrap-authorize % #{:signed-in}) #{:fe/error-log-in})
+    (m/wrap-just-these-handlers handlers #(friend/wrap-authorize % #{:signed-in})
+                                #{:fe/create-objective-form :fe/create-objective-form-post :fe/add-a-question
+                                  :fe/add-question-form-post :fe/add-answer-form-post :fe/create-profile-get
+                                  :fe/create-profile-post :fe/edit-profile-get :fe/edit-profile-post :fe/accept-invitation
+                                  :fe/post-up-vote :fe/post-down-vote :fe/post-comment :fe/post-annotation
+                                  :fe/post-star :fe/post-writer-note})))
 
 (defn front-end-handlers []
   (-> {:fe/index                           front-end-handlers/index
@@ -89,12 +104,7 @@
                                                         :fe/learn-more :fe/admin-activity :fe/create-objective-form
                                                         :fe/create-objective-form-post :fe/writer-invitation :fe/draft-diff
                                                         :fe/draft-list :fe/error-log-in :fe/error-configuration :fe/cookies})
-      (m/wrap-just-these-handlers #(friend/wrap-authorize % #{:signed-in})
-                                  #{:fe/create-objective-form :fe/create-objective-form-post :fe/add-a-question
-                                    :fe/add-question-form-post :fe/add-answer-form-post :fe/create-profile-get
-                                    :fe/create-profile-post :fe/edit-profile-get :fe/edit-profile-post :fe/accept-invitation
-                                    :fe/post-up-vote :fe/post-down-vote :fe/post-comment :fe/post-annotation
-                                    :fe/post-star :fe/post-writer-note})
+      (wrap-signed-in)
       (m/wrap-just-these-handlers #(friend/wrap-authorize % #{:admin})
                                   #{:fe/admin-removal-confirmation-get :fe/admin-removal-confirmation-post :fe/post-admin-removal})
       (m/wrap-just-these-handlers m/wrap-authorise-writer-inviter
@@ -203,18 +213,23 @@
 
 (def app-config
   {:authentication {:allow-anon? true
-                    :workflows   [(if (= (:fake-twitter-mode config/environment) "TRUE")
-                                    stub-twitter-workflow
-                                    (twitter-workflow (configure-twitter (:twitter-credentials config/environment))))
-                                  (stonecutter/workflow (soc/configure (:stonecutter-auth-provider-url config/environment)
-                                                                       (:stonecutter-client-id config/environment)
-                                                                       (:stonecutter-client-secret config/environment)
-                                                                       (str "https://" (:base-uri config/environment)
-                                                                            "/d-cent-callback")
-                                                                       :protocol :openid))
-                                  (facebook-workflow (:facebook-credentials config/environment))
-                                  sign-up-workflow]
-                    :login-uri   "/sign-in"}
+                    :workflows   (if (all-okta-credentials-provided?)
+                                   [(okta-workflow (:okta-credentials config/environment))
+                                    sign-up-workflow]
+                                   [(if (= (:fake-twitter-mode config/environment) "TRUE")
+                                      stub-twitter-workflow
+                                      (twitter-workflow (configure-twitter (:twitter-credentials config/environment))))
+                                    (stonecutter/workflow (soc/configure (:stonecutter-auth-provider-url config/environment)
+                                                                         (:stonecutter-client-id config/environment)
+                                                                         (:stonecutter-client-secret config/environment)
+                                                                         (str "https://" (:base-uri config/environment)
+                                                                              "/d-cent-callback")
+                                                                         :protocol :openid))
+                                    (facebook-workflow (:facebook-credentials config/environment))
+                                    sign-up-workflow])
+                    :login-uri   (if (all-okta-credentials-provided?)
+                                   "/okta-sign-in"
+                                   "/sign-in")}
    :session-store  (memory-store)
    :translation    (configure-translations)
    :db-spec        (db/spec (:db-config config/environment))})
