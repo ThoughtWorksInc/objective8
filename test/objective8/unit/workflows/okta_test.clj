@@ -57,7 +57,7 @@
                                                                        :session {:auth-provider-user-id    (str "okta-" okta-user-id)
                                                                                  :auth-provider-user-email valid-email}})
              (provided
-               (http/get-request token-url {:query-params {:grant_type    "authorization_code"
+               (http/post-request token-url {:form-params {:grant_type    "authorization_code"
                                                            :client_id     fake-client-id
                                                            :redirect_uri  redirect-uri
                                                            :client_secret fake-client-secret
@@ -72,7 +72,7 @@
              (okta-callback (-> fake-request with-code)) => (contains {:status  302
                                                                        :headers {"Location" (str utils/host-url "/error/log-in")}})
              (provided
-               (http/get-request token-url {:query-params {:grant_type    "authorization_code"
+               (http/post-request token-url {:form-params {:grant_type    "authorization_code"
                                                            :client_id     fake-client-id
                                                            :redirect_uri  redirect-uri
                                                            :client_secret fake-client-secret
@@ -82,7 +82,7 @@
              (okta-callback (-> fake-request with-code)) => (contains {:status  302
                                                                        :headers {"Location" (str utils/host-url "/error/log-in")}})
              (provided
-               (http/get-request token-url {:query-params {:grant_type    "authorization_code"
+               (http/post-request token-url {:form-params {:grant_type    "authorization_code"
                                                            :client_id     fake-client-id
                                                            :redirect_uri  redirect-uri
                                                            :client_secret fake-client-secret
@@ -95,7 +95,7 @@
                                                                        :headers {"Location" (str utils/host-url "/error/log-in")}})
 
              (provided
-               (http/get-request token-url {:query-params {:grant_type    "authorization_code"
+               (http/post-request token-url {:form-params {:grant_type    "authorization_code"
                                                            :client_id     fake-client-id
                                                            :redirect_uri  redirect-uri
                                                            :client_secret fake-client-secret
@@ -108,7 +108,7 @@
                                                                        :headers {"Location" (str utils/host-url "/error/log-in")}})
 
              (provided
-               (http/get-request token-url {:query-params {:grant_type    "authorization_code"
+               (http/post-request token-url {:form-params {:grant_type    "authorization_code"
                                                            :client_id     fake-client-id
                                                            :redirect_uri  redirect-uri
                                                            :client_secret fake-client-secret
