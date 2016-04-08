@@ -3,7 +3,8 @@
             [ring.util.response :as response]
             [objective8.front-end.api.http :as http]
             [bidi.ring :refer [make-handler]]
-            [cheshire.core :as json]))
+            [cheshire.core :as json]
+            [clojure.tools.logging :as log]))
 
 (def redirect-uri (str utils/host-url "/okta-callback"))
 
@@ -31,18 +32,19 @@
          (> expiry-time (utils/unix-current-time))
          (= issuer-url auth-url))))
 
-(defn check-token-info [request access-token]
-  (let [auth-url (get-in request [:okta-config :auth-url])
+(defn check-token-info [{:keys [okta-config session] :as request} access-token]
+  (let [auth-url (:auth-url okta-config)
         user-info (get-user-info access-token auth-url)
         user-info-body (response->json user-info)
         user-id (:sub user-info-body)
-        updated-session (assoc (:session request) :auth-provider-user-id (str "okta-" user-id)
-                                                  :auth-provider-user-email (:email user-info-body))]
+        updated-session (assoc session :auth-provider-user-id (str "okta-" user-id)
+                                       :auth-provider-user-email (:email user-info-body))]
 
     (if (user-info-valid? user-info user-info-body auth-url)
       (into (response/redirect (str utils/host-url "/sign-up"))
             {:session updated-session})
-      (response/redirect (str utils/host-url "/error/log-in")))))
+      (do (log/error (str "OKTA user info error with status code: " (:status user-info) " as " (get-in user-info [:headers "WWW-Authenticate"])))
+          (response/redirect (str utils/host-url "/error/log-in"))))))
 
 (defn get-access-token [{:keys [params okta-config] :as request}]
   (let [code (:code params)
@@ -54,17 +56,20 @@
                                                                                      :redirect_uri  redirect-uri
                                                                                      :client_secret client-secret
                                                                                      :code          code}})]
-    (response->json response)))
+    response))
 
 (defn check-access-token [request]
-  (let [access-token-response (get-access-token request)]
-    (if (:error access-token-response)
-      (response/redirect (str utils/host-url "/error/log-in"))
-      (check-token-info request (:access_token access-token-response)))))
+  (let [access-token-response (get-access-token request)
+        access-token-body (response->json access-token-response)]
+    (if (:error access-token-body)
+      (do (log/error (str "OKTA access token error with status code: " (:status access-token-response) " as " (:error access-token-body)))
+          (response/redirect (str utils/host-url "/error/log-in")))
+      (check-token-info request (:access_token access-token-body)))))
 
 (defn okta-callback [{:keys [params] :as request}]
   (if (:error params)
-    (response/redirect (str utils/host-url "/error/log-in"))
+    (do (log/error (str "OKTA callback error: " (:error params) ", " (:error_description params)))
+        (response/redirect (str utils/host-url "/error/log-in")))
     (check-access-token request)))
 
 (defn wrap-handler [handler okta-config]
