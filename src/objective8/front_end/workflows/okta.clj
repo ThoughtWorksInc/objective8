@@ -51,7 +51,7 @@
         client-id (:client-id okta-config)
         client-secret (:client-secret okta-config)
         auth-url (:auth-url okta-config)
-        response (http/get-request (str auth-url "/oauth2/v1/token") {:query-params {:grant_type    "authorization_code"
+        response (http/post-request (str auth-url "/oauth2/v1/token") {:query-params {:grant_type    "authorization_code"
                                                                                      :client_id     client-id
                                                                                      :redirect_uri  redirect-uri
                                                                                      :client_secret client-secret
