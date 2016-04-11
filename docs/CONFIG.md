@@ -27,7 +27,7 @@ The following environment variables can be passed to the application.
 - **STONECUTTER_NAME** - defaults to Stonecutter
 
 
-#### Enter these credentials to add [Okta](https://www.okta.com) - it will disable all other login options
+#### Enter these credentials to add [Okta](https://www.okta.com) - it will disable all other login options - **WORK IN PROGRESS**
 
 - **OKTA_CLIENT_ID** - Your client ID, from Okta.
 - **OKTA_CLIENT_SECRET** - Your client secret, from Okta.
