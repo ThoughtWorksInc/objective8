@@ -156,7 +156,7 @@
 (defn voting-actions-when-not-signed-in [{:keys [data ring-request] :as context} comment]
   (html/transformation
     :lockstep
-    {[:.clj-up-down-vote-form] (html/do-> (html/set-attr "method" "get") (html/set-attr "action" "/sign-in"))
+    {[:.clj-up-down-vote-form] (html/do-> (html/set-attr :method "get") (html/set-attr :action "/sign-in"))
      [:.clj-refer]             (html/set-attr "value" (comment-refer-uri ring-request comment))
      [:.clj-vote-on-uri]       nil
      [:.clj-up-vote-count]     (html/content (str (get-in comment [:votes :up])))

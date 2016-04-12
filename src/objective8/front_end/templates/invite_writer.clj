@@ -12,18 +12,6 @@
   (html/at invite-writer-form-snippet
            [:.clj-invite-a-writer-form] (html/prepend anti-forgery-snippet)))
 
-(def sign-in-to-invite-writer-snippet (html/select pf/library-html-resource [:.clj-to-invite-writer-please-sign-in]))
-
-(defn sign-in-to-invite-writer [{:keys [ring-request] :as context}]
-  (html/at sign-in-to-invite-writer-snippet 
-           [:.clj-to-invite-writer-sign-in-link] 
-           (html/set-attr :href (str "/sign-in?refer=" (:uri ring-request)))))
-
-(defn invite-writer [{user :user :as context}]
-  (if (:username user)
-    (invite-writer-form context) 
-    (sign-in-to-invite-writer context)))
-
 (defn apply-validations [{:keys [doc] :as context} nodes]
   (let [validation-data (get-in doc [:flash :validation])
         validation-report (:report validation-data)
@@ -50,6 +38,6 @@
                   [:.clj-objective-navigation-item-objective] (html/set-attr :href (str "/objectives/" (:_id objective)))
                   [:.clj-objective-title] (html/content (:title objective))
                   
-                  [:.clj-invite-a-writer-form] (html/content (invite-writer context))
+                  [:.clj-invite-a-writer-form] (html/content (invite-writer-form context))
                   [:.clj-invite-a-writer-form] (html/set-attr :action (str "/objectives/" (:_id objective) "/writer-invitations")))
          (apply-validations context))))

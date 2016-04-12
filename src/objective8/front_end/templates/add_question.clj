@@ -25,18 +25,6 @@
                (html/prepend anti-forgery-snippet)  
                (html/set-attr :action (utils/local-path-for :fe/add-question-form-post :id objective-id))))))
 
-(def sign-in-to-add-question-snippet (html/select pf/library-html-resource [:.clj-to-add-question-please-sign-in]))
-
-(defn sign-in-to-add-question [{:keys [ring-request] :as context}]
-  (html/at sign-in-to-add-question-snippet  
-           [:.clj-to-add-question-sign-in-link] 
-           (html/set-attr :href (str "/sign-in?refer=" (:uri ring-request)))))
-
-(defn add-question [{user :user :as context}]
-  (if (:username user)
-    (add-question-form context)
-    (sign-in-to-add-question context)))
-
 (defn add-question-page [{:keys [translations data doc] :as context}]
   (let [objective (:objective data)
         objective-id (:_id objective)]
@@ -50,5 +38,5 @@
               [:.l8n-guidance-heading] (html/content (translations :question-create/guidance-heading))
               [:.clj-objective-navigation-item-objective] (html/set-attr :href (utils/local-path-for :fe/objective :id objective-id))
               [:.clj-objective-title] (html/content (:title objective))
-              [:.clj-question-create] (html/content (add-question context)))
+              [:.clj-question-create] (html/content (add-question-form context)))
      (apply-validations context))))
