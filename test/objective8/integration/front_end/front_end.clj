@@ -8,8 +8,11 @@
             [objective8.core :as core]
             [objective8.front-end.templates.sign-in :as sign-in]))
 
-(def objectives-create-request (mock/request :get "/objectives/create"))
-(def objectives-post-request (mock/request :post "/objectives"))
+(defn mock-get-request [path]
+  (mock/request :get path))
+
+(defn mock-post-request [path]
+  (mock/request :post path))
 
 (def default-app (core/front-end-handler helpers/test-config))
 
@@ -22,13 +25,40 @@
                    (:body response))) => (contains "GOOGLE_ANALYTICS_TRACKING_ID"))
 
          (facts "authorisation"
-                (facts "unauthorised users"
-                       (fact "cannot reach the objective creation page"
-                             (default-app objectives-create-request) => (contains {:status 302}))
-                       (fact "cannot post a new objective"
-                             (default-app objectives-post-request) => (contains {:status 302}))
-                       (fact "cannot post a comment"
-                             (default-app (mock/request :post "/meta/comments")) => (contains {:status 302}))))))
+                (tabular
+                  (fact "unauthorised users are redirected to sign in page"
+                        (default-app ?request) => (contains {:status  302
+                                                             :headers (contains {"Location" "http://localhost/sign-in"})}))
+                  ?request
+                  (mock-get-request "/objectives/create")
+                  (mock-post-request "/objectives")
+                  (mock-get-request "/objectives/1/add-question")
+                  (mock-post-request "/objectives/1/questions")
+                  (mock-post-request "/objectives/1/questions/2/answers")
+                  (mock-get-request "/create-profile")
+                  (mock-post-request "/create-profile")
+                  (mock-get-request "/edit-profile")
+                  (mock-post-request "/edit-profile")
+                  (mock-post-request "/objectives/1/writer-invitations/2/accept")
+                  (mock-post-request "/meta/up-vote")
+                  (mock-post-request "/meta/down-vote")
+                  (mock-post-request "/meta/comments")
+                  (mock-post-request "/objectives/1/drafts/latest/sections/12345678/annotations")
+                  (mock-post-request "/meta/stars")
+                  (mock-post-request "/meta/writer-notes")
+                  (mock-get-request "/meta/admin-removal-confirmation")
+                  (mock-post-request "/meta/admin-removal-confirmation")
+                  (mock-post-request "/meta/admin-removals")
+                  (mock-get-request "/objectives/1/dashboard/questions")
+                  (mock-get-request "/objectives/1/dashboard/comments")
+                  (mock-get-request "/objectives/1/dashboard/annotations")
+                  (mock-get-request "/objectives/1/add-draft")
+                  (mock-get-request "/objectives/1/import-draft")
+                  (mock-post-request "/objectives/1/import-draft")
+                  (mock-post-request "/objectives/1/add-draft")
+                  (mock-get-request "/objectives/1/invite-writer")
+                  (mock-post-request "/objectives/1/writer-invitations")
+                  (mock/request :post "/meta/marks" {:question-uri "/objectives/1/questions/2"})))))
 
 (facts "about white-labelling"
        (fact "defaults are used when the env var is not set"
@@ -64,9 +94,9 @@
                    (:body response) => (contains ?present-element)
                    (:body response) =not=> (contains ?removed-element))))
 
-         ?app-credentials       ?app-credentials-token  ?app-credentials-secret  ?present-element        ?removed-element
-         :facebook-credentials  :client-id              :client-secret           "clj-sign-in-facebook"  "clj-sign-in-twitter"
-         :twitter-credentials   :consumer-token         :secret-token            "clj-sign-in-twitter"   "clj-sign-in-facebook")
+         ?app-credentials ?app-credentials-token ?app-credentials-secret ?present-element ?removed-element
+         :facebook-credentials :client-id :client-secret "clj-sign-in-facebook" "clj-sign-in-twitter"
+         :twitter-credentials :consumer-token :secret-token "clj-sign-in-twitter" "clj-sign-in-facebook")
 
        (fact "they are hidden when partial login details are provided"
              (binding [config/environment (-> config/environment
@@ -84,10 +114,10 @@
           (sign-in/twitter-credentials-present?) => ?twitter-present
           (sign-in/facebook-credentials-present?) => ?facebook-present))
 
-        ?twitter-present  ?facebook-present  ?data-l8n
-        true              true               "data-l8n=\"content:sign-in/twitter-and-facebook-helper-text\""
-        true              false              "data-l8n=\"content:sign-in/twitter-helper-text\""
-        false             true               "data-l8n=\"content:sign-in/facebook-helper-text\"")
+  ?twitter-present ?facebook-present ?data-l8n
+  true true "data-l8n=\"content:sign-in/twitter-and-facebook-helper-text\""
+  true false "data-l8n=\"content:sign-in/twitter-helper-text\""
+  false true "data-l8n=\"content:sign-in/facebook-helper-text\"")
 
 (fact "the helper message is removed when the facebook and twitter buttons are hidden"
       (let [{response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/sign-in))]
@@ -104,22 +134,22 @@
           (let [{response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/sign-in))]
             (:body response) ?arrow (contains "clj-sign-in-d-cent"))))
 
-  ?url   ?id   ?secret   ?arrow
-  "url"  "id"  "secret"  =>
-  "url"  "id"  nil       =not=>
-  "url"  nil   "secret"  =not=>
-  nil    "id"  "secret"  =not=>
-  nil    nil   nil       =not=>)
+  ?url ?id ?secret ?arrow
+  "url" "id" "secret" =>
+  "url" "id" nil =not=>
+  "url" nil "secret" =not=>
+  nil "id" "secret" =not=>
+  nil nil nil =not=>)
 
 (tabular
   (fact "the cookie message is only shown when the environment variable is set"
-      (binding [config/environment (assoc config/environment :cookie-message-enabled ?enabled)]
-        (let [{response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/index))]
-          (:body response) ?arrow (contains "clj-cookie-message")
-          (:body response) ?arrow (contains "clj-cookie-library"))))
+        (binding [config/environment (assoc config/environment :cookie-message-enabled ?enabled)]
+          (let [{response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/index))]
+            (:body response) ?arrow (contains "clj-cookie-message")
+            (:body response) ?arrow (contains "clj-cookie-library"))))
   ?enabled ?arrow
-  true     =>
-  false    =not=>)
+  true =>
+  false =not=>)
 
 (fact "the more info link in the cookies message is set to the cookies page"
       (binding [config/environment (assoc config/environment :cookie-message-enabled true)]
@@ -137,6 +167,6 @@
           (let [{response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/error-log-in))]
             (:body response) ?arrow (contains "<header role=\"banner\" id=\"top\">")
             (:body response) ?arrow (contains "<footer>"))))
-  ?client-id       ?arrow
-  "client-id-123"  =not=>
-  nil              =>)
+  ?client-id ?arrow
+  "client-id-123" =not=>
+  nil =>)
