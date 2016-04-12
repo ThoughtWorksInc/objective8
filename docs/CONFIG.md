@@ -11,7 +11,7 @@ The following environment variables can be passed to the application.
 - **BASE_URI** - your application URI or IP address. Defaults to localhost:8080
 - **APP_PORT** - defaults to 8080
 - **POSTGRES_DB** and **POSTGRES_USER** and **POSTGRES_PASSWORD** - set these variables to any strings. They are used to set up and connect to the postgres database. Defaults to objective8, objective8 and development
-- **ADMINS** - The auth IDs of the admins, separated by spaces. The format is twitter-&lt;ID of Twitter account&gt; or facebook-&lt;ID of Facebook account&gt;. e.g. "facebook-123456789 twitter-54321"
+- **ADMINS** - The auth IDs of the admins, separated by spaces. The format is twitter-&lt;ID of Twitter account&gt;. e.g. "twitter-12345 twitter-54321"
 - **AWS_ACCESS_KEY** and **AWS_SECRET_KEY** - the Access Key ID and Secret Access Key from your AWS account. They are used to backup the database daily.
 - **AWS_GPG_PASSPHRASE** - a passphrase for encrypting the database backups before they reach AWS S3. You will need this if you ever want to restore backups from a different machine so don't lose/forget it.
 - **APP_NAME** - defaults to Objective[8]
