@@ -8,6 +8,7 @@
             [objective8.front-end.front-end-requests :as front-end]))
 
 (defn invalid-configuration-handler [_]
+  (log/error "Invalid Stonecutter configuration provided")
   (response/redirect (utils/path-for :fe/error-configuration)))
 
 (defn stonecutter-sign-in [{:keys [stonecutter-config] :as request}]
