@@ -30,7 +30,7 @@
           approval-uri (oauth/user-approval-uri consumer (:oauth_token request-token-response))]
       (response/redirect approval-uri))
     (catch ExceptionInfo e
-      (do (log/warn (str "Could not get request token from twitter: " e))
+      (do (log/error (str "Could not get request token from twitter: " e))
           {:status 502}))))
 
 (defn twitter-callback [{:keys [params session twitter-config] :as request}]
@@ -45,7 +45,7 @@
                                               :auth-provider-user-id twitter-user-id)})]
       the-response)
     (catch ExceptionInfo e
-      (do (log/info (str "Did not get authentication from twitter: " e))
+      (do (log/error (str "Did not get authentication from twitter: " e))
           (response/redirect "/")))))
 
 (defn invalid-configuration-handler [request]

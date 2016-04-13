@@ -6,7 +6,8 @@
             [objective8.integration.integration-helpers :as ih]
             [objective8.config :as config]
             [objective8.utils :as utils]
-            [objective8.front-end.workflows.facebook :as facebook]))
+            [objective8.front-end.workflows.facebook :as facebook]
+            [cheshire.core :as json]))
 
 (def USER_ID 1)
 (def OBJECTIVE_ID 2)
@@ -97,10 +98,10 @@
          (tabular
            (fact "auth validation error is reported"
                (against-background
-                 (facebook/get-access-token anything) => {:access_token ...access-token...}
-                 (facebook/get-token-info ...access-token... anything) => {:user_id "123"}
+                 (facebook/get-access-token anything) => {:body (json/generate-string {:access_token "access-token-123"})}
+                 (facebook/get-token-info "access-token-123" anything) => {:body (json/generate-string {:data {:user_id "123"}})}
                  (facebook/token-info-valid? {:user_id "123"} anything) => true
-                 (facebook/get-user-email "123") => ?fb-email-address)
+                 (facebook/get-user-email "123") => {:body (json/generate-string {:email ?fb-email-address})})
                (-> user-session
                    (p/request facebook-callback-url)
                    p/follow-redirect

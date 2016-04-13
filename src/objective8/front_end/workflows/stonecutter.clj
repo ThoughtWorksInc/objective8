@@ -51,7 +51,7 @@
     (try
       (redirect-to-sign-up request)
       (catch Exception e
-        (do (log/info "Exception in Stonecutter callback handler: " e)
+        (do (log/error "Exception in Stonecutter callback handler: " e)
             (invalid-configuration-handler request))))))
 
 (defn wrap-stonecutter-config [handler config invalid-configuration-handler]

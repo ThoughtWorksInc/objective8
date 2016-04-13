@@ -10,7 +10,8 @@
             [stonecutter-oauth.client :as soc]
             [stonecutter-oauth.jwt :as so-jwt]
             [objective8.front-end.api.http :as http]
-            [objective8.front-end.workflows.facebook :as facebook]))
+            [objective8.front-end.workflows.facebook :as facebook]
+            [cheshire.core :as json]))
 
 (def test-session (helpers/front-end-context))
 
@@ -74,10 +75,10 @@
 
        (fact "new users signing in with facebook are only asked to enter a username"
              (against-background
-               (facebook/get-access-token anything) => {:access_token ...access-token...}
-               (facebook/get-token-info ...access-token... anything) => {:user_id "123"}
+               (facebook/get-access-token anything) => {:body (json/generate-string {:access_token "access-token-123"})}
+               (facebook/get-token-info "access-token-123" anything) => {:body (json/generate-string {:data {:user_id "123"}})}
                (facebook/token-info-valid? {:user_id "123"} anything) => true
-               (facebook/get-user-email "123") => "valid@email.com"
+               (facebook/get-user-email "123") => {:body (json/generate-string {:email "valid@email.com"})}
                (http-api/find-user-by-auth-provider-user-id "facebook-123") => {:status ::http-api/not-found})
              (let [response (-> test-session
                                 (p/request facebook-callback-url)
