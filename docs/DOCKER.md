@@ -21,7 +21,7 @@ To start a postgres docker container, using the relative path for your config fi
 
 To start the Objective[8] container without any customisations, run the following command:
 
-    docker run -d --env-file=<relative path to objective8 docker config> -p 8080:8080 -p 8081:8081 --link pg_objective8:postgres --name objective8 dcent/objective8
+    docker run -d --env-file=<relative path to objective8 docker config> -p 8080:8080 -p 8081:8081 --link pg_objective8:postgres --restart=on-failure --name objective8 dcent/objective8
     
 ### Customisations
 
