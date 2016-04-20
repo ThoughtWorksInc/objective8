@@ -238,6 +238,9 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('load-custom-theme', [
-    'sass:dist'
+    'clean:build',
+    'sass:dist',
+    'autoprefixer:dist',
+    'jade'
   ]);
 };
