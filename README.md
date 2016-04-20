@@ -80,6 +80,7 @@ Add any environment variables you want to use to the ```start_app_vm.sh``` scrip
 To start the app, run:
 
     lein start
+Go to localhost:8080 to test in development
 
 And then inside the REPL run this for a fake twitter sign-in:
 
