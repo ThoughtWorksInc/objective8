@@ -33,7 +33,7 @@ You can optionally customise the colour scheme, favicon, the Stonecutter icon on
     -v <absolute path to stonecutter sign-in icon>:/usr/src/app/resources/public/stonecutter-sign-in-icon.png \
     -v <absolute path to English custom translations>:/usr/src/app/resources/translations/custom-en.csv \
     -v <absolute path to Spanish custom translations>:/usr/src/app/resources/translations/custom-es.csv \
-    -p 8080:8080 -p 8081:8081 --link pg_objective8:postgres --name objective8 dcent/objective8
+    -p 8080:8080 -p 8081:8081 --link pg_objective8:postgres --restart=on-failure --name objective8 dcent/objective8
 
 You can omit any of the lines starting with -v if you are happy with the default settings.
 

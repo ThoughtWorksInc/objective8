@@ -236,4 +236,8 @@ module.exports = function(grunt) {
   grunt.registerTask('default', [
     'build'
   ]);
+
+  grunt.registerTask('load-custom-theme', [
+    'sass:dist'
+  ]);
 };
