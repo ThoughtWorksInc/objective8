@@ -26,6 +26,7 @@ The source folder will be located at `/var/objective8`.
 After initial setup, navigate to the source directory and apply the migrations:
 
     cd /var/objective8
+    grunt build
     lein ragtime migrate
 
 [Vagrant]: https://www.vagrantup.com
