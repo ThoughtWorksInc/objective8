@@ -131,6 +131,8 @@ module.exports = function(grunt) {
         src: [
           '<%= folders.src %>/js/vendor/jquery-1.11.2.js',
           '<%= folders.src %>/js/vendor/jquery.scrollto.js',
+          '<%= folders.src %>/../node_modules/moment/min/moment-with-locales.min.js',
+          '<%= folders.src %>/../node_modules/moment-timezone/builds/moment-timezone-with-data-2010-2020.min.js',
           '<%= folders.src %>/js/custom/**/*.js'
         ],
         dest: '<%= folders.output %>/public/scripts.js'

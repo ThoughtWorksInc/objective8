@@ -50,6 +50,17 @@ $('.js-hide-button').on('click', function(e) {
   hideContent.hide();
 });
 
+function timeToLocalTime(currentValue) {
+    var timezone = moment.tz.guess();
+    var commentTime = currentValue.textContent;
+    currentValue.textContent = moment.utc(commentTime, "DD-MM-YYYY HH:mm").tz(timezone).format("YYYY-MM-D, H:mm");
+}
+
+function updateCommentTimes() {
+  [].forEach.call(document.getElementsByClassName('clj-comment-date'), timeToLocalTime);
+}
+
+window.onload = updateCommentTimes();
 
 //Developer Easter egg
 function helpObjective8 () {
