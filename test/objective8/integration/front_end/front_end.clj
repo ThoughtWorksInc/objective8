@@ -148,8 +148,19 @@
             (:body response) ?arrow (contains "clj-cookie-message")
             (:body response) ?arrow (contains "clj-cookie-library"))))
   ?enabled ?arrow
-  true =>
-  false =not=>)
+  true     =>
+  false    =not=>)
+
+(tabular
+  (fact "the cookie page is only accessible when the cookie message is enabled"
+        (binding [config/environment (assoc config/environment :cookie-message-enabled ?enabled)]
+          (let [{response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/cookies))]
+            (:body response) ?arrow (contains "clj--cookie-page")
+            (:status response) ?arrow 200)))
+  ?enabled ?arrow
+  true     =>
+  false    =not=>)
+
 
 (fact "the more info link in the cookies message is set to the cookies page"
       (binding [config/environment (assoc config/environment :cookie-message-enabled true)]

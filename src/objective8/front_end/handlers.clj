@@ -81,9 +81,11 @@
    :body (views/learn-more-page "learn-more" request)})
 
 (defn cookies [request]
-  {:status 200
-   :headers {"Content-Type" "text/html"}
-   :body (views/cookies "cookie-page" request)})
+  (if (:cookie-message-enabled config/environment)
+    {:status  200
+     :headers {"Content-Type" "text/html"}
+     :body    (views/cookies "cookie-page" request)}
+    (error-404-response request)))
 
 ;; USER PROFILE
 
