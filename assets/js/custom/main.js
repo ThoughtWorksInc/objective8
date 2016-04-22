@@ -56,11 +56,34 @@ function timeToLocalTime(currentValue) {
     currentValue.textContent = moment.utc(commentTime, "DD-MM-YYYY HH:mm").tz(timezone).format("YYYY-MM-D, H:mm");
 }
 
-function updateCommentTimes() {
-  [].forEach.call(document.getElementsByClassName('clj-comment-date'), timeToLocalTime);
+function updateTimes(className) {
+   [].forEach.call(document.getElementsByClassName(className), timeToLocalTime);
 }
 
-window.onload = updateCommentTimes();
+function updateCommentTimes() {
+  updateTimes('clj-comment-date');
+}
+
+function updateLatestDraftTime() {
+  updateTimes('clj-latest-draft-time');
+}
+
+function updateDraftTime() {
+  updateTimes('clj-draft-version-time');
+}
+
+function updatePreviousDraftTimes() {
+  updateTimes('clj-previous-draft-time');
+}
+
+function updateAllTimes() {
+  updateCommentTimes();
+  updateDraftTime();
+  updateLatestDraftTime();
+  updatePreviousDraftTimes();
+}
+
+window.onload = updateAllTimes();
 
 //Developer Easter egg
 function helpObjective8 () {
