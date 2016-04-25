@@ -3,7 +3,8 @@
             [stonecutter-oauth.client :as soc]
             [stonecutter-oauth.jwt :as so-jwt]
             [objective8.utils :as utils]
-            [objective8.front-end.workflows.stonecutter :refer :all]))
+            [objective8.front-end.workflows.stonecutter :refer :all]
+            [objective8.config :as config]))
 
 (def openid-test-config (soc/configure "ISSUER" "CLIENT_ID" "<client-secret>" "<callback-uri>"
                                        :protocol :openid))
@@ -73,7 +74,23 @@
          ?stonecutter-email
          "invalid"
          " "
-         nil))
+         nil)
+
+       (binding [config/environment (assoc config/environment :limit-to-trusted-stonecutter-users "true")]
+         (fact "redirects to unauthorised error page when user is not trusted and limit users config variable is set to true"
+             (stonecutter-callback {:stonecutter-config openid-test-config
+                                    :params {:code ...auth-code...}
+                                    :session {:sign-in-referrer ...refer...}})
+             => (contains {:status 302
+                           :headers {"Location" (str utils/host-url "/authorisation")}})
+
+             (provided
+               (soc/request-access-token! openid-test-config ...auth-code...)
+               => {:id_token token-expiring-in-year-2515}
+               (so-jwt/get-public-key-string-from-jwk-set-url "ISSUER/api/jwk-set")
+               => test-auth-provider-public-key
+               (so-jwt/decode openid-test-config token-expiring-in-year-2515 test-auth-provider-public-key)
+               => (assoc token-content :role "untrusted")))))
 
 (facts "about wrap-stonecutter-config"
        (fact "includes the stonecutter configuration in the request when the configuration is valid"

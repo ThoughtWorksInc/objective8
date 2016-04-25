@@ -305,6 +305,10 @@ error-configuration,doc-title,Configuration error | %app-name%
 error-configuration,doc-description,"Sorry, the site has been incorrectly configured. Please contact the site administrator."
 error-configuration,page-title,Application configuration error
 error-configuration,page-intro,There is a problem with the way this instance of %app-name% has been configured.  Please contact the site administrator.
+authorisation-page,doc-title,Authorisation required | %app-name%
+authorisation-page,doc-description,"Sorry, you are not authenticated. Please contact the site administrator."
+authorisation-page,page-title,Authorisation required
+authorisation-page,page-intro!,"Sorry, you are currently not authorised to access this application. To gain access, please contact the site administrator at <a href=""mailto:%stonecutter-admin-email%"">%stonecutter-admin-email%</a>."
 answer-view,created-message,Your answer has been posted!
 answer-view,no-answers,No one has answered this question yet.
 answer-view,answer-title,Answers

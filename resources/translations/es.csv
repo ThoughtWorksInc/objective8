@@ -312,6 +312,10 @@ error-configuration,doc-title,Configuration error | %app-name% in spanish
 error-configuration,doc-description,"Sorry, the site has been incorrectly configured. Please contact the site administrator." in spanish
 error-configuration,page-title,Application configuration error in spanish
 error-configuration,page-intro,There is a problem with the way this instance of %app-name% has been configured.  Please contact the site administrator. in spanish
+authorisation-page,doc-title,Authorisation required | %app-name% in Spanish
+authorisation-page,doc-description,"Sorry, you are not authenticated. Please contact the site administrator in Spanish."
+authorisation-page,page-title,Authorisation required in Spanish
+authorisation-page,page-intro!,"Sorry, you are currently not authorised to access this application. To gain access, please contact the site administrator at <a href=""mailto:%stonecutter-admin-email%"">%stonecutter-admin-email%</a>. in spanish"
 answer-view,created-message,Your answer has been posted! in spanish
 answer-view,no-answers,No one has answered this question yet. in spanish
 answer-view,answer-title,Answers in spanish

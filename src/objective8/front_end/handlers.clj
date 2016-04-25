@@ -65,6 +65,11 @@
      :body    (views/sign-in "sign-in" request)
      :session (assoc (:session request) :sign-in-referrer referrer)}))
 
+(defn authorisation-page [request]
+  {:status  500
+   :headers {"Content-Type" "text/html"}
+   :body    (views/authorisation-page "authorisation-page" request)})
+
 (defn sign-out [request]
   (assoc
     (friend/logout* (response/redirect "/"))

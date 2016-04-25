@@ -5,7 +5,8 @@
             [stonecutter-oauth.client :as soc]
             [stonecutter-oauth.jwt :as so-jwt]
             [objective8.utils :as utils]
-            [objective8.front-end.front-end-requests :as front-end]))
+            [objective8.front-end.front-end-requests :as front-end]
+            [objective8.config :as config]))
 
 (defn invalid-configuration-handler [_]
   (log/error "Invalid Stonecutter configuration provided")
@@ -17,29 +18,30 @@
 (defn get-auth-jwks-url [stonecutter-config]
   (str (:auth-provider-url stonecutter-config) "/api/jwk-set"))
 
-(defn check-email-and-redirect [email redirect]
-  (if (front-end/valid-not-empty-email? email)
-        (into redirect
-              (assoc-in redirect [:session :auth-provider-user-email] email))
-        (into redirect
-              {:flash {:validation :auth-email}})))
+(defn untrusted-user? [role]
+  (and (:limit-to-trusted-stonecutter-users config/environment) (= role "untrusted")))
 
-(defn redirect-to-sign-up [request]
+(defn redirect [session user-info]
+  (let [sub (:sub user-info)
+        email (:email user-info)
+        role (:role user-info)
+        redirect-to-sign-up (-> (response/redirect (str utils/host-url "/sign-up"))
+                                (assoc :session session)
+                                (assoc-in [:session :auth-provider-user-id] (str "d-cent-" sub)))]
+    (cond
+      (untrusted-user? role) (response/redirect (str utils/host-url "/authorisation"))
+      (not sub) (throw (ex-info "'sub' is nil or missing from user-info record in token-response from stonecutter" {:user-info-keys (keys user-info)}))
+      (front-end/valid-not-empty-email? email) (assoc-in redirect-to-sign-up [:session :auth-provider-user-email] email)
+      :default (into redirect-to-sign-up {:flash {:validation :auth-email}}))))
+
+(defn get-user-info [request]
   (let [auth-code (get-in request [:params :code])
         stonecutter-config (get-in request [:stonecutter-config])
         token-response (soc/request-access-token! stonecutter-config auth-code)
         auth-jwks-url (get-auth-jwks-url stonecutter-config)
         public-key-string (so-jwt/get-public-key-string-from-jwk-set-url auth-jwks-url)
-        user-info (so-jwt/decode stonecutter-config (:id_token token-response) public-key-string)
-        sub (:sub user-info)
-        email (:email user-info)
-        redirect (-> (response/redirect (str utils/host-url "/sign-up"))
-                     (assoc :session (:session request))
-                     (assoc-in [:session :auth-provider-user-id] (str "d-cent-" sub)))]
-    (if sub
-      (check-email-and-redirect email redirect)
-      (throw (ex-info "'sub' is nil or missing from user-info record in token-response from stonecutter"
-                      {:user-info-keys (keys user-info)})))))
+        user-info (so-jwt/decode stonecutter-config (:id_token token-response) public-key-string)]
+    (redirect (:session request) user-info)))
 
 (defn redirect-to-referrer [request]
   (let [redirect-url (some-> (:session request) :sign-in-referrer utils/safen-url)]
@@ -50,7 +52,7 @@
   (if (get-in request [:params :error])
     (redirect-to-referrer request)
     (try
-      (redirect-to-sign-up request)
+      (get-user-info request)
       (catch Exception e
         (do (log/error "Exception in Stonecutter callback handler: " e)
             (invalid-configuration-handler request))))))

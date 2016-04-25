@@ -3,6 +3,14 @@
             [net.cgrand.jsoup :as jsoup]
             [objective8.front-end.templates.page-furniture :as f]))
 
+(def authorisation-template (html/html-resource "templates/jade/authorisation-page.html"))
+
+(defn authorisation-page [{:keys [doc] :as context}]
+  (html/at authorisation-template
+           [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
+           [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
+           [:.clj-status-bar] (html/substitute (f/status-flash-bar context))))
+
 (def sign-up-template (html/html-resource "templates/jade/sign-up.html" {:parser jsoup/parser}))
 
 (defn apply-validations [{:keys [doc] :as context} nodes]

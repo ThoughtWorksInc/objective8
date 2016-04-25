@@ -116,6 +116,7 @@
 (def dashboard-annotations-page (view dashboard-annotations/dashboard-annotations))
 (def sign-in (view sign-in/sign-in-page))
 (def sign-up (view sign-up/sign-up-page))
+(def authorisation-page (view sign-up/authorisation-page))
 (def admin-activity (view admin-activity/admin-activity-page))
 (def admin-removal-confirmation (view admin-removal-confirmation/admin-removal-confirmation-page))
 (def cookies (view cookies/cookie-page))

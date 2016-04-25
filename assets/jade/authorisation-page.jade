@@ -1,0 +1,10 @@
+extends layouts/base
+
+block vars
+  - pageTitle = "!Authorisation error | Objective[8]"
+
+block content
+
+  .middle-container.clj-error-404
+    h1(data-l8n="content:authorisation-page/page-title") !Authorisation required
+    p(data-l8n="html:authorisation-page/page-intro").lede !Sorry, you are currently not authorised to access this application. To gain access, please contact the site administrator at example.com

@@ -57,6 +57,7 @@
     "users"             {["/" :username] {:get :fe/profile}}
     "error"             {"/configuration" {:get :fe/error-configuration}
                          "/log-in" {:get :fe/error-log-in}}
+    "authorisation"     :fe/authorisation-page
     "cookies"           :fe/cookies}])
 
 (def back-end-routes

@@ -28,11 +28,17 @@
             => {:status ::tr/parse-error
                 :message "Translation lookup path too short"
                 :resource-name :rn})
-      (fact "loads a translation with a substitution variable"
+      (fact "loads a translation with all substitution variables"
             (binding [config/environment (assoc config/environment
-                                           :app-name "Policy Maker")]
+                                           :app-name "Policy Maker"
+                                           :stonecutter-name "D-Cent SSO"
+                                           :stonecutter-admin-email "admin@policy-maker.com")]
               (last (tr/replace-key ["index" "app-name" "The app is called %app-name%"]))
-              => "The app is called Policy Maker")))
+              => "The app is called Policy Maker"
+              (last (tr/replace-key ["sign-in" "sign-in-with-d-cent" "Sign in with %stonecutter-name%"]))
+              => "Sign in with D-Cent SSO"
+              (last (tr/replace-key ["error-authorisation" "page-intro" "Please contact the site administrator at %stonecutter-admin-email%"]))
+              => "Please contact the site administrator at admin@policy-maker.com")))
 
 (facts "about loading a set of translation resources"
        (fact "generates a translation dictionary"

@@ -99,6 +99,7 @@
        :fe/post-admin-removal              front-end-handlers/post-admin-removal
        :fe/error-log-in                    front-end-handlers/error-log-in
        :fe/error-configuration             front-end-handlers/error-configuration
+       :fe/authorisation-page              front-end-handlers/authorisation-page
        :fe/cookies                         front-end-handlers/cookies}
       (m/wrap-handlers-except utils/anti-forgery-hook #{:fe/index :fe/sign-in :fe/sign-out :fe/profile :fe/project-status
                                                         :fe/learn-more :fe/admin-activity :fe/create-objective-form

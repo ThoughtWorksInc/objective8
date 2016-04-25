@@ -54,6 +54,8 @@
    :stonecutter-auth-provider-url (get-var "STONECUTTER_AUTH_URL")
    :stonecutter-client-id         (get-var "STONECUTTER_CLIENT_ID")
    :stonecutter-client-secret     (get-var "STONECUTTER_CLIENT_SECRET")
+   :stonecutter-admin-email       (get-var "STONECUTTER_ADMIN_EMAIL" "")
+   :limit-to-trusted-stonecutter-users (get-var "STONECUTTER_TRUSTED_USERS")
    :coracle-bearer-token          (get-var "CORACLE_BEARER_TOKEN")
    :coracle-post-uri              (get-var "CORACLE_URI")
    :app-name                      (get-var "APP_NAME" "Objective[8]")
@@ -61,4 +63,4 @@
    :show-alpha-warnings           (get-var "SHOW_ALPHA_WARNINGS" false)
    :cookie-message-enabled        (get-var "COOKIE_MESSAGE_ENABLED" false)})
 
-(def replacement-keys [:app-name :stonecutter-name])
+(def replacement-keys [:app-name :stonecutter-name :stonecutter-admin-email])
