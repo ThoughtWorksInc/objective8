@@ -36,8 +36,10 @@
     (and (:client-id okta-credentials) (:client-secret okta-credentials) (:auth-url okta-credentials))))
 
 (defn wrap-signed-in [handlers]
-  (if (all-okta-credentials-provided?)
-    (m/wrap-handlers-except handlers #(friend/wrap-authorize % #{:signed-in}) #{:fe/error-log-in})
+  (if (or (all-okta-credentials-provided?) (:private-mode-enabled config/environment))
+    (m/wrap-handlers-except handlers #(friend/wrap-authorize % #{:signed-in})
+                            #{:fe/error-log-in :fe/sign-in :fe/create-profile-get
+                              :fe/create-profile-post :fe/authorisation-page})
     (m/wrap-just-these-handlers handlers #(friend/wrap-authorize % #{:signed-in})
                                 #{:fe/create-objective-form :fe/create-objective-form-post :fe/add-a-question
                                   :fe/add-question-form-post :fe/add-answer-form-post :fe/create-profile-get

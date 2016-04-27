@@ -66,7 +66,7 @@
      :session (assoc (:session request) :sign-in-referrer referrer)}))
 
 (defn authorisation-page [request]
-  {:status  500
+  {:status  403
    :headers {"Content-Type" "text/html"}
    :body    (views/authorisation-page "authorisation-page" request)})
 

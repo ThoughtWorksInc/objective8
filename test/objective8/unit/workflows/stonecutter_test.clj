@@ -76,8 +76,8 @@
          " "
          nil)
 
-       (binding [config/environment (assoc config/environment :limit-to-trusted-stonecutter-users "true")]
-         (fact "redirects to unauthorised error page when user is not trusted and limit users config variable is set to true"
+       (binding [config/environment (assoc config/environment :private-mode-enabled "true")]
+         (fact "redirects to unauthorised error page when user is not trusted and private mode config variable is set to true"
              (stonecutter-callback {:stonecutter-config openid-test-config
                                     :params {:code ...auth-code...}
                                     :session {:sign-in-referrer ...refer...}})

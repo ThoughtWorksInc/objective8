@@ -23,14 +23,6 @@
 
 (def USER_ID 1)
 
-(defn check-redirects-to
-  ([url-fragment]
-   (check-redirects-to url-fragment 302))
-  ([url-fragment status]
-   (contains {:response
-              (contains {:status  status
-                         :headers (contains {"Location" (contains url-fragment)})})})))
-
 (defn check-html-content [html-fragment]
   (contains {:response
              (contains {:body
@@ -42,7 +34,7 @@
 
 (facts "signup"
        (fact "User directly accessing /sign-up page is redirected to /sign-in"
-             (p/request test-session sign-up-url) => (check-redirects-to "/sign-in"))
+             (p/request test-session sign-up-url) => (helpers/check-redirects-to "/sign-in"))
 
        (fact "User directly posting to /sign-up page without csrf token receives 403"
              (p/request test-session sign-up-url
@@ -107,7 +99,7 @@
                                                  :request-method :post
                                                  :content-type "application/x-www-form-urlencoded"
                                                  :body "username=someUsername&email-address=test%40email.address.com")]
-                 sign-up-response => (check-redirects-to protected-resource 303))
+                 sign-up-response => (helpers/check-redirects-to protected-resource 303))
 
                (let [unauthorized-request-context (p/request test-session protected-resource)
                      signed-in-context (p/request unauthorized-request-context twitter-callback-url)
@@ -124,7 +116,7 @@
 
              (let [unauthorized-request-context (p/request test-session protected-resource)
                    signed-in-context (p/request unauthorized-request-context twitter-callback-url)]
-               (p/follow-redirect signed-in-context)) => (check-redirects-to protected-resource 303)
+               (p/follow-redirect signed-in-context)) => (helpers/check-redirects-to protected-resource 303)
              (provided
                (http-api/find-user-by-auth-provider-user-id "twitter-TWITTER_ID")
                => {:status ::http-api/success
@@ -147,7 +139,7 @@
                                               (p/request sign-up-url :request-method :post
                                                          :content-type "application/x-www-form-urlencoded"
                                                          :body "username=somename&email-address=test%40email.address.com"))]
-          sign-in-with-refer-response => (check-redirects-to target-uri)))
+          sign-in-with-refer-response => (helpers/check-redirects-to target-uri)))
 
   (fact "unauthorised, registered user can sign in and be referred to a target uri"
         (against-background
@@ -161,7 +153,7 @@
                                               (p/request (str utils/host-url "/sign-in?refer=" target-uri))
                                               (p/request twitter-callback-url)
                                               (p/request sign-up-url))]
-          sign-in-with-refer-response => (check-redirects-to target-uri)))
+          sign-in-with-refer-response => (helpers/check-redirects-to target-uri)))
 
   (fact "users with an unrecognized referer are sent back to /"
         (against-background
@@ -177,4 +169,4 @@
                                               (p/request sign-up-url :request-method :post
                                                          :content-type "application/x-www-form-urlencoded"
                                                          :body "username=somename&email-address=test%40email.address.com"))]
-          sign-in-with-refer-response => (check-redirects-to "/" 303))))
+          sign-in-with-refer-response => (helpers/check-redirects-to "/" 303))))

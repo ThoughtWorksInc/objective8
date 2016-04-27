@@ -154,3 +154,10 @@
   (let [untranslated-string-regex #"(?!!DOCTYPE|!IEMobile)!\w+"]
     (midje/chatty-checker [response-body] (empty? (re-seq untranslated-string-regex response-body)))))
 
+(defn check-redirects-to
+  ([url-fragment]
+   (check-redirects-to url-fragment 302))
+  ([url-fragment status]
+   (midje/contains {:response
+              (midje/contains {:status  status
+                         :headers (midje/contains {"Location" (midje/contains url-fragment)})})})))

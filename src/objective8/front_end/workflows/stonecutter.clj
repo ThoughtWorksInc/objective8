@@ -19,7 +19,7 @@
   (str (:auth-provider-url stonecutter-config) "/api/jwk-set"))
 
 (defn untrusted-user? [role]
-  (and (:limit-to-trusted-stonecutter-users config/environment) (= role "untrusted")))
+  (and (:private-mode-enabled config/environment) (= role "untrusted")))
 
 (defn redirect [session user-info]
   (let [sub (:sub user-info)
