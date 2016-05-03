@@ -40,3 +40,8 @@
 
  - name: Install node dependencies
    npm: path=/var/objective8
+
+ - name: Force post-install
+   command: ./npm-postinstall.sh
+   args:
+    chdir: /var/objective8/
