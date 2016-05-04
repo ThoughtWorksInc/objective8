@@ -39,7 +39,8 @@
   (if (or (all-okta-credentials-provided?) (:private-mode-enabled config/environment))
     (m/wrap-handlers-except handlers #(friend/wrap-authorize % #{:signed-in})
                             #{:fe/error-log-in :fe/sign-in :fe/create-profile-get
-                              :fe/create-profile-post :fe/authorisation-page})
+                              :fe/create-profile-post :fe/authorisation-page
+                              :fe/error-configuration})
     (m/wrap-just-these-handlers handlers #(friend/wrap-authorize % #{:signed-in})
                                 #{:fe/create-objective-form :fe/create-objective-form-post :fe/add-a-question
                                   :fe/add-question-form-post :fe/add-answer-form-post :fe/create-profile-get
