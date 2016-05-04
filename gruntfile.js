@@ -240,9 +240,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('load-custom-theme', [
-    'clean:build',
     'sass:dist',
-    'autoprefixer:dist',
-    'jade'
+    'autoprefixer:dist'
   ]);
 };
