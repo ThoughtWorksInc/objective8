@@ -50,7 +50,7 @@
     - `site_address` with the URL of the server
     - `external_jwk_set_url` with the URL of the server followed by /as2/jwk-set
 - Use the *objective8_config_template* found in the */ops* directory and replace the empty strings with your credentials and save it for use in the next step. Take note of the file path. You can find more information about the configuration variables [here](./CONFIG.md).
-- Create a */ops/roles/nginx/files/secure/* directory, and copy your SSL certificate and key files there, with the names *objective8.key* and *objective.crt*.
+- Create a */ops/roles/nginx/files/secure/* directory, and copy your SSL certificate and key files there, with the names *objective8.key* and *objective8.crt*.
 
 Run Ansible playbook:
 
