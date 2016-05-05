@@ -10,5 +10,6 @@
     - leiningen
     - postgres 
     - docker
+    - coracle
     - objective8_postgres_config
 
