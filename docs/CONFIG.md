@@ -19,13 +19,10 @@ The following environment variables can be passed to the application.
 - **GA_TRACKING_ID** - your Google Analytics tracking ID. Use this to monitor your deployment at https://analytics.google.com/
 - **COOKIE_MESSAGE_ENABLED** - set to true to show a warning about the use of cookies. You will need this if your deployment is based in the EU or aimed at EU citizens and you have set the variable **GA_TRACKING_ID**.
 
+#### Enter these credentials to store all activities in an instance of [Coracle](https://github.com/d-cent/coracle) 
 
-#### Enter these credentials to add [Stonecutter](https://github.com/d-cent/stonecutter) as a login option
-
-- **STONECUTTER_AUTH_URL** - the URL of the deployment
-- **STONECUTTER_CLIENT_ID** and **STONECUTTER_CLIENT_SECRET** - the client ID and secret from the clients.yml file
-- **STONECUTTER_NAME** - defaults to Stonecutter
-
+- **CORACLE_URI** - the URL of the deployment 
+- **CORACLE_BEARER_TOKEN** - the bearer token of the deployment
 
 #### Enter these credentials to add [Okta](https://www.okta.com) - it will disable all other login options - **WORK IN PROGRESS**
 
@@ -46,7 +43,19 @@ The following environment variables can be passed to the application.
 - **FB_CLIENT_SECRET** - the Facebook App Secret
 
 
-#### Enter these credentials to store all activities in an instance of [Coracle](https://github.com/d-cent/coracle) 
+#### Enter these credentials to add [Stonecutter](https://github.com/d-cent/stonecutter) as a login option
 
-- **CORACLE_URI** - the URL of the deployment 
-- **CORACLE_BEARER_TOKEN** - the bearer token of the deployment
+- **STONECUTTER_AUTH_URL** - the URL of the deployment
+- **STONECUTTER_CLIENT_ID** and **STONECUTTER_CLIENT_SECRET** - the client ID and secret from the clients.yml file
+- **STONECUTTER_NAME** - defaults to Stonecutter
+
+### Private Mode
+
+Private mode is a feature that will prevent unauthorised access to the content on Objective8. 
+Access will be granted to the admin of Stonecutter, and any users that are marked as trusted.
+This mode is incompatible with Facebook and Twitter logins, which will be both hidden from the user.
+
+#### Enter these credentials to enable Private mode
+
+- **PRIVATE_MODE_ENABLED** - When set to true this disables Facebook and Twitter login.   
+- **STONECUTTER_ADMIN_EMAIL** - For users to contact the administrator to request trusted status.

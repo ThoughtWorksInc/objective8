@@ -14,6 +14,12 @@
   (and (get-in config/environment [:facebook-credentials :client-id])
        (get-in config/environment [:facebook-credentials :client-secret])))
 
+(defn use-facebook-login? []
+  (and (facebook-credentials-present?) (not (get config/environment :private-mode-enabled))))
+
+(defn use-twitter-login? []
+  (and (twitter-credentials-present?) (not (get config/environment :private-mode-enabled))))
+
 (defn stonecutter-credentials-present? []
   (and (:stonecutter-auth-provider-url config/environment)
        (:stonecutter-client-id config/environment)
@@ -35,7 +41,7 @@
            [(and (html/has :meta) (html/attr= :name "description"))] (html/set-attr "content" (:description doc))
            [:.clj-masthead-signed-out] (html/substitute (f/masthead context))
            [:.clj-status-bar] (html/substitute (f/status-flash-bar context))
-           [:.clj-sign-in-twitter] (keep-node-if twitter-credentials-present?)
-           [:.clj-sign-in-facebook] (keep-node-if facebook-credentials-present?)
+           [:.clj-sign-in-twitter] (keep-node-if use-twitter-login?)
+           [:.clj-sign-in-facebook] (keep-node-if use-facebook-login?)
            [:.clj-sign-in-d-cent] (keep-node-if stonecutter-credentials-present?)
            [:.helper-text] (set-helper-text-translation!)))

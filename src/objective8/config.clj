@@ -14,15 +14,28 @@
   ([var-name]
    (get-var var-name nil))
   ([var-name default]
+   (get-var var-name default true))
+  ([var-name default logs?]
    (if-let [variable (get (System/getenv) var-name)]
      variable
      (do
        (if default
-         (log/info (str "Failed to look up environment variable \"" var-name "\" - using provided default"))
-         (log/error (str "Failed to look up environment variable \"" var-name "\" - no default provided")))
+         (when logs? (log/info (str "Failed to look up environment variable \"" var-name "\" - using provided default")))
+         (when logs? (log/error (str "Failed to look up environment variable \"" var-name "\" - no default provided"))))
        default))))
 
 (def base-uri (get-var "BASE_URI" "localhost:8080"))
+
+(defn get-private-mode []
+  (let [twitter-token (get-var "TWITTER_CONSUMER_TOKEN" nil false)
+        twitter-secret-token (get-var "TWITTER_CONSUMER_SECRET_TOKEN" nil false)
+        facebook-id (get-var "FB_CLIENT_ID" nil false)
+        facebook-secret (get-var "FB_CLIENT_SECRET" nil false)
+        private-mode (get-var "PRIVATE_MODE_ENABLED" false)]
+    (when (and twitter-secret-token twitter-token private-mode) (log/warn (str "Private mode enabled. Twitter login will be disabled")))
+    (when (and facebook-id facebook-secret private-mode) (log/warn (str "Private mode enabled. Facebook login will be disabled")))
+    private-mode
+    ))
 
 (def ^:dynamic environment
   {:uri-scheme                    (get-var "URI_SCHEME" "http")
@@ -61,6 +74,6 @@
    :stonecutter-name              (get-var "STONECUTTER_NAME" "Stonecutter")
    :show-alpha-warnings           (get-var "SHOW_ALPHA_WARNINGS" false)
    :cookie-message-enabled        (get-var "COOKIE_MESSAGE_ENABLED" false)
-   :private-mode-enabled          (get-var "PRIVATE_MODE_ENABLED" false)})
+   :private-mode-enabled          (get-private-mode)})
 
 (def replacement-keys [:app-name :stonecutter-name :stonecutter-admin-email])

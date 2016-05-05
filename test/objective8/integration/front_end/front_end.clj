@@ -89,14 +89,17 @@
          (fact "they are only shown when all credentials are provided"
                (binding [config/environment (-> config/environment
                                                 (assoc-in [?app-credentials ?app-credentials-token] "id-token")
-                                                (assoc-in [?app-credentials ?app-credentials-secret] "secret"))]
+                                                (assoc-in [?app-credentials ?app-credentials-secret] "secret")
+                                                (assoc :private-mode-enabled ?private-mode))]
                  (let [{response :response} (p/request (helpers/front-end-context) (utils/path-for :fe/sign-in))]
                    (:body response) => (contains ?present-element)
                    (:body response) =not=> (contains ?removed-element))))
 
-         ?app-credentials ?app-credentials-token ?app-credentials-secret ?present-element ?removed-element
-         :facebook-credentials :client-id :client-secret "clj-sign-in-facebook" "clj-sign-in-twitter"
-         :twitter-credentials :consumer-token :secret-token "clj-sign-in-twitter" "clj-sign-in-facebook")
+         ?app-credentials      ?app-credentials-token ?app-credentials-secret ?private-mode  ?present-element       ?removed-element
+         :facebook-credentials :client-id             :client-secret          false          "clj-sign-in-facebook" "clj-sign-in-twitter"
+         :twitter-credentials  :consumer-token        :secret-token           nil            "clj-sign-in-twitter"  "clj-sign-in-facebook"
+         :facebook-credentials :client-id             :client-secret          true           "clj-masthead-signed-out" "clj-sign-in-facebook"
+         :twitter-credentials  :consumer-token        :secret-token           true           "clj-masthead-signed-out"  "clj-sign-in-twitter")
 
        (fact "they are hidden when partial login details are provided"
              (binding [config/environment (-> config/environment
