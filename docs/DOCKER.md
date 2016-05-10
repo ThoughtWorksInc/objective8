@@ -15,7 +15,7 @@ You can find more information about the configuration variables [here](./CONFIG.
 
 To start a postgres docker container, using the relative path for your config file.
 
-    docker run -d --env-file=<docker config relative file path> -v /data --name pg_objective8 postgres
+    docker run -d --env-file=<relative path to objective8 docker config> -v /data --name pg_objective8 postgres
 
 ## Objective8
 

@@ -49,7 +49,8 @@
     - `ansible_ssh_host` with the IP address of your ubuntu server machine
     - `site_address` with the URL of the server
     - `external_jwk_set_url` with the URL of the server followed by /as2/jwk-set
-- Use the *objective8_config_template* found in the */ops* directory and replace the empty strings with your credentials and save it for use in the next step. Take note of the file path. You can find more information about the configuration variables [here](./CONFIG.md).
+- Use the *objective8_config_template* found in the */ops* directory and either replace the empty strings with your credentials or delete the variable. Save it for use in the next step and take note of the file path. You can find more information about the configuration variables [here](./CONFIG.md).
+- Remove from */ops/roles/objective8_application_config/templates/objective8_config.j2* the variables that you deleted in the previous step.
 - Create a */ops/roles/nginx/files/secure/* directory, and copy your SSL certificate and key files there, with the names *objective8.key* and *objective8.crt*.
 
 Run Ansible playbook:
