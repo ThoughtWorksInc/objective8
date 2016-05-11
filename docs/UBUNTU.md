@@ -35,7 +35,7 @@
 *(Optional: needed if deploying alongside [Mooncake](https://github.com/d-cent/mooncake))*
 
 - Deploy Coracle instance, as found [here](https://github.com/d-cent/coracle)
-- Uncomment the Coracle role in the *ops/digital_ocean_box_playbook.yml* file
+- If you are not using coracle, remove the coracle role in the *ops/digital_ocean_box_playbook.yml* file
 
 ### Amazon Web Services set up:
 *(Optional: required if you want to back up the database)*
