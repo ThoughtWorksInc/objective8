@@ -8,27 +8,27 @@
 
 (defn objective->activity [objective]
   {"@context"  "http://www.w3.org/ns/activitystreams"
-   "@type"     "Create"
+   "type"      "Create"
    "published" (:_created_at objective)
-   "actor"     {"@type"       "Person"
-                "displayName" (:username objective)}
-   "object"    {"@type"       "Objective"
-                "displayName" (:title objective)
-                "content"     (:description objective)
-                "url"         (str utils/host-url (:uri objective))}})
+   "actor"     {"type" "Person"
+                "name" (:username objective)}
+   "object"    {"type"    "Objective"
+                "name"    (:title objective)
+                "content" (:description objective)
+                "url"     (str utils/host-url (:uri objective))}})
 
 (defn question->activity [question]
   (let [objective (objectives/get-objective (:objective-id question))]
     {"@context"  "http://www.w3.org/ns/activitystreams"
-     "@type"     "Question"
+     "type"     "Question"
      "published" (:_created_at question)
-     "actor"     {"@type"       "Person"
-                  "displayName" (:username question)}
-     "object"    {"@type"       "Objective Question"
-                  "displayName" (:question question)
+     "actor"     {"type"       "Person"
+                  "name" (:username question)}
+     "object"    {"type"       "Objective Question"
+                  "name" (:question question)
                   "url"         (str utils/host-url (:uri question))}
-     "target"    {"@type"       "Objective"
-                  "displayName" (:title objective)
+     "target"    {"type"       "Objective"
+                  "name" (:title objective)
                   "url"         (str utils/host-url (:uri objective))}}))
 
 (def entities->activities {:objective objective->activity

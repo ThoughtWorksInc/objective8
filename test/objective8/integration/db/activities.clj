@@ -30,14 +30,14 @@
                    stored-objective-url (str utils/host-url (:uri stored-objective))
                    retrieved-objective (objectives/get-objective (:_id stored-objective))
                    expected-activity {"@context"  "http://www.w3.org/ns/activitystreams"
-                                      "@type"     "Create"
+                                      "type"      "Create"
                                       "published" stored-objective-timestamp
-                                      "actor"     {"@type"       "Person"
-                                                   "displayName" username}
-                                      "object"    {"@type"       "Objective"
-                                                   "displayName" "objective title"
-                                                   "content"     "objective description"
-                                                   "url"         stored-objective-url}}]
+                                      "actor"     {"type" "Person"
+                                                   "name" username}
+                                      "object"    {"type"    "Objective"
+                                                   "name"    "objective title"
+                                                   "content" "objective description"
+                                                   "url"     stored-objective-url}}]
                (activities/store-activity! activity-storage retrieved-objective) => expected-activity
                @activities-atom => [expected-activity]))
 
@@ -59,17 +59,17 @@
                    stored-question-url (str utils/host-url (:uri stored-question))
                    retrieved-question (questions/get-question (:uri stored-question))
                    expected-activity {"@context"  "http://www.w3.org/ns/activitystreams"
-                                      "@type"     "Question"
+                                      "type"      "Question"
                                       "published" stored-question-timestamp
-                                      "actor"     {"@type"       "Person"
-                                                   "displayName" question-username}
-                                      "object"    {"@type"
-                                                                 "Objective Question"
-                                                   "displayName" "Question content"
-                                                   "url"         stored-question-url}
-                                      "target"    {"@type"       "Objective"
-                                                   "displayName" "objective title"
-                                                   "url"         stored-objective-url}}]
+                                      "actor"     {"type" "Person"
+                                                   "name" question-username}
+                                      "object"    {"type"
+                                                          "Objective Question"
+                                                   "name" "Question content"
+                                                   "url"  stored-question-url}
+                                      "target"    {"type" "Objective"
+                                                   "name" "objective title"
+                                                   "url"  stored-objective-url}}]
                (activities/store-activity! activity-storage retrieved-question) => expected-activity
                @activities-atom => [expected-activity]))
 
