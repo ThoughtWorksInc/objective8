@@ -13,12 +13,19 @@
 (def objective-list-item-resource (html/select pf/library-html-resource [:.clj-objective-list-item]))
 (def objective-list-item-removal-container (html/select objective-list-resource 
                                                         [:.clj-objective-list-item-removal-container]))
+(def objective-list-item-promotion-container (html/select objective-list-resource
+                                                          [:.clj-promote-objective-form-container]))
 
 (defn removal-container [anti-forgery-snippet {:keys [title uri] :as objective}]
   (html/at objective-list-item-removal-container
            [:.clj-objective-removal-form] (html/prepend anti-forgery-snippet)
            [:.clj-removal-uri] (html/set-attr :value uri)
            [:.clj-removal-sample] (html/set-attr :value title)))
+
+(defn promotion-container [anti-forgery-snippet {:keys [uri] :as objective}]
+  (html/at objective-list-item-promotion-container
+           [:.clj-promote-objective-form] (html/prepend anti-forgery-snippet)
+           [:.clj-promotion-uri] (html/set-attr :value uri)))
 
 (defn- shorten-content [content]
   (let [content (or content "")
@@ -35,14 +42,17 @@
              (html/clone-for [{objective-id :_id :as objective} objectives]
                              [:.clj-objective-list-item-star] (if (get-in objective [:meta :starred])
                                                                 (html/add-class "starred")
-                                                                identity)    
+                                                                identity)
 
-                             [:.clj-objective-list-item-removal-container] (when (permissions/admin? user) 
+                             [:.clj-objective-list-item-removal-container] (when (permissions/admin? user)
                                                                              (html/substitute (removal-container anti-forgery-snippet objective)))
 
 
-                             [:.clj-objective-list-dashboard-link]  (when (permissions/writer-for? user objective-id)
-                                                                      (html/set-attr :href (utils/path-for :fe/dashboard-questions :id objective-id))) 
+                             [:.clj-objective-list-dashboard-link] (when (permissions/writer-for? user objective-id)
+                                                                      (html/set-attr :href (utils/path-for :fe/dashboard-questions :id objective-id)))
+
+                             [:.clj-promote-objective-form-container] (when (permissions/admin? user)
+                                                                    (html/substitute (promotion-container anti-forgery-snippet objective)))
 
                              [:.clj-objective-list-item-link] (html/set-attr :href (str "/objectives/" 
                                                                                         objective-id))

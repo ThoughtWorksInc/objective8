@@ -1,6 +1,5 @@
-(ns objective8.integration.front-end.admin-removals 
+(ns objective8.integration.front-end.admin-actions
   (:require [midje.sweet :refer :all]
-            [ring.mock.request :as mock]
             [peridot.core :as p]
             [oauth.client :as oauth]
             [objective8.front-end.api.http :as http-api]
@@ -70,6 +69,72 @@
                  (:status response) => 200
                  (:body response) => (contains "Objective Title")
                  (:body response) => (contains (:removal-uri params))))))
+
+(facts "about objective pinning"
+       (binding [config/enable-csrf false]
+         (fact "admin can post a pin objective form for an objective"
+               (against-background
+                 (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
+                 (http-api/post-promote-objective {:objective-uri "1" :promoted-by "/users/1"}) => {:status ::http-api/success
+                                                                                       :result              [{}]}
+                 (http-api/find-user-by-auth-provider-user-id anything) => {:status ::http-api/success
+                                                                            :result {:_id      USER_ID
+                                                                                     :username "username"}}
+                 (http-api/get-user anything) => {:result {:admin true}}
+                 (http-api/get-objectives {:signed-in-id 1}) => {:status ::http-api/success
+                                                                 :result {:some :data}})
+               (let [user-session (ih/front-end-context)
+                     params {:objective-uri 1}
+                     {response :response} (-> user-session
+                                              ih/sign-in-as-existing-user
+                                              (p/request (utils/path-for :fe/post-promote-objective)
+                                                         :request-method :post
+                                                         :params params))]
+                 (:status response) => 302
+                 (:headers response) => (ih/location-contains (utils/path-for :fe/objective-list))))
+
+         (fact "returns 400 if invalid input is entered"
+               (against-background
+                 (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
+                 (http-api/post-promote-objective {:objective-uri "1" :promoted-by "/users/1"}) => {:status ::http-api/invalid-input
+                                                                                       :result              [{}]}
+                 (http-api/find-user-by-auth-provider-user-id anything) => {:status ::http-api/success
+                                                                            :result {:_id      USER_ID
+                                                                                     :username "username"}}
+                 (http-api/get-user anything) => {:result {:admin true}}
+                 (http-api/get-objectives {:signed-in-id 1}) => {:status ::http-api/success
+                                                                 :result {:some :data}})
+
+               (let [user-session (ih/front-end-context)
+                     params {:objective-uri 1}
+                     {response :response} (-> user-session
+                                              ih/sign-in-as-existing-user
+                                              (p/request (utils/path-for :fe/post-promote-objective)
+                                                         :request-method :post
+                                                         :params params))]
+                 (:status response) => 400))
+         (fact "returns 400 if invalid input is entered"
+               (against-background
+                 (oauth/access-token anything anything anything) => {:user_id TWITTER_ID}
+                 (http-api/post-promote-objective {:objective-uri "1" :promoted-by "/users/1"}) => {:status ::http-api/aesrdtfyguh
+                                                                                       :result              [{:rs "drtfyghj"}]}
+                 (http-api/find-user-by-auth-provider-user-id anything) => {:status ::http-api/success
+                                                                            :result {:_id      USER_ID
+                                                                                     :username "username"}}
+                 (http-api/get-user anything) => {:result {:admin true}}
+                 (http-api/get-objectives {:signed-in-id 1}) => {:status ::http-api/success
+                                                                 :result {:some :data}})
+
+               (let [user-session (ih/front-end-context)
+                     params {:objective-uri 1}
+                     {response :response} (-> user-session
+                                              ih/sign-in-as-existing-user
+                                              (p/request (utils/path-for :fe/post-promote-objective)
+                                                         :request-method :post
+                                                         :params params))]
+                 (:status response) => 502))
+
+         ))
 
 (facts "about admin activity"
        (fact "admin removals can be retrieved"

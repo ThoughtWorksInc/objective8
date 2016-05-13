@@ -13,3 +13,8 @@ mixin objectiveListItem(objectiveTitle, numberOfDays)
       h3.objective-list-item-title.clj-objective-list-item-title.func--objective-title #{objectiveTitle}
       p.objective-list-item-preview-text.clj-objective-brief-description
         block
+    .clj-promote-objective-form-container
+      form.clj-promote-objective-form(action="/meta/promote-objective", method="post")
+        input.clj-promotion-uri(type="hidden", value="!promotion-uri", name="objective-uri")
+        button.func--promote-objective-button(type="submit")
+          | Promote

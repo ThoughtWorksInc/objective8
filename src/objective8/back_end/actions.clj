@@ -21,12 +21,12 @@
     [objective-id (:_id objective)
      {:keys [username profile] :as user} (users/retrieve-user (str "/users/" created-by-id))
      invitation {:invited-by-id (:created-by-id objective)
-                 :objective-id objective-id
-                 :reason "Default writer as creator of this objective"
-                 :writer-name username}
+                 :objective-id  objective-id
+                 :reason        "Default writer as creator of this objective"
+                 :writer-name   username}
      {uuid :uuid} (invitations/store-invitation! invitation)
      writer {:invitation-uuid uuid
-             :invitee-id created-by-id}]
+             :invitee-id      created-by-id}]
     (when-not profile
       (users/update-user! (assoc user :profile {:name username :biog (str "This profile was automatically generated for the creator of objective: " (:title objective))})))
     (writers/create-writer writer)))
@@ -114,13 +114,13 @@
   (if (objectives/get-objective objective-id)
     (if-let [stored-question (questions/store-question! question)]
       (do (activities/store-activity! (questions/get-question (:uri stored-question)))
-        (if (writers/retrieve-writer-for-objective created-by-id objective-id)
-          {:status ::success :result (->> (marks/store-mark! {:question-uri   (:uri stored-question)
-                                                              :created-by-uri (str "/users/" created-by-id)
-                                                              :active         true})
-                                          :active
-                                          (assoc-in stored-question [:meta :marked]))}
-          {:status ::success :result stored-question}))
+          (if (writers/retrieve-writer-for-objective created-by-id objective-id)
+            {:status ::success :result (->> (marks/store-mark! {:question-uri   (:uri stored-question)
+                                                                :created-by-uri (str "/users/" created-by-id)
+                                                                :active         true})
+                                            :active
+                                            (assoc-in stored-question [:meta :marked]))}
+            {:status ::success :result stored-question}))
       {:status ::failure})
     {:status ::entity-not-found}))
 
@@ -158,9 +158,9 @@
           objectives (objectives/get-objectives-owned-by-user-id (:_id user))
           admin (users/get-admin-by-auth-provider-user-id (:auth-provider-user-id user))]
       {:status ::success :result (assoc user
-                                        :writer-records writers
-                                        :owned-objectives objectives
-                                        :admin (not (empty? admin)))})
+                                   :writer-records writers
+                                   :owned-objectives objectives
+                                   :admin (not (empty? admin)))})
     {:status ::entity-not-found}))
 
 (defn update-user-with-profile! [profile-data]
@@ -206,5 +206,14 @@
             (objectives/admin-remove-objective! objective)
             {:status ::success :result (admin-removals/store-admin-removal! admin-removal-data)}))
         {:status ::entity-not-found})
-     {:status ::forbidden})
+      {:status ::forbidden})
+    {:status ::entity-not-found}))
+
+(defn create-promote-objective! [{:keys [objective-uri promoted-by] :as promoted-objective-data}]
+  (if-let [user (users/retrieve-user promoted-by)]
+    (if (users/get-admin-by-auth-provider-user-id (:auth-provider-user-id user))
+      (if-let [objective (storage/pg-retrieve-entity-by-uri objective-uri :with-global-id)]
+        {:status ::success :result (objectives/promote-objective! objective)}
+        {:status ::entity-not-found})
+      {:status ::forbidden})
     {:status ::entity-not-found}))

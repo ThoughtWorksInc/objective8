@@ -734,11 +734,14 @@
           (throw e)))
       => (contains "Functional test writer note on annotation"))
 
-(fact "User with admin credentials can remove an objective"
+(fact "User with admin credentials can promote and remove an objective"
       (let [result (try
                      (wd/click ".func--objectives")
                      (wait-for-title "Objectives | Objective[8]")
                      (screenshot "admins_objectives_page")
+                     (wait-for-element ".func--promote-objective-button")
+                     (wd/click ".func--promote-objective-button")
+                     (wait-for-title "Objectives | Objective[8]")
 
                      (wd/click ".func--remove-objective")
                      (wait-for-title "Are you sure? | Objective[8]")

@@ -345,3 +345,9 @@
 (defn request->removal-data [{:keys [session] :as request}]
   (some-> (:removal-data session)
           (utils/select-all-or-nothing [:removal-uri :removal-sample])))
+
+;; Promoting objectives
+
+(defn request->promoted-data [{:keys [params] :as request} user-id]
+  (when-let [objective-uri (:objective-uri params)]
+    {:objective-uri objective-uri :promoted-by (str "/users/" user-id)}))

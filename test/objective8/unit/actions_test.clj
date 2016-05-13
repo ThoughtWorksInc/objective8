@@ -33,32 +33,32 @@
 (def DRAFT_URI (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID))
 (def SECTION_LABEL "a84b23ca")
 (def an-answer {:global-id GLOBAL_ID})
-(def vote-data {:vote-on-uri :entity-uri
+(def vote-data {:vote-on-uri   :entity-uri
                 :created-by-id USER_ID
-                :vote-type :up})
+                :vote-type     :up})
 
 (facts "about casting up-down votes"
        (against-background
-        (actions/allowed-to-vote? anything anything) => true)
+         (actions/allowed-to-vote? anything anything) => true)
        (fact "stores a vote if user has no active vote on entity"
              (against-background
-              (up-down-votes/get-vote GLOBAL_ID USER_ID) => nil
-              (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => an-answer)
+               (up-down-votes/get-vote GLOBAL_ID USER_ID) => nil
+               (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => an-answer)
              (actions/cast-up-down-vote! vote-data) => {:status ::actions/success
                                                         :result :the-stored-vote}
              (provided
-              (up-down-votes/store-vote! an-answer vote-data) => :the-stored-vote))
+               (up-down-votes/store-vote! an-answer vote-data) => :the-stored-vote))
 
        (fact "fails if voting is not allowed on this entity"
              (against-background
                (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => an-answer)
              (actions/cast-up-down-vote! vote-data) => {:status ::actions/forbidden}
              (provided
-              (actions/allowed-to-vote? an-answer vote-data) => false))
+               (actions/allowed-to-vote? an-answer vote-data) => false))
 
        (fact "reports an error when the entity to vote on cannot be found"
              (against-background
-              (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => nil)
+               (storage/pg-retrieve-entity-by-uri :entity-uri :with-global-id) => nil)
              (actions/cast-up-down-vote! vote-data) => {:status ::actions/entity-not-found}))
 
 (def an-objective {:entity :objective})
@@ -77,8 +77,8 @@
 (def a-draft {:entity :draft})
 (def a-section {:entity :section :objective-id OBJECTIVE_ID})
 (def comment-data {:comment-on-uri "/entity-uri"
-                   :comment "A comment"
-                   :created-by-id USER_ID})
+                   :comment        "A comment"
+                   :created-by-id  USER_ID})
 (def COMMENT_ID)
 (def section-uri (str "/objectives/" OBJECTIVE_ID "/drafts/" DRAFT_ID "/sections/" SECTION_LABEL))
 (def reason-type "expand")
@@ -110,7 +110,7 @@
              (provided
                (storage/pg-retrieve-entity-by-uri section-uri :with-global-id) => nil
                (drafts/get-section-labels-for-draft-uri DRAFT_URI) => [SECTION_LABEL]
-               (drafts/store-section! {:entity :section :draft-id DRAFT_ID :objective-id OBJECTIVE_ID
+               (drafts/store-section! {:entity        :section :draft-id DRAFT_ID :objective-id OBJECTIVE_ID
                                        :section-label SECTION_LABEL}) => a-section
                (comments/store-comment-for! a-section section-comment-data) => {:_id COMMENT_ID}
                (comments/store-reason! {:reason reason-type :comment-id COMMENT_ID}) => {:reason reason-type}))
@@ -123,23 +123,23 @@
 (facts "about retrieving annotations for a draft"
        (fact "annotations are retrieved with the annotated section"
              (actions/get-annotations-for-draft DRAFT_URI) => {:status ::actions/success
-                                                               :result [{:section :some-hiccup
-                                                                         :uri :section-uri
+                                                               :result [{:section      :some-hiccup
+                                                                         :uri          :section-uri
                                                                          :objective-id OBJECTIVE_ID
-                                                                         :comments [:annotation]}]}
+                                                                         :comments     [:annotation]}]}
 
              (provided
-               (drafts/get-annotated-sections-with-section-content DRAFT_URI) => [{:uri :section-uri
+               (drafts/get-annotated-sections-with-section-content DRAFT_URI) => [{:uri          :section-uri
                                                                                    :objective-id OBJECTIVE_ID
-                                                                                   :section :some-hiccup}]
+                                                                                   :section      :some-hiccup}]
                (comments/get-comments :section-uri {}) => [:annotation])))
 
 (def STAR_ID 47)
 
-(def objective-uri (str "/objectives/" OBJECTIVE_ID))
+(def OBJECTIVE-URI (str "/objectives/" OBJECTIVE_ID))
 (def user-uri (str "/users/" USER_ID))
 
-(def star-data {:objective-uri objective-uri
+(def star-data {:objective-uri OBJECTIVE-URI
                 :created-by-id USER_ID})
 
 (def star-data-with-id (assoc star-data :objective-id OBJECTIVE_ID))
@@ -149,20 +149,20 @@
              (actions/toggle-star! star-data) => {:status ::actions/success
                                                   :result :the-stored-star}
              (provided
-              (storage/pg-retrieve-entity-by-uri objective-uri) => {:_id OBJECTIVE_ID}
-              (stars/get-star objective-uri user-uri) => nil
-              (stars/store-star! star-data-with-id) => :the-stored-star))
+               (storage/pg-retrieve-entity-by-uri OBJECTIVE-URI) => {:_id OBJECTIVE_ID}
+               (stars/get-star OBJECTIVE-URI user-uri) => nil
+               (stars/store-star! star-data-with-id) => :the-stored-star))
 
        (fact "the state of the star is toggled if the user has already starred the objective"
              (actions/toggle-star! star-data) => {:status ::actions/success
                                                   :result :the-toggled-star}
              (provided
-              (storage/pg-retrieve-entity-by-uri objective-uri) => {:_id OBJECTIVE_ID}
-              (stars/get-star objective-uri user-uri) => :star
-              (stars/toggle-star! :star) => :the-toggled-star)))
+               (storage/pg-retrieve-entity-by-uri OBJECTIVE-URI) => {:_id OBJECTIVE_ID}
+               (stars/get-star OBJECTIVE-URI user-uri) => :star
+               (stars/toggle-star! :star) => :the-toggled-star)))
 
-(def mark-data {:question-uri QUESTION_URI
-               :created-by-uri user-uri })
+(def mark-data {:question-uri   QUESTION_URI
+                :created-by-uri user-uri})
 
 (def question {:objective-id OBJECTIVE_ID :created-by-id USER_ID :uri QUESTION_URI :question "Sample question"})
 (def stored-question (assoc question :_id QUESTION_ID))
@@ -183,33 +183,33 @@
              (actions/mark-question! mark-data) => {:status ::actions/success
                                                     :result :the-new-mark}
              (provided
-              (questions/get-question QUESTION_URI) => :a-question
-              (marks/get-mark-for-question QUESTION_URI) => nil
-              (marks/store-mark! (contains (assoc mark-data :active true))) => :the-new-mark))
+               (questions/get-question QUESTION_URI) => :a-question
+               (marks/get-mark-for-question QUESTION_URI) => nil
+               (marks/store-mark! (contains (assoc mark-data :active true))) => :the-new-mark))
 
        (fact "the state of the mark is toggled if a mark already exists for the question"
              (actions/mark-question! mark-data) => {:status ::actions/success
                                                     :result :the-new-mark}
              (provided
-              (questions/get-question QUESTION_URI) => :a-question
-              (marks/get-mark-for-question QUESTION_URI) => {:active true}
-              (marks/store-mark! (contains (assoc mark-data :active false))) => :the-new-mark))
+               (questions/get-question QUESTION_URI) => :a-question
+               (marks/get-mark-for-question QUESTION_URI) => {:active true}
+               (marks/store-mark! (contains (assoc mark-data :active false))) => :the-new-mark))
 
        (fact "a question with the given uri must exist in order to be marked"
              (actions/mark-question! mark-data) => {:status ::actions/entity-not-found}
              (provided
-              (questions/get-question QUESTION_URI) => nil)))
+               (questions/get-question QUESTION_URI) => nil)))
 
 (facts "about getting users"
        (fact "gets user with writer records, owned objectives and admin role if they exist"
              (actions/get-user-with-roles user-uri)
              => {:status ::actions/success
-                 :result {:entity :user
-                          :_id USER_ID
+                 :result {:entity                :user
+                          :_id                   USER_ID
                           :auth-provider-user-id "twitter-id"
-                          :owned-objectives :stubbed-owned-objectives
-                          :writer-records :stubbed-writer-records
-                          :admin true}}
+                          :owned-objectives      :stubbed-owned-objectives
+                          :writer-records        :stubbed-writer-records
+                          :admin                 true}}
              (provided
                (users/retrieve-user user-uri) => {:entity :user :_id USER_ID :auth-provider-user-id "twitter-id"}
                (users/get-admin-by-auth-provider-user-id "twitter-id") => {:auth-provider-user-id "twitter-id"}
@@ -250,7 +250,7 @@
                (questions/get-question QUESTION_URI) => :a-question
                (answers/store-answer! answer) => nil)))
 
-(def invitation {:objective-id OBJECTIVE_ID
+(def invitation {:objective-id  OBJECTIVE_ID
                  :invited-by-id USER_ID})
 
 
@@ -292,11 +292,11 @@
 (def stored-objective (assoc objective :_id OBJECTIVE_ID))
 (def retrieved-objective (assoc stored-objective :username "UserName"))
 (def invitation {:invited-by-id USER_ID
-                 :objective-id OBJECTIVE_ID
-                 :reason (str "Default writer as creator of this objective")
-                 :writer-name "UserName"})
+                 :objective-id  OBJECTIVE_ID
+                 :reason        (str "Default writer as creator of this objective")
+                 :writer-name   "UserName"})
 (def writer-data {:invitation-uuid UU_ID
-                  :invitee-id USER_ID})
+                  :invitee-id      USER_ID})
 (def user-uri (str "/users/" USER_ID))
 
 
@@ -327,14 +327,45 @@
                (storage/pg-retrieve-entity-by-uri ANSWER_URI :with-global-id) => entity-to-note-on
                (writer-notes/retrieve-note ANSWER_URI) => [])))
 
-(def admin-removal {:removal-uri objective-uri
+(def admin-removal {:removal-uri    OBJECTIVE-URI
                     :removed-by-uri USER_URI})
 (fact "admin-removals"
-     (actions/create-admin-removal! admin-removal) => {:status ::actions/success
-                                                       :result :stored-admin-removal}
-     (provided
-       (users/retrieve-user USER_URI) => {:auth-provider-user-id "twitter-123456"}
-       (users/get-admin-by-auth-provider-user-id "twitter-123456") => {:auth-provider-user-id "twitter-123456"}
-       (storage/pg-retrieve-entity-by-uri objective-uri :with-global-id) => {:_id OBJECTIVE_ID}
-       (objectives/admin-remove-objective! {:_id OBJECTIVE_ID}) => {:_id OBJECTIVE_ID}
-       (admin-removals/store-admin-removal! admin-removal) => :stored-admin-removal))
+      (actions/create-admin-removal! admin-removal) => {:status ::actions/success
+                                                        :result :stored-admin-removal}
+      (provided
+        (users/retrieve-user USER_URI) => {:auth-provider-user-id "twitter-123456"}
+        (users/get-admin-by-auth-provider-user-id "twitter-123456") => {:auth-provider-user-id "twitter-123456"}
+        (storage/pg-retrieve-entity-by-uri OBJECTIVE-URI :with-global-id) => {:_id OBJECTIVE_ID}
+        (objectives/admin-remove-objective! {:_id OBJECTIVE_ID}) => {:_id OBJECTIVE_ID}
+        (admin-removals/store-admin-removal! admin-removal) => :stored-admin-removal))
+
+(def promoted-objective-data {:objective-uri OBJECTIVE-URI :promoted-by USER_URI})
+
+(facts "about promoting objectives"
+       (fact "does promote an existing objective when signed in as an admin"
+             (actions/create-promote-objective! promoted-objective-data) => {:status ::actions/success
+                                                                         :result     OBJECTIVE_ID}
+             (provided
+               (users/retrieve-user USER_URI) => {:auth-provider-user-id "twitter-123456"}
+               (users/get-admin-by-auth-provider-user-id "twitter-123456") => {:auth-provider-user-id "twitter-123456"}
+               (storage/pg-retrieve-entity-by-uri OBJECTIVE-URI :with-global-id) => {:_id OBJECTIVE_ID}
+               (objectives/promote-objective! {:_id OBJECTIVE_ID}) => OBJECTIVE_ID))
+
+       (fact "unable to promote objective if user is not signed in"
+             (actions/create-promote-objective! promoted-objective-data) => {:status ::actions/entity-not-found}
+             (provided
+               (users/retrieve-user USER_URI) => nil))
+
+       (fact "unable to promote objective if user is not an admin"
+             (actions/create-promote-objective! promoted-objective-data) => {:status ::actions/forbidden}
+             (provided
+               (users/retrieve-user USER_URI) => {:auth-provider-user-id "twitter-123456"}
+               (users/get-admin-by-auth-provider-user-id "twitter-123456") => nil))
+
+       (fact "unable to promote objective if objective n'existe pas"
+             (actions/create-promote-objective! promoted-objective-data) => {:status ::actions/entity-not-found}
+             (provided
+               (users/retrieve-user USER_URI) => {:auth-provider-user-id "twitter-123456"}
+               (users/get-admin-by-auth-provider-user-id "twitter-123456") => {:auth-provider-user-id "twitter-123456"}
+               (storage/pg-retrieve-entity-by-uri OBJECTIVE-URI :with-global-id) => nil
+               )))

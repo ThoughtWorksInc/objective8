@@ -98,6 +98,9 @@
 (defn request->star-data [{params :params :as request}]
   (utils/select-all-or-nothing params [:objective-uri :created-by-id]))
 
+(defn request->promote-objective-data [{params :params :as request}]
+  (utils/select-all-or-nothing params [:objective-uri :promoted-by]))
+
 (defn request->profile-data [{params :params :as request}]
   (utils/select-all-or-nothing params [:name :biog :user-uri]))
 

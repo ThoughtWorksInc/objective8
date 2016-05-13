@@ -100,6 +100,7 @@
        :fe/admin-removal-confirmation-get  front-end-handlers/admin-removal-confirmation
        :fe/admin-removal-confirmation-post front-end-handlers/post-admin-removal-confirmation
        :fe/post-admin-removal              front-end-handlers/post-admin-removal
+       :fe/post-promote-objective          front-end-handlers/post-promote-objective
        :fe/error-log-in                    front-end-handlers/error-log-in
        :fe/error-configuration             front-end-handlers/error-configuration
        :fe/authorisation-page              front-end-handlers/authorisation-page
@@ -110,7 +111,9 @@
                                                         :fe/draft-list :fe/error-log-in :fe/error-configuration :fe/cookies})
       (wrap-signed-in)
       (m/wrap-just-these-handlers #(friend/wrap-authorize % #{:admin})
-                                  #{:fe/admin-removal-confirmation-get :fe/admin-removal-confirmation-post :fe/post-admin-removal})
+                                  #{:fe/admin-removal-confirmation-get :fe/admin-removal-confirmation-post :fe/post-admin-removal
+                                    :fe/post-promote-objective})
+
       (m/wrap-just-these-handlers m/wrap-authorise-writer-inviter
                                   #{:fe/invite-writer :fe/invitation-form-post})
       (m/wrap-just-these-handlers #(m/authorize-based-on-request % permissions/request->writer-roles)
@@ -146,6 +149,7 @@
        :api/get-sections                back-end-handlers/get-sections
        :api/get-section                 back-end-handlers/get-section
        :api/get-annotations             back-end-handlers/get-annotations
+       :api/put-promote-objective       back-end-handlers/post-promote-objective
        :api/post-admin-removal          back-end-handlers/post-admin-removal
        :api/get-admin-removals          back-end-handlers/get-admin-removals
        :api/post-up-down-vote           back-end-handlers/post-up-down-vote

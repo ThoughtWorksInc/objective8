@@ -19,9 +19,9 @@
             [objective8.back-end.domain.activities :as activities]))
 
 (defn error-response [status message]
-  {:status status
+  {:status  status
    :headers {"Content-Type" "application/json"}
-   :body {:reason message}})
+   :body    {:reason message}})
 
 (defn invalid-response [message]
   (error-response 400 message))
@@ -42,16 +42,16 @@
   {:status 200})
 
 (defn resource-updated-response [resource-location updated-object]
-  {:status 200
+  {:status  200
    :headers {"Content-Type" "application/json"
-             "Location" resource-location}
-   :body updated-object})
+             "Location"     resource-location}
+   :body    updated-object})
 
 (defn resource-created-response [resource-location stored-object]
-  {:status 201
+  {:status  201
    :headers {"Content-Type" "application/json"
-             "Location" resource-location}
-   :body stored-object})
+             "Location"     resource-location}
+   :body    stored-object})
 
 ;; USERS
 
@@ -111,6 +111,8 @@
       (log/info "Error when posting profile: " e)
       (internal-server-error "Error when posting profile"))))
 
+;; ADMINS
+
 (defn post-admin-removal [request]
   (try
     (if-let [admin-removal-data (br/request->admin-removal-data request)]
@@ -141,6 +143,30 @@
     (catch Exception e
       (log/info "Error when getting admin-removals: " e)
       (internal-server-error "Error when getting admin-removals"))))
+
+;; PROMOTED OBJECTIVES
+
+(defn post-promote-objective [request]
+  (try
+    (if-let [pin-data (br/request->promote-objective-data request)]
+      (let [{status :status promoted-objective :result} (actions/create-promote-objective! pin-data)]
+        (cond
+          (= status ::actions/success)
+          (resource-updated-response (str utils/host-url "/api/v1/meta/promote-objective/" (:_id promoted-objective))
+                                     promoted-objective)
+          (= status ::actions/forbidden)
+          (forbidden-response "Admin credentials are required for this request")
+
+          (= status ::actions/entity-not-found)
+          (not-found-response "Objective with that URI does not exist")
+
+          :else
+          (internal-server-error "Error when posting to promote objective")))
+      (invalid-response "Invalid promote objective post request"))
+    (catch Exception e
+      (log/info "Error when promoting objective: " e)
+      (internal-server-error "Error when promoting objective"))))
+
 
 ;;STARS
 (defn post-star [request]
@@ -205,7 +231,7 @@
         (cond
           (= status ::actions/success)
           (resource-created-response (str utils/host-url "/api/v1/meta/comments/" (:_id comment))
-                                    comment)
+                                     comment)
 
           (= status ::actions/entity-not-found)
           (not-found-response "Entity does not exist")
@@ -288,7 +314,7 @@
 (defn post-answer [{:keys [route-params params] :as request}]
   (try
     (if-let [answer-data (br/request->answer-data request)]
-      (let [ {status :status answer :result} (actions/create-answer! answer-data)]
+      (let [{status :status answer :result} (actions/create-answer! answer-data)]
         (case status
           ::actions/success
           (resource-created-response (str utils/host-url
@@ -311,9 +337,9 @@
   (try
     (if-let [{question-uri :question-uri sorted-by :sorted-by filter-type :filter-type :as query-params} (br/request->answers-query request)]
       (if (questions/get-question question-uri)
-        (let [answers-query {:sorted-by sorted-by
+        (let [answers-query {:sorted-by   sorted-by
                              :filter-type filter-type
-                             :offset (get query-params :offset 0)}
+                             :offset      (get query-params :offset 0)}
               answers (answers/get-answers question-uri answers-query)]
           (-> answers
               response/response
@@ -326,20 +352,20 @@
 
 ;;WRITER-NOTES
 (defn post-writer-note [request]
- (try
-   (let [writer-note-data (br/request->writer-note-data request)
-         {status :status stored-note :result} (actions/create-writer-note! writer-note-data)]
-     (cond
-       (= status ::actions/success)
-       (resource-created-response (str utils/host-url
-                                       "/api/v1/meta/writer-notes/" (:_id stored-note)) stored-note)
+  (try
+    (let [writer-note-data (br/request->writer-note-data request)
+          {status :status stored-note :result} (actions/create-writer-note! writer-note-data)]
+      (cond
+        (= status ::actions/success)
+        (resource-created-response (str utils/host-url
+                                        "/api/v1/meta/writer-notes/" (:_id stored-note)) stored-note)
 
-       (= status ::actions/forbidden)
-       (forbidden-response (str "Cannot post a note against entity"))
+        (= status ::actions/forbidden)
+        (forbidden-response (str "Cannot post a note against entity"))
 
-       (= status ::actions/entity-not-found)
-       (not-found-response "Entity does not exist")
-       ))))
+        (= status ::actions/entity-not-found)
+        (not-found-response "Entity does not exist")
+        ))))
 
 ;;WRITERS
 (defn post-invitation [request]
@@ -378,7 +404,7 @@
     {:status 404}))
 
 (defn post-writer [{{objective-id :id} :route-params
-                    params :params :as request}]
+                    params             :params :as request}]
   (try
     (let [writer-data (br/request->writer-data request)]
       (if-let [{writer-id :_id :as writer} (writers/create-writer writer-data)]
@@ -405,13 +431,13 @@
 ;;WRITER-OBJECTIVES
 
 (defn get-objectives-for-writer [{:keys [route-params]}]
-(try
-   (let [user-id (-> (:id route-params)
-                     Integer/parseInt)
-         objectives (objectives/get-objectives-for-writer user-id)]
-     (-> objectives
-         response/response
-         (response/content-type "application/json")))
+  (try
+    (let [user-id (-> (:id route-params)
+                      Integer/parseInt)
+          objectives (objectives/get-objectives-for-writer user-id)]
+      (-> objectives
+          response/response
+          (response/content-type "application/json")))
     (catch Exception e
       (log/info "Errow when retrieving objectives for writer: " e)
       (invalid-response "Invalid objectives get request for this writer"))))
@@ -469,10 +495,10 @@
       (invalid-response "Invalid section request for this draft"))))
 
 (defn get-sections [{:keys [route-params] :as request}]
-   (-> (str "/objectives/" (:id route-params) "/drafts/" (:d-id route-params))
-       drafts/get-draft-sections-with-annotation-count
-       response/response
-       (response/content-type "application/json")))
+  (-> (str "/objectives/" (:id route-params) "/drafts/" (:d-id route-params))
+      drafts/get-draft-sections-with-annotation-count
+      response/response
+      (response/content-type "application/json")))
 
 (defn get-annotations [{:keys [route-params] :as request}]
   (let [draft-uri (str "/objectives/" (:id route-params) "/drafts/" (:d-id route-params))

@@ -82,3 +82,7 @@
   (some-> (storage/pg-update-objective! objective :removed-by-admin true)
           (utils/update-in-self [:uri] uri-for-objective)
           (dissoc :global-id)))
+
+(defn promote-objective! [objective]
+  (some-> (storage/pg-update-objective! objective :pinned true)
+          (dissoc :global-id)))

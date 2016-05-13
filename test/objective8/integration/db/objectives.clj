@@ -189,3 +189,10 @@
                (objectives/admin-remove-objective! objective) => (-> (dissoc objective :global-id) 
                                                                      (assoc :removed-by-admin true
                                                                             :uri uri))))) 
+
+(facts "about pinning objectives"
+       (fact "Pin objective sets status of objective to pinned"
+             (let [objective (sh/store-an-objective)]
+               (boolean (:pinned objective)) => false
+               (objectives/promote-objective! objective) => (-> (dissoc objective :global-id)
+                                                                (assoc :pinned true)))))

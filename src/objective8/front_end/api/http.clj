@@ -237,3 +237,8 @@
 
 (defn get-admin-removals []
   (default-get-call (utils/api-path-for :api/get-admin-removals)))
+
+;; Promoting Objectives
+
+(defn post-promote-objective [promoted-objective-data]
+  (default-put-call (utils/api-path-for :api/put-promote-objective) promoted-objective-data))

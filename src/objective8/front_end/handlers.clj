@@ -1118,12 +1118,40 @@
   (let [{status :status admin-removals :result} (http-api/get-admin-removals)]
     (cond
       (= status ::http-api/success)
-      {:status 200
+      {:status  200
        :headers {"Content-Type" "text/html"}
-       :body (views/admin-activity "admin-activity" request
-                                   :admin-removals admin-removals)}
+       :body    (views/admin-activity "admin-activity" request
+                                      :admin-removals admin-removals)}
 
       :else
       (do (log/info (str "admin-activity: api error get-admin-removals "
                          {:http-api-status status}))
           (default-error-page request 502)))))
+
+    ;; Promoting objectives
+
+(defn post-promote-objective [request]
+  (if-let [promoted-data (fr/request->promoted-data request (get (friend/current-authentication) :identity))]
+    (let [{status :status promoted-objective :result} (http-api/post-promote-objective promoted-data)
+          updated-session (dissoc (:session request) :removal-data)]
+      (case status
+        ::http-api/success
+        (-> (response/redirect (utils/path-for :fe/objective-list))
+            (assoc :session updated-session))
+
+        ::http-api/invalid-input
+        (do (log/info (str "post--promote-objective: invalid input to post-promote-objective api "
+                           {:data [promoted-data]}))
+            (default-error-page request 400))
+
+        (do (log/info (str "post-promote-objective: api error post-promote-objective "
+                           {:http-api-status status
+                            :data promoted-data}))
+            (default-error-page request 502))))
+
+
+    (do (log/info (str "post-promote-objective: fatal validation error "
+                           {:request {:params (:params request)
+                                      :route-params (:route-params request)}
+                            :authenticated-user-id (get (friend/current-authentication) :identity)}))
+            (default-error-page request 400))))

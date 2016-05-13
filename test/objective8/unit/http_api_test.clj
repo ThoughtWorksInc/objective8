@@ -385,3 +385,13 @@
       (http-api/get-admin-removals) => :api-call-result
       (provided
         (http-api/default-get-call (contains (utils/api-path-for :api/get-admin-removals))) => :api-call-result))
+
+;;Promoting objectives
+
+(def promoted-objective-data {:objective-uri OBJECTIVE_URI :user-uri USER_URI})
+
+(fact "posting a promoted objective hits the correct API endpoint"
+      (http-api/post-promote-objective promoted-objective-data) => :api-call-result
+      (provided
+        (http-api/default-put-call (contains "/api/v1/meta/promote-objective") promoted-objective-data) => :api-call-result))
+
