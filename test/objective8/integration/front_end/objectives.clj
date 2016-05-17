@@ -8,7 +8,10 @@
             [objective8.integration.integration-helpers :as helpers]
             [objective8.utils :as utils]
             [objective8.core :as core]
-            [objective8.front-end.permissions :as permissions]))
+            [objective8.front-end.permissions :as permissions]
+            [hiccup.core :as hiccup]
+            [hickory.core :as hickory]
+            [hickory.select :as select]))
 
 (def TWITTER_ID "TWITTER_ID")
 
@@ -30,6 +33,7 @@
                       :description "my objective description"
                       :uri         (str "/objectives/" OBJECTIVE_ID)
                       :meta        {:drafts-count 0 :comments-count 0}})
+
 
 (facts "objectives"
        (against-background
@@ -71,13 +75,14 @@
              (default-app objective-view-get-request) => (contains {:body (contains "my objective description")}))
 
 
-       (facts "about pinning objectives"
-              (fact "the pin objective button is hidden by default"
+       (facts "about promoting objectives"
+              (fact "the promote objective button is hidden by default"
                     (against-background
                       (http-api/get-objectives) => {:status ::http-api/success
                                                     :result [{:_id 1 :description "description" :title "title"}]})
                     (default-app objective-list-view-get-request) =not=> (contains {:body (contains "/objectives/promote-objective")}))
-              (fact "the pin objective button posts to the correct endpoint"
+
+              (fact "the promote objective button posts to the correct endpoint"
                            (-> user-session
                                helpers/sign-in-as-existing-user
                                (p/request "http://localhost:8080/objectives")
@@ -86,7 +91,43 @@
                     (provided (http-api/get-objectives {:signed-in-id 1}) => {:status ::http-api/success
                                                             :result [{:_id 1 :description "description" :title "title"}]}
                               (permissions/admin? {:username "username", :roles #{:signed-in}, :email nil}) => true))
-              )
+
+              (fact "promoted objectives container is populated with objectives"
+                    (against-background
+                      (http-api/get-objectives) => {:status ::http-api/success
+                                                    :result [{:_id 1 :description "description" :title "title" :promoted true}]})
+                    (default-app objective-list-view-get-request) => (contains {:body (contains "clj-promoted-objectives-container")}))
+
+              (fact "promoted objectives container is populated only with promoted objectives"
+                    (against-background
+                      (http-api/get-objectives) => {:status ::http-api/success
+                                                    :result [basic-objective {:_id 1 :description "promoted description" :title "promoted title" :promoted true}]})
+
+                    (let [response-tree (-> (default-app objective-list-view-get-request) :body hickory/parse hickory/as-hickory)]
+
+                      (str (select/select (select/class "clj-promoted-objective-list") response-tree)) => (contains "promoted description")
+                      (str (select/select (select/class "clj-promoted-objective-list") response-tree)) =not=> (contains "my objective description")
+
+                      (str (select/select (select/class "clj-objective-list") response-tree)) =not=> (contains "promoted description")
+                      (str (select/select (select/class "clj-objective-list") response-tree)) => (contains "my objective description")
+                      )
+                    )
+
+              (fact "promoted objectives container is hidden if there are no promoted objectives"
+                    (against-background
+                      (http-api/get-objectives) => {:status ::http-api/success
+                                                    :result [{:_id 1 :description "description" :title "title"}]})
+                    (default-app objective-list-view-get-request) =not=> (contains {:body (contains "clj-promoted-objectives-container")}))
+
+              (future-fact "the promoted objectives container is present if user is admin even if there are no promoted objectives"
+                    (-> user-session
+                        helpers/sign-in-as-existing-user
+                        (p/request "http://localhost:8080/objectives")
+                        :response)
+                    => (contains {:body (contains "clj-promoted-objectives-container")})
+                    (provided (http-api/get-objectives {:signed-in-id 1}) => {:status ::http-api/success
+                                                                              :result [{:_id 1 :description "description" :title "title"}]}
+                              (permissions/admin? {:username "username", :roles #{:signed-in}, :email nil}) => true)))
 
 
        (fact "When a signed in user views an objective, the objective contains user specific information"

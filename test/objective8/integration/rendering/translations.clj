@@ -67,11 +67,13 @@
                    :uri (str "/objectives/" OBJECTIVE_ID)
                    :meta {:comments-count 100}})
 
+(def promoted-objective (assoc an-objective :promoted true))
+
 (facts "about rendering objective-list page"
        (fact "there are no untranslated strings"
              (against-background
-               (http-api/get-objectives) => {:status ::http-api/success 
-                                             :result [an-objective an-objective]})
+               (http-api/get-objectives) => {:status ::http-api/success
+                                             :result [an-objective an-objective promoted-objective]})
              (let [{status :status body :body} (-> user-session
                                                    (p/request (utils/path-for :fe/objective-list))
                                                    :response)]

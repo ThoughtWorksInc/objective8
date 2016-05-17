@@ -190,9 +190,9 @@
                                                                      (assoc :removed-by-admin true
                                                                             :uri uri))))) 
 
-(facts "about pinning objectives"
-       (fact "Pin objective sets status of objective to pinned"
+(facts "about promoting objectives"
+       (fact "Promote objective sets status of objective to promoted"
              (let [objective (sh/store-an-objective)]
-               (boolean (:pinned objective)) => false
+               (boolean (:promoted objective)) => false
                (objectives/promote-objective! objective) => (-> (dissoc objective :global-id)
-                                                                (assoc :pinned true)))))
+                                                                (assoc :promoted true)))))

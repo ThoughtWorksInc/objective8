@@ -6,12 +6,12 @@
             [objective8.front-end.templates.page-furniture :as pf]
             [objective8.front-end.api.domain :as domain]
             [objective8.utils :as utils]
-            [objective8.front-end.templates.template-functions :as tf]))   
+            [objective8.front-end.templates.template-functions :as tf]))
 
 (def objective-list-resource (html/html-resource "templates/jade/objective-list.html" {:parser jsoup/parser}))
 
 (def objective-list-item-resource (html/select pf/library-html-resource [:.clj-objective-list-item]))
-(def objective-list-item-removal-container (html/select objective-list-resource 
+(def objective-list-item-removal-container (html/select objective-list-resource
                                                         [:.clj-objective-list-item-removal-container]))
 (def objective-list-item-promotion-container (html/select objective-list-resource
                                                           [:.clj-promote-objective-form-container]))
@@ -36,9 +36,11 @@
 (defn brief-description [objective]
   (shorten-content (:description objective)))
 
-(defn objective-list-items [{:keys [anti-forgery-snippet translations data user] :as context}]
-  (let [objectives (:objectives data)]
-    (html/at objective-list-item-resource [:.clj-objective-list-item] 
+(defn promoted-objectives? [objective] (= (:promoted objective) true))
+
+(defn objective-list-items [{:keys [anti-forgery-snippet translations data user] :as context} promoted]
+  (let [objectives (filter #(= (promoted-objectives? %) promoted) (:objectives data))]
+    (html/at objective-list-item-resource [:.clj-objective-list-item]
              (html/clone-for [{objective-id :_id :as objective} objectives]
                              [:.clj-objective-list-item-star] (if (get-in objective [:meta :starred])
                                                                 (html/add-class "starred")
@@ -49,26 +51,30 @@
 
 
                              [:.clj-objective-list-dashboard-link] (when (permissions/writer-for? user objective-id)
-                                                                      (html/set-attr :href (utils/path-for :fe/dashboard-questions :id objective-id)))
+                                                                     (html/set-attr :href (utils/path-for :fe/dashboard-questions :id objective-id)))
 
                              [:.clj-promote-objective-form-container] (when (permissions/admin? user)
-                                                                    (html/substitute (promotion-container anti-forgery-snippet objective)))
+                                                                        (html/substitute (promotion-container anti-forgery-snippet objective)))
 
-                             [:.clj-objective-list-item-link] (html/set-attr :href (str "/objectives/" 
+                             [:.clj-objective-list-item-link] (html/set-attr :href (str "/objectives/"
                                                                                         objective-id))
                              [:.clj-objective-list-item-title] (html/content (:title objective))
+                             [:.clj-objective-brief-description] (html/content (brief-description objective))))))
 
+(defn no-promoted-objectives? [{:keys [anti-forgery-snippet translations data user] :as context}]
+  (let [objectives (filter #(= (promoted-objectives? %) true) (:objectives data))]
+    (empty? objectives)))
 
-                             [:.clj-objective-brief-description]
-                             (html/content (brief-description objective))))))
-
-(defn objective-list-page [{:keys [translations data doc] :as context}]
+(defn objective-list-page [{:keys [translations data doc user] :as context}]
   (html/at objective-list-resource
-              [:title] (html/content (:title doc))
-              [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
-              [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
+           [:title] (html/content (:title doc))
+           [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
+           [:.clj-status-bar] (html/substitute (pf/status-flash-bar context))
 
-              [:.clj-guidance-buttons] nil
-              [:.l8n-guidance-heading] (html/content (translations :objectives-guidance/heading))
+           [:.clj-guidance-buttons] nil
+           [:.l8n-guidance-heading] (html/content (translations :objectives-guidance/heading))
 
-              [:.clj-objective-list] (html/content (objective-list-items context))))
+           [:.clj-objective-list] (html/content (objective-list-items context false))
+           [:.clj-promoted-objective-list] (html/content (objective-list-items context true))
+           [:.clj-promoted-objectives-container] (if (no-promoted-objectives? context) (html/substitute nil) identity)
+           ))

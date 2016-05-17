@@ -120,7 +120,7 @@
 
                  (:status response) => 200
                  (:body response) => (helpers/json-contains {:uri objective-uri
-                                                             :pinned true})
+                                                             :promoted true})
                  (:headers response) => (helpers/location-contains "/api/v1/meta/promote-objective/")))
 
          (fact "returns 403 if the user is not an admin"

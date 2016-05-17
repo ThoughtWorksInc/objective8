@@ -84,5 +84,5 @@
           (dissoc :global-id)))
 
 (defn promote-objective! [objective]
-  (some-> (storage/pg-update-objective! objective :pinned true)
+  (some-> (storage/pg-update-objective! objective :promoted true)
           (dissoc :global-id)))
