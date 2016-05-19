@@ -131,15 +131,32 @@
                     (against-background
                       (http-api/get-objectives) => {:status ::http-api/success
                                                     :result [{:_id 1 :description "description" :title "title"}]})
-                    (default-app objective-list-view-get-request) =not=> (contains {:body (contains "clj-promoted-objectives-container")}))
+                    (default-app objective-list-view-get-request) =not=> (contains {:body (contains "clj-promoted-objectives-container")})
+                    )
 
               (fact "promoted objectives button becomes 'Demote' for promoted objectives"
                     (against-background
                       (http-api/get-objectives) => {:status ::http-api/success
                                                     :result [{:_id 1 :description "promoted description" :title "promoted title" :promoted true}]}
                       (permissions/admin? {:email nil}) => true)
-                    (default-app objective-list-view-get-request) => (contains {:body (contains ">Demote<")})
-                    (default-app objective-list-view-get-request) =not=> (contains {:body (contains ">Promote<")}))
+                    (default-app objective-list-view-get-request) => (contains {:body (contains "demote-text")})
+                    (default-app objective-list-view-get-request) =not=> (contains {:body (contains "promote-text")}))
+
+              (fact "promote objective button is hidden if there are already 3 promoted objectives"
+                    (against-background
+                      (http-api/get-objectives) => {:status ::http-api/success
+                                                    :result [{:_id 1 :description "first promoted description" :title "first promoted title" :promoted true}
+                                                             {:_id 2 :description "second promoted description" :title "second promoted title" :promoted true}
+                                                             {:_id 3 :description "third promoted description" :title "third promoted title" :promoted true}
+                                                             basic-objective
+                                                             ]}
+                      (permissions/admin? {:email nil}) => true)
+
+                    (default-app objective-list-view-get-request) =not=> (contains {:body (contains "promote-text")})
+                    (default-app objective-list-view-get-request) => (contains {:body (contains "demote-text")})
+                    )
+
+
 
               (future-fact "the promoted objectives container is present if user is admin even if there are no promoted objectives"
                     (-> user-session

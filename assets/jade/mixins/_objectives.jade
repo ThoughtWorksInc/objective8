@@ -26,19 +26,20 @@ mixin objectiveListItem(objectiveTitle, numberOfDays)
     .objective-list-item-star-container.clj-star-container
       .objective-list-item-star.clj-objective-list-item-star
         i.fa.fa-star
-    .objective-list-item-removal-container.clj-objective-list-item-removal-container
-      form.objective-list-item-removal.clj-objective-removal-form(action="/meta/admin-removals", method="post")
-        input.clj-removal-uri(type="hidden", value="!removal-uri", name="removal-uri")
-        input.clj-removal-sample(type="hidden", value="!removal-sample", name="removal-sample")
-        button.objective-list-item-removal-button.func--remove-objective(type="submit")
-          i.fa.fa-trash-o.fa-lg
     a.objective-list-item-link.clj-objective-list-item-link.func--objective-list-item-link(href="/objectives/[id]")
       h3.objective-list-item-title.clj-objective-list-item-title.func--objective-title #{objectiveTitle}
       p.objective-list-item-preview-text.clj-objective-brief-description
         block
-    .clj-promote-objective-form-container
-      if blocks.buttonList
-        - blocks.buttonList()
+    .clj-admin-buttons-container
+      .objective-list-item-removal-container.clj-objective-list-item-removal-container
+        form.objective-list-item-removal.clj-objective-removal-form(action="/meta/admin-removals", method="post")
+          input.clj-removal-uri(type="hidden", value="!removal-uri", name="removal-uri")
+          input.clj-removal-sample(type="hidden", value="!removal-sample", name="removal-sample")
+          button.objective-list-item-removal-button.func--remove-objective(type="submit")
+            i.fa.fa-trash-o.fa-lg
+      .clj-promote-objective-form-container.promote-objective-form-container
+        if blocks.buttonList
+          - blocks.buttonList()
 
 
 mixin objectiveListItemWithPromoteForm(objectiveTitle, numberOfDays)

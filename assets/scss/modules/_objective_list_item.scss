@@ -86,10 +86,21 @@
   }
 }
 
+.promote-objective-form-container {
+  position: absolute;
+  top:0;
+  right:30px;
+}
+
 .promote-objective-button{
-  @extend .promote-question-button,;
+  @extend .promote-question-button;
 }
 
 .demote-objective-button{
-  @extend .demote-question-button,;
+  @extend .demote-question-button;
+}
+
+.promote-objective-button,
+.demote-objective-button {
+  position: static;
 }
