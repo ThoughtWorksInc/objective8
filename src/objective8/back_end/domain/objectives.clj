@@ -83,6 +83,7 @@
           (utils/update-in-self [:uri] uri-for-objective)
           (dissoc :global-id)))
 
-(defn promote-objective! [objective]
-  (some-> (storage/pg-update-objective! objective :promoted true)
-          (dissoc :global-id)))
+(defn toggle-promoted-status! [objective]
+  (let [promoted-objective? (:promoted objective)]
+    (some-> (storage/pg-update-objective! objective :promoted (not promoted-objective?))
+            (dissoc :global-id))))

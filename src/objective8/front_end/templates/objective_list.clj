@@ -2,19 +2,22 @@
   (:require [net.cgrand.enlive-html :as html]
             [net.cgrand.jsoup :as jsoup]
             [objective8.front-end.permissions :as permissions]
-            [objective8.config :as config]
             [objective8.front-end.templates.page-furniture :as pf]
-            [objective8.front-end.api.domain :as domain]
-            [objective8.utils :as utils]
-            [objective8.front-end.templates.template-functions :as tf]))
+            [objective8.utils :as utils]))
 
 (def objective-list-resource (html/html-resource "templates/jade/objective-list.html" {:parser jsoup/parser}))
 
-(def objective-list-item-resource (html/select pf/library-html-resource [:.clj-objective-list-item]))
-(def objective-list-item-removal-container (html/select objective-list-resource
+(def objective-list-item-with-promote-resource (html/select pf/library-html-resource [:.clj-library-key--objective-list-item-with-promote-form]))
+(def objective-list-item-with-demote-resource (html/select pf/library-html-resource [:.clj-library-key--objective-list-item-with-demote-form]))
+
+
+(def objective-list-item-removal-container (html/select objective-list-item-with-promote-resource
                                                         [:.clj-objective-list-item-removal-container]))
-(def objective-list-item-promotion-container (html/select objective-list-resource
+(def objective-list-item-promotion-container (html/select objective-list-item-with-promote-resource
                                                           [:.clj-promote-objective-form-container]))
+(def objective-list-item-demotion-container (html/select objective-list-item-with-demote-resource
+                                                          [:.clj-promote-objective-form-container]))
+
 
 (defn removal-container [anti-forgery-snippet {:keys [title uri] :as objective}]
   (html/at objective-list-item-removal-container
@@ -22,10 +25,11 @@
            [:.clj-removal-uri] (html/set-attr :value uri)
            [:.clj-removal-sample] (html/set-attr :value title)))
 
-(defn promotion-container [anti-forgery-snippet {:keys [uri] :as objective}]
-  (html/at objective-list-item-promotion-container
+(defn promotion-container [anti-forgery-snippet {:keys [uri promoted] :as objective}]
+  (html/at (if promoted objective-list-item-demotion-container objective-list-item-promotion-container)
            [:.clj-promote-objective-form] (html/prepend anti-forgery-snippet)
-           [:.clj-promotion-uri] (html/set-attr :value uri)))
+           [:.clj-promotion-uri] (html/set-attr :value uri)
+           ))
 
 (defn- shorten-content [content]
   (let [content (or content "")
@@ -36,11 +40,11 @@
 (defn brief-description [objective]
   (shorten-content (:description objective)))
 
-(defn promoted-objectives? [objective] (= (:promoted objective) true))
+(defn promoted-objectives? [objective] (true? (:promoted objective)))
 
-(defn objective-list-items [{:keys [anti-forgery-snippet translations data user] :as context} promoted]
+(defn objective-list-items [{:keys [anti-forgery-snippet data user] :as context} promoted]
   (let [objectives (filter #(= (promoted-objectives? %) promoted) (:objectives data))]
-    (html/at objective-list-item-resource [:.clj-objective-list-item]
+    (html/at objective-list-item-with-promote-resource [:.clj-objective-list-item]
              (html/clone-for [{objective-id :_id :as objective} objectives]
                              [:.clj-objective-list-item-star] (if (get-in objective [:meta :starred])
                                                                 (html/add-class "starred")
@@ -61,11 +65,11 @@
                              [:.clj-objective-list-item-title] (html/content (:title objective))
                              [:.clj-objective-brief-description] (html/content (brief-description objective))))))
 
-(defn no-promoted-objectives? [{:keys [anti-forgery-snippet translations data user] :as context}]
+(defn no-promoted-objectives? [{:keys [data] :as context}]
   (let [objectives (filter #(= (promoted-objectives? %) true) (:objectives data))]
     (empty? objectives)))
 
-(defn objective-list-page [{:keys [translations data doc user] :as context}]
+(defn objective-list-page [{:keys [translations doc] :as context}]
   (html/at objective-list-resource
            [:title] (html/content (:title doc))
            [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
@@ -76,5 +80,4 @@
 
            [:.clj-objective-list] (html/content (objective-list-items context false))
            [:.clj-promoted-objective-list] (html/content (objective-list-items context true))
-           [:.clj-promoted-objectives-container] (if (no-promoted-objectives? context) (html/substitute nil) identity)
-           ))
+           [:.clj-promoted-objectives-container] (if (no-promoted-objectives? context) (html/substitute nil) identity)))

@@ -160,11 +160,21 @@ html.no-js(lang="en")
 
       .example
         .documentation
-          h3 Objective list page list item
-          p Generated with objectiveListItem(objectiveTitle, numberOfDays) mixin
-        ol.unstyled-list
-          +objectiveListItem('!Build safer cycling networks in the streets of Madrid.', 30)
-            | !London and Pairs are two prime examples of cycle super highway heaven. We need to show the world that Madrid too can be the pinncale in cycli...
+          h3 Objective list page list item with promote button
+          p Generated with objectiveListItemWithPromoteForm(objectiveTitle, numberOfDays) mixin
+        .clj-library-key--objective-list-item-with-promote-form
+          ol.unstyled-list
+            +objectiveListItemWithPromoteForm('!Build safer cycling networks in the streets of Madrid.', 30)
+              | !London and Pairs are two prime examples of cycle super highway heaven. We need to show the world that Madrid too can be the pinncale in cycli...
+
+      .example
+        .documentation
+          h3 Objective list page list item with demote button
+          p Generated with objectiveListItemWithDemoteForm(objectiveTitle, numberOfDays) mixin
+        .clj-library-key--objective-list-item-with-demote-form
+          ol.unstyled-list
+            +objectiveListItemWithDemoteForm('!Build safer cycling networks in the streets of Madrid.', 30)
+              | !London and Pairs are two prime examples of cycle super highway heaven. We need to show the world that Madrid too can be the pinncale in cycli...
 
       .example
         .documentation

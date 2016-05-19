@@ -349,7 +349,7 @@
                (users/retrieve-user USER_URI) => {:auth-provider-user-id "twitter-123456"}
                (users/get-admin-by-auth-provider-user-id "twitter-123456") => {:auth-provider-user-id "twitter-123456"}
                (storage/pg-retrieve-entity-by-uri OBJECTIVE-URI :with-global-id) => {:_id OBJECTIVE_ID}
-               (objectives/promote-objective! {:_id OBJECTIVE_ID}) => OBJECTIVE_ID))
+               (objectives/toggle-promoted-status! {:_id OBJECTIVE_ID}) => OBJECTIVE_ID))
 
        (fact "unable to promote objective if user is not signed in"
              (actions/create-promote-objective! promoted-objective-data) => {:status ::actions/entity-not-found}

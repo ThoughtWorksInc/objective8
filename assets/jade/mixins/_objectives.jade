@@ -1,3 +1,26 @@
+mixin promoteObjectiveButton()
+  button.promote-objective-button.clj-toggle-promoted-objective.func--toggle-promoted-objective-button(type="submit" data-l8n="attr/alt:objective-list/promote-button attr/value:objective-list/promote-button")
+    span.promote-text(data-l8n="content:objective-list/promote-button") !Promote
+    i.fa.fa-angle-double-up
+
+mixin demoteObjectiveButton()
+  button.demote-objective-button.clj-toggle-promoted-objective.func--toggle-promoted-objective-button(type="submit" data-l8n="attr/alt:objective-list/demote-button attr/value:objective-list/demote-button")
+    span.demote-text(data-l8n="content:objective-list/demote-button") !Demote
+    i.fa.fa-angle-double-down
+
+
+mixin promoteObjectiveForm()
+  form.clj-promote-objective-form(action="/meta/promote-objective", method="post")
+    input.clj-promotion-uri(type="hidden", value="!promotion-uri", name="objective-uri")
+    +promoteObjectiveButton()
+
+
+mixin demoteObjectiveForm()
+  form.clj-promote-objective-form(action="/meta/promote-objective", method="post")
+    input.clj-promotion-uri(type="hidden", value="!promotion-uri", name="objective-uri")
+    +demoteObjectiveButton()
+
+
 mixin objectiveListItem(objectiveTitle, numberOfDays)
   li.objective-list-item.clj-objective-list-item
     .objective-list-item-star-container.clj-star-container
@@ -14,7 +37,19 @@ mixin objectiveListItem(objectiveTitle, numberOfDays)
       p.objective-list-item-preview-text.clj-objective-brief-description
         block
     .clj-promote-objective-form-container
-      form.clj-promote-objective-form(action="/meta/promote-objective", method="post")
-        input.clj-promotion-uri(type="hidden", value="!promotion-uri", name="objective-uri")
-        button.func--promote-objective-button(type="submit")
-          | Promote
+      if blocks.buttonList
+        - blocks.buttonList()
+
+
+mixin objectiveListItemWithPromoteForm(objectiveTitle, numberOfDays)
+  +objectiveListItem(objectiveTitle, numberOfDays)
+    block
+    +set('buttonList')
+      +promoteObjectiveForm()
+
+mixin objectiveListItemWithDemoteForm(objectiveTitle, numberOfDays)
+  +objectiveListItem(objectiveTitle, numberOfDays)
+    block
+    +set('buttonList')
+      +demoteObjectiveForm()
+

@@ -194,5 +194,13 @@
        (fact "Promote objective sets status of objective to promoted"
              (let [objective (sh/store-an-objective)]
                (boolean (:promoted objective)) => false
-               (objectives/promote-objective! objective) => (-> (dissoc objective :global-id)
-                                                                (assoc :promoted true)))))
+               (objectives/toggle-promoted-status! objective) => (-> (dissoc objective :global-id)
+                                                                     (assoc :promoted true))))
+
+       (fact "Toggle objective promotion status sets status of objective to un-promoted if objective is already promoted"
+             (let [objective (sh/store-an-objective)
+                   promoted-objective (-> (objectives/toggle-promoted-status! objective)
+                                          (assoc :global-id (:global-id objective)))]
+               (boolean (:promoted promoted-objective)) => true
+               (objectives/toggle-promoted-status! promoted-objective) => (-> (dissoc objective :global-id)
+                                                                     (assoc :promoted false)))))

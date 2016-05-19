@@ -44,16 +44,17 @@
 ;    (catch Exception e
 ;      (throw e)
 ;      )))
-;
-;(defn check-not-present [element]
-;  (if (try
-;        (not-present? element)
-;        false
-;        (catch Exception e
-;          true))
-;    true
-;    (do (throw (Throwable. (str "Element " element " was found that should not be present")))
-;        false)))
+
+
+(defn check-not-present [element]
+  (if (try
+        (wd/present? element)
+        false
+        (catch Exception e
+          true))
+    true
+    (do (throw (Throwable. (str "Element " element " was found that should not be present")))
+        false)))
 
 (def screenshot-directory "test/objective8/functional/screenshots")
 (def screenshot-number (atom 0))
@@ -762,16 +763,35 @@
                (throw e)))
         => (contains "Functional test writer note on annotation"))
 
-  (fact "User with admin credentials can promote and remove an objective"
+  (fact "User with admin credentials can promote and demote an objective"
         (let [result (try
                        (wd/click ".func--objectives")
                        (wait-for-title "Objectives | Objective[8]")
                        (screenshot "admins_objectives_page")
-                       (wait-for-element ".func--promoted-objectives-container")
-                       (wd/click ".func--promote-objective-button")
+                       (check-not-present ".clj-promoted-objectives-container")
+
+                       (wd/click ".func--toggle-promoted-objective-button")
                        (wait-for-title "Objectives | Objective[8]")
                        (wait-for-element ".func--promoted-objectives-container")
-                       (screenshot "promoted-objectives-objectives-list-page")
+                       (screenshot "promoted-objectives-list-page")
+                       (wd/click ".func--toggle-promoted-objective-button")
+                       (wait-for-title "Objectives | Objective[8]")
+                       (screenshot "demoted-objectives-list-page")
+                       (check-not-present ".clj-promoted-objectives-container")
+
+
+                       {:page-title (wd/title)
+                        :content    (wd/page-source)}
+                       (catch Exception e
+                         (screenshot "ERROR-User-with-admin-credentials-can-promote-and-demote-an-objective")
+                         (throw e)))]
+          (:page-title result) => "Objectives | Objective[8]"))
+
+  (fact "User with admin credentials can remove an objective"
+        (let [result (try
+
+                       (wd/click ".func--objectives")
+                       (wait-for-title "Objectives | Objective[8]")
 
                        (wd/click ".func--remove-objective")
                        (wait-for-title "Are you sure? | Objective[8]")
@@ -782,12 +802,12 @@
                        (screenshot "objectives_page_after_removing_the_only_objective")
                        {:page-title (wd/title)
                         :content    (wd/page-source)}
+
                        (catch Exception e
                          (screenshot "ERROR-User-with-admin-credentials-can-remove-objective")
                          (throw e)))]
           (:page-title result) => "Objectives | Objective[8]"
           (:content result) =not=> (contains "Functional test headline")))
-
 
   (fact "Can view the removed objective on the admin-activity page"
         (let [objective-id (-> (:objective-url @journey-state)

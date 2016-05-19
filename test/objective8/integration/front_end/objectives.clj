@@ -92,6 +92,20 @@
                                                             :result [{:_id 1 :description "description" :title "title"}]}
                               (permissions/admin? {:username "username", :roles #{:signed-in}, :email nil}) => true))
 
+
+              (fact "only one promote objectives button appears"
+                           (-> user-session
+                               helpers/sign-in-as-existing-user
+                               (p/request "http://localhost:8080/objectives")
+                               :response
+                               :body
+                               ((partial re-seq (re-pattern "clj-promote-objective-form-container")))
+                               count)
+                           => 1
+                    (provided (http-api/get-objectives {:signed-in-id 1}) => {:status ::http-api/success
+                                                            :result [{:_id 1 :description "description" :title "title"}]}
+                              (permissions/admin? {:username "username", :roles #{:signed-in}, :email nil}) => true))
+
               (fact "promoted objectives container is populated with objectives"
                     (against-background
                       (http-api/get-objectives) => {:status ::http-api/success
@@ -119,6 +133,14 @@
                                                     :result [{:_id 1 :description "description" :title "title"}]})
                     (default-app objective-list-view-get-request) =not=> (contains {:body (contains "clj-promoted-objectives-container")}))
 
+              (fact "promoted objectives button becomes 'Demote' for promoted objectives"
+                    (against-background
+                      (http-api/get-objectives) => {:status ::http-api/success
+                                                    :result [{:_id 1 :description "promoted description" :title "promoted title" :promoted true}]}
+                      (permissions/admin? {:email nil}) => true)
+                    (default-app objective-list-view-get-request) => (contains {:body (contains ">Demote<")})
+                    (default-app objective-list-view-get-request) =not=> (contains {:body (contains ">Promote<")}))
+
               (future-fact "the promoted objectives container is present if user is admin even if there are no promoted objectives"
                     (-> user-session
                         helpers/sign-in-as-existing-user
@@ -129,6 +151,18 @@
                                                                               :result [{:_id 1 :description "description" :title "title"}]}
                               (permissions/admin? {:username "username", :roles #{:signed-in}, :email nil}) => true)))
 
+       (fact "only one remove objective button appears"
+             (-> user-session
+                 helpers/sign-in-as-existing-user
+                 (p/request "http://localhost:8080/objectives")
+                 :response
+                 :body
+                 ((partial re-seq (re-pattern "clj-objective-list-item-removal-container")))
+                 count)
+             => 1
+             (provided (http-api/get-objectives {:signed-in-id 1}) => {:status ::http-api/success
+                                                                       :result [{:_id 1 :description "description" :title "title"}]}
+                       (permissions/admin? {:username "username", :roles #{:signed-in}, :email nil}) => true))
 
        (fact "When a signed in user views an objective, the objective contains user specific information"
              (against-background

@@ -85,3 +85,11 @@
     display: none;
   }
 }
+
+.promote-objective-button{
+  @extend .promote-question-button,;
+}
+
+.demote-objective-button{
+  @extend .demote-question-button,;
+}

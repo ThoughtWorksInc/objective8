@@ -213,7 +213,7 @@
   (if-let [user (users/retrieve-user promoted-by)]
     (if (users/get-admin-by-auth-provider-user-id (:auth-provider-user-id user))
       (if-let [objective (storage/pg-retrieve-entity-by-uri objective-uri :with-global-id)]
-        {:status ::success :result (objectives/promote-objective! objective)}
+        {:status ::success :result (objectives/toggle-promoted-status! objective)}
         {:status ::entity-not-found})
       {:status ::forbidden})
     {:status ::entity-not-found}))

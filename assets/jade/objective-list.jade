@@ -13,14 +13,14 @@ block content
     .objectives-list-actions
       a.button.create-objective-link(href="/objectives/create", data-l8n="content:objective-list/create-objective-link") !Create an objective
 
-    .func-promoted-objectives-container.clj-promoted-objectives-container
+    .func--promoted-objectives-container.clj-promoted-objectives-container
       h2(data-l8n="content:objective-list/promoted-subtitle") !Promoted objectives
       ol.unstyled-list.clj-promoted-objective-list
-        +objectiveListItem('!Having more fun in the streets of Berlin.', 29)
+        +objectiveListItemWithDemoteForm('!Having more fun in the streets of Berlin.', 29)
           | !London and Pairs are two prime examples of places where people have fun.
 
     .recent-objectives
       h2(data-l8n="content:objective-list/subtitle") !Recently created objectives
       ol.unstyled-list.clj-objective-list
-        +objectiveListItem('!Build safer cycling networks in the streets of Madrid.', 30)
+        +objectiveListItemWithPromoteForm('!Build safer cycling networks in the streets of Madrid.', 30)
           | !London and Pairs are two prime examples of cycle super highway heaven.
