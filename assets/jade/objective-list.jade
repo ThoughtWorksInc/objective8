@@ -15,6 +15,8 @@ block content
 
     .func--promoted-objectives-container.clj-promoted-objectives-container
       h2(data-l8n="content:objective-list/promoted-subtitle") !Promoted objectives
+      span.promoted-objective-info.clj-promoted-objective-information(data-l8n="content:objective-list/promoted-objective-information")
+        | !There is a limit of three promoted objectives.
       ol.unstyled-list.clj-promoted-objective-list
         +objectiveListItemWithDemoteForm('!Having more fun in the streets of Berlin.', 29)
           | !London and Pairs are two prime examples of places where people have fun.

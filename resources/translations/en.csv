@@ -63,6 +63,7 @@ index,learn-more,Learn more
 objective-list,doc-title,Objectives | %app-name%
 objective-list,doc-description,
 objective-list,page-title,Objectives
+objective-list,promoted-objective-information,There is a limit of three promoted objectives.
 objective-list,promoted-subtitle,Promoted objectives
 objective-list,promote-button,Promote
 objective-list,demote-button,Demote

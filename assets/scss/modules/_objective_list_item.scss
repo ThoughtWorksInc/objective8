@@ -104,3 +104,8 @@
 .demote-objective-button {
   position: static;
 }
+
+.promoted-objective-info {
+  @extend .label-helper;
+  margin: -0.5em 0 1em 0;
+}

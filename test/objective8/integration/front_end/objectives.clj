@@ -83,27 +83,27 @@
                     (default-app objective-list-view-get-request) =not=> (contains {:body (contains "/objectives/promote-objective")}))
 
               (fact "the promote objective button posts to the correct endpoint"
-                           (-> user-session
-                               helpers/sign-in-as-existing-user
-                               (p/request "http://localhost:8080/objectives")
-                               :response)
-                           => (contains {:body (contains "/meta/promote-objective")})
+                    (-> user-session
+                        helpers/sign-in-as-existing-user
+                        (p/request "http://localhost:8080/objectives")
+                        :response)
+                    => (contains {:body (contains "/meta/promote-objective")})
                     (provided (http-api/get-objectives {:signed-in-id 1}) => {:status ::http-api/success
-                                                            :result [{:_id 1 :description "description" :title "title"}]}
+                                                                              :result [{:_id 1 :description "description" :title "title"}]}
                               (permissions/admin? {:username "username", :roles #{:signed-in}, :email nil}) => true))
 
 
               (fact "only one promote objectives button appears"
-                           (-> user-session
-                               helpers/sign-in-as-existing-user
-                               (p/request "http://localhost:8080/objectives")
-                               :response
-                               :body
-                               ((partial re-seq (re-pattern "clj-promote-objective-form-container")))
-                               count)
-                           => 1
+                    (-> user-session
+                        helpers/sign-in-as-existing-user
+                        (p/request "http://localhost:8080/objectives")
+                        :response
+                        :body
+                        ((partial re-seq (re-pattern "clj-promote-objective-form-container")))
+                        count)
+                    => 1
                     (provided (http-api/get-objectives {:signed-in-id 1}) => {:status ::http-api/success
-                                                            :result [{:_id 1 :description "description" :title "title"}]}
+                                                                              :result [{:_id 1 :description "description" :title "title"}]}
                               (permissions/admin? {:username "username", :roles #{:signed-in}, :email nil}) => true))
 
               (fact "promoted objectives container is populated with objectives"
@@ -156,17 +156,18 @@
                     (default-app objective-list-view-get-request) => (contains {:body (contains "demote-text")})
                     )
 
+              (facts "About promoted objective information"
+                     (against-background
+                       (http-api/get-objectives) => {:status ::http-api/success
+                                                     :result [{:_id 1 :description "promoted description" :title "promoted title" :promoted true}]})
 
+                     (fact "Promoted objective information does not appear for normal users"
+                           (default-app objective-list-view-get-request) =not=> (contains {:body (contains "clj-promoted-objective-information")}))
 
-              (future-fact "the promoted objectives container is present if user is admin even if there are no promoted objectives"
-                    (-> user-session
-                        helpers/sign-in-as-existing-user
-                        (p/request "http://localhost:8080/objectives")
-                        :response)
-                    => (contains {:body (contains "clj-promoted-objectives-container")})
-                    (provided (http-api/get-objectives {:signed-in-id 1}) => {:status ::http-api/success
-                                                                              :result [{:_id 1 :description "description" :title "title"}]}
-                              (permissions/admin? {:username "username", :roles #{:signed-in}, :email nil}) => true)))
+                     (fact "Promoted objective information appears for admin users"
+                           (against-background (permissions/admin? {:email nil}) => true)
+                           (default-app objective-list-view-get-request) => (contains {:body (contains "clj-promoted-objective-information")})
+                           )))
 
        (fact "only one remove objective button appears"
              (-> user-session

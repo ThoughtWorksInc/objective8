@@ -18,6 +18,8 @@
 (def objective-list-item-demotion-container (html/select objective-list-item-with-demote-resource
                                                           [:.clj-promote-objective-form-container]))
 
+(def MAX_PROMOTED_OBJECTIVES 3)
+
 (def promoted true)
 
 (defn removal-container [anti-forgery-snippet {:keys [title uri] :as objective}]
@@ -45,7 +47,7 @@
 
 (defn max-promoted-objectives? [data]
   (let [promoted-objectives (filter #(= (promoted-objective? %) true) (:objectives data))]
-    (< 2 (count promoted-objectives))))
+    (<= MAX_PROMOTED_OBJECTIVES (count promoted-objectives))))
 
 (defn no-promoted-objectives? [{:keys [data] :as context}]
   (let [objectives (filter #(= (promoted-objective? %) true) (:objectives data))]
@@ -73,7 +75,7 @@
                              [:.clj-objective-list-item-title] (html/content (:title objective))
                              [:.clj-objective-brief-description] (html/content (brief-description objective))))))
 
-(defn objective-list-page [{:keys [translations doc] :as context}]
+(defn objective-list-page [{:keys [translations user doc] :as context}]
   (html/at objective-list-resource
            [:title] (html/content (:title doc))
            [:.clj-masthead-signed-out] (html/substitute (pf/masthead context))
@@ -81,6 +83,7 @@
 
            [:.clj-guidance-buttons] nil
            [:.l8n-guidance-heading] (html/content (translations :objectives-guidance/heading))
+           [:.clj-promoted-objective-information] (if (not (permissions/admin? user)) (html/substitute nil) identity)
 
            [:.clj-objective-list] (html/content (objective-list-items context (not promoted)))
            [:.clj-promoted-objective-list] (html/content (objective-list-items context promoted))

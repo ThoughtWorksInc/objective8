@@ -8,6 +8,7 @@ invitation-modal,email-body-line-1,Le he invitado para ayudar a redactar este do
 invitation-modal,email-body-line-2,Por favor siga el enlace más abajo para más información y para aceptar esta invitacion:
 objective-list,doc-title,Objetivos | %app-name%
 objective-list,page-title,Objetivos
+objective-list,promoted-objective-information,There is a limit of three promoted objectives in Spanish.
 objective-list,create-objective-link,Crear un objetivo
 objective-list,subtitle,Objetivos recientes
 objective-list,drafting-begins,La redacción empieza en
