@@ -138,7 +138,7 @@
                                                      :body (json/generate-string objective-data))]
 
                  (:status response) => 403
-                 (:body response) => (helpers/json-contains {:reason "Admin credentials are required for this request"})))
+                 (:body response) => (helpers/json-contains {:reason "Admin credentials are required for this request. Maximum 3 objectives may be promoted."})))
 
          (fact "returns 404 if the objective does not exist"
                (let [admin-uri (->> (sh/store-an-admin)
@@ -169,4 +169,23 @@
 
                  (:status response) => 400
                (:body response) => (helpers/json-contains {:reason "Invalid promote objective post request"})))
-         ))
+
+         (fact "returns 403 if there are at least 3 promoted objectives"
+               (let [user-uri (->> (sh/store-an-admin)
+                                   :_id
+                                   (str "/users/"))
+                     objective-uri (->> (sh/store-an-objective)
+                                        :_id
+                                        (str "/objectives/"))
+                     _ (sh/store-a-promoted-objective)
+                     _ (sh/store-a-promoted-objective)
+                     _ (sh/store-a-promoted-objective)
+                     objective-data {:objective-uri objective-uri
+                                     :promoted-by user-uri}
+                     {response :response} (p/request app (utils/api-path-for :api/put-promote-objective)
+                                                     :request-method :put
+                                                     :content-type "application/json"
+                                                     :body (json/generate-string objective-data))]
+
+                 (:status response) => 403
+                 (:body response) => (helpers/json-contains {:reason "Admin credentials are required for this request. Maximum 3 objectives may be promoted."})))))

@@ -43,6 +43,22 @@
                          :description description
                          :created-by-id user-id}))))
 
+(defn store-a-promoted-objective
+
+  ([]
+   (store-a-promoted-objective {}))
+
+  ([entities]
+   (let [{user-id :_id} (l-get entities :user (store-a-user))
+         title (get entities :title "test promoted title")
+         description (get entities :description "test promoted description")]
+     (storage/pg-store! {:entity :objective
+                         :removed-by-admin false
+                         :title title
+                         :description description
+                         :created-by-id user-id
+                         :promoted true}))))
+
 (defn store-an-admin-removed-objective
 
   ([]
@@ -52,8 +68,8 @@
    (let [{user-id :_id} (l-get entities :user (store-a-user))]
      (storage/pg-store! {:entity :objective
                          :removed-by-admin true
-                         :title "test title"
-                         :description "test description"
+                         :title "test admin removed title"
+                         :description "test admin removed description"
                          :created-by-id user-id}))))
 
 (defn store-an-activity []

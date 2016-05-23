@@ -38,3 +38,4 @@
 
 (fact "throws exception if no entity key is present"
       (s/pg-retrieve {}) => (throws Exception "Query map requires an :entity key"))
+

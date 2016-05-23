@@ -155,7 +155,7 @@
           (resource-updated-response (str utils/host-url "/api/v1/meta/promote-objective/" (:_id promoted-objective))
                                      promoted-objective)
           (= status ::actions/forbidden)
-          (forbidden-response "Admin credentials are required for this request")
+          (forbidden-response "Admin credentials are required for this request. Maximum 3 objectives may be promoted.")
 
           (= status ::actions/entity-not-found)
           (not-found-response "Objective with that URI does not exist")

@@ -191,16 +191,32 @@
                                                                             :uri uri))))) 
 
 (facts "about promoting objectives"
-       (fact "Promote objective sets status of objective to promoted"
-             (let [objective (sh/store-an-objective)]
-               (boolean (:promoted objective)) => false
-               (objectives/toggle-promoted-status! objective) => (-> (dissoc objective :global-id)
-                                                                     (assoc :promoted true))))
+       (against-background
+         [(before :contents (do (ih/db-connection)
+                                (ih/truncate-tables)))
+          (after :facts (ih/truncate-tables))]
 
-       (fact "Toggle objective promotion status sets status of objective to un-promoted if objective is already promoted"
-             (let [objective (sh/store-an-objective)
-                   promoted-objective (-> (objectives/toggle-promoted-status! objective)
-                                          (assoc :global-id (:global-id objective)))]
-               (boolean (:promoted promoted-objective)) => true
-               (objectives/toggle-promoted-status! promoted-objective) => (-> (dissoc objective :global-id)
-                                                                     (assoc :promoted false)))))
+         (fact "Promote objective sets status of objective to promoted"
+               (let [objective (sh/store-an-objective)]
+                 (boolean (:promoted objective)) => false
+                 (objectives/toggle-promoted-status! objective) => (-> (dissoc objective :global-id)
+                                                                       (assoc :promoted true))))
+
+         (fact "Toggle objective promotion status sets status of objective to un-promoted if objective is already promoted"
+               (let [objective (sh/store-an-objective)
+                     promoted-objective (-> (objectives/toggle-promoted-status! objective)
+                                            (assoc :global-id (:global-id objective)))]
+                 (boolean (:promoted promoted-objective)) => true
+                 (objectives/toggle-promoted-status! promoted-objective) => (-> (dissoc objective :global-id)
+                                                                                (assoc :promoted false))))
+
+         (fact "Get promoted objectives only retrieves promoted objectives"
+               (let [{username :username :as user} (sh/store-a-user)
+                     stored-promoted-objective (sh/store-a-promoted-objective {:user user})
+                     expected-retrieved-objective (-> stored-promoted-objective
+                                                      (assoc :username username)
+                                                      (dissoc :global-id))]
+                 (sh/store-an-objective {:user user})
+                 (sh/store-an-admin-removed-objective)
+                 (objectives/get-promoted-objectives) => [expected-retrieved-objective])
+               )))

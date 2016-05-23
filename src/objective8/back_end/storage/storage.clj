@@ -8,8 +8,8 @@
 
 (defn pg-create-global-identifier []
   (first (korma/exec-raw
-          "INSERT INTO objective8.global_identifiers values(default) RETURNING _id"
-          :results)))
+           "INSERT INTO objective8.global_identifiers values(default) RETURNING _id"
+           :results)))
 
 (defn insert
   "Wrapper around Korma's insert call"
@@ -31,7 +31,7 @@
   "Wrapper around Korma's select call"
   [entity where options]
   (let [{:keys [limit offset]} options
-        {:keys [field ordering]} (get options :sort {:field :_created_at
+        {:keys [field ordering]} (get options :sort {:field    :_created_at
                                                      :ordering :ASC})
         select-query (-> (korma/select* entity)
                          (korma/where where)
@@ -58,9 +58,9 @@
    (if entity
      (let [result (select (mappings/get-mapping query) (-> (dissoc query :entity)
                                                            (utils/transform-map-keys mappings/key->db-column)) options)]
-       {:query query
+       {:query   query
         :options options
-        :result result})
+        :result  result})
      (throw (Exception. "Query map requires an :entity key")))))
 
 (defn pg-retrieve-entity-by-uri [uri & options]
@@ -103,8 +103,8 @@ SELECT _id, 'section' AS entity FROM objective8.sections WHERE global_id=?
                                     (korma/set-fields new-fields)
                                     (korma/where where))]
     (when (= update-result 1)
-       (-> (korma/select entity (korma/where where))
-           first))))
+      (-> (korma/select entity (korma/where where))
+          first))))
 
 (defn pg-update-user! [user]
   (update (mappings/get-mapping {:entity :user}) user {:_id (:_id user)}))
@@ -112,9 +112,9 @@ SELECT _id, 'section' AS entity FROM objective8.sections WHERE global_id=?
 (defn pg-update-bearer-token!
   "Wrapper around Korma's update call"
   [{:keys [entity] :as m}]
-  (if-let [bearer-token-entity (mappings/get-mapping m)] 
+  (if-let [bearer-token-entity (mappings/get-mapping m)]
     (let [where {:bearer_name (:bearer-name m)}]
-      (update bearer-token-entity m where)) 
+      (update bearer-token-entity m where))
     (throw (Exception. (str "Could not find database mapping for " entity)))))
 
 (defn pg-update-invitation-status! [invitation new-status]
@@ -125,7 +125,7 @@ SELECT _id, 'section' AS entity FROM objective8.sections WHERE global_id=?
 (defn pg-update-objective! [objective field new-value]
   (update (mappings/get-mapping {:entity :objective})
           (assoc objective
-                 field new-value)
+            field new-value)
           {:_id (:_id objective)}))
 
 (defn pg-toggle-star! [star]
@@ -162,14 +162,14 @@ SELECT _id, 'section' AS entity FROM objective8.sections WHERE global_id=?
           objective-id (:objective-id sanitised-query)
           sorted-by (:sorted-by sanitised-query)
           sorted-by-clause {:created-at "ORDER BY answers._created_at DESC"
-                            :up-votes "ORDER BY up_votes DESC NULLS LAST"
+                            :up-votes   "ORDER BY up_votes DESC NULLS LAST"
                             :down-votes "ORDER BY down_votes DESC NULLS LAST"}
           filter-type (:filter-type query-map)
           filter-clause {:has-writer-note "AND notes.note IS NOT NULL"}
           offset (:offset sanitised-query)
           offset-clause (str "OFFSET " offset)]
       (apply vector (map unmap-answer-with-votes
-                         (korma/exec-raw [ (string/join " " ["
+                         (korma/exec-raw [(string/join " " ["
 SELECT answers.*, up_votes, down_votes, users.username, notes.note FROM objective8.answers AS answers
 JOIN objective8.users AS users ON users._id = answers.created_by_id
 LEFT JOIN objective8.writer_notes AS notes ON notes.note_on_id = answers.global_id
@@ -183,8 +183,8 @@ LEFT JOIN (SELECT global_id, count(vote) as up_votes
 ON agg2.global_id = answers.global_id
 WHERE answers.objective_id = ? AND answers.question_id = ?
 " (get filter-clause filter-type)
-(get sorted-by-clause sorted-by (:created-at sorted-by-clause))
-"LIMIT 50" offset-clause]) [objective-id question-id]] :results))))))
+                                                            (get sorted-by-clause sorted-by (:created-at sorted-by-clause))
+                                                            "LIMIT 50" offset-clause]) [objective-id question-id]] :results))))))
 
 (def unmap-comments-with-votes
   (-> (mappings/unmap :comment)
@@ -199,7 +199,7 @@ WHERE answers.objective_id = ? AND answers.question_id = ?
     (let [global-id (:global-id sanitised-query)
           sorted-by (:sorted-by sanitised-query)
           sorted-by-clause {:created-at "ORDER BY comments._created_at DESC"
-                            :up-votes "ORDER BY up_votes DESC NULLS LAST"
+                            :up-votes   "ORDER BY up_votes DESC NULLS LAST"
                             :down-votes "ORDER BY down_votes DESC NULLS LAST"}
           filter-type (:filter-type sanitised-query)
           filter-clause {:has-writer-note "AND notes.note IS NOT NULL"}
@@ -223,14 +223,14 @@ LEFT JOIN (SELECT global_id, count(vote) as up_votes
            WHERE vote > 0 GROUP BY global_id) AS agg2
 ON agg2.global_id = comments.global_id
 WHERE comments.comment_on_id = ?
-" (get filter-clause filter-type) 
-(get sorted-by-clause sorted-by (:created-at sorted-by-clause))
-limit-clause
-offset-clause]) [global-id]] :results))))))
+" (get filter-clause filter-type)
+                                                            (get sorted-by-clause sorted-by (:created-at sorted-by-clause))
+                                                            limit-clause
+                                                            offset-clause]) [global-id]] :results))))))
 
 (defn pg-retrieve-starred-objectives [user-id]
   (let [unmap-objective (first (get mappings/objective :transforms))]
-    (apply vector (map unmap-objective 
+    (apply vector (map unmap-objective
                        (korma/exec-raw ["
 SELECT objectives.*, users.username FROM objective8.objectives AS objectives
 JOIN objective8.stars AS stars
@@ -293,7 +293,7 @@ WHERE objectives._id=? AND objectives.removed_by_admin=false" [user-id objective
 (defn pg-get-objectives-for-writer [user-id]
   (let [unmap-objective (first (get mappings/objective :transforms))]
     (apply vector (map unmap-objective
-                      (korma/exec-raw ["
+                       (korma/exec-raw ["
 SELECT objectives.*, users.username FROM objective8.objectives AS objectives
 JOIN objective8.writers AS writers
 ON writers.objective_id = objectives._id
@@ -318,13 +318,14 @@ WHERE objectives.removed_by_admin=false
 ORDER BY objectives._created_at DESC
 LIMIT 50" [user-id]] :results)))))
 
+
 (defn pg-retrieve-question-by-query-map [query-map]
   (when-let [sanitised-query (utils/select-all-or-nothing query-map [:_id :objective-id :entity])]
     (let [unmap-question (first (get mappings/question :transforms))
           question-id (:_id sanitised-query)
           objective-id (:objective-id sanitised-query)]
       (first (apply vector (map unmap-question
-                  (korma/exec-raw ["
+                                (korma/exec-raw ["
 SELECT questions.*, users.username, marks.active AS marked, marks.username AS marked_by, COUNT (answers.*) AS answers_count
 FROM objective8.questions AS questions
 LEFT JOIN objective8.answers AS answers 
@@ -371,11 +372,11 @@ LIMIT 50" [objective-id objective-id]] :results))))
 
 
 (defn pg-retrieve-questions-for-objective-by-most-answered [query-map]
- (when-let [sanitised-query (utils/select-all-or-nothing query-map [:entity :objective_id])]
-   (let [objective-id (:objective_id sanitised-query)
-         unmap-question (first (get mappings/question :transforms))]
-    (apply vector (map unmap-question
-          (korma/exec-raw ["
+  (when-let [sanitised-query (utils/select-all-or-nothing query-map [:entity :objective_id])]
+    (let [objective-id (:objective_id sanitised-query)
+          unmap-question (first (get mappings/question :transforms))]
+      (apply vector (map unmap-question
+                         (korma/exec-raw ["
 SELECT questions.*, answers_count.answers_count, answers_count.username
 FROM objective8.questions AS questions
 JOIN (SELECT questions._id, COUNT(answers.*) AS answers_count, questions.username
@@ -432,7 +433,7 @@ WHERE drafts._id = ?" [draft-id]] :results)))))
       mappings/with-section-meta))
 
 (defn pg-get-draft-sections-with-annotation-count [draft-id objective-id]
-    (apply vector (map unmap-sections-with-annotation-count (korma/exec-raw ["
+  (apply vector (map unmap-sections-with-annotation-count (korma/exec-raw ["
 SELECT sections.*, comments_meta.number AS annotations_count 
 FROM objective8.sections AS sections
 LEFT JOIN (SELECT comments.comment_on_id, COUNT(comments.*) AS number
@@ -441,3 +442,4 @@ LEFT JOIN (SELECT comments.comment_on_id, COUNT(comments.*) AS number
 ON comments_meta.comment_on_id = sections.global_id
 WHERE sections.draft_id = ?
 AND sections.objective_id = ?" [draft-id objective-id]] :results))))
+

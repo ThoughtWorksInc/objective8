@@ -3,10 +3,15 @@
             [objective8.back-end.storage.storage :as storage]
             [objective8.back-end.storage.uris :as uris]
             [objective8.config :as config]
-            [objective8.utils :as utils]))
+            [objective8.utils :as utils]
+            [objective8.front-end.templates.objective-list :as fe-templates]))
 
 (defn uri-for-objective [{:keys [_id] :as objective}]
   (str "/objectives/" _id))
+
+(defn has-value [key value]
+  (fn [entity]
+    (= value (key entity))))
 
 (defn store-objective! [objective-data]
   (some-> objective-data
@@ -83,7 +88,17 @@
           (utils/update-in-self [:uri] uri-for-objective)
           (dissoc :global-id)))
 
+(defn get-promoted-objectives []
+  (let [query-map {:entity :objective
+                   :removed-by-admin false}]
+    (->> (storage/pg-retrieve query-map)
+         :result
+         (filter (has-value :promoted true))
+         (map #(dissoc % :global-id)))))
+
 (defn toggle-promoted-status! [objective]
   (let [promoted-objective? (:promoted objective)]
-    (some-> (storage/pg-update-objective! objective :promoted (not promoted-objective?))
-            (dissoc :global-id))))
+    (if (or promoted-objective? (< (count (get-promoted-objectives)) fe-templates/MAX_PROMOTED_OBJECTIVES))
+      (some-> (storage/pg-update-objective! objective :promoted (not promoted-objective?))
+              (dissoc :global-id))
+      nil)))
