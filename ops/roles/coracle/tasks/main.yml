@@ -4,15 +4,16 @@
    file: path=/data/db state=directory
 
  - name: docker mongo
-   docker:
+   docker_container:
      name: mongo
      image: mongo:3
      pull: always
      volumes:
        - /data/db:/data/db
+     api_version: 1.21
 
  - name: docker coracle
-   docker:
+   docker_container:
      name: coracle
      image: dcent/coracle:latest
      pull: always
@@ -24,3 +25,4 @@
      env:
        BEARER_TOKEN: "{{ CORACLE_BEARER_TOKEN }}"
        EXTERNAL_JWK_SET_URL: "{{ external_jwk_set_url }}"
+     api_version: 1.21
