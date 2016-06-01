@@ -7,7 +7,7 @@
    docker_container:
      name: mongo
      image: mongo:3
-     pull: always
+     pull: true
      volumes:
        - /data/db:/data/db
      api_version: 1.21
@@ -16,7 +16,7 @@
    docker_container:
      name: coracle
      image: dcent/coracle:latest
-     pull: always
+     pull: true
      links:
        - "mongo:mongo"
      expose: 7000
